@@ -49,8 +49,7 @@ namespace windows_client
                 string token = (string)obj["token"];
                 string msisdn = (string)obj["msisdn"];
                 string uid = (string)obj["uid"];
-                string sc = (string)obj[NetworkManager.SMS_CREDITS];
-                int smsCredits = Int32.Parse(sc);
+                int smsCredits = (int)obj[NetworkManager.SMS_CREDITS];
                 utils.Utils.savedAccountCredentials(new AccountUtils.AccountInfo(token, msisdn, uid, smsCredits));
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
             }

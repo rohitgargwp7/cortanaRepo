@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Data.Linq.Mapping;
 using System.Data.Linq;
-using CodeTitans.JSon;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.Model
 {
@@ -211,17 +211,17 @@ namespace windows_client.Model
             return (this.Name.ToLower().CompareTo(((ContactInfo)rhs).Name.ToLower()));
         }
 
-        public IJSonObject toJSON()
+        public JObject toJSON()
 	    {
-            JSonWriter wr = new JSonWriter();
-            wr.WriteObjectBegin();
-            wr.WriteMember("phone_no", this.PhoneNo);
-            wr.WriteMember("name", this.Name);
-            wr.WriteMember("id", this.Id);
-            wr.WriteObjectEnd();
-            JSonReader jr = new JSonReader();
-            IJSonObject obj = jr.ReadAsJSonObject(wr.ToString());
-            return obj;
+            //JSonWriter wr = new JSonWriter();
+            //wr.WriteObjectBegin();
+            //wr.WriteMember("phone_no", this.PhoneNo);
+            //wr.WriteMember("name", this.Name);
+            //wr.WriteMember("id", this.Id);
+            //wr.WriteObjectEnd();
+            //JSonReader jr = new JSonReader();
+            //IJSonObject obj = jr.ReadAsJSonObject(wr.ToString());
+            return null;
 	    }
 
         #endregion

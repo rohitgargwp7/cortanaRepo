@@ -6,11 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
-using SharpCompress.Archive;
-using SharpCompress.Common;
-using SharpCompress.Reader;
-using SharpCompress.Writer;
-using SharpCompress.Writer.GZip;
 
 namespace windows_client.utils
 {
@@ -124,9 +119,6 @@ namespace windows_client.utils
                         string json = data.ToString(Newtonsoft.Json.Formatting.None);
                         //byte [] requestString= Encoding.UTF8.GetBytes(json);
                         
-                        using (var zipW = WriterFactory.Open(sw.BaseStream, ArchiveType.GZip, CompressionType.GZip))
-                        {
-                        }
                         sw.Write(json);
                     }
                     break;

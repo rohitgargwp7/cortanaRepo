@@ -48,24 +48,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CodeTitans.Phone.JSon">
-      <HintPath>lib\CodeTitans.Phone.JSon.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Phone" />
-    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit">
+      <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL" />
-    <Reference Include="SharpCompress.WP7">
-      <HintPath>lib\SharpCompress.WP7.dll</HintPath>
-    </Reference>
     <Reference Include="system.data.linq" />
     <Reference Include="System.Servicemodel.Web" />
-    <Reference Include="System.Threading.Tasks.WP71">
-      <HintPath>..\packages\System.Threading.Tasks.3.0.2-beta2\lib\sl4-wp71\System.Threading.Tasks.WP71.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />

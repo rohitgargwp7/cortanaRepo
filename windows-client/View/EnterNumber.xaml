@@ -56,7 +56,7 @@
             <TextBlock x:Name="txtBlkEnterNumber" Foreground="White" TextWrapping="Wrap" Text="What's your number?" FontSize="30" TextAlignment="Center" Margin="-3,79,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="51" VerticalAlignment="Top" />
             
             <!--<Border CornerRadius="10" BorderBrush="White" Width="300" Height="65" Margin="67,133,89,522">-->
-            <TextBox x:Name="txtEnterPhone" Foreground="White" InputScope="Number" Height="72" VerticalAlignment="Top" Margin="55,130,78,0" />
+            <TextBox x:Name="txtEnterPhone" InputScope="Number" Height="72" VerticalAlignment="Top" Margin="55,130,78,0" />
             <!--</Border>-->
             <Image Source="images\ic_phone_big.png" Height="38" VerticalAlignment="Top" Margin="302,148,91,0">
 
