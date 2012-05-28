@@ -58,7 +58,7 @@
             <TextBlock x:Name="txtBlkEnterPin" Foreground="White" TextWrapping="Wrap" Text="Enter that here." FontSize="27" TextAlignment="Center" Margin="-9,84,6,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
 
             <!--Border CornerRadius="10" Background="White" Width="300" Height="65" Margin="67,159,89,504"-->
-            <TextBox SelectionStart="20" Foreground="White" InputScope="Number" x:Name="txtBxEnterPin" Height="68" VerticalAlignment="Top" Margin="57,139,76,0" />
+            <TextBox SelectionStart="20" InputScope="Number" x:Name="txtBxEnterPin" Height="68" VerticalAlignment="Top" Margin="57,139,76,0" />
             <Image Source="images\tux.png" Height="42" VerticalAlignment="Top" Margin="294,153,89,0" RenderTransformOrigin="0.52,0.738">
             </Image>
 

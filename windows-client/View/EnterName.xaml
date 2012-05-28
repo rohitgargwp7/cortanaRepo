@@ -56,7 +56,7 @@
         <Grid x:Name="ContentPanel" Margin="12,41,12,0" Grid.RowSpan="2">
             <TextBlock x:Name="txtBlkEnterName" Foreground="White" TextWrapping="Wrap" Text="Setup your profile name" FontSize="27" TextAlignment="Center" Margin="-3,46,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
 
-            <TextBox x:Name="txtBxEnterName" Foreground="White" Height="68" VerticalAlignment="Top" Margin="65,103,78,0">
+            <TextBox x:Name="txtBxEnterName" Height="68" VerticalAlignment="Top" Margin="65,103,78,0">
             </TextBox>
             <Image Source="images\tux.png" Height="38" VerticalAlignment="Top" Margin="301,118,96,0">
             </Image>
