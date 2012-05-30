@@ -24,7 +24,7 @@ namespace windows_client
 
         private void getStarted_click(object sender, RoutedEventArgs e)
         {
-            AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));           
+            AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));         
         }
 
         private void registerPostResponse_Callback(JObject obj)
@@ -37,24 +37,25 @@ namespace windows_client
                 // SHOW SOME TRY AGAIN MSG
                 return;
             }
-
             appSettings[HikeMessengerApp.ACCEPT_TERMS] = "y";
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
             if ("fail" == (string)obj["stat"])
             {
                 nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
             }
-            else // account creation successfull
+            /* account creation successfull */
+            else 
             {
-                string token = (string)obj["token"];
-                string msisdn = (string)obj["msisdn"];
-                string uid = (string)obj["uid"];
-                int smsCredits = (int)obj[NetworkManager.SMS_CREDITS];
-                utils.Utils.savedAccountCredentials(new AccountUtils.AccountInfo(token, msisdn, uid, smsCredits));
+                appSettings[HikeMessengerApp.PIN_SETTING] = "y";
+                appSettings.Save();
+                utils.Utils.savedAccountCredentials(obj);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                /* scan contacts and post addressbook on server*/
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             }
-            /*This is used to avoid cross thread invokation*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); });
+
+            /*This is used to avoid cross thread invokation exception*/
+            Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); return; });
         }
     }
 }

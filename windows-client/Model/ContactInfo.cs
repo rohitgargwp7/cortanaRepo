@@ -25,7 +25,7 @@ namespace windows_client.Model
         # region Users Table Members
         private String _id;
 
-        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
+        [Column(IsPrimaryKey=true)]
         public String Id
         {
             get
@@ -36,9 +36,7 @@ namespace windows_client.Model
             {
                 if (_id != value)
                 {
-                    NotifyPropertyChanging("Id");
                     _id = value;
-                    NotifyPropertyChanged("Id");
                 }
             }
         }

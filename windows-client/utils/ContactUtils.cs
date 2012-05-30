@@ -11,21 +11,29 @@ using System.Windows.Shapes;
 using Microsoft.Phone.UserData;
 using System.Collections.Generic;
 using windows_client.Model;
+using Newtonsoft.Json.Linq;
+using System.IO.IsolatedStorage;
+using windows_client.DbUtils;
 
 namespace windows_client.utils
 {
     public class ContactUtils
     {
-        public void getContacts()
+        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+
+        private static Dictionary<string, List<ContactInfo>> contactsMap = null;
+
+        public delegate void contacts_Callback(object sender, ContactsSearchEventArgs e);
+
+        public static void getContacts(contacts_Callback callback)
         {
-            InputScope scope = new InputScope();
-            InputScopeName scopeName = new InputScopeName();
             Contacts cons = new Contacts();
-            cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(Contacts_SearchCompleted);
+            cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
             cons.SearchAsync(String.Empty, FilterKind.None, "State String 1");
         }
 
-        void Contacts_SearchCompleted(object sender, ContactsSearchEventArgs e)
+        /* This is called when addressbook scanning on windows gets completed.*/
+        public static void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
         {
             try
             {
@@ -39,14 +47,39 @@ namespace windows_client.utils
                     List<ContactInfo> contactList = new List<ContactInfo>();
                     foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                     {
-                        ContactInfo cInfo = new ContactInfo(Convert.ToString(id), null,cn.DisplayName,ph.PhoneNumber);
+                        ContactInfo cInfo = new ContactInfo(Convert.ToString(id), null, cn.DisplayName, ph.PhoneNumber);
                         contactList.Add(cInfo);
                     }
+                    contactListMap.Add(Convert.ToString(id), contactList);
                 }
+                contactsMap = contactListMap;
+                string token = (string)appSettings["token"];
+                AccountUtils.postAddressBook(token, contactListMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
             }
             catch (System.Exception)
             {
                 //That's okay, no results//
+            }
+        }
+
+        /* This is the callback function which is called when server returns the addressbook*/
+        public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
+        {
+            // test this is called
+            JObject obj = jsonForAddressBookAndBlockList;
+            if (obj == null)
+            {
+                return;
+            }
+            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
+            List<String> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
+       
+            if (addressbook != null)
+            {
+                HikeDbUtils.addContacts(addressbook); // add the contacts to hike users db.
+                App.Ab_scanned = true;
+                appSettings[HikeMessengerApp.ADDRESS_BOOK_SCANNED] = "y";
+                appSettings.Save();
             }
         }
     }

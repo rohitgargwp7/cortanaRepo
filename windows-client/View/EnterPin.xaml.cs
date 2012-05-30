@@ -13,6 +13,8 @@ using Microsoft.Phone.Controls;
 using windows_client.utils;
 using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
+using Microsoft.Phone.UserData;
+using windows_client.Model;
 
 namespace windows_client
 {
@@ -29,7 +31,7 @@ namespace windows_client
         private void btnEnterPin_Click(object sender, RoutedEventArgs e)
         {  
             string pinEntered =  txtBxEnterPin.Text;
-            string unAuthMsisdn = this.NavigationContext.QueryString["msisdn"];
+            string unAuthMsisdn = (string)appSettings["msisdn"];
             AccountUtils.registerAccount(pinEntered, unAuthMsisdn, new AccountUtils.postResponseFunction(pinPostResponse_Callback)); 
         }
 
@@ -44,14 +46,21 @@ namespace windows_client
                 return;
             }
             appSettings[HikeMessengerApp.PIN_SETTING] = "y";
-            string token = (string)obj["token"];
-            string msisdn = (string)obj["msisdn"];
-            string uid = (string)obj["uid"];
-            int smsCredits= (int)obj[NetworkManager.SMS_CREDITS];
-            utils.Utils.savedAccountCredentials(new AccountUtils.AccountInfo(token,msisdn,uid,smsCredits));
+            appSettings.Save();
+            utils.Utils.savedAccountCredentials(obj);
+           
+            /*Before calling setName function , simply scan the addressbook*/
+            ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); });
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
         }
     }
 }

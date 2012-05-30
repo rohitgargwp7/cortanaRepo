@@ -60,7 +60,7 @@
             </TextBox>
             <Image Source="images\tux.png" Height="38" VerticalAlignment="Top" Margin="301,118,96,0">
             </Image>
-            <Button x:Name="btnEnterName" Foreground="White" Margin="65,198,78,442" Content="Done" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="onNameEntered">
+            <Button x:Name="btnEnterName" Foreground="White" Margin="65,198,78,442" Content="Done" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterName_Click">
             </Button>
         </Grid>
     </Grid>

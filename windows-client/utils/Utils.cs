@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.utils
 {
@@ -16,12 +17,13 @@ namespace windows_client.utils
     {
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
-        public static void savedAccountCredentials(windows_client.utils.AccountUtils.AccountInfo accountInfo)
+        public static void savedAccountCredentials(JObject obj)
         {
-            appSettings[HikeMessengerApp.MSISDN_SETTING] = accountInfo.msisdn;
-            appSettings[HikeMessengerApp.UID_SETTING] = accountInfo.uid;
-            appSettings[HikeMessengerApp.TOKEN_SETTING] = accountInfo.token;
-            appSettings[HikeMessengerApp.SMS_SETTING] = accountInfo.smsCredits;
+            AccountUtils.Token = (string)obj["token"];
+            appSettings[HikeMessengerApp.MSISDN_SETTING] = (string)obj["msisdn"];
+            appSettings[HikeMessengerApp.UID_SETTING] = (string)obj["uid"];
+            appSettings[HikeMessengerApp.TOKEN_SETTING] = (string)obj["token"];
+            appSettings[HikeMessengerApp.SMS_SETTING] =  (int)obj[NetworkManager.SMS_CREDITS];
             appSettings.Save();
         }
     }

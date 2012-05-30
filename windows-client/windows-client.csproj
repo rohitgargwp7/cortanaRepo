@@ -103,9 +103,8 @@
     <Compile Include="View\MessageList.xaml.cs">
       <DependentUpon>MessageList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="utils\prefUtils.cs" />
     <Compile Include="utils\TimeUtils.cs" />
-    <Compile Include="ViewModel\HikeViewModel.cs" />
+    <Compile Include="DbUtils\HikeDbUtils.cs" />
     <Compile Include="View\ConversationPage.xaml.cs">
       <DependentUpon>ConversationPage.xaml</DependentUpon>
     </Compile>

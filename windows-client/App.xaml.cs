@@ -3,9 +3,10 @@ using System.Windows;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
-using windows_client.ViewModel;
+using windows_client.DbUtils;
 using windows_client.Model;
 using System.IO.IsolatedStorage;
+using windows_client.utils;
 
 namespace windows_client
 {
@@ -20,11 +21,31 @@ namespace windows_client
         /// <returns>The root frame of the Phone Application.</returns>
         public PhoneApplicationFrame RootFrame { get; private set; }
 
+        private static bool ab_scanned = false;
 
-        private static HikeViewModel _viewModel;
-        public static HikeViewModel ViewModel
+        public static bool Ab_scanned
         {
-            get { return _viewModel; }
+            get
+            {
+                return ab_scanned;
+            }
+            set
+            {
+                if (ab_scanned != value)
+                {
+                    ab_scanned = value;
+                }
+            }
+        }
+
+
+        private static HikeDbUtils _viewModel;
+        public static HikeDbUtils ViewModel
+        {
+            get 
+            { 
+                return _viewModel; 
+            }
         }
 
         /// <summary>
@@ -74,11 +95,13 @@ namespace windows_client
                 }
             }
 
-            // Create the ViewModel object.
-            _viewModel = new HikeViewModel(DBConnectionString);
+            // Create the DbUtils object.
+            _viewModel = new HikeDbUtils(DBConnectionString);
             //viewModel.LoadCollectionsFromDatabase();
-
-
+            if(appSettings.Contains(HikeMessengerApp.TOKEN_SETTING) && null != appSettings[HikeMessengerApp.TOKEN_SETTING])
+            {
+                AccountUtils.Token = (string)appSettings[HikeMessengerApp.TOKEN_SETTING];
+            }
         }
 
 
@@ -102,6 +125,10 @@ namespace windows_client
             else if (!appSettings.Contains(HikeMessengerApp.NAME_SETTING) || "f" == appSettings[HikeMessengerApp.NAME_SETTING].ToString())
             {
                 nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                if (appSettings.Contains(HikeMessengerApp.ADDRESS_BOOK_SCANNED) && "y" == (string)appSettings[HikeMessengerApp.ADDRESS_BOOK_SCANNED])
+                {
+                    ab_scanned = true;
+                }
             }
             else
             {
@@ -121,7 +148,7 @@ namespace windows_client
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            loadPage();
+            //loadPage();
         }
 
         // Code to execute when the application is deactivated (sent to background)

@@ -23,12 +23,11 @@ namespace windows_client
 
         public EnterNumber()
         {
-            InitializeComponent(); 
+            InitializeComponent();
         }
 
         private void EnteredNumber_Click(object sender, RoutedEventArgs e)
         {
-            //read number from text box
             String phoneNumber = txtEnterPhone.Text;
             AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));         
         }
@@ -49,11 +48,18 @@ namespace windows_client
             }
             /*If all well*/
             logger.Info("HTTP", "Successfully validated phone number.");
-            appSettings[HikeMessengerApp.MSISDN_SETTING]=true;
+            appSettings[HikeMessengerApp.MSISDN_SETTING]=unauthedMSISDN;
             appSettings.Save();
-            Uri nextPage = new Uri("/View/EnterPin.xaml?msisdn="+unauthedMSISDN, UriKind.Relative);
+            Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation*/
             Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); });
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
         }
     }
 }

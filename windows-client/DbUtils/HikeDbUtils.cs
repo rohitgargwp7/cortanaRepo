@@ -13,21 +13,29 @@ using windows_client.Model;
 using System.Data.Linq;
 using System.Collections.Generic;
 using System.Linq;
-
-using windows_client.Model;
 using System.Collections.ObjectModel;
 using windows_client.utils;
 
-namespace windows_client.ViewModel
+namespace windows_client.DbUtils
 {
-    public class HikeViewModel : INotifyPropertyChanged
+    public class HikeDbUtils : INotifyPropertyChanged
     {
         private HikeDataContext hikeDataContext;
+
+        public HikeDataContext HikeDataContext
+        {
+            get
+            {
+                return hikeDataContext;
+            }
+        }
 
         private String hikeConnectionString;
 
         #region properties
+
         private ObservableCollection<MessageListPage> _messageListPageCollection;
+
         public ObservableCollection<MessageListPage> MessageListPageCollection
         {
             get { return _messageListPageCollection; }
@@ -100,7 +108,7 @@ namespace windows_client.ViewModel
         }
         #endregion
 
-        public HikeViewModel(String hikeConnectionString)
+        public HikeDbUtils(String hikeConnectionString)
         {
             this.hikeConnectionString = hikeConnectionString;
             hikeDataContext = new HikeDataContext(hikeConnectionString);
@@ -112,31 +120,32 @@ namespace windows_client.ViewModel
         }
 
         #region user table
-        public void addContact(ContactInfo user)
+
+        public static void addContact(ContactInfo user)
         {
-            hikeDataContext.users.InsertOnSubmit(user);
-            hikeDataContext.SubmitChanges();
+            App.ViewModel.HikeDataContext.users.InsertOnSubmit(user);
+            App.ViewModel.HikeDataContext.SubmitChanges();
             //TODO update observable list
         }
 
-        public void addContacts(List<ContactInfo> contacts)
+        public static void addContacts(List<ContactInfo> contacts)
         {
-            hikeDataContext.users.InsertAllOnSubmit(contacts);
-            hikeDataContext.SubmitChanges();
+            App.ViewModel.HikeDataContext.users.InsertAllOnSubmit(contacts);
+            App.ViewModel.HikeDataContext.SubmitChanges();
 
         }
 
-        public List<ContactInfo> getAllContacts()
+        public static List<ContactInfo> getAllContacts()
         {
             Func<HikeDataContext, IQueryable<ContactInfo>> q =
             CompiledQuery.Compile<HikeDataContext, IQueryable<ContactInfo>>
             ((HikeDataContext hdc) =>
                 from o in hdc.users
                 select o);
-            return q(hikeDataContext).ToList<ContactInfo>();
+            return q(App.ViewModel.HikeDataContext).ToList<ContactInfo>();
         }
 
-        public ContactInfo getContactInfoFromMSISDN(String msisdn)
+        public static ContactInfo getContactInfoFromMSISDN(String msisdn)
         {
             Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
@@ -149,7 +158,7 @@ namespace windows_client.ViewModel
             //{ 
 
             //}
-            return q(hikeDataContext, msisdn).First();
+            return q(App.ViewModel.HikeDataContext, msisdn).First();
             //IEnumerable<ContactInfo> contact = from ContactInfo c in hikeDataContext.users
             //              where c.Msisdn == msisdn
             //              select c;
@@ -235,7 +244,7 @@ namespace windows_client.ViewModel
             }
             catch (DuplicateKeyException dke)
             {
-
+                dke.ToString();
             }
         }
 
@@ -254,7 +263,6 @@ namespace windows_client.ViewModel
         {
             hikeDataContext.blockedUsersTable.DeleteAllOnSubmit<Blocked>(hikeDataContext.GetTable<Blocked>());
             hikeDataContext.SubmitChanges();
-
         }
 
         #endregion
