@@ -50,10 +50,10 @@ namespace windows_client.db
             }
         }
 
-        private String _message;
+        private string _message;
 
         [Column]
-        public String Message
+        public string Message
         {
             get
             {

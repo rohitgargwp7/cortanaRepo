@@ -13,6 +13,6 @@ namespace windows_client
 {
     public class NetworkManager
     {
-        public static readonly String SMS_CREDITS = "sc";
+        public static readonly string SMS_CREDITS = "sc";
     }
 }

@@ -29,7 +29,7 @@ namespace windows_client.utils
         {
             Contacts cons = new Contacts();
             cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
-            cons.SearchAsync(String.Empty, FilterKind.None, "State String 1");
+            cons.SearchAsync(string.Empty, FilterKind.None, "State string 1");
         }
 
         /* This is called when addressbook scanning on windows gets completed.*/
@@ -72,13 +72,13 @@ namespace windows_client.utils
                 return;
             }
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
-            List<String> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
+            List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
        
             if (addressbook != null)
             {
                 HikeDbUtils.addContacts(addressbook); // add the contacts to hike users db.
                 App.Ab_scanned = true;
-                appSettings[HikeMessengerApp.ADDRESS_BOOK_SCANNED] = "y";
+                appSettings[App.ADDRESS_BOOK_SCANNED] = "y";
                 appSettings.Save();
             }
         }

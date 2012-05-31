@@ -20,7 +20,7 @@ namespace windows_client.View
     public partial class ConversationPage : PhoneApplicationPage
     {
         private List<ConvMessage> messages;
-        private String msisdn;
+        private string msisdn;
         private bool onHike;
 
         public ConversationPage()
@@ -42,14 +42,14 @@ namespace windows_client.View
 
         //loads pre-existing messages for msisdn, returns null if empty
         //sets on-hike status
-        private void setConversationPage(String msisdn)
+        private void setConversationPage(string msisdn)
         {
             List<ConvMessage> messages = HikeDbUtils.getMessagesForMsisdn(msisdn);
             onHike = HikeDbUtils.getContactInfoFromMSISDN(msisdn).OnHike;
         }
 
         //adds an entry for message & an entry in conversation table if it is the first message of the chat thread
-        private void addMessage(String message, String msisdn)
+        private void addMessage(string message, string msisdn)
         {
             if (messages.Count == 0)
             {
@@ -63,7 +63,7 @@ namespace windows_client.View
             messages.Add(convMessage);
         }
 
-        private void deleteConversation(String msisdn)
+        private void deleteConversation(string msisdn)
         {
             HikeDbUtils.deleteConversation(msisdn);
         }

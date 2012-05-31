@@ -24,7 +24,16 @@ namespace windows_client
 
         private void getStarted_click(object sender, RoutedEventArgs e)
         {
-            AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));         
+            try
+            {
+                GetStarted.Content = "Pulling your digits.";
+                progressBar.Visibility = System.Windows.Visibility.Visible;
+                progressBar.IsEnabled = true;
+                AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
+            }
+            catch(Exception ex)
+            {
+            }
         }
 
         private void registerPostResponse_Callback(JObject obj)
@@ -37,7 +46,7 @@ namespace windows_client
                 // SHOW SOME TRY AGAIN MSG
                 return;
             }
-            appSettings[HikeMessengerApp.ACCEPT_TERMS] = "y";
+            appSettings[App.ACCEPT_TERMS] = "y";
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
             if ("fail" == (string)obj["stat"])
             {
@@ -46,7 +55,7 @@ namespace windows_client
             /* account creation successfull */
             else 
             {
-                appSettings[HikeMessengerApp.PIN_SETTING] = "y";
+                appSettings[App.PIN_SETTING] = "y";
                 appSettings.Save();
                 utils.Utils.savedAccountCredentials(obj);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
@@ -55,7 +64,13 @@ namespace windows_client
             }
 
             /*This is used to avoid cross thread invokation exception*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); return; });
+            Deployment.Current.Dispatcher.BeginInvoke(() => 
+            { 
+                NavigationService.Navigate(nextPage);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false; 
+            });
+
         }
     }
 }

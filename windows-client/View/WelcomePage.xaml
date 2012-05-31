@@ -12,7 +12,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
-    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:my="clr-namespace:Microsoft.Phone.Controls.Unsupported">
 
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
@@ -71,13 +71,14 @@
             	</TextBlock.RenderTransform>
             </TextBlock>
 
-            <Button x:Name="GetStarted" Foreground="White" Margin="43,525,41,75" Content="Get Started" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Click="getStarted_click">
+            <Button x:Name="GetStarted" Foreground="White" Margin="43,572,41,28" Content="Get Started" BorderThickness="2" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Click="getStarted_click" FontFamily="Segoe WP">
                 <Button.Background>
                     <ImageBrush ImageSource="Images\ic_bottom_button.png"/>
                 </Button.Background>
             </Button>
             <Image Source="Images\signup_loading_bckg.png" Margin="24,0,25,89" Height="100" VerticalAlignment="Bottom" Visibility="Collapsed" />
         </Grid>
-    </Grid>
+        <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+       </Grid>
 
 </phone:PhoneApplicationPage>

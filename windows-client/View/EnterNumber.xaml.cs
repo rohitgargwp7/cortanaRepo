@@ -26,9 +26,12 @@ namespace windows_client
             InitializeComponent();
         }
 
-        private void EnteredNumber_Click(object sender, RoutedEventArgs e)
+        private void enterPhoneBtn_Click(object sender, RoutedEventArgs e)
         {
-            String phoneNumber = txtEnterPhone.Text;
+            string phoneNumber = txtEnterPhone.Text;
+            enterPhoneBtn.Content = "Verifying your number";
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));         
         }
 
@@ -48,11 +51,16 @@ namespace windows_client
             }
             /*If all well*/
             logger.Info("HTTP", "Successfully validated phone number.");
-            appSettings[HikeMessengerApp.MSISDN_SETTING]=unauthedMSISDN;
+            appSettings[App.MSISDN_SETTING]=unauthedMSISDN;
             appSettings.Save();
             Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); });
+            Deployment.Current.Dispatcher.BeginInvoke(() => 
+            { 
+                NavigationService.Navigate(nextPage);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
+            });
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

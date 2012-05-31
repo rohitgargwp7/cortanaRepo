@@ -30,6 +30,9 @@ namespace windows_client
         private void btnEnterName_Click(object sender, RoutedEventArgs e)
         {
             string name = txtBxEnterName.Text;
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
+            enterNameBtn.Content = "Scaaning contacts";
             AccountUtils.setName(name,new AccountUtils.postResponseFunction(setName_Callback));
         }
 
@@ -43,7 +46,7 @@ namespace windows_client
                 // SHOW SOME TRY AGAIN MSG etc
                 return;
             }
-            appSettings[HikeMessengerApp.NAME_SETTING] = "y";
+            appSettings[App.NAME_SETTING] = "y";
             appSettings.Save();
             nextPage = new Uri("/View/MessageList.xaml", UriKind.Relative);
 
@@ -57,8 +60,16 @@ namespace windows_client
             {
                 // SHOW NETWORK ERROR
             }
+
             /*This is used to avoid cross thread invokation exception*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); });
+            Deployment.Current.Dispatcher.BeginInvoke(() => 
+            {
+                enterNameBtn.Content = "Getting you in";
+                Thread.Sleep(2 * 1000);
+                NavigationService.Navigate(nextPage);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
+            });
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

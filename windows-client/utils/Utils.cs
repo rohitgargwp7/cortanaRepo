@@ -20,10 +20,10 @@ namespace windows_client.utils
         public static void savedAccountCredentials(JObject obj)
         {
             AccountUtils.Token = (string)obj["token"];
-            appSettings[HikeMessengerApp.MSISDN_SETTING] = (string)obj["msisdn"];
-            appSettings[HikeMessengerApp.UID_SETTING] = (string)obj["uid"];
-            appSettings[HikeMessengerApp.TOKEN_SETTING] = (string)obj["token"];
-            appSettings[HikeMessengerApp.SMS_SETTING] =  (int)obj[NetworkManager.SMS_CREDITS];
+            appSettings[App.MSISDN_SETTING] = (string)obj["msisdn"];
+            appSettings[App.UID_SETTING] = (string)obj["uid"];
+            appSettings[App.TOKEN_SETTING] = (string)obj["token"];
+            appSettings[App.SMS_SETTING] =  (int)obj[NetworkManager.SMS_CREDITS];
             appSettings.Save();
         }
     }

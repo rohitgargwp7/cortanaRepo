@@ -10,11 +10,11 @@ namespace windows_client.db
     public class HikeUserDatabase_Context : DataContext
     {
         // Specify the connection string as a static, used in main page and app.xaml.
-        public static string DBConnectionString = "Data Source=isostore:/HikeUserDb.sdf";
+        public static string DBConnectionstring = "Data Source=isostore:/HikeUserDb.sdf";
 
         // Pass the connection string to the base class.
-        public HikeUserDatabase_Context(string connectionString)
-            : base(connectionString)
+        public HikeUserDatabase_Context(string connectionstring)
+            : base(connectionstring)
         { }
 
         #region User Table
@@ -30,7 +30,7 @@ namespace windows_client.db
          */
         public static void addContacts(List<ContactInfo> user)
         {
-            using (HikeUserDatabase_Context db = new HikeUserDatabase_Context(DBConnectionString))
+            using (HikeUserDatabase_Context db = new HikeUserDatabase_Context(DBConnectionstring))
             {
                 db.Users.InsertAllOnSubmit(user);
                 db.SubmitChanges();
@@ -39,7 +39,7 @@ namespace windows_client.db
 
         public static void addContact(ContactInfo user)
         {
-            using (HikeUserDatabase_Context db = new HikeUserDatabase_Context(DBConnectionString))
+            using (HikeUserDatabase_Context db = new HikeUserDatabase_Context(DBConnectionstring))
             {
                 db.Users.InsertOnSubmit(user);
                 db.SubmitChanges();
@@ -50,7 +50,7 @@ namespace windows_client.db
         public static IList<ContactInfo> getUsers()
         {
             IList<ContactInfo> usersList = null;
-            using (HikeUserDatabase_Context db = new HikeUserDatabase_Context(DBConnectionString))
+            using (HikeUserDatabase_Context db = new HikeUserDatabase_Context(DBConnectionstring))
             {
                 IQueryable<ContactInfo> userQuery = from user in db.Users select user;
                 usersList = userQuery.ToList();

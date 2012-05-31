@@ -23,10 +23,10 @@ namespace windows_client.Model
 
 
         # region Users Table Members
-        private String _id;
+        private string _id;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
-        public String Id
+        public string Id
         {
             get
             {
@@ -41,10 +41,10 @@ namespace windows_client.Model
             }
         }
 
-        private String _name;
+        private string _name;
 
         [Column]
-        public String Name
+        public string Name
         {
             get
             {
@@ -61,10 +61,10 @@ namespace windows_client.Model
             }
         }
 
-        private String _msisdn;
+        private string _msisdn;
 
         [Column(CanBeNull = false)]
-        public String Msisdn
+        public string Msisdn
         {
             get
             {
@@ -101,10 +101,10 @@ namespace windows_client.Model
             }
         }
 
-        private String _phoneNo;
+        private string _phoneNo;
 
         [Column]
-        public String PhoneNo
+        public string PhoneNo
         {
             get
             {
@@ -140,17 +140,17 @@ namespace windows_client.Model
         }
 
 
-        public ContactInfo(String id, String number, String name, String phoneNum)
+        public ContactInfo(string id, string number, string name, string phoneNum)
             : this(id, number, name, false, phoneNum, false)
         {
         }
 
-        public ContactInfo(String id, String number, String name, bool onHike, String phoneNum):            
+        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum):            
             this(id, number, name, onHike, phoneNum, false)
         {
         }
 
-        public ContactInfo(String id, String msisdn, String name, bool onhike, String phoneNo, bool hasCustomPhoto)
+        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto)
         {
             this.Id = id;
             this.Msisdn = msisdn;

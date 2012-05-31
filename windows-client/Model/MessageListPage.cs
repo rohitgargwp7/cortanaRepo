@@ -34,8 +34,8 @@ namespace windows_client.Model
         //}
 
 
-        private String _contactName;
-        public String ContactName
+        private string _contactName;
+        public string ContactName
         {
             get
             {
@@ -52,8 +52,8 @@ namespace windows_client.Model
             }
         }
         
-        private String _lastMessage;
-        public String LastMessage
+        private string _lastMessage;
+        public string LastMessage
         {
             get
             {
@@ -70,8 +70,8 @@ namespace windows_client.Model
             }
         }
         
-        private String _timeStamp;
-        public String TimeStamp
+        private string _timeStamp;
+        public string TimeStamp
         {
             get
             {
@@ -88,7 +88,7 @@ namespace windows_client.Model
             }
         }
 
-        public MessageListPage(String contactName, String lastMessage, String relativeTime)
+        public MessageListPage(string contactName, string lastMessage, string relativeTime)
         {
             this._contactName = contactName;
             this._lastMessage = lastMessage;

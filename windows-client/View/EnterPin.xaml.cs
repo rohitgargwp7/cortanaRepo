@@ -32,6 +32,8 @@ namespace windows_client
         {  
             string pinEntered =  txtBxEnterPin.Text;
             string unAuthMsisdn = (string)appSettings["msisdn"];
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             AccountUtils.registerAccount(pinEntered, unAuthMsisdn, new AccountUtils.postResponseFunction(pinPostResponse_Callback)); 
         }
 
@@ -45,7 +47,7 @@ namespace windows_client
                 // SHOW SOME TRY AGAIN MSG OR MOVE TO MSISDN PAGE
                 return;
             }
-            appSettings[HikeMessengerApp.PIN_SETTING] = "y";
+            appSettings[App.PIN_SETTING] = "y";
             appSettings.Save();
             utils.Utils.savedAccountCredentials(obj);
            
@@ -53,7 +55,12 @@ namespace windows_client
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation exception*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => { NavigationService.Navigate(nextPage); });
+            Deployment.Current.Dispatcher.BeginInvoke(() => 
+            { 
+                NavigationService.Navigate(nextPage);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
+            });
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

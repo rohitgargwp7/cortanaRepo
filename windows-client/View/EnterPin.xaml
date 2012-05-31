@@ -64,6 +64,8 @@
 
             <Button x:Name="btnEnterPin" Margin="54,225,76,415" Foreground="White" Content="Next" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterPin_Click">
             </Button>
+            <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+
         </Grid>
     </Grid>
 

@@ -13,16 +13,16 @@ namespace windows_client.utils
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        //public static readonly String HOST = "ec2-122-248-223-107.ap-southeast-1.compute.amazonaws.com"; 46.137.211.136
-        public static readonly String HOST = "46.137.211.136";
+        //public static readonly string HOST = "ec2-122-248-223-107.ap-southeast-1.compute.amazonaws.com"; 46.137.211.136
+        public static readonly string HOST = "46.137.211.136";
 
         private static readonly int PORT = 3001;
 
-        private static readonly String BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+        private static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
 
-        public static readonly String NETWORK_PREFS_NAME = "NetworkPrefs";
+        public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
-        private static String mToken = null;
+        private static string mToken = null;
 
         public static string Token
         {
@@ -38,15 +38,15 @@ namespace windows_client.utils
 
         public class AccountInfo
         {
-            public String token;
+            public string token;
 
-            public String msisdn;
+            public string msisdn;
 
-            public String uid;
+            public string uid;
 
             public int smsCredits;
 
-            public AccountInfo(String token, String msisdn, String uid, int smsCredits)
+            public AccountInfo(string token, string msisdn, string uid, int smsCredits)
             {
                 this.token = token;
                 this.msisdn = msisdn;
@@ -66,16 +66,16 @@ namespace windows_client.utils
             req.Headers["Cookie"] = "user=" + mToken;
         }
 
-        public static void registerAccount(String pin, String unAuthMSISDN, postResponseFunction finalCallback)
+        public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction readonlyCallback)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
-            req.Headers["X-MSISDN"] = "919999711370";
+           // req.Headers["X-MSISDN"] = "919999711370";
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallback });            
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, readonlyCallback });            
         }
 
-        public static void postAddressBook(string token, Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallback)
+        public static void postAddressBook(string token, Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction readonlyCallback)
         {
 
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
@@ -83,7 +83,7 @@ namespace windows_client.utils
            // req.Headers["Cookie"] = "user=" + token;
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, token, contactListMap, finalCallback });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, token, contactListMap, readonlyCallback });
         }
 
         public static void invite(string phone_no)
@@ -95,21 +95,21 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.INVITE, phone_no });
         }
 
-        public static void validateNumber(string phoneNo, postResponseFunction finalCallback)
+        public static void validateNumber(string phoneNo, postResponseFunction readonlyCallback)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, finalCallback});
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, readonlyCallback});
         }
 
-        public static void setName(String name, postResponseFunction finalCallback)
+        public static void setName(string name, postResponseFunction readonlyCallback)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/name")) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, finalCallback });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, readonlyCallback });
         }
 
         public static void deleteAccount()
@@ -126,14 +126,14 @@ namespace windows_client.utils
             JObject data = new JObject();
             HttpWebRequest req = vars[0] as HttpWebRequest;
             Stream postStream = req.EndGetRequestStream(result);
-            postResponseFunction finalCallback = null;
+            postResponseFunction readonlyCallback = null;
             RequestType type = (RequestType)vars[1];
             switch (type)
             {
                 case RequestType.REGISTER_ACCOUNT:
                     string pin = vars[2] as string;
                     string unAuthMSISDN = vars[3] as string;
-                    finalCallback = vars[4] as postResponseFunction;
+                    readonlyCallback = vars[4] as postResponseFunction;
                     data.Add("set_cookie","0");
                     if (pin != null)
                     {
@@ -143,7 +143,7 @@ namespace windows_client.utils
                     using (StreamWriter sw = new StreamWriter(postStream))
                     {
                         string json = data.ToString(Newtonsoft.Json.Formatting.None);
-                        //byte [] requestString= Encoding.UTF8.GetBytes(json);
+                        //byte [] requeststring= Encoding.UTF8.GetBytes(json);
                         
                         sw.Write(json);
                     }
@@ -162,7 +162,7 @@ namespace windows_client.utils
 
                 case RequestType.VALIDATE_NUMBER:
                     string numberToValidate = vars[2] as string;
-                    finalCallback = vars[3] as postResponseFunction;
+                    readonlyCallback = vars[3] as postResponseFunction;
                     data.Add("phone_no", numberToValidate);
                     using (StreamWriter sw = new StreamWriter(postStream))
                     {
@@ -173,7 +173,7 @@ namespace windows_client.utils
 
                 case RequestType.SET_NAME:
                     string nameToSet = vars[2] as string;
-                    finalCallback = vars[3] as postResponseFunction;
+                    readonlyCallback = vars[3] as postResponseFunction;
                     data.Add("name", nameToSet);
                     using (StreamWriter sw = new StreamWriter(postStream))
                     {
@@ -184,7 +184,7 @@ namespace windows_client.utils
                 case RequestType.POST_ADDRESSBOOK:
                     string token = vars[2] as string;
                     Dictionary<string, List<ContactInfo>> contactListMap = vars[3] as Dictionary<string, List<ContactInfo>>;
-                    finalCallback = vars[4] as postResponseFunction;
+                    readonlyCallback = vars[4] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
                     using (StreamWriter sw = new StreamWriter(postStream))
                     {
@@ -199,13 +199,13 @@ namespace windows_client.utils
                     break;
             }
             postStream.Close();
-            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallback });
+            req.BeginGetResponse(json_Callback, new object[] { req, type, readonlyCallback });
         }
 
         private static void json_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
-            postResponseFunction finalCallback = vars[2] as postResponseFunction;
+            postResponseFunction readonlyCallback = vars[2] as postResponseFunction;
             // State of request is asynchronous.
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
             HttpWebResponse response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
@@ -219,10 +219,10 @@ namespace windows_client.utils
                 data = reader.ReadToEnd();
             }
             JObject obj = JObject.Parse(data);
-            finalCallback(obj);
+            readonlyCallback(obj);
         }
 
-        public static List<String> getBlockList(JObject obj)
+        public static List<string> getBlockList(JObject obj)
         {
             try
             {
@@ -243,7 +243,7 @@ namespace windows_client.utils
                     logger.Info("AccountUtils", "Received blocklist as null");
                     return null;
                 }
-                List<String> blockListMsisdns = new List<string>();
+                List<string> blockListMsisdns = new List<string>();
                 foreach (string num in blocklist)
                 {
                     blockListMsisdns.Add(num);
@@ -262,10 +262,10 @@ namespace windows_client.utils
             }
         }
 
-        private static JObject getJsonContactList(Dictionary<String, List<ContactInfo>> contactsMap)
+        private static JObject getJsonContactList(Dictionary<string, List<ContactInfo>> contactsMap)
         {
             JObject updateContacts = new JObject();
-            foreach (String id in contactsMap.Keys)
+            foreach (string id in contactsMap.Keys)
             {
                 List<ContactInfo> list = contactsMap[id];
                 JArray contactInfoList = new JArray();
@@ -281,7 +281,7 @@ namespace windows_client.utils
             return updateContacts;
         }
 
-        public static List<ContactInfo> getContactList(JObject obj, Dictionary<String, List<ContactInfo>> new_contacts_by_id)
+        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id)
         {
             try
             {
@@ -309,7 +309,7 @@ namespace windows_client.utils
                     for (int i = 0; i < entries.Count; ++i)
                     {
                         JObject entry = (JObject)entries[i];
-                        String msisdn = (string)entry["msisdn"];
+                        string msisdn = (string)entry["msisdn"];
                         bool onhike = (bool)entry["onhike"];
                         ContactInfo info = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
                         server_contacts.Add(info);

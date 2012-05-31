@@ -60,8 +60,13 @@
             </TextBox>
             <Image Source="images\tux.png" Height="38" VerticalAlignment="Top" Margin="301,118,96,0">
             </Image>
-            <Button x:Name="btnEnterName" Foreground="White" Margin="65,198,78,442" Content="Done" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterName_Click">
+            <Button x:Name="enterNameBtn" Foreground="White" Margin="65,198,78,442" Content="Done" BorderThickness="2" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterName_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images\ic_bottom_button.png"/>
+                </Button.Background>
             </Button>
+            <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+
         </Grid>
     </Grid>
 

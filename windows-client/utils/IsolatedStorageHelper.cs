@@ -60,9 +60,9 @@ namespace WindowsPhonePuzzle
             }
         }
 
-        private static T Deserialize<T>(string jsonString)
+        private static T Deserialize<T>(string jsonstring)
         {
-            using (MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonString)))
+            using (MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonstring)))
             {
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
                 return (T)serializer.ReadObject(ms);

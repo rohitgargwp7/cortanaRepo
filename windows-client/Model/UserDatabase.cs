@@ -21,10 +21,10 @@ namespace windows_client.Model
     public class Blocked : INotifyPropertyChanged, INotifyPropertyChanging
     {
 
-        private String _msisdn;
+        private string _msisdn;
 
         [Column(IsPrimaryKey = true, CanBeNull = false)]
-        public String Msisdn
+        public string Msisdn
         {
             get
             {
@@ -41,7 +41,7 @@ namespace windows_client.Model
             }
         }
 
-        public Blocked(String msisdn)
+        public Blocked(string msisdn)
         {
             this.Msisdn = msisdn;
         }
@@ -86,10 +86,10 @@ namespace windows_client.Model
     {
 
 
-        private String _msisdn;
+        private string _msisdn;
 
         [Column(CanBeNull = false)]
-        public String Msisdn
+        public string Msisdn
         {
             get
             {

@@ -13,7 +13,7 @@ namespace windows_client.utils
 {
     public class TimeUtils
     {
-        public static String getRelativeTime(long timestamp)
+        public static string getRelativeTime(long timestamp)
         {
 //            TimeSpan.FromMilliseconds(milliseconds);
             long timespanMilliSeconds = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds - timestamp * 1000;

@@ -30,7 +30,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        private String hikeConnectionString;
+        private string hikeConnectionString;
 
         #region properties
 
@@ -108,7 +108,7 @@ namespace windows_client.DbUtils
         }
         #endregion
 
-        public HikeDbUtils(String hikeConnectionString)
+        public HikeDbUtils(string hikeConnectionString)
         {
             this.hikeConnectionString = hikeConnectionString;
             hikeDataContext = new HikeDataContext(hikeConnectionString);
@@ -158,7 +158,7 @@ namespace windows_client.DbUtils
         }
 
 
-        public static ContactInfo getContactInfoFromMSISDN(String msisdn)
+        public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
             Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
@@ -230,11 +230,11 @@ namespace windows_client.DbUtils
         }
 
 
-        //public static long getConvIdForMsisdn(String msisdn)
+        //public static long getConvIdForMsisdn(string msisdn)
         //{
-        //    Func<HikeDataContext, String, IQueryable<long>> q =
-        //    CompiledQuery.Compile<HikeDataContext, String, IQueryable<long>>
-        //    ((HikeDataContext hdc, String myId) =>
+        //    Func<HikeDataContext, string, IQueryable<long>> q =
+        //    CompiledQuery.Compile<HikeDataContext, string, IQueryable<long>>
+        //    ((HikeDataContext hdc, string myId) =>
         //        from o in hdc.conversations
         //        where o.Msisdn == myId
         //        select o.ConvId);
@@ -244,11 +244,11 @@ namespace windows_client.DbUtils
 
 
 
-        public static List<ConvMessage> getMessagesForMsisdn(String msisdn)
+        public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
         {
-            Func<HikeDataContext, String, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, String, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, String myMsisdn) =>
+            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, string myMsisdn) =>
                 from o in hdc.messages
                 where o.Msisdn == myMsisdn
                 select o);
@@ -256,11 +256,11 @@ namespace windows_client.DbUtils
                 q(App.ViewModel.HikeDataContext, msisdn).ToList<ConvMessage>();
         }
 
-        public static ConvMessage getLastMessageForMsisdn(String msisdn)
+        public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
-            Func<HikeDataContext, String, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, String, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, String myMsisdn) =>
+            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, string myMsisdn) =>
                 from o in hdc.messages
                 where o.Msisdn == myMsisdn
                 select o);
@@ -268,18 +268,18 @@ namespace windows_client.DbUtils
                 q(App.ViewModel.HikeDataContext, msisdn).Last<ConvMessage>();
         }
 
-        public static void deleteConversation(String msisdn)
+        public static void deleteConversation(string msisdn)
         {
-            Func<HikeDataContext, String, IQueryable<ConvMessage>> messages =
-            CompiledQuery.Compile<HikeDataContext, String, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, String phoneNum) =>
+            Func<HikeDataContext, string, IQueryable<ConvMessage>> messages =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, string phoneNum) =>
                 from o in hdc.messages
                 where o.Msisdn == phoneNum
                 select o);
 
-            Func<HikeDataContext, String, IQueryable<Conversation>> conversation =
-            CompiledQuery.Compile<HikeDataContext, String, IQueryable<Conversation>>
-            ((HikeDataContext hdc, String phoneNum) =>
+            Func<HikeDataContext, string, IQueryable<Conversation>> conversation =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Conversation>>
+            ((HikeDataContext hdc, string phoneNum) =>
                 from o in hdc.conversations
                 where o.Msisdn == phoneNum
                 select o);
@@ -289,8 +289,8 @@ namespace windows_client.DbUtils
             App.ViewModel.HikeDataContext.SubmitChanges();
         }
 
-//        public static Conversation addConversation(String msisdn, bool onhike)
-        public static void addConversation(String msisdn, bool onhike)
+//        public static Conversation addConversation(string msisdn, bool onhike)
+        public static void addConversation(string msisdn, bool onhike)
         {
             ContactInfo contactInfo = getContactInfoFromMSISDN(msisdn);
 
@@ -324,14 +324,14 @@ namespace windows_client.DbUtils
         #endregion
 
         #region blocked table
-        public void addBlockList(List<String> msisdns)
+        public void addBlockList(List<string> msisdns)
         {
             if (msisdns == null)
             {
                 return;
             }
 
-            foreach (String m in msisdns)
+            foreach (string m in msisdns)
             {
                 hikeDataContext.blockedUsersTable.InsertOnSubmit(new Blocked(m));
             }
@@ -372,9 +372,9 @@ namespace windows_client.DbUtils
             foreach (Conversation c in conversations)
             {
                 ConvMessage message = c.Messages[c.Messages.Count - 1]; 
-                String contactName = c.ContactName;
-                String lastMessage = message.Message;
-                String relativeTime = TimeUtils.getRelativeTime(message.Timestamp);
+                string contactName = c.ContactName;
+                string lastMessage = message.Message;
+                string relativeTime = TimeUtils.getRelativeTime(message.Timestamp);
                 MessageListPageCollection.Add(new MessageListPage(contactName, lastMessage, relativeTime));
             }
         }

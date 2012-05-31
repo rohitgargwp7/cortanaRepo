@@ -12,6 +12,15 @@ namespace windows_client
 {
     public partial class App : Application
     {
+        public static readonly string ACCEPT_TERMS = "acceptterms";
+        public static readonly string MSISDN_SETTING = "msisdn";
+        public static readonly string NAME_SETTING = "name";
+        public static readonly string ADDRESS_BOOK_SCANNED = "abscanned";
+        public static readonly string TOKEN_SETTING = "token";
+        public static readonly string MESSAGES_SETTING = "messageid";
+        public static readonly string PIN_SETTING = "pincode";
+        public static readonly string UID_SETTING = "uid";
+        public static readonly string SMS_SETTING = "smscredits";
 
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
@@ -48,6 +57,19 @@ namespace windows_client
             }
         }
 
+        private static HikePubSub mPubSubInstance;
+        public static HikePubSub HikePubSubInstance
+        {
+            get
+            {
+                return mPubSubInstance;
+            }
+            set
+            {
+                if (value != mPubSubInstance)
+                    mPubSubInstance = value;
+            }
+        }
         /// <summary>
         /// Constructor for the Application object.
         /// </summary>
@@ -82,10 +104,10 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-            string DBConnectionString = "Data Source=isostore:/HikeDB.sdf";
+            string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
 
             // Create the database if it does not exist.
-            using (HikeDataContext db = new HikeDataContext(DBConnectionString))
+            using (HikeDataContext db = new HikeDataContext(DBConnectionstring))
             {
                 if (db.DatabaseExists() == false)
                 {
@@ -96,12 +118,14 @@ namespace windows_client
             }
 
             // Create the DbUtils object.
-            _viewModel = new HikeDbUtils(DBConnectionString);
+            _viewModel = new HikeDbUtils(DBConnectionstring);
             //viewModel.LoadCollectionsFromDatabase();
-            if(appSettings.Contains(HikeMessengerApp.TOKEN_SETTING) && null != appSettings[HikeMessengerApp.TOKEN_SETTING])
+            if(appSettings.Contains(App.TOKEN_SETTING) && null != appSettings[App.TOKEN_SETTING])
             {
-                AccountUtils.Token = (string)appSettings[HikeMessengerApp.TOKEN_SETTING];
+                AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
             }
+
+            mPubSubInstance = new HikePubSub();
         }
 
 
@@ -110,22 +134,22 @@ namespace windows_client
 
             Uri nUri = null;
 
-            if (!appSettings.Contains(HikeMessengerApp.ACCEPT_TERMS) || "f"== appSettings[HikeMessengerApp.ACCEPT_TERMS].ToString())
+            if (!appSettings.Contains(App.ACCEPT_TERMS) || "f"== appSettings[App.ACCEPT_TERMS].ToString())
             {
                 nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
             }
-            else if (!appSettings.Contains(HikeMessengerApp.MSISDN_SETTING) || "f" == appSettings[HikeMessengerApp.MSISDN_SETTING].ToString())
+            else if (!appSettings.Contains(App.MSISDN_SETTING) || "f" == appSettings[App.MSISDN_SETTING].ToString())
             {
                 nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
             }
-            else if (!appSettings.Contains(HikeMessengerApp.PIN_SETTING) || "f" == appSettings[HikeMessengerApp.PIN_SETTING].ToString())
+            else if (!appSettings.Contains(App.PIN_SETTING) || "f" == appSettings[App.PIN_SETTING].ToString())
             {
                 nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             }
-            else if (!appSettings.Contains(HikeMessengerApp.NAME_SETTING) || "f" == appSettings[HikeMessengerApp.NAME_SETTING].ToString())
+            else if (!appSettings.Contains(App.NAME_SETTING) || "f" == appSettings[App.NAME_SETTING].ToString())
             {
                 nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
-                if (appSettings.Contains(HikeMessengerApp.ADDRESS_BOOK_SCANNED) && "y" == (string)appSettings[HikeMessengerApp.ADDRESS_BOOK_SCANNED])
+                if (appSettings.Contains(App.ADDRESS_BOOK_SCANNED) && "y" == (string)appSettings[App.ADDRESS_BOOK_SCANNED])
                 {
                     ab_scanned = true;
                 }

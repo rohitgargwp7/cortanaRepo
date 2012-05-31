@@ -20,10 +20,10 @@ namespace windows_client.Model
     {
 
         #region conversations members
-        private String _msisdn;
+        private string _msisdn;
 
         [Column(IsPrimaryKey = true)]
-        public String Msisdn
+        public string Msisdn
         {
             get
             {
@@ -60,9 +60,9 @@ namespace windows_client.Model
         //}
 
 
-        private String _contactId;
+        private string _contactId;
         [Column]
-        public String ContactId
+        public string ContactId
         {
             get
             {
@@ -98,9 +98,9 @@ namespace windows_client.Model
             }
         }
 
-        private String _metadata;
+        private string _metadata;
         [Column]
-        public String Metadata
+        public string Metadata
         {
             get
             {
@@ -136,8 +136,8 @@ namespace windows_client.Model
 
         }
 
-        private String _contactName;
-        public String ContactName
+        private string _contactName;
+        public string ContactName
         {
             get
             {
@@ -246,7 +246,7 @@ namespace windows_client.Model
             //    return (ConvId < rhs.ConvId) ? -1 : 1;
             //}
 
-            String cId = (ContactId != null) ? ContactId : "";
+            string cId = (ContactId != null) ? ContactId : "";
             return cId.CompareTo(rhs.ContactId);
         }
 
@@ -255,8 +255,8 @@ namespace windows_client.Model
             this.Messages = new List<ConvMessage>();
         }
 
-//        public Conversation(String msisdn, long convId, String contactId, String contactName, bool onhike)
-        public Conversation(String msisdn, String contactId, String contactName, bool onhike)
+//        public Conversation(string msisdn, long convId, string contactId, string contactName, bool onhike)
+        public Conversation(string msisdn, string contactId, string contactName, bool onhike)
         {
             this.Msisdn = msisdn;
             //this.ConvId = convId;
@@ -298,7 +298,7 @@ namespace windows_client.Model
             }
         }
 
-        public String getLabel()
+        public string getLabel()
         {
             return ContactName.CompareTo("") == 0 ? ContactName : Msisdn;
         }

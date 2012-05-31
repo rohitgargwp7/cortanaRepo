@@ -49,10 +49,10 @@ namespace windows_client.Model
             }
         }
 
-        private String _msisdn;
+        private string _msisdn;
 
         [Column]
-        public String Msisdn
+        public string Msisdn
         {
             get
             {
@@ -70,10 +70,10 @@ namespace windows_client.Model
         }
 
 
-        private String _message;
+        private string _message;
 
         [Column]
-        public String Message
+        public string Message
         {
             get
             {
@@ -228,12 +228,12 @@ namespace windows_client.Model
 
 
 
-        public ConvMessage(String message, String msisdn, long timestamp, State msgState)
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState)
             : this(message, msisdn, timestamp, msgState, -1, -1)
         {
         }
 
-        public ConvMessage(String message, String msisdn, long timestamp, State msgState, long msgid, long mappedMsgId)
+        public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId)
         {
             //TODO check assertion in c#
             //assert(msisdn != null);
@@ -276,7 +276,7 @@ namespace windows_client.Model
 //            /* if we're deserialized an object from json, it's always unread */
 //            this.MessageStatus = State.RECEIVED_UNREAD;
 //            this._messageId = -1;
-//            String mappedMsgID = data[HikeConstants.MESSAGE_ID].StringValue;
+//            string mappedMsgID = data[HikeConstants.MESSAGE_ID].StringValue;
 //            this.MappedMessageId = System.Int64.Parse(mappedMsgID);
 	    }
 
@@ -334,7 +334,7 @@ namespace windows_client.Model
 		    return result;
         }
 
-        public String getTimestampFormatted()
+        public string getTimestampFormatted()
         {
             return TimeUtils.getRelativeTime(Timestamp);
         }
