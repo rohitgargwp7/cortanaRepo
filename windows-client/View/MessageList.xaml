@@ -29,34 +29,22 @@
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28"></StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="myListBox" FontSize="26" Foreground="Black" ItemsSource="{Binding MessageListPageCollection}" Tap="btnGetSelected_Click" Margin="0,0,0,75" >
+        <ListBox x:Name="myListBox" FontSize="26" ItemsSource="{Binding MessageListPageCollection}" Tap="btnGetSelected_Click" Margin="0,0,0,75" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,70">
-                        <Image Source="Images\dummy_image.jpg" Height="70" Grid.Column="0"/>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding ContactName}" FontWeight="Bold" FontSize="23" Height="40" Grid.Column="1" Grid.ColumnSpan="2" />
                                 <TextBlock Text="{Binding Timestamp}" FontWeight="Bold" FontSize="23" Height="40" Grid.Column="3" Grid.ColumnSpan="1" />
                             </StackPanel>
-                            <TextBlock Text="{Binding Message}" Height="30"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" />
+                            <TextBlock Text="{Binding LastMessage}" Height="30"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" />
                         </StackPanel>
                     </StackPanel>
 
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <!--<StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="Images\dummy_image.jpg" Height="70"/>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="ContactName" Width="300" FontWeight="Bold" FontSize="23" Height="40" Grid.Row="1" />
-                    <TextBlock Text="Timestamp" Height="30" Width="Auto" />
-                </StackPanel>
-                <TextBlock Text="Message" Height="30"  Grid.Row="1" VerticalAlignment="Top" />
-            </StackPanel>
-        </StackPanel>-->
 
 
         <!--<StackPanel Orientation="Horizontal" Margin="0,0,0,0">

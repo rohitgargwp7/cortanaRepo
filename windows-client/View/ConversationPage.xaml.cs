@@ -10,11 +10,19 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using windows_client.DbUtils;
+using windows_client.Model;
+using windows_client.utils;
+using System.Threading;
 
 namespace windows_client.View
 {
     public partial class ConversationPage : PhoneApplicationPage
     {
+        private List<ConvMessage> messages;
+        private String msisdn;
+        private bool onHike;
+
         public ConversationPage()
         {
             InitializeComponent();
@@ -30,6 +38,34 @@ namespace windows_client.View
                 int selectedIndex = Convert.ToInt32(NavigationContext.QueryString["Index"]);
                 this.DataContext = App.ViewModel.MessageListPageCollection[selectedIndex];
             }
+        }
+
+        //loads pre-existing messages for msisdn, returns null if empty
+        //sets on-hike status
+        private void setConversationPage(String msisdn)
+        {
+            List<ConvMessage> messages = HikeDbUtils.getMessagesForMsisdn(msisdn);
+            onHike = HikeDbUtils.getContactInfoFromMSISDN(msisdn).OnHike;
+        }
+
+        //adds an entry for message & an entry in conversation table if it is the first message of the chat thread
+        private void addMessage(String message, String msisdn)
+        {
+            if (messages.Count == 0)
+            {
+                HikeDbUtils.addConversation(msisdn, onHike);
+                //TO discusse
+                // add message to list of existing messages and write to db when user quits this page
+            }
+
+            ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            HikeDbUtils.addMessage(convMessage);
+            messages.Add(convMessage);
+        }
+
+        private void deleteConversation(String msisdn)
+        {
+            HikeDbUtils.deleteConversation(msisdn);
         }
     }
 }

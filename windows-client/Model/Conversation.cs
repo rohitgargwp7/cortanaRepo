@@ -22,7 +22,7 @@ namespace windows_client.Model
         #region conversations members
         private String _msisdn;
 
-        [Column(CanBeNull = false)]
+        [Column(IsPrimaryKey = true)]
         public String Msisdn
         {
             get
@@ -40,24 +40,24 @@ namespace windows_client.Model
             }
         }
 
-        private long _convId;
-        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
-        public long ConvId
-        {
-            get
-            {
-                return _convId;
-            }
-            set
-            {
-                if (_convId != value)
-                {
-                    NotifyPropertyChanging("ConvId");
-                    _convId = value;
-                    NotifyPropertyChanged("ConvId");
-                }
-            }
-        }
+        //private long _convId;
+        //[Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
+        //public long ConvId
+        //{
+        //    get
+        //    {
+        //        return _convId;
+        //    }
+        //    set
+        //    {
+        //        if (_convId != value)
+        //        {
+        //            NotifyPropertyChanging("ConvId");
+        //            _convId = value;
+        //            NotifyPropertyChanged("ConvId");
+        //        }
+        //    }
+        //}
 
 
         private String _contactId;
@@ -124,6 +124,16 @@ namespace windows_client.Model
             {
                 return _messages;
             }
+            set
+            {
+                if (_messages != value)
+                {
+                    NotifyPropertyChanging("Messages");
+                    _messages = value;
+                    NotifyPropertyChanged("Messages");
+                }
+            }
+
         }
 
         private String _contactName;
@@ -167,8 +177,8 @@ namespace windows_client.Model
             }
             else if (ContactName.CompareTo(other.ContactName)!=0)
                 return false;
-            if (ConvId != other.ConvId)
-                return false;
+            //if (ConvId != other.ConvId)
+            //    return false;
             if (Messages == null)
             {
                 if (other.Messages != null)
@@ -197,7 +207,7 @@ namespace windows_client.Model
 		    int result = 1;
 		    result = prime * result + ((ContactId == null) ? 0 : ContactId.GetHashCode());
 		    result = prime * result + ((ContactName == null) ? 0 : ContactName.GetHashCode());
-		    result = prime * result + (int) (ConvId ^ Convert.ToUInt32(ConvId) >> 32);
+//		    result = prime * result + (int) (ConvId ^ Convert.ToUInt32(ConvId) >> 32);
 		    result = prime * result + ((Messages == null) ? 0 : Messages.GetHashCode());
 		    result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
 		    result = prime * result + (OnHike ? 1231 : 1237);
@@ -211,6 +221,7 @@ namespace windows_client.Model
                 return 0;
             }
             //TODO check is Messages is empty
+
             long ts = Messages.Count==0 ? 0 : Messages[(Messages.Count - 1)].Timestamp;
             if (rhs == null)
             {
@@ -230,13 +241,18 @@ namespace windows_client.Model
                 return ret;
             }
 
-            if (ConvId != rhs.ConvId)
-            {
-                return (ConvId < rhs.ConvId) ? -1 : 1;
-            }
+            //if (ConvId != rhs.ConvId)
+            //{
+            //    return (ConvId < rhs.ConvId) ? -1 : 1;
+            //}
 
             String cId = (ContactId != null) ? ContactId : "";
             return cId.CompareTo(rhs.ContactId);
+        }
+
+        public Conversation()
+        {
+            this.Messages = new List<ConvMessage>();
         }
 
 //        public Conversation(String msisdn, long convId, String contactId, String contactName, bool onhike)

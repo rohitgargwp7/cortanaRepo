@@ -142,8 +142,21 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.users
                 select o);
-            return q(App.ViewModel.HikeDataContext).ToList<ContactInfo>();
+            return q(App.ViewModel.HikeDataContext).Count<ContactInfo>() == 0 ? null:
+                q(App.ViewModel.HikeDataContext).ToList<ContactInfo>();
         }
+
+        public static List<ConvMessage> getAllMessages()
+        {
+            Func<HikeDataContext, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc) =>
+                from o in hdc.messages
+                select o);
+            return q(App.ViewModel.HikeDataContext).Count<ConvMessage>() == 0? null:
+                q(App.ViewModel.HikeDataContext).ToList<ConvMessage>();
+        }
+
 
         public static ContactInfo getContactInfoFromMSISDN(String msisdn)
         {
@@ -154,10 +167,6 @@ namespace windows_client.DbUtils
                 where o.Msisdn == m
                 select o);
 
-            //foreach (ContactInfo c in q(hikeDataContext, msisdn))
-            //{ 
-
-            //}
             return q(App.ViewModel.HikeDataContext, msisdn).First();
             //IEnumerable<ContactInfo> contact = from ContactInfo c in hikeDataContext.users
             //              where c.Msisdn == msisdn
@@ -165,10 +174,10 @@ namespace windows_client.DbUtils
             //return contact.First();
         }
 
-        public void deleteAllContacts()
+        public static void deleteAllContacts()
         {
-            hikeDataContext.users.DeleteAllOnSubmit<ContactInfo>(hikeDataContext.GetTable<ContactInfo>());
-            hikeDataContext.SubmitChanges();
+            App.ViewModel.HikeDataContext.users.DeleteAllOnSubmit<ContactInfo>(App.ViewModel.HikeDataContext.GetTable<ContactInfo>());
+            App.ViewModel.HikeDataContext.SubmitChanges();
 
         }
         #endregion
@@ -177,15 +186,14 @@ namespace windows_client.DbUtils
         #region convmessage functions
         public bool wasMessageReceived(ConvMessage conv)
         {
-            // conv.t
-            Func<HikeDataContext, long, long, string, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, long, long, string, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, long conversationId, long timestamp, string m) =>
+            Func<HikeDataContext, long, string, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, long, string, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, long timestamp, string m) =>
                 from cm in hdc.messages
-                where cm.Msisdn == m && cm.ConversationId == conversationId && cm.Timestamp == timestamp
+//                where cm.Msisdn == m && cm.ConversationId == conversationId && cm.Timestamp == timestamp
+                where cm.Msisdn == m && cm.Timestamp == timestamp
                 select cm);
-            //conv.MappedMessageId
-            return q(hikeDataContext, conv.ConversationId, conv.Timestamp, conv.Message).Count() != 0;
+            return q(hikeDataContext, conv.Timestamp, conv.Message).Count() != 0;
         }
 
         public void deleteMessage(long msgId)
@@ -196,30 +204,119 @@ namespace windows_client.DbUtils
                 from o in hdc.messages
                 where o.MessageId == id
                 select o);
-            hikeDataContext.messages.DeleteAllOnSubmit<ConvMessage>(q(hikeDataContext, msgId));
+            App.ViewModel.HikeDataContext.messages.DeleteAllOnSubmit<ConvMessage>(q(hikeDataContext, msgId));
+            App.ViewModel.HikeDataContext.SubmitChanges();
+        }
+
+        public static void addMessages(List<ConvMessage> messages)
+        {
+            App.ViewModel.HikeDataContext.messages.InsertAllOnSubmit(messages);
+            App.ViewModel.HikeDataContext.SubmitChanges();
+        }
+
+        public static void deleteAllConversations()
+        {
+            App.ViewModel.HikeDataContext.conversations.DeleteAllOnSubmit<Conversation>(App.ViewModel.HikeDataContext.GetTable<Conversation>());
+            App.ViewModel.HikeDataContext.SubmitChanges();
+
         }
 
 
-        public Conversation addConversation(String msisdn, bool onhike)
+        public static void deleteAllMessages()
+        {
+            App.ViewModel.HikeDataContext.messages.DeleteAllOnSubmit<ConvMessage>(App.ViewModel.HikeDataContext.GetTable<ConvMessage>());
+            App.ViewModel.HikeDataContext.SubmitChanges();
+
+        }
+
+
+        //public static long getConvIdForMsisdn(String msisdn)
+        //{
+        //    Func<HikeDataContext, String, IQueryable<long>> q =
+        //    CompiledQuery.Compile<HikeDataContext, String, IQueryable<long>>
+        //    ((HikeDataContext hdc, String myId) =>
+        //        from o in hdc.conversations
+        //        where o.Msisdn == myId
+        //        select o.ConvId);
+        //    return q(App.ViewModel.HikeDataContext, msisdn).Count<long>() == 0? -1 :
+        //            q(App.ViewModel.HikeDataContext, msisdn).First<long>();
+        //}
+
+
+
+        public static List<ConvMessage> getMessagesForMsisdn(String msisdn)
+        {
+            Func<HikeDataContext, String, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, String, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, String myMsisdn) =>
+                from o in hdc.messages
+                where o.Msisdn == myMsisdn
+                select o);
+            return q(App.ViewModel.HikeDataContext, msisdn).Count<ConvMessage>() == 0 ? null :
+                q(App.ViewModel.HikeDataContext, msisdn).ToList<ConvMessage>();
+        }
+
+        public static ConvMessage getLastMessageForMsisdn(String msisdn)
+        {
+            Func<HikeDataContext, String, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, String, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, String myMsisdn) =>
+                from o in hdc.messages
+                where o.Msisdn == myMsisdn
+                select o);
+            return q(App.ViewModel.HikeDataContext, msisdn).Count<ConvMessage>() == 0 ? null :
+                q(App.ViewModel.HikeDataContext, msisdn).Last<ConvMessage>();
+        }
+
+        public static void deleteConversation(String msisdn)
+        {
+            Func<HikeDataContext, String, IQueryable<ConvMessage>> messages =
+            CompiledQuery.Compile<HikeDataContext, String, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, String phoneNum) =>
+                from o in hdc.messages
+                where o.Msisdn == phoneNum
+                select o);
+
+            Func<HikeDataContext, String, IQueryable<Conversation>> conversation =
+            CompiledQuery.Compile<HikeDataContext, String, IQueryable<Conversation>>
+            ((HikeDataContext hdc, String phoneNum) =>
+                from o in hdc.conversations
+                where o.Msisdn == phoneNum
+                select o);
+
+            App.ViewModel.HikeDataContext.messages.DeleteAllOnSubmit<ConvMessage>(messages(App.ViewModel.HikeDataContext, msisdn));
+            App.ViewModel.HikeDataContext.conversations.DeleteAllOnSubmit<Conversation>(conversation(App.ViewModel.HikeDataContext, msisdn));
+            App.ViewModel.HikeDataContext.SubmitChanges();
+        }
+
+//        public static Conversation addConversation(String msisdn, bool onhike)
+        public static void addConversation(String msisdn, bool onhike)
         {
             ContactInfo contactInfo = getContactInfoFromMSISDN(msisdn);
 
             if (contactInfo != null)
                 onhike |= contactInfo.OnHike;
-
             Conversation conv = new Conversation(msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null, onhike);
-            //                HikeMessengerApp.getPubSub().publish(HikePubSub.NEW_CONVERSATION, conv);
-            return conv;
+            App.ViewModel.HikeDataContext.conversations.InsertOnSubmit(conv);
+            App.ViewModel.HikeDataContext.SubmitChanges();
         }
 
-        public List<Conversation> getConversations()
+        public static void addMessage(ConvMessage convMessage)
+        {
+            App.ViewModel.HikeDataContext.messages.InsertOnSubmit(convMessage);
+            App.ViewModel.HikeDataContext.SubmitChanges();
+        }
+
+        public static List<Conversation> getConversations()
         {
             Func<HikeDataContext, IQueryable<Conversation>> q =
             CompiledQuery.Compile<HikeDataContext, IQueryable<Conversation>>
             ((HikeDataContext hdc) =>
                 from o in hdc.conversations
                 select o);
-            List<Conversation> conversations = q(hikeDataContext).ToList<Conversation>();
+            if (q(App.ViewModel.HikeDataContext).Count<Conversation>() == 0)
+                return null;
+            List<Conversation> conversations = q(App.ViewModel.HikeDataContext).ToList<Conversation>();
             conversations.Sort();
             conversations.Reverse();
             return conversations;

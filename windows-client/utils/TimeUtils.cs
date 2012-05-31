@@ -56,5 +56,12 @@ namespace windows_client.utils
             int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
             return years <= 1 ? "one year ago" : years + " years ago";
         }
+
+        public static long getCurrentTimeStamp()
+        {
+            long ticks = DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks;
+            ticks /= 10000000; //Convert windows ticks to seconds
+            return ticks;        
+        }
     }
 }

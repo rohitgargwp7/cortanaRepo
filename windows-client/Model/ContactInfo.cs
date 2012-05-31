@@ -25,7 +25,7 @@ namespace windows_client.Model
         # region Users Table Members
         private String _id;
 
-        [Column(IsPrimaryKey=true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
         public String Id
         {
             get

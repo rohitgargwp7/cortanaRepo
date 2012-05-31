@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 namespace windows_client.Model
 {
     [Table(Name = "messages")]
-    [Index(Name = "Conversation_IDX", Columns = "ConversationId, Timestamp Desc")]
+//    [Index(Name = "Conversation_IDX", Columns = "ConversationId, Timestamp Desc")]
     public class ConvMessage : INotifyPropertyChanged, INotifyPropertyChanging
     {
         #region Messages Table member
@@ -38,16 +38,37 @@ namespace windows_client.Model
             {
                 return _messageId;
             }
-            //set
-            //{
-            //    if (_messageId != value)
-            //    {
-            //        NotifyPropertyChanging("MessageId");
-            //        _messageId = value;
-            //        NotifyPropertyChanged("MessageId");
-            //    }
-            //}
+            set
+            {
+                if (_messageId != value)
+                {
+                    NotifyPropertyChanging("MessageId");
+                    _messageId = value;
+                    NotifyPropertyChanged("MessageId");
+                }
+            }
         }
+
+        private String _msisdn;
+
+        [Column]
+        public String Msisdn
+        {
+            get
+            {
+                return _msisdn;
+            }
+            set
+            {
+                if (_msisdn != value)
+                {
+                    NotifyPropertyChanging("Msisdn");
+                    _msisdn = value;
+                    NotifyPropertyChanged("Msisdn");
+                }
+            }
+        }
+
 
         private String _message;
 
@@ -58,15 +79,15 @@ namespace windows_client.Model
             {
                 return _message;
             }
-            //set
-            //{
-            //    if (_message != value)
-            //    {
-            //        NotifyPropertyChanging("Message");
-            //        _message = value;
-            //        NotifyPropertyChanged("Message");
-            //    }
-            //}
+            set
+            {
+                if (_message != value)
+                {
+                    NotifyPropertyChanging("Message");
+                    _message = value;
+                    NotifyPropertyChanged("Message");
+                }
+            }
         }
 
         private State _messageStatus;
@@ -148,25 +169,25 @@ namespace windows_client.Model
         }
 
 
-        private int _conversationId;
+        //private long _conversationId;
 
-        [Column]
-        public int ConversationId
-        {
-            get
-            {
-                return _conversationId;
-            }
-            set
-            {
-                if (_conversationId != value)
-                {
-                    NotifyPropertyChanging("ConversationId");
-                    _conversationId = value;
-                    NotifyPropertyChanged("ConversationId");
-                }
-            }
-        }
+        //[Column]
+        //public long ConversationId
+        //{
+        //    get
+        //    {
+        //        return _conversationId;
+        //    }
+        //    set
+        //    {
+        //        if (_conversationId != value)
+        //        {
+        //            NotifyPropertyChanging("ConversationId");
+        //            _conversationId = value;
+        //            NotifyPropertyChanged("ConversationId");
+        //        }
+        //    }
+        //}
 
         private bool _isInvite;
 
@@ -205,14 +226,6 @@ namespace windows_client.Model
             }
         }
 
-        private String _msisdn;
-        public String Msisdn
-        {
-            get
-            {
-                return _msisdn;
-            }
-        }
 
 
         public ConvMessage(String message, String msisdn, long timestamp, State msgState)
