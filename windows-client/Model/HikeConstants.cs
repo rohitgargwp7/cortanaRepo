@@ -28,6 +28,7 @@ namespace windows_client.Model
 	    public static readonly string SMS_MESSAGE = "sm";
 	    public static readonly string TIMESTAMP = "ts";
 	    public static readonly string MESSAGE_ID = "i";
+        public static readonly string METADATA_DND = "dnd";
 
 	    public static readonly string SOUND_PREF = "soundPref";
 	    public static readonly string VIBRATE_PREF = "vibratePref";

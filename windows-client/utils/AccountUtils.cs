@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace windows_client.utils
 {
@@ -59,23 +60,23 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE , POST_ADDRESSBOOK
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT , POST_ADDRESSBOOK
         }
         private static void addToken(HttpWebRequest req)
         {
             req.Headers["Cookie"] = "user=" + mToken;
         }
 
-        public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction readonlyCallback)
+        public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
-           // req.Headers["X-MSISDN"] = "919999711370";
+            //req.Headers["X-MSISDN"] = "919999711370";
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, readonlyCallback });            
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });            
         }
 
-        public static void postAddressBook(string token, Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction readonlyCallback)
+        public static void postAddressBook(string token, Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
         {
 
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
@@ -83,42 +84,43 @@ namespace windows_client.utils
            // req.Headers["Cookie"] = "user=" + token;
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, token, contactListMap, readonlyCallback });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, token, contactListMap, finalCallbackFunction });
         }
 
-        public static void invite(string phone_no)
+        public static void invite(string phone_no, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/invite")) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.INVITE, phone_no });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.INVITE, phone_no, finalCallbackFunction });
         }
 
-        public static void validateNumber(string phoneNo, postResponseFunction readonlyCallback)
+        public static void validateNumber(string phoneNo, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, readonlyCallback});
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, finalCallbackFunction});
         }
 
-        public static void setName(string name, postResponseFunction readonlyCallback)
+        public static void setName(string name, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/name")) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, readonlyCallback });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, finalCallbackFunction });
         }
 
-        public static void deleteAccount()
+        public static void deleteAccount(postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
             addToken(req);
             req.Method = "DELETE";
             addToken(req);
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.DELETE });
+            req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
+            //req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
         private static void setParams_Callback(IAsyncResult result)
         {
@@ -126,100 +128,107 @@ namespace windows_client.utils
             JObject data = new JObject();
             HttpWebRequest req = vars[0] as HttpWebRequest;
             Stream postStream = req.EndGetRequestStream(result);
-            postResponseFunction readonlyCallback = null;
+            postResponseFunction finalCallbackFunction = null;
             RequestType type = (RequestType)vars[1];
+
             switch (type)
             {
                 case RequestType.REGISTER_ACCOUNT:
                     string pin = vars[2] as string;
                     string unAuthMSISDN = vars[3] as string;
-                    readonlyCallback = vars[4] as postResponseFunction;
+                    finalCallbackFunction = vars[4] as postResponseFunction;
                     data.Add("set_cookie","0");
                     if (pin != null)
                     {
                         data.Add("msisdn", unAuthMSISDN);
                         data.Add("pin", pin);
                     }
-                    using (StreamWriter sw = new StreamWriter(postStream))
-                    {
-                        string json = data.ToString(Newtonsoft.Json.Formatting.None);
-                        //byte [] requeststring= Encoding.UTF8.GetBytes(json);
-                        
-                        sw.Write(json);
-                    }
                     break;
 
                 case RequestType.INVITE:
-                    string phoneNo = vars[2] as string;
-                    
+                    string phoneNo = vars[2] as string;                    
                     data.Add("to",phoneNo);
-                    using (StreamWriter sw = new StreamWriter(postStream))
-                    {
-                        string json = data.ToString(Newtonsoft.Json.Formatting.None);
-                        sw.Write(json);
-                    }
                     break;
 
                 case RequestType.VALIDATE_NUMBER:
                     string numberToValidate = vars[2] as string;
-                    readonlyCallback = vars[3] as postResponseFunction;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("phone_no", numberToValidate);
-                    using (StreamWriter sw = new StreamWriter(postStream))
-                    {
-                        string json = data.ToString(Newtonsoft.Json.Formatting.None);
-                        sw.Write(json);
-                    }
                     break;
 
                 case RequestType.SET_NAME:
                     string nameToSet = vars[2] as string;
-                    readonlyCallback = vars[3] as postResponseFunction;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("name", nameToSet);
-                    using (StreamWriter sw = new StreamWriter(postStream))
-                    {
-                        string json = data.ToString(Newtonsoft.Json.Formatting.None);
-                        sw.Write(json);
-                    }
                     break;
+
                 case RequestType.POST_ADDRESSBOOK:
                     string token = vars[2] as string;
                     Dictionary<string, List<ContactInfo>> contactListMap = vars[3] as Dictionary<string, List<ContactInfo>>;
-                    readonlyCallback = vars[4] as postResponseFunction;
+                    finalCallbackFunction = vars[4] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
-                    using (StreamWriter sw = new StreamWriter(postStream))
-                    {
-                       
-                        string json = data.ToString(Newtonsoft.Json.Formatting.None);
-                       // string json = "{\"3\":[{\"phone_no\":\"9910000474\",\"name\":\"Vijay\"}],\"2\":[{\"phone_no\":\"9711118690\",\"name\":\"Anuj\"}]}"
-                       sw.Write(json);
-                        
-                    }
                     break;
+
+                case RequestType.DELETE_ACCOUNT:
+                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    break;
+
                 default:
                     break;
             }
+            using (StreamWriter sw = new StreamWriter(postStream))
+            {
+                string json = data.ToString(Newtonsoft.Json.Formatting.None);
+                sw.Write(json);
+            }
             postStream.Close();
-            req.BeginGetResponse(json_Callback, new object[] { req, type, readonlyCallback });
+            req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
         }
 
         private static void json_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
-            postResponseFunction readonlyCallback = vars[2] as postResponseFunction;
-            // State of request is asynchronous.
+            RequestType type = (RequestType)vars[1];
+            postResponseFunction finalCallbackFunction = vars[2] as postResponseFunction;
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
-            HttpWebResponse response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
-
-            // Read the response into a Stream object.
-            Stream responseStream = response.GetResponseStream();
-
+            HttpWebResponse response = null;
             string data;
-            using (var reader = new StreamReader(responseStream))
+            JObject obj = null;
+
+            try
             {
-                data = reader.ReadToEnd();
+                response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
+                Stream responseStream = response.GetResponseStream();
+                using (var reader = new StreamReader(responseStream))
+                {
+                    data = reader.ReadToEnd();
+                }
+                obj = JObject.Parse(data);
             }
-            JObject obj = JObject.Parse(data);
-            readonlyCallback(obj);
+            catch (IOException ioe)
+            {
+                logger.Info("AccountUtils", "RequestType : " + type + " , IOException occured : " + ioe);
+                obj = null;
+            }
+            catch (WebException we)
+            {
+                logger.Info("AccountUtils", "RequestType : " + type + " , Webexception occured : " + we);
+                obj = null;
+            }
+            catch (JsonException je)
+            {
+                logger.Info("AccountUtils", "RequestType : " + type + " , Invalid JSON Response", je);
+                obj = null;
+            }
+            catch (Exception e)
+            {
+                logger.Info("AccountUtils", "RequestType : " + type + " , Exception occured : " + e);
+                obj = null;
+            }
+            finally
+            {
+                finalCallbackFunction(obj);
+            }
         }
 
         public static List<string> getBlockList(JObject obj)
@@ -235,8 +244,8 @@ namespace windows_client.utils
                 }
                 logger.Info("AccountUtils", "Reply from addressbook:" + obj.ToString());
 
-                JToken bl = (JToken)obj["blocklist"];
-                JArray blocklist = JArray.FromObject(bl);
+                //JToken bl = (JToken)obj["blocklist"];
+                JArray blocklist = (JArray)obj["blocklist"];
 
                 if (blocklist == null)
                 {
@@ -252,12 +261,12 @@ namespace windows_client.utils
             }
             catch (ArgumentException e)
             {
-                logger.Info("AccountUtils", "Improper Argument is passed to the function. Exception : "+e.ToString());
+                logger.Info("AccountUtils", "Improper Argument is passed to the function. Exception : "+e);
                 return null;
             }
             catch (Exception e)
             {
-                logger.Info("AccountUtils", "Exception while processing GETBLOCKLIST function : " + e.ToString());
+                logger.Info("AccountUtils", "Exception while processing GETBLOCKLIST function : " + e);
                 return null;
             }
         }

@@ -32,6 +32,7 @@ namespace windows_client
         {  
             string pinEntered =  txtBxEnterPin.Text;
             string unAuthMsisdn = (string)appSettings["msisdn"];
+            pinErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             AccountUtils.registerAccount(pinEntered, unAuthMsisdn, new AccountUtils.postResponseFunction(pinPostResponse_Callback)); 
@@ -44,7 +45,12 @@ namespace windows_client
             if (obj == null || "fail" == (string)obj["stat"])
             {
                 logger.Info("HTTP", "Unable to create account");
-                // SHOW SOME TRY AGAIN MSG OR MOVE TO MSISDN PAGE
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    pinErrorTxt.Visibility = Visibility.Visible;
+                    progressBar.Visibility = Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 return;
             }
             appSettings[App.PIN_SETTING] = "y";

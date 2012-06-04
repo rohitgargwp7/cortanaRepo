@@ -7,11 +7,16 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using System.IO.IsolatedStorage;
 using windows_client.utils;
+using windows_client.ViewModel;
 
 namespace windows_client
 {
     public partial class App : Application
     {
+        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+
+        #region Hike Specific Constants
+
         public static readonly string ACCEPT_TERMS = "acceptterms";
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string NAME_SETTING = "name";
@@ -22,15 +27,20 @@ namespace windows_client
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
 
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+        #endregion
 
-        /// <summary>
-        /// Provides easy access to the root frame of the Phone Application.
-        /// </summary>
-        /// <returns>The root frame of the Phone Application.</returns>
-        public PhoneApplicationFrame RootFrame { get; private set; }
+        #region Hike specific instances and functions
+
+        #region instances
 
         private static bool ab_scanned = false;
+        private static HikePubSub mPubSubInstance;
+        private static HikeDataContext hikeDataContext;
+        private static HikeViewModel _viewModel;
+
+        #endregion
+
+        #region instances getters and setters
 
         public static bool Ab_scanned
         {
@@ -47,17 +57,6 @@ namespace windows_client
             }
         }
 
-
-        private static HikeDbUtils _viewModel;
-        public static HikeDbUtils ViewModel
-        {
-            get 
-            { 
-                return _viewModel; 
-            }
-        }
-
-        private static HikePubSub mPubSubInstance;
         public static HikePubSub HikePubSubInstance
         {
             get
@@ -70,6 +69,48 @@ namespace windows_client
                     mPubSubInstance = value;
             }
         }
+
+        public static HikeDataContext HikeDataContext
+        {
+            get
+            {
+                return hikeDataContext;
+            }
+            set
+            {
+                if (value != hikeDataContext)
+                {
+                    hikeDataContext = value;
+                }
+            }
+        }
+
+        public static HikeViewModel ViewModel
+        {
+             get
+            {
+                return _viewModel;
+            }
+            set
+            {
+                if (value != _viewModel)
+                {
+                    _viewModel = value;
+                }
+            }
+        }
+        
+        #endregion
+
+        #endregion
+       
+
+        /// <summary>
+        /// Provides easy access to the root frame of the Phone Application.
+        /// </summary>
+        /// <returns>The root frame of the Phone Application.</returns>
+        public PhoneApplicationFrame RootFrame { get; private set; }        
+       
         /// <summary>
         /// Constructor for the Application object.
         /// </summary>
@@ -104,6 +145,14 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+            /* Load App token if its there*/
+            if (appSettings.Contains(App.TOKEN_SETTING) && null != appSettings[App.TOKEN_SETTING])
+            {
+                AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
+            }
+
+            #region CreateDatabases
+
             string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
 
             // Create the database if it does not exist.
@@ -113,19 +162,19 @@ namespace windows_client
                 {
                     // Create the local database.
                     db.CreateDatabase();
-
                 }
+                HikeDataContext = db;
             }
 
-            // Create the DbUtils object.
-            _viewModel = new HikeDbUtils(DBConnectionstring);
-            //viewModel.LoadCollectionsFromDatabase();
-            if(appSettings.Contains(App.TOKEN_SETTING) && null != appSettings[App.TOKEN_SETTING])
-            {
-                AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
-            }
+            #endregion
 
+            #region Instantiate app instances
+
+            /* Create and instantiate Pubsub*/
             mPubSubInstance = new HikePubSub();
+            _viewModel = new HikeViewModel();
+
+            #endregion
         }
 
 

@@ -32,20 +32,20 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            IDictionary<string, string> parameters = this.NavigationContext.QueryString;
+            /*IDictionary<string, string> parameters = this.NavigationContext.QueryString;
             if (parameters.ContainsKey("Index"))
             {
                 int selectedIndex = Convert.ToInt32(NavigationContext.QueryString["Index"]);
                 this.DataContext = App.ViewModel.MessageListPageCollection[selectedIndex];
-            }
+            }*/
         }
 
         //loads pre-existing messages for msisdn, returns null if empty
         //sets on-hike status
         private void setConversationPage(string msisdn)
         {
-            List<ConvMessage> messages = HikeDbUtils.getMessagesForMsisdn(msisdn);
-            onHike = HikeDbUtils.getContactInfoFromMSISDN(msisdn).OnHike;
+            List<ConvMessage> messages = UsersTableUtils.getMessagesForMsisdn(msisdn);
+            onHike = UsersTableUtils.getContactInfoFromMSISDN(msisdn).OnHike;
         }
 
         //adds an entry for message & an entry in conversation table if it is the first message of the chat thread
@@ -53,19 +53,24 @@ namespace windows_client.View
         {
             if (messages.Count == 0)
             {
-                HikeDbUtils.addConversation(msisdn, onHike);
+                UsersTableUtils.addConversation(msisdn, onHike);
                 //TO discusse
                 // add message to list of existing messages and write to db when user quits this page
             }
 
             ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            HikeDbUtils.addMessage(convMessage);
+            UsersTableUtils.addMessage(convMessage);
             messages.Add(convMessage);
         }
 
         private void deleteConversation(string msisdn)
         {
-            HikeDbUtils.deleteConversation(msisdn);
+            UsersTableUtils.deleteConversation(msisdn);
+        }
+
+        private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

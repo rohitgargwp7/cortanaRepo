@@ -26,10 +26,34 @@ namespace windows_client.Model
 //    [Index(Name = "Conversation_IDX", Columns = "ConversationId, Timestamp Desc")]
     public class ConvMessage : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        #region Messages Table member
 
-            
-        private long _messageId;
+        private long _messageId; // this corresponds to msgID stored in sender's DB
+        private string _msisdn; // this corresponds to msgID stored in receiver's DB
+        private string _message;
+        private State _messageStatus;
+        private long _timestamp;
+        private long _mappedMessageId;
+        private bool _isInvite;
+        private bool _isSent;
+        private bool _isSms;
+        private Conversation mConversation;
+        private MessageMetadata metadata;
+
+
+        /* Adding entries to the beginning of this list is not backwards compatible */
+        public enum State
+        {
+            SENT_UNCONFIRMED = 0,  /* message sent to server */
+            SENT_FAILED, /* message could not be sent, manually retry */
+            SENT_CONFIRMED, /* message received by server */
+            SENT_DELIVERED, /* message delivered to client device */
+            SENT_DELIVERED_READ, /* message viewed by recipient */
+            RECEIVED_UNREAD, /* message received, but currently unread */
+            RECEIVED_READ, /* message received an read */
+            UNKNOWN
+        };
+
+        #region Messages Table member
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
         public long MessageId
@@ -49,8 +73,6 @@ namespace windows_client.Model
             }
         }
 
-        private string _msisdn;
-
         [Column]
         public string Msisdn
         {
@@ -69,9 +91,6 @@ namespace windows_client.Model
             }
         }
 
-
-        private string _message;
-
         [Column]
         public string Message
         {
@@ -88,9 +107,7 @@ namespace windows_client.Model
                     NotifyPropertyChanged("Message");
                 }
             }
-        }
-
-        private State _messageStatus;
+        }   
 
         [Column]
         public State MessageStatus
@@ -115,21 +132,6 @@ namespace windows_client.Model
             }
         }
 
-        /* Adding entries to the beginning of this list is not backwards compatible */
-        public enum State
-        {
-            SENT_UNCONFIRMED =0 ,  /* message sent to server */
-            SENT_FAILED, /* message could not be sent, manually retry */
-            SENT_CONFIRMED, /* message received by server */
-            SENT_DELIVERED, /* message delivered to client device */
-            SENT_DELIVERED_READ, /* message viewed by recipient */
-            RECEIVED_UNREAD, /* message received, but currently unread */
-            RECEIVED_READ, /* message received an read */
-            UNKNOWN
-        };
-
-        private long _timestamp;
-
         [Column]
         public long Timestamp
         {
@@ -147,8 +149,6 @@ namespace windows_client.Model
                 }
             }
         }
-
-        private long _mappedMessageId;
 
         [Column]
         public long MappedMessageId
@@ -168,29 +168,6 @@ namespace windows_client.Model
             }
         }
 
-
-        //private long _conversationId;
-
-        //[Column]
-        //public long ConversationId
-        //{
-        //    get
-        //    {
-        //        return _conversationId;
-        //    }
-        //    set
-        //    {
-        //        if (_conversationId != value)
-        //        {
-        //            NotifyPropertyChanging("ConversationId");
-        //            _conversationId = value;
-        //            NotifyPropertyChanged("ConversationId");
-        //        }
-        //    }
-        //}
-
-        private bool _isInvite;
-
         public bool IsInvite
         {
             get
@@ -208,7 +185,6 @@ namespace windows_client.Model
             }
         }
 
-        private bool _isSent;
         public bool IsSent
         {
             get
@@ -217,7 +193,6 @@ namespace windows_client.Model
             }
         }
 
-        private bool _isSms;
         public bool IsSms
         {
             get
@@ -226,7 +201,18 @@ namespace windows_client.Model
             }
         }
 
-
+        public Conversation Conversation
+        {
+            get
+            {
+                return mConversation;
+            }
+            set
+            {
+                if (value != mConversation)
+                    mConversation = value;
+            }
+        }
 
         public ConvMessage(string message, string msisdn, long timestamp, State msgState)
             : this(message, msisdn, timestamp, msgState, -1, -1)
@@ -284,6 +270,21 @@ namespace windows_client.Model
         { 
         }
 
+        public JObject serialize()
+        {
+            JObject obj = new JObject();
+            JObject data = new JObject();
+
+            data[HikeConstants.HIKE_MESSAGE] = _message;
+            data[HikeConstants.TIMESTAMP] = _timestamp;
+            data[HikeConstants.MESSAGE_ID] = _messageId;
+
+            obj[HikeConstants.TO] = _msisdn;
+            obj[HikeConstants.DATA] = data;
+            obj[HikeConstants.TYPE] = _isInvite ? NetworkManager.INVITE : NetworkManager.MESSAGE;
+
+            return obj;
+        }
 
         public override bool Equals(Object obj)
         {
@@ -325,10 +326,7 @@ namespace windows_client.Model
 		    result = prime * result + (IsSent ? 1231 : 1237);
 		    result = prime * result + ((Message == null) ? 0 : Message.GetHashCode());
 		    result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
-		    //result = prime * result + ((MessageStatus.GetHashCode() == null) ? 0 : MessageStatus.GetHashCode());
             result = prime * result + MessageStatus.GetHashCode();
-            //TODO unsigned right shift
-//            Convert.ToUInt32(Timestamp);
             result = prime * result + (int)(Timestamp ^ (Convert.ToUInt32(Timestamp) >> 32));
             
 		    return result;

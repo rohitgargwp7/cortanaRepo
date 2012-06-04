@@ -76,7 +76,7 @@ namespace windows_client.utils
        
             if (addressbook != null)
             {
-                HikeDbUtils.addContacts(addressbook); // add the contacts to hike users db.
+                UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 App.Ab_scanned = true;
                 appSettings[App.ADDRESS_BOOK_SCANNED] = "y";
                 appSettings.Save();

@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+using System.Collections.ObjectModel;
+using System.IO.IsolatedStorage;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+using System.Windows.Media.Imaging;
 using Microsoft.Phone.Controls;
-
-using System.Collections.ObjectModel;
-using windows_client.utils;
-
+using Newtonsoft.Json.Linq;
 using windows_client.DbUtils;
 using windows_client.Model;
-using Newtonsoft.Json.Linq;
+using windows_client.utils;
+using windows_client.ViewModel;
 
 namespace windows_client
 {
     public partial class MessageList : PhoneApplicationPage
     {
+        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public MessageList()
         {
             InitializeComponent();
@@ -31,16 +28,20 @@ namespace windows_client
 
         private void LoadMessages()
         {
-            List<Conversation> conversationList = HikeDbUtils.getConversations();
-
+            List<Conversation> conversationList = ConversationDbUtils.getConversations();
+            if (conversationList == null)
+            {
+                mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
+                return;
+            }
             App.ViewModel.MessageListPageCollection = new ObservableCollection<MessageListPage>();
 
-            foreach (Conversation conversation in conversationList)
+            for (int i=0;i<conversationList.Count;i++) 
             {
-                ConvMessage lastMessage = HikeDbUtils.getLastMessageForMsisdn(conversation.Msisdn);
-                ContactInfo contact = HikeDbUtils.getContactInfoFromMSISDN(lastMessage.Msisdn);
-                App.ViewModel.MessageListPageCollection.Add(
-                    new MessageListPage(contact.Name, lastMessage.Message, TimeUtils.getRelativeTime(lastMessage.Timestamp)));
+                Conversation conversation = conversationList[i];
+                ConvMessage lastMessage = UsersTableUtils.getLastMessageForMsisdn(conversation.Msisdn);
+                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(lastMessage.Msisdn);
+                App.ViewModel.MessageListPageCollection.Add(new MessageListPage(contact.Name, lastMessage.Message, TimeUtils.getRelativeTime(lastMessage.Timestamp)));
             }
         }
 
@@ -60,5 +61,39 @@ namespace windows_client
             while(NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
         }
+
+        private void deleteAccount_Click(object sender, EventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting account.","Delete Account ?",MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+            AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
+        }
+
+        private void deleteAccountResponse_Callback(JObject obj )
+        {
+            if (obj == null || "fail" == (string)obj["stat"])
+            {
+                logger.Info("Delete Account", "Could not delete account !!");
+                return;
+            }
+            appSettings.Clear();
+            UsersTableUtils.deleteAllContacts();
+            UsersTableUtils.deleteAllConversations();
+            UsersTableUtils.deleteAllMessages();
+            /*This is used to avoid cross thread invokation exception*/
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
+            });
+        }
+
+        /* Start or continue the conversation*/
+        private void startConversation_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/ChatThread.xaml", UriKind.Relative));
+        }
+
+     
     }
 }

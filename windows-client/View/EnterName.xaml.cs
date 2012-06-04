@@ -32,7 +32,7 @@ namespace windows_client
             string name = txtBxEnterName.Text;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
-            enterNameBtn.Content = "Scaaning contacts";
+            enterNameBtn.Content = "Scanning contacts";
             AccountUtils.setName(name,new AccountUtils.postResponseFunction(setName_Callback));
         }
 
@@ -65,7 +65,7 @@ namespace windows_client
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             {
                 enterNameBtn.Content = "Getting you in";
-                Thread.Sleep(2 * 1000);
+                Thread.Sleep(3 * 1000);
                 NavigationService.Navigate(nextPage);
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
                 progressBar.IsEnabled = false;

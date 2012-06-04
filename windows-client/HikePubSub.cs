@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Threading;
 using System.Collections.Generic;
+using windows_client.utils;
 
 namespace windows_client
 {
@@ -99,14 +100,14 @@ namespace windows_client
 
         private readonly Thread mThread;
 
-        private readonly Queue<Operation> mQueue;
+        private readonly BlockingQueue mQueue;
 
         private Dictionary<string, List<Listener>> listeners;
 
         public HikePubSub()
         {
             listeners = new Dictionary<string, List<Listener>>();
-            mQueue = new Queue<Operation>();
+            mQueue = new BlockingQueue(100);
             try
             {
                 mThread = new Thread(new ThreadStart(startPubSub));
@@ -122,7 +123,8 @@ namespace windows_client
 	    {
             lock (listeners) // enter synchronization here i.e only one thread can enter this part
             {
-                List<Listener> list = listeners[type];
+                List<Listener> list;
+                listeners.TryGetValue(type, out list);
                 if (list == null)
                 {
                     list = new List<Listener>();
@@ -132,7 +134,7 @@ namespace windows_client
             }
 	    }
 
-        public bool publish(string type, Object o)
+        public bool publish(string type, object o)
         {
 
             if (!listeners.ContainsKey(type))
@@ -148,24 +150,28 @@ namespace windows_client
 
         public void removeListener(string type, Listener listener)
         {
-            List<Listener> l = listeners[type];
+            List<Listener> l; 
+            listeners.TryGetValue(type , out l);
             if (l != null)
             {
                 l.Remove(listener);
             }
         }
 
-        public void startPubSub()
+        private void startPubSub1()
+        {
+            while (true)
+            {
+            }
+        }
+        private void startPubSub()
         {
             Operation op = null;
             while (true)
             {
                 try
                 {
-                    lock (mQueue)
-                    {
-                        op = mQueue.Dequeue();
-                    }
+                    op = (Operation)mQueue.Dequeue();
                 }
                 catch (Exception e)
                 {
@@ -176,7 +182,8 @@ namespace windows_client
                 {
                     break;
                 }
-
+                if (op == null)
+                    continue;
                 string type = op.type;
                 object o = op.payload;
 
@@ -184,7 +191,8 @@ namespace windows_client
               
                 lock (listeners)  // seems not required here
                 {
-                    list = listeners[type];
+                    listeners.TryGetValue(type, out list);
+                    //list = listeners[type];
                 }
                 if (list == null)
                 {

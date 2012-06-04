@@ -7,6 +7,7 @@ using Microsoft.Phone.UserData;
 using windows_client.utils;
 using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
+using System.Windows.Media;
 
 
 namespace windows_client
@@ -24,16 +25,10 @@ namespace windows_client
 
         private void getStarted_click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                GetStarted.Content = "Pulling your digits.";
-                progressBar.Visibility = System.Windows.Visibility.Visible;
-                progressBar.IsEnabled = true;
-                AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
-            }
-            catch(Exception ex)
-            {
-            }
+            GetStarted.Content = "Pulling your digits.";
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
+            AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
         }
 
         private void registerPostResponse_Callback(JObject obj)
@@ -43,7 +38,13 @@ namespace windows_client
             if ((obj == null))
             {
                 logger.Info("HTTP", "Unable to create account");
-                // SHOW SOME TRY AGAIN MSG
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    GetStarted.Content = "Network Error. Try Again.";
+                    GetStarted.Foreground = new SolidColorBrush(Colors.Red);
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 return;
             }
             appSettings[App.ACCEPT_TERMS] = "y";
@@ -70,7 +71,13 @@ namespace windows_client
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
                 progressBar.IsEnabled = false; 
             });
+        }
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
         }
     }
 }

@@ -30,6 +30,7 @@ namespace windows_client
         {
             string phoneNumber = txtEnterPhone.Text;
             enterPhoneBtn.Content = "Verifying your number";
+            msisdnErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));         
@@ -40,13 +41,25 @@ namespace windows_client
             if (obj == null)
             {
                 logger.Info("HTTP", "Unable to Validate Phone Number.");
-                // raise an exception , or handle this properly
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    msisdnErrorTxt.Visibility = Visibility.Visible;
+                    progressBar.Visibility = Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 return;
             }
             string unauthedMSISDN = (string)obj["msisdn"];
             if (unauthedMSISDN == null)
             {
                 logger.Info("SignupTask", "Unable to send PIN to user");
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    msisdnErrorTxt.Text = "Unable to send PIN to user";
+                    msisdnErrorTxt.Visibility = Visibility.Visible;
+                    progressBar.Visibility = Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 return;
             }
             /*If all well*/

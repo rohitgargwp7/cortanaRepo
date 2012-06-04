@@ -63,6 +63,7 @@
             </Image>
             <Button x:Name="enterPhoneBtn" Foreground="White" Margin="55,211,78,429" Content="Next" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="enterPhoneBtn_Click" />
             <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+            <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="msisdnErrorTxt" Text="Invalid MSISDN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
         </Grid>
     </Grid>
  
