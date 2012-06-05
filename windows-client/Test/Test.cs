@@ -24,22 +24,22 @@ namespace windows_client.Test
             list.Add(new ContactInfo("-1", "+919876543210", "Gautam", false, "9876543210", false));
             list.Add(new ContactInfo("-1", "+919876543211", "Madhur", false, "9876543211", false));
             list.Add(new ContactInfo("-1", "+919876543212", "Vijay", false, "9876543212", false));
-            HikeDbUtils.addContacts(list);
-            List<ContactInfo> c2 = HikeDbUtils.getAllContacts();
+            UsersTableUtils.addContacts(list);
+            List<ContactInfo> c2 = UsersTableUtils.getAllContacts();
         }
 
         public static void addMessage(String message, String msisdn)
         {
             if (messages.Count == 0)
             {
-                HikeDbUtils.addConversation(msisdn, false);
+                UsersTableUtils.addConversation(msisdn, false);
                 //TO discusse
                 // add message to list of existing messages and write to db when user quits this page
             }
 
             ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
 
-            HikeDbUtils.addMessage(convMessage);
+            UsersTableUtils.addMessage(convMessage);
             messages.Add(convMessage);
         }
 
