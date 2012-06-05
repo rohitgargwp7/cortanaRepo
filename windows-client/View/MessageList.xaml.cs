@@ -33,7 +33,7 @@ namespace windows_client
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
             if (conversationList == null)
             {
-                mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
+                //mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
                 return;
             }
             App.ViewModel.MessageListPageCollection = new ObservableCollection<MessageListPage>();
@@ -44,17 +44,17 @@ namespace windows_client
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn);
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
                 App.ViewModel.MessageListPageCollection.Add(new MessageListPage(conv.Msisdn,contact.Name, lastMessage.Message, TimeUtils.getRelativeTime(lastMessage.Timestamp)));
-                List<MessageListPage> abc = new List<MessageListPage>();
             }
         }
 
 
         private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ListBoxItem selectedItem = this.myListBox.ItemContainerGenerator.ContainerFromItem(this.myListBox.SelectedItem) as ListBoxItem;
+            MessageListPage obj = myListBox.SelectedItem as MessageListPage;
+            if (obj == null)
+                return;
             //this.myListBox.SelectedIndex;
-            string uri = "/View/ConversationPage.xaml?Index=";
-            uri += this.myListBox.SelectedIndex;
+            string uri = "/View/ChatThread.xaml?msisdn="+obj.MSISDN+"&name="+obj.ContactName;
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
@@ -97,17 +97,5 @@ namespace windows_client
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
-        private void testButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageListPage obj = new MessageListPage("+919876543211", "Madhur", "Fresh msg", TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
-            App.ViewModel.MessageListPageCollection.Remove(obj);
-            App.ViewModel.MessageListPageCollection.Insert(0, obj);
-
-            obj = new MessageListPage("+919876543213", "Rishabh", "Fresh msg2323", TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
-            App.ViewModel.MessageListPageCollection.Remove(obj);
-            App.ViewModel.MessageListPageCollection.Insert(0, obj);
-
-        }
-    
     }
 }

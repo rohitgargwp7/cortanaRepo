@@ -13,22 +13,27 @@ using Microsoft.Phone.Controls;
 using windows_client.Model;
 using windows_client.DbUtils;
 using windows_client.utils;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace windows_client.View
 {
-    public partial class ChatThread : PhoneApplicationPage , HikePubSub.Listener
+    public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
+        private ObservableCollection<ChatThreadPage> chatThreadPageCollection = null;
+        
         private string mContactNumber;
         private int mCredits;
         private HikePubSub mPubSub;
         private Conversation mConversation;
+        private string name;
 
         public ChatThread()
         {
             InitializeComponent();
+            //loadMessages();
+           // this.myListBox.ItemsSource = App.ViewModel.ChatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
-            //mConversation = ConversationDbUtils.getConversation(mContactNumber, 1000);
-
             /* register listeners */
             App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
             App.HikePubSubInstance.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
@@ -40,6 +45,36 @@ namespace windows_client.View
             App.HikePubSubInstance.addListener(HikePubSub.ICON_CHANGED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
+        }
+
+        private void loadMessages()
+        {
+            mContactNumber = "+" + mContactNumber.Trim();
+            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
+            if (messagesList == null)
+            {
+                return;
+            }
+            this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
+            for (int i = 0; i < messagesList.Count; i++)
+            {
+                this.ChatThreadPageCollection.Add(new ChatThreadPage(messagesList[i].Message));
+            }
+            this.myListBox.ItemsSource = chatThreadPageCollection;
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+           
+            NavigationContext.QueryString.TryGetValue("msisdn", out mContactNumber);
+            NavigationContext.QueryString.TryGetValue("name", out name);
+            if (mContactNumber == null)
+            {
+                // move to error page
+                return;
+            }
+            loadMessages();
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -73,13 +108,16 @@ namespace windows_client.View
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
         {
             string message = sendMsgTxtbox.Text.Trim();
-            if ((!mConversation.OnHike && mCredits <= 0) || message == "")
+           /* if ((!mConversation.OnHike && mCredits <= 0) || message == "")
             {
                 return;
             }
-
+            */
             sendMsgTxtbox.Text = "";
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            if (this.ChatThreadPageCollection == null)
+                this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
+            this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
             //convMessage.Conversation = mConversation;
             sendMessage(convMessage);
         }
@@ -87,6 +125,7 @@ namespace windows_client.View
         private void sendMessage(ConvMessage convMessage)
         {
             /*TODO :: Add this message to observable collection MessageListPageCollection*/
+            addToMessageList(convMessage);
             mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
             if(sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
@@ -94,7 +133,42 @@ namespace windows_client.View
 
         private void blockUnblockUser_Click(object sender, EventArgs e)
         {
-
+            ObservableCollection<ChatThreadPage> x = this.ChatThreadPageCollection;
+            int count = x.Count;
         }
+
+
+        public void addToMessageList(ConvMessage conv)
+        {
+            MessageListPage obj = new MessageListPage(conv.Msisdn, name, conv.Message, TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
+            App.ViewModel.MessageListPageCollection.Remove(obj);
+            App.ViewModel.MessageListPageCollection.Insert(0, obj);
+        }
+
+        public ObservableCollection<ChatThreadPage> ChatThreadPageCollection
+        {
+            get
+            {
+                return chatThreadPageCollection;
+            }
+            set
+            {
+                chatThreadPageCollection = value;
+                NotifyPropertyChanged("ChatThreadPageCollection");
+            }
+        }
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify Silverlight that a property has changed.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
     }
 }

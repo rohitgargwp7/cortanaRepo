@@ -122,7 +122,7 @@ namespace windows_client.Model
        }
        */
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (obj == null)
             {

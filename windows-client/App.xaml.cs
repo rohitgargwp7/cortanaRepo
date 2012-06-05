@@ -156,7 +156,7 @@ namespace windows_client
             string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
 
             // Create the database if it does not exist.
-            HikeDataContext db;
+            
             App.HikeDataContext = new HikeDataContext(DBConnectionstring);
             
                 if (App.HikeDataContext.DatabaseExists() == false)

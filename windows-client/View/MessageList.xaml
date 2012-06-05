@@ -15,9 +15,9 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot">
-        <Grid.Background>
+        <!--<Grid.Background>
             <ImageBrush x:Name="mainBackImage" ImageSource="Images\ic_backtexture.png"  />
-        </Grid.Background>
+        </Grid.Background>-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -51,10 +51,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
-        <Button Name="testButton" Content="TEST" Click="testButton_Click" Margin="0,477,0,75" Grid.Row="1" />
-
-        <!--<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+       <!--<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
             <Image Source="Images\dummy_image.jpg" Height="70" Grid.Column="0"/>
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
