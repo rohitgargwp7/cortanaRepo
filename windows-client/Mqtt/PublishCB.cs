@@ -32,7 +32,7 @@ namespace windows_client.Mqtt
 
         public void onFailure(Exception value)
         {
-            HikeDbUtils.addSentMessage(packet);
+            MiscDBUtils.addSentMessage(packet);
         }
 
     }

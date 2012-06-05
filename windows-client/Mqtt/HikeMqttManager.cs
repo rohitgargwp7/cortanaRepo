@@ -265,7 +265,7 @@ namespace windows_client.Mqtt
                 {
                     try
                     {
-                        HikeDbUtils.addSentMessage(packet);
+                        MiscDBUtils.addSentMessage(packet);
                     }
                     catch (Exception e)
                     {
