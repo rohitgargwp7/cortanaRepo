@@ -15,26 +15,17 @@ namespace windows_client.Model
 {
     public class MessageListPage : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        //private Image _avatar;
-        //public Image Avatar
-        //{
-        //    get
-        //    {
-        //        return _avatar;
-        //    }
-        //    set
-        //    {
-        //        if (_avatar != value)
-        //        {
-        //            NotifyPropertyChanging("Avatar");
-        //            _avatar = value;
-        //            NotifyPropertyChanged("Avatar");
-        //        }
-        //    }
-        //}
-
+        #region member variables
 
         private string _contactName;
+        private string _lastMessage;
+        private string _timeStamp;
+        /*private Image _avatar;*/
+
+        #endregion
+
+        #region member functions
+
         public string ContactName
         {
             get
@@ -52,7 +43,7 @@ namespace windows_client.Model
             }
         }
         
-        private string _lastMessage;
+        
         public string LastMessage
         {
             get
@@ -70,7 +61,7 @@ namespace windows_client.Model
             }
         }
         
-        private string _timeStamp;
+        
         public string TimeStamp
         {
             get
@@ -94,6 +85,27 @@ namespace windows_client.Model
             this._lastMessage = lastMessage;
             this._timeStamp = relativeTime;
         }
+
+        /*
+       public Image Avatar
+       {
+           get
+           {
+               return _avatar;
+           }
+           set
+           {
+               if (_avatar != value)
+               {
+                   NotifyPropertyChanging("Avatar");
+                   _avatar = value;
+                   NotifyPropertyChanged("Avatar");
+               }
+           }
+       }
+       */
+
+        #endregion
 
         #region INotifyPropertyChanged Members
 

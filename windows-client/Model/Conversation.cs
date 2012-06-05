@@ -19,8 +19,18 @@ namespace windows_client.Model
     public class Conversation : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<Conversation>
     {
 
-        #region conversations members
+        #region conversations member variables
+
         private string _msisdn;
+        private string _contactId;
+        private bool _onHike;
+        private string _metadata;
+        private List<ConvMessage> _messages;
+        private string _contactName;
+
+        #endregion
+
+        #region member functions
 
         [Column(IsPrimaryKey = true)]
         public string Msisdn
@@ -39,28 +49,7 @@ namespace windows_client.Model
                 }
             }
         }
-
-        //private long _convId;
-        //[Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
-        //public long ConvId
-        //{
-        //    get
-        //    {
-        //        return _convId;
-        //    }
-        //    set
-        //    {
-        //        if (_convId != value)
-        //        {
-        //            NotifyPropertyChanging("ConvId");
-        //            _convId = value;
-        //            NotifyPropertyChanged("ConvId");
-        //        }
-        //    }
-        //}
-
-
-        private string _contactId;
+        
         [Column]
         public string ContactId
         {
@@ -78,8 +67,7 @@ namespace windows_client.Model
                 }
             }
         }
-
-        private bool _onHike;
+      
         [Column]
         public bool OnHike
         {
@@ -97,8 +85,7 @@ namespace windows_client.Model
                 }
             }
         }
-
-        private string _metadata;
+       
         [Column]
         public string Metadata
         {
@@ -116,8 +103,7 @@ namespace windows_client.Model
                 }
             }
         }
-        
-        private List<ConvMessage> _messages;
+                
         public List<ConvMessage> Messages
         {
             get
@@ -135,8 +121,7 @@ namespace windows_client.Model
             }
 
         }
-
-        private string _contactName;
+        
         public string ContactName
         {
             get
@@ -198,9 +183,6 @@ namespace windows_client.Model
             return true;
         }
 
-
-
-
         public override int  GetHashCode()
         {
 		    const int prime = 31;
@@ -255,7 +237,6 @@ namespace windows_client.Model
             this.Messages = new List<ConvMessage>();
         }
 
-//        public Conversation(string msisdn, long convId, string contactId, string contactName, bool onhike)
         public Conversation(string msisdn, string contactId, string contactName, bool onhike)
         {
             this.Msisdn = msisdn;
@@ -268,7 +249,6 @@ namespace windows_client.Model
 
 
         #endregion
-
 
         #region INotifyPropertyChanged Members
 
