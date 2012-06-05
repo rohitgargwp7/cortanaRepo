@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.Model;
 using windows_client.DbUtils;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -66,6 +67,9 @@ namespace windows_client.View
         {
         }
 
+
+
+
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
         {
             string message = sendMsgTxtbox.Text.Trim();
@@ -75,18 +79,22 @@ namespace windows_client.View
             }
 
             sendMsgTxtbox.Text = "";
-            DateTime dt = new DateTime();
-            int time = dt.Millisecond / 1000;
-            ConvMessage convMessage = new ConvMessage(message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.Conversation = mConversation;
+            ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            //convMessage.Conversation = mConversation;
             sendMessage(convMessage);
         }
 
         private void sendMessage(ConvMessage convMessage)
         {
+            /*TODO :: Add this message to observable collection MessageListPageCollection*/
             mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
             if(sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
+        }
+
+        private void blockUnblockUser_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

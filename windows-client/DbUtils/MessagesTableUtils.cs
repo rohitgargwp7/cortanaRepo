@@ -44,5 +44,18 @@ namespace windows_client.DbUtils
             return q(App.HikeDataContext, msisdn).Count<ConvMessage>() == 0 ? null :
                 q(App.HikeDataContext, msisdn).Last<ConvMessage>();
         }
+
+
+        public static List<ConvMessage> getAllMessages()
+        {
+            Func<HikeDataContext, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc) =>
+                from o in hdc.messages
+                select o);
+            return q(App.HikeDataContext).Count<ConvMessage>() == 0 ? null :
+                q(App.HikeDataContext).ToList<ConvMessage>();
+        }
+
     }
 }

@@ -156,15 +156,16 @@ namespace windows_client
             string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
 
             // Create the database if it does not exist.
-            using (HikeDataContext db = new HikeDataContext(DBConnectionstring))
-            {
-                if (db.DatabaseExists() == false)
+            HikeDataContext db;
+            App.HikeDataContext = new HikeDataContext(DBConnectionstring);
+            
+                if (App.HikeDataContext.DatabaseExists() == false)
                 {
                     // Create the local database.
-                    db.CreateDatabase();
+                    App.HikeDataContext.CreateDatabase();
                 }
-                HikeDataContext = db;
-            }
+              
+            
 
             #endregion
 
@@ -175,6 +176,9 @@ namespace windows_client
             _viewModel = new HikeViewModel();
 
             #endregion
+
+       
+
         }
 
 
@@ -186,6 +190,11 @@ namespace windows_client
             if (!appSettings.Contains(App.ACCEPT_TERMS) || "f"== appSettings[App.ACCEPT_TERMS].ToString())
             {
                 nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                /* test function */
+
+                Test.Test.AddContactEntries();
+                Test.Test.insertMessages();
+
             }
             else if (!appSettings.Contains(App.MSISDN_SETTING) || "f" == appSettings[App.MSISDN_SETTING].ToString())
             {

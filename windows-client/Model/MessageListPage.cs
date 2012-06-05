@@ -17,6 +17,7 @@ namespace windows_client.Model
     {
         #region member variables
 
+        private string _msisdn;
         private string _contactName;
         private string _lastMessage;
         private string _timeStamp;
@@ -24,7 +25,7 @@ namespace windows_client.Model
 
         #endregion
 
-        #region member functions
+        #region Properties
 
         public string ContactName
         {
@@ -79,8 +80,24 @@ namespace windows_client.Model
             }
         }
 
-        public MessageListPage(string contactName, string lastMessage, string relativeTime)
+        public string MSISDN
         {
+            get
+            {
+                return _msisdn;
+            }
+            set
+            {
+                if (_msisdn != value)
+                {
+                    _msisdn = value;
+                }
+            }
+        }
+
+        public MessageListPage(string msisdn,string contactName, string lastMessage, string relativeTime)
+        {
+            this._msisdn = msisdn;
             this._contactName = contactName;
             this._lastMessage = lastMessage;
             this._timeStamp = relativeTime;
@@ -105,6 +122,20 @@ namespace windows_client.Model
        }
        */
 
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            MessageListPage o = obj as MessageListPage;
+
+            if ((System.Object)o == null)
+            {
+                return false;
+            }
+            return (_msisdn == o.MSISDN);
+        }
         #endregion
 
         #region INotifyPropertyChanged Members

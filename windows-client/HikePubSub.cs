@@ -17,6 +17,7 @@ namespace windows_client
     public class HikePubSub
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public class Operation
         {
             public readonly string type;

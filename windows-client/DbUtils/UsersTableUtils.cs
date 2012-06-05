@@ -128,17 +128,6 @@ namespace windows_client.DbUtils
                 q(App.HikeDataContext).ToList<ContactInfo>();
         }
 
-        public static List<ConvMessage> getAllMessages()
-        {
-            Func<HikeDataContext, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc) =>
-                from o in hdc.messages
-                select o);
-            return q(App.HikeDataContext).Count<ConvMessage>() == 0? null:
-                q(App.HikeDataContext).ToList<ConvMessage>();
-        }
-
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {

@@ -38,7 +38,7 @@ namespace windows_client.DbUtils
         }
 
         /* This function gets all the conversations shown on the message list page*/
-        public static List<Conversation> getConversations()
+        public static List<Conversation> getAllConversations()
         {
             Func<HikeDataContext, IQueryable<Conversation>> q =
             CompiledQuery.Compile<HikeDataContext, IQueryable<Conversation>>

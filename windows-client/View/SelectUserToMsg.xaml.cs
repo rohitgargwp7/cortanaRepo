@@ -17,13 +17,13 @@ using System.Threading;
 
 namespace windows_client.View
 {
-    public partial class ConversationPage : PhoneApplicationPage
+    public partial class SelectUserToMsg : PhoneApplicationPage
     {
         private List<ConvMessage> messages;
         private string msisdn;
         private bool onHike;
 
-        public ConversationPage()
+        public SelectUserToMsg()
         {
             InitializeComponent();
             this.DataContext = App.ViewModel;
@@ -44,7 +44,7 @@ namespace windows_client.View
         //sets on-hike status
         private void setConversationPage(string msisdn)
         {
-            List<ConvMessage> messages = UsersTableUtils.getMessagesForMsisdn(msisdn);
+            List<ConvMessage> messages = MessagesTableUtils.getMessagesForMsisdn(msisdn);
             onHike = UsersTableUtils.getContactInfoFromMSISDN(msisdn).OnHike;
         }
 
