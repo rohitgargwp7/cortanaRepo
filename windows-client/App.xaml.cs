@@ -13,7 +13,7 @@ namespace windows_client
 {
     public partial class App : Application
     {
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+        public static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         #region Hike Specific Constants
 
