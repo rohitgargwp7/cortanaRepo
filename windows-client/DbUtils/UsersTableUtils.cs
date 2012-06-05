@@ -215,31 +215,6 @@ namespace windows_client.DbUtils
         //}
 
 
-
-        public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
-        {
-            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, string myMsisdn) =>
-                from o in hdc.messages
-                where o.Msisdn == myMsisdn
-                select o);
-            return q(App.HikeDataContext, msisdn).Count<ConvMessage>() == 0 ? null :
-                q(App.HikeDataContext, msisdn).ToList<ConvMessage>();
-        }
-
-        public static ConvMessage getLastMessageForMsisdn(string msisdn)
-        {
-            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, string myMsisdn) =>
-                from o in hdc.messages
-                where o.Msisdn == myMsisdn
-                select o);
-            return q(App.HikeDataContext, msisdn).Count<ConvMessage>() == 0 ? null :
-                q(App.HikeDataContext, msisdn).Last<ConvMessage>();
-        }
-
         public static void deleteConversation(string msisdn)
         {
             Func<HikeDataContext, string, IQueryable<ConvMessage>> messages =

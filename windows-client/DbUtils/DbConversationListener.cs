@@ -41,14 +41,14 @@ namespace windows_client.DbUtils
             if (HikePubSub.MESSAGE_SENT == type)
             {
                 ConvMessage convMessage = (ConvMessage)obj;
-                ConversationDbUtils.addConversationMessages(convMessage, true);
+                ConversationTableUtils.addConversationMessages(convMessage, true);
                 logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + "	;	to : " + convMessage.Conversation.ContactName);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
             }
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
             {
                 ConvMessage convMessage = (ConvMessage)obj;
-                ConversationDbUtils.addConversationMessages(convMessage, false);
+                ConversationTableUtils.addConversationMessages(convMessage, false);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
 
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
@@ -72,7 +72,7 @@ namespace windows_client.DbUtils
             else if (HikePubSub.MESSAGE_DELETED == type)
             {
                 long msgId = (long)obj;
-                ConversationDbUtils.deleteMessage(msgId);
+                ConversationTableUtils.deleteMessage(msgId);
                 // TODO :: persistence.removeMessage(msgId);
             }
             else if (HikePubSub.MESSAGE_FAILED == type)  // server got msg from client 1 and sent back received msg receipt
@@ -107,7 +107,7 @@ namespace windows_client.DbUtils
         {
             long msgID = (long)obj;
             /* TODO we should lookup the convid for this user, since otherwise one could set mess with the state for other conversations */
-            ConversationDbUtils.updateMsgStatus(msgID, status);
+            ConversationTableUtils.updateMsgStatus(msgID, status);
         }
     }
 }
