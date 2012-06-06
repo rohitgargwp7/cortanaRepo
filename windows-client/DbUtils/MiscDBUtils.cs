@@ -18,20 +18,20 @@ namespace windows_client.DbUtils
     public class MiscDBUtils
     {
         #region MqttPersistence
-        public static List<HikeMqttPersistence> getAllSentMessages()
+        public static List<HikePacket> getAllSentMessages()
         {
-            Func<HikeDataContext, IQueryable<HikeMqttPersistence>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<HikeMqttPersistence>>
+            Func<HikeDataContext, IQueryable<HikePacket>> q =
+            CompiledQuery.Compile<HikeDataContext, IQueryable<HikePacket>>
             ((HikeDataContext hdc) =>
                 from o in hdc.mqttMessages
                 select o);
-            return q(App.HikeDataContext).Count<HikeMqttPersistence>() == 0 ? null :
-                q(App.HikeDataContext).ToList<HikeMqttPersistence>();
+            return q(App.HikeDataContext).Count<HikePacket>() == 0 ? null :
+                q(App.HikeDataContext).ToList<HikePacket>();
         }
 
         public static void addSentMessage(HikePacket packet)
         {
-            HikeMqttPersistence mqttMessage = new HikeMqttPersistence(packet.MessageId, packet.Message, packet.TimeStamp);
+            HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
             App.HikeDataContext.mqttMessages.InsertOnSubmit(mqttMessage);
             App.HikeDataContext.SubmitChanges();
             //TODO update observable list
@@ -39,13 +39,13 @@ namespace windows_client.DbUtils
 
         public void removeSentMessage(long msgId)
         {
-            Func<HikeDataContext, long, IQueryable<HikeMqttPersistence>> q =
-            CompiledQuery.Compile<HikeDataContext, long, IQueryable<HikeMqttPersistence>>
+            Func<HikeDataContext, long, IQueryable<HikePacket>> q =
+            CompiledQuery.Compile<HikeDataContext, long, IQueryable<HikePacket>>
             ((HikeDataContext hdc, long id) =>
                 from o in hdc.mqttMessages
                 where o.MessageId == id
                 select o);
-            App.HikeDataContext.mqttMessages.DeleteAllOnSubmit<HikeMqttPersistence>(q(App.HikeDataContext, msgId));
+            App.HikeDataContext.mqttMessages.DeleteAllOnSubmit<HikePacket>(q(App.HikeDataContext, msgId));
             App.HikeDataContext.SubmitChanges();
         }
         #endregion
