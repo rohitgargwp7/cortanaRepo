@@ -8,6 +8,7 @@ using windows_client.Model;
 using System.IO.IsolatedStorage;
 using windows_client.utils;
 using windows_client.ViewModel;
+using windows_client.Mqtt;
 
 namespace windows_client
 {
@@ -37,6 +38,8 @@ namespace windows_client
         private static HikePubSub mPubSubInstance;
         private static HikeDataContext hikeDataContext;
         private static HikeViewModel _viewModel;
+        private static DbConversationListener dbListener;
+        private static HikeMqttManager mMqttManager;
 
         #endregion
 
@@ -87,7 +90,7 @@ namespace windows_client
 
         public static HikeViewModel ViewModel
         {
-             get
+            get
             {
                 return _viewModel;
             }
@@ -99,18 +102,33 @@ namespace windows_client
                 }
             }
         }
+
+        public static DbConversationListener DbListener
+        {
+            get
+            {
+                return dbListener;
+            }
+            set
+            {
+                if (value != dbListener)
+                {
+                    dbListener = value;
+                }
+            }
+        }
         
         #endregion
 
         #endregion
-       
+
 
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
-        public PhoneApplicationFrame RootFrame { get; private set; }        
-       
+        public PhoneApplicationFrame RootFrame { get; private set; }
+
         /// <summary>
         /// Constructor for the Application object.
         /// </summary>
@@ -156,28 +174,25 @@ namespace windows_client
             string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
 
             // Create the database if it does not exist.
-            
+
             App.HikeDataContext = new HikeDataContext(DBConnectionstring);
-            
-                if (App.HikeDataContext.DatabaseExists() == false)
-                {
-                    // Create the local database.
-                    App.HikeDataContext.CreateDatabase();
-                }
-              
-            
+
+            if (App.HikeDataContext.DatabaseExists() == false)
+            {
+                // Create the local database.
+                App.HikeDataContext.CreateDatabase();
+            }
 
             #endregion
 
             #region Instantiate app instances
 
-            /* Create and instantiate Pubsub*/
-            mPubSubInstance = new HikePubSub();
-            _viewModel = new HikeViewModel();
+            mPubSubInstance = new HikePubSub(); // instantiate pubsub
+            _viewModel = new HikeViewModel();  // instantiate HikeviewModel 
+            dbListener = new DbConversationListener();
+            mMqttManager = new HikeMqttManager();
 
             #endregion
-
-       
 
         }
 
@@ -187,7 +202,7 @@ namespace windows_client
 
             Uri nUri = null;
 
-            if (!appSettings.Contains(App.ACCEPT_TERMS) || "f"== appSettings[App.ACCEPT_TERMS].ToString())
+            if (!appSettings.Contains(App.ACCEPT_TERMS) || "f" == appSettings[App.ACCEPT_TERMS].ToString())
             {
                 nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
                 /* test function */

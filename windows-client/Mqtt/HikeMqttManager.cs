@@ -18,13 +18,17 @@ using windows_client.DbUtils;
 using finalmqtt.Msg;
 using System.Net.NetworkInformation;
 using System.IO.IsolatedStorage;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace windows_client.Mqtt
 {
     //    public class HikeMqttManager : Listener
-    public class HikeMqttManager : Listener
+    public class HikeMqttManager : Listener, HikePubSub.Listener
     {
+        private static NLog.Logger logger; 
         public MqttConnection mqttConnection;
+        private HikePubSub pubSub;
         // constants used to define MQTT connection status
         public enum MQTTConnectionStatus
         {
@@ -40,7 +44,12 @@ namespace windows_client.Mqtt
             NOTCONNECTED_UNKNOWNREASON // failed to connect for some reason
         }
 
-
+        public HikeMqttManager()
+        {
+            logger = NLog.LogManager.GetCurrentClassLogger();
+            pubSub = App.HikePubSubInstance;
+            pubSub.addListener(HikePubSub.WS_RECEIVED, this);
+        }
 
         // status of MQTT client connection
         public volatile MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
@@ -320,6 +329,33 @@ namespace windows_client.Mqtt
         public void onDisconnected()
         {
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+        }
+
+        private void onMessage(string msg)
+        {
+            JObject jsonObj = null;
+            try
+            {
+                jsonObj = JObject.Parse(msg);
+            }
+            catch (JsonReaderException e)
+            {
+                logger.Info("WebSocketPublisher", "Invalid JSON message: " + msg + ", Exception : " + e);
+                return;
+            }
+            string type = (string)jsonObj[HikeConstants.TYPE];
+            string msisdn = (string)jsonObj[HikeConstants.FROM];
+
+           
+        }
+
+        public void onEventReceived(string type, object obj)
+        {
+            if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
+            {
+                
+                //onMessage(message);
+            }
         }
     }
 }

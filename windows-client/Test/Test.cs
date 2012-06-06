@@ -105,14 +105,14 @@ namespace windows_client.Test
         {
             if (messages.Count == 0)
             {
-                UsersTableUtils.addConversation(msisdn, false);
+                ConversationTableUtils.addConversation(msisdn, false);
                 //TO discusse
                 // add message to list of existing messages and write to db when user quits this page
             }
 
             ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
 
-            UsersTableUtils.addMessage(convMessage);
+            MessagesTableUtils.addMessage(convMessage);
             messages.Add(convMessage);
         }
 
@@ -120,6 +120,5 @@ namespace windows_client.Test
         {
             messages.Clear();
         }
-
     }
 }

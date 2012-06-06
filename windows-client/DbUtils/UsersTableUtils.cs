@@ -225,24 +225,7 @@ namespace windows_client.DbUtils
             App.HikeDataContext.SubmitChanges();
         }
 
-//        public static Conversation addConversation(string msisdn, bool onhike)
-        public static void addConversation(string msisdn, bool onhike)
-        {
-            ContactInfo contactInfo = getContactInfoFromMSISDN(msisdn);
-
-            if (contactInfo != null)
-                onhike |= contactInfo.OnHike;
-            Conversation conv = new Conversation(msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null, onhike);
-            App.HikeDataContext.conversations.InsertOnSubmit(conv);
-            App.HikeDataContext.SubmitChanges();
-        }
-
-        public static void addMessage(ConvMessage convMessage)
-        {
-            App.HikeDataContext.messages.InsertOnSubmit(convMessage);
-            App.HikeDataContext.SubmitChanges();
-        }
-
+      
         
         #endregion
 

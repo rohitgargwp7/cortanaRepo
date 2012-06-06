@@ -57,5 +57,22 @@ namespace windows_client.DbUtils
                 q(App.HikeDataContext).ToList<ConvMessage>();
         }
 
+        /* Adds a chat message to message Table.*/
+        public static void addMessage(ConvMessage convMessage)
+        {
+            App.HikeDataContext.messages.InsertOnSubmit(convMessage);
+            App.HikeDataContext.SubmitChanges();
+        }
+
+        public static void addChatMessage(ConvMessage convMsg, bool createEntry)
+        {
+            if (createEntry) // create a new conversation in conversation Table.
+            {
+                bool isOnhike = false;
+                ConversationTableUtils.addConversation(convMsg.Msisdn, isOnhike);
+            }
+            MessagesTableUtils.addMessage(convMsg);
+        }
+
     }
 }

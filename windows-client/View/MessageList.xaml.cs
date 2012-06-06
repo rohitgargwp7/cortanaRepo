@@ -11,6 +11,7 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using windows_client.ViewModel;
+using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
@@ -54,7 +55,8 @@ namespace windows_client
             if (obj == null)
                 return;
             //this.myListBox.SelectedIndex;
-            string uri = "/View/ChatThread.xaml?msisdn="+obj.MSISDN+"&name="+obj.ContactName;
+            PhoneApplicationService.Current.State["messageListPageObject"] = obj;
+            string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 

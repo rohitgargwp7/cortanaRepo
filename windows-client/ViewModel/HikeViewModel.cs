@@ -31,21 +31,6 @@ namespace windows_client.ViewModel
             }
         }
 
-        private ObservableCollection<ChatThreadPage> _chatThreadPageCollection = null;
-
-        public ObservableCollection<ChatThreadPage> ChatThreadPageCollection
-        {
-            get
-            {
-                return _chatThreadPageCollection;
-            }
-            set
-            {
-                _chatThreadPageCollection = value;
-                NotifyPropertyChanged("ChatThreadPageCollection");
-            }
-        }
-
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

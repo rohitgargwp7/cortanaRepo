@@ -17,10 +17,7 @@ namespace windows_client.DbUtils
 {
     public class ConversationTableUtils
     {
-        public static void addConversationMessages(ConvMessage conv, bool createEntry)
-        {
-        }
-
+       
         public static void deleteMessage(long msgId)
         {
             Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
@@ -52,5 +49,17 @@ namespace windows_client.DbUtils
             conversations.Reverse();
             return conversations;
         }
+
+        public static void addConversation(string msisdn, bool onhike)
+        {
+            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+
+            if (contactInfo != null)
+                onhike |= contactInfo.OnHike;
+            Conversation conv = new Conversation(msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null, onhike);
+            App.HikeDataContext.conversations.InsertOnSubmit(conv);
+            App.HikeDataContext.SubmitChanges();
+        }
+
     }
 }

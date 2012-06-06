@@ -15,13 +15,15 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
     public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
         private ObservableCollection<ChatThreadPage> chatThreadPageCollection = null;
-        
+
+        private bool isNewConversation = false;
         private string mContactNumber;
         private int mCredits;
         private HikePubSub mPubSub;
@@ -31,8 +33,7 @@ namespace windows_client.View
         public ChatThread()
         {
             InitializeComponent();
-            //loadMessages();
-           // this.myListBox.ItemsSource = App.ViewModel.ChatThreadPageCollection;
+
             mPubSub = App.HikePubSubInstance;
             /* register listeners */
             App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
@@ -49,10 +50,11 @@ namespace windows_client.View
 
         private void loadMessages()
         {
-            mContactNumber = "+" + mContactNumber.Trim();
+            //mContactNumber = "+" + mContactNumber.Trim();
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null)
             {
+                isNewConversation = true;
                 return;
             }
             this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
@@ -66,9 +68,16 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-           
-            NavigationContext.QueryString.TryGetValue("msisdn", out mContactNumber);
-            NavigationContext.QueryString.TryGetValue("name", out name);
+            MessageListPage obj = (MessageListPage)PhoneApplicationService.Current.State["messageListPageObject"];
+            if (obj == null)
+            {
+                // some error handling
+                return;
+            }
+            mContactNumber = obj.MSISDN;
+            name = obj.ContactName;
+            /*NavigationContext.QueryString.TryGetValue("msisdn", out mContactNumber);
+            NavigationContext.QueryString.TryGetValue("name", out name);*/
             if (mContactNumber == null)
             {
                 // move to error page
@@ -102,9 +111,6 @@ namespace windows_client.View
         {
         }
 
-
-
-
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
         {
             string message = sendMsgTxtbox.Text.Trim();
@@ -124,17 +130,18 @@ namespace windows_client.View
 
         private void sendMessage(ConvMessage convMessage)
         {
-            /*TODO :: Add this message to observable collection MessageListPageCollection*/
             addToMessageList(convMessage);
-            mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
+            object[] vals = new object[2];
+            vals[0] = (ConvMessage)convMessage;
+            vals[1] = (bool)isNewConversation;
+            mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
             if(sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
         }
 
         private void blockUnblockUser_Click(object sender, EventArgs e)
         {
-            ObservableCollection<ChatThreadPage> x = this.ChatThreadPageCollection;
-            int count = x.Count;
+            
         }
 
 
