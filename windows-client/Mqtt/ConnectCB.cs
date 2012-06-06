@@ -25,7 +25,7 @@ namespace windows_client.Mqtt
         {
             if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.BAD_USERNAME_OR_PASSWORD))
             {
-                //clear phone num & other prefs
+                App.appSettings.Clear();
             }
             hikeMqttManager.setConnectionStatus(windows_client.Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
         }

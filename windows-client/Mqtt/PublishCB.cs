@@ -18,10 +18,13 @@ namespace windows_client.Mqtt
     {
         private HikePacket packet;
         bool called;
-        public PublishCB(HikePacket packet)
+        private HikeMqttManager hikeMqttManager;
+
+        public PublishCB(HikePacket packet, HikeMqttManager hikeMqttManager)
         {
             this.packet = packet;
             this.called = false;
+            this.hikeMqttManager = hikeMqttManager;
         }
 
         public void onSuccess()
@@ -32,7 +35,9 @@ namespace windows_client.Mqtt
 
         public void onFailure(Exception value)
         {
+            hikeMqttManager.ping();
             MiscDBUtils.addSentMessage(packet);
+            //set message status
         }
 
     }

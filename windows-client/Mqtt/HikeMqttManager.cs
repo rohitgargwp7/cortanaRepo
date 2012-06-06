@@ -16,11 +16,13 @@ using System.Collections.Generic;
 using windows_client.Model;
 using windows_client.DbUtils;
 using finalmqtt.Msg;
+using System.Net.NetworkInformation;
+using System.IO.IsolatedStorage;
 
 namespace windows_client.Mqtt
 {
     //    public class HikeMqttManager : Listener
-    public class HikeMqttManager
+    public class HikeMqttManager : Listener
     {
         public MqttConnection mqttConnection;
         // constants used to define MQTT connection status
@@ -41,7 +43,7 @@ namespace windows_client.Mqtt
 
 
         // status of MQTT client connection
-        public MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
+        public volatile MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
 
         /************************************************************************/
         /* VARIABLES used to configure MQTT connection */
@@ -77,6 +79,7 @@ namespace windows_client.Mqtt
 
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
+
         public HikePacket getPacketIfUnsent(int mqttId)
         {
             HikePacket packet;
@@ -87,14 +90,10 @@ namespace windows_client.Mqtt
 
         private bool init()
         {
-            return false;
-
-            //settings = this.mHikeService.getSharedPreferences(HikeMessengerApp.ACCOUNT_SETTINGS, 0);
-            //password = settings.getString(HikeMessengerApp.TOKEN_SETTING, null);
-            //topic = uid = settings.getString(HikeMessengerApp.UID_SETTING, null);
-            //clientId = settings.getString(HikeMessengerApp.MSISDN_SETTING, null);
-            //Log.d("HikeMqttManager", "clientId is " + clientId);
-            //return !TextUtils.isEmpty(topic) && !TextUtils.isEmpty(clientId) && !TextUtils.isEmpty(password);
+            password = (string)IsolatedStorageSettings.ApplicationSettings[App.TOKEN_SETTING];
+            uid = topic = (string)IsolatedStorageSettings.ApplicationSettings[App.UID_SETTING];
+            clientId = (string)IsolatedStorageSettings.ApplicationSettings[App.MSISDN_SETTING];
+            return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 
         public void setConnectionStatus(MQTTConnectionStatus connectionStatus)
@@ -137,7 +136,7 @@ namespace windows_client.Mqtt
             if (mqttConnection == null)
             {
                 mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
-                //			mqttConnection.listener(this);
+                mqttConnection.Listener = this;
             }
 
             try
@@ -179,6 +178,8 @@ namespace windows_client.Mqtt
 
         private bool isUserOnline()
         {
+            //            NetworkInterface.GetIsNetworkAvailable();
+
             return (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.NetworkInterfaceType !=
                  Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None);
         }
@@ -187,7 +188,7 @@ namespace windows_client.Mqtt
          * Send a request to the message broker to be sent messages published with the specified topic name. Wildcards are allowed.
          */
         //TODO Define class Topics and use that
-        private void subscribeToTopics(String[] topics)
+        private void subscribeToTopics(Topic[] topics)
         {
 
             if (isConnected() == false)
@@ -199,7 +200,7 @@ namespace windows_client.Mqtt
 
             for (int i = 0; i < topics.Length; i++)
             {
-                mqttConnection.subscribe(topics[i], new SubscribeCB(this));
+                mqttConnection.subscribe(topics[i].Name, topics[i].qos, new SubscribeCB(this));
             }
         }
 
@@ -241,25 +242,20 @@ namespace windows_client.Mqtt
                 return;
             }
 
-            //if (this.mHikeService.isUserOnline())
-            //{
-            //    Log.d("HikeMqttManager", "netconnection valid, try to connect");
-            //    // set the status to show we're trying to connect
-            //    connectToBroker();
-            //}
-            //else
-            //{
-            //    // we can't do anything now because we don't have a working
-            //    // data connection
-            //    setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-            //}
+            if (isUserOnline())
+            {
+                connectToBroker();
+            }
+            else
+            {
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+            }
         }
 
         public void send(HikePacket packet, int qos)
         {
             if (!isConnected())
             {
-
                 /* only care about failures for messages we care about. */
                 if (qos > 0)
                 {
@@ -276,7 +272,7 @@ namespace windows_client.Mqtt
                 this.connect();
                 return;
             }
-            PublishCB pbCB = new PublishCB(packet);
+            PublishCB pbCB = new PublishCB(packet, this);
 
 
             mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
@@ -285,5 +281,45 @@ namespace windows_client.Mqtt
         }
 
 
+        private Topic[] getTopics()
+        {
+            //		bool appConnected = mHikeService.appIsConnected();
+            bool appConnected = true;
+            List<Topic> topics = new List<Topic>(2 + (appConnected ? 0 : 1));
+            topics.Add(new Topic(this.topic + HikeConstants.APP_TOPIC, QoS.AT_LEAST_ONCE));
+            topics.Add(new Topic(this.topic + HikeConstants.SERVICE_TOPIC, QoS.AT_LEAST_ONCE));
+
+            /* only subscribe to UI events if the app is currently connected */
+            if (appConnected)
+            {
+                topics.Add(new Topic(this.topic + HikeConstants.UI_TOPIC, QoS.AT_LEAST_ONCE));
+            }
+
+            return topics.ToArray();
+        }
+
+
+        public void onConnected()
+        {
+            //		Log.d("HikeMqttManager", "mqtt connected");
+            setConnectionStatus(MQTTConnectionStatus.CONNECTED);
+
+            subscribeToTopics(getTopics());
+
+            /* Accesses the persistence object from the main handler thread */
+
+            //TODO make it async
+            List<HikePacket> packets = MiscDBUtils.getAllSentMessages();
+            for (int i = 0; i < packets.Count; i++)
+            {
+                //					Log.d("HikeMqttManager", "resending message " + new String(hikePacket.getMessage()));
+                send(packets[i], 1);
+            }
+        }
+
+        public void onDisconnected()
+        {
+            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+        }
     }
 }
