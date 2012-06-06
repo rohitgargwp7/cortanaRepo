@@ -31,7 +31,14 @@ namespace finalmqtt.Client
             }
             return rc;
         }
-        private Listener listener;
+        private Listener _listener;
+        public Listener Listener
+        {
+            set 
+            {
+                _listener = value;
+            }
+        }
 
         private Socket _socket;
         const int MAX_BUFFER_SIZE = 1024;
@@ -58,7 +65,7 @@ namespace finalmqtt.Client
             this.stopped = true;
             this.connected = false;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
-            this.listener = listener;
+            this._listener = listener;
             this.pendingOutput = new List<byte>();
             this.host = host;
             this.port = port;
@@ -66,6 +73,8 @@ namespace finalmqtt.Client
             this.password = password;
             this.connectCallback = cb;
         }
+
+        
 
         public MqttConnection(String id, String host, int port, String username, String password, Callback connectCallback)
             : this(id, host, port, username, password, connectCallback ,null)
@@ -118,8 +127,8 @@ namespace finalmqtt.Client
             }
             else
             {
-                if(listener!=null)
-                    listener.onDisconnected();
+                if(_listener!=null)
+                    _listener.onDisconnected();
             }
             if (input.Size() > 0)
             {
