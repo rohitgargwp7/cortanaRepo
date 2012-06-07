@@ -49,7 +49,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="finalmqtt">
-      <HintPath>lib\finalmqtt.dll</HintPath>
+      <HintPath>..\..\..\winphonemqtt\finalmqtt\finalmqtt\Bin\Release\finalmqtt.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
@@ -75,12 +75,14 @@
     </Compile>
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
-    <Compile Include="DbUtils\MessagesTableUtils.cs" />
     <Compile Include="DbUtils\MiscDBUtils.cs" />
+    <Compile Include="DbUtils\MessagesTableUtils.cs" />
+    <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="db\ConversationDatabase.cs" />
     <Compile Include="db\DBConstants.cs" />
     <Compile Include="db\DBException.cs" />
     <Compile Include="db\HikeUserDatabase_Context.cs" />
+    <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Model\ChatThreadPage.cs" />
     <Compile Include="Model\HikePacket.cs" />
@@ -116,6 +118,9 @@
     <Compile Include="View\EnterPin.xaml.cs">
       <DependentUpon>EnterPin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SelectUserToMsg.xaml.cs">
+      <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -128,10 +133,6 @@
       <DependentUpon>MessageList.xaml</DependentUpon>
     </Compile>
     <Compile Include="utils\TimeUtils.cs" />
-    <Compile Include="DbUtils\UsersTableUtils.cs" />
-    <Compile Include="View\SelectUserToMsg.xaml.cs">
-      <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -139,8 +140,8 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="View\ChatThread.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\EnterName.xaml">
       <SubType>Designer</SubType>
@@ -154,15 +155,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\SelectUserToMsg.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MessageList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\SelectUserToMsg.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -182,8 +183,6 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="View\images\ic_name_2.png" />
-    <Resource Include="View\images\empty_messages_hike_logo.png" />
     <Resource Include="hi.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
