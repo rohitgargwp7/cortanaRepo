@@ -277,7 +277,6 @@ namespace windows_client.Mqtt
                     }
                     catch (Exception e)
                     {
-                        //                        Log.e("HikeMqttManager", "Unable to persist message");
                     }
                 }
 
@@ -297,7 +296,6 @@ namespace windows_client.Mqtt
 
         private Topic[] getTopics()
         {
-            //		bool appConnected = mHikeService.appIsConnected();
             bool appConnected = true;
             List<Topic> topics = new List<Topic>();
             topics.Add(new Topic(this.topic + HikeConstants.APP_TOPIC, QoS.AT_LEAST_ONCE));
@@ -323,19 +321,28 @@ namespace windows_client.Mqtt
             /* Accesses the persistence object from the main handler thread */
 
             //TODO make it async
-            List<HikePacket> packets = MiscDBUtils.getAllSentMessages();
-            if (packets == null)
-                return;
-            for (int i = 0; i < packets.Count; i++)
-            {
-                //					Log.d("HikeMqttManager", "resending message " + new String(hikePacket.getMessage()));
-                send(packets[i], 1);
-            }
+            //List<HikePacket> packets = MiscDBUtils.getAllSentMessages();
+            //if (packets == null)
+            //    return;
+            //for (int i = 0; i < packets.Count; i++)
+            //{
+            //    //					Log.d("HikeMqttManager", "resending message " + new String(hikePacket.getMessage()));
+            //    send(packets[i], 1);
+            //}
         }
 
         public void onDisconnected()
         {
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+        }
+
+        public void onPublish(String topic, byte[] body)
+        {
+            String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
+            if(receivedMessage.Contains("m"))
+            {
+                int abc = 43;
+            }
         }
 
         private void onMessage(string msg)
@@ -358,8 +365,8 @@ namespace windows_client.Mqtt
         {
             if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
             {
-               // string x = "{\"to\": \"+919873480092\",\"d\": {\"hm\": \"BSB Rocks\",\"ts\": 1338984856,\"i\": 40},\"t\": \"m\"}";
-               // JObject json = JObject.Parse(x);
+                // string x = "{\"to\": \"+919873480092\",\"d\": {\"hm\": \"BSB Rocks\",\"ts\": 1338984856,\"i\": 40},\"t\": \"m\"}";
+                // JObject json = JObject.Parse(x);
                 JObject json = (JObject)obj;
 
                 JToken data;
@@ -373,11 +380,11 @@ namespace windows_client.Mqtt
 
                 byte[] byteData = Encoding.UTF8.GetBytes(temp2);
 
-                
-//                String tempString = Encoding.UTF8.GetString(byteData, 0, byteData.Length);
+
+                //                String tempString = Encoding.UTF8.GetString(byteData, 0, byteData.Length);
 
                 HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
-                
+
                 send(packet, 1);
                 //onMessage(message);
             }

@@ -43,7 +43,7 @@ namespace windows_client.DbUtils
                 object[] vals =(object [])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 MessagesTableUtils.addChatMessage(convMessage, (bool)vals[1]);
-                logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Conversation.ContactName);
+//                logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Conversation.ContactName);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
             }
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
