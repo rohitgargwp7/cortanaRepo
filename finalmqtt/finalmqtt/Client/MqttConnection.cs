@@ -41,7 +41,7 @@ namespace finalmqtt.Client
         }
 
         private Socket _socket;
-        const int MAX_BUFFER_SIZE = 1024;
+        const int MAX_BUFFER_SIZE = 4096*2;
         private readonly String id;
         private volatile bool stopped;
         private volatile bool connected;
@@ -318,6 +318,8 @@ namespace finalmqtt.Client
         protected void handleMessage(PublishMessage msg)
         {
             sendAcknowledement(msg);
+            if (mqttListener != null)
+                mqttListener.onPublish(msg.getTopic(), msg.getData());
         }
 
         protected void handleMessage(PingRespMessage msg)

@@ -72,7 +72,7 @@ namespace finalmqtt.Msg
             int pos = 0;
             topic = ReadStringFromStream(input);
 
-            pos += (new UTF8Encoding().GetBytes(topic)).Length;
+            pos += FormatUtil.toMQttString(topic).Length;
             if (getQos() != QoS.AT_MOST_ONCE)
             {
                 base.readMessage(input, msgLength);

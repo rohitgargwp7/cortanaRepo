@@ -25,7 +25,7 @@ namespace finalmqtt.Msg
             data = new byte[size];
             startIndex = 0;
             endIndex = 0;
-            defaultBufferSize = 40;// if < 40 bytes are remaining to reach end of buffer, re-adjustment occurs
+            defaultBufferSize = 400;// if < 40 bytes are remaining to reach end of buffer, re-adjustment occurs
         }
 
         public byte[] ToArray()
@@ -71,11 +71,13 @@ namespace finalmqtt.Msg
             {
                 data[j] = data[i];
             }
+            startIndex = 0;
+            endIndex = j;
         }
 
         public void writeBytes(byte[] dataToWrite)
         {
-            if (data.Length - endIndex + defaultBufferSize < data.Length)
+            if (data.Length - endIndex < defaultBufferSize)
             {
                 reAdjustBuffer();
             }
@@ -85,7 +87,7 @@ namespace finalmqtt.Msg
 
         public void writeBytes(byte[] dataToWrite, int start, int bytesToWrite)
         {
-            if (data.Length - endIndex + defaultBufferSize < data.Length)
+            if (data.Length - endIndex < bytesToWrite + defaultBufferSize)
             {
                 reAdjustBuffer();
             }

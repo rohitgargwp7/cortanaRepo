@@ -9,7 +9,7 @@ namespace finalmqtt.Client
     {
         void onConnected();
         void onDisconnected();
-        //void onPublish(String topic, Buffer body);
+        void onPublish(String topic, byte[] body);
         //void onFailure();
         //void onSuccess();
     }
