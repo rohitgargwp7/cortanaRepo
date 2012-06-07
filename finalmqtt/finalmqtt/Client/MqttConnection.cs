@@ -15,6 +15,7 @@ using System.Text;
 using System.Collections.Generic;
 using mqtttest.Client;
 using Microsoft.Phone.Reactive;
+using System.Threading;
 
 namespace finalmqtt.Client
 {
@@ -58,7 +59,10 @@ namespace finalmqtt.Client
 
         private MessageStream input;
         private List<byte> pendingOutput;
-        
+        private volatile bool writeLockReqd;
+
+        private Thread mThread;
+
         public MqttConnection(String id, String host, int port, String username, String password, Callback cb, Listener listener)
         {
             this.id = id;
@@ -119,21 +123,50 @@ namespace finalmqtt.Client
 
         private void onReadCompleted(object s, SocketAsyncEventArgs e)
         {
-            if (e.SocketError == SocketError.Success)
+            if (e.BytesTransferred > 0)
             {
-                input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
+                writeLockReqd = true;
             }
-            else
+
+            lock (input)
             {
-                if(mqttListener!=null)
-                    mqttListener.onDisconnected();
+                if (e.SocketError == SocketError.Success)
+                {
+                    input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
+                }
+                else
+                {
+                    if (mqttListener != null)
+                        mqttListener.onDisconnected();
+                }
             }
-            if (input.Size() > 0)
-            {
-                Message message = readMessage();
-                handleMessage(message);
-            }
+            //if (input.Size() > 0)
+            //{
+            //    Message message = readMessage();
+            //    handleMessage(message);
+            //}
+            writeLockReqd = false;
+            mThread = new Thread(new ThreadStart(readMessageThread));
+            mThread.Start();
             read();
+        }
+
+
+        private void readMessageThread()
+        {
+            writeLockReqd = false;
+            lock (input)
+            {
+                while (writeLockReqd == false)
+                {
+                    if (input.Size() <= 0)
+                    {
+                        break;
+                    }
+                    Message message = readMessage();
+                    handleMessage(message);
+                }
+            }
         }
 
         private void onDataSent(object s, SocketAsyncEventArgs e)
@@ -213,10 +246,13 @@ namespace finalmqtt.Client
             msg.write();
             if (msg is RetryableMessage)
             {
-                //short messageId = ((RetryableMessage)msg).getMessageId();
-                //map.Add(messageId, cb);
-                //Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
-                //scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(15));
+                short messageId = ((RetryableMessage)msg).getMessageId();
+                if (messageId != 0)
+                {
+                    map.Add(messageId, cb);
+                    Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
+                    scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(15));
+                }
             }
         }
 
@@ -237,11 +273,13 @@ namespace finalmqtt.Client
         public void subscribe(String topic, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, QoS.AT_MOST_ONCE, this);
+            msg.setMessageId(getNextMessageId());
             sendCallbackMessage(msg, cb);
         }
         public void subscribe(String topic, QoS qos, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, qos, this);
+            msg.setMessageId(getNextMessageId());
             sendCallbackMessage(msg, cb);
         }
 

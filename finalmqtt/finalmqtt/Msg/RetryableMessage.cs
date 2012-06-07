@@ -43,9 +43,13 @@ namespace finalmqtt.Msg
 
         protected override void readMessage(MessageStream input, int msgLength)
         {
-            //        DataInputStream dis = new DataInputStream(in);
-            setMessageId((short)(input.readByte() >> 8 + input.readByte()));
-            //        setMessageId(dis.readShort());
+            byte msb = input.readByte();
+            byte lsb = input.readByte();
+            int id = msb >> 8;
+            id += lsb;
+            setMessageId(id);
+
+            //            setMessageId((short)(input.readByte() >> 8 + input.readByte()));
         }
 
         public void setMessageId(int messageId)

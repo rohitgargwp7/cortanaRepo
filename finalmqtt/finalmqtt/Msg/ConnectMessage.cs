@@ -65,11 +65,8 @@ namespace finalmqtt.Msg
 
         protected override void writeMessage()
         {
-//            WriteToStream(PROTOCOL_ID);
             messageData.AddRange(FormatUtil.toMQttString(PROTOCOL_ID));
-
             messageData.Add(PROTOCOL_VERSION);
-
             int flags = cleanSession ? 2 : 0;
             flags |= (will == null) ? 0 : 0x04;
             flags |= (Convert.ToInt32(willQoS) << 3);
@@ -77,28 +74,20 @@ namespace finalmqtt.Msg
             flags |= (password == null) ? 0 : 0x40;
             flags |= (username == null) ? 0 : 0x80;
             messageData.Add((byte)flags);
-//            WriteToStream((ushort)keepAlive);
             messageData.AddRange(FormatUtil.toMQttString(keepAlive));
-
             messageData.AddRange(FormatUtil.toMQttString(clientId));
-//            WriteToStream(clientId);
-            
             if (will != null)
             {
                 messageData.AddRange(FormatUtil.toMQttString(willTopic));
                 messageData.AddRange(FormatUtil.toMQttString(will));
-                //WriteToStream(willTopic);
-                //WriteToStream(will);
             }
             if (username != null)
             {
                 messageData.AddRange(FormatUtil.toMQttString(username));
-                //WriteToStream(username);
             }
             if (password != null)
             {
                 messageData.AddRange(FormatUtil.toMQttString(password));
-                //WriteToStream(password);
             }
         }
 

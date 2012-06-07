@@ -23,12 +23,12 @@ namespace finalmqtt.Msg
         private byte[] data;
 
         public PublishMessage(String topic, String msg, MqttConnection conn)
-            : this(topic, (new System.Text.UTF8Encoding().GetBytes(msg)), QoS.AT_MOST_ONCE, conn)
+            : this(topic, Encoding.UTF8.GetBytes(msg), QoS.AT_MOST_ONCE, conn)
         {
         }
 
         public PublishMessage(String topic, String msg, QoS qos, MqttConnection conn)
-            : this(topic, (new System.Text.UTF8Encoding().GetBytes(msg)), qos, conn)
+            : this(topic, Encoding.UTF8.GetBytes(msg), qos, conn)
         {
         }
 
@@ -56,14 +56,10 @@ namespace finalmqtt.Msg
         protected override void writeMessage()
         {
             messageData.AddRange(FormatUtil.toMQttString(topic));
-
-            //WriteToStream(topic);
             if (getQos() != QoS.AT_MOST_ONCE)
             {
                 base.writeMessage();
             }
-            //System.out.println("--> Pushing data :" + getDataAsString() + " : topic : " + topic);
-            //output.Write(data, 0, data.Length);
             messageData.AddRange(data);
         }
 
