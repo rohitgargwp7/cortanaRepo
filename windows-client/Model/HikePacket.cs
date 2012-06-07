@@ -100,6 +100,10 @@ namespace windows_client.Model
             this._timestamp = timestamp;
         }
 
+        public HikePacket()
+        { 
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -25,6 +25,10 @@ namespace windows_client
             InitializeComponent();
             logger = NLog.LogManager.GetCurrentClassLogger();
             appSettings = App.appSettings;
+
+            App.MqttManagerInstance.connect();
+
+
             LoadMessages();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
         }

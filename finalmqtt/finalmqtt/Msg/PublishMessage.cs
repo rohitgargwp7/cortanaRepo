@@ -47,7 +47,7 @@ namespace finalmqtt.Msg
 
         protected override int messageLength()
         {
-            int length = (new System.Text.UTF8Encoding().GetBytes(topic)).Length;
+            int length = FormatUtil.toMQttString(topic).Length;
             length += (getQos() == QoS.AT_MOST_ONCE) ? 0 : 2;
             length += data.Length;
             return length;

@@ -20,13 +20,14 @@ using System.Net.NetworkInformation;
 using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace windows_client.Mqtt
 {
     //    public class HikeMqttManager : Listener
     public class HikeMqttManager : Listener, HikePubSub.Listener
     {
-        private static NLog.Logger logger; 
+        private static NLog.Logger logger;
         public MqttConnection mqttConnection;
         private HikePubSub pubSub;
         // constants used to define MQTT connection status
@@ -48,7 +49,7 @@ namespace windows_client.Mqtt
         {
             logger = NLog.LogManager.GetCurrentClassLogger();
             pubSub = App.HikePubSubInstance;
-            pubSub.addListener(HikePubSub.WS_RECEIVED, this);
+            pubSub.addListener(HikePubSub.MQTT_PUBLISH, this);
         }
 
         // status of MQTT client connection
@@ -61,6 +62,7 @@ namespace windows_client.Mqtt
         // taken from preferences
         // host name of the server we're receiving push notifications from
         private String brokerHostName = AccountUtils.HOST;
+
 
         // defaults - this sample uses very basic defaults for it's interactions
         // with message brokers
@@ -99,9 +101,9 @@ namespace windows_client.Mqtt
 
         private bool init()
         {
-            password = (string)IsolatedStorageSettings.ApplicationSettings[App.TOKEN_SETTING];
-            uid = topic = (string)IsolatedStorageSettings.ApplicationSettings[App.UID_SETTING];
-            clientId = (string)IsolatedStorageSettings.ApplicationSettings[App.MSISDN_SETTING];
+            password = (string)App.appSettings[App.TOKEN_SETTING];
+            uid = topic = (string)App.appSettings[App.UID_SETTING];
+            clientId = (string)App.appSettings[App.MSISDN_SETTING];
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 
@@ -144,8 +146,9 @@ namespace windows_client.Mqtt
 
             if (mqttConnection == null)
             {
+                init();
                 mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
-                mqttConnection.Listener = this;
+                mqttConnection.MqttListener = this;
             }
 
             try
@@ -284,6 +287,8 @@ namespace windows_client.Mqtt
             PublishCB pbCB = new PublishCB(packet, this);
 
 
+            String tempString = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
+
             mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
                     pbCB);
@@ -294,7 +299,7 @@ namespace windows_client.Mqtt
         {
             //		bool appConnected = mHikeService.appIsConnected();
             bool appConnected = true;
-            List<Topic> topics = new List<Topic>(2 + (appConnected ? 0 : 1));
+            List<Topic> topics = new List<Topic>();
             topics.Add(new Topic(this.topic + HikeConstants.APP_TOPIC, QoS.AT_LEAST_ONCE));
             topics.Add(new Topic(this.topic + HikeConstants.SERVICE_TOPIC, QoS.AT_LEAST_ONCE));
 
@@ -319,6 +324,8 @@ namespace windows_client.Mqtt
 
             //TODO make it async
             List<HikePacket> packets = MiscDBUtils.getAllSentMessages();
+            if (packets == null)
+                return;
             for (int i = 0; i < packets.Count; i++)
             {
                 //					Log.d("HikeMqttManager", "resending message " + new String(hikePacket.getMessage()));
@@ -345,17 +352,36 @@ namespace windows_client.Mqtt
             }
             string type = (string)jsonObj[HikeConstants.TYPE];
             string msisdn = (string)jsonObj[HikeConstants.FROM];
-
-           
         }
 
         public void onEventReceived(string type, object obj)
         {
             if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
             {
+               // string x = "{\"to\": \"+919873480092\",\"d\": {\"hm\": \"BSB Rocks\",\"ts\": 1338984856,\"i\": 40},\"t\": \"m\"}";
+               // JObject json = JObject.Parse(x);
+                JObject json = (JObject)obj;
+
+                JToken data;
+                json.TryGetValue("d", out data);
+                JObject dataObj = JObject.FromObject(data);
+
+                JToken messageIdToken;
+                dataObj.TryGetValue("i", out messageIdToken);
+                int msgId = Convert.ToInt32(messageIdToken.ToString());
+                String temp2 = json.ToString(Newtonsoft.Json.Formatting.None);
+
+                byte[] byteData = Encoding.UTF8.GetBytes(temp2);
+
                 
+//                String tempString = Encoding.UTF8.GetString(byteData, 0, byteData.Length);
+
+                HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
+                
+                send(packet, 1);
                 //onMessage(message);
             }
         }
+
     }
 }

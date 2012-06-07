@@ -45,6 +45,21 @@ namespace windows_client
 
         #region instances getters and setters
 
+        public static HikeMqttManager MqttManagerInstance
+        {
+            get 
+            {
+                return mMqttManager;
+            }
+            set 
+            {
+                mMqttManager = value;
+            }
+        
+        
+        }
+
+
         public static bool Ab_scanned
         {
             get

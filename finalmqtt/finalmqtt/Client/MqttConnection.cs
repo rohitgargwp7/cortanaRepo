@@ -31,12 +31,12 @@ namespace finalmqtt.Client
             }
             return rc;
         }
-        private Listener _listener;
-        public Listener Listener
+        private Listener mqttListener;
+        public Listener MqttListener
         {
             set 
             {
-                _listener = value;
+                mqttListener = value;  
             }
         }
 
@@ -65,7 +65,7 @@ namespace finalmqtt.Client
             this.stopped = true;
             this.connected = false;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
-            this._listener = listener;
+            this.mqttListener = listener;
             this.pendingOutput = new List<byte>();
             this.host = host;
             this.port = port;
@@ -73,8 +73,6 @@ namespace finalmqtt.Client
             this.password = password;
             this.connectCallback = cb;
         }
-
-        
 
         public MqttConnection(String id, String host, int port, String username, String password, Callback connectCallback)
             : this(id, host, port, username, password, connectCallback ,null)
@@ -127,8 +125,8 @@ namespace finalmqtt.Client
             }
             else
             {
-                if(_listener!=null)
-                    _listener.onDisconnected();
+                if(mqttListener!=null)
+                    mqttListener.onDisconnected();
             }
             if (input.Size() > 0)
             {
@@ -215,10 +213,10 @@ namespace finalmqtt.Client
             msg.write();
             if (msg is RetryableMessage)
             {
-                short messageId = ((RetryableMessage)msg).getMessageId();
-                map.Add(messageId, cb);
-                Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
-                scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(5));
+                //short messageId = ((RetryableMessage)msg).getMessageId();
+                //map.Add(messageId, cb);
+                //Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
+                //scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(15));
             }
         }
 
@@ -312,6 +310,8 @@ namespace finalmqtt.Client
         protected void handleMessage(ConnAckMessage msg)
         {
             connackReceived = true;
+            if (mqttListener != null)
+                mqttListener.onConnected();
             connectCallback.onSuccess();
         }
 
