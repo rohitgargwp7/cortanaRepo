@@ -36,7 +36,7 @@ namespace windows_client.Model
         private bool _isInvite;
         private bool _isSent;
         private bool _isSms;
-        private Conversation mConversation;
+        private MessageListPage mConversation = null;
         private MessageMetadata metadata;
 
 
@@ -201,7 +201,7 @@ namespace windows_client.Model
             }
         }
 
-        public Conversation Conversation
+        public MessageListPage Conversation
         {
             get
             {

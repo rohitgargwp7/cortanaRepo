@@ -22,13 +22,11 @@ namespace windows_client.View
     public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
         private ObservableCollection<ChatThreadPage> chatThreadPageCollection = null;
-
-        private bool isNewConversation = false;
-        private string mContactNumber;
+       
         private int mCredits;
         private HikePubSub mPubSub;
-        private Conversation mConversation;
-        private string name;
+        private MessageListPage mConversation;
+
 
         public ChatThread()
         {
@@ -50,11 +48,10 @@ namespace windows_client.View
 
         private void loadMessages()
         {
-            //mContactNumber = "+" + mContactNumber.Trim();
-            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
-            if (messagesList == null)
+            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mConversation.MSISDN);
+            if (messagesList == null) // represents there are no chat messages for this msisdn
             {
-                isNewConversation = true;
+                mConversation.LastMessage = null;
                 return;
             }
             this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
@@ -68,17 +65,14 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            MessageListPage obj = (MessageListPage)PhoneApplicationService.Current.State["messageListPageObject"];
-            if (obj == null)
+            mConversation = (MessageListPage)PhoneApplicationService.Current.State["messageListPageObject"];
+            if (mConversation == null)
             {
                 // some error handling
                 return;
             }
-            mContactNumber = obj.MSISDN;
-            name = obj.ContactName;
-            /*NavigationContext.QueryString.TryGetValue("msisdn", out mContactNumber);
-            NavigationContext.QueryString.TryGetValue("name", out name);*/
-            if (mContactNumber == null)
+            PhoneApplicationService.Current.State.Remove("messageListPageObject");
+            if (mConversation.MSISDN == null)
             {
                 // move to error page
                 return;
@@ -120,21 +114,18 @@ namespace windows_client.View
             }
             */
             sendMsgTxtbox.Text = "";
-            ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            ConvMessage convMessage = new ConvMessage(message, mConversation.MSISDN, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             if (this.ChatThreadPageCollection == null)
                 this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
             this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
-            //convMessage.Conversation = mConversation;
+            convMessage.Conversation = mConversation;
             sendMessage(convMessage);
         }
 
         private void sendMessage(ConvMessage convMessage)
         {
             addToMessageList(convMessage);
-            object[] vals = new object[2];
-            vals[0] = (ConvMessage)convMessage;
-            vals[1] = (bool)isNewConversation;
-            mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+            mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
             if(sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
         }
@@ -147,7 +138,7 @@ namespace windows_client.View
 
         public void addToMessageList(ConvMessage conv)
         {
-            MessageListPage obj = new MessageListPage(conv.Msisdn, name, conv.Message, TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
+            MessageListPage obj = new MessageListPage(conv.Msisdn, mConversation.ContactName, conv.Message,TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
             App.ViewModel.MessageListPageCollection.Remove(obj);
             App.ViewModel.MessageListPageCollection.Insert(0, obj);
         }

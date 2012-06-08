@@ -21,13 +21,13 @@ namespace windows_client.Test
         public static void insertMessages()
         {
 
-            //addMessage("Hey Gautam 1", "+919876543210");
-            //addMessage("Hey Gautam 2", "+919876543210");
-            //addMessage("Hey Gautam 3", "+919876543210");
-            //addMessage("Hey Gautam 4", "+919876543210");
-            //addMessage("Hey Gautam 5", "+919876543210");
+            addMessage("Hey Gautam 1", "+919876543210");
+            addMessage("Hey Gautam 2", "+919876543210");
+            addMessage("Hey Gautam 3", "+919876543210");
+            addMessage("Hey Gautam 4", "+919876543210");
+            addMessage("Hey Gautam 5", "+919876543210");
 
-            //clearMessages();
+            clearMessages();
             List<ConvMessage> msgs = MessagesTableUtils.getAllMessages();
             List<Conversation> convs = ConversationTableUtils.getAllConversations();
 
@@ -45,8 +45,8 @@ namespace windows_client.Test
             addMessage("Hey Vijay 2", "+919910000474");
 
             clearMessages();
-            //msgs = MessagesTableUtils.getAllMessages(); ;
-            //convs = ConversationTableUtils.getAllConversations();
+            msgs = MessagesTableUtils.getAllMessages(); ;
+            convs = ConversationTableUtils.getAllConversations();
 
             addMessage("Hey Robby 1", "+919999711370");
             addMessage("Hey Robby 2", "+919999711370");
@@ -65,16 +65,16 @@ namespace windows_client.Test
             addMessage("Hey Rishabh 5", "+919582021646");
 
             clearMessages();
-            //msgs = MessagesTableUtils.getAllMessages(); ;
-            //convs = ConversationTableUtils.getAllConversations();
+            msgs = MessagesTableUtils.getAllMessages(); ;
+            convs = ConversationTableUtils.getAllConversations();
 
-            //addMessage("Hey GK2 1", "+919818082868");
-            //addMessage("Hey GK2 2", "+919818082868");
-            //addMessage("Hey GK2 3", "+919818082868");
-            //addMessage("Hey GK2 4", "+919818082868");
-            //addMessage("Hey GK2 5", "+919818082868");
+            addMessage("Hey GK2 1", "+919818082868");
+            addMessage("Hey GK2 2", "+919818082868");
+            addMessage("Hey GK2 3", "+919818082868");
+            addMessage("Hey GK2 4", "+919818082868");
+            addMessage("Hey GK2 5", "+919818082868");
 
-            //clearMessages();
+            clearMessages();
             addMessage("Hey Madhur", "+919873480092");
 
             msgs = MessagesTableUtils.getAllMessages(); ;
@@ -91,21 +91,22 @@ namespace windows_client.Test
             list.Add(new ContactInfo("-1", "+919582021646", "Rishabh", false, "9876543213", false));
             list.Add(new ContactInfo("-1", "+919999711370", "Robby", true, "9999711370", false));
             list.Add(new ContactInfo("-1", "+919873480092", "Madhur", true, "9873480092", false));
+            list.Add(new ContactInfo("-1", "+919818082868", "GK", true, "9818082868", false));
 
             UsersTableUtils.addContacts(list);
         }
 
         public static void addMessage(String message, String msisdn)
         {
+            ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            MessageListPage m = new MessageListPage(msisdn, "", null, TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
+            convMessage.Conversation = m;
             if (messages.Count == 0)
             {
-                ConversationTableUtils.addConversation(msisdn, false);
+                ConversationTableUtils.addConversation(convMessage);
                 //TO discusse
                 // add message to list of existing messages and write to db when user quits this page
-            }
-
-            ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-
+            }           
             MessagesTableUtils.addMessage(convMessage);
             messages.Add(convMessage);
         }

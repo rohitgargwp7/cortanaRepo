@@ -40,16 +40,15 @@ namespace windows_client.DbUtils
         {
             if (HikePubSub.MESSAGE_SENT == type)
             {
-                object[] vals =(object [])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
-                MessagesTableUtils.addChatMessage(convMessage, (bool)vals[1]);
-//                logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Conversation.ContactName);
+                ConvMessage convMessage = (ConvMessage)obj;
+                MessagesTableUtils.addChatMessage(convMessage);
+                logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Conversation.ContactName);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
             }
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
             {
                 ConvMessage convMessage = (ConvMessage)obj;
-                MessagesTableUtils.addChatMessage(convMessage, false);
+                MessagesTableUtils.addChatMessage(convMessage);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
 
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);

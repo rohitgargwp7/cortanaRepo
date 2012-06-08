@@ -64,12 +64,11 @@ namespace windows_client.DbUtils
             App.HikeDataContext.SubmitChanges();
         }
 
-        public static void addChatMessage(ConvMessage convMsg, bool createEntry)
+        public static void addChatMessage(ConvMessage convMsg)
         {
-            if (createEntry) // create a new conversation in conversation Table.
+            if (convMsg.Conversation.LastMessage == null) // create a new conversation in conversation Table.
             {
-                bool isOnhike = false;
-                ConversationTableUtils.addConversation(convMsg.Msisdn, isOnhike);
+                ConversationTableUtils.addConversation(convMsg);
             }
             MessagesTableUtils.addMessage(convMsg);
         }

@@ -18,13 +18,16 @@ namespace windows_client.Model
     [Table(Name = "users")]
     public class ContactInfo : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ContactInfo>
     {
+        private string _id;
+        private string _name;
+        private string _msisdn;
+        private bool _onHike;
+        private bool _hasCustomPhoto;
 
         //it significantly improves update performance
 
-
         # region Users Table Members
-        private string _id;
-
+        
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
         public string Id
         {
@@ -40,9 +43,7 @@ namespace windows_client.Model
                 }
             }
         }
-
-        private string _name;
-
+      
         [Column]
         public string Name
         {
@@ -61,8 +62,6 @@ namespace windows_client.Model
             }
         }
 
-        private string _msisdn;
-
         [Column(CanBeNull = false)]
         public string Msisdn
         {
@@ -80,8 +79,6 @@ namespace windows_client.Model
                 }
             }
         }
-
-        private bool _onHike;
 
         [Column]
         public bool OnHike
@@ -118,7 +115,6 @@ namespace windows_client.Model
             }
         }
 
-        private bool _hasCustomPhoto;
         [Column]
         public bool HasCustomPhoto
         {
@@ -133,7 +129,6 @@ namespace windows_client.Model
                 NotifyPropertyChanged("HasCustomPhoto");
             }
         }
-
 
         public ContactInfo()
         {
