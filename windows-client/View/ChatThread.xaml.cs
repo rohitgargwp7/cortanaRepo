@@ -109,6 +109,21 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            if (HikePubSub.MESSAGE_RECEIVED == type)
+            {
+                ConvMessage convMessage = (ConvMessage) obj;
+                /* Check is this is the same user for which this message is recieved*/
+                if (convMessage.Msisdn == mConversation.MSISDN)
+                {
+                    // Update UI
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (this.ChatThreadPageCollection == null)
+                                this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
+                            this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
+                        });
+                }
+            }
         }
 
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
@@ -131,23 +146,24 @@ namespace windows_client.View
         private void sendMessage(ConvMessage convMessage)
         {
             addToMessageList(convMessage);
-            mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
+            mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage); // this is to notify DBListener
             if(sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
         }
 
-        private void blockUnblockUser_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-
+     
         public void addToMessageList(ConvMessage conv)
         {
             MessageListPage obj = new MessageListPage(conv.Msisdn, mConversation.ContactName, conv.Message,TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
             App.ViewModel.MessageListPageCollection.Remove(obj);
             App.ViewModel.MessageListPageCollection.Insert(0, obj);
         }
+
+        private void blockUnblockUser_Click(object sender, EventArgs e)
+        {
+
+        }
+
 
         public ObservableCollection<ChatThreadPage> ChatThreadPageCollection
         {
