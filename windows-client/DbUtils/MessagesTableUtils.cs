@@ -66,7 +66,7 @@ namespace windows_client.DbUtils
 
         public static void addChatMessage(ConvMessage convMsg)
         {
-            if (convMsg.Conversation.LastMessage == null) // create a new conversation in conversation Table.
+            if (!MessageList.ConvMap.ContainsKey(convMsg.Msisdn)) // create a new conversation in conversation Table.
             {
                 ConversationTableUtils.addConversation(convMsg);
             }
