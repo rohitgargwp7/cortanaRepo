@@ -104,8 +104,8 @@ namespace windows_client
             }
             else if (SMS_CREDITS == type) /* SMS CREDITS */
             {
-                int sms_credits = (int)jsonObj[HikeConstants.DATA];
-                this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
+                /*int sms_credits = (int)jsonObj[HikeConstants.DATA];
+                this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);*/
             }
             else if ("sr" == type) /* Represents Server has received the msg*/
             {
@@ -150,7 +150,7 @@ namespace windows_client
                 long[] ids = new long[msgIds.Count];
                 for (int i = 0; i < ids.Length; i++)
                 {
-                    ids[i] = (long)msgIds[i];
+                    ids[i] = Int64.Parse(msgIds[i].ToString());
                 }
                 logger.Info("NETWORK MANAGER", "Delivery report received : " + "	;	REPORT : DELIVERED READ");
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, ids);
