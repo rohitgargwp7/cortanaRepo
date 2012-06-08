@@ -13,7 +13,7 @@ using System.Data.Linq;
 
 namespace windows_client.Model
 {
-    public class MessageListPage : INotifyPropertyChanged, INotifyPropertyChanging
+    public class MessageListPage
     {
         #region member variables
 
@@ -38,14 +38,12 @@ namespace windows_client.Model
             {
                 if (_contactName != value)
                 {
-                    NotifyPropertyChanging("ContactName");
                     _contactName = value;
-                    NotifyPropertyChanged("ContactName");
                 }
             }
         }
-        
-        
+
+
         public string LastMessage
         {
             get
@@ -56,14 +54,14 @@ namespace windows_client.Model
             {
                 if (_lastMessage != value)
                 {
-                    NotifyPropertyChanging("LastMessage");
+
                     _lastMessage = value;
-                    NotifyPropertyChanged("LastMessage");
+
                 }
             }
         }
-        
-        
+
+
         public string TimeStamp
         {
             get
@@ -74,9 +72,9 @@ namespace windows_client.Model
             {
                 if (_timeStamp != value)
                 {
-                    NotifyPropertyChanging("OnHike");
+                   
                     _timeStamp = value;
-                    NotifyPropertyChanged("OnHike");
+                
                 }
             }
         }
@@ -106,14 +104,14 @@ namespace windows_client.Model
             {
                 if (_isOnhike != value)
                 {
-                    NotifyPropertyChanging("ContactName");
+                   
                     _isOnhike = value;
-                    NotifyPropertyChanged("ContactName");
+                  
                 }
             }
         }
 
-        public MessageListPage(string msisdn,string contactName, string lastMessage,bool isOnhike,string relativeTime)
+        public MessageListPage(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
@@ -123,18 +121,18 @@ namespace windows_client.Model
         }
 
         public MessageListPage(string msisdn, string contactName, string lastMessage, string relativeTime)
-            :this(msisdn,contactName,lastMessage,false,relativeTime)
+            : this(msisdn, contactName, lastMessage, false, relativeTime)
         {
-            
+
         }
 
         public MessageListPage()
         {
             _msisdn = null;
-            _contactName=null;
-            _lastMessage=null;
-            _timeStamp=null;
-            _isOnhike=false;
+            _contactName = null;
+            _lastMessage = null;
+            _timeStamp = null;
+            _isOnhike = false;
         }
         /*
        public Image Avatar
@@ -169,36 +167,6 @@ namespace windows_client.Model
             }
             return (_msisdn == o.MSISDN);
         }
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // Used to notify that a property changed
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanging Members
-
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        // Used to notify that a property is about to change
-        private void NotifyPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-            {
-                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-            }
-        }
-
         #endregion
 
 
