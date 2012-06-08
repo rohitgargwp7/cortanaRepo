@@ -238,32 +238,33 @@ namespace windows_client.Model
 
         public ConvMessage(JObject obj) 
 	    {
-//            this._msisdn = obj["(HikeConstants.FROM"].StringValue;
-//            IJSonObject data = (new JSonReader()).ReadAsJSonObject(obj[HikeConstants.DATA].StringValue);
+            _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
+            JObject data = (JObject)obj[HikeConstants.DATA];
+            JToken msg;
             
-//            if (data.Contains(HikeConstants.SMS_MESSAGE))
-//            {
-//                this._message = data[HikeConstants.SMS_MESSAGE].StringValue;
-//                this._isSms = true;
-//            } else
-//            {
-//                this._message = data[HikeConstants.HIKE_MESSAGE].StringValue;
-//                this._isSms = false;
-//            }
+            if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg))
+            {
+                _message = msg.ToString();
+                _isSms = true;
+            }
+            else
+            {
+                _message = (string)data[HikeConstants.HIKE_MESSAGE];
+                _isSms = false;
+            }
 
-//            this.Timestamp = data[HikeConstants.TIMESTAMP].Int64Value;
+            Timestamp = (long)data[HikeConstants.TIMESTAMP];
 
-//            /* prevent us from receiving a message from the future */
+            /* prevent us from receiving a message from the future */
 
-//            long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds/1000;
-////		    long now = System.currentTimeMillis()/1000;
-//            this.Timestamp = (this.Timestamp > now) ? now : this.Timestamp;
-		  
-//            /* if we're deserialized an object from json, it's always unread */
-//            this.MessageStatus = State.RECEIVED_UNREAD;
-//            this._messageId = -1;
-//            string mappedMsgID = data[HikeConstants.MESSAGE_ID].StringValue;
-//            this.MappedMessageId = System.Int64.Parse(mappedMsgID);
+            long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+            this.Timestamp = (this.Timestamp > now) ? now : this.Timestamp;
+
+            /* if we're deserialized an object from json, it's always unread */
+            this.MessageStatus = State.RECEIVED_UNREAD;
+            this._messageId = -1;
+            string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
+            this.MappedMessageId = System.Int64.Parse(mappedMsgID);
 	    }
 
         public ConvMessage()
