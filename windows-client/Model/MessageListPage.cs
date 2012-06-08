@@ -21,6 +21,7 @@ namespace windows_client.Model
         private string _contactName;
         private string _lastMessage;
         private string _timeStamp;
+        private bool _isOnhike;
         /*private Image _avatar;*/
 
         #endregion
@@ -95,14 +96,46 @@ namespace windows_client.Model
             }
         }
 
-        public MessageListPage(string msisdn,string contactName, string lastMessage, string relativeTime)
+        public bool IsOnhike
+        {
+            get
+            {
+                return _isOnhike;
+            }
+            set
+            {
+                if (_isOnhike != value)
+                {
+                    NotifyPropertyChanging("ContactName");
+                    _isOnhike = value;
+                    NotifyPropertyChanged("ContactName");
+                }
+            }
+        }
+
+        public MessageListPage(string msisdn,string contactName, string lastMessage,bool isOnhike,string relativeTime)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
             this._lastMessage = lastMessage;
             this._timeStamp = relativeTime;
+            this._isOnhike = isOnhike;
         }
 
+        public MessageListPage(string msisdn, string contactName, string lastMessage, string relativeTime)
+            :this(msisdn,contactName,lastMessage,false,relativeTime)
+        {
+            
+        }
+
+        public MessageListPage()
+        {
+            _msisdn = null;
+            _contactName=null;
+            _lastMessage=null;
+            _timeStamp=null;
+            _isOnhike=false;
+        }
         /*
        public Image Avatar
        {
