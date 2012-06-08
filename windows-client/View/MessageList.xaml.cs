@@ -34,6 +34,7 @@ namespace windows_client
             logger = NLog.LogManager.GetCurrentClassLogger();
             appSettings = App.appSettings;
             App.MqttManagerInstance.connect();
+
             convMap = new Dictionary<string, MessageListPage>();
             LoadMessages();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;

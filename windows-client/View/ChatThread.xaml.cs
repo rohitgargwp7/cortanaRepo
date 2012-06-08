@@ -60,6 +60,9 @@ namespace windows_client.View
                 this.ChatThreadPageCollection.Add(new ChatThreadPage(messagesList[i].Message));
             }
             this.myListBox.ItemsSource = chatThreadPageCollection;
+            this.myListBox.UpdateLayout();
+            this.myListBox.ScrollIntoView(chatThreadPageCollection[messagesList.Count - 1]);
+            //this.myListBox.UpdateLayout();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -140,6 +143,10 @@ namespace windows_client.View
                 this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
             this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
             convMessage.Conversation = mConversation;
+
+            this.myListBox.UpdateLayout();
+            this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
+
             sendMessage(convMessage);
         }
 
