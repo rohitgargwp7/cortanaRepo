@@ -128,6 +128,18 @@ namespace windows_client.DbUtils
                 q(App.HikeDataContext).ToList<ContactInfo>();
         }
 
+        public static List<ContactInfo> getContactInfoFromName(string name)
+        {
+            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
+            ((HikeDataContext hdc, string m) =>
+                from o in hdc.users
+                where o.Name.Contains(name)
+                select o);
+
+            return q(App.HikeDataContext,name).Count<ContactInfo>() == 0 ? null :
+                q(App.HikeDataContext,name).ToList<ContactInfo>();
+        }
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
@@ -139,10 +151,6 @@ namespace windows_client.DbUtils
                 select o);
 
             return q(App.HikeDataContext, msisdn).First();
-            //IEnumerable<ContactInfo> contact = from ContactInfo c in App.HikeDataContext.users
-            //              where c.Msisdn == msisdn
-            //              select c;
-            //return contact.First();
         }
 
         public static void deleteAllContacts()

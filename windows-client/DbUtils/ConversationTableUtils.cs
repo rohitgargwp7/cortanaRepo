@@ -50,13 +50,11 @@ namespace windows_client.DbUtils
             return conversations;
         }
 
-        public static void addConversation(string msisdn, bool onhike)
+        public static void addConversation(ConvMessage convMessage)
         {
-            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
 
-            if (contactInfo != null)
-                onhike |= contactInfo.OnHike;
-            Conversation conv = new Conversation(msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null, onhike);
+            Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null, convMessage.Conversation.IsOnhike);
             App.HikeDataContext.conversations.InsertOnSubmit(conv);
             App.HikeDataContext.SubmitChanges();
         }
