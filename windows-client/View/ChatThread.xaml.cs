@@ -124,6 +124,8 @@ namespace windows_client.View
                             if (this.ChatThreadPageCollection == null)
                                 this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
                             this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
+                            this.myListBox.UpdateLayout();
+                            this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                         });
                 }
             }
@@ -132,6 +134,10 @@ namespace windows_client.View
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
         {
             string message = sendMsgTxtbox.Text.Trim();
+            if (String.IsNullOrEmpty(message))
+            {
+                return;
+            }
            /* if ((!mConversation.OnHike && mCredits <= 0) || message == "")
             {
                 return;
@@ -171,6 +177,15 @@ namespace windows_client.View
 
         }
 
+        private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
+            {
+                sendMsgBtn.IsEnabled = false;
+                return;
+            }
+            sendMsgBtn.IsEnabled = true;
+        }
 
         public ObservableCollection<ChatThreadPage> ChatThreadPageCollection
         {
@@ -197,5 +212,7 @@ namespace windows_client.View
             }
         }
         #endregion
+
+      
     }
 }

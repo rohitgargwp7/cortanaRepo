@@ -45,7 +45,7 @@
         </ListBox>
 
         <StackPanel x:Name="sendMsgPanel" Grid.Row="1" Margin="12,0,0,0" Orientation="Horizontal" VerticalAlignment="Bottom">
-            <toolkit:PhoneTextBox x:Name="sendMsgTxtbox" Hint="Free Message"  Width="369" TextWrapping="Wrap" Background="Black" />
+            <toolkit:PhoneTextBox x:Name="sendMsgTxtbox" Hint="Free Message"  Width="369" TextWrapping="Wrap" Background="Black" TextChanged="sendMsgTxtbox_TextChanged" />
             <Button Name="sendMsgBtn" Width="Auto" Content="Send" Click="sendMsgBtn_Click" />
         </StackPanel>
     </Grid>
