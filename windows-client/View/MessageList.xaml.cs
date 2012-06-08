@@ -26,7 +26,7 @@ namespace windows_client
             logger = NLog.LogManager.GetCurrentClassLogger();
             appSettings = App.appSettings;
 
-            App.MqttManagerInstance.connect();
+            //App.MqttManagerInstance.connect();
 
 
             LoadMessages();
@@ -48,7 +48,7 @@ namespace windows_client
                 Conversation conv = conversationList[i];
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn);
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
-                App.ViewModel.MessageListPageCollection.Add(new MessageListPage(conv.Msisdn,contact.Name, lastMessage.Message, TimeUtils.getRelativeTime(lastMessage.Timestamp)));
+                App.ViewModel.MessageListPageCollection.Add(new MessageListPage(conv.Msisdn, contact.Name, lastMessage.Message, contact.OnHike, TimeUtils.getRelativeTime(lastMessage.Timestamp)));
             }
         }
 

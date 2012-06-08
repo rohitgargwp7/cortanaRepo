@@ -14,6 +14,7 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using System.Threading;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
@@ -48,21 +49,6 @@ namespace windows_client.View
             onHike = UsersTableUtils.getContactInfoFromMSISDN(msisdn).OnHike;
         }
 
-        //adds an entry for message & an entry in conversation table if it is the first message of the chat thread
-        private void addMessage(string message, string msisdn)
-        {
-            if (messages.Count == 0)
-            {
-                ConversationTableUtils.addConversation(msisdn, onHike);
-                //TO discusse
-                // add message to list of existing messages and write to db when user quits this page
-            }
-
-            ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            MessagesTableUtils.addMessage(convMessage);
-            messages.Add(convMessage);
-        }
-
         private void deleteConversation(string msisdn)
         {
             UsersTableUtils.deleteConversation(msisdn);
@@ -70,7 +56,31 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
+            string charsEnetered = enterNameTxt.Text;
+            if (String.IsNullOrEmpty(charsEnetered))
+            {
+                contactsListBox.ItemsSource = null;
+                return;
+            }
+            List<ContactInfo> contactsList = UsersTableUtils.getContactInfoFromName(charsEnetered);
+            contactsListBox.ItemsSource = contactsList;
+        }
 
+        private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactInfo obj = contactsListBox.SelectedItem as ContactInfo;
+            if (obj == null)
+                return;
+            MessageListPage mObj = new MessageListPage();
+            mObj.MSISDN = obj.Msisdn;
+            if (App.ViewModel.MessageListPageCollection.Contains(mObj))
+            {
+                int idx = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
+                mObj = App.ViewModel.MessageListPageCollection[idx];
+            }
+            PhoneApplicationService.Current.State["messageListPageObject"] = mObj;
+            string uri = "/View/ChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
     }
 }
