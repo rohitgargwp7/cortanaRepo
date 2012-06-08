@@ -339,26 +339,7 @@ namespace windows_client.Mqtt
         public void onPublish(String topic, byte[] body)
         {
             String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
-            if(receivedMessage.Contains("m"))
-            {
-                int abc = 43;
-            }
-        }
-
-        private void onMessage(string msg)
-        {
-            JObject jsonObj = null;
-            try
-            {
-                jsonObj = JObject.Parse(msg);
-            }
-            catch (JsonReaderException e)
-            {
-                logger.Info("WebSocketPublisher", "Invalid JSON message: " + msg + ", Exception : " + e);
-                return;
-            }
-            string type = (string)jsonObj[HikeConstants.TYPE];
-            string msisdn = (string)jsonObj[HikeConstants.FROM];
+            pubSub.publish(HikePubSub.WS_RECEIVED, receivedMessage);
         }
 
         public void onEventReceived(string type, object obj)
