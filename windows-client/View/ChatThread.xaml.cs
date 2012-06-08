@@ -65,6 +65,12 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            if (PhoneApplicationService.Current.State.ContainsKey("fromSelectUserPage"))
+            {
+                PhoneApplicationService.Current.State.Remove("fromSelectUserPage");
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+            }
             mConversation = (MessageListPage)PhoneApplicationService.Current.State["messageListPageObject"];
             if (mConversation == null)
             {

@@ -40,6 +40,7 @@ namespace windows_client
         private static HikeViewModel _viewModel;
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
+        private static NetworkManager networkManager;
 
         #endregion
 
@@ -206,6 +207,7 @@ namespace windows_client
             _viewModel = new HikeViewModel();  // instantiate HikeviewModel 
             dbListener = new DbConversationListener();
             mMqttManager = new HikeMqttManager();
+            networkManager = NetworkManager.Instance;
 
             #endregion
 

@@ -79,6 +79,7 @@ namespace windows_client.View
                 mObj = App.ViewModel.MessageListPageCollection[idx];
             }
             PhoneApplicationService.Current.State["messageListPageObject"] = mObj;
+            PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
