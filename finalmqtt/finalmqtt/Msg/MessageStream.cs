@@ -18,14 +18,12 @@ namespace finalmqtt.Msg
         private byte[] data;
         private int startIndex;
         private int endIndex;
-        private int defaultBufferSize;
 
         public MessageStream(int size)
         {
             data = new byte[size];
             startIndex = 0;
             endIndex = 0;
-            defaultBufferSize = 400;// if < 40 bytes are remaining to reach end of buffer, re-adjustment occurs
         }
 
         public byte[] ToArray()
@@ -43,16 +41,15 @@ namespace finalmqtt.Msg
         {
             if (startIndex == endIndex)
                 throw new IndexOutOfRangeException("Nothing to read");
-            return data[startIndex++];
+            int temp = startIndex;
+            startIndex = (startIndex + 1) % data.Length;
+            return data[temp];
         }
 
         public void writeByte(byte byteToWrite)
         {
-            if (data.Length - endIndex + defaultBufferSize < data.Length)
-            {
-                reAdjustBuffer();
-            }
-            data[endIndex++] = byteToWrite;
+            data[endIndex] = byteToWrite;
+            endIndex = (endIndex + 1) % data.Length;
         }
 
         public int Size()
@@ -61,38 +58,41 @@ namespace finalmqtt.Msg
                 return 0;
             if(endIndex >= startIndex)
                 return endIndex - startIndex;
-            return data.Length - startIndex + endIndex;
-        }
-
-        private void reAdjustBuffer()
-        {
-            int j = 0;
-            for (int i = startIndex; i < endIndex; i++, j++)
-            {
-                data[j] = data[i];
-            }
-            startIndex = 0;
-            endIndex = j;
+            return data.Length - startIndex + endIndex + 1;
         }
 
         public void writeBytes(byte[] dataToWrite)
         {
-            if (data.Length - endIndex < defaultBufferSize)
+            if (data.Length - endIndex >= dataToWrite.Length)
             {
-                reAdjustBuffer();
+                Array.Copy(dataToWrite, 0, data, endIndex, dataToWrite.Length);
+                endIndex += dataToWrite.Length;
+                endIndex %= data.Length;
             }
-            Array.Copy(dataToWrite, 0, data, endIndex, dataToWrite.Length);
-            endIndex += dataToWrite.Length;
+            else 
+            {
+                int byteCountBeforeRotation = data.Length - endIndex;
+                Array.Copy(dataToWrite, 0, data, endIndex, byteCountBeforeRotation);
+                Array.Copy(dataToWrite, byteCountBeforeRotation, data, 0, dataToWrite.Length - byteCountBeforeRotation);
+                endIndex = dataToWrite.Length - byteCountBeforeRotation;
+            }
         }
 
-        public void writeBytes(byte[] dataToWrite, int start, int bytesToWrite)
+        public void writeBytes(byte[] source, int start, int bytesToWrite)
         {
-            if (data.Length - endIndex < bytesToWrite + defaultBufferSize)
+            if (data.Length - endIndex >= bytesToWrite)
             {
-                reAdjustBuffer();
+                Array.Copy(source, 0, data, endIndex, bytesToWrite);
+                endIndex += bytesToWrite;
+                endIndex %= data.Length;
             }
-            Array.Copy(dataToWrite, start, data, endIndex, bytesToWrite);
-            endIndex += bytesToWrite;
+            else
+            {
+                int byteCountBeforeRotation = data.Length - endIndex;
+                Array.Copy(source, start, data, endIndex, byteCountBeforeRotation);
+                Array.Copy(source, start + byteCountBeforeRotation, data, 0, bytesToWrite - byteCountBeforeRotation);
+                endIndex = bytesToWrite - byteCountBeforeRotation;
+            }
         }
     }
 }
