@@ -84,10 +84,11 @@ namespace finalmqtt.Msg
             }
             byte[] dataToRead = new byte[numberOfBytesToRead];
 
-            if (startIndex < endIndex)
+            if ((startIndex < endIndex) || ((data.Length - startIndex) >= numberOfBytesToRead))
             {
                 Array.Copy(data, startIndex, dataToRead, 0, numberOfBytesToRead);
                 startIndex += numberOfBytesToRead;
+                startIndex %= data.Length;
             }
             else
             {
