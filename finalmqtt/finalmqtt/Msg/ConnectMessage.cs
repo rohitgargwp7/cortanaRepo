@@ -93,9 +93,8 @@ namespace finalmqtt.Msg
 
         protected override void readMessage(MessageStream input, int msgLength)
         {
-
-            ReadStringFromStream(input);
-            input.readByte();
+            ReadStringFromStream(input);//PROTOCOL_ID
+            input.readByte(); // PROTOCOL_VERSION
             byte flags = input.readByte(); //flags
             keepAlive = (short)ReadUshortFromStream(input);
             clientId = ReadStringFromStream(input);

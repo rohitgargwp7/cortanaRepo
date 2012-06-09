@@ -187,20 +187,9 @@ namespace finalmqtt.Msg
         protected string ReadStringFromStream(MessageStream input)
         {
             ushort len = ReadUshortFromStream(input);
-            byte[] data = ReadBytes(input, len);
+            byte[] data = input.readBytes(len);
             UTF8Encoding enc = new UTF8Encoding();
             return enc.GetString(data, 0, data.Length);
-        }
-
-        protected byte[] ReadBytes(MessageStream input, int numberOfBytesToRead)
-        {
-            byte[] buffer = new byte[numberOfBytesToRead];
-            //throws invalidoperationexception if end of queue is reached
-            for (int i = 0; i < buffer.Length; i++)
-            {
-                buffer[i] = input.readByte();
-            }
-            return buffer;
         }
     }
 }

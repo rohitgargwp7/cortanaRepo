@@ -72,6 +72,33 @@ namespace finalmqtt.Msg
             writeBytes(dataToWrite, 0, dataToWrite.Length);
         }
 
+        public byte[] readBytes(int numberOfBytesToRead)
+        {
+            if (numberOfBytesToRead <= 0)
+            {
+                throw new ArgumentException("Number of bytes to read should be greater than 0");
+            }
+            if (this.Size() < numberOfBytesToRead)
+            {
+                throw new IndexOutOfRangeException("requested for " + numberOfBytesToRead + "bytes, where only " + this.Size() + " exist in buffer");
+            }
+            byte[] dataToRead = new byte[numberOfBytesToRead];
+
+            if (startIndex < endIndex)
+            {
+                Array.Copy(data, startIndex, dataToRead, 0, numberOfBytesToRead);
+                startIndex += numberOfBytesToRead;
+            }
+            else
+            {
+                int bytesBeforeRotation = data.Length - startIndex;
+                Array.Copy(data, startIndex, dataToRead, 0, bytesBeforeRotation);
+                Array.Copy(data, 0, dataToRead, bytesBeforeRotation, numberOfBytesToRead - bytesBeforeRotation);
+                startIndex = numberOfBytesToRead - bytesBeforeRotation;
+            }
+            return dataToRead;
+        }
+
         public void writeBytes(byte[] source, int start, int bytesToWrite)
         {
             if (data.Length - endIndex >= bytesToWrite)

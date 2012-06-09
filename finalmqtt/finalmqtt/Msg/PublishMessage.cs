@@ -75,7 +75,7 @@ namespace finalmqtt.Msg
                 pos += 2;
             }
             int payloadSize = (msgLength - pos);
-            data = ReadBytes(input, payloadSize);
+            data = input.readBytes(payloadSize);
         }
 
         public String getTopic()
