@@ -100,8 +100,39 @@ namespace finalmqtt.Msg
             return dataToRead;
         }
 
+        public int readMsgLength(out int bytesReadForSize)
+        {
+            int msgLength = 0;
+            int multiplier = 1;
+            int digit;
+            int temp = startIndex;
+            do
+            {
+                digit = data[temp++];
+                msgLength += (digit & 0x7f) * multiplier;
+                multiplier *= 128;
+            } while ((digit & 0x80) > 0);
+            bytesReadForSize = temp - startIndex;
+            return msgLength;
+        }
+
+        public void ignoreBytes(int bytesToIgnore)
+        {
+            startIndex += bytesToIgnore;
+            startIndex %= data.Length;
+            return;
+        }
+
+        public void insertMessageFlags(byte flags)
+        {
+            startIndex = (startIndex - 1) % data.Length;
+            data[startIndex] = flags;
+        }
+
         public void writeBytes(byte[] source, int start, int bytesToWrite)
         {
+            if (bytesToWrite > data.Length - this.Size())
+                throw new IndexOutOfRangeException("Requested for " + bytesToWrite + "bytes. Buffer capacity " + (data.Length - this.Size()));
             if (data.Length - endIndex >= bytesToWrite)
             {
                 Array.Copy(source, 0, data, endIndex, bytesToWrite);

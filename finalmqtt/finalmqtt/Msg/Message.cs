@@ -21,8 +21,6 @@ namespace finalmqtt.Msg
     {
 
         protected List<byte> messageData;
-
-        //        protected MessageStream messageData;
         protected MqttConnection mqttConnection;
 
         private static short _nextId = 1;
@@ -51,9 +49,21 @@ namespace finalmqtt.Msg
             this.mqttConnection = conn;
         }
 
-        public void read(MessageStream input)
+        /// <summary>
+        /// composes a message object from messagestream. throws exception if the message is incomplete in buffer as of now.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="flags">flags to be restored in message stream in case message is incomplete as of now</param>
+        public void read(MessageStream input, byte flags)
         {
-            int msgLength = readMsgLength(input);
+            int bytesReadForSize = 0;
+            int msgLength = input.readMsgLength(out bytesReadForSize);
+            if (msgLength > input.Size() - bytesReadForSize)
+            {
+                input.insertMessageFlags(flags);
+                throw new IndexOutOfRangeException("message length is " + msgLength + "bytes, where only " + input.Size() + " exist in buffer");
+            }
+            input.ignoreBytes(bytesReadForSize);
             readMessage(input, msgLength);
         }
 
@@ -63,22 +73,16 @@ namespace finalmqtt.Msg
             writeMsgLength();
             writeMessage();
             byte[] data = messageData.ToArray();
-            mqttConnection.sendMessage(data);
+            try
+            {
+                mqttConnection.sendMessage(data);
+            }
+            catch 
+            {
+                throw;
+            } 
         }
 
-        private int readMsgLength(MessageStream input)
-        {
-            int msgLength = 0;
-            int multiplier = 1;
-            int digit;
-            do
-            {
-                digit = input.readByte();
-                msgLength += (digit & 0x7f) * multiplier;
-                multiplier *= 128;
-            } while ((digit & 0x80) > 0);
-            return msgLength;
-        }
 
         private void writeMsgLength()
         {
@@ -98,12 +102,6 @@ namespace finalmqtt.Msg
             } while (val > 0);
         }
 
-        public byte[] toBytes()
-        {
-            MemoryStream baos = new MemoryStream();
-            return baos.ToArray();
-        }
-
         protected virtual int messageLength()
         {
             return 0;
@@ -118,22 +116,6 @@ namespace finalmqtt.Msg
 
         }
 
-        //protected byte[] ReadBytes(int payloadSize, MessageStream dis)
-        //{
-        //    byte[] data = new byte[payloadSize];
-        //    int dataRead = 0;
-        //    while (dataRead < payloadSize)
-        //    {
-        //        int byteToRead = payloadSize - dataRead;
-        //        int actualDataLength = dis.Read(data, dataRead, byteToRead);
-        //        dataRead += actualDataLength;
-        //        if (actualDataLength <= 0)
-        //        {
-        //            break;
-        //        }
-        //    }
-        //    return data;
-        //}
 
         public virtual void setRetained(bool retain)
         {

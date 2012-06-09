@@ -35,15 +35,15 @@ namespace finalmqtt.Client
         private Listener mqttListener;
         public Listener MqttListener
         {
-            set 
+            set
             {
-                mqttListener = value;  
+                mqttListener = value;
             }
         }
 
         private Socket _socket;
-        const int MAX_BUFFER_SIZE = 1024 * 60;
-        const int socketReadBufferSize = 1024 * 60;
+        const int MAX_BUFFER_SIZE = 1024 * 30;
+        const int socketReadBufferSize = 1024 * 10;
         private byte[] bufferForSocketReads;
         private readonly String id;
         private volatile bool stopped;
@@ -52,7 +52,7 @@ namespace finalmqtt.Client
 
         private Dictionary<short, Callback> map = new Dictionary<short, Callback>();
         private IScheduler scheduler = Scheduler.NewThread;
-        
+
         private String host;
         private int port;
         private String username;
@@ -61,9 +61,6 @@ namespace finalmqtt.Client
 
         private MessageStream input;
         private List<byte> pendingOutput;
-        private volatile bool writeLockReqd;
-
-        private Thread mThread;
 
         public MqttConnection(String id, String host, int port, String username, String password, Callback cb, Listener listener)
         {
@@ -82,10 +79,12 @@ namespace finalmqtt.Client
         }
 
         public MqttConnection(String id, String host, int port, String username, String password, Callback connectCallback)
-            : this(id, host, port, username, password, connectCallback ,null)
+            : this(id, host, port, username, password, connectCallback, null)
         {
         }
-
+        /// <summary>
+        /// Initiates connect request to server.
+        /// </summary>
         public void connect()
         {
             stopped = false;
@@ -96,7 +95,12 @@ namespace finalmqtt.Client
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onSocketConnected);
             _socket.ConnectAsync(socketEventArg);
         }
-
+        /// <summary>
+        /// AsyncCallback of socket connection. Is called when response of socket connection is received. 
+        /// It sends a connect message and then starts reading from socket.  
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="e"></param>
         private void onSocketConnected(object s, SocketAsyncEventArgs e)
         {
             connected = _socket.Connected;
@@ -111,83 +115,97 @@ namespace finalmqtt.Client
             msg.write();
             read();
         }
-
+        /// <summary>
+        /// It intiates read request from the socket connected with a buffer where data from socket would be copied.
+        /// </summary>
         private void read()
         {
             if (_socket != null)
             {
-                SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
-                socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
-                socketEventArg.SetBuffer(bufferForSocketReads, 0, socketReadBufferSize);
-                socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
-                _socket.ReceiveAsync(socketEventArg);
+                try
+                {
+                    SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
+                    socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
+                    socketEventArg.SetBuffer(bufferForSocketReads, 0, socketReadBufferSize);
+                    socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
+                    _socket.ReceiveAsync(socketEventArg);
+                }
+                catch 
+                {
+                    mqttListener.onDisconnected();
+                }
             }
         }
-
+        /// <summary>
+        /// asynccallback for reading socket. Is called when the data from socket is received.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="e"></param>
         private void onReadCompleted(object s, SocketAsyncEventArgs e)
         {
-            if (e.BytesTransferred > 0)
+            if (e.SocketError == SocketError.Success)
             {
-                writeLockReqd = true;
+                input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
             }
-
-            lock (input)
+            else
             {
-                if (e.SocketError == SocketError.Success)
-                {
-                    input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
-                }
-                else
-                {
-                    if (mqttListener != null)
-                        mqttListener.onDisconnected();
-                }
+                if (mqttListener != null)
+                    mqttListener.onDisconnected();
             }
-            //if (input.Size() > 0)
-            //{
-            //    Message message = readMessage();
-            //    handleMessage(message);
-            //}
-            writeLockReqd = false;
-            mThread = new Thread(new ThreadStart(readMessageThread));
-            mThread.Start();
+            readMessagesFromBuffer();
             read();
         }
 
-
-        private void readMessageThread()
+        /// <summary>
+        /// Reads messages in while loop from buffer (written by onReadCompleted). If a message is incomplete in buffer,
+        /// exception occurs which is ignored
+        /// </summary>
+        private void readMessagesFromBuffer()
         {
-            writeLockReqd = false;
-            lock (input)
+            try
             {
-                while (writeLockReqd == false)
+                while (input.Size() > 0)
                 {
-                    if (input.Size() <= 0)
-                    {
-                        break;
-                    }
                     Message message = readMessage();
                     handleMessage(message);
                 }
+            }
+            catch
+            {
+                //do nothing
             }
         }
 
         private void onDataSent(object s, SocketAsyncEventArgs e)
         {
-
         }
 
+        /// <summary>
+        /// sends raw bytes of data through socket
+        /// </summary>
+        /// <param name="data"></param>
         public void sendMessage(byte[] data)
         {
-            SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
-            socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
-            socketEventArg.UserToken = null;
-            socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
-            socketEventArg.SetBuffer(data, 0, data.Length);
-            _socket.SendAsync(socketEventArg);
-            
+            try
+            {
+                SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
+                socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
+                socketEventArg.UserToken = null;
+                socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onDataSent);
+                socketEventArg.SetBuffer(data, 0, data.Length);
+                _socket.SendAsync(socketEventArg);
+            }
+            catch 
+            {
+                mqttListener.onDisconnected();
+            }
         }
 
+        /// <summary>
+        /// reads message from messagestream buffer. It reads first byte of flags, which is passed further to restore buffer
+        /// if buffer does not  contains complete message as of now. An exception is thrown which is ignored by caller
+        /// </summary>
+        /// <returns></returns>
         public Message readMessage()
         {
             byte flags = input.readByte();
@@ -235,10 +253,23 @@ namespace finalmqtt.Client
                 default:
                     throw new NotSupportedException("No support for deserializing " + header.getType() + " messages");
             }
-            msg.read(input);
+            try
+            {
+                msg.read(input, flags);
+            }
+            catch (IndexOutOfRangeException outOfRange)
+            {
+                throw outOfRange;
+            } 
             return msg;
         }
 
+        /// <summary>
+        /// Writes message to socket. If message is of retryable type, its id and callback are inserted in a map.
+        /// If ack is not received in 5 seconds, then callback's onFailure is called
+        /// </summary>
+        /// <param name="msg">Message to be written (or sent)</param>
+        /// <param name="cb">Callback to be called in case of error</param>
         public void sendCallbackMessage(Message msg, Callback cb)
         {
             if (!connected || !connackReceived)
@@ -258,9 +289,8 @@ namespace finalmqtt.Client
             catch (SocketException se)
             {
                 cb.onFailure(se);
-            
             }
-            
+
             if (msg is RetryableMessage)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
@@ -312,7 +342,7 @@ namespace finalmqtt.Client
             if (connected)
             {
                 DisconnectMessage msg = new DisconnectMessage(this);
-                foreach (KeyValuePair<short,Callback> kvp in map)
+                foreach (KeyValuePair<short, Callback> kvp in map)
                 {
                     kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
                 }
@@ -323,11 +353,11 @@ namespace finalmqtt.Client
                 _socket.Close();
         }
 
-        public void writeMessage(Message message) //throws IOException
-        {
-        }
-
-
+        /// <summary>
+        /// it handles messages read from socket. If it exists in map (i.e. it is a response message from server) then its
+        /// entry is removed from map, so that its failure callback is not called
+        /// </summary>
+        /// <param name="msg"></param>
         private void handleMessage(Message msg)
         {
             if (msg == null)
@@ -346,7 +376,7 @@ namespace finalmqtt.Client
                     handleMessage((ConnAckMessage)msg);
                     break;
                 case MessageType.PUBLISH:
-                    handleMessage((PublishMessage) msg);
+                    handleMessage((PublishMessage)msg);
                     break;
                 case MessageType.PINGRESP:
                     handleMessage((PingRespMessage)msg);
@@ -388,13 +418,18 @@ namespace finalmqtt.Client
         {
         }
 
+        /// <summary>
+        /// sends acknowledgement of every publish message recieved. If server does not receive ack, then it keeps on sending
+        /// publish messages
+        /// </summary>
+        /// <param name="msg"></param>
         protected void sendAcknowledement(RetryableMessage msg)
         {
             short messageId = msg.getMessageId();
             if (msg.getQos() == QoS.AT_LEAST_ONCE || msg.getQos() == QoS.EXACTLY_ONCE)
             {
-                    Message puback = new PubAckMessage(messageId, this);
-                    puback.write();
+                Message puback = new PubAckMessage(messageId, this);
+                puback.write();
             }
         }
     }
