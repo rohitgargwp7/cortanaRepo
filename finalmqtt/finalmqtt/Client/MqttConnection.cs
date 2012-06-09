@@ -42,7 +42,9 @@ namespace finalmqtt.Client
         }
 
         private Socket _socket;
-        const int MAX_BUFFER_SIZE = 4096*2;
+        const int MAX_BUFFER_SIZE = 1024 * 60;
+        const int socketReadBufferSize = 1024 * 60;
+        private byte[] bufferForSocketReads;
         private readonly String id;
         private volatile bool stopped;
         private volatile bool connected;
@@ -76,6 +78,7 @@ namespace finalmqtt.Client
             this.username = username;
             this.password = password;
             this.connectCallback = cb;
+            this.bufferForSocketReads = new byte[socketReadBufferSize];
         }
 
         public MqttConnection(String id, String host, int port, String username, String password, Callback connectCallback)
@@ -115,7 +118,7 @@ namespace finalmqtt.Client
             {
                 SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
                 socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
-                socketEventArg.SetBuffer(new Byte[MAX_BUFFER_SIZE], 0, MAX_BUFFER_SIZE);
+                socketEventArg.SetBuffer(bufferForSocketReads, 0, socketReadBufferSize);
                 socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
                 _socket.ReceiveAsync(socketEventArg);
             }
@@ -243,7 +246,21 @@ namespace finalmqtt.Client
                 cb.onFailure(null);
                 return;
             }
-            msg.write();
+            try
+            {
+                msg.write();
+
+            }
+            catch (ObjectDisposedException ode)
+            {
+                cb.onFailure(ode);
+            }
+            catch (SocketException se)
+            {
+                cb.onFailure(se);
+            
+            }
+            
             if (msg is RetryableMessage)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
