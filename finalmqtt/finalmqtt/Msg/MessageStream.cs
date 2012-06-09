@@ -31,12 +31,12 @@ namespace finalmqtt.Msg
             byte[] messageData = new byte[this.Size()];
             if (startIndex < endIndex)
             {
-                Array.Copy(data, startIndex, messageData, 0, endIndex - startIndex);
+                Buffer.BlockCopy(data, startIndex, messageData, 0, endIndex - startIndex);
             }
             else
             {
-                Array.Copy(data, startIndex, messageData, 0, data.Length - startIndex);
-                Array.Copy(data, 0, messageData, data.Length - startIndex, endIndex);
+                Buffer.BlockCopy(data, startIndex, messageData, 0, data.Length - startIndex);
+                Buffer.BlockCopy(data, 0, messageData, data.Length - startIndex, endIndex);
             }
             return messageData;
         }
@@ -86,15 +86,15 @@ namespace finalmqtt.Msg
 
             if ((startIndex < endIndex) || ((data.Length - startIndex) >= numberOfBytesToRead))
             {
-                Array.Copy(data, startIndex, dataToRead, 0, numberOfBytesToRead);
+                Buffer.BlockCopy(data, startIndex, dataToRead, 0, numberOfBytesToRead);
                 startIndex += numberOfBytesToRead;
                 startIndex %= data.Length;
             }
             else
             {
                 int bytesBeforeRotation = data.Length - startIndex;
-                Array.Copy(data, startIndex, dataToRead, 0, bytesBeforeRotation);
-                Array.Copy(data, 0, dataToRead, bytesBeforeRotation, numberOfBytesToRead - bytesBeforeRotation);
+                Buffer.BlockCopy(data, startIndex, dataToRead, 0, bytesBeforeRotation);
+                Buffer.BlockCopy(data, 0, dataToRead, bytesBeforeRotation, numberOfBytesToRead - bytesBeforeRotation);
                 startIndex = numberOfBytesToRead - bytesBeforeRotation;
             }
             return dataToRead;
@@ -135,15 +135,15 @@ namespace finalmqtt.Msg
                 throw new IndexOutOfRangeException("Requested for " + bytesToWrite + "bytes. Buffer capacity " + (data.Length - this.Size()));
             if (data.Length - endIndex >= bytesToWrite)
             {
-                Array.Copy(source, 0, data, endIndex, bytesToWrite);
+                Buffer.BlockCopy(source, 0, data, endIndex, bytesToWrite);
                 endIndex += bytesToWrite;
                 endIndex %= data.Length;
             }
             else
             {
                 int byteCountBeforeRotation = data.Length - endIndex;
-                Array.Copy(source, start, data, endIndex, byteCountBeforeRotation);
-                Array.Copy(source, start + byteCountBeforeRotation, data, 0, bytesToWrite - byteCountBeforeRotation);
+                Buffer.BlockCopy(source, start, data, endIndex, byteCountBeforeRotation);
+                Buffer.BlockCopy(source, start + byteCountBeforeRotation, data, 0, bytesToWrite - byteCountBeforeRotation);
                 endIndex = bytesToWrite - byteCountBeforeRotation;
             }
         }
