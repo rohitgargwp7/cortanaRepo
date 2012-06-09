@@ -29,7 +29,15 @@ namespace finalmqtt.Msg
         public byte[] ToArray()
         { 
             byte[] messageData = new byte[this.Size()];
-            Array.Copy(data, startIndex, messageData, 0, this.Size());
+            if (startIndex < endIndex)
+            {
+                Array.Copy(data, startIndex, messageData, 0, endIndex - startIndex);
+            }
+            else
+            {
+                Array.Copy(data, startIndex, messageData, 0, data.Length - startIndex);
+                Array.Copy(data, 0, messageData, data.Length - startIndex, endIndex);
+            }
             return messageData;
         }
 
@@ -54,28 +62,14 @@ namespace finalmqtt.Msg
 
         public int Size()
         {
-            if (endIndex == 0 && startIndex == -1)
-                return 0;
             if(endIndex >= startIndex)
                 return endIndex - startIndex;
-            return data.Length - startIndex + endIndex + 1;
+            return data.Length - startIndex + endIndex;
         }
 
         public void writeBytes(byte[] dataToWrite)
         {
-            if (data.Length - endIndex >= dataToWrite.Length)
-            {
-                Array.Copy(dataToWrite, 0, data, endIndex, dataToWrite.Length);
-                endIndex += dataToWrite.Length;
-                endIndex %= data.Length;
-            }
-            else 
-            {
-                int byteCountBeforeRotation = data.Length - endIndex;
-                Array.Copy(dataToWrite, 0, data, endIndex, byteCountBeforeRotation);
-                Array.Copy(dataToWrite, byteCountBeforeRotation, data, 0, dataToWrite.Length - byteCountBeforeRotation);
-                endIndex = dataToWrite.Length - byteCountBeforeRotation;
-            }
+            writeBytes(dataToWrite, 0, dataToWrite.Length);
         }
 
         public void writeBytes(byte[] source, int start, int bytesToWrite)
