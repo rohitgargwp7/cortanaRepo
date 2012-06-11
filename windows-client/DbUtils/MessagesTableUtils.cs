@@ -31,7 +31,7 @@ namespace windows_client.DbUtils
                 q(App.HikeDataContext, msisdn).ToList<ConvMessage>();
         }
 
-       
+
         /* This queries messages table and get the last message for given msisdn*/
         public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
@@ -65,14 +65,34 @@ namespace windows_client.DbUtils
             long x = convMessage.MessageId;
         }
 
-        public static void addChatMessage(ConvMessage convMsg,bool isNewConversation)
+        public static void addChatMessage(ConvMessage convMsg, bool isNewConversation)
         {
-            if (isNewConversation) 
+            if (isNewConversation)
             {
                 ConversationTableUtils.addConversation(convMsg);
             }
             MessagesTableUtils.addMessage(convMsg);
         }
 
+        /// <summary>
+        /// Update message status in db. 
+        /// </summary>
+        /// <param name="msgID">messageID from which msg is searched in db.</param>
+        /// <param name="val">New value of Message state</param>
+        public static void updateMsgStatus(long msgID, int val)
+        {
+            ConvMessage message;
+            Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
+             CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
+             ((HikeDataContext hdc, long m) =>
+                 from o in hdc.messages
+                 where o.MessageId == msgID
+                 select o);
+            if (q(App.HikeDataContext, msgID).Count<ConvMessage>() == 1)
+            {
+                message = q(App.HikeDataContext, msgID).ToList<ConvMessage>().First<ConvMessage>();
+                message.MessageStatus = (ConvMessage.State)val;
+            }
+        }
     }
 }
