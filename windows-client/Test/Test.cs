@@ -68,14 +68,14 @@ namespace windows_client.Test
             msgs = MessagesTableUtils.getAllMessages(); ;
             convs = ConversationTableUtils.getAllConversations();
 
-            addMessage("Hey GK2 1", "+919818082868");
-            addMessage("Hey GK2 2", "+919818082868");
-            addMessage("Hey GK2 3", "+919818082868");
-            addMessage("Hey GK2 4", "+919818082868");
-            addMessage("Hey GK2 5", "+919818082868");
+            addMessage("Hey GK2 1", "+918826670738");
+            addMessage("Hey GK2 2", "+918826670738");
+            addMessage("Hey GK2 3", "+918826670738");
+            addMessage("Hey GK2 4", "+918826670738");
+            addMessage("Hey GK2 5", "+918826670738");
 
             clearMessages();
-            addMessage("Hey Madhur", "+919873480092");
+            addMessage("Hey Madhur", "+919810116420");
 
             msgs = MessagesTableUtils.getAllMessages(); ;
             convs = ConversationTableUtils.getAllConversations();
@@ -90,8 +90,8 @@ namespace windows_client.Test
             list.Add(new ContactInfo("-1", "+919910000474", "Vijay", false, "9876543212", false));
             list.Add(new ContactInfo("-1", "+919582021646", "Rishabh", false, "9876543213", false));
             list.Add(new ContactInfo("-1", "+919999711370", "Robby", true, "9999711370", false));
-            list.Add(new ContactInfo("-1", "+919873480092", "Madhur", true, "9873480092", false));
-            list.Add(new ContactInfo("-1", "+919818082868", "GK", true, "9818082868", false));
+            list.Add(new ContactInfo("-1", "+919810116420", "Madhur", true, "9810116420", false));
+            list.Add(new ContactInfo("-1", "+918826670738", "GK", true, "8826670738", false));
 
             UsersTableUtils.addContacts(list);
         }
@@ -99,7 +99,7 @@ namespace windows_client.Test
         public static void addMessage(String message, String msisdn)
         {
             ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            MessageListPage m = new MessageListPage(msisdn, "", null, TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
+            ConversationListObject m = new ConversationListObject(msisdn, "", null, TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
             convMessage.Conversation = m;
             if (messages.Count == 0)
             {

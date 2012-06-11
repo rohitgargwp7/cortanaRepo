@@ -16,9 +16,9 @@ namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<MessageListPage> _messageListPageCollection = null;
+        private ObservableCollection<ConversationListObject> _messageListPageCollection = null;
 
-        public ObservableCollection<MessageListPage> MessageListPageCollection
+        public ObservableCollection<ConversationListObject> MessageListPageCollection
         {
             get
             {

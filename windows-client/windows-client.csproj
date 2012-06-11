@@ -100,7 +100,7 @@
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="utils\IsolatedStorageHelper.cs" />
     <Compile Include="Model\HikeConstants.cs" />
-    <Compile Include="Model\MessageListPage.cs" />
+    <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="Model\UserDatabase.cs" />
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />

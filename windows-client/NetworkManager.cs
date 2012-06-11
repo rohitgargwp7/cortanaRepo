@@ -25,6 +25,8 @@ namespace windows_client
 
         public static readonly string DELIVERY_REPORT = "dr";
 
+        public static readonly string SERVER_REPORT = "sr";
+
         public static readonly string USER_JOINED = "uj";
 
         public static readonly string USER_LEFT = "ul";
@@ -87,7 +89,7 @@ namespace windows_client
                 try
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
-                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED_FROM_SENDER, convMessage);
+                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
                 }
                 catch (Exception e)
                 {
@@ -104,16 +106,16 @@ namespace windows_client
             }
             else if (SMS_CREDITS == type) /* SMS CREDITS */
             {
-                /*int sms_credits = (int)jsonObj[HikeConstants.DATA];
-                this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);*/
+                int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
+                this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
             }
-            else if ("sr" == type) /* Represents Server has received the msg*/
+            else if (SERVER_REPORT == type) /* Represents Server has received the msg*/
             {
                 string id = (string)jsonObj[HikeConstants.DATA];
                 long msgID;
                 try
                 {
-                    msgID = Int64.Parse(id);
+                    msgID = long.Parse(id);
                 }
                 catch (FormatException e)
                 {

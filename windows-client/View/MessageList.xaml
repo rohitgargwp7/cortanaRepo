@@ -68,7 +68,7 @@
             <shell:ApplicationBarIconButton 
                 IconUri="/Images/appbar.add.rest.png" 
                 Text="add" 
-                x:Name="newTaskAppBarButton" Click="startConversation_Click" />           
+                x:Name="newTaskAppBarButton" Click="selectUserBtn_Click" />           
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text = "Delete Account" Click="deleteAccount_Click"/>
             </shell:ApplicationBar.MenuItems>

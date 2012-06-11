@@ -37,7 +37,7 @@
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,70">
                         <!--<Image x:Name="icon" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/windows-client;component/View/images/dummy_image.jpg"></Image>-->
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Message}" FontWeight="Bold" FontSize="23" Height="40" Grid.Column="1" Grid.ColumnSpan="2" />
+                                <TextBlock x:Name="msgTxtBlock" Text="{Binding Message}" FontWeight="Bold" FontSize="23" Height="40" Grid.Column="1" Grid.ColumnSpan="2" />
                                </StackPanel>
                             </StackPanel>
                 </DataTemplate>

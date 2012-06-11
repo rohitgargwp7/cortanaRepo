@@ -21,6 +21,7 @@ namespace windows_client.Model
         private string _id;
         private string _name;
         private string _msisdn;
+        private string _phoneNo;
         private bool _onHike;
         private bool _hasCustomPhoto;
 
@@ -97,8 +98,6 @@ namespace windows_client.Model
                 }
             }
         }
-
-        private string _phoneNo;
 
         [Column]
         public string PhoneNo

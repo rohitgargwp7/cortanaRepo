@@ -15,6 +15,7 @@ namespace windows_client.Model
     public class ChatThreadPage : INotifyPropertyChanged, INotifyPropertyChanging
     {
         private string _message;
+        private string _alignment;
 
         public string Message
         {
@@ -33,9 +34,31 @@ namespace windows_client.Model
             }
         }
 
+        public string Alignment
+        {
+            get
+            {
+                return _alignment;
+            }
+            set
+            {
+                if (value != _alignment)
+                {
+                    _alignment = value;
+                }
+            }
+        }
+
         public ChatThreadPage(string msg)
         {
             _message = msg;
+            _alignment = "Left";
+        }
+
+        public ChatThreadPage(string msg,string alignment)
+        {
+            _message = msg;
+            _alignment = alignment;
         }
 
         #region INotifyPropertyChanged Members

@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +23,6 @@ using Newtonsoft.Json.Linq;
 namespace windows_client.Model
 {
     [Table(Name = "messages")]
-//    [Index(Name = "Conversation_IDX", Columns = "ConversationId, Timestamp Desc")]
     public class ConvMessage : INotifyPropertyChanged, INotifyPropertyChanging
     {
 
@@ -36,7 +35,7 @@ namespace windows_client.Model
         private bool _isInvite;
         private bool _isSent;
         private bool _isSms;
-        private MessageListPage mConversation = null;
+        private ConversationListObject mConversation = null;
         private MessageMetadata metadata;
 
 
@@ -201,7 +200,7 @@ namespace windows_client.Model
             }
         }
 
-        public MessageListPage Conversation
+        public ConversationListObject Conversation
         {
             get
             {
