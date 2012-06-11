@@ -130,7 +130,7 @@ namespace finalmqtt.Client
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
                     _socket.ReceiveAsync(socketEventArg);
                 }
-                catch 
+                catch
                 {
                     mqttListener.onDisconnected();
                 }
@@ -162,17 +162,10 @@ namespace finalmqtt.Client
         /// </summary>
         private void readMessagesFromBuffer()
         {
-            try
+            while (input.containsCompleteMessage())
             {
-                while (input.Size() > 0)
-                {
-                    Message message = readMessage();
-                    handleMessage(message);
-                }
-            }
-            catch
-            {
-                //do nothing
+                Message message = readMessage();
+                handleMessage(message);
             }
         }
 
@@ -195,7 +188,7 @@ namespace finalmqtt.Client
                 socketEventArg.SetBuffer(data, 0, data.Length);
                 _socket.SendAsync(socketEventArg);
             }
-            catch 
+            catch
             {
                 mqttListener.onDisconnected();
             }
@@ -255,12 +248,12 @@ namespace finalmqtt.Client
             }
             try
             {
-                msg.read(input, flags);
+                msg.read(input);
             }
             catch (IndexOutOfRangeException outOfRange)
             {
                 throw outOfRange;
-            } 
+            }
             return msg;
         }
 

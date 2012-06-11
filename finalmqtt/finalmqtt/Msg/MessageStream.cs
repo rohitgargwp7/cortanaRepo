@@ -26,8 +26,24 @@ namespace finalmqtt.Msg
             endIndex = 0;
         }
 
+        public bool containsCompleteMessage()
+        {
+            if (this.Size() == 0)
+                return false;
+            int temp = startIndex;
+            startIndex = (startIndex + 1) % data.Length; //ignore byte containing flags
+            int msgLength = readMsgLength();
+            int sizeAfterReadingMessageLength = this.Size();
+            startIndex = temp; //readjust start of buffer array to keep the data intact
+            if (sizeAfterReadingMessageLength >= msgLength)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public byte[] ToArray()
-        { 
+        {
             byte[] messageData = new byte[this.Size()];
             if (startIndex < endIndex)
             {
@@ -41,7 +57,8 @@ namespace finalmqtt.Msg
             return messageData;
         }
 
-        public MessageStream():this(2048)
+        public MessageStream()
+            : this(2048)
         {
         }
 
@@ -62,7 +79,7 @@ namespace finalmqtt.Msg
 
         public int Size()
         {
-            if(endIndex >= startIndex)
+            if (endIndex >= startIndex)
                 return endIndex - startIndex;
             return data.Length - startIndex + endIndex;
         }
@@ -100,27 +117,19 @@ namespace finalmqtt.Msg
             return dataToRead;
         }
 
-        public int readMsgLength(out int bytesReadForSize)
+        public int readMsgLength()
         {
             int msgLength = 0;
             int multiplier = 1;
             int digit;
-            int temp = startIndex;
             do
             {
-                digit = data[temp++];
+                digit = data[startIndex];
+                startIndex = (startIndex + 1) % data.Length;
                 msgLength += (digit & 0x7f) * multiplier;
                 multiplier *= 128;
             } while ((digit & 0x80) > 0);
-            bytesReadForSize = temp - startIndex;
             return msgLength;
-        }
-
-        public void ignoreBytes(int bytesToIgnore)
-        {
-            startIndex += bytesToIgnore;
-            startIndex %= data.Length;
-            return;
         }
 
         public void insertMessageFlags(byte flags)

@@ -54,16 +54,9 @@ namespace finalmqtt.Msg
         /// </summary>
         /// <param name="input"></param>
         /// <param name="flags">flags to be restored in message stream in case message is incomplete as of now</param>
-        public void read(MessageStream input, byte flags)
+        public void read(MessageStream input)
         {
-            int bytesReadForSize = 0;
-            int msgLength = input.readMsgLength(out bytesReadForSize);
-            if (msgLength > input.Size() - bytesReadForSize)
-            {
-                input.insertMessageFlags(flags);
-                throw new IndexOutOfRangeException("message length is " + msgLength + "bytes, where only " + input.Size() + " exist in buffer");
-            }
-            input.ignoreBytes(bytesReadForSize);
+            int msgLength = input.readMsgLength();
             readMessage(input, msgLength);
         }
 
