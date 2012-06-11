@@ -40,18 +40,20 @@ namespace windows_client.DbUtils
         {
             if (HikePubSub.MESSAGE_SENT == type)
             {
-                ConvMessage convMessage = (ConvMessage)obj;
-                MessagesTableUtils.addChatMessage(convMessage);
-                logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Conversation.ContactName);
+                object[] vals = (object[])obj;
+                ConvMessage convMessage = (ConvMessage)vals[0];
+                bool isNewConv = (bool)vals[1];
+                MessagesTableUtils.addChatMessage(convMessage,isNewConv);
+                logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Msisdn);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
             }
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
             {
-                ConvMessage convMessage = (ConvMessage)obj;
-                MessagesTableUtils.addChatMessage(convMessage);
+                object[] vals = (object[])obj;
+                ConvMessage convMessage = (ConvMessage)vals[0];
+                bool isNewConv = (bool)vals[1];
+                MessagesTableUtils.addChatMessage(convMessage, isNewConv);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
-
-                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
             }
             else if (HikePubSub.SERVER_RECEIVED_MSG == type)  // server got msg from client 1 and sent back received msg receipt
             {

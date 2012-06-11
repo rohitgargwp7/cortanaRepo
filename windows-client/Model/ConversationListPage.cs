@@ -13,7 +13,7 @@ using System.Data.Linq;
 
 namespace windows_client.Model
 {
-    public class MessageListPage
+    public class ConversationListObject
     {
         #region member variables
 
@@ -111,7 +111,7 @@ namespace windows_client.Model
             }
         }
 
-        public MessageListPage(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
@@ -120,13 +120,13 @@ namespace windows_client.Model
             this._isOnhike = isOnhike;
         }
 
-        public MessageListPage(string msisdn, string contactName, string lastMessage, string relativeTime)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime)
             : this(msisdn, contactName, lastMessage, false, relativeTime)
         {
 
         }
 
-        public MessageListPage()
+        public ConversationListObject()
         {
             _msisdn = null;
             _contactName = null;
@@ -159,7 +159,7 @@ namespace windows_client.Model
             {
                 return false;
             }
-            MessageListPage o = obj as MessageListPage;
+            ConversationListObject o = obj as ConversationListObject;
 
             if ((System.Object)o == null)
             {

@@ -22,10 +22,10 @@ namespace windows_client.View
     public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
         private ObservableCollection<ChatThreadPage> chatThreadPageCollection = null;
-       
+
         private int mCredits;
         private HikePubSub mPubSub;
-        private MessageListPage mConversation;
+        private string mContactNumber;
 
 
         public ChatThread()
@@ -46,12 +46,30 @@ namespace windows_client.View
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
         }
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (PhoneApplicationService.Current.State.ContainsKey("fromSelectUserPage"))
+            {
+                PhoneApplicationService.Current.State.Remove("fromSelectUserPage");
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+            }
+            mContactNumber = (string)PhoneApplicationService.Current.State["msisdn"];
+            if (mContactNumber == null)
+            {
+                // some error handling
+                return;
+            }
+            PhoneApplicationService.Current.State.Remove("msisdn");
+            loadMessages();
+        }
+
         private void loadMessages()
         {
-            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mConversation.MSISDN);
+            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {
-                mConversation.LastMessage = null;
                 return;
             }
             this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
@@ -65,33 +83,9 @@ namespace windows_client.View
             //this.myListBox.UpdateLayout();
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            if (PhoneApplicationService.Current.State.ContainsKey("fromSelectUserPage"))
-            {
-                PhoneApplicationService.Current.State.Remove("fromSelectUserPage");
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
-            }
-            mConversation = (MessageListPage)PhoneApplicationService.Current.State["messageListPageObject"];
-            if (mConversation == null)
-            {
-                // some error handling
-                return;
-            }
-            PhoneApplicationService.Current.State.Remove("messageListPageObject");
-            if (mConversation.MSISDN == null)
-            {
-                // move to error page
-                return;
-            }
-            loadMessages();
-        }
-
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            base.OnNavigatingFrom(e);        
+            base.OnNavigatingFrom(e);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -110,27 +104,6 @@ namespace windows_client.View
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
         }
 
-        public void onEventReceived(string type, object obj)
-        {
-            if (HikePubSub.MESSAGE_RECEIVED == type)
-            {
-                ConvMessage convMessage = (ConvMessage) obj;
-                /* Check is this is the same user for which this message is recieved*/
-                if (convMessage.Msisdn == mConversation.MSISDN)
-                {
-                    // Update UI
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (this.ChatThreadPageCollection == null)
-                                this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
-                            this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
-                            this.myListBox.UpdateLayout();
-                            this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                        });
-                }
-            }
-        }
-
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
         {
             string message = sendMsgTxtbox.Text.Trim();
@@ -138,38 +111,26 @@ namespace windows_client.View
             {
                 return;
             }
-           /* if ((!mConversation.OnHike && mCredits <= 0) || message == "")
-            {
-                return;
-            }
-            */
+            /* if ((!mConversation.OnHike && mCredits <= 0) || message == "")
+             {
+                 return;
+             }
+             */
             sendMsgTxtbox.Text = "";
-            ConvMessage convMessage = new ConvMessage(message, mConversation.MSISDN, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             if (this.ChatThreadPageCollection == null)
                 this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
-            this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
-            convMessage.Conversation = mConversation;
-
+            this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message, "Right"));
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-
             sendMessage(convMessage);
         }
 
         private void sendMessage(ConvMessage convMessage)
         {
-            addToMessageList(convMessage);
-            mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage); // this is to notify DBListener
-            if(sendMsgTxtbox.Text != "")
+            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage); // this is to notify DBListener
+            if (sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
-        }
-
-     
-        public void addToMessageList(ConvMessage conv)
-        {
-            MessageListPage obj = new MessageListPage(conv.Msisdn, mConversation.ContactName, conv.Message,TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
-            App.ViewModel.MessageListPageCollection.Remove(obj);
-            App.ViewModel.MessageListPageCollection.Insert(0, obj);
         }
 
         private void blockUnblockUser_Click(object sender, EventArgs e)
@@ -186,6 +147,42 @@ namespace windows_client.View
             }
             sendMsgBtn.IsEnabled = true;
         }
+
+        #region Pubsub Event
+
+        /* this function is running on pubsub thread and not UI thread*/
+        public void onEventReceived(string type, object obj)
+        {
+            if (HikePubSub.MESSAGE_RECEIVED == type)
+            {
+                ConvMessage convMessage = (ConvMessage)obj;
+                /* Check is this is the same user for which this message is recieved*/
+                if (convMessage.Msisdn == mContactNumber)
+                {
+                    // Update UI
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (this.ChatThreadPageCollection == null)
+                            this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
+                        this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
+                        this.myListBox.UpdateLayout();
+                        this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                    });
+                }
+            }
+            else if (HikePubSub.SERVER_RECEIVED_MSG == type)
+            {
+                //long msgId = (long)obj;
+                //ConvMessage msg = findMessageById(msgId);
+                //if (msg != null)
+                //{
+                //    msg.setState(ConvMessage.State.SENT_CONFIRMED);
+                //    runOnUiThread(mUpdateAdapter);
+                //}
+            }
+        }
+
+        #endregion
 
         public ObservableCollection<ChatThreadPage> ChatThreadPageCollection
         {
@@ -213,6 +210,6 @@ namespace windows_client.View
         }
         #endregion
 
-      
+
     }
 }

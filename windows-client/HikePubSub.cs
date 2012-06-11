@@ -99,11 +99,14 @@ namespace windows_client
 
         public static readonly string USER_LEFT = "userLeft";
 
+        public static readonly string SEND_NEW_MSG = "sendNewMsg";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;
 
         private Dictionary<string, List<Listener>> listeners;
+        
 
         public HikePubSub()
         {

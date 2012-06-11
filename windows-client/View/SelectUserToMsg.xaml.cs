@@ -68,17 +68,11 @@ namespace windows_client.View
 
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ContactInfo obj = contactsListBox.SelectedItem as ContactInfo;
-            if (obj == null)
+            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+            if (contact == null)
                 return;
-            MessageListPage mObj = new MessageListPage();
-            mObj.MSISDN = obj.Msisdn;
-            if (App.ViewModel.MessageListPageCollection.Contains(mObj))
-            {
-                int idx = App.ViewModel.MessageListPageCollection.IndexOf(mObj);
-                mObj = App.ViewModel.MessageListPageCollection[idx];
-            }
-            PhoneApplicationService.Current.State["messageListPageObject"] = mObj;
+            
+            PhoneApplicationService.Current.State["msisdn"] = contact.Msisdn;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));

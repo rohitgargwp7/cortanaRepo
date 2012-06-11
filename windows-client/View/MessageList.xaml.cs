@@ -17,11 +17,12 @@ namespace windows_client
 {
     public partial class MessageList : PhoneApplicationPage, HikePubSub.Listener
     {
+        private HikePubSub mPubSub;
         private readonly IsolatedStorageSettings appSettings;
         private NLog.Logger logger;
-        private static Dictionary<string, MessageListPage> convMap; // this holds msisdn -> conversation mapping
+        private static Dictionary<string, ConversationListObject> convMap; // this holds msisdn -> conversation mapping
 
-        public static Dictionary<string, MessageListPage> ConvMap
+        public static Dictionary<string, ConversationListObject> ConvMap
         {
             get
             {
@@ -31,11 +32,12 @@ namespace windows_client
         public MessageList()
         {
             InitializeComponent();
+            mPubSub = App.HikePubSubInstance;
             logger = NLog.LogManager.GetCurrentClassLogger();
             appSettings = App.appSettings;
             App.MqttManagerInstance.connect();
 
-            convMap = new Dictionary<string, MessageListPage>();
+            convMap = new Dictionary<string, ConversationListObject>();
             LoadMessages();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
 
@@ -46,6 +48,7 @@ namespace windows_client
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_DELIVERED, this);
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_FAILED, this);
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
+            App.HikePubSubInstance.addListener(HikePubSub.SEND_NEW_MSG, this);
             App.HikePubSubInstance.addListener(HikePubSub.ICON_CHANGED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
@@ -59,14 +62,14 @@ namespace windows_client
                 //mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
                 return;
             }
-            App.ViewModel.MessageListPageCollection = new ObservableCollection<MessageListPage>();
+            App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
 
             for (int i = 0; i < conversationList.Count; i++)
             {
                 Conversation conv = conversationList[i];
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
-                MessageListPage mObj = new MessageListPage(conv.Msisdn, contact.Name, lastMessage.Message, contact.OnHike, TimeUtils.getRelativeTime(lastMessage.Timestamp));
+                ConversationListObject mObj = new ConversationListObject(contact.Msisdn,contact.Name, lastMessage.Message, contact.OnHike, TimeUtils.getRelativeTime(lastMessage.Timestamp));
                 convMap.Add(conv.Msisdn, mObj);
                 App.ViewModel.MessageListPageCollection.Add(mObj);
             }
@@ -75,11 +78,11 @@ namespace windows_client
 
         private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageListPage obj = myListBox.SelectedItem as MessageListPage;
+            ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
             if (obj == null)
                 return;
-            //this.myListBox.SelectedIndex;
-            PhoneApplicationService.Current.State["messageListPageObject"] = obj;
+
+            PhoneApplicationService.Current.State["msisdn"] = obj.MSISDN;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -118,36 +121,44 @@ namespace windows_client
         }
 
         /* Start or continue the conversation*/
-        private void startConversation_Click(object sender, EventArgs e)
+        private void selectUserBtn_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
         public void onEventReceived(string type, object obj)
         {
-            if (HikePubSub.MESSAGE_RECEIVED == type || HikePubSub.MESSAGE_SENT == type)
+            if (HikePubSub.MESSAGE_RECEIVED == type || HikePubSub.SEND_NEW_MSG == type)
             {
                 ConvMessage convMessage = (ConvMessage)obj;
-                MessageListPage mObj;
+                ConversationListObject mObj;
+                bool isNewConversation = false;
+
+                /*This is used to avoid cross thread invokation exception*/
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (convMap.ContainsKey(convMessage.Msisdn))
                     {
                         mObj = convMap[convMessage.Msisdn];
                         mObj.LastMessage = convMessage.Message;
-                        mObj.TimeStamp = TimeUtils.getRelativeTime(convMessage.Timestamp);
-
-                        /*This is used to avoid cross thread invokation exception*/
-
+                        mObj.TimeStamp = TimeUtils.getRelativeTime(convMessage.Timestamp);                       
                         App.ViewModel.MessageListPageCollection.Remove(mObj);
-                        //App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                     }
                     else
                     {
                         ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                        mObj = new MessageListPage(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message, contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getRelativeTime(convMessage.Timestamp));
+                        mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message, contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getRelativeTime(convMessage.Timestamp));
+                        convMap.Add(convMessage.Msisdn,mObj);
+                        isNewConversation = true;
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, mObj);     
+                    App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+                    object[] vals = new object[2];
+                    vals[0] = convMessage;
+                    vals[1] = isNewConversation;
+                    if ( HikePubSub.SEND_NEW_MSG == type)
+                        mPubSub.publish(HikePubSub.MESSAGE_SENT,vals);
+                    else if(HikePubSub.MESSAGE_RECEIVED == type)
+                        mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_FROM_SENDER ,vals);
                 });
             }
         }
