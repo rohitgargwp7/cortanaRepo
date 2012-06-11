@@ -62,11 +62,12 @@ namespace windows_client.DbUtils
         {
             App.HikeDataContext.messages.InsertOnSubmit(convMessage);
             App.HikeDataContext.SubmitChanges();
+            long x = convMessage.MessageId;
         }
 
-        public static void addChatMessage(ConvMessage convMsg)
+        public static void addChatMessage(ConvMessage convMsg,bool isNewConversation)
         {
-            if (!MessageList.ConvMap.ContainsKey(convMsg.Msisdn)) // create a new conversation in conversation Table.
+            if (isNewConversation) 
             {
                 ConversationTableUtils.addConversation(convMsg);
             }

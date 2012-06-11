@@ -17,7 +17,6 @@ namespace windows_client.DbUtils
 {
     public class ConversationTableUtils
     {
-       
         public static void deleteMessage(long msgId)
         {
             Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
@@ -32,6 +31,7 @@ namespace windows_client.DbUtils
 
         public static void updateMsgStatus(long msgID, int val)
         {
+           
         }
 
         /* This function gets all the conversations shown on the message list page*/
@@ -53,7 +53,7 @@ namespace windows_client.DbUtils
         public static void addConversation(ConvMessage convMessage)
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-            Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null, convMessage.Conversation.IsOnhike);
+            Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null, contactInfo.OnHike);
             App.HikeDataContext.conversations.InsertOnSubmit(conv);
             App.HikeDataContext.SubmitChanges();
         }

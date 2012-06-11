@@ -278,21 +278,21 @@ namespace windows_client.DbUtils
 
         #endregion
 
-       /* public void LoadMessagePageList()
+        /* public void LoadMessagePageList()
         {
             List<Conversation> conversations = getConversations();
 
-            MessageListPageCollection = new ObservableCollection<MessageListPage>();
+            MessageListPageCollection = new ObservableCollection<ConversationListObject>();
             foreach (Conversation c in conversations)
             {
                 ConvMessage message = c.Messages[c.Messages.Count - 1]; 
                 string contactName = c.ContactName;
                 string lastMessage = message.Message;
                 string relativeTime = TimeUtils.getRelativeTime(message.Timestamp);
-                MessageListPageCollection.Add(new MessageListPage(contactName, lastMessage, relativeTime));
+                MessageListPageCollection.Add(new ConversationListObject(contactName, lastMessage, relativeTime));
             }
         }
         */
-    
+
     }
 }
