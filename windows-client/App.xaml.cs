@@ -223,10 +223,6 @@ namespace windows_client
             {
                 nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
                 /* test function */
-
-                Test.Test.AddContactEntries();
-                Test.Test.insertMessages();
-
             }
             else if (!appSettings.Contains(App.MSISDN_SETTING) || "f" == appSettings[App.MSISDN_SETTING].ToString())
             {
