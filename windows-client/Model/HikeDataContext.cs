@@ -27,6 +27,7 @@ namespace windows_client.Model
         public Table<Blocked> blockedUsersTable;
 
         public Table<HikePacket> mqttMessages;
-        //public Table<Thumbnails> thumbnails;
+        
+        public Table<Thumbnails> thumbnails;
     }
 }
