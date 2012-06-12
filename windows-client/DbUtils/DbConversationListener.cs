@@ -108,7 +108,7 @@ namespace windows_client.DbUtils
         {
             long msgID = (long)obj;
             /* TODO we should lookup the convid for this user, since otherwise one could set mess with the state for other conversations */
-            ConversationTableUtils.updateMsgStatus(msgID, status);
+            MessagesTableUtils.updateMsgStatus(msgID, status);
         }
     }
 }

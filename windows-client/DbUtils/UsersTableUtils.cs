@@ -150,7 +150,8 @@ namespace windows_client.DbUtils
                 where o.Msisdn == m
                 select o);
 
-            return q(App.HikeDataContext, msisdn).First();
+             return q(App.HikeDataContext,msisdn).Count<ContactInfo>() == 0 ? null :
+                q(App.HikeDataContext,msisdn).First();
         }
 
         public static void deleteAllContacts()
