@@ -81,7 +81,7 @@ namespace windows_client.View
             {
                 return;
             }
-            
+
             for (int i = 0; i < messagesList.Count; i++)
             {
                 this.ChatThreadPageCollection.Add(messagesList[i]);
@@ -135,14 +135,14 @@ namespace windows_client.View
 
         private void sendMessage(ConvMessage convMessage)
         {
-            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage); 
+            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
         }
 
         private void blockUnblockUser_Click(object sender, EventArgs e)
         {
-            ConvMessage c = ChatThreadPageCollection[0];
+            ConvMessage c = ChatThreadPageCollection[ChatThreadPageCollection.Count - 1];
         }
 
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
@@ -181,9 +181,43 @@ namespace windows_client.View
                 ConvMessage msg = msgMap[msgId];
                 if (msg != null)
                 {
-                    msg.MsgState = ConvMessage.State.SENT_CONFIRMED;
+                    msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
                 }
             }
+            else if (HikePubSub.MESSAGE_DELIVERED == type)
+            {
+                long msgId = (long)obj;
+                ConvMessage msg = msgMap[msgId];
+                if (msg != null)
+                {
+                    msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.myListBox.UpdateLayout();
+                        this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                    });
+                
+                }
+            }
+            else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
+            {
+                long[] ids = (long[])obj;
+                // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    ConvMessage msg = msgMap[ids[i]];
+                    if (msg != null)
+                    {
+                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                    }
+                }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.myListBox.UpdateLayout();
+                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                });
+            }
+           
         }
 
         #endregion

@@ -109,7 +109,7 @@ namespace windows_client
                 int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
                 this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
             }
-            else if (SERVER_REPORT == type) /* Represents Server has received the msg*/
+            else if (SERVER_REPORT == type) /* Represents Server has received the msg you sent */
             {
                 string id = (string)jsonObj[HikeConstants.DATA];
                 long msgID;
