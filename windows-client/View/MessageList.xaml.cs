@@ -37,6 +37,7 @@ namespace windows_client
             appSettings = App.appSettings;
             App.MqttManagerInstance.connect();
 
+            App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
             convMap = new Dictionary<string, ConversationListObject>();
             LoadMessages();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
@@ -62,8 +63,6 @@ namespace windows_client
                 //mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
                 return;
             }
-            App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
-
             for (int i = 0; i < conversationList.Count; i++)
             {
                 Conversation conv = conversationList[i];
@@ -151,6 +150,8 @@ namespace windows_client
                         convMap.Add(convMessage.Msisdn,mObj);
                         isNewConversation = true;
                     }
+                    if( App.ViewModel.MessageListPageCollection == null)
+                        App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                     object[] vals = new object[2];
                     vals[0] = convMessage;
