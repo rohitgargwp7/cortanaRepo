@@ -111,6 +111,5 @@ namespace windows_client.DbUtils
                 message.MessageStatus = (ConvMessage.State)val;
             }
         }
-
     }
 }
