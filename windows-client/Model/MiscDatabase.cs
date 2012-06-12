@@ -90,6 +90,10 @@ namespace windows_client.Model
         #endregion
 
         #region properties
+
+        [Column(IsVersion = true)]
+        private Binary version;
+
         [Column(IsPrimaryKey = true, CanBeNull = false)]
         public string Msisdn
         {

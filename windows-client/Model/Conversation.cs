@@ -13,6 +13,7 @@ using System.Data.Linq.Mapping;
 using System.Collections.Generic;
 
 using windows_client.utils;
+using System.Data.Linq;
 namespace windows_client.Model
 {
     [Table(Name="conversations")]
@@ -31,6 +32,9 @@ namespace windows_client.Model
         #endregion
 
         #region member functions
+
+        [Column(IsVersion = true)]
+        private Binary version;
 
         [Column(IsPrimaryKey = true)]
         public string Msisdn

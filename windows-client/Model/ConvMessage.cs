@@ -54,6 +54,9 @@ namespace windows_client.Model
 
         #region Messages Table member
 
+        [Column(IsVersion = true)]
+        private Binary version;
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
         public long MessageId
         {
