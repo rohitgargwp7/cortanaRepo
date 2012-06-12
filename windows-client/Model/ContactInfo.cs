@@ -28,7 +28,10 @@ namespace windows_client.Model
         //it significantly improves update performance
 
         # region Users Table Members
-        
+
+        [Column(IsVersion = true)]
+        private Binary version;
+
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
         public string Id
         {

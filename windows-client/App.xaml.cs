@@ -89,7 +89,7 @@ namespace windows_client
             }
         }
 
-        public static HikeDataContext HikeDataContext
+        public static HikeDataContext HikeDataContextInstance
         {
             get
             {
@@ -191,12 +191,12 @@ namespace windows_client
 
             // Create the database if it does not exist.
 
-            App.HikeDataContext = new HikeDataContext(DBConnectionstring);
+            App.HikeDataContextInstance = new HikeDataContext(DBConnectionstring);
 
-            if (App.HikeDataContext.DatabaseExists() == false)
+            if (App.HikeDataContextInstance.DatabaseExists() == false)
             {
                 // Create the local database.
-                App.HikeDataContext.CreateDatabase();
+                App.HikeDataContextInstance.CreateDatabase();
             }
 
             #endregion

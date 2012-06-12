@@ -25,8 +25,8 @@ namespace windows_client.DbUtils
                 from o in hdc.messages
                 where o.MessageId == id
                 select o);
-            App.HikeDataContext.messages.DeleteAllOnSubmit<ConvMessage>(q(App.HikeDataContext, msgId));
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(q(App.HikeDataContextInstance, msgId));
+            App.HikeDataContextInstance.SubmitChanges();
         }
 
         /* This function gets all the conversations shown on the message list page*/
@@ -37,9 +37,9 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.conversations
                 select o);
-            if (q(App.HikeDataContext).Count<Conversation>() == 0)
+            if (q(App.HikeDataContextInstance).Count<Conversation>() == 0)
                 return null;
-            List<Conversation> conversations = q(App.HikeDataContext).ToList<Conversation>();
+            List<Conversation> conversations = q(App.HikeDataContextInstance).ToList<Conversation>();
             conversations.Sort();
             conversations.Reverse();
             return conversations;
@@ -49,8 +49,8 @@ namespace windows_client.DbUtils
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
             Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null,  (contactInfo != null) ? contactInfo.OnHike:false);
-            App.HikeDataContext.conversations.InsertOnSubmit(conv);
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.conversations.InsertOnSubmit(conv);
+            App.HikeDataContextInstance.SubmitChanges();
         }
 
     }
