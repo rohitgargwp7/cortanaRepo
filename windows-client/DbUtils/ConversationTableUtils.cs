@@ -29,11 +29,6 @@ namespace windows_client.DbUtils
             App.HikeDataContext.SubmitChanges();
         }
 
-        public static void updateMsgStatus(long msgID, int val)
-        {
-           
-        }
-
         /* This function gets all the conversations shown on the message list page*/
         public static List<Conversation> getAllConversations()
         {
