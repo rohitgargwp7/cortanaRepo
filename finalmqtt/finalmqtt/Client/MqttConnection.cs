@@ -360,7 +360,15 @@ namespace finalmqtt.Client
             if (msg is RetryableMessage)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
-                map.Remove(messageId);
+                if (messageId != 0)
+                {
+                    Callback cb;
+                    map.TryGetValue(messageId, out cb);
+                    if (cb != null)
+                    {
+                        cb.onSuccess();
+                    }
+                }
             }
 
             switch (msg.getType())
