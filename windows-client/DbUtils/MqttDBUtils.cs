@@ -15,7 +15,7 @@ using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
-    public class MiscDBUtils
+    public class MqttDBUtils
     {
         #region MqttPersistence
         public static List<HikePacket> getAllSentMessages()

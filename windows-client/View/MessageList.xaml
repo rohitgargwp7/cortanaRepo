@@ -38,13 +38,13 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,70">
-                        <!--<Image x:Name="icon" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/windows-client;component/View/images/dummy_image.jpg"></Image>-->
+                        <Image x:Name="icon" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/windows-client;component/View/images/dummy_image.jpg"></Image>
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Margin="25 0 0 5">
                                 <TextBlock Text="{Binding ContactName}" FontWeight="Bold" FontSize="23" Height="40" Grid.Column="1" Grid.ColumnSpan="2" />
                                 <TextBlock Text="{Binding Timestamp}" FontWeight="Bold" FontSize="23" Height="40" Grid.Column="3" Grid.ColumnSpan="1" />
                             </StackPanel>
-                            <TextBlock Text="{Binding LastMessage}" Height="30"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" />
+                            <TextBlock Text="{Binding LastMessage}" Margin="30 0 0 5" Height="30"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" />
                         </StackPanel>
                     </StackPanel>
 

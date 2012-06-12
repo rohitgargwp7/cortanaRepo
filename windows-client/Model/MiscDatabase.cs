@@ -84,11 +84,13 @@ namespace windows_client.Model
 
     public class Thumbnails : INotifyPropertyChanged, INotifyPropertyChanging
     {
-
-
+        #region members
         private string _msisdn;
+        private byte[] _avatar;
+        #endregion
 
-        [Column(CanBeNull = false)]
+        #region properties
+        [Column(IsPrimaryKey = true, CanBeNull = false)]
         public string Msisdn
         {
             get
@@ -106,10 +108,9 @@ namespace windows_client.Model
             }
         }
 
-        private Binary _avatar;
 
         [Column(CanBeNull = false)]
-        public Binary Avatar
+        public byte[] Avatar
         {
             get
             {
@@ -125,8 +126,20 @@ namespace windows_client.Model
                 }
             }
         }
+        #endregion
 
+        #region contructors
+        public Thumbnails()
+        { 
+        }
 
+        public Thumbnails(string msisdn, byte[] image)
+        {
+            this.Msisdn = msisdn;
+            this.Avatar = image;
+        }
+
+        #endregion
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

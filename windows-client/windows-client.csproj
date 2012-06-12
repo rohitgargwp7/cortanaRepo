@@ -75,8 +75,9 @@
     </Compile>
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
-    <Compile Include="DbUtils\MiscDBUtils.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
+    <Compile Include="DbUtils\MiscDBUtil.cs" />
+    <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="db\ConversationDatabase.cs" />
     <Compile Include="db\DBConstants.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Model\ChatThreadPage.cs" />
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
+    <Compile Include="Model\MiscDatabase.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\DisconnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -100,7 +102,6 @@
     <Compile Include="utils\IsolatedStorageHelper.cs" />
     <Compile Include="Model\HikeConstants.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
-    <Compile Include="Model\UserDatabase.cs" />
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />

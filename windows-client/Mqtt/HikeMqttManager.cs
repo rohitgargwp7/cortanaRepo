@@ -273,7 +273,7 @@ namespace windows_client.Mqtt
                 {
                     try
                     {
-                        MiscDBUtils.addSentMessage(packet);
+                        MqttDBUtils.addSentMessage(packet);
                     }
                     catch (Exception e)
                     {
@@ -338,7 +338,23 @@ namespace windows_client.Mqtt
 
         public void onPublish(String topic, byte[] body)
         {
+
             String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
+            JObject jsonObj = JObject.Parse(receivedMessage);
+
+            JToken type;
+            jsonObj.TryGetValue(HikeConstants.TYPE, out type);
+
+            if(NetworkManager.ICON.Equals(type.ToString()))
+            {
+                JToken temp;
+                jsonObj.TryGetValue(HikeConstants.FROM,out temp);
+                string msisdn = temp.ToString();
+                jsonObj.TryGetValue(HikeConstants.DATA,out temp);
+                string iconBase64 = temp.ToString();
+                MiscDBUtil.setIcon(msisdn, System.Convert.FromBase64String(iconBase64));
+            }
+
             pubSub.publish(HikePubSub.WS_RECEIVED, receivedMessage);
         }
 
@@ -346,8 +362,6 @@ namespace windows_client.Mqtt
         {
             if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
             {
-                // string x = "{\"to\": \"+919873480092\",\"d\": {\"hm\": \"BSB Rocks\",\"ts\": 1338984856,\"i\": 40},\"t\": \"m\"}";
-                // JObject json = JObject.Parse(x);
                 JObject json = (JObject)obj;
 
                 JToken data;
@@ -360,14 +374,8 @@ namespace windows_client.Mqtt
                 String temp2 = json.ToString(Newtonsoft.Json.Formatting.None);
 
                 byte[] byteData = Encoding.UTF8.GetBytes(temp2);
-
-
-                //                String tempString = Encoding.UTF8.GetString(byteData, 0, byteData.Length);
-
                 HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
-
                 send(packet, 1);
-                //onMessage(message);
             }
         }
 

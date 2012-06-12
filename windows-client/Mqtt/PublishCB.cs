@@ -36,9 +36,8 @@ namespace windows_client.Mqtt
         public void onFailure(Exception value)
         {
             hikeMqttManager.ping();
-            MiscDBUtils.addSentMessage(packet);
+            MqttDBUtils.addSentMessage(packet);
             //set message status
         }
-
     }
 }
