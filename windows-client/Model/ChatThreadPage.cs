@@ -16,6 +16,7 @@ namespace windows_client.Model
     {
         private string _message;
         private string _alignment;
+        private string _msgId;
 
         public string Message
         {
@@ -49,16 +50,33 @@ namespace windows_client.Model
             }
         }
 
+        public string MsgId
+        {
+            get
+            {
+                return _msgId;
+            }
+            set
+            {
+                if (value != _msgId)
+                {
+                    NotifyPropertyChanging("MsgId");
+                    _msgId = value;
+                    NotifyPropertyChanged("MsgId");
+                }
+            }
+        }
         public ChatThreadPage(string msg)
         {
             _message = msg;
             _alignment = "Left";
         }
 
-        public ChatThreadPage(string msg,string alignment)
+        public ChatThreadPage(string msgId,string msg,string alignment)
         {
             _message = msg;
             _alignment = alignment;
+            _msgId = msgId;
         }
 
         #region INotifyPropertyChanged Members

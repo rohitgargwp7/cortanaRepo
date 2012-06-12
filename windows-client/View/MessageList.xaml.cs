@@ -157,8 +157,7 @@ namespace windows_client
                     vals[1] = isNewConversation;
                     if ( HikePubSub.SEND_NEW_MSG == type)
                         mPubSub.publish(HikePubSub.MESSAGE_SENT,vals);
-                    else if(HikePubSub.MESSAGE_RECEIVED == type)
-                        mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_FROM_SENDER ,vals);
+  
                 });
             }
         }

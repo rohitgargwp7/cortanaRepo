@@ -89,7 +89,7 @@ namespace windows_client
                 try
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
-                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
+                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED_FROM_SENDER, convMessage);
                 }
                 catch (Exception e)
                 {

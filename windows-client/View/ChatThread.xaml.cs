@@ -21,17 +21,26 @@ namespace windows_client.View
 {
     public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
-        private ObservableCollection<ChatThreadPage> chatThreadPageCollection = null;
+        private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
         private int mCredits;
         private HikePubSub mPubSub;
         private string mContactNumber;
 
+        private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> message mapping
+
+        public Dictionary<long, ConvMessage> MsgMap
+        {
+            get
+            {
+                return msgMap;
+            }
+        }
 
         public ChatThread()
         {
             InitializeComponent();
-
+            this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             /* register listeners */
             App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
@@ -72,12 +81,12 @@ namespace windows_client.View
             {
                 return;
             }
-            this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
+            
             for (int i = 0; i < messagesList.Count; i++)
             {
-                this.ChatThreadPageCollection.Add(new ChatThreadPage(messagesList[i].Message));
+                this.ChatThreadPageCollection.Add(messagesList[i]);
+                msgMap.Add(messagesList[i].MessageId, messagesList[i]);
             }
-            this.myListBox.ItemsSource = chatThreadPageCollection;
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[messagesList.Count - 1]);
             //this.myListBox.UpdateLayout();
@@ -118,9 +127,7 @@ namespace windows_client.View
              */
             sendMsgTxtbox.Text = "";
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            if (this.ChatThreadPageCollection == null)
-                this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
-            this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message, "Right"));
+            this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
             sendMessage(convMessage);
@@ -128,14 +135,14 @@ namespace windows_client.View
 
         private void sendMessage(ConvMessage convMessage)
         {
-            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage); // this is to notify DBListener
+            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage); 
             if (sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
         }
 
         private void blockUnblockUser_Click(object sender, EventArgs e)
         {
-
+            ConvMessage c = ChatThreadPageCollection[0];
         }
 
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
@@ -156,15 +163,13 @@ namespace windows_client.View
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
                 ConvMessage convMessage = (ConvMessage)obj;
-                /* Check is this is the same user for which this message is recieved*/
+                /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
                 {
                     // Update UI
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (this.ChatThreadPageCollection == null)
-                            this.ChatThreadPageCollection = new ObservableCollection<ChatThreadPage>();
-                        this.ChatThreadPageCollection.Add(new ChatThreadPage(convMessage.Message));
+                        this.ChatThreadPageCollection.Add(convMessage);
                         this.myListBox.UpdateLayout();
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                     });
@@ -172,19 +177,18 @@ namespace windows_client.View
             }
             else if (HikePubSub.SERVER_RECEIVED_MSG == type)
             {
-                //long msgId = (long)obj;
-                //ConvMessage msg = findMessageById(msgId);
-                //if (msg != null)
-                //{
-                //    msg.setState(ConvMessage.State.SENT_CONFIRMED);
-                //    runOnUiThread(mUpdateAdapter);
-                //}
+                long msgId = (long)obj;
+                ConvMessage msg = msgMap[msgId];
+                if (msg != null)
+                {
+                    msg.MsgState = ConvMessage.State.SENT_CONFIRMED;
+                }
             }
         }
 
         #endregion
 
-        public ObservableCollection<ChatThreadPage> ChatThreadPageCollection
+        public ObservableCollection<ConvMessage> ChatThreadPageCollection
         {
             get
             {

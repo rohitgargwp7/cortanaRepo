@@ -337,7 +337,35 @@ namespace windows_client.Model
             return TimeUtils.getRelativeTime(Timestamp);
         }
 
-
+        public State MsgState
+        {
+            get
+            {
+                return _messageStatus;
+            }
+            set
+            {
+                if (value != _messageStatus)
+                    _messageStatus = value;
+            }
+        }
+        public string MsgStatus
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case State.SENT_CONFIRMED:
+                        return " -> S";
+                    case State.SENT_DELIVERED:
+                        return " -> D";
+                    case State.SENT_DELIVERED_READ:
+                        return " -> R";
+                    default:
+                        return " UC";
+                }
+            }
+        }
 
         #endregion
 

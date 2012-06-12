@@ -49,11 +49,10 @@ namespace windows_client.DbUtils
             }
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
             {
-                object[] vals = (object[])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
-                bool isNewConv = (bool)vals[1];
-                MessagesTableUtils.addChatMessage(convMessage, isNewConv);
+                ConvMessage convMessage = (ConvMessage)obj;
+                MessagesTableUtils.addChatMessage(convMessage);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
+                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED,convMessage);
             }
             else if (HikePubSub.SERVER_RECEIVED_MSG == type)  // server got msg from client 1 and sent back received msg receipt
             {

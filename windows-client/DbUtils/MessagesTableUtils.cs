@@ -12,6 +12,8 @@ using System.Linq;
 using windows_client.Model;
 using System.Data.Linq;
 using System.Collections.Generic;
+using Microsoft.Phone.Controls;
+using windows_client.View;
 
 namespace windows_client.DbUtils
 {
@@ -62,7 +64,14 @@ namespace windows_client.DbUtils
         {
             App.HikeDataContext.messages.InsertOnSubmit(convMessage);
             App.HikeDataContext.SubmitChanges();
-            long x = convMessage.MessageId;
+            long msgId = convMessage.MessageId;
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                var currentPage = ((App)Application.Current).RootFrame.Content as ChatThread;
+                if (currentPage != null)
+                    currentPage.MsgMap.Add(msgId, convMessage);
+            });
         }
 
         public static void addChatMessage(ConvMessage convMsg, bool isNewConversation)
@@ -71,7 +80,15 @@ namespace windows_client.DbUtils
             {
                 ConversationTableUtils.addConversation(convMsg);
             }
-            MessagesTableUtils.addMessage(convMsg);
+            addMessage(convMsg);
+        }
+        public static void addChatMessage(ConvMessage convMsg)
+        {
+            if (!MessageList.ConvMap.ContainsKey(convMsg.Msisdn))
+            {
+                ConversationTableUtils.addConversation(convMsg);
+            }
+            addMessage(convMsg);
         }
 
         /// <summary>
@@ -94,5 +111,6 @@ namespace windows_client.DbUtils
                 message.MessageStatus = (ConvMessage.State)val;
             }
         }
+
     }
 }
