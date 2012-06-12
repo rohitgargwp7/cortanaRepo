@@ -337,18 +337,6 @@ namespace windows_client.Model
             return TimeUtils.getRelativeTime(Timestamp);
         }
 
-        public State MsgState
-        {
-            get
-            {
-                return _messageStatus;
-            }
-            set
-            {
-                if (value != _messageStatus)
-                    _messageStatus = value;
-            }
-        }
         public string MsgStatus
         {
             get
