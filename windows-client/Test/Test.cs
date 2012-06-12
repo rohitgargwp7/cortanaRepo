@@ -75,7 +75,7 @@ namespace windows_client.Test
             addMessage("Hey GK2 5", "+918826670738");
 
             clearMessages();
-            addMessage("Hey Madhur", "+919810116420");
+            addMessage("Hey Madhur", "+919873480092");
 
             msgs = MessagesTableUtils.getAllMessages(); ;
             convs = ConversationTableUtils.getAllConversations();
@@ -87,10 +87,10 @@ namespace windows_client.Test
         {
             List<ContactInfo> list = new List<ContactInfo>();
             list.Add(new ContactInfo("-1", "+919876543210", "Gautam", false, "9876543210", false));
-            list.Add(new ContactInfo("-1", "+919910000474", "Vijay", false, "9876543212", false));
-            list.Add(new ContactInfo("-1", "+919582021646", "Rishabh", false, "9876543213", false));
+            list.Add(new ContactInfo("-1", "+919910000474", "Vijay", false, "9910000474", false));
+            list.Add(new ContactInfo("-1", "+919582021646", "Rishabh", false, "9582021646", false));
             list.Add(new ContactInfo("-1", "+919999711370", "Robby", true, "9999711370", false));
-            list.Add(new ContactInfo("-1", "+919810116420", "Madhur", true, "9810116420", false));
+            list.Add(new ContactInfo("-1", "+919873480092", "Madhur", true, "9873480092", false));
             list.Add(new ContactInfo("-1", "+918826670738", "GK", true, "8826670738", false));
 
             UsersTableUtils.addContacts(list);
