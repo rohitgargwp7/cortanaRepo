@@ -23,7 +23,7 @@ namespace windows_client.DbUtils
             Thumbnails thumbnail = getThumbNailForMSisdn(msisdn);
             if (thumbnail == null)
             {
-                App.HikeDataContext.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
+                App.HikeDataContextInstance.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                 contact.HasCustomPhoto = true;
             }
@@ -31,7 +31,7 @@ namespace windows_client.DbUtils
             {
                 thumbnail.Avatar = image;
             }
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.SubmitChanges();
         }
 
         public static List<Thumbnails> getAllThumbNails()
@@ -41,8 +41,8 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.thumbnails
                 select o);
-            return q(App.HikeDataContext).Count<Thumbnails>() == 0 ? null :
-                q(App.HikeDataContext).ToList<Thumbnails>();
+            return q(App.HikeDataContextInstance).Count<Thumbnails>() == 0 ? null :
+                q(App.HikeDataContextInstance).ToList<Thumbnails>();
         }
 
 
@@ -54,8 +54,8 @@ namespace windows_client.DbUtils
                 from o in hdc.thumbnails
                 where o.Msisdn == m
                 select o);
-            return q(App.HikeDataContext, msisdn).Count<Thumbnails>() == 0 ? null :
-                q(App.HikeDataContext, msisdn).First<Thumbnails>();
+            return q(App.HikeDataContextInstance, msisdn).Count<Thumbnails>() == 0 ? null :
+                q(App.HikeDataContextInstance, msisdn).First<Thumbnails>();
         }
     }
 }

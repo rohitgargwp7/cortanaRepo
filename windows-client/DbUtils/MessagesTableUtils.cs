@@ -29,8 +29,8 @@ namespace windows_client.DbUtils
                 from o in hdc.messages
                 where o.Msisdn == myMsisdn
                 select o);
-            return q(App.HikeDataContext, msisdn).Count<ConvMessage>() == 0 ? null :
-                q(App.HikeDataContext, msisdn).ToList<ConvMessage>();
+            return q(App.HikeDataContextInstance, msisdn).Count<ConvMessage>() == 0 ? null :
+                q(App.HikeDataContextInstance, msisdn).ToList<ConvMessage>();
         }
 
 
@@ -43,8 +43,8 @@ namespace windows_client.DbUtils
                 from o in hdc.messages
                 where o.Msisdn == myMsisdn
                 select o);
-            return q(App.HikeDataContext, msisdn).Count<ConvMessage>() == 0 ? null :
-                q(App.HikeDataContext, msisdn).Last<ConvMessage>();
+            return q(App.HikeDataContextInstance, msisdn).Count<ConvMessage>() == 0 ? null :
+                q(App.HikeDataContextInstance, msisdn).Last<ConvMessage>();
         }
 
 
@@ -55,15 +55,15 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.messages
                 select o);
-            return q(App.HikeDataContext).Count<ConvMessage>() == 0 ? null :
-                q(App.HikeDataContext).ToList<ConvMessage>();
+            return q(App.HikeDataContextInstance).Count<ConvMessage>() == 0 ? null :
+                q(App.HikeDataContextInstance).ToList<ConvMessage>();
         }
 
         /* Adds a chat message to message Table.*/
         public static void addMessage(ConvMessage convMessage)
         {
-            App.HikeDataContext.messages.InsertOnSubmit(convMessage);
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.messages.InsertOnSubmit(convMessage);
+            App.HikeDataContextInstance.SubmitChanges();
             long msgId = convMessage.MessageId;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -105,9 +105,9 @@ namespace windows_client.DbUtils
                  from o in hdc.messages
                  where o.MessageId == msgID
                  select o);
-            if (q(App.HikeDataContext, msgID).Count<ConvMessage>() == 1)
+            if (q(App.HikeDataContextInstance, msgID).Count<ConvMessage>() == 1)
             {
-                message = q(App.HikeDataContext, msgID).ToList<ConvMessage>().First<ConvMessage>();
+                message = q(App.HikeDataContextInstance, msgID).ToList<ConvMessage>().First<ConvMessage>();
                 message.MessageStatus = (ConvMessage.State)val;
                 //App.HikeDataContext.SubmitChanges();
             }

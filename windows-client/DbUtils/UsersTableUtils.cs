@@ -88,7 +88,7 @@ namespace windows_client.DbUtils
 
         public void SaveChangesToDB()
         {
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.SubmitChanges();
         }
 
         #region user table
@@ -105,15 +105,15 @@ namespace windows_client.DbUtils
 
         public static void addContact(ContactInfo user)
         {
-            App.HikeDataContext.users.InsertOnSubmit(user);
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.users.InsertOnSubmit(user);
+            App.HikeDataContextInstance.SubmitChanges();
             //TODO update observable list
         }
 
         public static void addContacts(List<ContactInfo> contacts)
         {
-            App.HikeDataContext.users.InsertAllOnSubmit(contacts);
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.users.InsertAllOnSubmit(contacts);
+            App.HikeDataContextInstance.SubmitChanges();
 
         }
 
@@ -124,8 +124,8 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.users
                 select o);
-            return q(App.HikeDataContext).Count<ContactInfo>() == 0 ? null:
-                q(App.HikeDataContext).ToList<ContactInfo>();
+            return q(App.HikeDataContextInstance).Count<ContactInfo>() == 0 ? null:
+                q(App.HikeDataContextInstance).ToList<ContactInfo>();
         }
 
         public static List<ContactInfo> getContactInfoFromName(string name)
@@ -137,8 +137,8 @@ namespace windows_client.DbUtils
                 where o.Name.Contains(name)
                 select o);
 
-            return q(App.HikeDataContext,name).Count<ContactInfo>() == 0 ? null :
-                q(App.HikeDataContext,name).ToList<ContactInfo>();
+            return q(App.HikeDataContextInstance,name).Count<ContactInfo>() == 0 ? null :
+                q(App.HikeDataContextInstance,name).ToList<ContactInfo>();
         }
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
@@ -150,14 +150,14 @@ namespace windows_client.DbUtils
                 where o.Msisdn == m
                 select o);
 
-             return q(App.HikeDataContext,msisdn).Count<ContactInfo>() == 0 ? null :
-                q(App.HikeDataContext,msisdn).First();
+             return q(App.HikeDataContextInstance,msisdn).Count<ContactInfo>() == 0 ? null :
+                q(App.HikeDataContextInstance,msisdn).First();
         }
 
         public static void deleteAllContacts()
         {
-            App.HikeDataContext.users.DeleteAllOnSubmit<ContactInfo>(App.HikeDataContext.GetTable<ContactInfo>());
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.users.DeleteAllOnSubmit<ContactInfo>(App.HikeDataContextInstance.GetTable<ContactInfo>());
+            App.HikeDataContextInstance.SubmitChanges();
 
         }
         #endregion
@@ -173,29 +173,29 @@ namespace windows_client.DbUtils
 //                where cm.Msisdn == m && cm.ConversationId == conversationId && cm.Timestamp == timestamp
                 where cm.Msisdn == m && cm.Timestamp == timestamp
                 select cm);
-            return q(App.HikeDataContext, conv.Timestamp, conv.Message).Count() != 0;
+            return q(App.HikeDataContextInstance, conv.Timestamp, conv.Message).Count() != 0;
         }
 
       
 
         public static void addMessages(List<ConvMessage> messages)
         {
-            App.HikeDataContext.messages.InsertAllOnSubmit(messages);
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.messages.InsertAllOnSubmit(messages);
+            App.HikeDataContextInstance.SubmitChanges();
         }
 
         public static void deleteAllConversations()
         {
-            App.HikeDataContext.conversations.DeleteAllOnSubmit<Conversation>(App.HikeDataContext.GetTable<Conversation>());
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.conversations.DeleteAllOnSubmit<Conversation>(App.HikeDataContextInstance.GetTable<Conversation>());
+            App.HikeDataContextInstance.SubmitChanges();
 
         }
 
 
         public static void deleteAllMessages()
         {
-            App.HikeDataContext.messages.DeleteAllOnSubmit<ConvMessage>(App.HikeDataContext.GetTable<ConvMessage>());
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(App.HikeDataContextInstance.GetTable<ConvMessage>());
+            App.HikeDataContextInstance.SubmitChanges();
 
         }
 
@@ -229,9 +229,9 @@ namespace windows_client.DbUtils
                 where o.Msisdn == phoneNum
                 select o);
 
-            App.HikeDataContext.messages.DeleteAllOnSubmit<ConvMessage>(messages(App.HikeDataContext, msisdn));
-            App.HikeDataContext.conversations.DeleteAllOnSubmit<Conversation>(conversation(App.HikeDataContext, msisdn));
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(messages(App.HikeDataContextInstance, msisdn));
+            App.HikeDataContextInstance.conversations.DeleteAllOnSubmit<Conversation>(conversation(App.HikeDataContextInstance, msisdn));
+            App.HikeDataContextInstance.SubmitChanges();
         }
 
       
@@ -248,11 +248,11 @@ namespace windows_client.DbUtils
 
             foreach (string m in msisdns)
             {
-                App.HikeDataContext.blockedUsersTable.InsertOnSubmit(new Blocked(m));
+                App.HikeDataContextInstance.blockedUsersTable.InsertOnSubmit(new Blocked(m));
             }
             try
             {
-                App.HikeDataContext.SubmitChanges();
+                App.HikeDataContextInstance.SubmitChanges();
             }
             catch (DuplicateKeyException dke)
             {
@@ -268,13 +268,13 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.blockedUsersTable
                 select o);
-            return q(App.HikeDataContext).ToList<Blocked>();
+            return q(App.HikeDataContextInstance).ToList<Blocked>();
         }
 
         public void deleteBlocklist()
         {
-            App.HikeDataContext.blockedUsersTable.DeleteAllOnSubmit<Blocked>(App.HikeDataContext.GetTable<Blocked>());
-            App.HikeDataContext.SubmitChanges();
+            App.HikeDataContextInstance.blockedUsersTable.DeleteAllOnSubmit<Blocked>(App.HikeDataContextInstance.GetTable<Blocked>());
+            App.HikeDataContextInstance.SubmitChanges();
         }
 
         #endregion
