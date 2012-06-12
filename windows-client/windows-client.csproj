@@ -48,10 +48,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="finalmqtt">
-      <HintPath>lib\finalmqtt.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="finalmqtt, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
