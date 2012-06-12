@@ -109,7 +109,7 @@ namespace windows_client.DbUtils
             {
                 message = q(App.HikeDataContextInstance, msgID).ToList<ConvMessage>().First<ConvMessage>();
                 message.MessageStatus = (ConvMessage.State)val;
-                //App.HikeDataContext.SubmitChanges();
+                App.HikeDataContextInstance.SubmitChanges();
             }
         }
     }
