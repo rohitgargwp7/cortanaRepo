@@ -22,6 +22,8 @@ namespace windows_client.Model
         private string _lastMessage;
         private string _timeStamp;
         private bool _isOnhike;
+        private ConvMessage.State _messageStatus;
+
         /*private Image _avatar;*/
 
         #endregion
@@ -107,6 +109,25 @@ namespace windows_client.Model
                    
                     _isOnhike = value;
                   
+                }
+            }
+        }
+
+        public ConvMessage.State MessageStatus
+        {
+            get
+            {
+                return _messageStatus;
+            }
+            set
+            {
+                if (_messageStatus != value)
+                {
+                    //TODO check ((_messageStatus != null) ? _messageStatus : 0) <= value
+                    if (_messageStatus != value)
+                    {
+                        _messageStatus = value;
+                    }
                 }
             }
         }
