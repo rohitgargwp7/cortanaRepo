@@ -42,6 +42,7 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
+                convMessage.IsSent = true;
                 bool isNewConv = (bool)vals[1];
                 MessagesTableUtils.addChatMessage(convMessage,isNewConv);
                 logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Msisdn);
@@ -50,6 +51,7 @@ namespace windows_client.DbUtils
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
             {
                 ConvMessage convMessage = (ConvMessage)obj;
+                convMessage.IsSent = false;
                 MessagesTableUtils.addChatMessage(convMessage);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED,convMessage);
@@ -68,7 +70,7 @@ namespace windows_client.DbUtils
             {
                 long[] ids = (long[])obj;
                 logger.Info("DBCONVERSATION LISTENER", "Message delivered read for ids " + ids);
-                //TODO :: updateDbBatch(ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
+                updateDbBatch(ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
             }
             else if (HikePubSub.MESSAGE_DELETED == type)
             {
@@ -107,8 +109,12 @@ namespace windows_client.DbUtils
         private void updateDB(object obj, int status)
         {
             long msgID = (long)obj;
-            /* TODO we should lookup the convid for this user, since otherwise one could set mess with the state for other conversations */
             MessagesTableUtils.updateMsgStatus(msgID, status);
+        }
+
+        private void updateDbBatch(long[] ids, int status)
+        {
+            MessagesTableUtils.updateAllMsgStatus(ids, status);
         }
     }
 }
