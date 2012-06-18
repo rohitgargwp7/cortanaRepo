@@ -112,5 +112,10 @@ namespace windows_client.DbUtils
                 App.HikeDataContextInstance.SubmitChanges();
             }
         }
+
+        public static void updateAllMsgStatus(long[] ids, int status)
+        {
+            
+        }
     }
 }
