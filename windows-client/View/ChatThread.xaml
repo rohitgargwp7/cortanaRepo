@@ -27,7 +27,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Grid.Row="0" Margin="12,17,0,28" Background="AliceBlue">
-            <TextBlock x:Name="HikeLabel" Text="HIKE APPLICATION" Foreground="#FF1A1919"></TextBlock>
+            <TextBlock x:Name="hikeLabel" Text="" Foreground="#FF1A1919"></TextBlock>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
