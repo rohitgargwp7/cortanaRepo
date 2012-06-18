@@ -73,6 +73,7 @@ namespace windows_client.View
                 return;
             
             PhoneApplicationService.Current.State["msisdn"] = contact.Msisdn;
+            PhoneApplicationService.Current.State["name"] = contact.Name;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
