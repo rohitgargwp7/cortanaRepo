@@ -18,6 +18,7 @@ using System.ComponentModel;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using System.Windows.Controls.Primitives;
 
 namespace windows_client.View
 {
@@ -25,6 +26,7 @@ namespace windows_client.View
     {
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
+        ConvMessage selectedConvMsg;
         private int mCredits;
         private HikePubSub mPubSub;
         private string mContactNumber;
@@ -176,11 +178,12 @@ namespace windows_client.View
 
         public void test()
         {
+
         }
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             Action x = test;
-            
+
             /* Create the typing notification*/
             long lastChanged = TimeUtils.getCurrentTimeStamp();
             if (mTextLastChanged == 0)
@@ -279,7 +282,7 @@ namespace windows_client.View
 
             else if (HikePubSub.END_TYPING_CONVERSATION == type)
             {
-                if (mContactNumber == obj)
+                if (mContactNumber == (obj as string))
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -290,7 +293,7 @@ namespace windows_client.View
             }
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
-                if (mContactNumber == obj)
+                if (mContactNumber == (obj as string))
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -329,6 +332,45 @@ namespace windows_client.View
             }
         }
         #endregion
+
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
+            MessagesTableUtils.deleteMessage(msg.MessageId);
+            //update Conversation list class
+            this.ChatThreadPageCollection.Remove(msg);
+
+            ConversationListObject obj = MessageList.ConvMap[msg.Msisdn];
+            /* Remove the message from conversation list */
+            if (this.ChatThreadPageCollection.Count > 0)
+            {               
+                obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
+            }
+            else // no message is left simply remove the object from Conversation list 
+            {
+                App.ViewModel.MessageListPageCollection.Remove(obj);
+            }
+
+            int idx = App.ViewModel.MessageListPageCollection.IndexOf(obj);
+            ConversationListObject obj2 = App.ViewModel.MessageListPageCollection[idx];
+
+        }
 
     }
 }

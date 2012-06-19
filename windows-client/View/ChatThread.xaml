@@ -12,7 +12,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True" Visibility="Visible">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot">
@@ -36,10 +36,17 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,70">
                         <!--<Image x:Name="iconImg" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/windows-client;component/View/images/dummy_image.jpg"></Image>-->
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="msgTxtBlock" Text="{Binding Message}" FontWeight="Bold" FontSize="23" Height="40" />
-                                <TextBlock x:Name="statusTxtBlock" Text="{Binding MsgStatus}" FontWeight="Bold" FontSize="23" Height="40"/>
-                            </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="msgTxtBlock" Text="{Binding Message}" FontWeight="Bold" FontSize="23" Height="40" />
+                            <TextBlock x:Name="statusTxtBlock" Text="{Binding MsgStatus}" FontWeight="Bold" FontSize="23" Height="40"/>
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu Name="ctxMenu">
+                                    <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
+                                    <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
+                                    <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
+                        </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -50,6 +57,9 @@
             <Button Name="sendMsgBtn" Width="Auto" Content="Send" Click="sendMsgBtn_Click" />
         </StackPanel>
     </Grid>
+
+    
+
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton 
