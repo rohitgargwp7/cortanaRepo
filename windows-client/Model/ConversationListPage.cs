@@ -23,8 +23,7 @@ namespace windows_client.Model
         private string _timeStamp;
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
-
-        /*private Image _avatar;*/
+        private byte[] _avatar;
 
         #endregion
 
@@ -113,6 +112,21 @@ namespace windows_client.Model
             }
         }
 
+        public byte[] Avatar
+        {
+            get
+            {
+                return _avatar;
+            }
+            set
+            {
+                if (_avatar != value)
+                {
+                    _avatar = value;
+                }
+            }
+        }
+
         public ConvMessage.State MessageStatus
         {
             get
@@ -132,17 +146,18 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime, byte[] avatarImage)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
             this._lastMessage = lastMessage;
             this._timeStamp = relativeTime;
             this._isOnhike = isOnhike;
+            this._avatar = avatarImage;
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime)
-            : this(msisdn, contactName, lastMessage, false, relativeTime)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime, byte[] avatarImage)
+            : this(msisdn, contactName, lastMessage, false, relativeTime, avatarImage)
         {
 
         }
@@ -155,25 +170,6 @@ namespace windows_client.Model
             _timeStamp = null;
             _isOnhike = false;
         }
-        /*
-       public Image Avatar
-       {
-           get
-           {
-               return _avatar;
-           }
-           set
-           {
-               if (_avatar != value)
-               {
-                   NotifyPropertyChanging("Avatar");
-                   _avatar = value;
-                   NotifyPropertyChanged("Avatar");
-               }
-           }
-       }
-       */
-
         public override bool Equals(object obj)
         {
             if (obj == null)

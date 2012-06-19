@@ -69,7 +69,10 @@ namespace windows_client
                 Conversation conv = conversationList[i];
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
-                ConversationListObject mObj = new ConversationListObject(contact.Msisdn,contact.Name, lastMessage.Message, contact.OnHike, TimeUtils.getRelativeTime(lastMessage.Timestamp));
+
+                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
+                ConversationListObject mObj = new ConversationListObject(contact.Msisdn, contact.Name, lastMessage.Message, contact.OnHike,
+                    TimeUtils.getRelativeTime(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
                 convMap.Add(conv.Msisdn, mObj);
                 App.ViewModel.MessageListPageCollection.Add(mObj);
             }
@@ -148,8 +151,12 @@ namespace windows_client
                     else
                     {
                         ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                        mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message, contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getRelativeTime(convMessage.Timestamp));
-                        convMap.Add(convMessage.Msisdn,mObj);
+                        Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+                        mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
+                        contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getRelativeTime(convMessage.Timestamp),
+                        thumbnail == null ? null : thumbnail.Avatar);
+                        
+                        convMap.Add(convMessage.Msisdn, mObj);
                         isNewConversation = true;
                     }
                     if( App.ViewModel.MessageListPageCollection == null)
