@@ -193,6 +193,15 @@ namespace windows_client.Model
             {
                 return _isSent;
             }
+            set
+            {
+                if (_isSent != value)
+                {
+                    NotifyPropertyChanging("IsInvite");
+                    _isSent = value;
+                    NotifyPropertyChanged("IsInvite");
+                }
+            }
         }
 
         public bool IsSms
