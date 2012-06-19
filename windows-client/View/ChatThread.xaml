@@ -7,18 +7,33 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
+    xmlns:Converters="clr-namespace:windows_client.converters"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" Visibility="Visible">
+
+    <phone:PhoneApplicationPage.Resources>
+        <Style x:Key="ListBoxItemStretchContentStyle" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+    </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot">
-        <!--<Grid.Background>
+        <Grid.Resources>
+            <Converters:ChatThreadAlignment x:Key="alignmentConverter"></Converters:ChatThreadAlignment>
+            <Converters:ChatBubbleDirection x:Key="bubbleDirectionConverter"/>
+            <Converters:ChatThreadBackground x:Key="bubbleBackgroundConverter"/>
+        </Grid.Resources>
+
+        <Grid.Background>
             <ImageBrush x:Name="mainBackImage" ImageSource="Images\ic_backtexture.png"  />
-        </Grid.Background>-->
+        </Grid.Background>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -27,45 +42,44 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Grid.Row="0" Margin="12,17,0,28" Background="AliceBlue">
-            <TextBlock x:Name="hikeLabel" Text="" Foreground="#FF1A1919"></TextBlock>
+            <TextBlock x:Name="hikeLabel" Text="" Foreground="#FF1A1919"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" FontSize="26" Margin="0,0,0,75">
+        <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" FontSize="26" Margin="0,0,0,75">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,70">
-                        <!--<Image x:Name="iconImg" HorizontalAlignment="Left" VerticalAlignment="Center" Source="/windows-client;component/View/images/dummy_image.jpg"></Image>-->
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="msgTxtBlock" Text="{Binding Message}" FontWeight="Bold" FontSize="23" Height="40" />
-                            <TextBlock x:Name="statusTxtBlock" Text="{Binding MsgStatus}" FontWeight="Bold" FontSize="23" Height="40"/>
-                            <toolkit:ContextMenuService.ContextMenu>
-                                <toolkit:ContextMenu Name="ctxMenu">
-                                    <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
-                                    <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
-                                    <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
-                                </toolkit:ContextMenu>
-                            </toolkit:ContextMenuService.ContextMenu>
-                        </StackPanel>
-                    </StackPanel>
+                    <!--<edc:Callout VerticalAlignment="Stretch" HorizontalAlignment="Right" AnchorPoint="0,1.5" CalloutStyle="RoundedRectangle" Content="{Binding Message}" Fill="DeepSkyBlue" FontSize="25" Stroke="Black" MinWidth="100" MinHeight="60" Margin="10, 5, 5, 10" Height="Auto" Width="Auto" MaxWidth="400"/>-->
+                    <c4fToolkit:ChatBubble Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}" MinWidth="50" Margin="25,10,25,10" VerticalAlignment="Stretch" 
+                                           MaxWidth="350" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
+                                           FontFamily="Arial" ChatBubbleDirection="{Binding IsSent, Converter={StaticResource bubbleDirectionConverter}}">
+                        <TextBlock TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
+                        <toolkit:ContextMenuService.ContextMenu>
+                            <toolkit:ContextMenu Name="ctxMenu">
+                                <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
+                                <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
+                                <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                            </toolkit:ContextMenu>
+                        </toolkit:ContextMenuService.ContextMenu>
+                    </c4fToolkit:ChatBubble>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <StackPanel x:Name="sendMsgPanel" Grid.Row="1" Margin="12,0,0,0" Orientation="Horizontal" VerticalAlignment="Bottom">
-            <toolkit:PhoneTextBox x:Name="sendMsgTxtbox" Hint="Free Message"  Width="369" TextWrapping="Wrap" Background="Black" TextChanged="sendMsgTxtbox_TextChanged" />
-            <Button Name="sendMsgBtn" Width="Auto" Content="Send" Click="sendMsgBtn_Click" />
+        <StackPanel x:Name="sendMsgPanel" Grid.Row="1" Margin="0,0,0,0" Orientation="Horizontal" VerticalAlignment="Bottom" Background="WhiteSmoke">
+            <toolkit:PhoneTextBox BorderThickness=".5" BorderBrush="Gray" x:Name="sendMsgTxtbox" Hint="Free Message..."  Width="369" TextWrapping="Wrap" Background="White" TextChanged="sendMsgTxtbox_TextChanged" />
+            <Button BorderThickness="0" x:Name="sendMsgBtn" Height="75" Width="Auto" Content="Send" Click="sendMsgBtn_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
+                </Button.Background>
+            </Button>
         </StackPanel>
     </Grid>
-
-    
-
-    <phone:PhoneApplicationPage.ApplicationBar>
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton 
                 IconUri="/Images/appbar.add.rest.png" 
                 Text="add" 
                 x:Name="blockUnblockUser" Click="blockUnblockUser_Click" />
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
 </phone:PhoneApplicationPage>
