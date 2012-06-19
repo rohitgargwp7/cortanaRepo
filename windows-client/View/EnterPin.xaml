@@ -58,27 +58,25 @@
             <TextBlock x:Name="txtBlkEnterPin" Foreground="White" TextWrapping="Wrap" Text="Enter that here." FontSize="27" TextAlignment="Center" Margin="-9,84,6,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
 
             <!--Border CornerRadius="10" Background="White" Width="300" Height="65" Margin="67,159,89,504"-->
-            <toolkit:PhoneTextBox SelectionStart="20" InputScope="Number" x:Name="txtBxEnterPin" Height="76" VerticalAlignment="Top" Margin="57,139,76,0" />
-            <Image Source="images\tux.png" Height="42" VerticalAlignment="Top" Margin="294,153,89,0" RenderTransformOrigin="0.52,0.738">
-            </Image>
+            <!--<toolkit:PhoneTextBox SelectionStart="20" InputScope="Number" x:Name="txtBxEnterPin" Height="76" VerticalAlignment="Top" Margin="57,139,76,0" />
+            <Image Source="/images/tux.png" Height="42" VerticalAlignment="Top" Margin="294,153,89,0" RenderTransformOrigin="0.52,0.738">
+            </Image>-->
 
-            <Button x:Name="btnEnterPin" Margin="54,225,76,415" Foreground="White" Content="Next" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterPin_Click">
+            <StackPanel Orientation="Horizontal" Height="61"  Background="White" Margin="50,134,51,0" VerticalAlignment="Top">
+                <Image Source="/View/images/ic_phone_big.png" Margin="15,0,0,3" Height="40" />
+                <toolkit:PhoneTextBox InputScope="Number" Margin="0,-3,0,0" x:Name="txtBxEnterPin" Width="315" Height="76" Hint="Phone Number"/>
+            </StackPanel>
+
+            <Button BorderThickness=".3" BorderBrush="DarkBlue" x:Name="enterPhoneBtn" FontWeight="Bold" Foreground="White" Margin="37,211,37,429" Content="Next" Click="btnEnterPin_Click" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
+                </Button.Background>
             </Button>
+
+            <!--<Button x:Name="btnEnterPin" Margin="54,225,76,415" Foreground="White" Content="Next" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterPin_Click">
+            </Button>-->
             <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
             <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="pinErrorTxt" Text="Invalid PIN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
         </Grid>
     </Grid>
-
-    <!--Sample code showing usage of ApplicationBar-->
-    <!--<phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
-                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>-->
-
 </phone:PhoneApplicationPage>
