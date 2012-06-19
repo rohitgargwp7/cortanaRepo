@@ -48,5 +48,17 @@ namespace windows_client.DbUtils
             App.HikeDataContextInstance.SubmitChanges();
 
         }
+
+        public static void deleteConversation(string msisdn)
+        {
+            Func<HikeDataContext, string, IQueryable<Conversation>> q =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Conversation>>
+            ((HikeDataContext hdc, string _msisdn) =>
+                from o in hdc.conversations
+                where o.Msisdn == _msisdn
+                select o);
+            App.HikeDataContextInstance.conversations.DeleteAllOnSubmit<Conversation>(q(App.HikeDataContextInstance, msisdn));
+            App.HikeDataContextInstance.SubmitChanges();
+        }
     }
 }
