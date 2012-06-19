@@ -56,30 +56,22 @@
         <Grid x:Name="ContentPanel" Margin="12,41,12,0" Grid.RowSpan="2">
             <TextBlock x:Name="txtBlkEnterName" Foreground="White" TextWrapping="Wrap" Text="Setup your profile name" FontSize="27" TextAlignment="Center" Margin="-3,46,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
 
-            <toolkit:PhoneTextBox x:Name="txtBxEnterName" Height="76" VerticalAlignment="Top" Margin="65,103,78,0">
+            <!--<toolkit:PhoneTextBox x:Name="txtBxEnterName" Height="76" VerticalAlignment="Top" Margin="65,103,78,0">
             </toolkit:PhoneTextBox>
             <Image Source="images\tux.png" Height="38" VerticalAlignment="Top" Margin="301,118,96,0">
-            </Image>
-            <Button x:Name="enterNameBtn" Foreground="White" Margin="65,198,78,442" Content="Done" BorderThickness="2" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterName_Click">
+            </Image>-->
+
+            <StackPanel Orientation="Horizontal" Height="61"  Background="White" Margin="50,134,51,0" VerticalAlignment="Top">
+                <Image Source="/View/images/ic_name_big.png" Margin="15,0,0,3" Height="40" />
+                <toolkit:PhoneTextBox Margin="0,-3,0,0" Height="76" x:Name="txtBxEnterName" Width="315" Hint="Name"/>
+            </StackPanel>
+            <Button BorderThickness=".3" BorderBrush="DarkBlue" x:Name="enterNameBtn" FontWeight="Bold" Foreground="White" Margin="37,211,37,429" Content="Let's hike" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterName_Click">
                 <Button.Background>
-                    <ImageBrush ImageSource="Images\ic_bottom_button.png"/>
+                    <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
                 </Button.Background>
             </Button>
             <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
 
         </Grid>
     </Grid>
-
-    <!--Sample code showing usage of ApplicationBar-->
-    <!--<phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
-                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>-->
-
 </phone:PhoneApplicationPage>
