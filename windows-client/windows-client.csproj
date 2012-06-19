@@ -25,6 +25,8 @@
     <SilverlightAppEntry>windows_client.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.30816.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,9 +50,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Coding4Fun.Phone.Controls">
+      <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="finalmqtt">
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
@@ -73,6 +79,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="converters\ChatBubbleDirection.cs" />
+    <Compile Include="converters\ChatThreadAlignment.cs" />
+    <Compile Include="converters\ChatThreadBackground.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
@@ -99,6 +108,7 @@
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
+    <Compile Include="converters\ImageConverter.cs" />
     <Compile Include="utils\IsolatedStorageHelper.cs" />
     <Compile Include="Model\HikeConstants.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
@@ -110,6 +120,7 @@
     <Compile Include="View\ChatThread.xaml.cs">
       <DependentUpon>ChatThread.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\effects\HybridOrientationChanges.cs" />
     <Compile Include="View\EnterName.xaml.cs">
       <DependentUpon>EnterName.xaml</DependentUpon>
     </Compile>
@@ -189,24 +200,27 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="View\images\compose_pressed.png" />
-    <Resource Include="View\images\dummy_image.jpg" />
-    <Resource Include="View\images\ic_backtexture.png" />
-    <Resource Include="View\images\welcome_bckg.png" />
-    <Resource Include="View\images\key.jpg" />
-    <Resource Include="View\images\ic_name_big.png" />
-    <Resource Include="View\images\ic_phone_big.png" />
-    <Resource Include="View\images\tb_name.9.png" />
-    <Resource Include="View\images\tb_phone.9.png" />
-    <Resource Include="View\images\tb_pin.9.png" />
-    <Resource Include="View\images\signup_background.jpg" />
-    <Resource Include="View\images\hike_logo.png" />
-    <Resource Include="View\images\hi_logo_big.png" />
-    <Resource Include="View\images\ic_tc.png" />
-    <Resource Include="View\images\main_bg.jpg" />
-    <Resource Include="View\images\progress_bar.png" />
-    <Resource Include="View\images\signup_loading_bckg.png" />
-    <Resource Include="View\images\ic_bottom_button.png" />
-    <Resource Include="View\images\tux.png" />
+    <Content Include="View\images\ic_backtexture.png" />
+    <Content Include="View\images\headerbar.png" />
+    <Content Include="View\images\ic_avatar0.png" />
+    <Content Include="View\images\welcome_bckg.png" />
+    <Content Include="View\images\key.jpg" />
+    <Content Include="View\images\ic_name_big.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="View\images\ic_phone_big.png" />
+    <Content Include="View\images\tb_name.9.png" />
+    <Content Include="View\images\tb_phone.9.png" />
+    <Content Include="View\images\tb_pin.9.png" />
+    <Content Include="View\images\signup_background.jpg" />
+    <Content Include="View\images\hike_logo.png" />
+    <Content Include="View\images\hi_logo_big.png" />
+    <Content Include="View\images\ic_tc.png" />
+    <Content Include="View\images\main_bg.jpg" />
+    <Content Include="View\images\progress_bar.png" />
+    <Content Include="View\images\signup_loading_bckg.png" />
+    <Content Include="View\images\ic_bottom_button.png" />
+    <Content Include="View\images\tux.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup />
