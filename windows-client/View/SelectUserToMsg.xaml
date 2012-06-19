@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -23,47 +23,44 @@
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Grid.Column="0" Margin="12,17,0,28">
-            <!--<TextBlock x:Name="ApplicationTitle" Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="PageTitle" Text="page name" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>-->
+        <StackPanel Background="White">
+            <StackPanel x:Name="HikeTitle" Margin="0,0,0,0" Height="76">
+                <StackPanel.Background>
+                    <ImageBrush ImageSource="images\headerbar.png" Stretch="Fill" />
+                </StackPanel.Background>
+                <TextBlock Text="New Message" FontFamily="Arial" FontSize="30"  Margin="20,23,0,23" HorizontalAlignment="Left" Height="49" Width="224"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/View/images/ic_name_big.png" Margin="15,0,0,3" Height="40" />
+                <toolkit:PhoneTextBox Margin="0,0,0,0" x:Name="enterNameTxt" HorizontalAlignment="Stretch" Width="406" Hint="Start typing a name..." TextChanged="enterNameTxt_TextChanged"/>
+            </StackPanel>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <StackPanel x:Name="enterNamePanel" Orientation="Horizontal" Margin="-12,0,0,0">
-                <!--<Image Source="/windows-client;component/View/images/ic_name_2.png" />-->
-                <toolkit:PhoneTextBox x:Name="enterNameTxt" Width="477" Hint="Start Typing Here" TextChanged="enterNameTxt_TextChanged"/>
-                <!--<TextBox x:Name="enterNameTxt" Text="" Width="442" TextChanged="enterNameTxt_TextChanged"/>-->
-            </StackPanel>
-            <ListBox x:Name="contactsListBox" FontSize="26" Grid.Row="1" Tap="contactSelected_Click">
+            <Grid.Background>
+                <ImageBrush x:Name="mainBackImage" ImageSource="Images\ic_backtexture.png" Stretch="UniformToFill"  />
+            </Grid.Background>
+            <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="0,0,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                            <StackPanel x:Name="Sender" Height="80"  Orientation="Vertical" Width="333">
-                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="23" Height="40" />
-                            <TextBlock Text="{Binding Msisdn}" FontWeight="Bold" FontSize="23" Height="40" />
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel x:Name="Sender" Height="70"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
+                                <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="26" Height="30" />
+                                <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" />
+                            </StackPanel>
+                            <Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
         <StackPanel x:Name="sendMsgPanel" Orientation="Horizontal" Margin="-12,580,0,0" Grid.Row="2">
-           <TextBox x:Name="enterMsgTxt" Width="442" TextChanged="enterNameTxt_TextChanged" />
+            <TextBox x:Name="enterMsgTxt" Width="442" TextChanged="enterNameTxt_TextChanged" />
         </StackPanel>
     </Grid>
- 
-    <!--Sample code showing usage of ApplicationBar-->
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
-           <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
-                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
-
 </phone:PhoneApplicationPage>
