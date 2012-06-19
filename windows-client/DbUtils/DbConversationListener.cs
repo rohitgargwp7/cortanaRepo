@@ -42,7 +42,7 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                convMessage.IsSent = true;
+                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 bool isNewConv = (bool)vals[1];
                 MessagesTableUtils.addChatMessage(convMessage,isNewConv);
                 logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Msisdn);
@@ -51,7 +51,7 @@ namespace windows_client.DbUtils
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
             {
                 ConvMessage convMessage = (ConvMessage)obj;
-                convMessage.IsSent = false;
+                convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 MessagesTableUtils.addChatMessage(convMessage);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED,convMessage);

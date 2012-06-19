@@ -186,14 +186,18 @@ namespace windows_client.Model
         {
             get
             {
-                return _isSent;
+                return (_messageStatus == State.SENT_UNCONFIRMED ||
+                        _messageStatus == State.SENT_CONFIRMED ||
+                        _messageStatus == State.SENT_DELIVERED ||
+                        _messageStatus == State.SENT_DELIVERED_READ ||
+                        _messageStatus == State.SENT_FAILED);
             }
-            set
-            {
+            //set
+            //{
 
-                if (value != _isSent)
-                    _isSent = value;
-            }
+            //    if (value != _isSent)
+            //        _isSent = value;
+            //}
         }
 
         public bool IsSms
