@@ -75,7 +75,7 @@ namespace windows_client.DbUtils
             else if (HikePubSub.MESSAGE_DELETED == type)
             {
                 long msgId = (long)obj;
-                ConversationTableUtils.deleteMessage(msgId);
+                MessagesTableUtils.deleteMessage(msgId);
                 // TODO :: persistence.removeMessage(msgId);
             }
             else if (HikePubSub.MESSAGE_FAILED == type)  // server got msg from client 1 and sent back received msg receipt

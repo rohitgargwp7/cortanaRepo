@@ -117,5 +117,24 @@ namespace windows_client.DbUtils
         {
             
         }
+
+
+        public static void deleteAllMessages()
+        {
+            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(App.HikeDataContextInstance.GetTable<ConvMessage>());
+            App.HikeDataContextInstance.SubmitChanges();
+        }
+
+        public static void deleteMessage(long msgId)
+        {
+            Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, long id) =>
+                from o in hdc.messages
+                where o.MessageId == id
+                select o);
+            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(q(App.HikeDataContextInstance, msgId));
+            App.HikeDataContextInstance.SubmitChanges();
+        }
     }
 }
