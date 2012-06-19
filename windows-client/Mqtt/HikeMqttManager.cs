@@ -352,7 +352,7 @@ namespace windows_client.Mqtt
                 string msisdn = temp.ToString();
                 jsonObj.TryGetValue(HikeConstants.DATA,out temp);
                 string iconBase64 = temp.ToString();
-                MiscDBUtil.setIcon(msisdn, System.Convert.FromBase64String(iconBase64));
+                MiscDBUtil.addOrUpdateIcon(msisdn, System.Convert.FromBase64String(iconBase64));
             }
 
             pubSub.publish(HikePubSub.WS_RECEIVED, receivedMessage);

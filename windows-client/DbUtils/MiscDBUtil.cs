@@ -17,9 +17,8 @@ namespace windows_client.DbUtils
 {
     public class MiscDBUtil
     {
-        public static void setIcon(string msisdn, byte[] image)
+        public static void addOrUpdateIcon(string msisdn, byte[] image)
         {
-            //Binary binaryImage = new Binary(image);
             Thumbnails thumbnail = getThumbNailForMSisdn(msisdn);
             if (thumbnail == null)
             {
