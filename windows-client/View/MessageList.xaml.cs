@@ -49,6 +49,7 @@ namespace windows_client
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_DELIVERED, this);
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_FAILED, this);
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
+            App.HikePubSubInstance.addListener(HikePubSub.MSG_READ, this);
             App.HikePubSubInstance.addListener(HikePubSub.SEND_NEW_MSG, this);
             App.HikePubSubInstance.addListener(HikePubSub.ICON_CHANGED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
@@ -82,6 +83,7 @@ namespace windows_client
                 return;
 
             PhoneApplicationService.Current.State["msisdn"] = obj.MSISDN;
+            PhoneApplicationService.Current.State["name"] = obj.ContactName;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -110,8 +112,8 @@ namespace windows_client
             }
             appSettings.Clear();
             UsersTableUtils.deleteAllContacts();
-            UsersTableUtils.deleteAllConversations();
-            UsersTableUtils.deleteAllMessages();
+            ConversationTableUtils.deleteAllConversations();
+            MessagesTableUtils.deleteAllMessages();
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -160,6 +162,13 @@ namespace windows_client
                         mPubSub.publish(HikePubSub.MESSAGE_SENT,vals);
   
                 });
+            }
+            else if (HikePubSub.MSG_READ == type)
+            {
+                string msisdn = (string) obj;
+                ConversationListObject convObj = convMap[msisdn];
+                convObj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                //TODO : update the UI here also.
             }
         }
     }

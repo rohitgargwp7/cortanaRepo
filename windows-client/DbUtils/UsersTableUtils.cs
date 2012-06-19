@@ -184,22 +184,6 @@ namespace windows_client.DbUtils
             App.HikeDataContextInstance.SubmitChanges();
         }
 
-        public static void deleteAllConversations()
-        {
-            App.HikeDataContextInstance.conversations.DeleteAllOnSubmit<Conversation>(App.HikeDataContextInstance.GetTable<Conversation>());
-            App.HikeDataContextInstance.SubmitChanges();
-
-        }
-
-
-        public static void deleteAllMessages()
-        {
-            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(App.HikeDataContextInstance.GetTable<ConvMessage>());
-            App.HikeDataContextInstance.SubmitChanges();
-
-        }
-
-
         //public static long getConvIdForMsisdn(string msisdn)
         //{
         //    Func<HikeDataContext, string, IQueryable<long>> q =

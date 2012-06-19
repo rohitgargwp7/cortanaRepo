@@ -17,18 +17,6 @@ namespace windows_client.DbUtils
 {
     public class ConversationTableUtils
     {
-        public static void deleteMessage(long msgId)
-        {
-            Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, long id) =>
-                from o in hdc.messages
-                where o.MessageId == id
-                select o);
-            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(q(App.HikeDataContextInstance, msgId));
-            App.HikeDataContextInstance.SubmitChanges();
-        }
-
         /* This function gets all the conversations shown on the message list page*/
         public static List<Conversation> getAllConversations()
         {
@@ -53,5 +41,12 @@ namespace windows_client.DbUtils
             App.HikeDataContextInstance.SubmitChanges();
         }
 
+
+        public static void deleteAllConversations()
+        {
+            App.HikeDataContextInstance.conversations.DeleteAllOnSubmit<Conversation>(App.HikeDataContextInstance.GetTable<Conversation>());
+            App.HikeDataContextInstance.SubmitChanges();
+
+        }
     }
 }

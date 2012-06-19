@@ -1,4 +1,4 @@
-﻿ using System;
+﻿using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -68,9 +68,9 @@ namespace windows_client.Model
             {
                 if (_messageId != value)
                 {
-                    NotifyPropertyChanging("MessageId");
+                    
                     _messageId = value;
-                    NotifyPropertyChanged("MessageId");
+                  
                 }
             }
         }
@@ -104,12 +104,12 @@ namespace windows_client.Model
             {
                 if (_message != value)
                 {
-                    NotifyPropertyChanging("Message");
+                   
                     _message = value;
-                    NotifyPropertyChanged("Message");
+                 
                 }
             }
-        }   
+        }
 
         [Column]
         public State MessageStatus
@@ -119,16 +119,11 @@ namespace windows_client.Model
                 return _messageStatus;
             }
             set
-            {
+            {               
                 if (_messageStatus != value)
                 {
                     NotifyPropertyChanging("MessageStatus");
-
-                    //TODO check ((_messageStatus != null) ? _messageStatus : 0) <= value
-                    if (_messageStatus!=value)
-                    {
-                        _messageStatus = value;
-                    }
+                    _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
                 }
             }
@@ -145,9 +140,9 @@ namespace windows_client.Model
             {
                 if (_timestamp != value)
                 {
-                    NotifyPropertyChanging("Timestamp");
+                    
                     _timestamp = value;
-                    NotifyPropertyChanged("Timestamp");
+       
                 }
             }
         }
@@ -163,9 +158,9 @@ namespace windows_client.Model
             {
                 if (_mappedMessageId != value)
                 {
-                    NotifyPropertyChanging("MappedMessageId");
+                   
                     _mappedMessageId = value;
-                    NotifyPropertyChanged("MappedMessageId");
+            
                 }
             }
         }
@@ -195,12 +190,9 @@ namespace windows_client.Model
             }
             set
             {
-                if (_isSent != value)
-                {
-                    NotifyPropertyChanging("IsInvite");
+
+                if (value != _isSent)
                     _isSent = value;
-                    NotifyPropertyChanged("IsInvite");
-                }
             }
         }
 
@@ -247,12 +239,12 @@ namespace windows_client.Model
             MessageStatus = msgState;
         }
 
-        public ConvMessage(JObject obj) 
-	    {
+        public ConvMessage(JObject obj)
+        {
             _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
             JObject data = (JObject)obj[HikeConstants.DATA];
             JToken msg;
-            
+
             if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg))
             {
                 _message = msg.ToString();
@@ -276,10 +268,10 @@ namespace windows_client.Model
             this._messageId = -1;
             string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
             this.MappedMessageId = System.Int64.Parse(mappedMsgID);
-	    }
+        }
 
         public ConvMessage()
-        { 
+        {
         }
 
         public JObject serialize()
@@ -315,16 +307,16 @@ namespace windows_client.Model
                 if (other.Message != null)
                     return false;
             }
-            else if (Message.CompareTo(other.Message)!=0)
+            else if (Message.CompareTo(other.Message) != 0)
                 return false;
             if (Msisdn == null)
             {
                 if (other.Msisdn != null)
                     return false;
             }
-            else if (Msisdn.CompareTo(other.Msisdn)!=0)
+            else if (Msisdn.CompareTo(other.Msisdn) != 0)
                 return false;
-            if ( MessageStatus.Equals(other.MessageStatus))
+            if (MessageStatus.Equals(other.MessageStatus))
                 return false;
             if (Timestamp != other.Timestamp)
                 return false;
@@ -333,15 +325,15 @@ namespace windows_client.Model
 
         public override int GetHashCode()
         {
-		    const int prime = 31;
-		    int result = 1;
-		    result = prime * result + (IsSent ? 1231 : 1237);
-		    result = prime * result + ((Message == null) ? 0 : Message.GetHashCode());
-		    result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
+            const int prime = 31;
+            int result = 1;
+            result = prime * result + (IsSent ? 1231 : 1237);
+            result = prime * result + ((Message == null) ? 0 : Message.GetHashCode());
+            result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
             result = prime * result + MessageStatus.GetHashCode();
             result = prime * result + (int)(Timestamp ^ (Convert.ToUInt32(Timestamp) >> 32));
-            
-		    return result;
+
+            return result;
         }
 
         public string getTimestampFormatted()
@@ -398,5 +390,23 @@ namespace windows_client.Model
         }
         #endregion
 
+
+        public JObject serializeDeliveryReportRead()
+        {
+            JObject obj = new JObject();
+            JArray ids = new JArray();
+            try
+            {
+                ids.Add(Convert.ToString(_mappedMessageId));
+                obj.Add(HikeConstants.DATA, ids);
+                obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
+                obj.Add(HikeConstants.TO, _msisdn);
+            }
+            catch (Exception e)
+            {
+
+            }
+            return obj;
+        }
     }
 }

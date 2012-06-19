@@ -16,6 +16,9 @@ using windows_client.utils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Microsoft.Phone.Shell;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Windows.Controls.Primitives;
 
 namespace windows_client.View
 {
@@ -23,9 +26,12 @@ namespace windows_client.View
     {
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
+        ConvMessage selectedConvMsg;
         private int mCredits;
         private HikePubSub mPubSub;
         private string mContactNumber;
+        private string mContactName;
+        private long mTextLastChanged = 0;
 
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> message mapping
 
@@ -65,30 +71,55 @@ namespace windows_client.View
                     NavigationService.RemoveBackEntry();
             }
             mContactNumber = (string)PhoneApplicationService.Current.State["msisdn"];
+            mContactName = (string)PhoneApplicationService.Current.State["name"];
             if (mContactNumber == null)
             {
                 // some error handling
                 return;
             }
             PhoneApplicationService.Current.State.Remove("msisdn");
+            PhoneApplicationService.Current.State.Remove("name");
             loadMessages();
         }
 
         private void loadMessages()
         {
+            bool isPublish = false;
+            hikeLabel.Text = mContactName;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {
                 return;
             }
 
-            for (int i = 0; i < messagesList.Count; i++)
+            JArray ids = new JArray();
+            long[] dbIds = new long[messagesList.Count];
+
+            for (int i = 0, k = 0; i < messagesList.Count; i++)
             {
+                if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                {
+                    isPublish = true;
+                    ids.Add(Convert.ToString(messagesList[i].MessageId));
+                    dbIds[k] = messagesList[i].MessageId;
+                    messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    k++;
+                }
                 this.ChatThreadPageCollection.Add(messagesList[i]);
                 msgMap.Add(messagesList[i].MessageId, messagesList[i]);
             }
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[messagesList.Count - 1]);
+
+            if (isPublish)
+            {
+                JObject obj = new JObject();
+                obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
+                obj.Add(HikeConstants.TO, mContactNumber);
+                obj.Add(HikeConstants.DATA, ids);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
+                mPubSub.publish(HikePubSub.MSG_READ, mContactNumber);
+            }
             //this.myListBox.UpdateLayout();
         }
 
@@ -145,8 +176,35 @@ namespace windows_client.View
             ConvMessage c = ChatThreadPageCollection[ChatThreadPageCollection.Count - 1];
         }
 
+        public void test()
+        {
+
+        }
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Action x = test;
+
+            /* Create the typing notification*/
+            long lastChanged = TimeUtils.getCurrentTimeStamp();
+            if (mTextLastChanged == 0)
+            {
+                // we're currently not in 'typing' mode
+                mTextLastChanged = lastChanged;
+
+                JObject obj = new JObject();
+                try
+                {
+                    obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
+                    obj.Add(HikeConstants.TO, mContactNumber);
+                }
+                catch (Exception ex)
+                {
+                    //logger.("ConvMessage", "invalid json message", e);
+                }
+
+                // fire an event
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH_LOW, obj);
+            }
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
                 sendMsgBtn.IsEnabled = false;
@@ -166,6 +224,10 @@ namespace windows_client.View
                 /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
                 {
+                    convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    MessagesTableUtils.updateMsgStatus(convMessage.MessageId, (int)ConvMessage.State.RECEIVED_READ);
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
+                    mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
                     // Update UI
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -196,7 +258,7 @@ namespace windows_client.View
                         this.myListBox.UpdateLayout();
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                     });
-                
+
                 }
             }
             else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
@@ -217,7 +279,30 @@ namespace windows_client.View
                     this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                 });
             }
-           
+
+            else if (HikePubSub.END_TYPING_CONVERSATION == type)
+            {
+                if (mContactNumber == (obj as string))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        hikeLabel.Text = mContactName;
+                        // handle auto removing
+                    });
+                }
+            }
+            else if (HikePubSub.TYPING_CONVERSATION == type)
+            {
+                if (mContactNumber == (obj as string))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        hikeLabel.Text = mContactName + " is typing.";
+                        // handle auto removing
+                    });
+                }
+            }
+
         }
 
         #endregion
@@ -248,6 +333,44 @@ namespace windows_client.View
         }
         #endregion
 
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
+            MessagesTableUtils.deleteMessage(msg.MessageId);
+            //update Conversation list class
+            this.ChatThreadPageCollection.Remove(msg);
+
+            ConversationListObject obj = MessageList.ConvMap[msg.Msisdn];
+            /* Remove the message from conversation list */
+            if (this.ChatThreadPageCollection.Count > 0)
+            {               
+                obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
+            }
+            else // no message is left simply remove the object from Conversation list 
+            {
+                App.ViewModel.MessageListPageCollection.Remove(obj);
+            }
+
+            int idx = App.ViewModel.MessageListPageCollection.IndexOf(obj);
+            ConversationListObject obj2 = App.ViewModel.MessageListPageCollection[idx];
+
+        }
 
     }
 }
