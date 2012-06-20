@@ -60,14 +60,14 @@
                                 </StackPanel>
                                 <TextBlock Text="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Height="35"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
                             </StackPanel>
-                            <toolkit:ContextMenuService.ContextMenu>
-                                <toolkit:ContextMenu Name="ctxMenu">
-                                    <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
-                                    <toolkit:MenuItem Header="Add Shortcut"/>
-                                </toolkit:ContextMenu>
-                            </toolkit:ContextMenuService.ContextMenu>
                         </StackPanel>
                         <Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>
+                        <toolkit:ContextMenuService.ContextMenu>
+                            <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                <toolkit:MenuItem Header="Add Shortcut"/>
+                            </toolkit:ContextMenu>
+                        </toolkit:ContextMenuService.ContextMenu>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
