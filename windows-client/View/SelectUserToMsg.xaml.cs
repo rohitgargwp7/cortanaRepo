@@ -33,12 +33,6 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            /*IDictionary<string, string> parameters = this.NavigationContext.QueryString;
-            if (parameters.ContainsKey("Index"))
-            {
-                int selectedIndex = Convert.ToInt32(NavigationContext.QueryString["Index"]);
-                this.DataContext = App.ViewModel.MessageListPageCollection[selectedIndex];
-            }*/
         }
 
         //loads pre-existing messages for msisdn, returns null if empty

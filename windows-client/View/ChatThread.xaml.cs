@@ -24,6 +24,7 @@ namespace windows_client.View
 {
     public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
         ConvMessage selectedConvMsg;
@@ -48,27 +49,39 @@ namespace windows_client.View
             InitializeComponent();
             this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
-            /* register listeners */
-            App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_DELIVERED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_FAILED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.ICON_CHANGED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
+            registerListeners();
+            initPageBasedOnState();
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        #region register broadcast listeners
+        private void registerListeners()
         {
-            base.OnNavigatedTo(e);
-            if (PhoneApplicationService.Current.State.ContainsKey("fromSelectUserPage"))
+            mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
+            mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
+            mPubSub.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_FAILED, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
+            mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
+            mPubSub.addListener(HikePubSub.USER_JOINED, this);
+            mPubSub.addListener(HikePubSub.USER_LEFT, this);
+        }
+        #endregion
+
+        #region register broadcast listeners
+        private void removeListeners()
+        {
+        }
+        #endregion
+
+        private void initPageBasedOnState()
+        {
+            /* Check if it is a forwarded msg */
+            if (PhoneApplicationService.Current.State.ContainsKey("forwardedText"))
             {
-                PhoneApplicationService.Current.State.Remove("fromSelectUserPage");
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
+                sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State["forwardedText"];
+                PhoneApplicationService.Current.State.Remove("forwardedText");
             }
             mContactNumber = (string)PhoneApplicationService.Current.State["msisdn"];
             mContactName = (string)PhoneApplicationService.Current.State["name"];
@@ -123,6 +136,16 @@ namespace windows_client.View
             //this.myListBox.UpdateLayout();
         }
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (PhoneApplicationService.Current.State.ContainsKey("fromSelectUserPage"))
+            {
+                PhoneApplicationService.Current.State.Remove("fromSelectUserPage");
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+            }
+        }
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
@@ -203,7 +226,7 @@ namespace windows_client.View
                 }
 
                 // fire an event
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH_LOW, obj);
+                // mPubSub.publish(HikePubSub.MQTT_PUBLISH_LOW, obj);
             }
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
@@ -249,16 +272,23 @@ namespace windows_client.View
             else if (HikePubSub.MESSAGE_DELIVERED == type)
             {
                 long msgId = (long)obj;
-                ConvMessage msg = msgMap[msgId];
-                if (msg != null)
+                try
                 {
-                    msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    ConvMessage msg = msgMap[msgId];
+                    if (msg != null)
                     {
-                        this.myListBox.UpdateLayout();
-                        this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                    });
+                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            this.myListBox.UpdateLayout();
+                            this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                        });
 
+                    }
+                }
+                catch (KeyNotFoundException e)
+                {
+                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                 }
             }
             else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
@@ -266,12 +296,21 @@ namespace windows_client.View
                 long[] ids = (long[])obj;
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Length; i++)
-                {
-                    ConvMessage msg = msgMap[ids[i]];
-                    if (msg != null)
+                {                   
+                    try
                     {
-                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                        ConvMessage msg = msgMap[ids[i]];
+                        if (msg != null)
+                        {
+                            msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                        }
                     }
+                    catch (KeyNotFoundException e)
+                    {
+                        logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                        continue;
+                    }
+
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -335,12 +374,27 @@ namespace windows_client.View
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
+            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
 
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
+            Clipboard.SetText(msg.Message);
         }
 
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
         {
+            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
 
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
+            PhoneApplicationService.Current.State["forwardedText"] = msg.Message;
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
@@ -359,7 +413,7 @@ namespace windows_client.View
             ConversationListObject obj = MessageList.ConvMap[msg.Msisdn];
             /* Remove the message from conversation list */
             if (this.ChatThreadPageCollection.Count > 0)
-            {               
+            {
                 obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
             }
             else // no message is left simply remove the object from Conversation list 
