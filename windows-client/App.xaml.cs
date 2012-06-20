@@ -9,6 +9,7 @@ using System.IO.IsolatedStorage;
 using windows_client.utils;
 using windows_client.ViewModel;
 using windows_client.Mqtt;
+using windows_client.View;
 
 namespace windows_client
 {
@@ -276,6 +277,9 @@ namespace windows_client
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
+            MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+                return;
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // A navigation has failed; break into the debugger
@@ -291,6 +295,14 @@ namespace windows_client
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
+            // Running on a device / emulator without debugging
+            e.Handled = true;
+            Error.Exception = e.ExceptionObject;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+            });
+          
         }
 
         #region Phone application initialization
