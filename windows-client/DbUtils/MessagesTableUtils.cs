@@ -136,5 +136,17 @@ namespace windows_client.DbUtils
             App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(q(App.HikeDataContextInstance, msgId));
             App.HikeDataContextInstance.SubmitChanges();
         }
+
+        public static void deleteAllMessagesForMsisdn(string msisdn)
+        {
+            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, string myMsisdn) =>
+                from o in hdc.messages
+                where o.Msisdn == myMsisdn
+                select o);
+            App.HikeDataContextInstance.messages.DeleteAllOnSubmit<ConvMessage>(q(App.HikeDataContextInstance, msisdn));
+            App.HikeDataContextInstance.SubmitChanges();
+        }
     }
 }
