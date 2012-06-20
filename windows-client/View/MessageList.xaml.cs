@@ -29,6 +29,7 @@ namespace windows_client
                 return convMap;
             }
         }
+
         public MessageList()
         {
             InitializeComponent();
@@ -181,6 +182,9 @@ namespace windows_client
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting conversation.", "Delete Conversation ?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
             {
@@ -189,7 +193,8 @@ namespace windows_client
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
             convMap.Remove(convObj.MSISDN); // removed entry from map
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
-            ConversationTableUtils.deleteConversation(convObj.MSISDN);
+            ConversationTableUtils.deleteConversation(convObj.MSISDN); // removed entry from conversation table
+            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.MSISDN); //removed all chat messages for this msisdn
         }
     }
 }
