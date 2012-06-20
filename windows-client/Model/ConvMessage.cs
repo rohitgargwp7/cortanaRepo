@@ -27,11 +27,11 @@ namespace windows_client.Model
     {
 
         private long _messageId; // this corresponds to msgID stored in sender's DB
-        private string _msisdn; // this corresponds to msgID stored in receiver's DB
+        private string _msisdn; 
         private string _message;
         private State _messageStatus;
         private long _timestamp;
-        private long _mappedMessageId;
+        private long _mappedMessageId; // this corresponds to msgID stored in receiver's DB
         private bool _isInvite;
         private bool _isSent;
         private bool _isSms;
