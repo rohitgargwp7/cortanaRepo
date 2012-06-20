@@ -98,17 +98,17 @@ namespace windows_client.Test
 
         public static void addMessage(String message, String msisdn)
         {
-            ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            ConversationListObject m = new ConversationListObject(msisdn, "", null, TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
-            convMessage.Conversation = m;
-            if (messages.Count == 0)
-            {
-                ConversationTableUtils.addConversation(convMessage);
-                //TO discusse
-                // add message to list of existing messages and write to db when user quits this page
-            }           
-            MessagesTableUtils.addMessage(convMessage);
-            messages.Add(convMessage);
+            //ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            //ConversationListObject m = new ConversationListObject(msisdn, "", null, TimeUtils.getRelativeTime(TimeUtils.getCurrentTimeStamp()));
+            //convMessage.Conversation = m;
+            //if (messages.Count == 0)
+            //{
+            //    ConversationTableUtils.addConversation(convMessage);
+            //    //TO discusse
+            //    // add message to list of existing messages and write to db when user quits this page
+            //}           
+            //MessagesTableUtils.addMessage(convMessage);
+            //messages.Add(convMessage);
         }
 
         public static void clearMessages()
