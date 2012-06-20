@@ -214,6 +214,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="View\images\compose_pressed.png" />
+    <Resource Include="View\images\hike_header.png" />
     <Content Include="View\images\ic_backtexture.png" />
     <Content Include="View\images\headerbar.png" />
     <Content Include="View\images\ic_avatar0.png" />

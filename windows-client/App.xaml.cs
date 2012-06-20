@@ -243,7 +243,7 @@ namespace windows_client
             }
             else
             {
-                nUri = new Uri("/View/MessageList.xaml", UriKind.Relative);
+                nUri = new Uri("/View/ConvProfilePanorama.xaml", UriKind.Relative);
             }
 
             ((App)Application.Current).RootFrame.Navigate(nUri);

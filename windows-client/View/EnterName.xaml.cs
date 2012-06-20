@@ -48,7 +48,7 @@ namespace windows_client
             }
             appSettings[App.NAME_SETTING] = "y";
             appSettings.Save();
-            nextPage = new Uri("/View/MessageList.xaml", UriKind.Relative);
+            nextPage = new Uri("/View/ConvProfilePanorama.xaml", UriKind.Relative);
 
             int count = 1;
             while (!App.Ab_scanned && count <=20)
