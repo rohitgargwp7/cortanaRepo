@@ -58,6 +58,7 @@
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Phone" />
+    <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
@@ -120,6 +121,9 @@
     <Compile Include="View\ChatThread.xaml.cs">
       <DependentUpon>ChatThread.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ConvProfilePanorama.xaml.cs">
+      <DependentUpon>ConvProfilePanorama.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\EnterName.xaml.cs">
       <DependentUpon>EnterName.xaml</DependentUpon>
     </Compile>
@@ -154,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="View\ChatThread.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ConvProfilePanorama.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
