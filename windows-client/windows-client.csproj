@@ -120,7 +120,6 @@
     <Compile Include="View\ChatThread.xaml.cs">
       <DependentUpon>ChatThread.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\effects\HybridOrientationChanges.cs" />
     <Compile Include="View\EnterName.xaml.cs">
       <DependentUpon>EnterName.xaml</DependentUpon>
     </Compile>
@@ -129,6 +128,9 @@
     </Compile>
     <Compile Include="View\EnterPin.xaml.cs">
       <DependentUpon>EnterPin.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Error.xaml.cs">
+      <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SelectUserToMsg.xaml.cs">
       <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
@@ -164,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EnterPin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Error.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
