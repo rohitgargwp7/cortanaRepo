@@ -363,17 +363,25 @@ namespace windows_client.Mqtt
             if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
             {
                 JObject json = (JObject)obj;
-
                 JToken data;
+                json.TryGetValue(HikeConstants.TYPE, out data);
+                string objType = data.ToString();
                 json.TryGetValue("d", out data);
-                JObject dataObj = JObject.FromObject(data);
-
-                JToken messageIdToken;
-                dataObj.TryGetValue("i", out messageIdToken);
-                int msgId = Convert.ToInt32(messageIdToken.ToString());
-                String temp2 = json.ToString(Newtonsoft.Json.Formatting.None);
-
-                byte[] byteData = Encoding.UTF8.GetBytes(temp2);
+                JObject dataObj;
+                int msgId;
+                if (objType == NetworkManager.MESSAGE_READ)
+                {
+                    msgId = -1;   
+                }
+                else
+                {
+                    dataObj = JObject.FromObject(data);
+                    JToken messageIdToken;
+                    dataObj.TryGetValue("i", out messageIdToken);
+                    msgId = Convert.ToInt32(messageIdToken.ToString());
+                }                
+                String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
+                byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
                 HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
                 send(packet, 1);
             }
