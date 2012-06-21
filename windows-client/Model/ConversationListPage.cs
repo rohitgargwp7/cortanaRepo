@@ -13,7 +13,7 @@ using System.Data.Linq;
 
 namespace windows_client.Model
 {
-    public class ConversationListObject
+    public class ConversationListObject : INotifyPropertyChanged
     {
         #region member variables
 
@@ -40,6 +40,7 @@ namespace windows_client.Model
                 if (_contactName != value)
                 {
                     _contactName = value;
+                    NotifyPropertyChanged("ContactName");
                 }
             }
         }
@@ -57,7 +58,7 @@ namespace windows_client.Model
                 {
 
                     _lastMessage = value;
-
+                    NotifyPropertyChanged("LastMessage");
                 }
             }
         }
@@ -107,7 +108,7 @@ namespace windows_client.Model
                 {
                    
                     _isOnhike = value;
-                  
+                    NotifyPropertyChanged("IsOnhike");
                 }
             }
         }
@@ -123,6 +124,7 @@ namespace windows_client.Model
                 if (_avatar != value)
                 {
                     _avatar = value;
+                    NotifyPropertyChanged("Avatar");
                 }
             }
         }
@@ -141,6 +143,7 @@ namespace windows_client.Model
                     if (_messageStatus != value)
                     {
                         _messageStatus = value;
+                        NotifyPropertyChanged("MessageStatus");
                     }
                 }
             }
@@ -186,6 +189,19 @@ namespace windows_client.Model
         }
         #endregion
 
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify Silverlight that a property has changed.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
 
     }
 }

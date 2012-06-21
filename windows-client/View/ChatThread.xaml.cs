@@ -406,7 +406,7 @@ namespace windows_client.View
                 return;
             }
             ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
-            MessagesTableUtils.deleteMessage(msg.MessageId);
+            MessagesTableUtils.deleteMessage(msg.MessageId); // delete msg with given msgId from messages table
             //update Conversation list class
             this.ChatThreadPageCollection.Remove(msg);
 
@@ -416,14 +416,14 @@ namespace windows_client.View
             {
                 obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
             }
-            else // no message is left simply remove the object from Conversation list 
+            else 
             {
+                // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
+
+                // delete the conversation from DB.
+                ConversationTableUtils.deleteConversation(obj.MSISDN);
             }
-
-            int idx = App.ViewModel.MessageListPageCollection.IndexOf(obj);
-            ConversationListObject obj2 = App.ViewModel.MessageListPageCollection[idx];
-
         }
 
     }
