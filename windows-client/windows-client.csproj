@@ -218,6 +218,12 @@
     <Content Include="View\images\ic_backtexture.png" />
     <Content Include="View\images\headerbar.png" />
     <Content Include="View\images\ic_avatar0.png" />
+    <Resource Include="View\images\ic_delivered.png" />
+    <Resource Include="View\images\ic_delivered_small.png" />
+    <Resource Include="View\images\ic_read.png" />
+    <Resource Include="View\images\ic_read_small.png" />
+    <Resource Include="View\images\ic_sent.png" />
+    <Resource Include="View\images\ic_sent_small.png" />
     <Content Include="View\images\welcome_bckg.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="View\images\ic_name_big.png">

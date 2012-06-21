@@ -369,17 +369,18 @@ namespace windows_client.Mqtt
                 json.TryGetValue("d", out data);
                 JObject dataObj;
                 int msgId;
-                if (objType == NetworkManager.MESSAGE_READ)
-                {
-                    msgId = -1;   
-                }
-                else
+
+                if (objType == NetworkManager.MESSAGE)
                 {
                     dataObj = JObject.FromObject(data);
                     JToken messageIdToken;
                     dataObj.TryGetValue("i", out messageIdToken);
                     msgId = Convert.ToInt32(messageIdToken.ToString());
-                }                
+                }
+                else
+                {
+                    msgId = -1;
+                }
                 String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
                 byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
                 HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
