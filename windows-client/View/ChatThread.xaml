@@ -49,10 +49,11 @@
         <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" FontSize="26" Margin="0,0,0,75">
             <ListBox.ItemTemplate>
                 <DataTemplate>
+                    
                     <!--<edc:Callout VerticalAlignment="Stretch" HorizontalAlignment="Right" AnchorPoint="0,1.5" CalloutStyle="RoundedRectangle" Content="{Binding Message}" Fill="DeepSkyBlue" FontSize="25" Stroke="Black" MinWidth="100" MinHeight="60" Margin="10, 5, 5, 10" Height="Auto" Width="Auto" MaxWidth="400"/>-->
                     <c4fToolkit:ChatBubble Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}" MinWidth="50" Margin="25,10,25,10" VerticalAlignment="Stretch" 
                                            MaxWidth="350" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
-                                           FontFamily="Arial" ChatBubbleDirection="{Binding IsSent, Converter={StaticResource bubbleDirectionConverter}}">
+                                           FontFamily="Arial" ChatBubbleDirection="{Binding IsSent, Converter={StaticResource bubbleDirectionConverter}}">                       
                         <TextBlock TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
                         <toolkit:ContextMenuService.ContextMenu>
                             <toolkit:ContextMenu Name="ctxMenu">
