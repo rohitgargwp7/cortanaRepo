@@ -84,7 +84,7 @@ namespace windows_client.DbUtils
         }
         public static void addChatMessage(ConvMessage convMsg)
         {
-            if (!ConvProfilePanorama.ConvMap.ContainsKey(convMsg.Msisdn))
+            if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 ConversationTableUtils.addConversation(convMsg);
             }
