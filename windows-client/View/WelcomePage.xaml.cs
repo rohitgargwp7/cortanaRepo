@@ -21,7 +21,7 @@ namespace windows_client
         public WelcomePage()
         {
             InitializeComponent();
-            //Test.Test.AddContactEntries();
+            Test.Test.AddContactEntries();
             //Test.Test.insertMessages();
         }
 

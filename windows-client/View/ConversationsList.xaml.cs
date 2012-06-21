@@ -14,7 +14,7 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 namespace windows_client.View
 {
-    public partial class ConvProfilePanorama : PhoneApplicationPage, HikePubSub.Listener
+    public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
         private HikePubSub mPubSub;
         private readonly IsolatedStorageSettings appSettings;
@@ -29,31 +29,37 @@ namespace windows_client.View
             }
         }
 
-        public ConvProfilePanorama()
+        public ConversationsList()
         {
             InitializeComponent();
             mPubSub = App.HikePubSubInstance;
             logger = NLog.LogManager.GetCurrentClassLogger();
             appSettings = App.appSettings;
-            App.MqttManagerInstance.connect();
-
             App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
-            convMap = new Dictionary<string, ConversationListObject>();
-            LoadMessages();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            convMap = new Dictionary<string, ConversationListObject>();
 
-            App.HikePubSubInstance.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_DELIVERED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_FAILED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.MSG_READ, this);
-            App.HikePubSubInstance.addListener(HikePubSub.SEND_NEW_MSG, this);
-            App.HikePubSubInstance.addListener(HikePubSub.ICON_CHANGED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
-            App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
+            LoadMessages();            
+            registerListeners();
+
+            App.MqttManagerInstance.connect();
+        }
+
+        private void registerListeners()
+        {
+            mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
+            mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
+            mPubSub.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_FAILED, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
+            mPubSub.addListener(HikePubSub.MSG_READ, this);
+            mPubSub.addListener(HikePubSub.SEND_NEW_MSG, this);
+            mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
+            mPubSub.addListener(HikePubSub.USER_JOINED, this);
+            mPubSub.addListener(HikePubSub.USER_LEFT, this);
+
         }
 
         private void LoadMessages()

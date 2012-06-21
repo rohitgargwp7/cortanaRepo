@@ -410,7 +410,7 @@ namespace windows_client.View
             //update Conversation list class
             this.ChatThreadPageCollection.Remove(msg);
 
-            ConversationListObject obj = ConvProfilePanorama.ConvMap[msg.Msisdn];
+            ConversationListObject obj = ConversationsList.ConvMap[msg.Msisdn];
             /* Remove the message from conversation list */
             if (this.ChatThreadPageCollection.Count > 0)
             {

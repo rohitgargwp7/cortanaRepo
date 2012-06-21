@@ -121,8 +121,8 @@
     <Compile Include="View\ChatThread.xaml.cs">
       <DependentUpon>ChatThread.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ConvProfilePanorama.xaml.cs">
-      <DependentUpon>ConvProfilePanorama.xaml</DependentUpon>
+    <Compile Include="View\ConversationsList.xaml.cs">
+      <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EnterName.xaml.cs">
       <DependentUpon>EnterName.xaml</DependentUpon>
@@ -161,7 +161,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\ConvProfilePanorama.xaml">
+    <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
