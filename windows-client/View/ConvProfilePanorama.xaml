@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:Converters="clr-namespace:windows_client.converters"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -15,10 +16,10 @@
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="False">
 
-    
+
     <!--LayoutRoot contains the root grid where all other page content is placed-->
     <Grid x:Name="LayoutRoot">
-        
+
         <controls:Panorama Foreground="Black" Background="White">
             <!--<controls:Panorama.TitleTemplate>
                 <DataTemplate>
@@ -68,6 +69,12 @@
                                         </StackPanel>
                                     </StackPanel>
                                     <!--<Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>-->
+                                    <toolkit:ContextMenuService.ContextMenu>
+                                        <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem Header="Add Shortcut"/>
+                                        </toolkit:ContextMenu>
+                                    </toolkit:ContextMenuService.ContextMenu>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

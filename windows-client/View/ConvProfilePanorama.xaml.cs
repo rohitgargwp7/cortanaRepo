@@ -16,7 +16,6 @@ namespace windows_client.View
 {
     public partial class ConvProfilePanorama : PhoneApplicationPage, HikePubSub.Listener
     {
-
         private HikePubSub mPubSub;
         private readonly IsolatedStorageSettings appSettings;
         private NLog.Logger logger;
@@ -29,6 +28,7 @@ namespace windows_client.View
                 return convMap;
             }
         }
+
         public ConvProfilePanorama()
         {
             InitializeComponent();
@@ -145,7 +145,7 @@ namespace windows_client.View
                     {
                         mObj = convMap[convMessage.Msisdn];
                         mObj.LastMessage = convMessage.Message;
-                        mObj.TimeStamp = TimeUtils.getRelativeTime(convMessage.Timestamp);
+                        mObj.TimeStamp = TimeUtils.getRelativeTime(convMessage.Timestamp);                       
                         App.ViewModel.MessageListPageCollection.Remove(mObj);
                     }
                     else
@@ -155,29 +155,45 @@ namespace windows_client.View
                         mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
                         contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getRelativeTime(convMessage.Timestamp),
                         thumbnail == null ? null : thumbnail.Avatar);
-
+                        
                         convMap.Add(convMessage.Msisdn, mObj);
                         isNewConversation = true;
                     }
-                    if (App.ViewModel.MessageListPageCollection == null)
+                    if( App.ViewModel.MessageListPageCollection == null)
                         App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                     object[] vals = new object[2];
                     vals[0] = convMessage;
                     vals[1] = isNewConversation;
-                    if (HikePubSub.SEND_NEW_MSG == type)
-                        mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
-
+                    if ( HikePubSub.SEND_NEW_MSG == type)
+                        mPubSub.publish(HikePubSub.MESSAGE_SENT,vals);
+  
                 });
             }
             else if (HikePubSub.MSG_READ == type)
             {
-                string msisdn = (string)obj;
+                string msisdn = (string) obj;
                 ConversationListObject convObj = convMap[msisdn];
                 convObj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 //TODO : update the UI here also.
             }
         }
 
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting conversation.", "Delete Conversation ?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
+            convMap.Remove(convObj.MSISDN); // removed entry from map
+            App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+            ConversationTableUtils.deleteConversation(convObj.MSISDN); // removed entry from conversation table
+            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.MSISDN); //removed all chat messages for this msisdn
+        }
     }
 }
