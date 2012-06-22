@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using mqtttest.Client;
 using windows_client.Model;
 using windows_client.DbUtils;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.Mqtt
 {
@@ -29,7 +30,16 @@ namespace windows_client.Mqtt
 
         public void onSuccess()
         {
-            //set message status
+            if (packet != null)
+            {
+                if (packet.MessageId > 0) // represents ack for message that is recieved by server
+                {
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = NetworkManager.SERVER_REPORT;
+                    obj[HikeConstants.DATA] = Convert.ToString(packet.MessageId);
+                    App.HikePubSubInstance.publish(HikePubSub.WS_RECEIVED,obj.ToString());
+                }
+            }
         }
 
 
@@ -37,7 +47,16 @@ namespace windows_client.Mqtt
         {
             hikeMqttManager.ping();
             MqttDBUtils.addSentMessage(packet);
-            //set message status
+
+            if (packet != null)
+            {
+                if (packet.MessageId > 0) // represents ack for message that is recieved by server
+                {
+                    JObject obj = new JObject();
+                    obj[HikeConstants.DATA] = Convert.ToString(packet.MessageId);
+                    App.HikePubSubInstance.publish(HikePubSub.WS_RECEIVED, obj.ToString());
+                }
+            }
         }
     }
 }

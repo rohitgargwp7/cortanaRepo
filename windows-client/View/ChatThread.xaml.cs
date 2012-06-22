@@ -69,7 +69,7 @@ namespace windows_client.View
         }
         #endregion
 
-        #region register broadcast listeners
+        #region remove broadcast listeners
         private void removeListeners()
         {
         }
@@ -278,12 +278,6 @@ namespace windows_client.View
                     if (msg != null)
                     {
                         msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            this.myListBox.UpdateLayout();
-                            this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                        });
-
                     }
                 }
                 catch (KeyNotFoundException e)
@@ -296,7 +290,7 @@ namespace windows_client.View
                 long[] ids = (long[])obj;
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Length; i++)
-                {                   
+                {
                     try
                     {
                         ConvMessage msg = msgMap[ids[i]];
@@ -312,13 +306,19 @@ namespace windows_client.View
                     }
 
                 }
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    this.myListBox.UpdateLayout();
-                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                });
             }
+            else if (HikePubSub.SMS_CREDIT_CHANGED == type)
+            {
 
+            }
+            else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
+            {
+                string msisdn = (string)obj;
+                if (mContactNumber != msisdn)
+                {
+                    return;
+                }
+            }
             else if (HikePubSub.END_TYPING_CONVERSATION == type)
             {
                 if (mContactNumber == (obj as string))
@@ -416,7 +416,7 @@ namespace windows_client.View
             {
                 obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
             }
-            else 
+            else
             {
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
