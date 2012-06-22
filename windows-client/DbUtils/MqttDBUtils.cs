@@ -25,15 +25,21 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.mqttMessages
                 select o);
-            return q(App.HikeDataContextInstance).Count<HikePacket>() == 0 ? null :
-                q(App.HikeDataContextInstance).ToList<HikePacket>();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                return q(context).Count<HikePacket>() == 0 ? null :
+                    q(context).ToList<HikePacket>();
+            }
         }
 
         public static void addSentMessage(HikePacket packet)
         {
             HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
-            App.HikeDataContextInstance.mqttMessages.InsertOnSubmit(mqttMessage);
-            App.HikeDataContextInstance.SubmitChanges();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.mqttMessages.InsertOnSubmit(mqttMessage);
+                context.SubmitChanges();
+            }
             //TODO update observable list
         }
 
@@ -45,8 +51,11 @@ namespace windows_client.DbUtils
                 from o in hdc.mqttMessages
                 where o.MessageId == id
                 select o);
-            App.HikeDataContextInstance.mqttMessages.DeleteAllOnSubmit<HikePacket>(q(App.HikeDataContextInstance, msgId));
-            App.HikeDataContextInstance.SubmitChanges();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(q(context, msgId));
+                context.SubmitChanges();
+            }
         }
         #endregion
 

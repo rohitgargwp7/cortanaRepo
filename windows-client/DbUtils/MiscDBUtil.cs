@@ -20,17 +20,21 @@ namespace windows_client.DbUtils
         public static void addOrUpdateIcon(string msisdn, byte[] image)
         {
             Thumbnails thumbnail = getThumbNailForMSisdn(msisdn);
-            if (thumbnail == null)
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                App.HikeDataContextInstance.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
-                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                contact.HasCustomPhoto = true;
+                if (thumbnail == null)
+                {
+                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
+                    ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    contact.HasCustomPhoto = true;
+                }
+                else
+                {
+                    thumbnail.Avatar = image;
+                }
+
+                context.SubmitChanges();
             }
-            else
-            {
-                thumbnail.Avatar = image;
-            }
-            App.HikeDataContextInstance.SubmitChanges();
         }
 
         public static List<Thumbnails> getAllThumbNails()
@@ -40,8 +44,11 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.thumbnails
                 select o);
-            return q(App.HikeDataContextInstance).Count<Thumbnails>() == 0 ? null :
-                q(App.HikeDataContextInstance).ToList<Thumbnails>();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                return q(context).Count<Thumbnails>() == 0 ? null :
+                    q(context).ToList<Thumbnails>();
+            }
         }
 
 
@@ -53,8 +60,11 @@ namespace windows_client.DbUtils
                 from o in hdc.thumbnails
                 where o.Msisdn == m
                 select o);
-            return q(App.HikeDataContextInstance, msisdn).Count<Thumbnails>() == 0 ? null :
-                q(App.HikeDataContextInstance, msisdn).First<Thumbnails>();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                return q(context, msisdn).Count<Thumbnails>() == 0 ? null :
+                    q(context, msisdn).First<Thumbnails>();
+            }
         }
     }
 }

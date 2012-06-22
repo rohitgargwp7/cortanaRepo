@@ -25,28 +25,36 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.conversations
                 select o);
-            if (q(App.HikeDataContextInstance).Count<Conversation>() == 0)
-                return null;
-            List<Conversation> conversations = q(App.HikeDataContextInstance).ToList<Conversation>();
-            conversations.Sort();
-            conversations.Reverse();
-            return conversations;
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                if (q(context).Count<Conversation>() == 0)
+                    return null;
+                List<Conversation> conversations = q(context).ToList<Conversation>();
+                conversations.Sort();
+                conversations.Reverse();
+                return conversations;
+            }           
         }
 
         public static void addConversation(ConvMessage convMessage)
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
             Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null,  (contactInfo != null) ? contactInfo.OnHike:false);
-            App.HikeDataContextInstance.conversations.InsertOnSubmit(conv);
-            App.HikeDataContextInstance.SubmitChanges();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.conversations.InsertOnSubmit(conv);
+                context.SubmitChanges();
+            }          
         }
 
 
         public static void deleteAllConversations()
         {
-            App.HikeDataContextInstance.conversations.DeleteAllOnSubmit<Conversation>(App.HikeDataContextInstance.GetTable<Conversation>());
-            App.HikeDataContextInstance.SubmitChanges();
-
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.conversations.DeleteAllOnSubmit<Conversation>(context.GetTable<Conversation>());
+                context.SubmitChanges();
+            }
         }
 
         public static void deleteConversation(string msisdn)
@@ -57,8 +65,11 @@ namespace windows_client.DbUtils
                 from o in hdc.conversations
                 where o.Msisdn == _msisdn
                 select o);
-            App.HikeDataContextInstance.conversations.DeleteAllOnSubmit<Conversation>(q(App.HikeDataContextInstance, msisdn));
-            App.HikeDataContextInstance.SubmitChanges();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.conversations.DeleteAllOnSubmit<Conversation>(q(context, msisdn));
+                context.SubmitChanges();
+            }
         }
     }
 }
