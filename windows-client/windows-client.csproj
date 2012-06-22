@@ -83,6 +83,8 @@
     <Compile Include="converters\ChatBubbleDirection.cs" />
     <Compile Include="converters\ChatThreadAlignment.cs" />
     <Compile Include="converters\ChatThreadBackground.cs" />
+    <Compile Include="converters\ChatThreadSDRImage.cs" />
+    <Compile Include="converters\ChatThreadSDRImageShow.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
