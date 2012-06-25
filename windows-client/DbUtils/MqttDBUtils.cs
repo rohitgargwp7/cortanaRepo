@@ -18,6 +18,11 @@ namespace windows_client.DbUtils
     public class MqttDBUtils
     {
         #region MqttPersistence
+        /// <summary>
+        /// Retrives all messages thet were unsent previously, and are required to send when connection re-establishes
+        /// deletes pending messages from db after reading
+        /// </summary>
+        /// <returns></returns>
         public static List<HikePacket> getAllSentMessages()
         {
             Func<HikeDataContext, IQueryable<HikePacket>> q =
@@ -25,8 +30,13 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.mqttMessages
                 select o);
-            return q(App.HikeDataContextInstance).Count<HikePacket>() == 0 ? null :
+            List<HikePacket> unsentMessages = q(App.HikeDataContextInstance).Count<HikePacket>() == 0 ? null :
                 q(App.HikeDataContextInstance).ToList<HikePacket>();
+            
+            App.HikeDataContextInstance.mqttMessages.DeleteAllOnSubmit(App.HikeDataContextInstance.mqttMessages);
+            App.HikeDataContextInstance.SubmitChanges();
+
+            return unsentMessages;
         }
 
         public static void addSentMessage(HikePacket packet)
