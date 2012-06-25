@@ -25,6 +25,7 @@ namespace windows_client
         public EnterName()
         {
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
         }
 
         private void btnEnterName_Click(object sender, RoutedEventArgs e)
@@ -77,6 +78,11 @@ namespace windows_client
             base.OnNavigatedTo(e);
             if(NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+        }
+
+        void EnterNamePage_Loaded(object sender, RoutedEventArgs e)
+        {
+            txtBxEnterName.Focus();
         }
     }
 }

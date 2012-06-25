@@ -26,6 +26,7 @@ namespace windows_client
         public EnterPin()
         {
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
         }
 
         private void btnEnterPin_Click(object sender, RoutedEventArgs e)
@@ -75,5 +76,11 @@ namespace windows_client
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
         }
+
+        void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            txtBxEnterPin.Focus();
+        }
+ 
     }
 }

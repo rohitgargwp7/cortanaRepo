@@ -24,6 +24,8 @@ namespace windows_client
         public EnterNumber()
         {
             InitializeComponent();
+            this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
+
         }
 
         private void enterPhoneBtn_Click(object sender, RoutedEventArgs e)
@@ -82,5 +84,10 @@ namespace windows_client
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
         }
+        void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            txtEnterPhone.Focus();
+        }
+ 
     }
 }
