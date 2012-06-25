@@ -90,9 +90,7 @@ namespace windows_client.View
             ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
             if (obj == null)
                 return;
-
-            PhoneApplicationService.Current.State["msisdn"] = obj.MSISDN;
-            PhoneApplicationService.Current.State["name"] = obj.ContactName;
+            PhoneApplicationService.Current.State["objFromConversationPage"] = obj;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
