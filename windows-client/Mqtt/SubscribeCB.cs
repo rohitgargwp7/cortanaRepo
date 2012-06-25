@@ -23,7 +23,7 @@ namespace windows_client.Mqtt
 
         public void onFailure(Exception value)
         {
-            hikeMqttManager.disconnectFromBroker(false);
+            hikeMqttManager.ping();
         }
 
         public void onSuccess()

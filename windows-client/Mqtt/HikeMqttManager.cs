@@ -21,6 +21,8 @@ using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.Phone.Reactive;
+using windows_client.converters;
 
 namespace windows_client.Mqtt
 {
@@ -87,6 +89,9 @@ namespace windows_client.Mqtt
         private String password;
 
         private String uid;
+
+        private IScheduler scheduler = Scheduler.NewThread;
+
 
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
@@ -190,10 +195,9 @@ namespace windows_client.Mqtt
 
         private bool isUserOnline()
         {
-            //            NetworkInterface.GetIsNetworkAvailable();
-
-            return (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.NetworkInterfaceType !=
-                 Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None);
+            return NetworkInterface.GetIsNetworkAvailable();
+            //return (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.NetworkInterfaceType !=
+            //     Microsoft.Phone.Net.NetworkInformation.NetworkInterfaceType.None);
         }
 
         /*
@@ -260,6 +264,10 @@ namespace windows_client.Mqtt
             }
             else
             {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBoxResult result = MessageBox.Show("Boss check the internet", "Hike", MessageBoxButton.OKCancel);
+                });
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
             }
         }
@@ -284,8 +292,6 @@ namespace windows_client.Mqtt
                 return;
             }
             PublishCB pbCB = new PublishCB(packet, this);
-
-
             String tempString = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
 
             mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
@@ -313,22 +319,20 @@ namespace windows_client.Mqtt
 
         public void onConnected()
         {
-            //		Log.d("HikeMqttManager", "mqtt connected");
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
-
             subscribeToTopics(getTopics());
+            scheduler.Schedule(ping, TimeSpan.FromMinutes(10));
 
             /* Accesses the persistence object from the main handler thread */
 
             //TODO make it async
-            //List<HikePacket> packets = MiscDBUtils.getAllSentMessages();
-            //if (packets == null)
-            //    return;
-            //for (int i = 0; i < packets.Count; i++)
-            //{
-            //    //					Log.d("HikeMqttManager", "resending message " + new String(hikePacket.getMessage()));
-            //    send(packets[i], 1);
-            //}
+            /*List<HikePacket> packets = MqttDBUtils.getAllSentMessages();
+            if (packets == null)
+                return;
+            for (int i = 0; i < packets.Count; i++)
+            {
+                send(packets[i], 1);
+            }*/
         }
 
         public void onDisconnected()
@@ -352,7 +356,9 @@ namespace windows_client.Mqtt
                 string msisdn = temp.ToString();
                 jsonObj.TryGetValue(HikeConstants.DATA,out temp);
                 string iconBase64 = temp.ToString();
-                MiscDBUtil.addOrUpdateIcon(msisdn, System.Convert.FromBase64String(iconBase64));
+                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
+                ImageConverter.updateImageInCache(msisdn, imageBytes);
             }
 
             pubSub.publish(HikePubSub.WS_RECEIVED, receivedMessage);

@@ -363,10 +363,14 @@ namespace finalmqtt.Client
                 if (messageId != 0)
                 {
                     Callback cb;
-                    map.TryGetValue(messageId, out cb);
-                    if (cb != null)
+                    if (map.ContainsKey(messageId))
                     {
-                        cb.onSuccess();
+                        map.TryGetValue(messageId, out cb);
+                        map.Remove(messageId);
+                        if (cb != null)
+                        {
+                            cb.onSuccess();
+                        }
                     }
                 }
             }
