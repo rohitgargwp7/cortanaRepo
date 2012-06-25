@@ -12,23 +12,23 @@ using System.Windows.Data;
 
 namespace windows_client.converters
 {
-    public class ChatThreadBackground : IValueConverter
+    public class ChatThreadImageVisible : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool isSent = (bool)value;
             if (isSent)
             {
-                return "#FFA9E9C9";
-                //return "LightGreen";
+                return "collapsed";
             }
-            return "#FFDADADA";
-//            return "LightGray";
+            return "visible";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

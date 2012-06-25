@@ -12,18 +12,16 @@ using System.Windows.Data;
 
 namespace windows_client.converters
 {
-    public class ChatThreadBackground : IValueConverter
+    public class ChatBubbleMargin : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             bool isSent = (bool)value;
             if (isSent)
             {
-                return "#FFA9E9C9";
-                //return "LightGreen";
+                return "15,0,10,10";
             }
-            return "#FFDADADA";
-//            return "LightGray";
+            return "5,0,10,10";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -32,3 +30,4 @@ namespace windows_client.converters
         }
     }
 }
+
