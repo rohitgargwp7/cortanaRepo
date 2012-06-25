@@ -288,5 +288,25 @@ namespace windows_client.DbUtils
         }
 
         #endregion
+
+        public static void updateOnHikeStatus(string msisdn, bool joined)
+        {
+            ContactInfo cInfo = null;
+            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
+             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
+             ((HikeDataContext hdc, string ms) =>
+                 from o in hdc.users
+                 where o.Msisdn == ms
+                 select o);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                if (q(context, msisdn).Count<ContactInfo>() == 1)
+                {
+                    cInfo = q(context, msisdn).ToList<ContactInfo>().First<ContactInfo>();
+                    cInfo.OnHike = (bool)joined;
+                    context.SubmitChanges();
+                }
+            }
+        }
     }
 }

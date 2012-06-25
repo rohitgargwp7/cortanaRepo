@@ -71,5 +71,25 @@ namespace windows_client.DbUtils
                 context.SubmitChanges();
             }
         }
+
+        public static void updateOnHikeStatus(string msisdn, bool joined)
+        {
+            Conversation cInfo = null;
+            Func<HikeDataContext, string, IQueryable<Conversation>> q =
+             CompiledQuery.Compile<HikeDataContext, string, IQueryable<Conversation>>
+             ((HikeDataContext hdc, string ms) =>
+                 from o in hdc.conversations
+                 where o.Msisdn == ms
+                 select o);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                if (q(context, msisdn).Count<Conversation>() == 1)
+                {
+                    cInfo = q(context, msisdn).ToList<Conversation>().First<Conversation>();
+                    cInfo.OnHike = (bool)joined;
+                    context.SubmitChanges();
+                }
+            }
+        }
     }
 }
