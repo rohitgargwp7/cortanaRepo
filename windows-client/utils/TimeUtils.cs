@@ -8,11 +8,47 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Text;
 
 namespace windows_client.utils
 {
     public class TimeUtils
     {
+        public static string getTimeString(long timestamp)
+        {
+            long ticks = timestamp * 10000000;
+            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+            DateTime messageTime = new DateTime(ticks);
+            DateTime now = DateTime.UtcNow;
+
+            TimeSpan span = now.Subtract(messageTime);
+            messageTime = messageTime.AddHours(5);
+            messageTime = messageTime.AddMinutes(30);
+
+            StringBuilder messageTimeString = new StringBuilder();
+            if (span.Days < 1)
+            {
+                messageTimeString.Append(String.Format("{0:00}",(messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}",(messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
+                return messageTimeString.ToString(); ;
+            }
+            else if (span.Days < 7)
+            {
+                return messageTime.DayOfWeek.ToString();
+            }//TODO count no of days in that year
+            else if (span.Days < 365)
+            {
+                messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month);
+                return messageTimeString.ToString();
+            }
+            else
+            {
+                messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month).Append("/").Append(messageTime.Year%100);
+                return messageTimeString.ToString();
+            }
+
+        }
+
+
         public static string getRelativeTime(long timestamp)
         {
 //            TimeSpan.FromMilliseconds(milliseconds);
