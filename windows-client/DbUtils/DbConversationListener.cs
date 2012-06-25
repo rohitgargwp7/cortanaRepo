@@ -96,6 +96,20 @@ namespace windows_client.DbUtils
                 JObject unblockObj = blockUnblockSerialize("ub", msisdn);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
+            else if (HikePubSub.SMS_CREDIT_CHANGED == type)  // server got msg from client 1 and sent back received msg receipt
+            {
+                /* Save credits to isolated storage */
+                int credits =  (int)obj;
+                App.appSettings[App.SMS_SETTING] = credits;
+                App.appSettings.Save();
+            }
+            else if(HikePubSub.USER_JOINED == type || HikePubSub.USER_LEFT == type)
+            {
+                string msisdn = (string)obj;
+                bool joined = HikePubSub.USER_JOINED == type;
+                UsersTableUtils.updateOnHikeStatus(msisdn,joined);
+                ConversationTableUtils.updateOnHikeStatus(msisdn, joined);
+            }
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)
