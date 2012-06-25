@@ -19,6 +19,7 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 
 namespace windows_client.View
 {
@@ -33,6 +34,69 @@ namespace windows_client.View
         private string mContactNumber;
         private string mContactName;
         private long mTextLastChanged = 0;
+
+
+        private const double LandscapeShift = -259d;
+        private const double LandscapeShiftWithBar = -328d;
+        private const double Epsilon = 0.00000001d;
+        private const double PortraitShift = -339d;
+        private const double PortraitShiftWithBar = -408d;
+
+        public static readonly DependencyProperty TranslateYProperty = DependencyProperty.Register("TranslateY", typeof(double), typeof(ChatThread), new PropertyMetadata(0d, OnRenderXPropertyChanged));
+
+        #region handling keyboard focus
+        public double TranslateY
+        {
+            get { return (double)GetValue(TranslateYProperty); }
+            set { SetValue(TranslateYProperty, value); }
+        }
+
+        private static void OnRenderXPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((ChatThread)d).UpdateTopMargin((double)e.NewValue);
+        }
+
+        private void ChatThreadPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            BindToKeyboardFocus();
+        }
+
+        private void BindToKeyboardFocus()
+        {
+            PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
+            if (frame != null)
+            {
+                var group = frame.RenderTransform as TransformGroup;
+                if (group != null)
+                {
+                    var translate = group.Children[0] as TranslateTransform;
+                    var translateYBinding = new Binding("Y");
+                    translateYBinding.Source = translate;
+                    SetBinding(TranslateYProperty, translateYBinding);
+                }
+            }
+        }
+
+        private void UpdateTopMargin(double translateY)
+        {
+            if (IsClose(translateY, LandscapeShift) || IsClose(translateY, PortraitShift)
+            || IsClose(translateY, LandscapeShiftWithBar) || IsClose(translateY, PortraitShiftWithBar))
+            {
+                LayoutRoot.Margin = new Thickness(0, -translateY, 0, 0);
+            }
+        }
+
+        private bool IsClose(double a, double b)
+        {
+            return Math.Abs(a - b) < Epsilon;
+        }
+
+        private void TextBoxLostFocus(object sender, RoutedEventArgs e)
+        {
+            LayoutRoot.Margin = new Thickness();
+        }
+        #endregion
+
 
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> message mapping
 
@@ -51,6 +115,8 @@ namespace windows_client.View
             mPubSub = App.HikePubSubInstance;
             registerListeners();
             initPageBasedOnState();
+            this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
+
         }
 
         #region register broadcast listeners
@@ -296,7 +362,7 @@ namespace windows_client.View
                 long[] ids = (long[])obj;
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Length; i++)
-                {                   
+                {
                     try
                     {
                         ConvMessage msg = msgMap[ids[i]];
@@ -336,7 +402,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        hikeLabel.Text = mContactName + " is typing.";
+                        //                        hikeLabel.Text = mContactName + " is typing.";
                         // handle auto removing
                     });
                 }
@@ -416,7 +482,7 @@ namespace windows_client.View
             {
                 obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
             }
-            else 
+            else
             {
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
@@ -424,6 +490,10 @@ namespace windows_client.View
                 // delete the conversation from DB.
                 ConversationTableUtils.deleteConversation(obj.MSISDN);
             }
+        }
+
+        private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
+        {
         }
 
     }
