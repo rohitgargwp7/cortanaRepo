@@ -63,6 +63,7 @@
       <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Phone.Reactive" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -81,8 +82,10 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="converters\ChatBubbleDirection.cs" />
+    <Compile Include="converters\ChatBubbleMargin.cs" />
     <Compile Include="converters\ChatThreadAlignment.cs" />
     <Compile Include="converters\ChatThreadBackground.cs" />
+    <Compile Include="converters\ChatThreadImageVisible.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
