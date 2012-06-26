@@ -37,6 +37,7 @@ namespace windows_client
         #region instances
 
         private static bool ab_scanned = false;
+        public static bool isABScanning = false;
         private static HikePubSub mPubSubInstance;
         private static HikeViewModel _viewModel;
         private static DbConversationListener dbListener;

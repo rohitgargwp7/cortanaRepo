@@ -54,12 +54,17 @@ namespace windows_client
             int count = 1;
             while (!App.Ab_scanned && count <=20)
             {
+                if (!App.isABScanning)
+                {
+                    ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
+                }
                 Thread.Sleep(1 * 1000); //sleep for one second
                 count++;
             }
             if (!App.Ab_scanned) // timeout occured
             {
                 // SHOW NETWORK ERROR
+                return;
             }
 
             /*This is used to avoid cross thread invokation exception*/
