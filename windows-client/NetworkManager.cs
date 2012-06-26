@@ -124,7 +124,7 @@ namespace windows_client
                 }
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
             }
-            else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the tornado server and it send back a received msg
+            else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
             {
                 string id = (string)jsonObj[HikeConstants.DATA];
                 long msgID;
@@ -159,8 +159,9 @@ namespace windows_client
             }
             else if ((USER_JOINED == type) || (USER_LEFT == type))
             {
+                string uMsisdn = (string)jsonObj[HikeConstants.DATA];
                 bool joined = USER_JOINED == type;
-                this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, msisdn);
+                this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
             /*else if ((ICON.equals(type)))
             {

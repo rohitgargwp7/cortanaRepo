@@ -167,13 +167,7 @@ namespace windows_client.Model
             if (GetType() != obj.GetType())
                 return false;
             ContactInfo other = (ContactInfo)obj;
-            if (Id == null)
-            {
-                if (other.Id != null)
-                    return false;
-            }
-            else if (Id.CompareTo(other.Id)!=0)
-                return false;
+           
             if (Name == null)
             {
                 if (other.Name != null)
@@ -195,7 +189,6 @@ namespace windows_client.Model
         {
 		    const int prime = 31;
 		    int result = 1;
-		    result = prime * result + ((Id == null) ? 0 : Id.GetHashCode());
 		    result = prime * result + ((Name == null) ? 0 : Name.GetHashCode());
 		    result = prime * result + ((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
 		    return result;

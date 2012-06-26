@@ -28,6 +28,7 @@ namespace windows_client
         public static readonly string PIN_SETTING = "pincode";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
+        public static readonly string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
 
         #endregion
 
@@ -37,7 +38,6 @@ namespace windows_client
 
         private static bool ab_scanned = false;
         private static HikePubSub mPubSubInstance;
-        private static HikeDataContext hikeDataContext;
         private static HikeViewModel _viewModel;
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
@@ -87,21 +87,6 @@ namespace windows_client
             {
                 if (value != mPubSubInstance)
                     mPubSubInstance = value;
-            }
-        }
-
-        public static HikeDataContext HikeDataContextInstance
-        {
-            get
-            {
-                return hikeDataContext;
-            }
-            set
-            {
-                if (value != hikeDataContext)
-                {
-                    hikeDataContext = value;
-                }
             }
         }
 
@@ -188,18 +173,17 @@ namespace windows_client
 
             #region CreateDatabases
 
-            string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
-
             // Create the database if it does not exist.
 
-            App.HikeDataContextInstance = new HikeDataContext(DBConnectionstring);
-
-            if (App.HikeDataContextInstance.DatabaseExists() == false)
+            using (HikeDataContext db = new HikeDataContext(DBConnectionstring))
             {
-                // Create the local database.
-                App.HikeDataContextInstance.CreateDatabase();
-            }
 
+                if (db.DatabaseExists() == false)
+                {
+                    // Create the local database.
+                    db.CreateDatabase();
+                }
+            }
             #endregion
 
             #region Instantiate app instances

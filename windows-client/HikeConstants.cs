@@ -67,6 +67,10 @@ namespace windows_client
         public static readonly int CRITICAL_UPDATE = 1;
         public static readonly int NO_UPDATE = 0;
 
+        public static class Extras
+	    {
+            public static readonly string ANIMATED_ONCE = "animatedOnce";
+        }
 
     }
 }

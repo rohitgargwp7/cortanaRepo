@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 namespace windows_client.Model
 {
     [Table(Name = "messages")]
-    public class ConvMessage : INotifyPropertyChanged, INotifyPropertyChanging
+    public class ConvMessage : INotifyPropertyChanged
     {
 
         private long _messageId; // this corresponds to msgID stored in sender's DB
@@ -67,10 +67,8 @@ namespace windows_client.Model
             set
             {
                 if (_messageId != value)
-                {
-                    
-                    _messageId = value;
-                  
+                {                    
+                    _messageId = value;                  
                 }
             }
         }
@@ -86,9 +84,7 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
-                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value;
-                    NotifyPropertyChanged("Msisdn");
                 }
             }
         }
@@ -103,15 +99,13 @@ namespace windows_client.Model
             set
             {
                 if (_message != value)
-                {
-                   
-                    _message = value;
-                 
+                {                   
+                    _message = value;                 
                 }
             }
         }
 
-        [Column]
+        [Column(IsDbGenerated = false, UpdateCheck = UpdateCheck.Never)]
         public State MessageStatus
         {
             get
@@ -122,7 +116,6 @@ namespace windows_client.Model
             {               
                 if (_messageStatus != value)
                 {
-                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
                 }
@@ -139,10 +132,8 @@ namespace windows_client.Model
             set
             {
                 if (_timestamp != value)
-                {
-                    
-                    _timestamp = value;
-       
+                {                   
+                    _timestamp = value;       
                 }
             }
         }
@@ -157,10 +148,8 @@ namespace windows_client.Model
             set
             {
                 if (_mappedMessageId != value)
-                {
-                   
+                {                  
                     _mappedMessageId = value;
-            
                 }
             }
         }
@@ -175,7 +164,6 @@ namespace windows_client.Model
             {
                 if (_isInvite != value)
                 {
-                    NotifyPropertyChanging("IsInvite");
                     _isInvite = value;
                     NotifyPropertyChanged("IsInvite");
                 }
@@ -192,12 +180,6 @@ namespace windows_client.Model
                         _messageStatus == State.SENT_DELIVERED_READ ||
                         _messageStatus == State.SENT_FAILED);
             }
-            //set
-            //{
-
-            //    if (value != _isSent)
-            //        _isSent = value;
-            //}
         }
 
         public bool IsSms
@@ -228,8 +210,6 @@ namespace windows_client.Model
 
         public ConvMessage(string message, string msisdn, long timestamp, State msgState, long msgid, long mappedMsgId)
         {
-            //TODO check assertion in c#
-            //assert(msisdn != null);
             this._msisdn = msisdn;
             this._message = message;
             this._timestamp = timestamp;
@@ -345,24 +325,6 @@ namespace windows_client.Model
             return TimeUtils.getRelativeTime(Timestamp);
         }
 
-        public string MsgStatus
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case State.SENT_CONFIRMED:
-                        return " -> S";
-                    case State.SENT_DELIVERED:
-                        return " -> D";
-                    case State.SENT_DELIVERED_READ:
-                        return " -> R";
-                    default:
-                        return " UC";
-                }
-            }
-        }
-
         #endregion
 
         #region INotifyPropertyChanged Members
@@ -374,26 +336,14 @@ namespace windows_client.Model
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                });             
             }
         }
 
         #endregion
-
-        #region INotifyPropertyChanging Members
-
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        // Used to notify that a property is about to change
-        private void NotifyPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-            {
-                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-            }
-        }
-        #endregion
-
 
         public JObject serializeDeliveryReportRead()
         {

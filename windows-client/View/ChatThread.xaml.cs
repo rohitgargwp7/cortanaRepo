@@ -28,12 +28,14 @@ namespace windows_client.View
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
-        ConvMessage selectedConvMsg;
+        private bool mUserIsBlocked;
+        private bool isOnHike;
         private int mCredits;
         private HikePubSub mPubSub;
         private string mContactNumber;
         private string mContactName;
         private long mTextLastChanged = 0;
+        private bool animatedOnce = false;
 
 
         private const double LandscapeShift = -259d;
@@ -135,7 +137,7 @@ namespace windows_client.View
         }
         #endregion
 
-        #region register broadcast listeners
+        #region remove broadcast listeners
         private void removeListeners()
         {
         }
@@ -143,21 +145,37 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-            /* Check if it is a forwarded msg */
-            if (PhoneApplicationService.Current.State.ContainsKey("forwardedText"))
+            if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
             {
-                sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State["forwardedText"];
-                PhoneApplicationService.Current.State.Remove("forwardedText");
+                ConversationListObject obj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
+                mContactNumber = obj.MSISDN;
+                mContactName = obj.ContactName;
+                isOnHike = obj.IsOnhike;
+                PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
-            mContactNumber = (string)PhoneApplicationService.Current.State["msisdn"];
-            mContactName = (string)PhoneApplicationService.Current.State["name"];
+            else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
+            {
+                ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State["objFromSelectUserPage"];
+                mContactNumber = obj.Msisdn;
+                mContactName = obj.Name;
+                isOnHike = obj.OnHike;
+
+                /* Check if it is a forwarded msg */
+                if (PhoneApplicationService.Current.State.ContainsKey("forwardedText"))
+                {
+                    sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State["forwardedText"];
+                    PhoneApplicationService.Current.State.Remove("forwardedText");
+                }
+
+                PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
+            }
+
             if (mContactNumber == null)
             {
                 // some error handling
                 return;
             }
-            PhoneApplicationService.Current.State.Remove("msisdn");
-            PhoneApplicationService.Current.State.Remove("name");
+            mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
             loadMessages();
         }
 
@@ -250,28 +268,14 @@ namespace windows_client.View
             this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-            sendMessage(convMessage);
-        }
-
-        private void sendMessage(ConvMessage convMessage)
-        {
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (sendMsgTxtbox.Text != "")
                 sendMsgBtn.IsEnabled = true;
         }
 
-        private void blockUnblockUser_Click(object sender, EventArgs e)
-        {
-            ConvMessage c = ChatThreadPageCollection[ChatThreadPageCollection.Count - 1];
-        }
 
-        public void test()
-        {
-
-        }
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Action x = test;
 
             /* Create the typing notification*/
             long lastChanged = TimeUtils.getCurrentTimeStamp();
@@ -307,6 +311,8 @@ namespace windows_client.View
         /* this function is running on pubsub thread and not UI thread*/
         public void onEventReceived(string type, object obj)
         {
+            #region MSG RECEIVED
+
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
                 ConvMessage convMessage = (ConvMessage)obj;
@@ -326,15 +332,32 @@ namespace windows_client.View
                     });
                 }
             }
+
+            # endregion
+
+            #region SERVER RECEIVED MSG
+
             else if (HikePubSub.SERVER_RECEIVED_MSG == type)
             {
                 long msgId = (long)obj;
-                ConvMessage msg = msgMap[msgId];
-                if (msg != null)
+                try
                 {
-                    msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
+                    ConvMessage msg = msgMap[msgId];
+                    if (msg != null)
+                    {
+                        msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
+                    }
+                }
+                catch (KeyNotFoundException e)
+                {
+                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                 }
             }
+
+            #endregion
+
+            #region MSG DELIVERED
+
             else if (HikePubSub.MESSAGE_DELIVERED == type)
             {
                 long msgId = (long)obj;
@@ -344,12 +367,6 @@ namespace windows_client.View
                     if (msg != null)
                     {
                         msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            this.myListBox.UpdateLayout();
-                            this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                        });
-
                     }
                 }
                 catch (KeyNotFoundException e)
@@ -357,6 +374,10 @@ namespace windows_client.View
                     logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                 }
             }
+
+            #endregion
+
+            #region MSG DELIVERED READ
             else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
             {
                 long[] ids = (long[])obj;
@@ -378,12 +399,78 @@ namespace windows_client.View
                     }
 
                 }
+            }
+
+            #endregion
+
+            #region SMS CREDITS CHANGED
+
+            else if (HikePubSub.SMS_CREDIT_CHANGED == type)
+            {
+                mCredits = (int)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    this.myListBox.UpdateLayout();
-                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                    updateChatMetadata();
+                    if (!animatedOnce)
+                    {
+                        if (App.appSettings.Contains(HikeConstants.Extras.ANIMATED_ONCE))
+                            animatedOnce = (bool)App.appSettings[HikeConstants.Extras.ANIMATED_ONCE];
+                        else
+                            animatedOnce = false;
+                        if (!animatedOnce)
+                        {
+                            App.appSettings[HikeConstants.Extras.ANIMATED_ONCE] = true;
+                            App.appSettings.Save();
+                        }
+                    }
+
+                    if ((mCredits % 5 == 0 || !animatedOnce) && !isOnHike)
+                    {
+                        animatedOnce = true;
+                        //showSMSCounter();
+                    }
+                });
+
+            }
+
+            #endregion
+
+            #region USER LEFT/JOINED
+
+            else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
+            {
+                string msisdn = (string)obj;
+                if (mContactNumber != msisdn)
+                {
+                    return;
+                }
+                isOnHike = HikePubSub.USER_JOINED == type;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    changeInviteButtonVisibility();
+                    updateUIForHikeStatus();
                 });
             }
+
+            #endregion
+
+            #region TYPING CONVERSATION
+
+            else if (HikePubSub.TYPING_CONVERSATION == type)
+            {
+                if (mContactNumber == (obj as string))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        hikeLabel.Text = mContactName + " is typing.";
+                        // handle auto removing
+                    });
+                }
+            }
+
+            #endregion
+
+            #region END TYPING CONVERSATION
 
             else if (HikePubSub.END_TYPING_CONVERSATION == type)
             {
@@ -392,52 +479,78 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         hikeLabel.Text = mContactName;
-                        // handle auto removing
                     });
                 }
             }
-            else if (HikePubSub.TYPING_CONVERSATION == type)
+
+            #endregion
+        }
+
+      
+        #endregion
+
+        private void updateUIForHikeStatus()
+        {
+            
+        }
+
+        private void changeInviteButtonVisibility()
+        {
+            
+        }
+      
+        private void showSMSCounter()
+        {
+            
+        }
+
+        private void updateChatMetadata()
+        {
+            //mMetadataNumChars.setVisibility(View.VISIBLE);
+            if (mCredits <= 0)
             {
-                if (mContactNumber == (obj as string))
+                sendMsgBtn.IsEnabled = false;
+                if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        //                        hikeLabel.Text = mContactName + " is typing.";
-                        // handle auto removing
-                    });
+                    sendMsgTxtbox.Text = "";
                 }
+                sendMsgTxtbox.Hint = "0 Free SMS left...";
+                sendMsgTxtbox.IsEnabled = false;
+                //SHOW SOME UI EFFECTS
             }
+            else
+            {
+                if (!sendMsgTxtbox.IsEnabled)
+                {
+                    if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
+                    {
+                        sendMsgTxtbox.Text = "";
+                    }
+                    sendMsgTxtbox.Hint = "SMS Message...";
+                    sendMsgTxtbox.IsEnabled = true;
+                }
 
+                // HIDE UI EFFECTS
+                // IF BLOCK OVERLAY IS THERE HIDE IT
+                // DO OTHER STUFF TOO 
+            }
         }
 
-        #endregion
-
-        public ObservableCollection<ConvMessage> ChatThreadPageCollection
+        private void blockUnblock_Click(object sender, EventArgs e)
         {
-            get
+            if (mUserIsBlocked)
             {
-                return chatThreadPageCollection;
+                mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
+                mUserIsBlocked = false;
             }
-            set
+            else
             {
-                chatThreadPageCollection = value;
-                NotifyPropertyChanged("ChatThreadPageCollection");
-            }
+                mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
+                mUserIsBlocked = true;
+                //showOverlay(true); true means show block animation
+            }          
         }
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // Used to notify Silverlight that a property has changed.
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
-
+        
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
@@ -492,9 +605,37 @@ namespace windows_client.View
             }
         }
 
+
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
         }
+
+        public ObservableCollection<ConvMessage> ChatThreadPageCollection
+        {
+            get
+            {
+                return chatThreadPageCollection;
+            }
+            set
+            {
+                chatThreadPageCollection = value;
+                NotifyPropertyChanged("ChatThreadPageCollection");
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify Silverlight that a property has changed.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
 
     }
 }

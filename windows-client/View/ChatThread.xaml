@@ -13,7 +13,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" Visibility="Visible">
 
     <phone:PhoneApplicationPage.Resources>
@@ -25,14 +25,16 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
 
-        <!--<Grid.Resources>
+        <Grid.Resources>
             <Converters:ChatThreadAlignment x:Key="alignmentConverter"></Converters:ChatThreadAlignment>
             <Converters:ChatBubbleDirection x:Key="bubbleDirectionConverter"/>
             <Converters:ChatThreadBackground x:Key="bubbleBackgroundConverter"/>
             <Converters:ChatThreadImageVisible x:Key="chatThreadImageVisibleOrCollapsed"/>
             <Converters:ChatBubbleMargin x:Key="chatBubbleMargin"/>
             <Converters:ImageConverter x:Key="imgConverter"/>
-        </Grid.Resources>-->
+            <Converters:ChatThreadSDRImageShow x:Key="sdrVisibilityConverter"/>
+            <Converters:ChatThreadSDRImage x:Key="sdrImageConverter"/>
+        </Grid.Resources>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -55,6 +57,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
                                  Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}" Margin="20,5,20,15"  Grid.RowSpan="2">
+                        <Image Visibility="{Binding MessageStatus, Converter={StaticResource sdrVisibilityConverter}}" Source="{Binding MessageStatus, Converter={StaticResource sdrImageConverter}}" HorizontalAlignment="Right"></Image>
                         <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
                         <TextBlock Height="Auto" MaxWidth="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
 
@@ -66,27 +69,12 @@
                             </toolkit:ContextMenu>
                         </toolkit:ContextMenuService.ContextMenu>
                     </StackPanel>
-
-                    <!--<edc:Callout VerticalAlignment="Stretch" HorizontalAlignment="Right" AnchorPoint="0,1.5" CalloutStyle="RoundedRectangle" Content="{Binding Message}" Fill="DeepSkyBlue" FontSize="25" Stroke="Black" MinWidth="100" MinHeight="60" Margin="10, 5, 5, 10" Height="Auto" Width="Auto" MaxWidth="400"/>-->
-
-                    <!--<c4fToolkit:ChatBubble Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}" MinWidth="50" Margin="25,10,25,10" VerticalAlignment="Stretch" 
-                                           MaxWidth="350" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
-                                           FontFamily="Arial" ChatBubbleDirection="{Binding IsSent, Converter={StaticResource bubbleDirectionConverter}}">                       
-                        <TextBlock TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
-                        <toolkit:ContextMenuService.ContextMenu>
-                            <toolkit:ContextMenu Name="ctxMenu">
-                                <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
-                                <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
-                                <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
-                            </toolkit:ContextMenu>
-                        </toolkit:ContextMenuService.ContextMenu>
-                    </c4fToolkit:ChatBubble>-->
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
         <!--<Canvas x:Name="myCanv">
-            <Rectangle x:Name="myRect" Stroke="Gray" Fill="LightGray" Width="200" Height="25"/>
+            <Rectangle x:Name="myRect" Fill="LightGray" Width="200" Height="25"/>
             <TextBlock x:Name="myText" Text="Madhur rocks" Foreground="Black"/>
         </Canvas>-->
 
@@ -105,4 +93,11 @@
             </StackPanel>
         </StackPanel>
     </Grid>
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text = "Block User" Click="blockUnblock_Click"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

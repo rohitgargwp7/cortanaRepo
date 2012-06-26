@@ -65,9 +65,7 @@ namespace windows_client.View
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null)
                 return;
-            
-            PhoneApplicationService.Current.State["msisdn"] = contact.Msisdn;
-            PhoneApplicationService.Current.State["name"] = contact.Name;
+            PhoneApplicationService.Current.State["objFromSelectUserPage"] = contact;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));

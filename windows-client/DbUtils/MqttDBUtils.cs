@@ -30,20 +30,26 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.mqttMessages
                 select o);
-            List<HikePacket> unsentMessages = q(App.HikeDataContextInstance).Count<HikePacket>() == 0 ? null :
-                q(App.HikeDataContextInstance).ToList<HikePacket>();
-            
-            App.HikeDataContextInstance.mqttMessages.DeleteAllOnSubmit(App.HikeDataContextInstance.mqttMessages);
-            App.HikeDataContextInstance.SubmitChanges();
 
+            List<HikePacket> unsentMessages;
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                unsentMessages = q(context).Count<HikePacket>() == 0 ? null :
+                    q(context).ToList<HikePacket>();
+                context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
+                context.SubmitChanges();
+            }
             return unsentMessages;
         }
 
         public static void addSentMessage(HikePacket packet)
         {
             HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
-            App.HikeDataContextInstance.mqttMessages.InsertOnSubmit(mqttMessage);
-            App.HikeDataContextInstance.SubmitChanges();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.mqttMessages.InsertOnSubmit(mqttMessage);
+                context.SubmitChanges();
+            }
             //TODO update observable list
         }
 
@@ -55,8 +61,11 @@ namespace windows_client.DbUtils
                 from o in hdc.mqttMessages
                 where o.MessageId == id
                 select o);
-            App.HikeDataContextInstance.mqttMessages.DeleteAllOnSubmit<HikePacket>(q(App.HikeDataContextInstance, msgId));
-            App.HikeDataContextInstance.SubmitChanges();
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(q(context, msgId));
+                context.SubmitChanges();
+            }
         }
         #endregion
 
