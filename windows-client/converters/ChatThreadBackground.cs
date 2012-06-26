@@ -19,10 +19,10 @@ namespace windows_client.converters
             bool isSent = (bool)value;
             if (isSent)
             {
-                return "#FFA9E9C9";
+                return "#d4edfc";
                 //return "LightGreen";
             }
-            return "#FFDADADA";
+            return "#f2f2f2";
 //            return "LightGray";
         }
 
