@@ -73,7 +73,7 @@ namespace windows_client
 
                 Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
                 ConversationListObject mObj = new ConversationListObject(contact.Msisdn, contact.Name, lastMessage.Message, contact.OnHike,
-                    TimeUtils.getRelativeTime(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
+                    TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
                 convMap.Add(conv.Msisdn, mObj);
                 App.ViewModel.MessageListPageCollection.Add(mObj);
             }
@@ -146,7 +146,7 @@ namespace windows_client
                     {
                         mObj = convMap[convMessage.Msisdn];
                         mObj.LastMessage = convMessage.Message;
-                        mObj.TimeStamp = TimeUtils.getRelativeTime(convMessage.Timestamp);                       
+                        mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);                       
                         App.ViewModel.MessageListPageCollection.Remove(mObj);
                     }
                     else
@@ -154,7 +154,7 @@ namespace windows_client
                         ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
                         Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
                         mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                        contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getRelativeTime(convMessage.Timestamp),
+                        contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
                         thumbnail == null ? null : thumbnail.Avatar);
                         
                         convMap.Add(convMessage.Msisdn, mObj);

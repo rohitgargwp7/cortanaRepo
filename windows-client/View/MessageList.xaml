@@ -53,13 +53,16 @@
                                Source="{Binding Avatar, Converter={StaticResource imgConverter}}"
                                >
                             </Image>
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal" Margin="25 0 0 0">
-                                    <TextBlock Text="{Binding ContactName}" FontSize="26" Height="40" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Black" />
-                                    <TextBlock Text="{Binding Timestamp}" FontSize="20" Height="40" Grid.Column="3" Grid.ColumnSpan="1" Foreground="Black"/>
+                            <Border>
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal" Margin="25 0 0 0">
+                                        <TextBlock Text="{Binding ContactName}" FontSize="26" Height="40" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Black" />
+                                        <TextBlock Text="{Binding Timestamp}" FontSize="20" Height="40" Grid.Column="3" Grid.ColumnSpan="1" Foreground="Black"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Height="35"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
                                 </StackPanel>
-                                <TextBlock Text="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Height="35"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
-                            </StackPanel>
+                            </Border>
+
                         </StackPanel>
                         <Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>
                         <toolkit:ContextMenuService.ContextMenu>
