@@ -20,82 +20,26 @@ namespace windows_client.DbUtils
 {
     public class UsersTableUtils
     {
-        #region properties
-
-   /*
-        
-        private ObservableCollection<ContactInfo> _contacts;
-
-        public ObservableCollection<ContactInfo> Contacts
-        {
-            get { return _contacts; }
-            set
-            {
-                _contacts = value;
-                NotifyPropertyChanged("Contacts");
-            }
-        }
-
-        private ObservableCollection<Blocked> _blockedUsers;
-
-        public ObservableCollection<Blocked> BlockedUsers
-        {
-            get { return _blockedUsers; }
-            set
-            {
-                _blockedUsers = value;
-                NotifyPropertyChanged("BlockedUsers");
-            }
-        }
-
-        private ObservableCollection<Conversation> _conversation;
-
-        public ObservableCollection<Conversation> Conversation
-        {
-            get { return _conversation; }
-            set
-            {
-                _conversation = value;
-                NotifyPropertyChanged("Conversation");
-            }
-        }
-
-        private ObservableCollection<Thumbnails> _thumbnails;
-        public ObservableCollection<Thumbnails> Thumbnails
-        {
-            get { return _thumbnails; }
-            set
-            {
-                _thumbnails = value;
-                NotifyPropertyChanged("Thumbnails");
-            }
-        }
-
-
-
-        private ObservableCollection<ConvMessage> _messages;
-        public ObservableCollection<ConvMessage> Messages
-        {
-            get { return _messages; }
-            set
-            {
-                _messages = value;
-                NotifyPropertyChanged("Messages");
-            }
-        }
-    * */
-        #endregion
-
         #region user table
 
         public static void block(string msisdn)
         {
-
+            Blocked userBlocked = new Blocked(msisdn);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.blockedUsersTable.InsertOnSubmit(userBlocked);
+                context.SubmitChanges();
+            }
         }
 
         public static void unblock(string msisdn)
         {
-
+            Blocked userUnblocked = new Blocked(msisdn);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.blockedUsersTable.DeleteOnSubmit(userUnblocked);
+                context.SubmitChanges();
+            }
         }
 
         public static void addContact(ContactInfo user)
@@ -105,7 +49,6 @@ namespace windows_client.DbUtils
                 context.users.InsertOnSubmit(user);
                 context.SubmitChanges();
             }
-            //TODO update observable list
         }
 
         public static void addContacts(List<ContactInfo> contacts)
@@ -307,6 +250,24 @@ namespace windows_client.DbUtils
                     context.SubmitChanges();
                 }
             }
+        }
+
+        public static bool isUserBlocked(string msisdn)
+        {
+            Func<HikeDataContext, string, IQueryable<Blocked>> q =
+             CompiledQuery.Compile<HikeDataContext, string, IQueryable<Blocked>>
+             ((HikeDataContext hdc, string ms) =>
+                 from o in hdc.blockedUsersTable
+                 where o.Msisdn == ms
+                 select o);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                if (q(context, msisdn).Count<Blocked>() > 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
