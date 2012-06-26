@@ -326,13 +326,13 @@ namespace windows_client.Mqtt
             /* Accesses the persistence object from the main handler thread */
 
             //TODO make it async
-            /*List<HikePacket> packets = MqttDBUtils.getAllSentMessages();
+            List<HikePacket> packets = MqttDBUtils.getAllSentMessages();
             if (packets == null)
                 return;
             for (int i = 0; i < packets.Count; i++)
             {
                 send(packets[i], 1);
-            }*/
+            }
         }
 
         public void onDisconnected()
@@ -349,17 +349,7 @@ namespace windows_client.Mqtt
             JToken type;
             jsonObj.TryGetValue(HikeConstants.TYPE, out type);
 
-            if(NetworkManager.ICON.Equals(type.ToString()))
-            {
-                JToken temp;
-                jsonObj.TryGetValue(HikeConstants.FROM,out temp);
-                string msisdn = temp.ToString();
-                jsonObj.TryGetValue(HikeConstants.DATA,out temp);
-                string iconBase64 = temp.ToString();
-                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
-                ImageConverter.updateImageInCache(msisdn, imageBytes);
-            }
+           
 
             pubSub.publish(HikePubSub.WS_RECEIVED, receivedMessage);
         }

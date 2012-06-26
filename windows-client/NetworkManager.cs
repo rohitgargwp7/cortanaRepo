@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using windows_client.Model;
+using windows_client.DbUtils;
+using windows_client.converters;
 
 namespace windows_client
 {
@@ -163,10 +165,18 @@ namespace windows_client
                 bool joined = USER_JOINED == type;
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
-            /*else if ((ICON.equals(type)))
+            else if (ICON == type)
             {
-                IconCacheManager.getInstance().clearIconForMSISDN(msisdn);
-            }*/
+                JToken fromMsisdn;
+                jsonObj.TryGetValue(HikeConstants.FROM, out fromMsisdn);
+                string msisdn2 = fromMsisdn.ToString();
+                jsonObj.TryGetValue(HikeConstants.DATA, out fromMsisdn);
+                string iconBase64 = fromMsisdn.ToString();
+                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+
+                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
+               // ImageConverter.updateImageInCache(msisdn, imageBytes);
+            }
             else
             {
                 logger.Info("WebSocketPublisher", "Unknown Type:" + type);
