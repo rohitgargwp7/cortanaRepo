@@ -55,20 +55,22 @@
         <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" FontSize="26" Margin="0,0,0,75">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    
-                    <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
-                                 Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}" Margin="20,5,20,15"  Grid.RowSpan="2">
-                        <Image Visibility="{Binding MessageStatus, Converter={StaticResource sdrVisibilityConverter}}" Source="{Binding MessageStatus, Converter={StaticResource sdrImageConverter}}" HorizontalAlignment="Right"></Image>
-                        <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
-                        <TextBlock Height="Auto" MaxWidth="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
 
-                        <toolkit:ContextMenuService.ContextMenu>
-                            <toolkit:ContextMenu Name="ctxMenu">
-                                <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
-                                <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
-                                <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
-                            </toolkit:ContextMenu>
-                        </toolkit:ContextMenuService.ContextMenu>
+                    <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
+                                  Margin="20,5,20,15"  Grid.RowSpan="2">
+                        <Image Margin="0,0,8,0" Visibility="{Binding MessageStatus, Converter={StaticResource sdrVisibilityConverter}}" Source="{Binding MessageStatus, Converter={StaticResource sdrImageConverter}}" HorizontalAlignment="Right"></Image>
+                        <StackPanel Orientation="Horizontal" Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}">
+                            <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                            <TextBlock Height="Auto" MaxWidth="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
+
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu Name="ctxMenu">
+                                    <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
+                                    <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
+                                    <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
+                        </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
