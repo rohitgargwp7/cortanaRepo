@@ -27,6 +27,7 @@ namespace windows_client.View
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
+        private bool mUserIsBlocked;
         private bool isOnHike;
         private int mCredits;
         private HikePubSub mPubSub;
@@ -108,6 +109,7 @@ namespace windows_client.View
                 // some error handling
                 return;
             }
+            mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
             loadMessages();
         }
 
@@ -244,6 +246,7 @@ namespace windows_client.View
         public void onEventReceived(string type, object obj)
         {
             #region MSG RECEIVED
+
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
                 ConvMessage convMessage = (ConvMessage)obj;
@@ -263,7 +266,11 @@ namespace windows_client.View
                     });
                 }
             }
+
             # endregion
+
+            #region SERVER RECEIVED MSG
+
             else if (HikePubSub.SERVER_RECEIVED_MSG == type)
             {
                 long msgId = (long)obj;
@@ -280,6 +287,11 @@ namespace windows_client.View
                     logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                 }
             }
+
+            #endregion
+
+            #region MSG DELIVERED
+
             else if (HikePubSub.MESSAGE_DELIVERED == type)
             {
                 long msgId = (long)obj;
@@ -296,6 +308,10 @@ namespace windows_client.View
                     logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                 }
             }
+
+            #endregion
+
+            #region MSG DELIVERED READ
             else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
             {
                 long[] ids = (long[])obj;
@@ -318,6 +334,11 @@ namespace windows_client.View
 
                 }
             }
+
+            #endregion
+
+            #region SMS CREDITS CHANGED
+
             else if (HikePubSub.SMS_CREDIT_CHANGED == type)
             {
                 mCredits = (int)obj;
@@ -345,6 +366,11 @@ namespace windows_client.View
                 });
 
             }
+
+            #endregion
+
+            #region USER LEFT/JOINED
+
             else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
             {
                 string msisdn = (string)obj;
@@ -355,21 +381,15 @@ namespace windows_client.View
                 isOnHike = HikePubSub.USER_JOINED == type;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                   /* changeInviteButtonVisibility();
-                    updateUIForHikeStatus();*/
+                    changeInviteButtonVisibility();
+                    updateUIForHikeStatus();
                 });
             }
-            else if (HikePubSub.END_TYPING_CONVERSATION == type)
-            {
-                if (mContactNumber == (obj as string))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        hikeLabel.Text = mContactName;
-                        // handle auto removing
-                    });
-                }
-            }
+
+            #endregion
+
+            #region TYPING CONVERSATION
+
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
                 if (mContactNumber == (obj as string))
@@ -382,14 +402,42 @@ namespace windows_client.View
                 }
             }
 
+            #endregion
+
+            #region END TYPING CONVERSATION
+
+            else if (HikePubSub.END_TYPING_CONVERSATION == type)
+            {
+                if (mContactNumber == (obj as string))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        hikeLabel.Text = mContactName;
+                        // handle auto removing
+                    });
+                }
+            }
+
+            #endregion
         }
 
+      
+        #endregion
+
+        private void updateUIForHikeStatus()
+        {
+            
+        }
+
+        private void changeInviteButtonVisibility()
+        {
+            
+        }
+      
         private void showSMSCounter()
         {
-            throw new NotImplementedException();
+            
         }
-
-        #endregion
 
         private void updateChatMetadata()
         {
@@ -423,32 +471,21 @@ namespace windows_client.View
             }
         }
 
-        public ObservableCollection<ConvMessage> ChatThreadPageCollection
+        private void blockUnblock_Click(object sender, EventArgs e)
         {
-            get
+            if (mUserIsBlocked)
             {
-                return chatThreadPageCollection;
+                mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
+                mUserIsBlocked = false;
             }
-            set
+            else
             {
-                chatThreadPageCollection = value;
-                NotifyPropertyChanged("ChatThreadPageCollection");
-            }
+                mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
+                mUserIsBlocked = true;
+                //showOverlay(true); true means show block animation
+            }          
         }
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // Used to notify Silverlight that a property has changed.
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
-
+        
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
@@ -502,6 +539,33 @@ namespace windows_client.View
                 ConversationTableUtils.deleteConversation(obj.MSISDN);
             }
         }
+
+        public ObservableCollection<ConvMessage> ChatThreadPageCollection
+        {
+            get
+            {
+                return chatThreadPageCollection;
+            }
+            set
+            {
+                chatThreadPageCollection = value;
+                NotifyPropertyChanged("ChatThreadPageCollection");
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify Silverlight that a property has changed.
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
 
     }
 }
