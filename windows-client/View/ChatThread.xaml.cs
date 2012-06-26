@@ -151,6 +151,8 @@ namespace windows_client.View
                 mContactNumber = obj.MSISDN;
                 mContactName = obj.ContactName;
                 isOnHike = obj.IsOnhike;
+                if (!isOnHike)
+                    sendMsgTxtbox.Hint = "SMS message...";
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
