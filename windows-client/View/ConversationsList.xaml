@@ -89,7 +89,7 @@
             </controls:PanoramaItem>
 
             <!--Panorama item two-->
-            <controls:PanoramaItem Header="item2">
+            <controls:PanoramaItem Header="profile">
                 <Grid/>
             </controls:PanoramaItem>
         </controls:Panorama>
