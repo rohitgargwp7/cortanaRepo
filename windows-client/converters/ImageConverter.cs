@@ -24,7 +24,8 @@ namespace windows_client.converters
     {
         private static BitmapImage defaultBitmapImage;
         private static Dictionary<string, BitmapImage> imageCache;
-        private static List<string> numbersWithDefaultImage; 
+        private static List<string> numbersWithDefaultImage;
+        private static HikePubSub pubSub;
 
         public ImageConverter()
         {
@@ -32,26 +33,34 @@ namespace windows_client.converters
             Uri uri = new Uri("/View/images/ic_avatar0.png", UriKind.Relative);
             defaultBitmapImage = new BitmapImage(uri);
             numbersWithDefaultImage = new List<string>();
+            pubSub = new HikePubSub();
         }
 
         public static void updateImageInCache(string msisdn, byte[] imageBytes)
         {
-            if (!numbersWithDefaultImage.Contains(msisdn) && !imageCache.ContainsKey(msisdn))
-                return;
 
-            if (numbersWithDefaultImage.Contains(msisdn))
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                numbersWithDefaultImage.Remove(msisdn);
-            }
-            else if (imageCache.ContainsKey(msisdn))
-            {
-                imageCache.Remove(msisdn);
-            }
-            MemoryStream memStream = new MemoryStream(imageBytes);
-            memStream.Seek(0, SeekOrigin.Begin);
-            BitmapImage empImage = new BitmapImage();
-            empImage.SetSource(memStream);
-            imageCache.Add(msisdn, empImage);
+                if (!numbersWithDefaultImage.Contains(msisdn) && !imageCache.ContainsKey(msisdn))
+                    return;
+
+                MemoryStream memStream = new MemoryStream(imageBytes);
+                memStream.Seek(0, SeekOrigin.Begin);
+
+                BitmapImage empImage = new BitmapImage();
+                empImage.SetSource(memStream);
+                if (numbersWithDefaultImage.Contains(msisdn))
+                {
+                    numbersWithDefaultImage.Remove(msisdn);
+                }
+                else if (imageCache.ContainsKey(msisdn))
+                {
+                    imageCache.Remove(msisdn);
+                }
+                imageCache.Add(msisdn, empImage);
+                //pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+            });
+
         }
 
 
