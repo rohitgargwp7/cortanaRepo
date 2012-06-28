@@ -90,7 +90,48 @@
 
             <!--Panorama item two-->
             <controls:PanoramaItem Header="profile">
-                <Grid/>
+                <Grid x:Name="ProfileGrid">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0">
+                        <Image Source="images\ic_avatar0.png" Height="90">
+                        </Image>
+                        <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
+                            <TextBlock x:Name="UserName"  Foreground="Black" FontSize="35" Text="Madhur Garg"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Free SMS remaining: " Foreground="#8d8d8d"></TextBlock>
+                                <TextBlock x:Name="CreditsTxtBlck" Text="100" Foreground="#8d8d8d"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Margin="30, 30, 0,10" Orientation="Vertical" Grid.Row="1">
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="0,15,0,5">
+                            <Image Source="images\purchases.png" Height="35"></Image>
+                            <TextBlock Text="Purchases" Margin="15,4,0,0" FontSize="30"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="0,15,0,5">
+                            <Image Source="images\notifications.png" Height="35"></Image>
+                            <TextBlock Text="Notifications" Margin="15,4,0,0" FontSize="30"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="0,15,0,5">
+                            <Image Source="images\privacy.png" Height="35"></Image>
+                            <TextBlock Text="Privacy" Margin="25,4,0,0" FontSize="30"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="0,15,0,5">
+                            <Image Source="images\help.png" Height="35"></Image>
+                            <TextBlock Text="Help" Margin="15,4,0,0" FontSize="30"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2">
+                        <Image Source="images\Made_with_love.png" Height="20" Margin="0,0,0,10"/>
+
+                    </StackPanel>
+                </Grid>
             </controls:PanoramaItem>
         </controls:Panorama>
 

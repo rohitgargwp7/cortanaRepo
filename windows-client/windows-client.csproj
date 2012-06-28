@@ -214,12 +214,20 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="View\images\wrong_num.png" />
     <Resource Include="hi.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="View\images\Application_TileImage_173x173.png" />
+    <Content Include="View\images\background.png" />
+    <Resource Include="View\images\change_pic.png" />
     <Content Include="View\images\compose_pressed.png" />
     <Resource Include="View\images\hike_header.png" />
+    <Resource Include="View\images\empty_messages_hike_logo.png" />
+    <Resource Include="View\images\enter_name.png" />
+    <Resource Include="View\images\help.png" />
+    <Resource Include="View\images\hike_logo_small.png" />
     <Content Include="View\images\ic_backtexture.png" />
     <Content Include="View\images\headerbar.png" />
     <Content Include="View\images\ic_avatar0.png" />
@@ -229,6 +237,18 @@
     <Resource Include="View\images\ic_read_small.png" />
     <Resource Include="View\images\ic_sent.png" />
     <Resource Include="View\images\ic_sent_small.png" />
+    <Resource Include="View\images\ic_name_2.png" />
+    <Resource Include="View\images\Made_with_love.png" />
+    <Resource Include="View\images\network_error.png" />
+    <Resource Include="View\images\notifications.png" />
+    <Resource Include="View\images\phone_number.png" />
+    <Resource Include="View\images\privacy.png" />
+    <Resource Include="View\images\purchases.png" />
+    <Resource Include="View\images\signup_logo.png" />
+    <Resource Include="View\images\sms_pin.png" />
+    <Resource Include="View\images\splash_logo.png" />
+    <Resource Include="View\images\splash_text.png" />
+    <Resource Include="View\images\terms_back.png" />
     <Content Include="View\images\welcome_bckg.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="View\images\ic_name_big.png">
