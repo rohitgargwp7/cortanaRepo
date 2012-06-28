@@ -47,8 +47,7 @@ namespace windows_client
                 // SHOW SOME TRY AGAIN MSG etc
                 return;
             }
-            appSettings[App.NAME_SETTING] = "y";
-            appSettings.Save();
+           
             nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
 
             int count = 1;
@@ -66,6 +65,9 @@ namespace windows_client
                 // SHOW NETWORK ERROR
                 return;
             }
+
+            appSettings[App.NAME_SETTING] = "y";
+            appSettings.Save();
 
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 

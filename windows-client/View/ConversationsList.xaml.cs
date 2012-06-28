@@ -38,7 +38,6 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
-
             LoadMessages();            
             registerListeners();
 
