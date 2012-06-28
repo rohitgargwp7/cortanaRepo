@@ -165,11 +165,11 @@ namespace windows_client
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-
             /* Load App token if its there*/
             if (appSettings.Contains(App.TOKEN_SETTING) && null != appSettings[App.TOKEN_SETTING])
             {
                 AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.makePatchRequest_Callback));
             }
 
             #region CreateDatabases

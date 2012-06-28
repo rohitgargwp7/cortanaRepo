@@ -16,8 +16,9 @@ using Newtonsoft.Json.Linq;
 namespace windows_client.Model
 {
     [Table(Name = "users")]
-    public class ContactInfo : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ContactInfo>
+    public class ContactInfo : INotifyPropertyChanged, IComparable<ContactInfo>
     {
+        private int _dbId;
         private string _id;
         private string _name;
         private string _msisdn;
@@ -32,7 +33,22 @@ namespace windows_client.Model
         [Column(IsVersion = true)]
         private Binary version;
 
-        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
+        [Column(IsPrimaryKey=true,IsDbGenerated=true)]
+        public int DbId
+        {
+            get
+            {
+                return _dbId;
+            }
+            set
+            {
+                if (_dbId != value)
+                {
+                    _dbId = value;
+                }
+            }
+        }
+        [Column]
         public string Id
         {
             get
@@ -59,7 +75,6 @@ namespace windows_client.Model
             {
                 if (_name != value)
                 {
-                    NotifyPropertyChanging("Name");
                     _name = value;
                     NotifyPropertyChanged("Name");
                 }
@@ -77,7 +92,6 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
-                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value;
                     NotifyPropertyChanged("Msisdn");
                 }
@@ -95,7 +109,6 @@ namespace windows_client.Model
             {
                 if (_onHike != value)
                 {
-                    NotifyPropertyChanging("OnHike");
                     _onHike = value;    
                     NotifyPropertyChanged("OnHike");
                 }
@@ -111,7 +124,6 @@ namespace windows_client.Model
             }
             set
             {
-                NotifyPropertyChanging("PhoneNo");
                 _phoneNo = value;
                 NotifyPropertyChanged("PhoneNo");
             }
@@ -126,7 +138,6 @@ namespace windows_client.Model
             }
             set
             {
-                NotifyPropertyChanging("HasCustomPhoto");
                 _hasCustomPhoto = value;
                 NotifyPropertyChanged("HasCustomPhoto");
             }
@@ -136,6 +147,10 @@ namespace windows_client.Model
         {
         }
 
+        public ContactInfo(string number, string name, string phoneNum)
+            : this(null, number, name, false, phoneNum, false)
+        {
+        }
 
         public ContactInfo(string id, string number, string name, string phoneNum)
             : this(id, number, name, false, phoneNum, false)
@@ -189,8 +204,8 @@ namespace windows_client.Model
         {
 		    const int prime = 31;
 		    int result = 1;
-		    result = prime * result + ((Name == null) ? 0 : Name.GetHashCode());
-		    result = prime * result + ((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
+		    result = prime * result +((Name == null) ? 0 : Name.GetHashCode());
+            result = prime * result +((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
 		    return result;
         }
 
@@ -224,21 +239,6 @@ namespace windows_client.Model
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanging Members
-
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        // Used to notify that a property is about to change
-        private void NotifyPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-            {
-                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
             }
         }
 

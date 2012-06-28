@@ -142,19 +142,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        //public static long getConvIdForMsisdn(string msisdn)
-        //{
-        //    Func<HikeDataContext, string, IQueryable<long>> q =
-        //    CompiledQuery.Compile<HikeDataContext, string, IQueryable<long>>
-        //    ((HikeDataContext hdc, string myId) =>
-        //        from o in hdc.conversations
-        //        where o.Msisdn == myId
-        //        select o.ConvId);
-        //    return q(App.HikeDataContext, msisdn).Count<long>() == 0? -1 :
-        //            q(App.HikeDataContext, msisdn).First<long>();
-        //}
-
-
+       
         public static void deleteConversation(string msisdn)
         {
             Func<HikeDataContext, string, IQueryable<ConvMessage>> messages =
@@ -268,6 +256,54 @@ namespace windows_client.DbUtils
                 }
             }
             return false;
+        }
+
+        public static void deleteMultipleRows(List<string> ids)
+        {
+            if(ids == null || ids.Count == 0)
+                return;
+            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
+             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
+             ((HikeDataContext hdc, string i) =>
+                 from o in hdc.users
+                 where o.Id == i
+                 select o);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                for (int i = 0; i < ids.Count; i++)
+                {
+                    context.users.DeleteAllOnSubmit<ContactInfo>(q(context, ids[i]));
+                }
+                context.SubmitChanges();
+            }
+        }
+
+        public static void deleteMultipleRows(List<ContactInfo> ids)
+        {
+            if (ids == null || ids.Count == 0)
+                return;
+            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
+             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
+             ((HikeDataContext hdc, string i) =>
+                 from o in hdc.users
+                 where o.Id == i
+                 select o);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                for (int i = 0; i < ids.Count; i++)
+                {
+                    context.users.DeleteAllOnSubmit<ContactInfo>(q(context, ids[i].Id));
+                }
+                context.SubmitChanges();
+            }
+        }
+
+        public static void updateContacts(List<ContactInfo> updatedContacts)
+        {
+            if (updatedContacts == null)
+                return;
+            deleteMultipleRows(updatedContacts);
+            addContacts(updatedContacts);
         }
     }
 }

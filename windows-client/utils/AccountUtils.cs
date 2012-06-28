@@ -15,7 +15,7 @@ namespace windows_client.utils
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         //public static readonly string HOST = "ec2-122-248-223-107.ap-southeast-1.compute.amazonaws.com"; 46.137.211.136
-        public static readonly string HOST = "46.137.211.136";
+        public static readonly string HOST = "im.hike.in";
 
         private static readonly int PORT = 3001;
 
@@ -60,7 +60,7 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT , POST_ADDRESSBOOK
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -70,20 +70,29 @@ namespace windows_client.utils
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
+            req.Headers["X-MSISDN"] = "919999711366";
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });            
         }
 
-        public static void postAddressBook(string token, Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
+        public static void postAddressBook(string token,Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
         {
 
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
             addToken(req);
-           // req.Headers["Cookie"] = "user=" + token;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, token, contactListMap, finalCallbackFunction });
+        }
+
+        public static void updateAddressBook(Dictionary<string, List<ContactInfo>> contacts_to_update, JArray ids_json, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "PATCH";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPDATE_ADDRESSBOOK, contacts_to_update, ids_json, finalCallbackFunction });
         }
 
         public static void invite(string phone_no, postResponseFunction finalCallbackFunction)
@@ -166,6 +175,15 @@ namespace windows_client.utils
                     Dictionary<string, List<ContactInfo>> contactListMap = vars[3] as Dictionary<string, List<ContactInfo>>;
                     finalCallbackFunction = vars[4] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
+                    break;
+
+                case RequestType.UPDATE_ADDRESSBOOK:
+                    Dictionary<string, List<ContactInfo>> contacts_to_update = vars[2] as Dictionary<string, List<ContactInfo>>;
+                    JArray ids_json = vars[3] as JArray;
+                    finalCallbackFunction = vars[4] as postResponseFunction;
+ 
+                    data.Add("remove",ids_json);
+                    data.Add("update", getJsonContactList(contacts_to_update));
                     break;
 
                 case RequestType.DELETE_ACCOUNT:
