@@ -24,8 +24,10 @@ namespace windows_client.DbUtils
             {
                 if (thumbnail == null)
                 {
-                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    if (contact == null)
+                        return;
+                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));                    
                     contact.HasCustomPhoto = true;
                 }
                 else
