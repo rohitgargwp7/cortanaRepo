@@ -269,6 +269,7 @@ namespace windows_client.Mqtt
                     MessageBoxResult result = MessageBox.Show("Boss check the internet", "Hike", MessageBoxButton.OKCancel);
                 });
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
             }
         }
 
@@ -342,15 +343,11 @@ namespace windows_client.Mqtt
 
         public void onPublish(String topic, byte[] body)
         {
-
             String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
             JObject jsonObj = JObject.Parse(receivedMessage);
 
             JToken type;
             jsonObj.TryGetValue(HikeConstants.TYPE, out type);
-
-           
-
             pubSub.publish(HikePubSub.WS_RECEIVED, receivedMessage);
         }
 
