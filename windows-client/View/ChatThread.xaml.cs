@@ -44,6 +44,9 @@ namespace windows_client.View
         private const double PortraitShift = -339d;
         private const double PortraitShiftWithBar = -408d;
 
+        private readonly SolidColorBrush enableButtonColor = new SolidColorBrush(Color.FromArgb(255, 116, 181, 220));
+        private readonly SolidColorBrush disableButtonColor = new SolidColorBrush(Color.FromArgb(0, 242, 242, 242));
+
         public static readonly DependencyProperty TranslateYProperty = DependencyProperty.Register("TranslateY", typeof(double), typeof(ChatThread), new PropertyMetadata(0d, OnRenderXPropertyChanged));
 
         #region handling keyboard focus
@@ -118,7 +121,6 @@ namespace windows_client.View
             registerListeners();
             initPageBasedOnState();
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
-
         }
 
         #region register broadcast listeners
@@ -134,6 +136,8 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
+            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
+
         }
         #endregion
 
@@ -266,13 +270,17 @@ namespace windows_client.View
              }
              */
             sendMsgTxtbox.Text = "";
+            sendMsgBtn.Foreground = disableButtonColor;
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (sendMsgTxtbox.Text != "")
+            {
                 sendMsgBtn.IsEnabled = true;
+                sendMsgBtn.Foreground = enableButtonColor;
+            }
         }
 
 
@@ -303,9 +311,11 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
                 sendMsgBtn.IsEnabled = false;
+                sendMsgBtn.Foreground = disableButtonColor;
                 return;
             }
             sendMsgBtn.IsEnabled = true;
+            sendMsgBtn.Foreground = enableButtonColor;
         }
 
         #region Pubsub Event
@@ -325,6 +335,7 @@ namespace windows_client.View
                     MessagesTableUtils.updateMsgStatus(convMessage.MessageId, (int)ConvMessage.State.RECEIVED_READ);
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                     mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
+
                     // Update UI
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -333,6 +344,10 @@ namespace windows_client.View
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                     });
                 }
+            }
+            else if (HikePubSub.UPDATE_UI == type)
+            {
+                //refersh UI
             }
 
             # endregion
@@ -464,7 +479,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        hikeLabel.Text = mContactName + " is typing.";
+                        hikeLabel.Text = mContactName;// +" is typing.";
                         // handle auto removing
                     });
                 }
@@ -512,6 +527,7 @@ namespace windows_client.View
             if (mCredits <= 0)
             {
                 sendMsgBtn.IsEnabled = false;
+                sendMsgBtn.Foreground = disableButtonColor;
                 if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
                 {
                     sendMsgTxtbox.Text = "";

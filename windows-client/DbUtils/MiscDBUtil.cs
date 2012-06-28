@@ -19,9 +19,17 @@ namespace windows_client.DbUtils
     {
         public static void addOrUpdateIcon(string msisdn, byte[] image)
         {
-            Thumbnails thumbnail = getThumbNailForMSisdn(msisdn);
+            Func<HikeDataContext, string, IQueryable<Thumbnails>> q =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Thumbnails>>
+            ((HikeDataContext hdc, string m) =>
+                from o in hdc.thumbnails
+                where o.Msisdn == m
+                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
+                Thumbnails thumbnail = q(context, msisdn).Count<Thumbnails>() == 0 ? null :
+                    q(context, msisdn).First<Thumbnails>();
+
                 if (thumbnail == null)
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
@@ -34,7 +42,6 @@ namespace windows_client.DbUtils
                 {
                     thumbnail.Avatar = image;
                 }
-
                 context.SubmitChanges();
             }
         }

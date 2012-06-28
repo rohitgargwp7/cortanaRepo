@@ -101,6 +101,8 @@ namespace windows_client
 
         public static readonly string SEND_NEW_MSG = "sendNewMsg";
 
+        public static readonly string UPDATE_UI = "udpateUI";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;

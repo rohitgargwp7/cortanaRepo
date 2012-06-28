@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using windows_client;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
+using windows_client.converters;
 
 namespace windows_client.DbUtils
 {
@@ -34,6 +35,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.MESSAGE_FAILED, this);
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
+            mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -44,7 +46,7 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 bool isNewConv = (bool)vals[1];
-                MessagesTableUtils.addChatMessage(convMessage,isNewConv);
+                MessagesTableUtils.addChatMessage(convMessage, isNewConv);
                 logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Msisdn);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
             }
@@ -54,7 +56,7 @@ namespace windows_client.DbUtils
                 convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 MessagesTableUtils.addChatMessage(convMessage);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
-                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED,convMessage);
+                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
             }
             else if (HikePubSub.SERVER_RECEIVED_MSG == type)  // server got msg from client 1 and sent back received msg receipt
             {
@@ -99,24 +101,33 @@ namespace windows_client.DbUtils
             else if (HikePubSub.SMS_CREDIT_CHANGED == type)  // server got msg from client 1 and sent back received msg receipt
             {
                 /* Save credits to isolated storage */
-                int credits =  (int)obj;
+                int credits = (int)obj;
                 App.appSettings[App.SMS_SETTING] = credits;
                 App.appSettings.Save();
             }
-            else if(HikePubSub.USER_JOINED == type || HikePubSub.USER_LEFT == type)
+            else if (HikePubSub.USER_JOINED == type || HikePubSub.USER_LEFT == type)
             {
                 string msisdn = (string)obj;
                 bool joined = HikePubSub.USER_JOINED == type;
-                UsersTableUtils.updateOnHikeStatus(msisdn,joined);
+                UsersTableUtils.updateOnHikeStatus(msisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(msisdn, joined);
+            }
+            else if (HikePubSub.ICON_CHANGED == type)
+            {
+                object[] data = (object[])obj;
+                string msisdn = (string)data[0];
+                byte[] imageBytes = (byte[])data[1];
+                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
+                ImageConverter.updateImageInCache(msisdn, imageBytes);
+                mPubSub.publish(HikePubSub.UPDATE_UI, msisdn);
             }
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)
         {
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] =  type;
-            obj[HikeConstants.DATA] = msisdn;           
+            obj[HikeConstants.TYPE] = type;
+            obj[HikeConstants.DATA] = msisdn;
             return obj;
         }
 

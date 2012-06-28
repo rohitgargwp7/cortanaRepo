@@ -167,15 +167,17 @@ namespace windows_client
             }
             else if (ICON == type)
             {
-                JToken fromMsisdn;
-                jsonObj.TryGetValue(HikeConstants.FROM, out fromMsisdn);
-                string msisdn2 = fromMsisdn.ToString();
-                jsonObj.TryGetValue(HikeConstants.DATA, out fromMsisdn);
-                string iconBase64 = fromMsisdn.ToString();
+                JToken temp;
+                jsonObj.TryGetValue(HikeConstants.FROM, out temp);
+                string msisdnToUpdate = temp.ToString();
+                jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+                string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-
-                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
-               // ImageConverter.updateImageInCache(msisdn, imageBytes);
+                
+                object[] msisdnAndImage = new object[2];
+                msisdnAndImage[0] = msisdnToUpdate;
+                msisdnAndImage[1] = imageBytes;
+                this.pubSub.publish(HikePubSub.ICON_CHANGED, msisdnAndImage);
             }
             else
             {
