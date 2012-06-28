@@ -121,7 +121,6 @@ namespace windows_client.View
             registerListeners();
             initPageBasedOnState();
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
-
         }
 
         #region register broadcast listeners
@@ -137,6 +136,8 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
+            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
+
         }
         #endregion
 
@@ -334,6 +335,7 @@ namespace windows_client.View
                     MessagesTableUtils.updateMsgStatus(convMessage.MessageId, (int)ConvMessage.State.RECEIVED_READ);
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                     mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
+
                     // Update UI
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -342,6 +344,10 @@ namespace windows_client.View
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                     });
                 }
+            }
+            else if (HikePubSub.UPDATE_UI == type)
+            {
+                //refersh UI
             }
 
             # endregion
