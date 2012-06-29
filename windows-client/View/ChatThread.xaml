@@ -87,7 +87,7 @@
             </StackPanel>-->
 
             <StackPanel x:Name="sendMsgPanel" Height="Auto" Grid.Row="1" Orientation="Horizontal" Background="WhiteSmoke">
-                <toolkit:PhoneTextBox LostFocus="TextBoxLostFocus" GotFocus="sendMsgTxtbox_GotFocus" BorderThickness="0" BorderBrush="Gray" x:Name="sendMsgTxtbox" Background="WhiteSmoke" Hint="hike message..."  Width="350" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" />
+                <toolkit:PhoneTextBox LostFocus="TextBoxLostFocus" GotFocus="sendMsgTxtbox_GotFocus" BorderThickness="0" BorderBrush="Gray" x:Name="sendMsgTxtbox" Background="WhiteSmoke" Hint=""  Width="350" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" />
                 <Canvas x:Name="ContentPanelCanvas" Background="Transparent"  Margin="12,15,0,15">
                     <Line X1="0" Y1="-5" X2="0" Y2="50" Stroke="#e4e4e4" StrokeThickness="2"/>
                 </Canvas>

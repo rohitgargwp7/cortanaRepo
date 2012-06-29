@@ -188,6 +188,11 @@ namespace windows_client.Model
             {
                 return _isSms;
             }
+            set
+            {
+                if (value != _isSms)
+                    _isSms = value;
+            }
         }
 
         public ConversationListObject Conversation

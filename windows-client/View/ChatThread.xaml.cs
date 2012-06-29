@@ -120,6 +120,11 @@ namespace windows_client.View
             mPubSub = App.HikePubSubInstance;
             registerListeners();
             initPageBasedOnState();
+            if (!isOnHike)
+                sendMsgTxtbox.Hint = "SMS message...";
+            else
+                sendMsgTxtbox.Hint = "hike message...";
+
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
 
@@ -155,8 +160,6 @@ namespace windows_client.View
                 mContactNumber = obj.MSISDN;
                 mContactName = obj.ContactName;
                 isOnHike = obj.IsOnhike;
-                if (!isOnHike)
-                    sendMsgTxtbox.Hint = "SMS message...";
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
@@ -264,14 +267,15 @@ namespace windows_client.View
             {
                 return;
             }
-            /* if ((!mConversation.OnHike && mCredits <= 0) || message == "")
-             {
-                 return;
-             }
-             */
+            if ((!isOnHike && mCredits <= 0) || message == "")
+            {
+                return;
+            }
+
             sendMsgTxtbox.Text = "";
             sendMsgBtn.Foreground = disableButtonColor;
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = !isOnHike;
             this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
@@ -503,22 +507,22 @@ namespace windows_client.View
             #endregion
         }
 
-      
+
         #endregion
 
         private void updateUIForHikeStatus()
         {
-            
+
         }
 
         private void changeInviteButtonVisibility()
         {
-            
+
         }
-      
+
         private void showSMSCounter()
         {
-            
+
         }
 
         private void updateChatMetadata()
@@ -566,9 +570,9 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
                 mUserIsBlocked = true;
                 //showOverlay(true); true means show block animation
-            }          
+            }
         }
-        
+
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
