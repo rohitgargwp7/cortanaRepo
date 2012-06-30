@@ -199,17 +199,15 @@ namespace windows_client.View
             }
 
             JArray ids = new JArray();
-            long[] dbIds = new long[messagesList.Count];
-
-            for (int i = 0, k = 0; i < messagesList.Count; i++)
+            List<long> dbIds = new List<long>();
+            for (int i = 0; i < messagesList.Count; i++)
             {
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     isPublish = true;
-                    ids.Add(Convert.ToString(messagesList[i].MessageId));
-                    dbIds[k] = messagesList[i].MessageId;
+                    ids.Add(Convert.ToString(messagesList[i].MappedMessageId));
+                    dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    k++;
                 }
                 this.ChatThreadPageCollection.Add(messagesList[i]);
                 msgMap.Add(messagesList[i].MessageId, messagesList[i]);
@@ -223,10 +221,12 @@ namespace windows_client.View
                 obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
                 obj.Add(HikeConstants.TO, mContactNumber);
                 obj.Add(HikeConstants.DATA, ids);
+                
+                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ,dbIds.ToArray());
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
                 mPubSub.publish(HikePubSub.MSG_READ, mContactNumber);
             }
-            //this.myListBox.UpdateLayout();
+
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -336,7 +336,7 @@ namespace windows_client.View
                 if (convMessage.Msisdn == mContactNumber)
                 {
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    MessagesTableUtils.updateMsgStatus(convMessage.MessageId, (int)ConvMessage.State.RECEIVED_READ);
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ,new long [] {convMessage.MessageId});
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                     mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
 

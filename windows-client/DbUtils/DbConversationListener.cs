@@ -28,6 +28,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.MESSAGE_SENT, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED_FROM_SENDER, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
             mPubSub.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
             mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
             mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED, this);
@@ -53,10 +54,15 @@ namespace windows_client.DbUtils
             else if (HikePubSub.MESSAGE_RECEIVED_FROM_SENDER == type)  // represents event when a client receive msg from other client through server.
             {
                 ConvMessage convMessage = (ConvMessage)obj;
-                convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                 MessagesTableUtils.addChatMessage(convMessage);
                 logger.Info("DBCONVERSATION LISTENER", "Receiver received Message : " + convMessage.Message + " ; Receiver Msg ID : " + convMessage.MessageId + "	; Mapped msgID : " + convMessage.MappedMessageId);
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
+            }
+            else if (HikePubSub.MESSAGE_RECEIVED_READ == type)  // represents event when a msg is read by this user
+            {
+                long[] ids = (long[])obj;
+                updateDbBatch(ids, (int)ConvMessage.State.RECEIVED_READ);
             }
             else if (HikePubSub.SERVER_RECEIVED_MSG == type)  // server got msg from client 1 and sent back received msg receipt
             {

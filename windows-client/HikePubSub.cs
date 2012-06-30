@@ -74,6 +74,9 @@ namespace windows_client
         /* broadcast when a message is received from the sender but before it's been written our DB*/
         public static readonly string MESSAGE_RECEIVED_FROM_SENDER = "messageReceivedFromSender";
 
+        /* broadcast when a message is received from the sender abd is being read now */
+        public static readonly string MESSAGE_RECEIVED_READ = "messageReceivedRead";
+
         public static readonly string MSG_READ = "msgRead";
 
         /* publishes a message via mqtt to the server */
