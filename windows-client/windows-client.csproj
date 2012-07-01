@@ -152,9 +152,6 @@
     <Compile Include="Model\ConvMessage.cs" />
     <Compile Include="Model\HikeDataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="View\MessageList.xaml.cs">
-      <DependentUpon>MessageList.xaml</DependentUpon>
-    </Compile>
     <Compile Include="utils\TimeUtils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -191,10 +188,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\WelcomePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MessageList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

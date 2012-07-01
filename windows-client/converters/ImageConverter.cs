@@ -58,7 +58,6 @@ namespace windows_client.converters
                     imageCache.Remove(msisdn);
                 }
                 imageCache.Add(msisdn, empImage);
-                //pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
             });
 
         }
