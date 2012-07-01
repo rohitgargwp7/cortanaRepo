@@ -80,7 +80,7 @@ namespace windows_client.DbUtils
             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
             ((HikeDataContext hdc, string m) =>
                 from o in hdc.users
-                where o.Name.Contains(name)
+                where o.Name.Contains(m)
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
