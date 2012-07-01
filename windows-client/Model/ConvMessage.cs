@@ -337,7 +337,7 @@ namespace windows_client.Model
         public event PropertyChangedEventHandler PropertyChanged;
 
         // Used to notify that a property changed
-        private void NotifyPropertyChanged(string propertyName)
+        public void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {
