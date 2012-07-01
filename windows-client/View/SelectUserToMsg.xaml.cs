@@ -43,11 +43,6 @@ namespace windows_client.View
             onHike = UsersTableUtils.getContactInfoFromMSISDN(msisdn).OnHike;
         }
 
-        private void deleteConversation(string msisdn)
-        {
-            UsersTableUtils.deleteConversation(msisdn);
-        }
-
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
             string charsEnetered = enterNameTxt.Text;

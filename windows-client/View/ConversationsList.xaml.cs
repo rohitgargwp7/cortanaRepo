@@ -38,7 +38,7 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
-            LoadMessages();            
+            LoadMessages();
             registerListeners();
 
             App.MqttManagerInstance.connect();
@@ -58,7 +58,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
-
+            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
         }
 
         private void LoadMessages()
@@ -148,7 +148,7 @@ namespace windows_client.View
                     {
                         mObj = convMap[convMessage.Msisdn];
                         mObj.LastMessage = convMessage.Message;
-                        mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);                       
+                        mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
                         App.ViewModel.MessageListPageCollection.Remove(mObj);
                     }
                     else
@@ -158,27 +158,60 @@ namespace windows_client.View
                         mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
                         contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
                         thumbnail == null ? null : thumbnail.Avatar);
-                        
+
                         convMap.Add(convMessage.Msisdn, mObj);
                         isNewConversation = true;
                     }
-                    if( App.ViewModel.MessageListPageCollection == null)
+                    if (App.ViewModel.MessageListPageCollection == null)
                         App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                     object[] vals = new object[2];
                     vals[0] = convMessage;
                     vals[1] = isNewConversation;
-                    if ( HikePubSub.SEND_NEW_MSG == type)
-                        mPubSub.publish(HikePubSub.MESSAGE_SENT,vals);
-  
+                    if (HikePubSub.SEND_NEW_MSG == type)
+                        mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+
                 });
             }
             else if (HikePubSub.MSG_READ == type)
             {
-                string msisdn = (string) obj;
-                ConversationListObject convObj = convMap[msisdn];
-                convObj.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                //TODO : update the UI here also.
+                string msisdn = (string)obj;
+                try
+                {
+                    ConversationListObject convObj = convMap[msisdn];
+                    convObj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    //TODO : update the UI here also.
+                }
+                catch (KeyNotFoundException)
+                {
+                }
+            }
+            else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
+            {
+                string msisdn = (string)obj;
+                try
+                {
+                    ConversationListObject convObj = convMap[msisdn];
+                    convObj.IsOnhike = HikePubSub.USER_JOINED == type;
+                }
+                catch (KeyNotFoundException)
+                {
+                }
+            }
+            else if (HikePubSub.UPDATE_UI == type)
+            {
+                string msisdn = (string)obj;
+                try
+                {
+                    ConversationListObject convObj = convMap[msisdn];
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        convObj.NotifyPropertyChanged("MSISDN");
+                    });
+                }
+                catch (KeyNotFoundException)
+                {
+                }
             }
         }
 

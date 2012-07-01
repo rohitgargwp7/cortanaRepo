@@ -25,6 +25,14 @@ namespace windows_client.View
 {
     public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
+        #region CONSTANTS
+
+        private readonly string ON_HIKE_TEXT = "Free Message...";
+        private readonly string ON_SMS_TEXT = "SMS Message...";
+        private readonly string ZERO_CREDITS_MSG = "0 Free SMS left...";
+        
+        #endregion
+
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
@@ -121,9 +129,9 @@ namespace windows_client.View
             registerListeners();
             initPageBasedOnState();
             if (!isOnHike)
-                sendMsgTxtbox.Hint = "SMS message...";
+                sendMsgTxtbox.Hint = ON_SMS_TEXT;
             else
-                sendMsgTxtbox.Hint = "hike message...";
+                sendMsgTxtbox.Hint = ON_HIKE_TEXT;
 
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
@@ -351,7 +359,12 @@ namespace windows_client.View
             }
             else if (HikePubSub.UPDATE_UI == type)
             {
-                //refersh UI
+                foreach (long key in msgMap.Keys)
+                {
+                    ConvMessage c = msgMap[key];
+                    if(!c.IsSent)
+                        c.NotifyPropertyChanged("Msisdn");
+                }               
             }
 
             # endregion
@@ -512,7 +525,15 @@ namespace windows_client.View
 
         private void updateUIForHikeStatus()
         {
-
+            if (isOnHike)
+            {
+                sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+            }
+            else
+            {
+                updateChatMetadata();
+                sendMsgTxtbox.Hint = ON_SMS_TEXT;
+            }
         }
 
         private void changeInviteButtonVisibility()
@@ -536,7 +557,7 @@ namespace windows_client.View
                 {
                     sendMsgTxtbox.Text = "";
                 }
-                sendMsgTxtbox.Hint = "0 Free SMS left...";
+                sendMsgTxtbox.Hint = ZERO_CREDITS_MSG;
                 sendMsgTxtbox.IsEnabled = false;
                 //SHOW SOME UI EFFECTS
             }
@@ -548,13 +569,12 @@ namespace windows_client.View
                     {
                         sendMsgTxtbox.Text = "";
                     }
-                    sendMsgTxtbox.Hint = "SMS Message...";
                     sendMsgTxtbox.IsEnabled = true;
                 }
 
                 // HIDE UI EFFECTS
                 // IF BLOCK OVERLAY IS THERE HIDE IT
-                // DO OTHER STUFF TOO 
+                // DO OTHER STUFF TODO 
             }
         }
 
