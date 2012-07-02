@@ -17,6 +17,33 @@ namespace windows_client.DbUtils
 {
     public class MiscDBUtil
     {
+
+        public static void addOrUpdateProfileIcon(string msisdn, byte[] image)
+        {
+            Func<HikeDataContext, string, IQueryable<Thumbnails>> q =
+            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Thumbnails>>
+            ((HikeDataContext hdc, string m) =>
+                from o in hdc.thumbnails
+                where o.Msisdn == m
+                select o);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                Thumbnails thumbnail = q(context, msisdn).Count<Thumbnails>() == 0 ? null :
+                    q(context, msisdn).First<Thumbnails>();
+
+                if (thumbnail == null)
+                {
+                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
+                }
+                else
+                {
+                    thumbnail.Avatar = image;
+                }
+                context.SubmitChanges();
+            }
+        }
+
+
         public static void addOrUpdateIcon(string msisdn, byte[] image)
         {
             Func<HikeDataContext, string, IQueryable<Thumbnails>> q =
