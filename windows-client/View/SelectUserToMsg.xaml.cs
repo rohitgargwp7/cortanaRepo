@@ -28,19 +28,13 @@ namespace windows_client.View
         {
             InitializeComponent();
             this.DataContext = App.ViewModel;
+            List<ContactInfo> contactsList = UsersTableUtils.getAllContacts();
+            contactsListBox.ItemsSource = contactsList;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-        }
-
-        //loads pre-existing messages for msisdn, returns null if empty
-        //sets on-hike status
-        private void setConversationPage(string msisdn)
-        {
-            List<ConvMessage> messages = MessagesTableUtils.getMessagesForMsisdn(msisdn);
-            onHike = UsersTableUtils.getContactInfoFromMSISDN(msisdn).OnHike;
         }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
