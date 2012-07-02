@@ -59,27 +59,26 @@
                     <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
                                   Margin="20,5,20,15"  Grid.RowSpan="2">
                         <Image Margin="0,0,8,0" Visibility="{Binding MessageStatus, Converter={StaticResource sdrVisibilityConverter}}" Source="{Binding MessageStatus, Converter={StaticResource sdrImageConverter}}" HorizontalAlignment="Right"></Image>
-                        <StackPanel Orientation="Horizontal" Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}">
-                            <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
-                            <TextBlock Height="Auto" MaxWidth="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
 
-                            <toolkit:ContextMenuService.ContextMenu>
-                                <toolkit:ContextMenu Name="ctxMenu">
-                                    <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
-                                    <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
-                                    <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
-                                </toolkit:ContextMenu>
-                            </toolkit:ContextMenuService.ContextMenu>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal" Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}">
+                                <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                                <TextBlock Height="Auto" MaxWidth="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
+                                <Rectangle Width="2" Height="Auto" Fill="#c8c8c8"></Rectangle>
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu Name="ctxMenu">
+                                        <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
+                                        <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
+                                        <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
+                            </StackPanel>
+                            <Rectangle Width="Auto" Height="2" Fill="#c8c8c8"></Rectangle>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <!--<Canvas x:Name="myCanv">
-            <Rectangle x:Name="myRect" Fill="LightGray" Width="200" Height="25"/>
-            <TextBlock x:Name="myText" Text="Madhur rocks" Foreground="Black"/>
-        </Canvas>-->
 
         <StackPanel Height="Auto" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom" Background="White">
             <!--<StackPanel Background="#FFDADADA" MaxWidth="20" HorizontalAlignment="Left" Margin="20,8,0,0">
