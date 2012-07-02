@@ -34,6 +34,7 @@
             <Converters:ImageConverter x:Key="imgConverter"/>
             <Converters:ChatThreadSDRImageShow x:Key="sdrVisibilityConverter"/>
             <Converters:ChatThreadSDRImage x:Key="sdrImageConverter"/>
+            <Converters:TimestampConverter x:Key="tsConverter"/>
         </Grid.Resources>
 
         <Grid.RowDefinitions>
@@ -63,7 +64,11 @@
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}">
                                 <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
-                                <TextBlock Height="Auto" MaxWidth="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
+
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Height="Auto" Width="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
+                                    <TextBlock Height="35" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Timestamp, Converter={StaticResource tsConverter}}"/>
+                                </StackPanel>
                                 <Rectangle Width="2" Height="Auto" Fill="#c8c8c8"></Rectangle>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu Name="ctxMenu">

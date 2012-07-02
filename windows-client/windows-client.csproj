@@ -88,6 +88,7 @@
     <Compile Include="converters\ChatThreadImageVisible.cs" />
     <Compile Include="converters\ChatThreadSDRImage.cs" />
     <Compile Include="converters\ChatThreadSDRImageShow.cs" />
+    <Compile Include="converters\TimestampConverter.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
