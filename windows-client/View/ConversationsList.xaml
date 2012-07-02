@@ -157,6 +157,7 @@
                 x:Name="newTaskAppBarButton" Click="selectUserBtn_Click" />
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text = "Delete Account" Click="deleteAccount_Click"/>
+                <shell:ApplicationBarMenuItem Text = "Invite Users" Click="inviteUsers_Click"/>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

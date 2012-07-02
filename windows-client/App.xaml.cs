@@ -29,6 +29,7 @@ namespace windows_client
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
         public static readonly string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
+        public static readonly string invite_message = "Hey! I\'m using hike to send SMS for free. Download it at http://get.hike.in and start messaging me and other friends for free!";
 
         #endregion
 

@@ -45,6 +45,8 @@ namespace windows_client.View
         private long mTextLastChanged = 0;
         private bool animatedOnce = false;
 
+        private ApplicationBar appBar;
+        ApplicationBarIconButton inviteUsrIconButton = null;
 
         private const double LandscapeShift = -259d;
         private const double LandscapeShiftWithBar = -328d;
@@ -129,6 +131,30 @@ namespace windows_client.View
             }
         }
 
+        private void initAppBar()
+        {
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = true;
+
+            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
+            menuItem1.Text = "Block User";
+            menuItem1.Click += new EventHandler(blockUnblock_Click);
+            appBar.MenuItems.Add(menuItem1);
+        }
+
+        private void initAppBarIconButton()
+        {
+            if (inviteUsrIconButton != null)
+                return;
+            inviteUsrIconButton = new ApplicationBarIconButton();
+            inviteUsrIconButton.IconUri = new Uri("/View/images/appbar.favs.addto.rest.png", UriKind.Relative);
+            inviteUsrIconButton.Text = "invite";
+            inviteUsrIconButton.Click += new EventHandler(inviteUserBtn_Click);
+            inviteUsrIconButton.IsEnabled = true;
+        }
+
         public ChatThread()
         {
             InitializeComponent();
@@ -136,11 +162,18 @@ namespace windows_client.View
             mPubSub = App.HikePubSubInstance;
             registerListeners();
             initPageBasedOnState();
+            initAppBar();
+            chatThreadMainPage.ApplicationBar = appBar;
             if (!isOnHike)
+            {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                initAppBarIconButton();
+                appBar.Buttons.Add(inviteUsrIconButton);
+            }
             else
+            {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
-
+            }
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
 
@@ -549,7 +582,16 @@ namespace windows_client.View
 
         private void changeInviteButtonVisibility()
         {
-
+            if (isOnHike)
+            {
+                appBar.Buttons.Remove(inviteUsrIconButton);
+                inviteUsrIconButton = null;
+            }
+            else
+            {
+                initAppBarIconButton();
+                appBar.Buttons.Add(inviteUsrIconButton);
+            }
         }
 
         private void showSMSCounter()
@@ -689,6 +731,18 @@ namespace windows_client.View
             }
         }
         #endregion
+
+        private void inviteUserBtn_Click(object sender, EventArgs e)
+        {
+            
+            if (isOnHike)
+                return;
+            
+            long time = utils.TimeUtils.getCurrentTimeStamp();
+            ConvMessage convMessage = new ConvMessage(App.invite_message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsInvite = true;
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
+        }
 
     }
 }

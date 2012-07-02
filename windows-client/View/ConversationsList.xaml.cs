@@ -231,5 +231,14 @@ namespace windows_client.View
             ConversationTableUtils.deleteConversation(convObj.MSISDN); // removed entry from conversation table
             MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.MSISDN); //removed all chat messages for this msisdn
         }
+
+        private void inviteUsers_Click(object sender, EventArgs e)
+        {
+            Uri nextPage = new Uri("/View/InviteUsers.xaml", UriKind.Relative);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                NavigationService.Navigate(nextPage);
+            });
+        }
     }
 }

@@ -141,6 +141,9 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\InviteUsers.xaml.cs">
+      <DependentUpon>InviteUsers.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SelectUserToMsg.xaml.cs">
       <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
     </Compile>
@@ -183,6 +186,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\InviteUsers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SelectUserToMsg.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -213,6 +220,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="View\images\Application_TileImage_173x173.png" />
+    <Resource Include="View\images\appbar.favs.addto.rest.png" />
     <Content Include="View\images\background.png" />
     <Resource Include="View\images\change_pic.png" />
     <Content Include="View\images\compose_pressed.png" />

@@ -305,5 +305,20 @@ namespace windows_client.DbUtils
             deleteMultipleRows(updatedContacts);
             addContacts(updatedContacts);
         }
+
+        public static List<ContactInfo> getAllContactsToInvite()
+        {
+            Func<HikeDataContext, IQueryable<ContactInfo>> q =
+            CompiledQuery.Compile<HikeDataContext, IQueryable<ContactInfo>>
+            ((HikeDataContext hdc) =>
+                from o in hdc.users 
+                where o.OnHike == false 
+                select o);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                List<ContactInfo> myList = q(context).ToList<ContactInfo>();
+                return myList.Count == 0 ? null : myList;
+            }
+        }
     }
 }
