@@ -134,7 +134,7 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Mode = ApplicationBarMode.Minimized;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
 
@@ -149,7 +149,7 @@ namespace windows_client.View
             if (inviteUsrIconButton != null)
                 return;
             inviteUsrIconButton = new ApplicationBarIconButton();
-            inviteUsrIconButton.IconUri = new Uri("/View/images/appbar.favs.addto.rest.png", UriKind.Relative);
+            inviteUsrIconButton.IconUri = new Uri("images\\appbar.favs.addto.rest.png", UriKind.Relative);
             inviteUsrIconButton.Text = "invite";
             inviteUsrIconButton.Click += new EventHandler(inviteUserBtn_Click);
             inviteUsrIconButton.IsEnabled = true;

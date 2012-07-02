@@ -40,7 +40,7 @@
 
             <!--Panorama item one-->
             <controls:PanoramaItem Header="conversations" Margin="-12,0,-10,0">
-                <Grid x:Name="COnversationList">
+                <Grid x:Name="ConversationList">
 
                     <Grid.Resources>
                         <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
@@ -108,7 +108,7 @@
                             <TextBlock x:Name="UserName"  Foreground="Black" FontSize="35" Text="Madhur Garg"/>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Free SMS remaining: " Foreground="#8d8d8d"></TextBlock>
-                                <TextBlock x:Name="CreditsTxtBlck" Text="100" Foreground="#8d8d8d"></TextBlock>
+                                <TextBlock x:Name="creditsTxtBlck" Text="" Foreground="#8d8d8d"></TextBlock>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>

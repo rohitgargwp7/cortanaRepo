@@ -44,7 +44,7 @@ namespace windows_client.View
             LoadMessages();
             registerListeners();
             msisdn = (string)App.appSettings[App.MSISDN_SETTING];
-            CreditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
+            creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
 
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
@@ -60,7 +60,6 @@ namespace windows_client.View
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;
             }
-
             App.MqttManagerInstance.connect();
         }
 
@@ -273,6 +272,13 @@ namespace windows_client.View
                 catch (KeyNotFoundException)
                 {
                 }
+            }
+            else if (HikePubSub.SMS_CREDIT_CHANGED == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    creditsTxtBlck.Text = Convert.ToString((int)obj);
+                });               
             }
         }
 
