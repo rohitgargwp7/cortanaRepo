@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using Microsoft.Phone.Reactive;
 
 namespace windows_client.View
 {
@@ -30,7 +31,7 @@ namespace windows_client.View
         private readonly string ON_HIKE_TEXT = "Free Message...";
         private readonly string ON_SMS_TEXT = "SMS Message...";
         private readonly string ZERO_CREDITS_MSG = "0 Free SMS left...";
-        
+
         #endregion
 
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -44,6 +45,10 @@ namespace windows_client.View
         private string mContactName;
         private long mTextLastChanged = 0;
         private bool animatedOnce = false;
+
+        private IScheduler scheduler = Scheduler.NewThread;
+        private long lastTextChangedTime;
+        private bool endTypingSent = true;
 
         private ApplicationBar appBar;
         ApplicationBarIconButton inviteUsrIconButton = null;
@@ -174,6 +179,7 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
+            hikeLabel.Text = mContactName;
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
 
@@ -273,8 +279,8 @@ namespace windows_client.View
                 obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
                 obj.Add(HikeConstants.TO, mContactNumber);
                 obj.Add(HikeConstants.DATA, ids);
-                
-                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ,dbIds.ToArray());
+
+                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray());
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
                 mPubSub.publish(HikePubSub.MSG_READ, mContactNumber);
             }
@@ -339,16 +345,37 @@ namespace windows_client.View
             }
         }
 
+        private void sendEndTypingNotification()
+        {
+            long currentTime = TimeUtils.getCurrentTimeStamp();
+            if (currentTime - lastTextChangedTime >= 5 && endTypingSent == false)
+            {
+                JObject obj = new JObject();
+                try
+                {
+                    obj.Add(HikeConstants.TYPE, NetworkManager.END_TYPING);
+                    obj.Add(HikeConstants.TO, mContactNumber);
+                }
+                catch (Exception ex)
+                {
+                    //logger.("ConvMessage", "invalid json message", e);
+                }
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                endTypingSent = true;
+            }
+        }
 
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
             /* Create the typing notification*/
-            long lastChanged = TimeUtils.getCurrentTimeStamp();
-            if (mTextLastChanged == 0)
+            lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
+
+            scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
+
+            if (endTypingSent)
             {
-                // we're currently not in 'typing' mode
-                mTextLastChanged = lastChanged;
+                endTypingSent = false;
 
                 JObject obj = new JObject();
                 try
@@ -362,14 +389,15 @@ namespace windows_client.View
                 }
 
                 // fire an event
-                // mPubSub.publish(HikePubSub.MQTT_PUBLISH_LOW, obj);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
-            if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
-            {
-                sendMsgBtn.IsEnabled = false;
-                sendMsgBtn.Foreground = disableButtonColor;
-                return;
-            }
+            else
+                if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
+                {
+                    sendMsgBtn.IsEnabled = false;
+                    sendMsgBtn.Foreground = disableButtonColor;
+                    return;
+                }
             sendMsgBtn.IsEnabled = true;
             sendMsgBtn.Foreground = enableButtonColor;
         }
@@ -388,7 +416,7 @@ namespace windows_client.View
                 if (convMessage.Msisdn == mContactNumber)
                 {
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ,new long [] {convMessage.MessageId});
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                     mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
 
@@ -403,12 +431,12 @@ namespace windows_client.View
             }
             else if (HikePubSub.UPDATE_UI == type)
             {
-                for (int i = 0; i < incomingMessages.Count;i++ )
+                for (int i = 0; i < incomingMessages.Count; i++)
                 {
                     ConvMessage c = incomingMessages[i];
                     if (!c.IsSent)
                         c.NotifyPropertyChanged("Msisdn");
-                }               
+                }
             }
 
             # endregion
@@ -540,7 +568,9 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        hikeLabel.Text = mContactName;// +" is typing.";
+                        typingNotification.Visibility = Visibility.Visible;
+
+                        //hikeLabel.Text = mContactName;// +" is typing.";
                         // handle auto removing
                     });
                 }
@@ -556,7 +586,8 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        hikeLabel.Text = mContactName;
+                        typingNotification.Visibility = Visibility.Collapsed;
+                        //hikeLabel.Text = mContactName;
                     });
                 }
             }
@@ -734,10 +765,10 @@ namespace windows_client.View
 
         private void inviteUserBtn_Click(object sender, EventArgs e)
         {
-            
+
             if (isOnHike)
                 return;
-            
+
             long time = utils.TimeUtils.getCurrentTimeStamp();
             ConvMessage convMessage = new ConvMessage(App.invite_message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsInvite = true;

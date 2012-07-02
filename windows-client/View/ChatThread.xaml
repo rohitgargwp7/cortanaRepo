@@ -86,6 +86,9 @@
                 <TextBlock HorizontalAlignment="Left" Text="....." Height="25" Foreground="Black"></TextBlock>
             </StackPanel>-->
 
+            <StackPanel x:Name="typingNotification" Visibility="Collapsed" Height="40">
+                <TextBlock Height="40" Foreground="Black" Text="....."></TextBlock>
+            </StackPanel>
             <StackPanel x:Name="sendMsgPanel" Height="Auto" Grid.Row="1" Orientation="Horizontal" Background="WhiteSmoke">
                 <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" AcceptsReturn="True" LostFocus="TextBoxLostFocus" GotFocus="sendMsgTxtbox_GotFocus" BorderThickness="0" BorderBrush="Gray" Background="WhiteSmoke" Hint=""  Width="350" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged">
                 </toolkit:PhoneTextBox>
