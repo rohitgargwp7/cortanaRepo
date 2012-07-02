@@ -40,6 +40,7 @@ namespace windows_client.View
             convMap = new Dictionary<string, ConversationListObject>();
             LoadMessages();
             registerListeners();
+            creditsTxtBlck.Text = Convert.ToString((int)App.appSettings[App.SMS_SETTING]);
 
             App.MqttManagerInstance.connect();
         }
@@ -212,6 +213,13 @@ namespace windows_client.View
                 catch (KeyNotFoundException)
                 {
                 }
+            }
+            else if (HikePubSub.SMS_CREDIT_CHANGED == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    creditsTxtBlck.Text = Convert.ToString((int)obj);
+                });               
             }
         }
 
