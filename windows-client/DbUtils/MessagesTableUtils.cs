@@ -83,10 +83,14 @@ namespace windows_client.DbUtils
                 {
                     var currentPage = ((App)Application.Current).RootFrame.Content as ChatThread;
                     if (currentPage != null)
-                        currentPage.MsgMap.Add(msgId, convMessage);
+                    {
+                        if (convMessage.IsSent)
+                            currentPage.MsgMap.Add(msgId, convMessage);
+                        else
+                            currentPage.IncomingMessages.Add(convMessage);
+                    }
                 });
-            }
-           
+            }           
         }
 
         public static void addChatMessage(ConvMessage convMsg, bool isNewConversation)

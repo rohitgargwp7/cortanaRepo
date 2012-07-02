@@ -110,7 +110,15 @@ namespace windows_client.View
         }
         #endregion
 
-
+        private List<ConvMessage> incomingMessages = new List<ConvMessage>();
+        public List<ConvMessage> IncomingMessages
+        {
+            get
+            {
+                return incomingMessages;
+            }
+        }
+        /* This map will contain only outgoing messages */
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> message mapping
 
         public Dictionary<long, ConvMessage> MsgMap
@@ -218,7 +226,10 @@ namespace windows_client.View
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
                 this.ChatThreadPageCollection.Add(messagesList[i]);
-                msgMap.Add(messagesList[i].MessageId, messagesList[i]);
+                if (messagesList[i].IsSent)
+                    msgMap.Add(messagesList[i].MessageId, messagesList[i]);
+                else
+                    incomingMessages.Add(messagesList[i]);
             }
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[messagesList.Count - 1]);
@@ -359,10 +370,10 @@ namespace windows_client.View
             }
             else if (HikePubSub.UPDATE_UI == type)
             {
-                foreach (long key in msgMap.Keys)
+                for (int i = 0; i < incomingMessages.Count;i++ )
                 {
-                    ConvMessage c = msgMap[key];
-                    if(!c.IsSent)
+                    ConvMessage c = incomingMessages[i];
+                    if (!c.IsSent)
                         c.NotifyPropertyChanged("Msisdn");
                 }               
             }
