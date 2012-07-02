@@ -98,8 +98,12 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0">
-                        <Image Source="images\ic_avatar0.png" Height="90">
-                        </Image>
+                        <Button Height="Auto" Click="onProfilePicButtonClick">
+                            <StackPanel Orientation="Horizontal" Margin="-15">
+                                <Image x:Name="avatarImage" Height="80"  Source="images\ic_avatar0.png" />
+                            </StackPanel>
+                        </Button>
+
                         <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
                             <TextBlock x:Name="UserName"  Foreground="Black" FontSize="35" Text="Madhur Garg"/>
                             <StackPanel Orientation="Horizontal">
@@ -144,8 +148,8 @@
             </StackPanel>
             <TextBlock Text="Hello" FontSize="20" Margin="30 0 0 2" Height="35"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
         </StackPanel>-->
-        
-        
+
+
     </Grid>
 
     <!--Panorama-based applications should not show an ApplicationBar-->

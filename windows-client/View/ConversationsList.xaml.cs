@@ -12,6 +12,8 @@ using windows_client.Model;
 using windows_client.utils;
 using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Tasks;
+using System.IO;
 namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
@@ -20,7 +22,8 @@ namespace windows_client.View
         private readonly IsolatedStorageSettings appSettings;
         private NLog.Logger logger;
         private static Dictionary<string, ConversationListObject> convMap; // this holds msisdn -> conversation mapping
-
+        private PhotoChooserTask photoChooserTask;
+        private string msisdn;
         public static Dictionary<string, ConversationListObject> ConvMap
         {
             get
@@ -40,6 +43,23 @@ namespace windows_client.View
             convMap = new Dictionary<string, ConversationListObject>();
             LoadMessages();
             registerListeners();
+            msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+            CreditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
+
+            photoChooserTask = new PhotoChooserTask();
+            photoChooserTask.ShowCamera = true;
+            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn + "::large");
+            if (profileThumbnail != null)
+            {
+                MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
+                memStream.Seek(0, SeekOrigin.Begin);
+
+                BitmapImage empImage = new BitmapImage();
+                empImage.SetSource(memStream);
+                avatarImage.Source = empImage;
+            }
 
             App.MqttManagerInstance.connect();
         }
@@ -60,6 +80,47 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
         }
+
+        void imageOpenedHandler(object sender, RoutedEventArgs e)
+        {
+            BitmapImage image = (BitmapImage)sender;
+            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+            MemoryStream msLargeImage = new MemoryStream();
+            writeableBitmap.SaveJpeg(msLargeImage, 70, 80, 0, 90);
+
+            MemoryStream msSmallImage = new MemoryStream();
+            writeableBitmap.SaveJpeg(msSmallImage, 30, 35, 0, 95);
+
+            MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
+            MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
+
+        }
+
+        void photoChooserTask_Completed(object sender, PhotoResult e)
+        {
+            if (e.TaskResult == TaskResult.OK)
+            {
+                Uri uri = new Uri(e.OriginalFileName);
+                BitmapImage image = new BitmapImage(uri);
+                image.CreateOptions = BitmapCreateOptions.None;
+                image.UriSource = uri;
+                image.ImageOpened += imageOpenedHandler;
+                avatarImage.Source = image;
+            }
+        }
+
+        private void onProfilePicButtonClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                photoChooserTask.Show();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                MessageBox.Show("An error occurred.");
+            }
+        }
+
 
         private void LoadMessages()
         {
