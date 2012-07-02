@@ -87,10 +87,10 @@ namespace windows_client.View
             BitmapImage image = (BitmapImage)sender;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
             MemoryStream msLargeImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msLargeImage, 70, 80, 0, 90);
+            writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
 
             MemoryStream msSmallImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msSmallImage, 30, 35, 0, 95);
+            writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
 
             MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
             MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
@@ -107,7 +107,7 @@ namespace windows_client.View
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
                 avatarImage.Source = image;
-                avatarImage.Height = 95;
+                avatarImage.Height = 90;
                 avatarImage.Width = 90;
             }
         }
