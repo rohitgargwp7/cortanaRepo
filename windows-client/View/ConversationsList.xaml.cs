@@ -48,6 +48,8 @@ namespace windows_client.View
 
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
+            photoChooserTask.PixelHeight = 95;
+            photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn + "::large");
@@ -105,6 +107,8 @@ namespace windows_client.View
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
                 avatarImage.Source = image;
+                avatarImage.Height = 95;
+                avatarImage.Width = 90;
             }
         }
 
