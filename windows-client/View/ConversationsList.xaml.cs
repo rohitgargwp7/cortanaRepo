@@ -90,6 +90,8 @@ namespace windows_client.View
             MemoryStream msSmallImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
 
+            //send image to server here and insert in db after getting response
+ 
             object[] vals = new object[3];
             vals[0] = msisdn;
             vals[1] = msSmallImage;
@@ -110,6 +112,17 @@ namespace windows_client.View
                 avatarImage.Height = 90;
                 avatarImage.Width = 90;
             }
+            //else
+            //{
+            //    Uri uri = new Uri("/View/images/tux.png", UriKind.Relative);
+            //    BitmapImage image = new BitmapImage(uri);
+            //    image.CreateOptions = BitmapCreateOptions.None;
+            //    image.UriSource = uri;
+            //    image.ImageOpened += imageOpenedHandler;
+            //    avatarImage.Source = image;
+            //    avatarImage.Height = 90;
+            //    avatarImage.Width = 90;
+            //}
         }
 
         private void onProfilePicButtonClick(object sender, RoutedEventArgs e)
