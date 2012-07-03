@@ -60,7 +60,7 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -71,13 +71,13 @@ namespace windows_client.utils
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
 
-            //req.Headers["X-MSISDN"] = "919810116420";
+            req.Headers["X-MSISDN"] = "919810116420";
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });            
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });
         }
 
-        public static void postAddressBook(string token,Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
+        public static void postAddressBook(string token, Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
         {
 
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
@@ -110,7 +110,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, finalCallbackFunction});
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, finalCallbackFunction });
         }
 
         public static void setName(string name, postResponseFunction finalCallbackFunction)
@@ -131,6 +131,14 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
             //req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
+
+        public static void updateProfileIcon(byte[] imageBytes, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/avatar")) as HttpWebRequest;
+            req.Method = "POST";
+            req.BeginGetResponse(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, imageBytes, finalCallbackFunction });
+
+        }
         private static void setParams_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -146,7 +154,7 @@ namespace windows_client.utils
                     string pin = vars[2] as string;
                     string unAuthMSISDN = vars[3] as string;
                     finalCallbackFunction = vars[4] as postResponseFunction;
-                    data.Add("set_cookie","0");
+                    data.Add("set_cookie", "0");
                     if (pin != null)
                     {
                         data.Add("msisdn", unAuthMSISDN);
@@ -155,8 +163,8 @@ namespace windows_client.utils
                     break;
 
                 case RequestType.INVITE:
-                    string phoneNo = vars[2] as string;                    
-                    data.Add("to",phoneNo);
+                    string phoneNo = vars[2] as string;
+                    data.Add("to", phoneNo);
                     break;
 
                 case RequestType.VALIDATE_NUMBER:
@@ -182,14 +190,22 @@ namespace windows_client.utils
                     Dictionary<string, List<ContactInfo>> contacts_to_update = vars[2] as Dictionary<string, List<ContactInfo>>;
                     JArray ids_json = vars[3] as JArray;
                     finalCallbackFunction = vars[4] as postResponseFunction;
- 
-                    data.Add("remove",ids_json);
+
+                    data.Add("remove", ids_json);
                     data.Add("update", getJsonContactList(contacts_to_update));
                     break;
 
                 case RequestType.DELETE_ACCOUNT:
                     finalCallbackFunction = vars[2] as postResponseFunction;
                     break;
+
+                case RequestType.POST_PROFILE_ICON:
+                    byte[] imageBytes = vars[2] as byte[];
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    postStream.Write(imageBytes, 0, imageBytes.Length);
+                    postStream.Close();
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    return;
 
                 default:
                     break;
@@ -279,7 +295,7 @@ namespace windows_client.utils
             }
             catch (ArgumentException e)
             {
-                logger.Info("AccountUtils", "Improper Argument is passed to the function. Exception : "+e);
+                logger.Info("AccountUtils", "Improper Argument is passed to the function. Exception : " + e);
                 return null;
             }
             catch (Exception e)
@@ -322,13 +338,13 @@ namespace windows_client.utils
                 JObject addressbook = (JObject)obj["addressbook"];
                 if (addressbook == null)
                 {
-                    logger.Info("AccountUtils","Invalid JSON object. Addressbook empty.");
+                    logger.Info("AccountUtils", "Invalid JSON object. Addressbook empty.");
                     return null;
                 }
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
-                IEnumerator<KeyValuePair<string,JToken>> keyVals = addressbook.GetEnumerator();
+                IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
                 KeyValuePair<string, JToken> kv;
-                while(keyVals.MoveNext())
+                while (keyVals.MoveNext())
                 {
                     kv = keyVals.Current;
                     JArray entries = (JArray)addressbook[kv.Key];
@@ -342,7 +358,7 @@ namespace windows_client.utils
                         server_contacts.Add(info);
                     }
                 }
-               
+
                 return server_contacts;
             }
             catch (ArgumentException)
@@ -352,7 +368,7 @@ namespace windows_client.utils
             }
             catch (Exception e)
             {
-                logger.Info("AccountUtils", "Exception while processing GETCONTACTLIST function : "+e.ToString());
+                logger.Info("AccountUtils", "Exception while processing GETCONTACTLIST function : " + e.ToString());
                 return null;
             }
         }
