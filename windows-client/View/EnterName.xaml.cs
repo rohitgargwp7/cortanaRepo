@@ -31,11 +31,11 @@ namespace windows_client
 
         private void btnEnterName_Click(object sender, RoutedEventArgs e)
         {
-            string name = txtBxEnterName.Text;
+            ac_name = txtBxEnterName.Text;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             enterNameBtn.Content = "Scanning contacts";
-            AccountUtils.setName(name,new AccountUtils.postResponseFunction(setName_Callback));
+            AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
         }
 
         private void setName_Callback(JObject obj)
