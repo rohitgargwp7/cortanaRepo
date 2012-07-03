@@ -49,6 +49,7 @@ namespace windows_client.View
         private IScheduler scheduler = Scheduler.NewThread;
         private long lastTextChangedTime;
         private bool endTypingSent = true;
+        private string lastText = "";
 
         private ApplicationBar appBar;
         ApplicationBarIconButton inviteUsrIconButton = null;
@@ -332,11 +333,16 @@ namespace windows_client.View
 
             sendMsgTxtbox.Text = "";
             sendMsgBtn.Foreground = disableButtonColor;
+
+            endTypingSent = true;
+            sendTypingNotification(false);
+            
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
             this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
+
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (sendMsgTxtbox.Text != "")
             {
@@ -345,59 +351,64 @@ namespace windows_client.View
             }
         }
 
+        /// <summary>
+        /// Sends start and end typing notifications
+        /// </summary>
+        /// <param name="notificationType">If it is true then send start typing else send end typing</param>
+        private void sendTypingNotification(bool notificationType)
+        {
+            JObject obj = new JObject();
+            try
+            {
+                if (notificationType)
+                {
+                    obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
+
+                }
+                else
+                {
+                    obj.Add(HikeConstants.TYPE, NetworkManager.END_TYPING);
+                }
+                obj.Add(HikeConstants.TO, mContactNumber);
+            }
+            catch (Exception ex)
+            {
+                //logger.("ConvMessage", "invalid json message", e);
+            }
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            //endTypingSent = !notificationType;
+        }
+
         private void sendEndTypingNotification()
         {
             long currentTime = TimeUtils.getCurrentTimeStamp();
             if (currentTime - lastTextChangedTime >= 5 && endTypingSent == false)
             {
-                JObject obj = new JObject();
-                try
-                {
-                    obj.Add(HikeConstants.TYPE, NetworkManager.END_TYPING);
-                    obj.Add(HikeConstants.TO, mContactNumber);
-                }
-                catch (Exception ex)
-                {
-                    //logger.("ConvMessage", "invalid json message", e);
-                }
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 endTypingSent = true;
+                sendTypingNotification(false);
             }
         }
 
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (lastText.Equals(sendMsgTxtbox.Text))
+                return;
+            if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
+            {
+                //sendMsgBtn.IsEnabled = false;
+                sendMsgBtn.Foreground = disableButtonColor;
+                return;
+            }
 
-            /* Create the typing notification*/
+            lastText = sendMsgTxtbox.Text;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
-
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
 
             if (endTypingSent)
             {
                 endTypingSent = false;
-
-                JObject obj = new JObject();
-                try
-                {
-                    obj.Add(HikeConstants.TYPE, NetworkManager.START_TYPING);
-                    obj.Add(HikeConstants.TO, mContactNumber);
-                }
-                catch (Exception ex)
-                {
-                    //logger.("ConvMessage", "invalid json message", e);
-                }
-
-                // fire an event
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                sendTypingNotification(true);
             }
-            else
-                if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
-                {
-                    sendMsgBtn.IsEnabled = false;
-                    sendMsgBtn.Foreground = disableButtonColor;
-                    return;
-                }
             sendMsgBtn.IsEnabled = true;
             sendMsgBtn.Foreground = enableButtonColor;
         }
@@ -635,7 +646,7 @@ namespace windows_client.View
             //mMetadataNumChars.setVisibility(View.VISIBLE);
             if (mCredits <= 0)
             {
-                sendMsgBtn.IsEnabled = false;
+                //sendMsgBtn.IsEnabled = false;
                 sendMsgBtn.Foreground = disableButtonColor;
                 if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
                 {

@@ -67,7 +67,7 @@
 
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Height="Auto" Width="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
-                                    <TextBlock Height="35" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Timestamp, Converter={StaticResource tsConverter}}"/>
+                                    <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Timestamp, Converter={StaticResource tsConverter}}"/>
                                 </StackPanel>
                                 <Rectangle Width="2" Height="Auto" Fill="#c8c8c8"></Rectangle>
                                 <toolkit:ContextMenuService.ContextMenu>
