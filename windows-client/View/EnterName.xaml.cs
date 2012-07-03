@@ -21,6 +21,7 @@ namespace windows_client
     {
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private string ac_name;
 
         public EnterName()
         {
@@ -67,6 +68,7 @@ namespace windows_client
             }
 
             appSettings[App.NAME_SETTING] = "y";
+            appSettings[App.ACCOUNT_NAME] = ac_name;
             appSettings.Save();
 
             /*This is used to avoid cross thread invokation exception*/

@@ -44,6 +44,10 @@ namespace windows_client.View
             LoadMessages();
             registerListeners();
             msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+            string name;
+            appSettings.TryGetValue(App.ACCOUNT_NAME,out name);
+            if(name != null)
+                accountName.Text = name;
             creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
 
             photoChooserTask = new PhotoChooserTask();
@@ -82,15 +86,14 @@ namespace windows_client.View
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
             MemoryStream msLargeImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-
             MemoryStream msSmallImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
 
-            object[] vals = new object[2];
+            object[] vals = new object[3];
             vals[0] = msisdn;
             vals[1] = msSmallImage;
             vals[2] = msLargeImage;
-            mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE,vals);
+            mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)

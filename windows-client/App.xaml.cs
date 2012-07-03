@@ -19,6 +19,7 @@ namespace windows_client
 
         #region Hike Specific Constants
 
+        public static string ACCOUNT_NAME = "accountName";
         public static readonly string ACCEPT_TERMS = "acceptterms";
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string NAME_SETTING = "name";

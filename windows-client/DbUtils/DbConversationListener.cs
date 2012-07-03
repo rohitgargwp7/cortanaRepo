@@ -13,6 +13,7 @@ using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using windows_client.converters;
 using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.DbUtils
 {
@@ -130,7 +131,7 @@ namespace windows_client.DbUtils
                 mPubSub.publish(HikePubSub.UPDATE_UI, msisdn);
             }
             else if (HikePubSub.ADD_OR_UPDATE_PROFILE == type)
-            {
+            { 
                 object[] vals = (object[])obj;
                 string msisdn = (string)vals[0];
                 MemoryStream msSmallImage = (MemoryStream)vals[1];
