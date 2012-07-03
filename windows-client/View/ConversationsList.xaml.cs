@@ -86,9 +86,11 @@ namespace windows_client.View
             MemoryStream msSmallImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
 
-            MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
-            MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
-
+            object[] vals = new object[2];
+            vals[0] = msisdn;
+            vals[1] = msSmallImage;
+            vals[2] = msLargeImage;
+            mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE,vals);
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)

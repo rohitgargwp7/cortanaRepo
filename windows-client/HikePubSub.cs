@@ -106,12 +106,13 @@ namespace windows_client
 
         public static readonly string UPDATE_UI = "udpateUI";
 
+        public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;
 
         private Dictionary<string, List<Listener>> listeners;
-        
 
         public HikePubSub()
         {

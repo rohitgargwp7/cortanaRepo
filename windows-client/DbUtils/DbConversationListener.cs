@@ -12,6 +12,7 @@ using windows_client;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using windows_client.converters;
+using System.IO;
 
 namespace windows_client.DbUtils
 {
@@ -37,6 +38,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
+            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -126,6 +128,15 @@ namespace windows_client.DbUtils
                 MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
                 ImageConverter.updateImageInCache(msisdn, imageBytes);
                 mPubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+            }
+            else if (HikePubSub.ADD_OR_UPDATE_PROFILE == type)
+            {
+                object[] vals = (object[])obj;
+                string msisdn = (string)vals[0];
+                MemoryStream msSmallImage = (MemoryStream)vals[1];
+                MemoryStream msLargeImage = (MemoryStream)vals[2];
+                MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
+                MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
             }
         }
 
