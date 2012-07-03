@@ -136,30 +136,6 @@ namespace windows_client.View
             }
         }
 
-        private void initAppBar()
-        {
-            appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Minimized;
-            appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
-
-            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
-            menuItem1.Text = "Block User";
-            menuItem1.Click += new EventHandler(blockUnblock_Click);
-            appBar.MenuItems.Add(menuItem1);
-        }
-
-        private void initAppBarIconButton()
-        {
-            if (inviteUsrIconButton != null)
-                return;
-            inviteUsrIconButton = new ApplicationBarIconButton();
-            inviteUsrIconButton.IconUri = new Uri("images\\appbar.favs.addto.rest.png", UriKind.Relative);
-            inviteUsrIconButton.Text = "invite";
-            inviteUsrIconButton.Click += new EventHandler(inviteUserBtn_Click);
-            inviteUsrIconButton.IsEnabled = true;
-        }
-
         public ChatThread()
         {
             InitializeComponent();
@@ -168,7 +144,7 @@ namespace windows_client.View
             registerListeners();
             initPageBasedOnState();
             initAppBar();
-            chatThreadMainPage.ApplicationBar = appBar;
+            
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
@@ -207,6 +183,29 @@ namespace windows_client.View
         }
         #endregion
 
+        private void initAppBar()
+        {
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Minimized;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = true;
+
+            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
+            menuItem1.Text = "Block User";
+            menuItem1.Click += new EventHandler(blockUnblock_Click);
+            appBar.MenuItems.Add(menuItem1);
+            chatThreadMainPage.ApplicationBar = appBar;
+        }
+
+        private void initAppBarIconButton()
+        {
+            inviteUsrIconButton = new ApplicationBarIconButton();
+            inviteUsrIconButton.IconUri = new Uri("images\\appbar.favs.addto.rest.png", UriKind.Relative);
+            inviteUsrIconButton.Text = "invite";
+            inviteUsrIconButton.Click += new EventHandler(inviteUserBtn_Click);
+            inviteUsrIconButton.IsEnabled = true;
+        }
+
         private void initPageBasedOnState()
         {
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
@@ -230,7 +229,6 @@ namespace windows_client.View
                     sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State["forwardedText"];
                     PhoneApplicationService.Current.State.Remove("forwardedText");
                 }
-
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
             }
 
@@ -240,6 +238,7 @@ namespace windows_client.View
                 return;
             }
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
+            mCredits = (int)App.appSettings[App.SMS_SETTING];
             loadMessages();
         }
 
@@ -322,13 +321,10 @@ namespace windows_client.View
         {
             string message = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(message))
-            {
                 return;
-            }
+
             if ((!isOnHike && mCredits <= 0) || message == "")
-            {
                 return;
-            }
 
             sendMsgTxtbox.Text = "";
             sendMsgBtn.Foreground = disableButtonColor;
@@ -615,13 +611,15 @@ namespace windows_client.View
         {
             if (isOnHike)
             {
-                appBar.Buttons.Remove(inviteUsrIconButton);
-                inviteUsrIconButton = null;
+                if(appBar.Buttons.Contains(inviteUsrIconButton))
+                    appBar.Buttons.Remove(inviteUsrIconButton);
             }
             else
             {
-                initAppBarIconButton();
-                appBar.Buttons.Add(inviteUsrIconButton);
+                if(inviteUsrIconButton == null)
+                    initAppBarIconButton();
+                if(!appBar.Buttons.Contains(inviteUsrIconButton))
+                    appBar.Buttons.Add(inviteUsrIconButton);
             }
         }
 

@@ -48,6 +48,7 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME,out name);
             if(name != null)
                 accountName.Text = name;
+
             creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
 
             photoChooserTask = new PhotoChooserTask();
