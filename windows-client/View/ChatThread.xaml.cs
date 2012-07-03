@@ -31,6 +31,8 @@ namespace windows_client.View
         private readonly string ON_HIKE_TEXT = "Free Message...";
         private readonly string ON_SMS_TEXT = "SMS Message...";
         private readonly string ZERO_CREDITS_MSG = "0 Free SMS left...";
+        private readonly string BLOCK_USER = "BLOCK";
+        private readonly string UNBLOCK_USER = "UNBLOCK";
 
         #endregion
 
@@ -52,6 +54,7 @@ namespace windows_client.View
         private string lastText = "";
 
         private ApplicationBar appBar;
+        ApplicationBarMenuItem menuItem1;
         ApplicationBarIconButton inviteUsrIconButton = null;
 
         private const double LandscapeShift = -259d;
@@ -191,8 +194,8 @@ namespace windows_client.View
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
 
-            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
-            menuItem1.Text = "Block User";
+            menuItem1 = new ApplicationBarMenuItem();
+            menuItem1.Text = BLOCK_USER;
             menuItem1.Click += new EventHandler(blockUnblock_Click);
             appBar.MenuItems.Add(menuItem1);
             chatThreadMainPage.ApplicationBar = appBar;
@@ -677,11 +680,13 @@ namespace windows_client.View
             {
                 mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                 mUserIsBlocked = false;
+                menuItem1.Text = BLOCK_USER;
             }
             else
             {
                 mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
                 mUserIsBlocked = true;
+                menuItem1.Text = UNBLOCK_USER;
                 //showOverlay(true); true means show block animation
             }
         }
