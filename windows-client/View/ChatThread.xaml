@@ -69,7 +69,7 @@
                                     <TextBlock Height="Auto" Width="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Timestamp, Converter={StaticResource tsConverter}}"/>
                                 </StackPanel>
-                                <Rectangle Width="2" Height="Auto" Fill="#c8c8c8"></Rectangle>
+                                <Rectangle Width="2" Height="Auto" Fill="#c8c8c8" Margin="1,2,0,0"></Rectangle>
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu Name="ctxMenu">
                                         <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
@@ -78,7 +78,7 @@
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
                             </StackPanel>
-                            <Rectangle Width="Auto" Height="2" Fill="#c8c8c8"></Rectangle>
+                            <Rectangle Width="Auto" Height="2" Margin="2,0,0,0" Fill="#c8c8c8"></Rectangle>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
