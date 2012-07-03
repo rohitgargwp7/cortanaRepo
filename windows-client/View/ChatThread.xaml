@@ -62,7 +62,7 @@
                         <Image Margin="0,0,8,0" Visibility="{Binding MessageStatus, Converter={StaticResource sdrVisibilityConverter}}" Source="{Binding MessageStatus, Converter={StaticResource sdrImageConverter}}" HorizontalAlignment="Right"></Image>
 
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" Background="{Binding IsSent, Converter={StaticResource bubbleBackgroundConverter}}">
+                            <StackPanel Orientation="Horizontal" Background="{Binding MsgType, Converter={StaticResource bubbleBackgroundConverter}}">
                                 <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
 
                                 <StackPanel Orientation="Vertical">

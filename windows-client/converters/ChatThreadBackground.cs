@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Data;
+using windows_client.Model;
 
 namespace windows_client.converters
 {
@@ -16,14 +17,21 @@ namespace windows_client.converters
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            bool isSent = (bool)value;
-            if (isSent)
+            ConvMessage.ChatBubbleType bubbleType = (ConvMessage.ChatBubbleType)value;
+
+
+            if (ConvMessage.ChatBubbleType.RECEIVED == bubbleType)
+            {
+                return "#f2f2f2";
+            }
+            else if (ConvMessage.ChatBubbleType.HIKE_SENT == bubbleType)
             {
                 return "#d4edfc";
-                //return "LightGreen";
             }
-            return "#f2f2f2";
-//            return "LightGray";
+            else
+            {
+                return "#cff3cc";
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

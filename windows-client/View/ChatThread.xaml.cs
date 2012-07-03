@@ -257,6 +257,7 @@ namespace windows_client.View
             List<long> dbIds = new List<long>();
             for (int i = 0; i < messagesList.Count; i++)
             {
+                messagesList[i].IsSms = !isOnHike;
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     isPublish = true;
