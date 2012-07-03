@@ -67,19 +67,13 @@ namespace windows_client.View
 
         private void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_FAILED, this);
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.MSG_READ, this);
             mPubSub.addListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
+            mPubSub.addListener(HikePubSub.MSG_READ, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
+            mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
@@ -124,7 +118,6 @@ namespace windows_client.View
             }
         }
 
-
         private void LoadMessages()
         {
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
@@ -146,7 +139,6 @@ namespace windows_client.View
                 App.ViewModel.MessageListPageCollection.Add(mObj);
             }
         }
-
 
         private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
