@@ -212,7 +212,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
             {
                 ConversationListObject obj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
-                mContactNumber = obj.MSISDN;
+                mContactNumber = obj.Msisdn;
                 mContactName = obj.ContactName;
                 isOnHike = obj.IsOnhike;
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
@@ -737,7 +737,7 @@ namespace windows_client.View
                 App.ViewModel.MessageListPageCollection.Remove(obj);
 
                 // delete the conversation from DB.
-                ConversationTableUtils.deleteConversation(obj.MSISDN);
+                ConversationTableUtils.deleteConversation(obj.Msisdn);
             }
         }
 

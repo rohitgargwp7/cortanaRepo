@@ -281,7 +281,7 @@ namespace windows_client.View
                     ConversationListObject convObj = convMap[msisdn];
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        convObj.NotifyPropertyChanged("MSISDN");
+                        convObj.NotifyPropertyChanged("Msisdn");
                     });
                 }
                 catch (KeyNotFoundException)
@@ -308,10 +308,10 @@ namespace windows_client.View
                 return;
             }
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
-            convMap.Remove(convObj.MSISDN); // removed entry from map
+            convMap.Remove(convObj.Msisdn); // removed entry from map
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
-            ConversationTableUtils.deleteConversation(convObj.MSISDN); // removed entry from conversation table
-            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.MSISDN); //removed all chat messages for this msisdn
+            ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
+            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
         }
 
         private void inviteUsers_Click(object sender, EventArgs e)

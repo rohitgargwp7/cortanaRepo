@@ -63,8 +63,7 @@
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal" Margin="22,5,5,5">
                                         <Image x:Name="avatar_image" Height="65" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding MSISDN, Converter={StaticResource imgConverter}}"
-                               >
+                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}">
                                         </Image>
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="25 0 0 0">
