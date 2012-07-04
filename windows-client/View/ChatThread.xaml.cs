@@ -159,6 +159,12 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
+            if (mUserIsBlocked)
+            {
+                sendMsgTxtbox.Text = "BLOCKED";
+                sendMsgTxtbox.IsEnabled = false;
+                sendMsgBtn.Visibility = System.Windows.Visibility.Collapsed;
+            }
             hikeLabel.Text = mContactName;
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
@@ -195,7 +201,10 @@ namespace windows_client.View
             appBar.IsMenuEnabled = true;
 
             menuItem1 = new ApplicationBarMenuItem();
-            menuItem1.Text = BLOCK_USER;
+            if (mUserIsBlocked)
+                menuItem1.Text = UNBLOCK_USER;
+            else
+                menuItem1.Text = BLOCK_USER;
             menuItem1.Click += new EventHandler(blockUnblock_Click);
             appBar.MenuItems.Add(menuItem1);
             chatThreadMainPage.ApplicationBar = appBar;
@@ -681,12 +690,18 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
+                sendMsgTxtbox.IsEnabled = true;
+                sendMsgBtn.IsEnabled = true;
+                sendMsgTxtbox.Text = "";
             }
             else
             {
                 mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
+                sendMsgTxtbox.Text = "BLOCKED";
+                sendMsgTxtbox.IsEnabled = false;
+                sendMsgBtn.IsEnabled = false;
                 //showOverlay(true); true means show block animation
             }
         }

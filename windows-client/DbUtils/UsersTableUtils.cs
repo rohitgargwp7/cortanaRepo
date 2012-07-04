@@ -34,10 +34,16 @@ namespace windows_client.DbUtils
 
         public static void unblock(string msisdn)
         {
-            Blocked userUnblocked = new Blocked(msisdn);
+            Func<HikeDataContext,string,IQueryable<Blocked>> q =
+            CompiledQuery.Compile<HikeDataContext,string,IQueryable<Blocked>>
+            ((HikeDataContext hdc,string m) =>
+                from o in hdc.blockedUsersTable
+                where o.Msisdn == m
+                select o);
+           
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                context.blockedUsersTable.DeleteOnSubmit(userUnblocked);
+                context.blockedUsersTable.DeleteAllOnSubmit(q(context,msisdn).ToList<Blocked>());
                 context.SubmitChanges();
             }
         }
