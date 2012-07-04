@@ -31,6 +31,8 @@ namespace windows_client.View
         private readonly string ON_HIKE_TEXT = "Free Message...";
         private readonly string ON_SMS_TEXT = "SMS Message...";
         private readonly string ZERO_CREDITS_MSG = "0 Free SMS left...";
+        private readonly string BLOCK_USER = "BLOCK";
+        private readonly string UNBLOCK_USER = "UNBLOCK";
 
         #endregion
 
@@ -52,6 +54,7 @@ namespace windows_client.View
         private string lastText = "";
 
         private ApplicationBar appBar;
+        ApplicationBarMenuItem menuItem1;
         ApplicationBarIconButton inviteUsrIconButton = null;
 
         private const double LandscapeShift = -259d;
@@ -156,6 +159,7 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
+           
             hikeLabel.Text = mContactName;
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
@@ -191,8 +195,11 @@ namespace windows_client.View
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
 
-            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
-            menuItem1.Text = "Block User";
+            menuItem1 = new ApplicationBarMenuItem();
+            if (mUserIsBlocked)
+                menuItem1.Text = UNBLOCK_USER;
+            else
+                menuItem1.Text = BLOCK_USER;
             menuItem1.Click += new EventHandler(blockUnblock_Click);
             appBar.MenuItems.Add(menuItem1);
             chatThreadMainPage.ApplicationBar = appBar;
@@ -201,7 +208,7 @@ namespace windows_client.View
         private void initAppBarIconButton()
         {
             inviteUsrIconButton = new ApplicationBarIconButton();
-            inviteUsrIconButton.IconUri = new Uri("images\\appbar.favs.addto.rest.png", UriKind.Relative);
+            inviteUsrIconButton.IconUri = new Uri("/View/images/appbar.favs.addto.rest.png", UriKind.Relative);
             inviteUsrIconButton.Text = "invite";
             inviteUsrIconButton.Click += new EventHandler(inviteUserBtn_Click);
             inviteUsrIconButton.IsEnabled = true;
@@ -239,6 +246,17 @@ namespace windows_client.View
                 return;
             }
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
+            if (mUserIsBlocked)
+            {
+                sendMsgTxtbox.Text = "BLOCKED";
+                sendMsgTxtbox.IsEnabled = false;
+                sendMsgBtn.IsEnabled = false;
+            }
+            else
+            {
+                sendMsgBtn.IsEnabled = true;
+            }
+
             mCredits = (int)App.appSettings[App.SMS_SETTING];
             loadMessages();
         }
@@ -321,6 +339,8 @@ namespace windows_client.View
 
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (mUserIsBlocked)
+                return;
             string message = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(message))
                 return;
@@ -674,15 +694,27 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
-            if (mUserIsBlocked)
+            if (mUserIsBlocked) // UNBLOCK REQUEST
             {
                 mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                 mUserIsBlocked = false;
+                menuItem1.Text = BLOCK_USER;
+                sendMsgTxtbox.IsEnabled = true;
+                sendMsgBtn.IsEnabled = true;
+                if (isOnHike)
+                    sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+                else
+                    sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                //sendMsgTxtbox.Foreground = "WhiteSmoke";
             }
-            else
+            else     // BLOCK REQUEST
             {
                 mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
                 mUserIsBlocked = true;
+                menuItem1.Text = UNBLOCK_USER;
+                sendMsgTxtbox.Text = "BLOCKED";
+                sendMsgTxtbox.IsEnabled = false;
+                sendMsgBtn.IsEnabled = false;
                 //showOverlay(true); true means show block animation
             }
         }

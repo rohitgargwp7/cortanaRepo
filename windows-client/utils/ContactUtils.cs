@@ -202,7 +202,10 @@ namespace windows_client.utils
 
             if (addressbook != null)
             {
+                UsersTableUtils.deleteAllContacts();
+                UsersTableUtils.deleteBlocklist();
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
+                UsersTableUtils.addBlockList(blockList);
                 App.Ab_scanned = true;
                 appSettings[App.ADDRESS_BOOK_SCANNED] = "y";
                 appSettings.Save();

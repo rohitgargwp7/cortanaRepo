@@ -100,7 +100,7 @@
                     <Line X1="0" Y1="-5" X2="0" Y2="50" Stroke="#e4e4e4" StrokeThickness="2"/>
                 </Canvas>
 
-                <Button x:Name="sendMsgBtn" BorderThickness="0" Margin="5,0,5,0" Height="75" Width="Auto" Content="Send" Foreground="#c4c4c4" Click="sendMsgBtn_Click">
+                <Button x:Name="sendMsgBtn" BorderThickness="0" Margin="5,0,5,0" Height="75" Width="Auto" Content="Send" Foreground="#c4c4c4" Click="sendMsgBtn_Click" IsEnabled="False">
                     <!--<Button.Background>
                         <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
                     </Button.Background>-->

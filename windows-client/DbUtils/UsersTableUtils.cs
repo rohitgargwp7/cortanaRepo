@@ -34,10 +34,16 @@ namespace windows_client.DbUtils
 
         public static void unblock(string msisdn)
         {
-            Blocked userUnblocked = new Blocked(msisdn);
+            Func<HikeDataContext,string,IQueryable<Blocked>> q =
+            CompiledQuery.Compile<HikeDataContext,string,IQueryable<Blocked>>
+            ((HikeDataContext hdc,string m) =>
+                from o in hdc.blockedUsersTable
+                where o.Msisdn == m
+                select o);
+           
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                context.blockedUsersTable.DeleteOnSubmit(userUnblocked);
+                context.blockedUsersTable.DeleteAllOnSubmit(q(context,msisdn).ToList<Blocked>());
                 context.SubmitChanges();
             }
         }
@@ -172,7 +178,7 @@ namespace windows_client.DbUtils
         #endregion
 
         #region blocked table
-        public void addBlockList(List<string> msisdns)
+        public static void addBlockList(List<string> msisdns)
         {
             if (msisdns == null)
             {
@@ -196,7 +202,7 @@ namespace windows_client.DbUtils
         }
 
 
-        public List<Blocked> getBlockList()
+        public static List<Blocked> getBlockList()
         {
             Func<HikeDataContext, IQueryable<Blocked>> q =
             CompiledQuery.Compile<HikeDataContext, IQueryable<Blocked>>
@@ -209,7 +215,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public void deleteBlocklist()
+        public static void deleteBlocklist()
         {
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
