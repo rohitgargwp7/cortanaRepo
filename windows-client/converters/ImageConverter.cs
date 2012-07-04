@@ -29,10 +29,15 @@ namespace windows_client.converters
 
         public ImageConverter()
         {
-            imageCache = new Dictionary<string, BitmapImage>();
-            Uri uri = new Uri("/View/images/ic_avatar0.png", UriKind.Relative);
-            defaultBitmapImage = new BitmapImage(uri);
-            numbersWithDefaultImage = new List<string>();
+            if (imageCache == null)
+                imageCache = new Dictionary<string, BitmapImage>();
+            if (numbersWithDefaultImage == null)
+                numbersWithDefaultImage = new List<string>();
+            if (defaultBitmapImage == null)
+            {
+                Uri uri = new Uri("/View/images/ic_avatar0.png", UriKind.Relative);
+                defaultBitmapImage = new BitmapImage(uri);
+            }
             pubSub = new HikePubSub();
         }
 
