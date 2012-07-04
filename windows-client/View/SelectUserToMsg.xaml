@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Converters="clr-namespace:windows_client.converters"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -21,39 +22,45 @@
             <RowDefinition Height="599"/>
             <RowDefinition Height="52*"/>
         </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
+            <Converters:OnHikeIndicator x:Key="onHikeConverter"></Converters:OnHikeIndicator>
+        </Grid.Resources>
+
+        <!--<StackPanel Orientation="Vertical" Margin="-10,75,0, 0">
+            <Image Source="images\hike_header.png"/>
+        </StackPanel>-->
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Background="White">
-            <StackPanel x:Name="HikeTitle" Margin="0,0,0,0" Height="76">
-                <StackPanel.Background>
-                    <ImageBrush ImageSource="images\headerbar.png" Stretch="Fill" />
-                </StackPanel.Background>
-                <TextBlock Text="New Message" FontFamily="Arial" FontSize="30"  Margin="20,23,0,23" HorizontalAlignment="Left" Height="49" Width="224"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/View/images/ic_name_big.png" Margin="15,0,0,3" Height="40" />
-                <toolkit:PhoneTextBox Margin="0,0,0,0" x:Name="enterNameTxt" HorizontalAlignment="Stretch" Width="406" Hint="Start typing a name..." TextChanged="enterNameTxt_TextChanged"/>
+            <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
+                <Image Source="images\hike_header.png" Height="80" HorizontalAlignment="Left"/>
+                <TextBlock Text="new chat" FontFamily="Calibri" FontSize="55" FontStretch="Expanded"  Margin="20,0,0,0" Foreground="Black"/>
             </StackPanel>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.Background>
-                <ImageBrush x:Name="mainBackImage" ImageSource="Images\ic_backtexture.png" Stretch="UniformToFill"  />
-            </Grid.Background>
-            <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="0,0,0,0">
+            <toolkit:PhoneTextBox Background="#efefef" Margin="5,0,0,0" Width="440" x:Name="enterNameTxt" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged"/>
+            <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel x:Name="Sender" Height="70"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
-                                <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="26" Height="30" />
-                                <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" />
+                        <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
+                            <Image x:Name="avatar_image" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}"/>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
+                                    <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding OnHike, Converter={StaticResource onHikeConverter}}" Height="20" Width="20"/>
+                                        <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" />
+                                    </StackPanel>
+                                </StackPanel>
                             </StackPanel>
-                            <Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

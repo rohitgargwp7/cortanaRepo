@@ -88,6 +88,7 @@
     <Compile Include="converters\ChatThreadImageVisible.cs" />
     <Compile Include="converters\ChatThreadSDRImage.cs" />
     <Compile Include="converters\ChatThreadSDRImageShow.cs" />
+    <Compile Include="converters\OnHikeIndicator.cs" />
     <Compile Include="converters\TimestampConverter.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -251,6 +252,8 @@
     <Resource Include="View\images\splash_logo.png" />
     <Resource Include="View\images\splash_text.png" />
     <Resource Include="View\images\terms_back.png" />
+    <Content Include="View\images\ic_hike_user.png" />
+    <Content Include="View\images\ic_sms_user.png" />
     <Content Include="View\images\welcome_bckg.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="View\images\ic_name_big.png">

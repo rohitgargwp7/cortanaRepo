@@ -81,7 +81,7 @@ namespace windows_client.Model
             }
         }
 
-        public string MSISDN
+        public string Msisdn
         {
             get
             {
@@ -185,7 +185,7 @@ namespace windows_client.Model
             {
                 return false;
             }
-            return (_msisdn == o.MSISDN);
+            return (_msisdn == o.Msisdn);
         }
         #endregion
 

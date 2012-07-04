@@ -27,7 +27,7 @@ namespace windows_client.Model
     {
 
         private long _messageId; // this corresponds to msgID stored in sender's DB
-        private string _msisdn; 
+        private string _msisdn;
         private string _message;
         private State _messageStatus;
         private long _timestamp;
@@ -52,6 +52,13 @@ namespace windows_client.Model
             UNKNOWN
         };
 
+        public enum ChatBubbleType
+        {
+            RECEIVED = 0,
+            HIKE_SENT,
+            SMS_SENT
+        }
+
         #region Messages Table member
 
         [Column(IsVersion = true)]
@@ -67,8 +74,8 @@ namespace windows_client.Model
             set
             {
                 if (_messageId != value)
-                {                    
-                    _messageId = value;                  
+                {
+                    _messageId = value;
                 }
             }
         }
@@ -99,8 +106,8 @@ namespace windows_client.Model
             set
             {
                 if (_message != value)
-                {                   
-                    _message = value;                 
+                {
+                    _message = value;
                 }
             }
         }
@@ -113,7 +120,7 @@ namespace windows_client.Model
                 return _messageStatus;
             }
             set
-            {               
+            {
                 if (_messageStatus != value)
                 {
                     _messageStatus = value;
@@ -132,8 +139,8 @@ namespace windows_client.Model
             set
             {
                 if (_timestamp != value)
-                {                   
-                    _timestamp = value;       
+                {
+                    _timestamp = value;
                 }
             }
         }
@@ -148,12 +155,25 @@ namespace windows_client.Model
             set
             {
                 if (_mappedMessageId != value)
-                {                  
+                {
                     _mappedMessageId = value;
                 }
             }
         }
 
+
+        public ChatBubbleType MsgType
+        {
+            get
+            {
+                if (!IsSent)
+                    return ChatBubbleType.RECEIVED;
+                if (IsSms)
+                    return ChatBubbleType.SMS_SENT;
+                return ChatBubbleType.HIKE_SENT;
+            }
+
+        }
         public bool IsInvite
         {
             get
@@ -344,7 +364,7 @@ namespace windows_client.Model
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                });             
+                });
             }
         }
 
