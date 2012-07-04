@@ -159,12 +159,7 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
-            if (mUserIsBlocked)
-            {
-                sendMsgTxtbox.Text = "BLOCKED";
-                sendMsgTxtbox.IsEnabled = false;
-                sendMsgBtn.Visibility = System.Windows.Visibility.Collapsed;
-            }
+           
             hikeLabel.Text = mContactName;
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
@@ -213,7 +208,7 @@ namespace windows_client.View
         private void initAppBarIconButton()
         {
             inviteUsrIconButton = new ApplicationBarIconButton();
-            inviteUsrIconButton.IconUri = new Uri("images\\appbar.favs.addto.rest.png", UriKind.Relative);
+            inviteUsrIconButton.IconUri = new Uri("/View/images/appbar.favs.addto.rest.png", UriKind.Relative);
             inviteUsrIconButton.Text = "invite";
             inviteUsrIconButton.Click += new EventHandler(inviteUserBtn_Click);
             inviteUsrIconButton.IsEnabled = true;
@@ -251,6 +246,17 @@ namespace windows_client.View
                 return;
             }
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
+            if (mUserIsBlocked)
+            {
+                sendMsgTxtbox.Text = "BLOCKED";
+                sendMsgTxtbox.IsEnabled = false;
+                sendMsgBtn.IsEnabled = false;
+            }
+            else
+            {
+                sendMsgBtn.IsEnabled = true;
+            }
+
             mCredits = (int)App.appSettings[App.SMS_SETTING];
             loadMessages();
         }
@@ -332,6 +338,8 @@ namespace windows_client.View
 
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (mUserIsBlocked)
+                return;
             string message = sendMsgTxtbox.Text.Trim();
             if (String.IsNullOrEmpty(message))
                 return;
@@ -685,16 +693,20 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
-            if (mUserIsBlocked)
+            if (mUserIsBlocked) // UNBLOCK REQUEST
             {
                 mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
                 sendMsgTxtbox.IsEnabled = true;
                 sendMsgBtn.IsEnabled = true;
-                sendMsgTxtbox.Text = "";
+                if (isOnHike)
+                    sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+                else
+                    sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                //sendMsgTxtbox.Foreground = "WhiteSmoke";
             }
-            else
+            else     // BLOCK REQUEST
             {
                 mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
                 mUserIsBlocked = true;
