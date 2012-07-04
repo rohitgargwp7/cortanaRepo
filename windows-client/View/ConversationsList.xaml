@@ -9,12 +9,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:Converters="clr-namespace:windows_client.converters"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="False" Name="convListPage">
 
     <phone:PhoneApplicationPage.Resources>
         <Style x:Key="ListBoxItemStretchContentStyle" TargetType="StackPanel">
@@ -26,7 +26,7 @@
     <!--LayoutRoot contains the root grid where all other page content is placed-->
     <Grid x:Name="LayoutRoot">
 
-        <controls:Panorama Foreground="Black" Background="White">
+        <controls:Panorama Foreground="Black" Background="White" SelectionChanged="Panorama_SelectionChanged">
             <!--<controls:Panorama.TitleTemplate>
                 <DataTemplate>
                     <TextBlock FontSize="10"  Margin="0,20,0,0" FontWeight="Bold" />
@@ -153,19 +153,5 @@
 
 
     </Grid>
-
-    <!--Panorama-based applications should not show an ApplicationBar-->
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton 
-                IconUri="/View/images/appbar.add.rest.png" 
-                Text="compose" 
-                x:Name="newTaskAppBarButton" Click="selectUserBtn_Click" />
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text = "Delete Account" Click="deleteAccount_Click"/>
-                <shell:ApplicationBarMenuItem Text = "Invite Users" Click="inviteUsers_Click"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>

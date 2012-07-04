@@ -18,12 +18,21 @@ namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
+        #region CONSTANTS
+
+        private readonly string DELETE_ACCOUNT = "Delete Account";
+        private readonly string INVITE_USERS = "Invite Users";
+
+        #endregion
         private HikePubSub mPubSub;
         private readonly IsolatedStorageSettings appSettings;
         private NLog.Logger logger;
         private static Dictionary<string, ConversationListObject> convMap; // this holds msisdn -> conversation mapping
         private PhotoChooserTask photoChooserTask;
         private string msisdn;
+
+        private ApplicationBar appBar;
+
         public static Dictionary<string, ConversationListObject> ConvMap
         {
             get
@@ -43,6 +52,7 @@ namespace windows_client.View
             convMap = new Dictionary<string, ConversationListObject>();
             LoadMessages();
             registerListeners();
+            initAppBar();
             msisdn = (string)App.appSettings[App.MSISDN_SETTING];
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME,out name);
@@ -68,6 +78,34 @@ namespace windows_client.View
                 avatarImage.Source = empImage;
             }
             App.MqttManagerInstance.connect();
+        }
+
+        private void initAppBar()
+        {
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = true;
+
+            /* Add icons */
+            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+            composeIconButton.Text = "compose";
+            composeIconButton.Click += new EventHandler(selectUserBtn_Click);
+            composeIconButton.IsEnabled = true;
+            appBar.Buttons.Add(composeIconButton);
+
+            /* Add Menu Items*/
+            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
+            menuItem1.Text = DELETE_ACCOUNT;
+            menuItem1.Click += new EventHandler(deleteAccount_Click);
+            appBar.MenuItems.Add(menuItem1);
+
+            ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
+            menuItem2.Text = INVITE_USERS;
+            menuItem1.Click += new EventHandler(inviteUsers_Click);
+            appBar.MenuItems.Add(menuItem2);
+            convListPage.ApplicationBar = appBar;
         }
 
         private void registerListeners()
@@ -321,6 +359,21 @@ namespace windows_client.View
             {
                 NavigationService.Navigate(nextPage);
             });
+        }
+
+        private void Panorama_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PanoramaItem pItem = e.AddedItems[0] as PanoramaItem;
+            var panorama = pItem.Parent as Panorama;
+            var selectedIndex = panorama.SelectedIndex;
+            if (selectedIndex == 0)
+            {
+                appBar.IsVisible = true;
+            }
+            else if(selectedIndex == 1)
+            {
+                appBar.IsVisible = false;
+            }
         }
     }
 }
