@@ -172,7 +172,7 @@ namespace windows_client.DbUtils
         #endregion
 
         #region blocked table
-        public void addBlockList(List<string> msisdns)
+        public static void addBlockList(List<string> msisdns)
         {
             if (msisdns == null)
             {
@@ -196,7 +196,7 @@ namespace windows_client.DbUtils
         }
 
 
-        public List<Blocked> getBlockList()
+        public static List<Blocked> getBlockList()
         {
             Func<HikeDataContext, IQueryable<Blocked>> q =
             CompiledQuery.Compile<HikeDataContext, IQueryable<Blocked>>
@@ -209,7 +209,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public void deleteBlocklist()
+        public static void deleteBlocklist()
         {
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
