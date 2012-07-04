@@ -20,7 +20,7 @@ namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
-        private List<ConvMessage> messages;
+        List<ContactInfo> allContactsList;
         private string msisdn;
         private bool onHike;
 
@@ -28,8 +28,8 @@ namespace windows_client.View
         {
             InitializeComponent();
             this.DataContext = App.ViewModel;
-            List<ContactInfo> contactsList = UsersTableUtils.getAllContacts();
-            contactsListBox.ItemsSource = contactsList;
+            allContactsList = UsersTableUtils.getAllContacts();
+            contactsListBox.ItemsSource = allContactsList;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -39,14 +39,32 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string charsEnetered = enterNameTxt.Text;
+            string charsEnetered = enterNameTxt.Text.ToLower();
             if (String.IsNullOrEmpty(charsEnetered))
+            {
+                contactsListBox.ItemsSource = allContactsList;
+                return;
+            }
+            List<ContactInfo> contactsList = getContactInfoFromNameOrPhone(charsEnetered);
+            if(contactsList == null || contactsList.Count == 0)
             {
                 contactsListBox.ItemsSource = null;
                 return;
             }
-            List<ContactInfo> contactsList = UsersTableUtils.getContactInfoFromName(charsEnetered);
             contactsListBox.ItemsSource = contactsList;
+        }
+
+        private List<ContactInfo> getContactInfoFromNameOrPhone(string charsEnetered)
+        {
+            List<ContactInfo> contactsList = new List<ContactInfo>();
+            for (int i = 0; i < allContactsList.Count; i++)
+            {
+                if (allContactsList[i].Name.ToLower().Contains(charsEnetered) || allContactsList[i].Msisdn.Contains(charsEnetered) || allContactsList[i].PhoneNo.Contains(charsEnetered))
+                {
+                    contactsList.Add(allContactsList[i]);
+                }
+            }
+            return contactsList;
         }
 
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
