@@ -120,6 +120,17 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
         }
 
+        private void removeListeners()
+        {
+            mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+            mPubSub.removeListener(HikePubSub.SEND_NEW_MSG, this);
+            mPubSub.removeListener(HikePubSub.MSG_READ, this);
+            mPubSub.removeListener(HikePubSub.USER_JOINED, this);
+            mPubSub.removeListener(HikePubSub.USER_LEFT, this);
+            mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
+            mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+        }
+
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
@@ -235,6 +246,8 @@ namespace windows_client.View
                 logger.Info("Delete Account", "Could not delete account !!");
                 return;
             }
+
+            removeListeners();
             appSettings.Clear();
             UsersTableUtils.deleteAllContacts();
             ConversationTableUtils.deleteAllConversations();
