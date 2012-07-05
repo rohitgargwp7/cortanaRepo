@@ -17,6 +17,20 @@ namespace windows_client.DbUtils
 {
     public class MiscDBUtil
     {
+        public static void clearDatabase()
+        {
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.conversations.DeleteAllOnSubmit<Conversation>(context.GetTable<Conversation>());
+                context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
+                context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
+                context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
+                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
+                context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
+                context.SubmitChanges();
+            }
+        }
+        
 
         public static void addOrUpdateProfileIcon(string msisdn, byte[] image)
         {
@@ -102,5 +116,14 @@ namespace windows_client.DbUtils
                     q(context, msisdn).First<Thumbnails>();
             }
         }
+
+        public static void deleteAllThumbnails()
+        {
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
+            }
+        }
+
     }
 }

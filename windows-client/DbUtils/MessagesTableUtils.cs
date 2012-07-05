@@ -197,5 +197,32 @@ namespace windows_client.DbUtils
                 context.SubmitChanges();
             }   
         }
+
+        public bool wasMessageReceived(ConvMessage conv)
+        {
+            Func<HikeDataContext, long, string, IQueryable<ConvMessage>> q =
+            CompiledQuery.Compile<HikeDataContext, long, string, IQueryable<ConvMessage>>
+            ((HikeDataContext hdc, long timestamp, string m) =>
+                from cm in hdc.messages
+                //                where cm.Msisdn == m && cm.ConversationId == conversationId && cm.Timestamp == timestamp
+                where cm.Msisdn == m && cm.Timestamp == timestamp
+                select cm);
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                return q(context, conv.Timestamp, conv.Message).Count() != 0;
+            }
+        }
+
+
+
+        public static void addMessages(List<ConvMessage> messages)
+        {
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.messages.InsertAllOnSubmit(messages);
+                context.SubmitChanges();
+            }
+        }
+
     }
 }
