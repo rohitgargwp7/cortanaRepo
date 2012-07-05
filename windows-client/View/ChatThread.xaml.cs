@@ -202,7 +202,15 @@ namespace windows_client.View
                 menuItem1.Text = BLOCK_USER;
             menuItem1.Click += new EventHandler(blockUnblock_Click);
             appBar.MenuItems.Add(menuItem1);
+            ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
+            menuItem2.Text = "add user";
+            menuItem2.Click += new EventHandler(addUser_Click);
+            appBar.MenuItems.Add(menuItem2);
             chatThreadMainPage.ApplicationBar = appBar;
+        }
+        private void addUser_Click(object sender, EventArgs e)
+        {
+            ContactUtils.saveContact(mContactNumber);
         }
 
         private void initAppBarIconButton()
@@ -220,7 +228,10 @@ namespace windows_client.View
             {
                 ConversationListObject obj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
                 mContactNumber = obj.Msisdn;
-                mContactName = obj.ContactName;
+                if (obj.ContactName == null)
+                {
+                    mContactName = mContactNumber;
+                }
                 isOnHike = obj.IsOnhike;
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
