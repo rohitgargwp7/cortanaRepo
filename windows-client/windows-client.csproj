@@ -252,6 +252,7 @@
     <Resource Include="View\images\splash_logo.png" />
     <Resource Include="View\images\splash_text.png" />
     <Resource Include="View\images\terms_back.png" />
+    <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\ic_hike_user.png" />
     <Content Include="View\images\ic_sms_user.png" />
     <Content Include="View\images\welcome_bckg.png" />

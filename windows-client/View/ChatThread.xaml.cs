@@ -59,6 +59,9 @@ namespace windows_client.View
         private readonly SolidColorBrush enableButtonColor = new SolidColorBrush(Color.FromArgb(255, 116, 181, 220));
         private readonly SolidColorBrush disableButtonColor = new SolidColorBrush(Color.FromArgb(0, 242, 242, 242));
 
+        private readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        private readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         public List<ConvMessage> IncomingMessages
         {
@@ -206,13 +209,13 @@ namespace windows_client.View
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
             if (mUserIsBlocked)
             {
-                sendMsgTxtbox.Text = "BLOCKED";
-                sendMsgTxtbox.IsEnabled = false;
-                sendMsgBtn.IsEnabled = false;
+                //sendMsgBtn.IsEnabled = false;
+                showOverlay(true);
             }
             else
             {
-                sendMsgBtn.IsEnabled = true;
+                //sendMsgBtn.IsEnabled = true;
+                showOverlay(false);
             }
 
             mCredits = (int)App.appSettings[App.SMS_SETTING];
@@ -309,9 +312,9 @@ namespace windows_client.View
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
 
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
-            if (sendMsgTxtbox.Text != "")
+            if (message != "")
             {
-                sendMsgBtn.IsEnabled = true;
+                //sendMsgBtn.IsEnabled = true;
                 sendMsgBtn.Foreground = enableButtonColor;
             }
         }
@@ -374,7 +377,7 @@ namespace windows_client.View
                 endTypingSent = false;
                 sendTypingNotification(true);
             }
-            sendMsgBtn.IsEnabled = true;
+            //sendMsgBtn.IsEnabled = true;
             sendMsgBtn.Foreground = enableButtonColor;
         }
 
@@ -451,12 +454,7 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
-                sendMsgTxtbox.IsEnabled = true;
-                sendMsgBtn.IsEnabled = true;
-                if (isOnHike)
-                    sendMsgTxtbox.Hint = ON_HIKE_TEXT;
-                else
-                    sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                showOverlay(false);
                 //sendMsgTxtbox.Foreground = "WhiteSmoke";
             }
             else     // BLOCK REQUEST
@@ -464,12 +462,37 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
-                sendMsgTxtbox.Text = "BLOCKED";
-                sendMsgTxtbox.IsEnabled = false;
-                sendMsgBtn.IsEnabled = false;
-                //showOverlay(true); true means show block animation
+                showOverlay(true); //true means show block animation
             }
         }
+
+        private void showOverlay(bool show)
+        {
+            if (show)
+            {
+                LayoutRoot.Background = blackBackground;
+                HikeTitle.Opacity = 0.25;
+                myListBox.Opacity = 0.25;
+                bottomPanel.Opacity = 0.25;
+                HikeTitle.IsHitTestVisible = false;
+                myListBox.IsHitTestVisible = false;
+                bottomPanel.IsHitTestVisible = false;
+                OverlayMessagePanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LayoutRoot.Background = whiteBackground;
+                HikeTitle.Opacity = 1;
+                myListBox.Opacity = 1;
+                bottomPanel.Opacity = 1;
+                HikeTitle.IsHitTestVisible = true;
+                myListBox.IsHitTestVisible = true;
+                bottomPanel.IsHitTestVisible = true;
+                OverlayMessagePanel.Visibility = Visibility.Collapsed;
+            
+             }
+        
+         }
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
