@@ -67,6 +67,15 @@ namespace windows_client.DbUtils
                 context.SubmitChanges();
             }
         }
+
+        public static void deleteAllUnsentMessages()
+        {
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
+            }
+        }
+
         #endregion
 
 
