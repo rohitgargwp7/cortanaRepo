@@ -39,7 +39,7 @@ namespace windows_client.DbUtils
         public static void addConversation(ConvMessage convMessage)
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-            Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : null,  (contactInfo != null) ? contactInfo.OnHike:!convMessage.IsSms);
+            Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : convMessage.Msisdn,  (contactInfo != null) ? contactInfo.OnHike:!convMessage.IsSms);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.conversations.InsertOnSubmit(conv);
