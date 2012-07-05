@@ -19,8 +19,8 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="599"/>
-            <RowDefinition Height="52*"/>
+            <RowDefinition Height="620"/>
+            <RowDefinition Height="0*"/>
         </Grid.RowDefinitions>
         <Grid.Resources>
             <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
