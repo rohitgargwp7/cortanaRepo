@@ -45,7 +45,6 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private string mContactNumber;
         private string mContactName;
-        private long mTextLastChanged = 0;
         private bool animatedOnce = false;
 
         private IScheduler scheduler = Scheduler.NewThread;
@@ -57,69 +56,8 @@ namespace windows_client.View
         ApplicationBarMenuItem menuItem1;
         ApplicationBarIconButton inviteUsrIconButton = null;
 
-        private const double LandscapeShift = -259d;
-        private const double LandscapeShiftWithBar = -328d;
-        private const double Epsilon = 0.00000001d;
-        private const double PortraitShift = -339d;
-        private const double PortraitShiftWithBar = -408d;
-
         private readonly SolidColorBrush enableButtonColor = new SolidColorBrush(Color.FromArgb(255, 116, 181, 220));
         private readonly SolidColorBrush disableButtonColor = new SolidColorBrush(Color.FromArgb(0, 242, 242, 242));
-
-        public static readonly DependencyProperty TranslateYProperty = DependencyProperty.Register("TranslateY", typeof(double), typeof(ChatThread), new PropertyMetadata(0d, OnRenderXPropertyChanged));
-
-        #region handling keyboard focus
-        public double TranslateY
-        {
-            get { return (double)GetValue(TranslateYProperty); }
-            set { SetValue(TranslateYProperty, value); }
-        }
-
-        private static void OnRenderXPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((ChatThread)d).UpdateTopMargin((double)e.NewValue);
-        }
-
-        private void ChatThreadPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            BindToKeyboardFocus();
-        }
-
-        private void BindToKeyboardFocus()
-        {
-            PhoneApplicationFrame frame = Application.Current.RootVisual as PhoneApplicationFrame;
-            if (frame != null)
-            {
-                var group = frame.RenderTransform as TransformGroup;
-                if (group != null)
-                {
-                    var translate = group.Children[0] as TranslateTransform;
-                    var translateYBinding = new Binding("Y");
-                    translateYBinding.Source = translate;
-                    SetBinding(TranslateYProperty, translateYBinding);
-                }
-            }
-        }
-
-        private void UpdateTopMargin(double translateY)
-        {
-            if (IsClose(translateY, LandscapeShift) || IsClose(translateY, PortraitShift)
-            || IsClose(translateY, LandscapeShiftWithBar) || IsClose(translateY, PortraitShiftWithBar))
-            {
-                LayoutRoot.Margin = new Thickness(0, -translateY, 0, 0);
-            }
-        }
-
-        private bool IsClose(double a, double b)
-        {
-            return Math.Abs(a - b) < Epsilon;
-        }
-
-        private void TextBoxLostFocus(object sender, RoutedEventArgs e)
-        {
-            LayoutRoot.Margin = new Thickness();
-        }
-        #endregion
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         public List<ConvMessage> IncomingMessages
@@ -161,7 +99,6 @@ namespace windows_client.View
             }
            
             hikeLabel.Text = mContactName;
-            this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
 
         #region register broadcast listeners
