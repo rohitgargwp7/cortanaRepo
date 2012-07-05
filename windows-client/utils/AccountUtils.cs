@@ -71,7 +71,7 @@ namespace windows_client.utils
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
 
-            req.Headers["X-MSISDN"] = "919810116420";
+            //req.Headers["X-MSISDN"] = "919999711366";
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });
@@ -132,12 +132,13 @@ namespace windows_client.utils
             //req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
 
-        public static void updateProfileIcon(byte[] imageBytes, postResponseFunction finalCallbackFunction)
+        public static void updateProfileIcon(MemoryStream msSmallImage, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/avatar")) as HttpWebRequest;
+            //addToken(req);
+            req.ContentType = "multipart/form-data";
             req.Method = "POST";
-            req.BeginGetResponse(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, imageBytes, finalCallbackFunction });
-
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, msSmallImage, finalCallbackFunction });
         }
         private static void setParams_Callback(IAsyncResult result)
         {
@@ -200,7 +201,8 @@ namespace windows_client.utils
                     break;
 
                 case RequestType.POST_PROFILE_ICON:
-                    byte[] imageBytes = vars[2] as byte[];
+                    MemoryStream ms = vars[2] as MemoryStream;
+                    byte[] imageBytes = ms.ToArray();
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     postStream.Write(imageBytes, 0, imageBytes.Length);
                     postStream.Close();

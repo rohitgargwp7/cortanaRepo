@@ -14,6 +14,7 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using System.IO;
+using System.Threading;
 namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
@@ -127,14 +128,19 @@ namespace windows_client.View
             writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
             MemoryStream msSmallImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
-
+            
             //send image to server here and insert in db after getting response
+            AccountUtils.updateProfileIcon(msSmallImage, new AccountUtils.postResponseFunction(updateProfile_Callback));
  
             object[] vals = new object[3];
             vals[0] = msisdn;
             vals[1] = msSmallImage;
             vals[2] = msLargeImage;
             mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+        }
+
+        public void updateProfile_Callback(JObject obj)
+        {
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -150,17 +156,17 @@ namespace windows_client.View
                 avatarImage.Height = 90;
                 avatarImage.Width = 90;
             }
-            //else
-            //{
-            //    Uri uri = new Uri("/View/images/tux.png", UriKind.Relative);
-            //    BitmapImage image = new BitmapImage(uri);
-            //    image.CreateOptions = BitmapCreateOptions.None;
-            //    image.UriSource = uri;
-            //    image.ImageOpened += imageOpenedHandler;
-            //    avatarImage.Source = image;
-            //    avatarImage.Height = 90;
-            //    avatarImage.Width = 90;
-            //}
+            else
+            {
+                Uri uri = new Uri("/View/images/tux.png", UriKind.Relative);
+                BitmapImage image = new BitmapImage(uri);
+                image.CreateOptions = BitmapCreateOptions.None;
+                image.UriSource = uri;
+                image.ImageOpened += imageOpenedHandler;
+                avatarImage.Source = image;
+                avatarImage.Height = 90;
+                avatarImage.Width = 90;
+            }
         }
 
         private void onProfilePicButtonClick(object sender, RoutedEventArgs e)
@@ -190,7 +196,7 @@ namespace windows_client.View
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
 
                 Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
-                ConversationListObject mObj = new ConversationListObject(contact.Msisdn, contact.Name, lastMessage.Message, contact.OnHike,
+                ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? conv.Msisdn : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
                     TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
                 convMap.Add(conv.Msisdn, mObj);
                 App.ViewModel.MessageListPageCollection.Add(mObj);
@@ -245,6 +251,49 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting conversation.", "Delete Conversation ?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
+            convMap.Remove(convObj.Msisdn); // removed entry from map
+            App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+            ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
+            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
+        }
+
+        private void inviteUsers_Click(object sender, EventArgs e)
+        {
+            Uri nextPage = new Uri("/View/InviteUsers.xaml", UriKind.Relative);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                NavigationService.Navigate(nextPage);
+            });
+        }
+
+        private void Panorama_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PanoramaItem pItem = e.AddedItems[0] as PanoramaItem;
+            var panorama = pItem.Parent as Panorama;
+            var selectedIndex = panorama.SelectedIndex;
+            if (selectedIndex == 0)
+            {
+                //appBar.IsVisible = true;
+            }
+            else if(selectedIndex == 1)
+            {
+                //appBar.IsVisible = false;
+            }
+        }
+
+        #region PUBSUB
 
         public void onEventReceived(string type, object obj)
         {
@@ -331,49 +380,10 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     creditsTxtBlck.Text = Convert.ToString((int)obj);
-                });               
+                });
             }
         }
 
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting conversation.", "Delete Conversation ?", MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
-                return;
-            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
-            if (selectedListBoxItem == null)
-            {
-                return;
-            }
-            ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
-            convMap.Remove(convObj.Msisdn); // removed entry from map
-            App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
-            ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
-            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
-        }
-
-        private void inviteUsers_Click(object sender, EventArgs e)
-        {
-            Uri nextPage = new Uri("/View/InviteUsers.xaml", UriKind.Relative);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                NavigationService.Navigate(nextPage);
-            });
-        }
-
-        private void Panorama_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            PanoramaItem pItem = e.AddedItems[0] as PanoramaItem;
-            var panorama = pItem.Parent as Panorama;
-            var selectedIndex = panorama.SelectedIndex;
-            if (selectedIndex == 0)
-            {
-                appBar.IsVisible = true;
-            }
-            else if(selectedIndex == 1)
-            {
-                appBar.IsVisible = false;
-            }
-        }
+        #endregion
     }
 }
