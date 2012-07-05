@@ -14,6 +14,7 @@ using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using System.IO.IsolatedStorage;
 using windows_client.DbUtils;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.utils
 {
@@ -53,7 +54,6 @@ namespace windows_client.utils
             }
         }
 
-
         public static void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
         {
             try
@@ -82,6 +82,7 @@ namespace windows_client.utils
                 /* If nothing is changed simply return without sending update request*/
                 if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
                 {
+                    App.isABScanning = false;
                     return;
                 }
 
@@ -231,6 +232,30 @@ namespace windows_client.utils
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
+            }
+            App.isABScanning = false;
+        }
+       
+        public static void saveContact(string phone)
+        {
+            SaveContactTask saveContactTask = new SaveContactTask();
+            saveContactTask.Completed += new EventHandler<SaveContactResult>(saveContactTask_Completed);
+            saveContactTask.MobilePhone = phone;
+            saveContactTask.Show(); 
+        }
+        private static void saveContactTask_Completed(object sender, SaveContactResult e)
+        {
+            switch (e.TaskResult)
+            {
+                case TaskResult.OK:
+                    MessageBox.Show("Contact is successfully saved.");
+                    break;
+                case TaskResult.Cancel:
+                    MessageBox.Show("The user canceled the task.");
+                    break;
+                case TaskResult.None:
+                    MessageBox.Show("NO information regarding the task result is available.");
+                    break;
             }
         }
     }
