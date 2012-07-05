@@ -148,7 +148,7 @@ namespace windows_client.View
             registerListeners();
             initPageBasedOnState();
             initAppBar();
-            
+
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
@@ -159,32 +159,42 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
-           
+
             hikeLabel.Text = mContactName;
             this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
         }
 
-        #region register broadcast listeners
+        #region REGISTER LISTENERS
+
         private void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
-            mPubSub.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_FAILED, this);
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.ICON_CHANGED, this);
+            mPubSub.addListener(HikePubSub.SERVER_RECEIVED_MSG, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED, this);
+            mPubSub.addListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
+            mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
+            mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
+            mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
-
         }
+
         #endregion
 
-        #region remove broadcast listeners
+        #region REMOVE LISTENERS
         private void removeListeners()
         {
+            mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+            mPubSub.removeListener(HikePubSub.SERVER_RECEIVED_MSG, this);
+            mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED, this);
+            mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
+            mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+            mPubSub.removeListener(HikePubSub.USER_JOINED, this);
+            mPubSub.removeListener(HikePubSub.USER_LEFT, this);
+            mPubSub.removeListener(HikePubSub.TYPING_CONVERSATION, this);
+            mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
+            mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
         }
         #endregion
 
@@ -335,17 +345,7 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_DELIVERED, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.SERVER_RECEIVED_MSG, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_FAILED, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.ICON_CHANGED, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
+            removeListeners();
         }
 
         private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
@@ -364,7 +364,7 @@ namespace windows_client.View
 
             endTypingSent = true;
             sendTypingNotification(false);
-            
+
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
             this.ChatThreadPageCollection.Add(convMessage);
@@ -441,202 +441,6 @@ namespace windows_client.View
             sendMsgBtn.Foreground = enableButtonColor;
         }
 
-        #region Pubsub Event
-
-        /* this function is running on pubsub thread and not UI thread*/
-        public void onEventReceived(string type, object obj)
-        {
-            #region MSG RECEIVED
-
-            if (HikePubSub.MESSAGE_RECEIVED == type)
-            {
-                ConvMessage convMessage = (ConvMessage)obj;
-                /* Check if this is the same user for which this message is recieved*/
-                if (convMessage.Msisdn == mContactNumber)
-                {
-                    convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
-                    mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
-
-                    // Update UI
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        this.ChatThreadPageCollection.Add(convMessage);
-                        this.myListBox.UpdateLayout();
-                        this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                    });
-                }
-            }
-            else if (HikePubSub.UPDATE_UI == type)
-            {
-                for (int i = 0; i < incomingMessages.Count; i++)
-                {
-                    ConvMessage c = incomingMessages[i];
-                    if (!c.IsSent)
-                        c.NotifyPropertyChanged("Msisdn");
-                }
-            }
-
-            # endregion
-
-            #region SERVER RECEIVED MSG
-
-            else if (HikePubSub.SERVER_RECEIVED_MSG == type)
-            {
-                long msgId = (long)obj;
-                try
-                {
-                    ConvMessage msg = msgMap[msgId];
-                    if (msg != null)
-                    {
-                        msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
-                    }
-                }
-                catch (KeyNotFoundException e)
-                {
-                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
-                }
-            }
-
-            #endregion
-
-            #region MSG DELIVERED
-
-            else if (HikePubSub.MESSAGE_DELIVERED == type)
-            {
-                long msgId = (long)obj;
-                try
-                {
-                    ConvMessage msg = msgMap[msgId];
-                    if (msg != null)
-                    {
-                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
-                    }
-                }
-                catch (KeyNotFoundException e)
-                {
-                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
-                }
-            }
-
-            #endregion
-
-            #region MSG DELIVERED READ
-            else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
-            {
-                long[] ids = (long[])obj;
-                // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
-                for (int i = 0; i < ids.Length; i++)
-                {
-                    try
-                    {
-                        ConvMessage msg = msgMap[ids[i]];
-                        if (msg != null)
-                        {
-                            msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
-                        }
-                    }
-                    catch (KeyNotFoundException e)
-                    {
-                        logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
-                        continue;
-                    }
-
-                }
-            }
-
-            #endregion
-
-            #region SMS CREDITS CHANGED
-
-            else if (HikePubSub.SMS_CREDIT_CHANGED == type)
-            {
-                mCredits = (int)obj;
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    updateChatMetadata();
-                    if (!animatedOnce)
-                    {
-                        if (App.appSettings.Contains(HikeConstants.Extras.ANIMATED_ONCE))
-                            animatedOnce = (bool)App.appSettings[HikeConstants.Extras.ANIMATED_ONCE];
-                        else
-                            animatedOnce = false;
-                        if (!animatedOnce)
-                        {
-                            App.appSettings[HikeConstants.Extras.ANIMATED_ONCE] = true;
-                            App.appSettings.Save();
-                        }
-                    }
-
-                    if ((mCredits % 5 == 0 || !animatedOnce) && !isOnHike)
-                    {
-                        animatedOnce = true;
-                        //showSMSCounter();
-                    }
-                });
-
-            }
-
-            #endregion
-
-            #region USER LEFT/JOINED
-
-            else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
-            {
-                string msisdn = (string)obj;
-                if (mContactNumber != msisdn)
-                {
-                    return;
-                }
-                isOnHike = HikePubSub.USER_JOINED == type;
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    changeInviteButtonVisibility();
-                    updateUIForHikeStatus();
-                });
-            }
-
-            #endregion
-
-            #region TYPING CONVERSATION
-
-            else if (HikePubSub.TYPING_CONVERSATION == type)
-            {
-                if (mContactNumber == (obj as string))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        typingNotification.Visibility = Visibility.Visible;
-
-                        //hikeLabel.Text = mContactName;// +" is typing.";
-                        // handle auto removing
-                    });
-                }
-            }
-
-            #endregion
-
-            #region END TYPING CONVERSATION
-
-            else if (HikePubSub.END_TYPING_CONVERSATION == type)
-            {
-                if (mContactNumber == (obj as string))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        typingNotification.Visibility = Visibility.Collapsed;
-                        //hikeLabel.Text = mContactName;
-                    });
-                }
-            }
-
-            #endregion
-        }
-
-
-        #endregion
-
         private void updateUIForHikeStatus()
         {
             if (isOnHike)
@@ -654,14 +458,14 @@ namespace windows_client.View
         {
             if (isOnHike)
             {
-                if(appBar.Buttons.Contains(inviteUsrIconButton))
+                if (appBar.Buttons.Contains(inviteUsrIconButton))
                     appBar.Buttons.Remove(inviteUsrIconButton);
             }
             else
             {
-                if(inviteUsrIconButton == null)
+                if (inviteUsrIconButton == null)
                     initAppBarIconButton();
-                if(!appBar.Buttons.Contains(inviteUsrIconButton))
+                if (!appBar.Buttons.Contains(inviteUsrIconButton))
                     appBar.Buttons.Add(inviteUsrIconButton);
             }
         }
@@ -784,7 +588,6 @@ namespace windows_client.View
             }
         }
 
-
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
         }
@@ -828,5 +631,205 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
         }
 
+        #region Pubsub Event
+
+        /* this function is running on pubsub thread and not UI thread*/
+        public void onEventReceived(string type, object obj)
+        {
+            #region MESSAGE_RECEIVED
+
+            if (HikePubSub.MESSAGE_RECEIVED == type)
+            {
+                ConvMessage convMessage = (ConvMessage)obj;
+                /* Check if this is the same user for which this message is recieved*/
+                if (convMessage.Msisdn == mContactNumber)
+                {
+                    convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
+                    mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
+
+                    // Update UI
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.ChatThreadPageCollection.Add(convMessage);
+                        this.myListBox.UpdateLayout();
+                        this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                    });
+                }
+            }
+
+            # endregion
+
+            #region SERVER_RECEIVED_MSG
+
+            else if (HikePubSub.SERVER_RECEIVED_MSG == type)
+            {
+                long msgId = (long)obj;
+                try
+                {
+                    ConvMessage msg = msgMap[msgId];
+                    if (msg != null)
+                    {
+                        msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
+                    }
+                }
+                catch (KeyNotFoundException e)
+                {
+                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                }
+            }
+
+            #endregion
+
+            #region MESSAGE_DELIVERED
+
+            else if (HikePubSub.MESSAGE_DELIVERED == type)
+            {
+                long msgId = (long)obj;
+                try
+                {
+                    ConvMessage msg = msgMap[msgId];
+                    if (msg != null)
+                    {
+                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
+                    }
+                }
+                catch (KeyNotFoundException e)
+                {
+                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                }
+            }
+
+            #endregion
+
+            #region MESSAGE_DELIVERED_READ
+
+            else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
+            {
+                long[] ids = (long[])obj;
+                // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    try
+                    {
+                        ConvMessage msg = msgMap[ids[i]];
+                        if (msg != null)
+                        {
+                            msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
+                        }
+                    }
+                    catch (KeyNotFoundException e)
+                    {
+                        logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                        continue;
+                    }
+
+                }
+            }
+
+            #endregion
+
+            #region SMS_CREDIT_CHANGED
+
+            else if (HikePubSub.SMS_CREDIT_CHANGED == type)
+            {
+                mCredits = (int)obj;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    updateChatMetadata();
+                    if (!animatedOnce)
+                    {
+                        if (App.appSettings.Contains(HikeConstants.Extras.ANIMATED_ONCE))
+                            animatedOnce = (bool)App.appSettings[HikeConstants.Extras.ANIMATED_ONCE];
+                        else
+                            animatedOnce = false;
+                        if (!animatedOnce)
+                        {
+                            App.appSettings[HikeConstants.Extras.ANIMATED_ONCE] = true;
+                            App.appSettings.Save();
+                        }
+                    }
+
+                    if ((mCredits % 5 == 0 || !animatedOnce) && !isOnHike)
+                    {
+                        animatedOnce = true;
+                        //showSMSCounter();
+                    }
+                });
+
+            }
+
+            #endregion
+
+            #region USER_LEFT/JOINED
+
+            else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
+            {
+                string msisdn = (string)obj;
+                if (mContactNumber != msisdn)
+                {
+                    return;
+                }
+                isOnHike = HikePubSub.USER_JOINED == type;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    changeInviteButtonVisibility();
+                    updateUIForHikeStatus();
+                });
+            }
+
+            #endregion
+
+            #region TYPING_CONVERSATION
+
+            else if (HikePubSub.TYPING_CONVERSATION == type)
+            {
+                if (mContactNumber == (obj as string))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        typingNotification.Visibility = Visibility.Visible;
+
+                        //hikeLabel.Text = mContactName;// +" is typing.";
+                        // handle auto removing
+                    });
+                }
+            }
+
+            #endregion
+
+            #region END_TYPING_CONVERSATION
+
+            else if (HikePubSub.END_TYPING_CONVERSATION == type)
+            {
+                if (mContactNumber == (obj as string))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        typingNotification.Visibility = Visibility.Collapsed;
+                        //hikeLabel.Text = mContactName;
+                    });
+                }
+            }
+
+            #endregion
+
+            #region UPDATE_UI
+
+            else if (HikePubSub.UPDATE_UI == type)
+            {
+                for (int i = 0; i < incomingMessages.Count; i++)
+                {
+                    ConvMessage c = incomingMessages[i];
+                    if (!c.IsSent)
+                        c.NotifyPropertyChanged("Msisdn");
+                }
+            }
+
+            #endregion
+        }
+
+        #endregion
     }
 }
