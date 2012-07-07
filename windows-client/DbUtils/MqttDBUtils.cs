@@ -31,15 +31,14 @@ namespace windows_client.DbUtils
                 from o in hdc.mqttMessages
                 select o);
 
-            List<HikePacket> unsentMessages;
+            List<HikePacket> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                unsentMessages = q(context).Count<HikePacket>() == 0 ? null :
-                    q(context).ToList<HikePacket>();
+                res = q(context).ToList<HikePacket>();
                 context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
                 context.SubmitChanges();
             }
-            return unsentMessages;
+            return (res==null || res.Count() == 0)?null:res;
         }
 
         public static void addSentMessage(HikePacket packet)
@@ -61,6 +60,7 @@ namespace windows_client.DbUtils
                 from o in hdc.mqttMessages
                 where o.MessageId == id
                 select o);
+
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(q(context, msgId));

@@ -12,6 +12,7 @@ using windows_client.Model;
 using System.Linq;
 using System.Data.Linq;
 using System.Collections.Generic;
+using windows_client.View;
 
 namespace windows_client.DbUtils
 {
@@ -25,14 +26,15 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.conversations
                 select o);
+
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                if (q(context).Count<Conversation>() == 0)
+                List<Conversation> res = q(context).ToList<Conversation>();
+                if (res==null || res.Count() == 0)
                     return null;
-                List<Conversation> conversations = q(context).ToList<Conversation>();
-                conversations.Sort();
-                conversations.Reverse();
-                return conversations;
+                res.Sort();
+                res.Reverse();
+                return res;
             }           
         }
 
@@ -42,8 +44,14 @@ namespace windows_client.DbUtils
             Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : convMessage.Msisdn,  (contactInfo != null) ? contactInfo.OnHike:!convMessage.IsSms);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                context.conversations.InsertOnSubmit(conv);
-                context.SubmitChanges();
+                try
+                {
+                    context.conversations.InsertOnSubmit(conv);
+                    context.SubmitChanges();
+                }
+                catch (Exception)
+                {
+                }
             }          
         }
 
@@ -74,7 +82,6 @@ namespace windows_client.DbUtils
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            Conversation cInfo = null;
             Func<HikeDataContext, string, IQueryable<Conversation>> q =
              CompiledQuery.Compile<HikeDataContext, string, IQueryable<Conversation>>
              ((HikeDataContext hdc, string ms) =>
@@ -83,12 +90,15 @@ namespace windows_client.DbUtils
                  select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                if (q(context, msisdn).Count<Conversation>() == 1)
+                List<Conversation> res = q(context, msisdn).ToList<Conversation>();
+                if (res == null || res.Count<Conversation>() == 0)
+                    return;
+                for (int i = 0; i < res.Count;i++ )
                 {
-                    cInfo = q(context, msisdn).ToList<Conversation>().First<Conversation>();
-                    cInfo.OnHike = (bool)joined;
-                    context.SubmitChanges();
+                    Conversation conv = res[i];
+                    conv.OnHike = (bool)joined;
                 }
+                context.SubmitChanges();
             }
         }
     }

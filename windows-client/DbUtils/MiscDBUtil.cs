@@ -42,8 +42,8 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                Thumbnails thumbnail = q(context, msisdn).Count<Thumbnails>() == 0 ? null :
-                    q(context, msisdn).First<Thumbnails>();
+                List<Thumbnails> res = q(context, msisdn).ToList<Thumbnails>();
+                Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();                  
 
                 if (thumbnail == null)
                 {
@@ -68,8 +68,8 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                Thumbnails thumbnail = q(context, msisdn).Count<Thumbnails>() == 0 ? null :
-                    q(context, msisdn).First<Thumbnails>();
+                List<Thumbnails> res = q(context, msisdn).ToList<Thumbnails>();
+                Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();   
 
                 if (thumbnail == null)
                 {
@@ -96,8 +96,9 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                return q(context).Count<Thumbnails>() == 0 ? null :
-                    q(context).ToList<Thumbnails>();
+                List<Thumbnails> res = q(context).ToList<Thumbnails>();
+                return (res == null || res.Count == 0) ? null : res;
+                   
             }
         }
 
@@ -112,8 +113,8 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                return q(context, msisdn).Count<Thumbnails>() == 0 ? null :
-                    q(context, msisdn).First<Thumbnails>();
+                List<Thumbnails> res = q(context, msisdn).ToList<Thumbnails>();
+                return (res == null || res.Count == 0) ? null : res.First();                   
             }
         }
 

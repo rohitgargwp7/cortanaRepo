@@ -31,9 +31,9 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                return q(context, msisdn).Count<ConvMessage>() == 0 ? null :
-                q(context, msisdn).ToList<ConvMessage>();
-            }           
+                List<ConvMessage> res = q(context, msisdn).ToList<ConvMessage>();
+                return (res == null || res.Count == 0) ? null : res;
+            }
         }
 
 
@@ -46,14 +46,15 @@ namespace windows_client.DbUtils
                 from o in hdc.messages
                 where o.Msisdn == myMsisdn
                 select o);
+
+            List<ConvMessage> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                return q(context, msisdn).Count<ConvMessage>() == 0 ? null :
-              q(context, msisdn).Last<ConvMessage>();
+                res = q(context, msisdn).ToList<ConvMessage>();
+                return (res == null || res.Count == 0) ? null : res.Last();
             }
-          
-        }
 
+        }
 
         public static List<ConvMessage> getAllMessages()
         {
@@ -62,12 +63,14 @@ namespace windows_client.DbUtils
             ((HikeDataContext hdc) =>
                 from o in hdc.messages
                 select o);
+
+            List<ConvMessage> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                return q(context).Count<ConvMessage>() == 0 ? null :
-               q(context).ToList<ConvMessage>();
+                res = q(context).ToList<ConvMessage>();
+                return (res == null || res.Count == 0) ? null : res.ToList();
             }
-           
+
         }
 
         /* Adds a chat message to message Table.*/
@@ -90,7 +93,7 @@ namespace windows_client.DbUtils
                             currentPage.IncomingMessages.Add(convMessage);
                     }
                 });
-            }           
+            }
         }
 
         public static void addChatMessage(ConvMessage convMsg, bool isNewConversation)
@@ -110,47 +113,49 @@ namespace windows_client.DbUtils
             addMessage(convMsg);
         }
 
-        /// <summary>
-        /// Update message status in db. 
-        /// </summary>
-        /// <param name="msgID">messageID from which msg is searched in db.</param>
-        /// <param name="val">New value of Message state</param>
+
         public static void updateMsgStatus(long msgID, int val)
         {
-            ConvMessage message = null;
             Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
              CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
              ((HikeDataContext hdc, long m) =>
                  from o in hdc.messages
                  where o.MessageId == m
                  select o);
+
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                if (q(context, msgID).Count<ConvMessage>() == 1)
+                List<ConvMessage> res = q(context, msgID).ToList<ConvMessage>();
+                if (res.Count == 1)
                 {
-                    message = q(context, msgID).ToList<ConvMessage>().First<ConvMessage>();
+                    ConvMessage message = res.First();
                     message.MessageStatus = (ConvMessage.State)val;
                     context.SubmitChanges();
                 }
+                else
+                {
+                    // show some logs and errors
+                }
             }
-            
+
         }
         public static void updateAllMsgStatus(long[] ids, int status)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
-            {
-                for (int i = 0; i < ids.Length; i++)
-                {
-                    ConvMessage message = new ConvMessage();
-                    Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
+            Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
                      CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
                      ((HikeDataContext hdc, long m) =>
                          from o in hdc.messages
                          where o.MessageId == m
                          select o);
-                    if (q(context, ids[i]).Count<ConvMessage>() == 1)
+
+            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            {
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    List<ConvMessage> res = q(context, ids[i]).ToList<ConvMessage>();
+                    if (res.Count == 1)
                     {
-                        message = q(context, ids[i]).ToList<ConvMessage>().First<ConvMessage>();
+                        ConvMessage message = res.First();
                         message.MessageStatus = (ConvMessage.State)status;
                     }
                 }
@@ -176,6 +181,7 @@ namespace windows_client.DbUtils
                 from o in hdc.messages
                 where o.MessageId == id
                 select o);
+
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(q(context, msgId));
@@ -191,29 +197,13 @@ namespace windows_client.DbUtils
                 from o in hdc.messages
                 where o.Msisdn == myMsisdn
                 select o);
+
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(q(context, msisdn));
                 context.SubmitChanges();
-            }   
-        }
-
-        public bool wasMessageReceived(ConvMessage conv)
-        {
-            Func<HikeDataContext, long, string, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, long, string, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, long timestamp, string m) =>
-                from cm in hdc.messages
-                //                where cm.Msisdn == m && cm.ConversationId == conversationId && cm.Timestamp == timestamp
-                where cm.Msisdn == m && cm.Timestamp == timestamp
-                select cm);
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
-            {
-                return q(context, conv.Timestamp, conv.Message).Count() != 0;
             }
         }
-
-
 
         public static void addMessages(List<ConvMessage> messages)
         {
