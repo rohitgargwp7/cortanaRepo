@@ -78,7 +78,6 @@ namespace windows_client.View
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;
             }
-            App.MqttManagerInstance.connect();
         }
 
         private void initAppBar()
@@ -229,6 +228,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            App.MqttManagerInstance.connect();
         }
 
         private void deleteAccount_Click(object sender, EventArgs e)
@@ -249,9 +249,7 @@ namespace windows_client.View
 
             removeListeners();
             appSettings.Clear();
-            UsersTableUtils.deleteAllContacts();
-            ConversationTableUtils.deleteAllConversations();
-            MessagesTableUtils.deleteAllMessages();
+            MiscDBUtil.clearDatabase();
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -304,6 +302,34 @@ namespace windows_client.View
             {
                 //appBar.IsVisible = false;
             }
+        }
+
+        public static bool msgRecievedOrSend(ConvMessage convMessage)
+        {
+            bool isNewConversation = false;
+            ConversationListObject mObj;
+            if (convMap.ContainsKey(convMessage.Msisdn))
+            {
+                mObj = convMap[convMessage.Msisdn];
+                mObj.LastMessage = convMessage.Message;
+                mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
+                App.ViewModel.MessageListPageCollection.Remove(mObj);
+            }
+            else
+            {
+                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+                mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
+                contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
+                thumbnail == null ? null : thumbnail.Avatar);
+
+                convMap.Add(convMessage.Msisdn, mObj);
+                isNewConversation = true;
+            }
+            if (App.ViewModel.MessageListPageCollection == null)
+                App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
+            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
+            return isNewConversation;
         }
 
         #region PUBSUB
