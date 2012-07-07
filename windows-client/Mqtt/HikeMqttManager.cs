@@ -264,10 +264,6 @@ namespace windows_client.Mqtt
             }
             else
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBoxResult result = MessageBox.Show("Boss check the internet", "Hike", MessageBoxButton.OKCancel);
-                });
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
                 scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
             }
@@ -339,6 +335,7 @@ namespace windows_client.Mqtt
         public void onDisconnected()
         {
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+            connect();
         }
 
         public void onPublish(String topic, byte[] body)
