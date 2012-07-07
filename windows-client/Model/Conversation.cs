@@ -227,11 +227,6 @@ namespace windows_client.Model
                 return ret;
             }
 
-            //if (ConvId != rhs.ConvId)
-            //{
-            //    return (ConvId < rhs.ConvId) ? -1 : 1;
-            //}
-
             string cId = (ContactId != null) ? ContactId : "";
             return cId.CompareTo(rhs.ContactId);
         }
