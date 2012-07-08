@@ -56,8 +56,8 @@ namespace windows_client.View
             initAppBar();
             msisdn = (string)App.appSettings[App.MSISDN_SETTING];
             string name;
-            appSettings.TryGetValue(App.ACCOUNT_NAME,out name);
-            if(name != null)
+            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+            if (name != null)
                 accountName.Text = name;
 
             creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
@@ -138,10 +138,10 @@ namespace windows_client.View
             writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
             MemoryStream msSmallImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
-            
+
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(msSmallImage, new AccountUtils.postResponseFunction(updateProfile_Callback));
- 
+
             object[] vals = new object[3];
             vals[0] = msisdn;
             vals[1] = msSmallImage;
@@ -196,7 +196,6 @@ namespace windows_client.View
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
             if (conversationList == null)
             {
-                //mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
                 return;
             }
             for (int i = 0; i < conversationList.Count; i++)
@@ -298,38 +297,10 @@ namespace windows_client.View
             {
                 //appBar.IsVisible = true;
             }
-            else if(selectedIndex == 1)
+            else if (selectedIndex == 1)
             {
                 //appBar.IsVisible = false;
             }
-        }
-
-        public static bool msgRecievedOrSend(ConvMessage convMessage)
-        {
-            bool isNewConversation = false;
-            ConversationListObject mObj;
-            if (convMap.ContainsKey(convMessage.Msisdn))
-            {
-                mObj = convMap[convMessage.Msisdn];
-                mObj.LastMessage = convMessage.Message;
-                mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
-                App.ViewModel.MessageListPageCollection.Remove(mObj);
-            }
-            else
-            {
-                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
-                mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
-                thumbnail == null ? null : thumbnail.Avatar);
-
-                convMap.Add(convMessage.Msisdn, mObj);
-                isNewConversation = true;
-            }
-            if (App.ViewModel.MessageListPageCollection == null)
-                App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
-            App.ViewModel.MessageListPageCollection.Insert(0, mObj);
-            return isNewConversation;
         }
 
         #region PUBSUB
@@ -343,36 +314,41 @@ namespace windows_client.View
                 bool isNewConversation = false;
 
                 /*This is used to avoid cross thread invokation exception*/
+
+                if (convMap.ContainsKey(convMessage.Msisdn))
+                {
+                    mObj = convMap[convMessage.Msisdn];
+                    mObj.LastMessage = convMessage.Message;
+                    mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(mObj);
+                    });
+                }
+                else
+                {
+                    ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                    Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
+                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
+                    thumbnail == null ? null : thumbnail.Avatar);
+
+                    convMap.Add(convMessage.Msisdn, mObj);
+                    isNewConversation = true;
+                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (convMap.ContainsKey(convMessage.Msisdn))
-                    {
-                        mObj = convMap[convMessage.Msisdn];
-                        mObj.LastMessage = convMessage.Message;
-                        mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
-                        App.ViewModel.MessageListPageCollection.Remove(mObj);
-                    }
-                    else
-                    {
-                        ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                        Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
-                        mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                        contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
-                        thumbnail == null ? null : thumbnail.Avatar);
-
-                        convMap.Add(convMessage.Msisdn, mObj);
-                        isNewConversation = true;
-                    }
                     if (App.ViewModel.MessageListPageCollection == null)
                         App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
-                    object[] vals = new object[2];
-                    vals[0] = convMessage;
-                    vals[1] = isNewConversation;
-                    if (HikePubSub.SEND_NEW_MSG == type)
-                        mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
-
                 });
+                object[] vals = new object[2];
+                vals[0] = convMessage;
+                vals[1] = isNewConversation;
+                if (HikePubSub.SEND_NEW_MSG == type)
+                    mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+
+
             }
             else if (HikePubSub.MSG_READ == type)
             {

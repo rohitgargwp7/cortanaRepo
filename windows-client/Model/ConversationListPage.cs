@@ -198,7 +198,10 @@ namespace windows_client.Model
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+               Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+               });
             }
         }
         #endregion
