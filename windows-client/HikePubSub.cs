@@ -168,12 +168,6 @@ namespace windows_client
             }
         }
 
-        private void startPubSub1()
-        {
-            while (true)
-            {
-            }
-        }
         private void startPubSub()
         {
             Operation op = null;

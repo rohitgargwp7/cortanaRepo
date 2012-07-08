@@ -100,8 +100,6 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
-
-            hikeLabel.Text = mContactName;
         }
 
         #region REGISTER LISTENERS
@@ -178,10 +176,7 @@ namespace windows_client.View
             {
                 ConversationListObject obj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
                 mContactNumber = obj.Msisdn;
-                if (obj.ContactName == null)
-                {
-                    mContactName = mContactNumber;
-                }
+                mContactName = obj.ContactName;
                 isOnHike = obj.IsOnhike;
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
@@ -218,6 +213,7 @@ namespace windows_client.View
                 showOverlay(false);
             }
 
+            userName.Text = mContactName;
             mCredits = (int)App.appSettings[App.SMS_SETTING];
             loadMessages();
         }
@@ -225,7 +221,6 @@ namespace windows_client.View
         private void loadMessages()
         {
             bool isPublish = false;
-            hikeLabel.Text = mContactName;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {

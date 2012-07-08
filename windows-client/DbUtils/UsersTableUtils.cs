@@ -43,7 +43,7 @@ namespace windows_client.DbUtils
            
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Blocked> res = q(context, msisdn).ToList<Blocked>();
+                List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
                 if (res == null || res.Count == 0)
                     return;
                 context.blockedUsersTable.DeleteAllOnSubmit(res);
@@ -81,7 +81,7 @@ namespace windows_client.DbUtils
                 List<ContactInfo> res;
                 try
                 {
-                    res = q(context).ToList<ContactInfo>();
+                    res = DbCompiledQueries.GetAllContacts(context).ToList<ContactInfo>();
                 }
                 catch (ArgumentNullException)
                 {
@@ -105,7 +105,7 @@ namespace windows_client.DbUtils
                 List<ContactInfo> res;
                 try
                 {
-                    res = q(context, name).ToList<ContactInfo>();
+                    res = DbCompiledQueries.GetContactFromName(context, name).ToList<ContactInfo>();
                 }
                 catch (Exception)
                 {
@@ -129,7 +129,7 @@ namespace windows_client.DbUtils
                 List<ContactInfo> res;
                 try
                 {
-                    res = q(context, msisdn).ToList<ContactInfo>();
+                    res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
                 }
                 catch (Exception)
                 {
@@ -183,7 +183,7 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Blocked> res = q(context).ToList<Blocked>();
+                List<Blocked> res = DbCompiledQueries.GetBlockList(context).ToList<Blocked>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
@@ -210,7 +210,7 @@ namespace windows_client.DbUtils
 
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<ContactInfo> res = q(context, msisdn).ToList<ContactInfo>();
+                List<ContactInfo> res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
                 if(res == null || res.Count == 0)
                     return;
                 foreach(ContactInfo cInfo in res)
@@ -231,7 +231,7 @@ namespace windows_client.DbUtils
                  select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Blocked> res =  q(context, msisdn).ToList<Blocked>();
+                List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
                 if (res != null && res.Count > 0)
                 {
                     return true;
@@ -254,7 +254,7 @@ namespace windows_client.DbUtils
             {
                 for (int i = 0; i < ids.Count; i++)
                 {
-                    context.users.DeleteAllOnSubmit<ContactInfo>(q(context, ids[i]));
+                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.DeleteUsersWithGivenId(context, ids[i]));
                 }
                 context.SubmitChanges();
             }
@@ -274,7 +274,7 @@ namespace windows_client.DbUtils
             {
                 for (int i = 0; i < ids.Count; i++)
                 {
-                    context.users.DeleteAllOnSubmit<ContactInfo>(q(context, ids[i].Id));
+                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.DeleteUsersWithGivenId(context, ids[i].Id));
                 }
                 context.SubmitChanges();
             }
@@ -298,7 +298,7 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<ContactInfo> res = q(context).ToList<ContactInfo>();
+                List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();
                 return (res==null || res.Count == 0) ? null : res;
             }
         }

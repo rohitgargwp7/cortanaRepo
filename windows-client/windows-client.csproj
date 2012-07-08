@@ -91,6 +91,7 @@
     <Compile Include="converters\OnHikeIndicator.cs" />
     <Compile Include="converters\TimestampConverter.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
+    <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
     <Compile Include="DbUtils\MiscDBUtil.cs" />

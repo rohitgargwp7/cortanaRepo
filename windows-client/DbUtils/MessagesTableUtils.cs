@@ -31,7 +31,7 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<ConvMessage> res = q(context, msisdn).ToList<ConvMessage>();
+                List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
@@ -50,7 +50,7 @@ namespace windows_client.DbUtils
             List<ConvMessage> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                res = q(context, msisdn).ToList<ConvMessage>();
+                res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.Last();
             }
 
@@ -67,7 +67,7 @@ namespace windows_client.DbUtils
             List<ConvMessage> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                res = q(context).ToList<ConvMessage>();
+                res = DbCompiledQueries.GetAllMessages(context).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.ToList();
             }
 
@@ -125,7 +125,7 @@ namespace windows_client.DbUtils
 
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<ConvMessage> res = q(context, msgID).ToList<ConvMessage>();
+                List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, msgID).ToList<ConvMessage>();
                 if (res.Count == 1)
                 {
                     ConvMessage message = res.First();
@@ -152,7 +152,7 @@ namespace windows_client.DbUtils
             {
                 for (int i = 0; i < ids.Length; i++)
                 {
-                    List<ConvMessage> res = q(context, ids[i]).ToList<ConvMessage>();
+                    List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).ToList<ConvMessage>();
                     if (res.Count == 1)
                     {
                         ConvMessage message = res.First();
@@ -184,7 +184,7 @@ namespace windows_client.DbUtils
 
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                context.messages.DeleteAllOnSubmit<ConvMessage>(q(context, msgId));
+                context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsgId(context, msgId));
                 context.SubmitChanges();
             }
         }
@@ -200,7 +200,7 @@ namespace windows_client.DbUtils
 
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                context.messages.DeleteAllOnSubmit<ConvMessage>(q(context, msisdn));
+                context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsisdn(context, msisdn));
                 context.SubmitChanges();
             }
         }

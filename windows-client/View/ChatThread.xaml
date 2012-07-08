@@ -49,7 +49,7 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Grid.Row="0" HorizontalAlignment="Left">
             <Image Source="images\hike_header.png" Margin="0,-7,0,0" Height="62" Width="127"></Image>
-            <TextBlock x:Name="hikeLabel" Text="Madhur Garg" FontSize="45" Height="70" Margin="35,0,0,0" Width="Auto" Foreground="Black"/>
+            <TextBlock x:Name="userName" Text="UNKNOWN" FontSize="45" Height="70" Margin="35,0,0,0" Width="Auto" Foreground="Black"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->

@@ -29,7 +29,7 @@ namespace windows_client.DbUtils
 
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Conversation> res = q(context).ToList<Conversation>();
+                List<Conversation> res = DbCompiledQueries.GetAllConversations(context).ToList<Conversation>();
                 if (res==null || res.Count() == 0)
                     return null;
                 res.Sort();
@@ -75,7 +75,7 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                context.conversations.DeleteAllOnSubmit<Conversation>(q(context, msisdn));
+                context.conversations.DeleteAllOnSubmit<Conversation>(DbCompiledQueries.GetConvForMsisdn(context, msisdn));
                 context.SubmitChanges();
             }
         }
@@ -90,7 +90,7 @@ namespace windows_client.DbUtils
                  select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Conversation> res = q(context, msisdn).ToList<Conversation>();
+                List<Conversation> res = DbCompiledQueries.GetConvForMsisdn(context, msisdn).ToList<Conversation>();
                 if (res == null || res.Count<Conversation>() == 0)
                     return;
                 for (int i = 0; i < res.Count;i++ )

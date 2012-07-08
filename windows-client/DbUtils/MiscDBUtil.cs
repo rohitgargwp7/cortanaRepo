@@ -42,7 +42,7 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Thumbnails> res = q(context, msisdn).ToList<Thumbnails>();
+                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
                 Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();                  
 
                 if (thumbnail == null)
@@ -68,7 +68,7 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Thumbnails> res = q(context, msisdn).ToList<Thumbnails>();
+                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
                 Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();   
 
                 if (thumbnail == null)
@@ -96,9 +96,8 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Thumbnails> res = q(context).ToList<Thumbnails>();
-                return (res == null || res.Count == 0) ? null : res;
-                   
+                List<Thumbnails> res = DbCompiledQueries.GetAllIcons(context).ToList<Thumbnails>();
+                return (res == null || res.Count == 0) ? null : res;                   
             }
         }
 
@@ -113,7 +112,7 @@ namespace windows_client.DbUtils
                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                List<Thumbnails> res = q(context, msisdn).ToList<Thumbnails>();
+                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
                 return (res == null || res.Count == 0) ? null : res.First();                   
             }
         }

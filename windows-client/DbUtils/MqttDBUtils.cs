@@ -34,7 +34,7 @@ namespace windows_client.DbUtils
             List<HikePacket> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                res = q(context).ToList<HikePacket>();
+                res = DbCompiledQueries.GetAllSentMessages(context).ToList<HikePacket>();
                 context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
                 context.SubmitChanges();
             }
@@ -63,7 +63,7 @@ namespace windows_client.DbUtils
 
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
-                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(q(context, msgId));
+                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(DbCompiledQueries.GetMqttMsgForMsgId(context, msgId));
                 context.SubmitChanges();
             }
         }
