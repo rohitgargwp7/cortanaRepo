@@ -23,12 +23,6 @@ namespace windows_client.DbUtils
         /* This is shown on chat thread screen*/
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
         {
-            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, string myMsisdn) =>
-                from o in hdc.messages
-                where o.Msisdn == myMsisdn
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
@@ -36,17 +30,9 @@ namespace windows_client.DbUtils
             }
         }
 
-
         /* This queries messages table and get the last message for given msisdn*/
         public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
-            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, string myMsisdn) =>
-                from o in hdc.messages
-                where o.Msisdn == myMsisdn
-                select o);
-
             List<ConvMessage> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
@@ -58,12 +44,6 @@ namespace windows_client.DbUtils
 
         public static List<ConvMessage> getAllMessages()
         {
-            Func<HikeDataContext, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc) =>
-                from o in hdc.messages
-                select o);
-
             List<ConvMessage> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
@@ -104,6 +84,7 @@ namespace windows_client.DbUtils
             }
             addMessage(convMsg);
         }
+
         public static void addChatMessage(ConvMessage convMsg)
         {
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
@@ -113,16 +94,8 @@ namespace windows_client.DbUtils
             addMessage(convMsg);
         }
 
-
         public static void updateMsgStatus(long msgID, int val)
         {
-            Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
-             CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
-             ((HikeDataContext hdc, long m) =>
-                 from o in hdc.messages
-                 where o.MessageId == m
-                 select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, msgID).ToList<ConvMessage>();
@@ -139,15 +112,9 @@ namespace windows_client.DbUtils
             }
 
         }
+
         public static void updateAllMsgStatus(long[] ids, int status)
         {
-            Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
-                     CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
-                     ((HikeDataContext hdc, long m) =>
-                         from o in hdc.messages
-                         where o.MessageId == m
-                         select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 for (int i = 0; i < ids.Length; i++)
@@ -163,7 +130,6 @@ namespace windows_client.DbUtils
             }
         }
 
-
         public static void deleteAllMessages()
         {
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
@@ -175,13 +141,6 @@ namespace windows_client.DbUtils
 
         public static void deleteMessage(long msgId)
         {
-            Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, long id) =>
-                from o in hdc.messages
-                where o.MessageId == id
-                select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsgId(context, msgId));
@@ -191,13 +150,6 @@ namespace windows_client.DbUtils
 
         public static void deleteAllMessagesForMsisdn(string msisdn)
         {
-            Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
-            ((HikeDataContext hdc, string myMsisdn) =>
-                from o in hdc.messages
-                where o.Msisdn == myMsisdn
-                select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsisdn(context, msisdn));

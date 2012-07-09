@@ -25,12 +25,6 @@ namespace windows_client.DbUtils
         /// <returns></returns>
         public static List<HikePacket> getAllSentMessages()
         {
-            Func<HikeDataContext, IQueryable<HikePacket>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<HikePacket>>
-            ((HikeDataContext hdc) =>
-                from o in hdc.mqttMessages
-                select o);
-
             List<HikePacket> res;
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
@@ -54,14 +48,7 @@ namespace windows_client.DbUtils
 
         public void removeSentMessage(long msgId)
         {
-            Func<HikeDataContext, long, IQueryable<HikePacket>> q =
-            CompiledQuery.Compile<HikeDataContext, long, IQueryable<HikePacket>>
-            ((HikeDataContext hdc, long id) =>
-                from o in hdc.mqttMessages
-                where o.MessageId == id
-                select o);
-
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+           using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(DbCompiledQueries.GetMqttMsgForMsgId(context, msgId));
                 context.SubmitChanges();
@@ -77,7 +64,5 @@ namespace windows_client.DbUtils
         }
 
         #endregion
-
-
     }
 }

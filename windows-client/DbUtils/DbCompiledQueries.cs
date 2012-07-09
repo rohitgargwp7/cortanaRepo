@@ -99,7 +99,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<ContactInfo>> DeleteUsersWithGivenId
+        public static Func<HikeDataContext, string, IQueryable<ContactInfo>> GetUsersWithGivenId
         {
             get
             {

@@ -21,12 +21,6 @@ namespace windows_client.DbUtils
         /* This function gets all the conversations shown on the message list page*/
         public static List<Conversation> getAllConversations()
         {
-            Func<HikeDataContext, IQueryable<Conversation>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<Conversation>>
-            ((HikeDataContext hdc) =>
-                from o in hdc.conversations
-                select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Conversation> res = DbCompiledQueries.GetAllConversations(context).ToList<Conversation>();
@@ -55,7 +49,6 @@ namespace windows_client.DbUtils
             }          
         }
 
-
         public static void deleteAllConversations()
         {
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
@@ -67,12 +60,6 @@ namespace windows_client.DbUtils
 
         public static void deleteConversation(string msisdn)
         {
-            Func<HikeDataContext, string, IQueryable<Conversation>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Conversation>>
-            ((HikeDataContext hdc, string _msisdn) =>
-                from o in hdc.conversations
-                where o.Msisdn == _msisdn
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 context.conversations.DeleteAllOnSubmit<Conversation>(DbCompiledQueries.GetConvForMsisdn(context, msisdn));
@@ -82,12 +69,6 @@ namespace windows_client.DbUtils
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            Func<HikeDataContext, string, IQueryable<Conversation>> q =
-             CompiledQuery.Compile<HikeDataContext, string, IQueryable<Conversation>>
-             ((HikeDataContext hdc, string ms) =>
-                 from o in hdc.conversations
-                 where o.Msisdn == ms
-                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Conversation> res = DbCompiledQueries.GetConvForMsisdn(context, msisdn).ToList<Conversation>();

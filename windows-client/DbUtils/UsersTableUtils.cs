@@ -34,13 +34,6 @@ namespace windows_client.DbUtils
 
         public static void unblock(string msisdn)
         {
-            Func<HikeDataContext,string,IQueryable<Blocked>> q =
-            CompiledQuery.Compile<HikeDataContext,string,IQueryable<Blocked>>
-            ((HikeDataContext hdc,string m) =>
-                from o in hdc.blockedUsersTable
-                where o.Msisdn == m
-                select o);
-           
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
@@ -71,11 +64,6 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContacts()
         {
-            Func<HikeDataContext, IQueryable<ContactInfo>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<ContactInfo>>
-            ((HikeDataContext hdc) =>
-                from o in hdc.users
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<ContactInfo> res;
@@ -93,13 +81,6 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getContactInfoFromName(string name)
         {
-            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-            ((HikeDataContext hdc, string m) => 
-                from o in hdc.users
-                where o.Name.Contains(m)
-                select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<ContactInfo> res;
@@ -117,13 +98,6 @@ namespace windows_client.DbUtils
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
-            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-            ((HikeDataContext hdc, string m) =>
-                from o in hdc.users
-                where o.Msisdn == m
-                select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<ContactInfo> res;
@@ -201,13 +175,6 @@ namespace windows_client.DbUtils
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-             ((HikeDataContext hdc, string ms) =>
-                 from o in hdc.users
-                 where o.Msisdn == ms
-                 select o);
-
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<ContactInfo> res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
@@ -223,12 +190,6 @@ namespace windows_client.DbUtils
 
         public static bool isUserBlocked(string msisdn)
         {
-            Func<HikeDataContext, string, IQueryable<Blocked>> q =
-             CompiledQuery.Compile<HikeDataContext, string, IQueryable<Blocked>>
-             ((HikeDataContext hdc, string ms) =>
-                 from o in hdc.blockedUsersTable
-                 where o.Msisdn == ms
-                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Blocked> res = DbCompiledQueries.GetBlockedUserForMsisdn(context, msisdn).ToList<Blocked>();
@@ -244,17 +205,11 @@ namespace windows_client.DbUtils
         {
             if(ids == null || ids.Count == 0)
                 return;
-            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-             ((HikeDataContext hdc, string i) =>
-                 from o in hdc.users
-                 where o.Id == i
-                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 for (int i = 0; i < ids.Count; i++)
                 {
-                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.DeleteUsersWithGivenId(context, ids[i]));
+                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i]));
                 }
                 context.SubmitChanges();
             }
@@ -264,17 +219,11 @@ namespace windows_client.DbUtils
         {
             if (ids == null || ids.Count == 0)
                 return;
-            Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-             CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-             ((HikeDataContext hdc, string i) =>
-                 from o in hdc.users
-                 where o.Id == i
-                 select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 for (int i = 0; i < ids.Count; i++)
                 {
-                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.DeleteUsersWithGivenId(context, ids[i].Id));
+                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
                 }
                 context.SubmitChanges();
             }
@@ -290,12 +239,6 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsToInvite()
         {
-            Func<HikeDataContext, IQueryable<ContactInfo>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<ContactInfo>>
-            ((HikeDataContext hdc) =>
-                from o in hdc.users 
-                where o.OnHike == false 
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();

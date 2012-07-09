@@ -31,15 +31,8 @@ namespace windows_client.DbUtils
             }
         }
         
-
         public static void addOrUpdateProfileIcon(string msisdn, byte[] image)
         {
-            Func<HikeDataContext, string, IQueryable<Thumbnails>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Thumbnails>>
-            ((HikeDataContext hdc, string m) =>
-                from o in hdc.thumbnails
-                where o.Msisdn == m
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
@@ -57,15 +50,8 @@ namespace windows_client.DbUtils
             }
         }
 
-
         public static void addOrUpdateIcon(string msisdn, byte[] image)
         {
-            Func<HikeDataContext, string, IQueryable<Thumbnails>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Thumbnails>>
-            ((HikeDataContext hdc, string m) =>
-                from o in hdc.thumbnails
-                where o.Msisdn == m
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
@@ -89,11 +75,6 @@ namespace windows_client.DbUtils
 
         public static List<Thumbnails> getAllThumbNails()
         {
-            Func<HikeDataContext, IQueryable<Thumbnails>> q =
-            CompiledQuery.Compile<HikeDataContext, IQueryable<Thumbnails>>
-            ((HikeDataContext hdc) =>
-                from o in hdc.thumbnails
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetAllIcons(context).ToList<Thumbnails>();
@@ -101,15 +82,8 @@ namespace windows_client.DbUtils
             }
         }
 
-
         public static Thumbnails getThumbNailForMSisdn(string msisdn)
         {
-            Func<HikeDataContext, string, IQueryable<Thumbnails>> q =
-            CompiledQuery.Compile<HikeDataContext, string, IQueryable<Thumbnails>>
-            ((HikeDataContext hdc, string m) =>
-                from o in hdc.thumbnails
-                where o.Msisdn == m
-                select o);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
