@@ -171,7 +171,6 @@ namespace windows_client
             if (appSettings.Contains(App.TOKEN_SETTING) && null != appSettings[App.TOKEN_SETTING])
             {
                 AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
-                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.makePatchRequest_Callback));
             }
 
             #region CreateDatabases

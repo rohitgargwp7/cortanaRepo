@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using System.IO.IsolatedStorage;
 using windows_client.DbUtils;
 using Microsoft.Phone.Tasks;
+using windows_client.View;
 
 namespace windows_client.utils
 {
@@ -95,7 +96,7 @@ namespace windows_client.utils
                 hike_contactsMap = hike_contacts_by_id;
                 AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -233,6 +234,7 @@ namespace windows_client.utils
             {
                 UsersTableUtils.updateContacts(updatedContacts);
             }
+            ConversationsList.ReloadConversations();
             App.isABScanning = false;
         }
        
@@ -243,6 +245,7 @@ namespace windows_client.utils
             saveContactTask.MobilePhone = phone;
             saveContactTask.Show(); 
         }
+
         private static void saveContactTask_Completed(object sender, SaveContactResult e)
         {
             switch (e.TaskResult)

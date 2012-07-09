@@ -83,5 +83,10 @@ namespace windows_client.View
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
+
+        private void refreshContacts_Click(object sender, EventArgs e)
+        {
+            ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.makePatchRequest_Callback));
+        }
     }
 }

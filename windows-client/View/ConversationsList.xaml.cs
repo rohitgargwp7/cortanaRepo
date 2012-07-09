@@ -54,12 +54,16 @@ namespace windows_client.View
             LoadMessages();
             registerListeners();
             initAppBar();
+            initProfilePage();
+        }
+
+        private void initProfilePage()
+        {
             msisdn = (string)App.appSettings[App.MSISDN_SETTING];
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
                 accountName.Text = name;
-
             creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
 
             photoChooserTask = new PhotoChooserTask();
@@ -78,7 +82,6 @@ namespace windows_client.View
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;
             }
-            App.MqttManagerInstance.connect();
         }
 
         private void initAppBar()
@@ -181,12 +184,11 @@ namespace windows_client.View
             }
         }
 
-        private void LoadMessages()
+        private static void LoadMessages()
         {
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
             if (conversationList == null)
             {
-                //mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
                 return;
             }
             for (int i = 0; i < conversationList.Count; i++)
@@ -203,6 +205,19 @@ namespace windows_client.View
             }
         }
 
+        public static void ReloadConversations() // running on some background thread
+        {
+            App.MqttManagerInstance.disconnectFromBroker(false);
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                App.ViewModel.MessageListPageCollection.Clear();
+                convMap.Clear();
+                LoadMessages();
+            });
+            
+            App.MqttManagerInstance.connect();
+        }
         private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
@@ -218,6 +233,8 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+
+            App.MqttManagerInstance.connect();
         }
 
         private void deleteAccount_Click(object sender, EventArgs e)
