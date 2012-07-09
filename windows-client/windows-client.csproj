@@ -256,6 +256,7 @@
     <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\ic_hike_user.png" />
     <Content Include="View\images\ic_sms_user.png" />
+    <Content Include="View\images\typing.png" />
     <Content Include="View\images\welcome_bckg.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="View\images\ic_name_big.png">
