@@ -610,6 +610,7 @@ namespace windows_client.View
                         this.ChatThreadPageCollection.Add(convMessage);
                         this.myListBox.UpdateLayout();
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                        //set typing notification as false
                         typingNotification.Opacity = 0;
                     });
                 }
