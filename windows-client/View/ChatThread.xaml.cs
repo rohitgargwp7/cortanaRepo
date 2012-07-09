@@ -610,6 +610,7 @@ namespace windows_client.View
                         this.ChatThreadPageCollection.Add(convMessage);
                         this.myListBox.UpdateLayout();
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                        typingNotification.Opacity = 0;
                     });
                 }
             }
@@ -744,7 +745,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        typingNotification.Visibility = Visibility.Visible;
+                        typingNotification.Opacity = 1;
 
                         //hikeLabel.Text = mContactName;// +" is typing.";
                         // handle auto removing
@@ -762,7 +763,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        typingNotification.Visibility = Visibility.Collapsed;
+                        typingNotification.Opacity = 0;
                         //hikeLabel.Text = mContactName;
                     });
                 }
