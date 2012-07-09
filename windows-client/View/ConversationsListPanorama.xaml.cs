@@ -17,7 +17,7 @@ using System.IO;
 using System.Threading;
 namespace windows_client.View
 {
-    public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
+    public partial class ConversationsListPanorama : PhoneApplicationPage, HikePubSub.Listener
     {
         #region CONSTANTS
 
@@ -42,7 +42,7 @@ namespace windows_client.View
             }
         }
 
-        public ConversationsList()
+        public ConversationsListPanorama()
         {
             InitializeComponent();
             mPubSub = App.HikePubSubInstance;
@@ -78,7 +78,6 @@ namespace windows_client.View
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;
             }
-            App.MqttManagerInstance.connect();
         }
 
         private void initAppBar()
@@ -106,7 +105,7 @@ namespace windows_client.View
             menuItem2.Text = INVITE_USERS;
             menuItem1.Click += new EventHandler(inviteUsers_Click);
             appBar.MenuItems.Add(menuItem2);
-            convListPagePivot.ApplicationBar = appBar;
+            convListPage.ApplicationBar = appBar;
         }
 
         private void registerListeners()
@@ -118,6 +117,17 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+        }
+
+        private void removeListeners()
+        {
+            mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+            mPubSub.removeListener(HikePubSub.SEND_NEW_MSG, this);
+            mPubSub.removeListener(HikePubSub.MSG_READ, this);
+            mPubSub.removeListener(HikePubSub.USER_JOINED, this);
+            mPubSub.removeListener(HikePubSub.USER_LEFT, this);
+            mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
+            mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
@@ -186,7 +196,6 @@ namespace windows_client.View
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
             if (conversationList == null)
             {
-                //mainBackImage.ImageSource = new BitmapImage(new Uri("images\\empty_messages_hike_logo.png", UriKind.Relative));
                 return;
             }
             for (int i = 0; i < conversationList.Count; i++)
@@ -218,6 +227,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            App.MqttManagerInstance.connect();
         }
 
         private void deleteAccount_Click(object sender, EventArgs e)
@@ -235,10 +245,10 @@ namespace windows_client.View
                 logger.Info("Delete Account", "Could not delete account !!");
                 return;
             }
+
+            removeListeners();
             appSettings.Clear();
-            UsersTableUtils.deleteAllContacts();
-            ConversationTableUtils.deleteAllConversations();
-            MessagesTableUtils.deleteAllMessages();
+            MiscDBUtil.clearDatabase();
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -278,10 +288,10 @@ namespace windows_client.View
             });
         }
 
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Panorama_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PivotItem pItem = e.AddedItems[0] as PivotItem;
-            var panorama = pItem.Parent as Pivot;
+            PanoramaItem pItem = e.AddedItems[0] as PanoramaItem;
+            var panorama = pItem.Parent as Panorama;
             var selectedIndex = panorama.SelectedIndex;
             if (selectedIndex == 0)
             {
@@ -289,8 +299,7 @@ namespace windows_client.View
             }
             else if (selectedIndex == 1)
             {
-//                enterNameTxt.Focus();
-                ////appBar.IsVisible = false;
+                //appBar.IsVisible = false;
             }
         }
 
@@ -305,36 +314,41 @@ namespace windows_client.View
                 bool isNewConversation = false;
 
                 /*This is used to avoid cross thread invokation exception*/
+
+                if (convMap.ContainsKey(convMessage.Msisdn))
+                {
+                    mObj = convMap[convMessage.Msisdn];
+                    mObj.LastMessage = convMessage.Message;
+                    mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(mObj);
+                    });
+                }
+                else
+                {
+                    ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                    Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
+                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
+                    thumbnail == null ? null : thumbnail.Avatar);
+
+                    convMap.Add(convMessage.Msisdn, mObj);
+                    isNewConversation = true;
+                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (convMap.ContainsKey(convMessage.Msisdn))
-                    {
-                        mObj = convMap[convMessage.Msisdn];
-                        mObj.LastMessage = convMessage.Message;
-                        mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
-                        App.ViewModel.MessageListPageCollection.Remove(mObj);
-                    }
-                    else
-                    {
-                        ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                        Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
-                        mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                        contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
-                        thumbnail == null ? null : thumbnail.Avatar);
-
-                        convMap.Add(convMessage.Msisdn, mObj);
-                        isNewConversation = true;
-                    }
                     if (App.ViewModel.MessageListPageCollection == null)
                         App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
-                    object[] vals = new object[2];
-                    vals[0] = convMessage;
-                    vals[1] = isNewConversation;
-                    if (HikePubSub.SEND_NEW_MSG == type)
-                        mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
-
                 });
+                object[] vals = new object[2];
+                vals[0] = convMessage;
+                vals[1] = isNewConversation;
+                if (HikePubSub.SEND_NEW_MSG == type)
+                    mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+
+
             }
             else if (HikePubSub.MSG_READ == type)
             {
@@ -386,6 +400,5 @@ namespace windows_client.View
         }
 
         #endregion
-
     }
 }

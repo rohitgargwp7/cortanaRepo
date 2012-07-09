@@ -129,6 +129,9 @@
     <Compile Include="View\ChatThread.xaml.cs">
       <DependentUpon>ChatThread.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ConversationsListPanorama.xaml.cs">
+      <DependentUpon>ConversationsListPanorama.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
@@ -166,6 +169,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="View\ChatThread.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ConversationsListPanorama.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
