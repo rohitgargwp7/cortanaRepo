@@ -83,6 +83,7 @@ namespace windows_client.utils
                 /* If nothing is changed simply return without sending update request*/
                 if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
                 {
+                    SelectUserToMsg.progress.Hide();
                     App.isABScanning = false;
                     return;
                 }
@@ -217,7 +218,13 @@ namespace windows_client.utils
         public static void updateAddressBook_Callback(JObject patchJsonObj)
         {
             if (patchJsonObj == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    SelectUserToMsg.progress.Hide();
+                });
                 return;
+            }
             List<ContactInfo> updatedContacts = AccountUtils.getContactList(patchJsonObj, contactsMap);
             List<string> hikeIds = new List<string>();
             foreach (string id in hike_contactsMap.Keys)
@@ -236,14 +243,18 @@ namespace windows_client.utils
             }
             ConversationsList.ReloadConversations();
             App.isABScanning = false;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+               SelectUserToMsg.progress.Hide();
+            });
         }
-       
+
         public static void saveContact(string phone)
         {
             SaveContactTask saveContactTask = new SaveContactTask();
             saveContactTask.Completed += new EventHandler<SaveContactResult>(saveContactTask_Completed);
             saveContactTask.MobilePhone = phone;
-            saveContactTask.Show(); 
+            saveContactTask.Show();
         }
 
         private static void saveContactTask_Completed(object sender, SaveContactResult e)

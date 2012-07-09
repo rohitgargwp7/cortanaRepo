@@ -14,12 +14,14 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using System.Threading;
+using Phone.Controls;
 using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        public static MyProgressIndicator progress = null;
         List<ContactInfo> allContactsList;
         private string msisdn;
         private bool onHike;
@@ -86,6 +88,12 @@ namespace windows_client.View
 
         private void refreshContacts_Click(object sender, EventArgs e)
         {
+            if (progress == null)
+            {
+                progress = new MyProgressIndicator();
+            }
+
+            progress.Show();
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.makePatchRequest_Callback));
         }
     }

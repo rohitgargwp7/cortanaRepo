@@ -1,0 +1,9 @@
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\Bin\Debug\Phone.Controls.dll
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\Bin\Debug\Phone.Controls.pdb
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\obj\Debug\Phone.Controls.g.resources
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\obj\Debug\Phone.Controls.dll
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\obj\Debug\Phone.Controls.pdb
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\Bin\Debug\Microsoft.Phone.Controls.Toolkit.dll
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\Bin\Debug\Microsoft.Phone.Controls.dll
+C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\windows-hike-client\Phone.Controls\Bin\Debug\Microsoft.Phone.Controls.xml

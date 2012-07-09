@@ -15,6 +15,7 @@ using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using System.IO;
 using System.Threading;
+using Phone.Controls;
 namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
@@ -25,6 +26,8 @@ namespace windows_client.View
         private readonly string INVITE_USERS = "Invite Users";
 
         #endregion
+
+        public MyProgressIndicator progress = null;
         private HikePubSub mPubSub;
         private readonly IsolatedStorageSettings appSettings;
         private NLog.Logger logger;
@@ -227,6 +230,7 @@ namespace windows_client.View
             
             App.MqttManagerInstance.connect();
         }
+
         private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
@@ -251,6 +255,12 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show("Are you sure about deleting account.", "Delete Account ?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+            if (progress == null)
+            {
+                progress = new MyProgressIndicator();
+            }
+
+            progress.Show();
             AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
         }
 
@@ -266,6 +276,7 @@ namespace windows_client.View
             MiscDBUtil.clearDatabase();            /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                progress.Hide();
                 NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
             });
         }
