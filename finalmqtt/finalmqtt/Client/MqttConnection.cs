@@ -47,8 +47,9 @@ namespace finalmqtt.Client
         private byte[] bufferForSocketReads;
         private readonly String id;
         private volatile bool stopped;
-        private volatile bool connected;
+//        private volatile bool connected;
         private volatile bool connackReceived;
+        private volatile bool disconnectSent = false;
 
         private Dictionary<short, Callback> map = new Dictionary<short, Callback>();
         private IScheduler scheduler = Scheduler.NewThread;
@@ -66,7 +67,7 @@ namespace finalmqtt.Client
         {
             this.id = id;
             this.stopped = true;
-            this.connected = false;
+//            this.connected = false;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
             this.mqttListener = listener;
             this.pendingOutput = new List<byte>();
@@ -103,7 +104,7 @@ namespace finalmqtt.Client
         /// <param name="e"></param>
         private void onSocketConnected(object s, SocketAsyncEventArgs e)
         {
-            connected = _socket.Connected;
+            //connected = _socket.Connected;
             if (e.SocketError != SocketError.Success)
             {
                 connectCallback.onFailure(new Exception(e.SocketError.ToString()));
@@ -130,8 +131,13 @@ namespace finalmqtt.Client
                     socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(onReadCompleted);
                     _socket.ReceiveAsync(socketEventArg);
                 }
-                catch
+                catch (Exception e)
                 {
+                    if (_socket != null)
+                    {
+                        _socket.Close();
+                        _socket = null;
+                    }
                     mqttListener.onDisconnected();
                 }
             }
@@ -150,7 +156,14 @@ namespace finalmqtt.Client
             else
             {
                 if (mqttListener != null)
+                {
+                    if (_socket != null)
+                    {
+                        _socket.Close();
+                        _socket = null;
+                    }
                     mqttListener.onDisconnected();
+                }
             }
             readMessagesFromBuffer();
             read();
@@ -171,6 +184,12 @@ namespace finalmqtt.Client
 
         private void onDataSent(object s, SocketAsyncEventArgs e)
         {
+            if (disconnectSent)
+            {
+                if (_socket != null)
+                    _socket.Close();
+                disconnectSent = false;
+            }
         }
 
         /// <summary>
@@ -265,7 +284,7 @@ namespace finalmqtt.Client
         /// <param name="cb">Callback to be called in case of error</param>
         public void sendCallbackMessage(Message msg, Callback cb)
         {
-            if (!connected || !connackReceived)
+            if (!_socket.Connected || !connackReceived)
             {
                 cb.onFailure(null);
                 return;
@@ -332,7 +351,7 @@ namespace finalmqtt.Client
         public void disconnect(Callback cb) //throws IOException 
         {
             stopped = true;
-            if (connected)
+            if (_socket.Connected)
             {
                 DisconnectMessage msg = new DisconnectMessage(this);
                 foreach (KeyValuePair<short, Callback> kvp in map)
@@ -340,10 +359,11 @@ namespace finalmqtt.Client
                     kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
                 }
                 map.Clear();
+                disconnectSent = true;
                 sendCallbackMessage(msg, cb);
             }
-            if (_socket != null)
-                _socket.Close();
+            //if (_socket != null)
+            //    _socket.Close();
         }
 
         /// <summary>
