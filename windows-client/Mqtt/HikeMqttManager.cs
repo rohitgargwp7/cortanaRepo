@@ -229,9 +229,6 @@ namespace windows_client.Mqtt
             return connectionStatus;
         }
 
-
-
-
         public void ping()
         {
             mqttConnection.ping(new PingCB(this));
@@ -244,7 +241,7 @@ namespace windows_client.Mqtt
 
             if (mqttConnection != null)
             {
-                mqttConnection.disconnect(new DisconnectCB(true, this));
+                mqttConnection.disconnect(new DisconnectCB(false, this));
                 mqttConnection = null;
             }
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
@@ -335,6 +332,7 @@ namespace windows_client.Mqtt
         public void onDisconnected()
         {
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+            mqttConnection = null;
             connect();
         }
 
