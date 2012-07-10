@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.UserData;
 using System.Collections.Generic;
 using windows_client.Model;
@@ -84,6 +76,7 @@ namespace windows_client.utils
                 if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
                 {
                     SelectUserToMsg.progress.Hide();
+                    SelectUserToMsg.canGoBack = true;
                     App.isABScanning = false;
                     return;
                 }
@@ -222,6 +215,7 @@ namespace windows_client.utils
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     SelectUserToMsg.progress.Hide();
+                    SelectUserToMsg.canGoBack = true;
                 });
                 return;
             }
@@ -246,6 +240,7 @@ namespace windows_client.utils
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                SelectUserToMsg.progress.Hide();
+               SelectUserToMsg.canGoBack = true;
             });
         }
 

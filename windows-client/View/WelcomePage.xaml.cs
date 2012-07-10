@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.UserData;
 using windows_client.utils;
 using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;

@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 namespace windows_client.Model
 {
     [Table(Name = "messages")]
+    [Index(Columns = "Msisdn,Timestamp DESC", IsUnique = true, Name = "Msg_Idx")]
     public class ConvMessage : INotifyPropertyChanged
     {
 

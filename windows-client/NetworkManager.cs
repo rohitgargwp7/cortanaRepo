@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using windows_client.Model;
-using windows_client.DbUtils;
-using windows_client.converters;
 
 namespace windows_client
 {

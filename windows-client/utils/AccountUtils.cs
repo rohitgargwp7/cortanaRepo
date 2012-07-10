@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.IO;
-using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using windows_client.Model;
@@ -71,7 +70,7 @@ namespace windows_client.utils
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
 
-            //req.Headers["X-MSISDN"] = "919999711366";
+            req.Headers["X-MSISDN"] = "918826670738";
             req.Method = "POST";
             req.ContentType = "application/json";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });

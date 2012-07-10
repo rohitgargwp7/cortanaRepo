@@ -10,12 +10,11 @@ using Newtonsoft.Json.Linq;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
-using windows_client.ViewModel;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using System.IO;
-using System.Threading;
 using Phone.Controls;
+using System.Diagnostics;
 namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
@@ -110,7 +109,7 @@ namespace windows_client.View
 
             ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
             menuItem2.Text = INVITE_USERS;
-            menuItem1.Click += new EventHandler(inviteUsers_Click);
+            menuItem2.Click += new EventHandler(inviteUsers_Click);
             appBar.MenuItems.Add(menuItem2);
             convListPagePivot.ApplicationBar = appBar;
         }
@@ -268,9 +267,15 @@ namespace windows_client.View
         {
             if (obj == null || "fail" == (string)obj["stat"])
             {
+                Debug.WriteLine("Delete Account", "Could not delete account !!");
                 logger.Info("Delete Account", "Could not delete account !!");
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    progress.Hide();
+                });
                 return;
             }
+            App.MqttManagerInstance.disconnectFromBroker(false);
             removeListeners(); 
             appSettings.Clear();
             MiscDBUtil.clearDatabase();            /*This is used to avoid cross thread invokation exception*/

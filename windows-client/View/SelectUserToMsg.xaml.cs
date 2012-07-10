@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
-using System.Threading;
 using Phone.Controls;
 using Microsoft.Phone.Shell;
 
@@ -22,6 +13,7 @@ namespace windows_client.View
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
         public static MyProgressIndicator progress = null;
+        public static bool canGoBack = true;
         List<ContactInfo> allContactsList;
         private string msisdn;
         private bool onHike;
@@ -94,7 +86,20 @@ namespace windows_client.View
             }
 
             progress.Show();
+            canGoBack = false;
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.makePatchRequest_Callback));
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            if (canGoBack)
+            {
+                if (NavigationService.CanGoBack)
+                {
+                    NavigationService.GoBack();
+                }
+            }
         }
     }
 }
