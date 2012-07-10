@@ -231,7 +231,14 @@ namespace windows_client.Mqtt
 
         public void ping()
         {
-            mqttConnection.ping(new PingCB(this));
+            if (mqttConnection != null)
+            {
+                mqttConnection.ping(new PingCB(this));
+            }
+            else
+            {
+                connect();
+            }
         }
 
         public void reconnect()
