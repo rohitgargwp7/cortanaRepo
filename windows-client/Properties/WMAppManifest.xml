@@ -24,7 +24,7 @@
     <Tokens>
       <PrimaryToken TokenID="windows_clientToken" TaskName="_default">
         <TemplateType5>
-          <BackgroundImageURI IsRelative="true" IsResource="false">hi.png</BackgroundImageURI>
+          <BackgroundImageURI IsRelative="true" IsResource="false">View\images\Application_TileImage_173x173.png</BackgroundImageURI>
           <Count>0</Count>
           <Title>hike</Title>
         </TemplateType5>

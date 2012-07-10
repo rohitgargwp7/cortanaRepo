@@ -20,7 +20,7 @@
     </SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>windows_client.xap</XapFilename>
+    <XapFilename>hike.xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <SilverlightAppEntry>windows_client.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
