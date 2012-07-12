@@ -7,11 +7,12 @@ using Microsoft.Phone.Controls;
 using windows_client.Model;
 using windows_client.DbUtils;
 using windows_client.utils;
-using System.Collections.ObjectModel;
+using WP7Contrib.Collections;
 using System.ComponentModel;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Reactive;
+using System.Threading;
 
 namespace windows_client.View
 {
@@ -26,7 +27,6 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = "UNBLOCK";
 
         #endregion
-
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
@@ -72,25 +72,74 @@ namespace windows_client.View
             }
         }
 
+        BackgroundWorker bw = new BackgroundWorker();
+
         public ChatThread()
         {
             InitializeComponent();
             this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
-            registerListeners();
             initPageBasedOnState();
-            initAppBar();
 
-            if (!isOnHike)
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+            bw.RunWorkerAsync();
+
+
+        }
+
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            if ((worker.CancellationPending == true))
             {
-                sendMsgTxtbox.Hint = ON_SMS_TEXT;
-                initAppBarIconButton();
-                appBar.Buttons.Add(inviteUsrIconButton);
+                e.Cancel = true;
             }
             else
             {
-                sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+                // Perform a time consuming operation and report progress.
+                initBlockUnblockState();
+                mCredits = (int)App.appSettings[App.SMS_SETTING];
+                loadMessages();
+                registerListeners();
             }
+
+        }
+        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if ((e.Cancelled == true))
+            {
+
+            }
+
+            else if (!(e.Error == null))
+            {
+
+            }
+
+            else
+            {
+
+            }
+        }
+
+        private void initBlockUnblockState()
+        {
+            mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (mUserIsBlocked)
+                    {
+                        //sendMsgBtn.IsEnabled = false;
+                        showOverlay(true);
+                    }
+                    else
+                    {
+                        //sendMsgBtn.IsEnabled = true;
+                        showOverlay(false);
+                    }
+                });
         }
 
         #region REGISTER LISTENERS
@@ -127,6 +176,7 @@ namespace windows_client.View
         }
         #endregion
 
+        /* Should run on UI thread, based on mUserIsBlocked*/
         private void initAppBar()
         {
             appBar = new ApplicationBar();
@@ -147,6 +197,7 @@ namespace windows_client.View
             appBar.MenuItems.Add(menuItem2);
             chatThreadMainPage.ApplicationBar = appBar;
         }
+
         private void addUser_Click(object sender, EventArgs e)
         {
             ContactUtils.saveContact(mContactNumber);
@@ -187,40 +238,40 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
             }
 
-            if (mContactNumber == null)
+            userName.Text = mContactName;
+            initAppBar();
+            if (!isOnHike)
             {
-                // some error handling
-                return;
-            }
-            mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
-            if (mUserIsBlocked)
-            {
-                //sendMsgBtn.IsEnabled = false;
-                showOverlay(true);
+                sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                initAppBarIconButton();
+                appBar.Buttons.Add(inviteUsrIconButton);
             }
             else
             {
-                //sendMsgBtn.IsEnabled = true;
-                showOverlay(false);
+                sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
 
-            userName.Text = mContactName;
-            mCredits = (int)App.appSettings[App.SMS_SETTING];
-            loadMessages();
+            if (mContactNumber == null)
+            {
+                // some error handling
+            }
+
         }
 
         private void loadMessages()
         {
+            int i;
+            int limit = 6;
             bool isPublish = false;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
-            if (messagesList == null) // represents there are no chat messages for this msisdn
+            if (messagesList == null || messagesList.Count == 0) // represents there are no chat messages for this msisdn
             {
                 return;
             }
-
+            
             JArray ids = new JArray();
             List<long> dbIds = new List<long>();
-            for (int i = 0; i < messagesList.Count; i++)
+            for (i = (messagesList.Count - limit >= 0 ? (messagesList.Count - limit):0); i < messagesList.Count; i++)
             {
                 messagesList[i].IsSms = !isOnHike;
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
@@ -230,15 +281,65 @@ namespace windows_client.View
                     dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
-                this.ChatThreadPageCollection.Add(messagesList[i]);
+                ConvMessage cm = messagesList[i];
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
                     incomingMessages.Add(messagesList[i]);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.ChatThreadPageCollection.Add(cm);
+                });
+                
             }
-            this.myListBox.UpdateLayout();
-            this.myListBox.ScrollIntoView(chatThreadPageCollection[messagesList.Count - 1]);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   this.myListBox.UpdateLayout();
+                   this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+               });
+            int count = 0;
+            for (i = messagesList.Count - limit - 1; i >= 0;i--)
+            {
+                count++;
+                messagesList[i].IsSms = !isOnHike;
+                if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                {
+                    isPublish = true;
+                    ids.Insert(0,Convert.ToString(messagesList[i].MappedMessageId));
+                    dbIds.Insert(0,messagesList[i].MessageId);
+                    messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
+                }
+                else
+                {
+                    /* just publish the message */
 
+                    if (isPublish)
+                    {
+                        JObject obj = new JObject();
+                        obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
+                        obj.Add(HikeConstants.TO, mContactNumber);
+                        obj.Add(HikeConstants.DATA, ids);
+
+                        mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
+                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
+                        mPubSub.publish(HikePubSub.MSG_READ, mContactNumber); // this is to notify ConvList. This can be done on UI directly
+                        isPublish = false;
+                    }
+                }
+                ConvMessage c = messagesList[i];
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.ChatThreadPageCollection.Insert(0,c);
+                    this.myListBox.UpdateLayout();
+                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                });
+                if(count%5 == 0)
+                    Thread.Sleep(2);
+                if (messagesList[i].IsSent)
+                    msgMap.Add(messagesList[i].MessageId, messagesList[i]);
+                else
+                    incomingMessages.Insert(0,messagesList[i]);
+            }
             if (isPublish)
             {
                 JObject obj = new JObject();
@@ -246,11 +347,11 @@ namespace windows_client.View
                 obj.Add(HikeConstants.TO, mContactNumber);
                 obj.Add(HikeConstants.DATA, ids);
 
-                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray());
+                mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
-                mPubSub.publish(HikePubSub.MSG_READ, mContactNumber);
+                mPubSub.publish(HikePubSub.MSG_READ, mContactNumber); // this is to notify ConvList. This can be done on UI directly
+                isPublish = false;
             }
-
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -475,10 +576,10 @@ namespace windows_client.View
                 myListBox.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
-            
-             }
-        
-         }
+
+            }
+
+        }
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
@@ -513,11 +614,11 @@ namespace windows_client.View
             {
                 return;
             }
+            bool delConv = false;
             ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
-            MessagesTableUtils.deleteMessage(msg.MessageId); // delete msg with given msgId from messages table
+          
             //update Conversation list class
             this.ChatThreadPageCollection.Remove(msg);
-
             ConversationListObject obj = ConversationsList.ConvMap[msg.Msisdn];
             /* Remove the message from conversation list */
             if (this.ChatThreadPageCollection.Count > 0)
@@ -528,14 +629,13 @@ namespace windows_client.View
             {
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
-
-                // delete the conversation from DB.
-                ConversationTableUtils.deleteConversation(obj.Msisdn);
+                delConv = true;
             }
-        }
-
-        private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
-        {
+            object [] o = new object[3];
+            o[0] = msg.MessageId;
+            o[1] = obj.Msisdn;
+            o[2] = delConv;
+            mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
         }
 
         public ObservableCollection<ConvMessage> ChatThreadPageCollection
