@@ -7,6 +7,7 @@ using windows_client.Model;
 using windows_client.utils;
 using Phone.Controls;
 using Microsoft.Phone.Shell;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -15,8 +16,7 @@ namespace windows_client.View
         public static MyProgressIndicator progress = null;
         public static bool canGoBack = true;
         List<ContactInfo> allContactsList;
-        private string msisdn;
-        private bool onHike;
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 239, 239, 239));
 
         public SelectUserToMsg()
         {
@@ -94,6 +94,12 @@ namespace windows_client.View
                     NavigationService.GoBack();
                 }
             }
+        }
+
+        private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            enterNameTxt.Background = textBoxBackground;
+
         }
     }
 }
