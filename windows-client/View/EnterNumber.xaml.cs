@@ -84,6 +84,7 @@ namespace windows_client
 
         private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
         {
+            txtEnterPhone.Text = "";
             txtEnterPhone.Background = textBoxBackground;
         }
     }

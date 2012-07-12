@@ -61,13 +61,6 @@ namespace windows_client
             });
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            while (NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
-        }
-
         void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Focus();
@@ -77,6 +70,12 @@ namespace windows_client
         {
             txtBxEnterPin.Background = textBoxBackground;
 
+        }
+
+        private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
         }
  
     }

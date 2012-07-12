@@ -59,8 +59,12 @@
                     <Image Source="images\sms_pin.png" Margin="15,10,0,10" Height="20" />
                     <toolkit:PhoneTextBox x:Name="txtBxEnterPin" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" Background="#e3e3df" BorderThickness="0" InputScope="Number" Margin="0,-8,0,0" Width="250" Height="70" Hint="pin"/>
                 </StackPanel>
-                <Button x:Name="enterPhoneBtn" Click="btnEnterPin_Click" BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" Foreground="White" Margin="37,10,37,429" Content="Next" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="72" Width="344">
+                <Button x:Name="enterPhoneBtn" Click="btnEnterPin_Click" BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" Foreground="White" Content="Next" RenderTransformOrigin="0.5,0.5" Height="72" Width="344">
                 </Button>
+                <StackPanel Orientation="Horizontal" Height="50" >
+                    <TextBlock Text="Entered a wrong number" FontSize="20" Foreground="#4f4f4f" Margin="90,10,-10,5"></TextBlock>
+                    <Button x:Name="btnWrongMsisdn" Content="Tap Here" Foreground="#399cdf" FontSize="20" Background="Transparent" BorderThickness="0" Height="65" Margin="0,-7,0,-8" Click="btnWrongMsisdn_Click"></Button>
+                </StackPanel>
                 <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
                 <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="pinErrorTxt" Text="Invalid PIN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
             </StackPanel>
