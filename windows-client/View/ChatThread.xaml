@@ -46,8 +46,8 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Grid.Row="0" HorizontalAlignment="Left">
-            <Image Source="images\hike_header.png" Margin="0,-7,0,0" Height="62" Width="127"></Image>
-            <TextBlock x:Name="userName" Text="Madhur" FontSize="45" Height="70" Margin="35,0,0,0" Width="Auto" Foreground="Black"/>
+            <Image Source="images\hike_logo_small.png" Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127"></Image>
+            <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
         <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" FontSize="26" Margin="0,0,0,75">
@@ -66,7 +66,7 @@
                                     <TextBlock Height="Auto" Width="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Timestamp, Converter={StaticResource tsConverter}}"/>
                                 </StackPanel>
-                                <Rectangle Width="2" Height="Auto" Fill="#c8c8c8" Margin="1,2,0,0"></Rectangle>
+                                <!--<Rectangle Width="2" Height="Auto" Fill="#c8c8c8" Margin="1,2,0,0"></Rectangle>-->
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu Name="ctxMenu">
                                         <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
@@ -75,7 +75,7 @@
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
                             </StackPanel>
-                            <Rectangle Width="Auto" Height="2" Margin="2,0,0,0" Fill="#c8c8c8"></Rectangle>
+                            <!--<Rectangle Width="Auto" Height="2" Margin="2,0,0,0" Fill="#c8c8c8"></Rectangle>-->
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
@@ -83,19 +83,10 @@
         </ListBox>
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom" Background="White">
-            <!--<StackPanel x:Name="typingNotification" Visibility="Visible" Height="25" Background="#f2f2f2" HorizontalAlignment="Left" Margin="20,0,0,0" Width="28">
-                <TextBlock Width="30" Height="34" FontSize="30" Foreground="Black" Margin="0,-18,0,0" Text="..."></TextBlock>
-            </StackPanel>-->
             <Image x:Name="typingNotification" Source="images\typing.png" Visibility="Visible" Opacity="0" Height="20" Width="30" HorizontalAlignment="Left" Margin="20,5,0,0"></Image>
-
-            <StackPanel x:Name="sendMsgPanel" Height="80" Orientation="Horizontal" VerticalAlignment="Bottom">
-                <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" AcceptsReturn="True" BorderThickness="0" BorderBrush="Gray" Background="WhiteSmoke" Hint=""  Width="350" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged">
-                </toolkit:PhoneTextBox>
-                <Canvas x:Name="ContentPanelCanvas" Background="Transparent"  Margin="12,15,0,15">
-                    <Line X1="0" Y1="-5" X2="0" Y2="50" Stroke="#e4e4e4" StrokeThickness="2"/>
-                </Canvas>
-                <Button x:Name="sendMsgBtn" BorderThickness="0" Margin="5,0,5,0" Height="75" Width="Auto" Content="Send" Foreground="#c4c4c4" Click="sendMsgBtn_Click" IsEnabled="True">
-                </Button>
+            <Rectangle Width="Auto" Height="2" Margin="2,0,0,0" Fill="Black"/>
+            <StackPanel x:Name="sendMsgPanel" Height="80" Orientation="Horizontal" VerticalAlignment="Bottom" Background="#f2f2f2">
+                <toolkit:PhoneTextBox x:Name="sendMsgTxtbox" Background="Transparent" AcceptsReturn="True" BorderThickness="0" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged"/>
             </StackPanel>
         </StackPanel>
 

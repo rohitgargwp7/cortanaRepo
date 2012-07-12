@@ -180,9 +180,17 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Minimized;
+            appBar.Mode = ApplicationBarMode.Default;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
+
+            //add icon for send
+            ApplicationBarIconButton sendIconButton = new ApplicationBarIconButton();
+            sendIconButton.IconUri = new Uri("/View/images/send_button.png", UriKind.Relative);
+            sendIconButton.Text = "send";
+            sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
+            sendIconButton.IsEnabled = true;
+            appBar.Buttons.Add(sendIconButton);
 
             menuItem1 = new ApplicationBarMenuItem();
             if (mUserIsBlocked)
@@ -268,10 +276,10 @@ namespace windows_client.View
             {
                 return;
             }
-            
+
             JArray ids = new JArray();
             List<long> dbIds = new List<long>();
-            for (i = (messagesList.Count - limit >= 0 ? (messagesList.Count - limit):0); i < messagesList.Count; i++)
+            for (i = (messagesList.Count - limit >= 0 ? (messagesList.Count - limit) : 0); i < messagesList.Count; i++)
             {
                 messagesList[i].IsSms = !isOnHike;
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
@@ -290,7 +298,7 @@ namespace windows_client.View
                 {
                     this.ChatThreadPageCollection.Add(cm);
                 });
-                
+
             }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                {
@@ -298,15 +306,15 @@ namespace windows_client.View
                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                });
             int count = 0;
-            for (i = messagesList.Count - limit - 1; i >= 0;i--)
+            for (i = messagesList.Count - limit - 1; i >= 0; i--)
             {
                 count++;
                 messagesList[i].IsSms = !isOnHike;
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     isPublish = true;
-                    ids.Insert(0,Convert.ToString(messagesList[i].MappedMessageId));
-                    dbIds.Insert(0,messagesList[i].MessageId);
+                    ids.Insert(0, Convert.ToString(messagesList[i].MappedMessageId));
+                    dbIds.Insert(0, messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
                 else
@@ -329,16 +337,16 @@ namespace windows_client.View
                 ConvMessage c = messagesList[i];
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    this.ChatThreadPageCollection.Insert(0,c);
+                    this.ChatThreadPageCollection.Insert(0, c);
                     this.myListBox.UpdateLayout();
                     this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                 });
-                if(count%5 == 0)
+                if (count % 5 == 0)
                     Thread.Sleep(2);
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
-                    incomingMessages.Insert(0,messagesList[i]);
+                    incomingMessages.Insert(0, messagesList[i]);
             }
             if (isPublish)
             {
@@ -375,7 +383,7 @@ namespace windows_client.View
             removeListeners();
         }
 
-        private void sendMsgBtn_Click(object sender, RoutedEventArgs e)
+        private void sendMsgBtn_Click(object sender, EventArgs e)
         {
             if (mUserIsBlocked)
                 return;
@@ -387,7 +395,6 @@ namespace windows_client.View
                 return;
 
             sendMsgTxtbox.Text = "";
-            sendMsgBtn.Foreground = disableButtonColor;
 
             endTypingSent = true;
             sendTypingNotification(false);
@@ -401,8 +408,6 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (message != "")
             {
-                //sendMsgBtn.IsEnabled = true;
-                sendMsgBtn.Foreground = enableButtonColor;
             }
         }
 
@@ -450,8 +455,6 @@ namespace windows_client.View
                 return;
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
-                //sendMsgBtn.IsEnabled = false;
-                sendMsgBtn.Foreground = disableButtonColor;
                 return;
             }
 
@@ -464,8 +467,6 @@ namespace windows_client.View
                 endTypingSent = false;
                 sendTypingNotification(true);
             }
-            //sendMsgBtn.IsEnabled = true;
-            sendMsgBtn.Foreground = enableButtonColor;
         }
 
         private void updateUIForHikeStatus()
@@ -507,8 +508,6 @@ namespace windows_client.View
             //mMetadataNumChars.setVisibility(View.VISIBLE);
             if (mCredits <= 0)
             {
-                //sendMsgBtn.IsEnabled = false;
-                sendMsgBtn.Foreground = disableButtonColor;
                 if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
                 {
                     sendMsgTxtbox.Text = "";
@@ -616,7 +615,7 @@ namespace windows_client.View
             }
             bool delConv = false;
             ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
-          
+
             //update Conversation list class
             this.ChatThreadPageCollection.Remove(msg);
             ConversationListObject obj = ConversationsList.ConvMap[msg.Msisdn];
@@ -631,7 +630,7 @@ namespace windows_client.View
                 App.ViewModel.MessageListPageCollection.Remove(obj);
                 delConv = true;
             }
-            object [] o = new object[3];
+            object[] o = new object[3];
             o[0] = msg.MessageId;
             o[1] = obj.Msisdn;
             o[2] = delConv;
