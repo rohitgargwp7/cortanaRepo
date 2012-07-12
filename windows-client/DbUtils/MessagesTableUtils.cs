@@ -3,6 +3,7 @@ using System.Linq;
 using windows_client.Model;
 using System.Collections.Generic;
 using windows_client.View;
+using System;
 
 namespace windows_client.DbUtils
 {
@@ -49,6 +50,7 @@ namespace windows_client.DbUtils
             {
                 context.messages.InsertOnSubmit(convMessage);
                 context.SubmitChanges();
+
                 long msgId = convMessage.MessageId;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -76,9 +78,10 @@ namespace windows_client.DbUtils
 
         public static void addChatMessage(ConvMessage convMsg)
         {
-            if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
+            if (!ConversationsList.convMap2.ContainsKey(convMsg.Msisdn))
             {
                 ConversationTableUtils.addConversation(convMsg);
+                ConversationsList.convMap2.Add(convMsg.Msisdn,false);
             }
             addMessage(convMsg);
         }
