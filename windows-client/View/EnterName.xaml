@@ -38,40 +38,36 @@
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot">
-        <Grid.Background>
-            <ImageBrush ImageSource="images/main_bg.jpg"  />
-        </Grid.Background>
-
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Margin="12,41,12,0" Grid.RowSpan="2">
-            <TextBlock x:Name="txtBlkEnterName" Foreground="White" TextWrapping="Wrap" Text="Setup your profile name" FontSize="27" TextAlignment="Center" Margin="-3,46,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
+        <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.RowSpan="2" >
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="500" >
+                <Image Source="images\hike_logo_small.png" Height="40" Margin="0,15,0,0"></Image>
+                <Rectangle Height="2" Margin="2,15,0,0" Fill="#2e91d3"></Rectangle>
 
-            <!--<toolkit:PhoneTextBox x:Name="txtBxEnterName" Height="76" VerticalAlignment="Top" Margin="65,103,78,0">
-            </toolkit:PhoneTextBox>
-            <Image Source="images\tux.png" Height="38" VerticalAlignment="Top" Margin="301,118,96,0">
-            </Image>-->
-
-            <StackPanel Orientation="Horizontal" Height="61"  Background="White" Margin="50,134,51,0" VerticalAlignment="Top">
-                <Image Source="/View/images/ic_name_big.png" Margin="15,0,0,3" Height="40" />
-                <toolkit:PhoneTextBox Margin="0,-3,0,0" Height="76" x:Name="txtBxEnterName" Width="315" Hint="Name"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto" Height="60">
+                    <TextBlock Foreground="#4f4f4f" TextWrapping="Wrap" Text="Your are all set on" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                    <TextBlock x:Name="txtBlckPhoneNumber" Foreground="#4f4f4f" TextWrapping="Wrap" Text="" FontSize="25"  TextAlignment="Center" Margin="0,27,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                </StackPanel>
+                <TextBlock Foreground="#4f4f4f" TextWrapping="Wrap" Text="What's your name?" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
+                <StackPanel Orientation="Horizontal" Height="50"  Background="#e3e3df" Width="320" Margin="0,10,0,0" >
+                    <Image Source="images\enter_name.png" Margin="15,10,0,10" Height="20" />
+                    <toolkit:PhoneTextBox x:Name="txtBxEnterName" GotFocus="txtBxEnterName_GotFocus" Foreground="Black" Background="#e3e3df" BorderThickness="0" Margin="0,-8,0,0" Width="250" Height="70" Hint="Name"/>
+                </StackPanel>
+                <Button x:Name="enterNameBtn" BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" Foreground="White" Margin="37,10,37,429" Content="Lets hike" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="72" Click="btnEnterName_Click" Width="344">
+                </Button>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Foreground="Black" Background="#FFF2F6F8" IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
             </StackPanel>
-            <Button BorderThickness=".3" BorderBrush="DarkBlue" x:Name="enterNameBtn" FontWeight="Bold" Foreground="White" Margin="37,211,37,429" Content="Let's hike" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterName_Click">
-                <Button.Background>
-                    <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
-                </Button.Background>
-            </Button>
-            <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
-
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

@@ -113,6 +113,7 @@ namespace windows_client.DbUtils
                     ((HikeDataContext hdc) =>
                         from o in hdc.users
                         where o.OnHike == false
+                        orderby o.Name
                         select o);
                 return q;
             }

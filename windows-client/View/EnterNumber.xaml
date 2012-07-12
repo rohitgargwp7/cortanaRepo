@@ -37,38 +37,33 @@
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot">
-        <Grid.Background>
-            <ImageBrush ImageSource="images/main_bg.jpg"  />
-        </Grid.Background>
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Margin="12,41,12,0" Grid.RowSpan="2">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                <TextBlock x:Name="txtBlkOldSchool" Foreground="White" TextWrapping="Wrap" Text="  We couldn't pull your phone #" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
-                <TextBlock x:Name="txtBlkEnterNumber" Foreground="White" TextWrapping="Wrap" Text="Enter it below to get started" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="51" VerticalAlignment="Top" />
-            </StackPanel>
+        <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.Row="0">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="500" >
+                <Image Source="images\hike_logo_small.png" Height="40" Margin="0,25,0,10"></Image>
+                <Rectangle Height="1" Margin="2,15,0,0" Fill="#e5e5e5"></Rectangle>
 
-            <StackPanel Orientation="Horizontal" Height="61"  Background="White" Margin="50,134,51,0" VerticalAlignment="Top">
-                <Image Source="/View/images/ic_phone_big.png" Margin="15,0,0,3" Height="40" />
-                <toolkit:PhoneTextBox InputScope="Number" Margin="0,-3,0,0" x:Name="txtEnterPhone" Width="313" Height="76" Hint="Phone Number"/>
+                <TextBlock x:Name="txtBlkOldSchool" Foreground="#4f4f4f" TextWrapping="Wrap" Text="  We couldn't pull your phone #" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                <TextBlock x:Name="txtBlkEnterNumber" Foreground="#4f4f4f" TextWrapping="Wrap" Text="Enter it below to get started" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
+                <StackPanel Orientation="Horizontal" Height="50"  Background="#e3e3df" Width="320" Margin="0,10,0,0" >
+                    <Image Source="images\phone_number.png" Margin="15,10,0,10" Height="20" />
+                    <toolkit:PhoneTextBox x:Name="txtEnterPhone" GotFocus="txtEnterPhone_GotFocus" Foreground="Black" BorderThickness="0" InputScope="Number" Margin="0,-8,0,0" Width="250" Height="70" Hint="Phone Number"/>
+                </StackPanel>
+                <Button BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" x:Name="enterPhoneBtn" Foreground="White" Margin="37,10,37,429" Content="Next" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="72" Click="enterPhoneBtn_Click" Width="344">
+                </Button>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Foreground="Black" Background="#FFF2F6F8" IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+                <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="msisdnErrorTxt" Text="Invalid MSISDN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
             </StackPanel>
-
-            <Button BorderThickness=".3" BorderBrush="DarkBlue" x:Name="enterPhoneBtn" FontWeight="Bold" Foreground="White" Margin="37,211,37,429" Content="Next" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="enterPhoneBtn_Click">
-                <Button.Background>
-                    <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
-                </Button.Background>
-            </Button>
-            <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
-            <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="msisdnErrorTxt" Text="Invalid MSISDN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

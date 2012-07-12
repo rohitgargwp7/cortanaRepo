@@ -37,27 +37,41 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="0,-30,-25,75" Tap="inviteListBox_Tap">
+        <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="0,0,0,0" Tap="inviteListBox_Tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="22,5,5,5">
-                        <Image x:Name="avatar_image" Height="65" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                    <!--<StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
+                        <Image x:Name="avatar_image" Height="40" HorizontalAlignment="Left" VerticalAlignment="Center" 
                                Source="{Binding Msisdn, Converter={StaticResource imgConverter}}"
                                >
                         </Image>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Name}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                            <TextBlock Text="{Binding Msisdn}" Width="280" FontSize="25" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                        </StackPanel>
-                        <Button Content="invite" BorderThickness=".3" BorderBrush="DarkBlue" Margin="10,15,0,-5" FontSize="32" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="White" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Right">
-                            <Button.Background>
-                                <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
-                            </Button.Background>
-                        </Button>
+                        <TextBlock Text="{Binding Name}" Width="280" Margin="15,15,0,0" FontSize="30" Height="70" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
+                        <Button Foreground="Black" Content="invite" Width="120" Height="60" Margin="0,0,35,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" Canvas.ZIndex="60" FontSize="21.333"></Button>
+                    </StackPanel>-->
+                    <StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
+                        <Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}"
+                               >
+                        </Image>
+                        <TextBlock Text="{Binding Name}" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
+                        <Button Foreground="Black" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
                     </StackPanel>
+
+
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+
+        <!--<StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
+            <Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                               Source="\View\images\ic_avatar0.png"
+                               >
+            </Image>
+            <TextBlock Text="Madhur" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
+            <Button Foreground="Black" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
+        </StackPanel>-->
+
 
     </Grid>
 

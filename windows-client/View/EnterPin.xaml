@@ -38,45 +38,36 @@
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot">
-        <Grid.Background>
-            <ImageBrush ImageSource="images/main_bg.jpg"  />
-        </Grid.Background>
-
+    <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Margin="12,41,12,0" Grid.RowSpan="2">
-            <TextBlock x:Name="txtBlkSMSPin" Foreground="White" TextWrapping="Wrap" Text="Great! Did you get an SMS Pin?" FontSize="27"  TextAlignment="Center" Margin="-3,27,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
-            <TextBlock x:Name="txtBlkEnterPin" Foreground="White" TextWrapping="Wrap" Text="Enter that here." FontSize="27" TextAlignment="Center" Margin="-9,84,6,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="51" VerticalAlignment="Top" />
+        <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.Row="0">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="500" >
+                <Image Source="images\hike_logo_small.png" Height="40" Margin="0,15,0,0"></Image>
+                <Rectangle Height="1" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>
 
-            <!--Border CornerRadius="10" Background="White" Width="300" Height="65" Margin="67,159,89,504"-->
-            <!--<toolkit:PhoneTextBox SelectionStart="20" InputScope="Number" x:Name="txtBxEnterPin" Height="76" VerticalAlignment="Top" Margin="57,139,76,0" />
-            <Image Source="/images/tux.png" Height="42" VerticalAlignment="Top" Margin="294,153,89,0" RenderTransformOrigin="0.52,0.738">
-            </Image>-->
-
-            <StackPanel Orientation="Horizontal" Height="61"  Background="White" Margin="50,134,51,0" VerticalAlignment="Top">
-                <Image Source="/View/images/ic_phone_big.png" Margin="15,0,0,3" Height="40" />
-                <toolkit:PhoneTextBox InputScope="Number" Margin="0,-3,0,0" x:Name="txtBxEnterPin" Width="315" Height="76" Hint="Phone Number"/>
+                <TextBlock x:Name="txtBlkSMSPin" Foreground="#4f4f4f" TextWrapping="Wrap" Text="Thanks! Did you get an SMS pin?" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                <TextBlock x:Name="txtBlkEnterPin" Foreground="#4f4f4f" TextWrapping="Wrap" Text="Enter it here" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
+                <StackPanel Orientation="Horizontal" Height="50"  Background="#e3e3df" Width="320" Margin="0,10,0,0" >
+                    <Image Source="images\sms_pin.png" Margin="15,10,0,10" Height="20" />
+                    <toolkit:PhoneTextBox x:Name="txtBxEnterPin" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" Background="#e3e3df" BorderThickness="0" InputScope="Number" Margin="0,-8,0,0" Width="250" Height="70" Hint="pin"/>
+                </StackPanel>
+                <Button x:Name="enterPhoneBtn" Click="btnEnterPin_Click" BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" Foreground="White" Content="Next" RenderTransformOrigin="0.5,0.5" Height="72" Width="344">
+                </Button>
+                <StackPanel Orientation="Horizontal" Height="50" >
+                    <TextBlock Text="Entered a wrong number" FontSize="20" Foreground="#4f4f4f" Margin="90,10,-10,5"></TextBlock>
+                    <Button x:Name="btnWrongMsisdn" Content="Tap Here" Foreground="#399cdf" FontSize="20" Background="Transparent" BorderThickness="0" Height="65" Margin="0,-7,0,-8" Click="btnWrongMsisdn_Click"></Button>
+                </StackPanel>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+                <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="pinErrorTxt" Text="Invalid PIN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
             </StackPanel>
-
-            <Button BorderThickness=".3" BorderBrush="DarkBlue" x:Name="enterPhoneBtn" FontWeight="Bold" Foreground="White" Margin="37,211,37,429" Content="Next" Click="btnEnterPin_Click" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87">
-                <Button.Background>
-                    <ImageBrush ImageSource="Images\ic_bottom_button.png" Stretch="Fill"/>
-                </Button.Background>
-            </Button>
-
-            <!--<Button x:Name="btnEnterPin" Margin="54,225,76,415" Foreground="White" Content="Next" BorderThickness="4" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="87" Click="btnEnterPin_Click">
-            </Button>-->
-            <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
-            <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="pinErrorTxt" Text="Invalid PIN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

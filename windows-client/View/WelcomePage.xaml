@@ -36,49 +36,35 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot">
-        <Grid.Background>
-            <ImageBrush ImageSource="Images\signup_background.jpg"  />
-        </Grid.Background>
+    <Grid x:Name="LayoutRoot" Background="White">
+        <!--<Grid.Background>
+            <ImageBrush ImageSource="images\background.png"  />
+        </Grid.Background>-->
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28"/>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel"  Margin="12,0,12,0" Height="710">
+        <Grid x:Name="ContentPanel" Grid.Row="0" Height="710">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Row="0">
+                <Image Source="images\signup_logo.png" Margin="0,150,0,20" Height="104"></Image>
+                <Image Source="images\splash_text.png" Height="30"></Image>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Bottom" Orientation="Vertical" Grid.Row="1">
+                <Image Source="images\terms_link.png" Height="43"></Image>
+                <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-40" Width="Auto" BorderThickness="0" Background="#2e91d3" >
+                </Button>
+            </StackPanel>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBlock x:Name="PageTitle" Foreground="White" TextWrapping="Wrap" Text="Messaging simplified.&#13; Fun, free, forever." FontSize="30" FontWeight="ExtraBold" TextAlignment="Center" Margin="-11,339,8,291" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" >
-            	<TextBlock.RenderTransform>
-            		<CompositeTransform/>
-            	</TextBlock.RenderTransform>
-            </TextBlock>
-            <TextBlock x:Name="Terms" Foreground="White" TextWrapping="Wrap" Text="Terms and privacy" FontSize="22"  TextAlignment="Center" Margin="-11,441,8,189" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" >
-            	<TextBlock.RenderTransform>
-            		<CompositeTransform/>
-            	</TextBlock.RenderTransform>
-            </TextBlock>
-
-            <Button x:Name="GetStarted" Foreground="White" Margin="43,572,41,28" Content="Get Started" BorderThickness="2" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Click="getStarted_click" FontFamily="Segoe WP">
-                <Button.Background>
-                    <ImageBrush ImageSource="Images\ic_bottom_button.png"/>
-                </Button.Background>
-            </Button>
-            <Image Source="Images\signup_loading_bckg.png" Margin="24,0,25,89" Height="100" VerticalAlignment="Bottom" Visibility="Collapsed" />
         </Grid>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
-       </Grid>
+        <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+    </Grid>
 
 </phone:PhoneApplicationPage>

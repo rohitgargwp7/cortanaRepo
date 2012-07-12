@@ -4,6 +4,7 @@ using Microsoft.Phone.Controls;
 using windows_client.utils;
 using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -11,6 +12,7 @@ namespace windows_client
     {
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
 
         public EnterPin()
         {
@@ -59,17 +61,39 @@ namespace windows_client
             });
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            while (NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
-        }
-
         void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Focus();
         }
- 
+
+        private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txtBxEnterPin.Background = textBoxBackground;
+
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            goBackLogic(); 
+        }
+        private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
+        {
+            goBackLogic();          
+        }
+
+        private void goBackLogic()
+        {
+            App.appSettings.Remove(App.MSISDN_SETTING);
+            if (NavigationService.CanGoBack)
+            {
+                NavigationService.GoBack();
+            }
+            else
+            {
+                Uri nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
+                NavigationService.Navigate(nextPage);
+            }            
+        }
     }
 }
