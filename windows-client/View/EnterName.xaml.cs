@@ -6,6 +6,7 @@ using System.IO.IsolatedStorage;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
+using System.Text;
 
 namespace windows_client
 {
@@ -87,8 +88,9 @@ namespace windows_client
         {
             string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
             msisdn = msisdn.Substring(msisdn.Length - 10);
-            string userMsisdn = msisdn.Substring(0, 3) + "-" + msisdn.Substring(3, 3) + "-" + msisdn.Substring(6) + "!";
-            txtBlckPhoneNumber.Text = userMsisdn;
+            StringBuilder userMsisdn = new StringBuilder();
+            userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
+            txtBlckPhoneNumber.Text = userMsisdn.ToString();
             txtBxEnterName.Focus();
         }
 
