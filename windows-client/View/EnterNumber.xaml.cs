@@ -4,6 +4,7 @@ using Microsoft.Phone.Controls;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.IO.IsolatedStorage;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -11,12 +12,13 @@ namespace windows_client
     {
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+
 
         public EnterNumber()
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
-
         }
 
         private void enterPhoneBtn_Click(object sender, RoutedEventArgs e)
@@ -79,6 +81,10 @@ namespace windows_client
         {
             txtEnterPhone.Focus();
         }
- 
+
+        private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txtEnterPhone.Background = textBoxBackground;
+        }
     }
 }
