@@ -5,6 +5,7 @@ using windows_client.utils;
 using System.IO.IsolatedStorage;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using System.Windows.Media;
 
 namespace windows_client
 {
@@ -13,6 +14,8 @@ namespace windows_client
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private string ac_name;
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+
 
         public EnterName()
         {
@@ -83,6 +86,11 @@ namespace windows_client
         void EnterNamePage_Loaded(object sender, RoutedEventArgs e)
         {
             txtBxEnterName.Focus();
+        }
+
+        private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txtBxEnterName.Background = textBoxBackground;
         }
     }
 }
