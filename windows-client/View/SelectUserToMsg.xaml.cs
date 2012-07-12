@@ -22,6 +22,8 @@ namespace windows_client.View
         {
             InitializeComponent();
             this.DataContext = App.ViewModel;
+            allContactsList = UsersTableUtils.getAllContacts();
+            contactsListBox.ItemsSource = allContactsList;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -31,20 +33,14 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (String.IsNullOrEmpty(enterNameTxt.Text))
+            string charsEnetered = enterNameTxt.Text.ToLower();
+            if (String.IsNullOrEmpty(charsEnetered))
             {
-                return;
-            }
-            string charsEnetered = enterNameTxt.Text.Trim().ToLower();
-
-            if (charsEnetered.Length == 1)
-            {
-                allContactsList = UsersTableUtils.getContactInfoFromName(charsEnetered);
                 contactsListBox.ItemsSource = allContactsList;
                 return;
             }
             List<ContactInfo> contactsList = getContactInfoFromNameOrPhone(charsEnetered);
-            if(contactsList == null || contactsList.Count == 0)
+            if (contactsList == null || contactsList.Count == 0)
             {
                 contactsListBox.ItemsSource = null;
                 return;
@@ -54,8 +50,6 @@ namespace windows_client.View
 
         private List<ContactInfo> getContactInfoFromNameOrPhone(string charsEnetered)
         {
-            if (allContactsList == null || allContactsList.Count == 0)
-                return null;
             List<ContactInfo> contactsList = new List<ContactInfo>();
             for (int i = 0; i < allContactsList.Count; i++)
             {
