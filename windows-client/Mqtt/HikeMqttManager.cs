@@ -10,6 +10,8 @@ using System.Net.NetworkInformation;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using Microsoft.Phone.Reactive;
+using System.Threading;
+using System.Windows;
 
 namespace windows_client.Mqtt
 {
@@ -337,7 +339,7 @@ namespace windows_client.Mqtt
 
             JToken type;
             jsonObj.TryGetValue(HikeConstants.TYPE, out type);
-            pubSub.publish(HikePubSub.WS_RECEIVED, receivedMessage);
+            NetworkManager.Instance.onMessage(receivedMessage);
         }
 
         public void onEventReceived(string type, object obj)
