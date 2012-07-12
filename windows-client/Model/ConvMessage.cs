@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 namespace windows_client.Model
 {
     [Table(Name = "messages")]
-    [Index(Columns = "Msisdn,Timestamp DESC", IsUnique = true, Name = "Msg_Idx")]
+    [Index(Columns = "Msisdn,Timestamp ASC", IsUnique = false, Name = "Msg_Idx")]
     public class ConvMessage : INotifyPropertyChanged
     {
 
@@ -352,9 +352,9 @@ namespace windows_client.Model
             if (PropertyChanged != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                });
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    });
             }
         }
 
