@@ -51,7 +51,7 @@
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.Row="0">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="500" >
                 <Image Source="images\hike_logo_small.png" Height="40" Margin="0,15,0,0"></Image>
-                <Rectangle Height="2" Margin="2,15,0,0" Fill="#2e91d3"></Rectangle>
+                <Rectangle Height="1" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>
 
                 <TextBlock x:Name="txtBlkSMSPin" Foreground="#4f4f4f" TextWrapping="Wrap" Text="Thanks! Did you get an SMS pin?" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                 <TextBlock x:Name="txtBlkEnterPin" Foreground="#4f4f4f" TextWrapping="Wrap" Text="Enter it here" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />

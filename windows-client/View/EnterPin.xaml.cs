@@ -75,7 +75,10 @@ namespace windows_client
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
         {
             if (NavigationService.CanGoBack)
+            {
+                App.appSettings.Remove(App.MSISDN_SETTING);
                 NavigationService.GoBack();
+            }
         }
  
     }
