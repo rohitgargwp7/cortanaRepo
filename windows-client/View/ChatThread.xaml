@@ -23,8 +23,6 @@
 
     </phone:PhoneApplicationPage.Resources>
 
-
-
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
 
@@ -51,7 +49,6 @@
             <Image Source="images\hike_header.png" Margin="0,-7,0,0" Height="62" Width="127"></Image>
             <TextBlock x:Name="userName" Text="Madhur" FontSize="45" Height="70" Margin="35,0,0,0" Width="Auto" Foreground="Black"/>
         </StackPanel>
-
         <!--ContentPanel - place additional content here-->
         <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" FontSize="26" Margin="0,0,0,75">
             <ListBox.ItemTemplate>
@@ -92,7 +89,7 @@
             <Image x:Name="typingNotification" Source="images\typing.png" Visibility="Visible" Opacity="0" Height="20" Width="30" HorizontalAlignment="Left" Margin="20,5,0,0"></Image>
 
             <StackPanel x:Name="sendMsgPanel" Height="80" Orientation="Horizontal" VerticalAlignment="Bottom">
-                <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" AcceptsReturn="True" GotFocus="sendMsgTxtbox_GotFocus" BorderThickness="0" BorderBrush="Gray" Background="WhiteSmoke" Hint=""  Width="350" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged">
+                <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" AcceptsReturn="True" BorderThickness="0" BorderBrush="Gray" Background="WhiteSmoke" Hint=""  Width="350" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged">
                 </toolkit:PhoneTextBox>
                 <Canvas x:Name="ContentPanelCanvas" Background="Transparent"  Margin="12,15,0,15">
                     <Line X1="0" Y1="-5" X2="0" Y2="50" Stroke="#e4e4e4" StrokeThickness="2"/>
