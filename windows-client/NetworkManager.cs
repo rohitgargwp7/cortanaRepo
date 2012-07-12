@@ -2,6 +2,8 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using windows_client.Model;
+using windows_client.DbUtils;
+using windows_client.converters;
 
 namespace windows_client
 {
@@ -60,7 +62,7 @@ namespace windows_client
             }
         }
 
-        private void onMessage(string msg)
+        public void onMessage(string msg)
         {
             JObject jsonObj = null;
             try
@@ -80,7 +82,9 @@ namespace windows_client
                 try
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
-                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED_FROM_SENDER, convMessage);
+                    convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                    MessagesTableUtils.addChatMessage(convMessage);
+                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
                 }
                 catch (Exception e)
                 {
@@ -98,6 +102,8 @@ namespace windows_client
             else if (SMS_CREDITS == type) /* SMS CREDITS */
             {
                 int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
+                App.appSettings[App.SMS_SETTING] = sms_credits;
+                App.appSettings.Save();
                 this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
             }
             else if (SERVER_REPORT == type) /* Represents Server has received the msg you sent */
@@ -113,6 +119,7 @@ namespace windows_client
                     logger.Info("NETWORK MANAGER", "Exception occured while parsing msgId. Exception : " + e);
                     msgID = -1;
                 }
+                updateDB(msgID, (int)ConvMessage.State.SENT_CONFIRMED);
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
             }
             else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
@@ -129,6 +136,7 @@ namespace windows_client
                     msgID = -1;
                 }
                 logger.Info("NETWORK MANAGER", "Delivery report received for msgid : " + msgID + "	;	REPORT : DELIVERED");
+                updateDB(msgID, (int)ConvMessage.State.SENT_DELIVERED);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, msgID);
             }
             else if (MESSAGE_READ == type) // Message read by recipient
@@ -146,27 +154,29 @@ namespace windows_client
                     ids[i] = Int64.Parse(msgIds[i].ToString());
                 }
                 logger.Info("NETWORK MANAGER", "Delivery report received : " + "	;	REPORT : DELIVERED READ");
+                updateDbBatch(ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, ids);
             }
             else if ((USER_JOINED == type) || (USER_LEFT == type))
             {
                 string uMsisdn = (string)jsonObj[HikeConstants.DATA];
                 bool joined = USER_JOINED == type;
+                UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
+                ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
             else if (ICON == type)
             {
                 JToken temp;
-                jsonObj.TryGetValue(HikeConstants.FROM, out temp);
-                string msisdnToUpdate = temp.ToString();
                 jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+                if (temp == null)
+                    return;
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                 
-                object[] msisdnAndImage = new object[2];
-                msisdnAndImage[0] = msisdnToUpdate;
-                msisdnAndImage[1] = imageBytes;
-                this.pubSub.publish(HikePubSub.ICON_CHANGED, msisdnAndImage);
+                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
+                ImageConverter.updateImageInCache(msisdn, imageBytes);
+                this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
             }
             else
             {
@@ -181,6 +191,16 @@ namespace windows_client
                 string message = (string)obj;
                 onMessage(message);
             }
+        }
+
+        private void updateDB(long msgID, int status)
+        {
+            MessagesTableUtils.updateMsgStatus(msgID, status);
+        }
+
+        private void updateDbBatch(long[] ids, int status)
+        {
+            MessagesTableUtils.updateAllMsgStatus(ids, status);
         }
     }
 }

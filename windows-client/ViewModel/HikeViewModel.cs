@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Collections.ObjectModel;
 using windows_client.Model;
+using WP7Contrib.Collections;
 
 namespace windows_client.ViewModel
 {

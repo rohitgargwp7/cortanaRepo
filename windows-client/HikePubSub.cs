@@ -108,7 +108,7 @@ namespace windows_client
         public HikePubSub()
         {
             listeners = new Dictionary<string, List<Listener>>();
-            mQueue = new BlockingQueue(100);
+            mQueue = new BlockingQueue(2000);
             try
             {
                 mThread = new Thread(new ThreadStart(startPubSub));
@@ -142,10 +142,7 @@ namespace windows_client
             {
                 return false;
             }
-            lock (mQueue)
-            {
-                mQueue.Enqueue(new Operation(type, o));
-            }
+            mQueue.Enqueue(new Operation(type, o));
             return true;
         }
 
@@ -196,6 +193,7 @@ namespace windows_client
                 for (int i = 0; i < list.Count; i++)
                 {
                     list[i].onEventReceived(type, o);
+                    Thread.Sleep(10);
                 }
             }
         }

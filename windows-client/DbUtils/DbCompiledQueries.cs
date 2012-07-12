@@ -27,9 +27,9 @@ namespace windows_client.DbUtils
             get
             {
                 Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-                   CompiledQuery.Compile((HikeDataContext hdc, string name) =>
+                   CompiledQuery.Compile((HikeDataContext hdc, string chars) =>
                        from o in hdc.users
-                       where o.Name.Contains(name)
+                       where o.Name.Contains(chars) || o.PhoneNo.Contains(chars)
                        select o);
                 return q;
             }

@@ -72,14 +72,28 @@ namespace windows_client
 
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            goBackLogic(); 
+        }
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
         {
+            goBackLogic();          
+        }
+
+        private void goBackLogic()
+        {
+            App.appSettings.Remove(App.MSISDN_SETTING);
             if (NavigationService.CanGoBack)
             {
-                App.appSettings.Remove(App.MSISDN_SETTING);
                 NavigationService.GoBack();
             }
+            else
+            {
+                Uri nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
+                NavigationService.Navigate(nextPage);
+            }            
         }
- 
     }
 }
