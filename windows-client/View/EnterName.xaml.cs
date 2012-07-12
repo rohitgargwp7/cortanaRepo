@@ -85,6 +85,10 @@ namespace windows_client
 
         void EnterNamePage_Loaded(object sender, RoutedEventArgs e)
         {
+            string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+            msisdn = msisdn.Substring(msisdn.Length - 10);
+            string userMsisdn = msisdn.Substring(0, 3) + "-" + msisdn.Substring(3, 3) + "-" + msisdn.Substring(6) + "!";
+            txtBlckPhoneNumber.Text = userMsisdn;
             txtBxEnterName.Focus();
         }
 
