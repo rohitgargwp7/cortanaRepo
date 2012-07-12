@@ -13,15 +13,15 @@ namespace windows_client.converters
 
             if (ConvMessage.ChatBubbleType.RECEIVED == bubbleType)
             {
-                return "#f2f2f2";
+                return "#eeeeec";
             }
             else if (ConvMessage.ChatBubbleType.HIKE_SENT == bubbleType)
             {
-                return "#d4edfc";
+                return "#ccecfe";
             }
             else
             {
-                return "#cff3cc";
+                return "#e1f4d7";
             }
         }
 
