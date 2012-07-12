@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO.IsolatedStorage;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +14,9 @@ using Microsoft.Phone.Tasks;
 using System.IO;
 using Phone.Controls;
 using System.Diagnostics;
+using WP7Contrib.Collections;
+using System.Threading;
+
 namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
@@ -31,6 +33,7 @@ namespace windows_client.View
         private readonly IsolatedStorageSettings appSettings;
         private NLog.Logger logger;
         private static Dictionary<string, ConversationListObject> convMap; // this holds msisdn -> conversation mapping
+        public static Dictionary<string, bool> convMap2 = new Dictionary<string, bool>();
         private PhotoChooserTask photoChooserTask;
         private string msisdn;
 
@@ -53,10 +56,10 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
-            LoadMessages();
-            registerListeners();
+            LoadMessages();          
             initAppBar();
             initProfilePage();
+            registerListeners();
         }
 
         private void initProfilePage()
@@ -212,6 +215,7 @@ namespace windows_client.View
                 ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? conv.Msisdn : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
                     TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
                 convMap.Add(conv.Msisdn, mObj);
+                convMap2.Add(conv.Msisdn,false);
                 App.ViewModel.MessageListPageCollection.Add(mObj);
             }
         }
@@ -303,7 +307,8 @@ namespace windows_client.View
                 return;
             }
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
-            convMap.Remove(convObj.Msisdn); // removed entry from map
+            convMap.Remove(convObj.Msisdn); // removed entry from map for UI
+            convMap2.Remove(convObj.Msisdn); // removed entry from map for DB
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
             MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
@@ -343,7 +348,7 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)obj;
                 ConversationListObject mObj;
                 bool isNewConversation = false;
-
+                
                 /*This is used to avoid cross thread invokation exception*/
                 if (convMap.ContainsKey(convMessage.Msisdn))
                 {
@@ -362,14 +367,11 @@ namespace windows_client.View
                     mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
                     contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
                     thumbnail == null ? null : thumbnail.Avatar);
-
-                    convMap.Add(convMessage.Msisdn, mObj);
+                    convMap[convMessage.Msisdn] = mObj;
                     isNewConversation = true;
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (App.ViewModel.MessageListPageCollection == null)
-                        App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
                 object[] vals = new object[2];
