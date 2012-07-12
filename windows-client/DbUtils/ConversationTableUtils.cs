@@ -26,15 +26,9 @@ namespace windows_client.DbUtils
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
             Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : convMessage.Msisdn,  (contactInfo != null) ? contactInfo.OnHike:!convMessage.IsSms);
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
-            {
-                try
-                {
+            {              
                     context.conversations.InsertOnSubmit(conv);
                     context.SubmitChanges();
-                }
-                catch (Exception)
-                {
-                }
             }          
         }
 
