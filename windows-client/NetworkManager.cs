@@ -7,7 +7,7 @@ using windows_client.converters;
 
 namespace windows_client
 {
-    public class NetworkManager : HikePubSub.Listener
+    public class NetworkManager
     {
         /* message read by recipient */
         public static readonly string MESSAGE_READ = "mr";
@@ -42,7 +42,6 @@ namespace windows_client
         {
             logger = NLog.LogManager.GetCurrentClassLogger();
             pubSub = App.HikePubSubInstance;
-            pubSub.addListener(HikePubSub.WS_RECEIVED, this);
         }
 
         public static NetworkManager Instance
@@ -181,15 +180,6 @@ namespace windows_client
             else
             {
                 logger.Info("WebSocketPublisher", "Unknown Type:" + type);
-            }
-        }
-
-        public void onEventReceived(string type, object obj)
-        {
-            if (type == HikePubSub.WS_RECEIVED) // signifies msg is received through web sockets.
-            {
-                string message = (string)obj;
-                onMessage(message);
             }
         }
 

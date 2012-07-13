@@ -335,10 +335,6 @@ namespace windows_client.Mqtt
         public void onPublish(String topic, byte[] body)
         {
             String receivedMessage = Encoding.UTF8.GetString(body, 0, body.Length);
-            JObject jsonObj = JObject.Parse(receivedMessage);
-
-            JToken type;
-            jsonObj.TryGetValue(HikeConstants.TYPE, out type);
             NetworkManager.Instance.onMessage(receivedMessage);
         }
 
