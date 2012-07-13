@@ -72,6 +72,7 @@ namespace windows_client.DbUtils
             if (isNewConversation)
             {
                 ConversationTableUtils.addConversation(convMsg);
+                ConversationsList.convMap2.Add(convMsg.Msisdn, false);
             }
             addMessage(convMsg);
         }
@@ -81,7 +82,7 @@ namespace windows_client.DbUtils
             if (!ConversationsList.convMap2.ContainsKey(convMsg.Msisdn))
             {
                 ConversationTableUtils.addConversation(convMsg);
-                ConversationsList.convMap2.Add(convMsg.Msisdn,false);
+                ConversationsList.convMap2.Add(convMsg.Msisdn, false);
             }
             addMessage(convMsg);
         }
@@ -93,9 +94,11 @@ namespace windows_client.DbUtils
                 List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, msgID).ToList<ConvMessage>();
                 if (res.Count == 1)
                 {
+
                     ConvMessage message = res.First();
                     message.MessageStatus = (ConvMessage.State)val;
                     context.SubmitChanges();
+
                 }
                 else
                 {
@@ -109,6 +112,7 @@ namespace windows_client.DbUtils
         {
             using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
             {
+
                 for (int i = 0; i < ids.Length; i++)
                 {
                     List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).ToList<ConvMessage>();
@@ -119,6 +123,7 @@ namespace windows_client.DbUtils
                     }
                 }
                 context.SubmitChanges();
+
             }
         }
 
