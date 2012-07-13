@@ -47,11 +47,10 @@ namespace windows_client.View
         ApplicationBarMenuItem menuItem1;
         ApplicationBarIconButton inviteUsrIconButton = null;
 
-        private readonly SolidColorBrush enableButtonColor = new SolidColorBrush(Color.FromArgb(255, 116, 181, 220));
-        private readonly SolidColorBrush disableButtonColor = new SolidColorBrush(Color.FromArgb(0, 242, 242, 242));
-
         private readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
         private readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
+
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         public List<ConvMessage> IncomingMessages
@@ -878,5 +877,11 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            sendMsgTxtbox.Background = textBoxBackground;
+
+        }
     }
 }
