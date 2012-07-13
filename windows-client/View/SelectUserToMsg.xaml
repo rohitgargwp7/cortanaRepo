@@ -34,19 +34,23 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Background="White">
             <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-                <Image Source="images\hike_logo_small.png" Margin="20,20,0,0" HorizontalAlignment="Left" Height="34" Width="127"></Image>
-                <TextBlock Text="new chat" FontFamily="Calibri" FontSize="55" FontStretch="Expanded"  Margin="20,0,0,0" Foreground="Black" Height="56"/>
+                <Image Source="images\hike_logo_small.png" Margin="25,20,0,0" HorizontalAlignment="Left" Height="34" Width="127"></Image>
+                <TextBlock Text="new chat" FontFamily="Calibri" FontSize="55" FontStretch="Expanded"  Margin="23,0,0,0" Foreground="Black" Height="56"/>
             </StackPanel>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
+        	<Grid.ColumnDefinitions>
+        		<ColumnDefinition Width="0.206*"/>
+        		<ColumnDefinition Width="0.794*"/>
+        	</Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" Background="#efefef" Margin="5,0,0,0" Width="470" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged"/>
-            <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0">
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" Background="#efefef" Margin="8,0,2,0" Width="470" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged" BorderThickness="8,3,3,3" Grid.ColumnSpan="2"/>
+            <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
