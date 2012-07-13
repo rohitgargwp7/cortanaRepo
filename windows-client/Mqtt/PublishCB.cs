@@ -28,11 +28,10 @@ namespace windows_client.Mqtt
                     JObject obj = new JObject();
                     obj[HikeConstants.TYPE] = NetworkManager.SERVER_REPORT;
                     obj[HikeConstants.DATA] = Convert.ToString(packet.MessageId);
-                    App.HikePubSubInstance.publish(HikePubSub.WS_RECEIVED,obj.ToString());
+                    NetworkManager.Instance.onMessage(obj.ToString());
                 }
             }
         }
-
 
         public void onFailure(Exception value)
         {
