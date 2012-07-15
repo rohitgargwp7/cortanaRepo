@@ -9,25 +9,25 @@ namespace windows_client.DbUtils
     {
         #region UsersTable Queries
 
-        public static Func<HikeDataContext, IQueryable<ContactInfo>> GetAllContacts
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllContacts
         {
             get
             {
-                Func<HikeDataContext, IQueryable<ContactInfo>> q =
-                     CompiledQuery.Compile<HikeDataContext, IQueryable<ContactInfo>>
-                     ((HikeDataContext hdc) =>
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc) =>
                          from o in hdc.users
                          select o);
                 return q;
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<ContactInfo>> GetContactFromName
+        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromName
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-                   CompiledQuery.Compile((HikeDataContext hdc, string chars) =>
+                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
+                   CompiledQuery.Compile((HikeUsersDb hdc, string chars) =>
                        from o in hdc.users
                        where o.Name.Contains(chars) || o.PhoneNo.Contains(chars)
                        select o);
@@ -35,13 +35,13 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<ContactInfo>> GetContactFromMsisdn
+        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromMsisdn
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-                    CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-                    ((HikeDataContext hdc, string m) =>
+                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
+                    CompiledQuery.Compile<HikeUsersDb, string, IQueryable<ContactInfo>>
+                    ((HikeUsersDb hdc, string m) =>
                         from o in hdc.users
                         where o.Msisdn == m
                         select o);
@@ -49,26 +49,26 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeDataContext, IQueryable<Blocked>> GetBlockList
+        public static Func<HikeUsersDb, IQueryable<Blocked>> GetBlockList
         {
             get
             {
-                Func<HikeDataContext, IQueryable<Blocked>> q =
-                     CompiledQuery.Compile<HikeDataContext, IQueryable<Blocked>>
-                     ((HikeDataContext hdc) =>
+                Func<HikeUsersDb, IQueryable<Blocked>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<Blocked>>
+                     ((HikeUsersDb hdc) =>
                          from o in hdc.blockedUsersTable
                          select o);
                 return q;
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<ContactInfo>> UpdateOnhikeStatus
+        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> UpdateOnhikeStatus
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-                     CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-                     ((HikeDataContext hdc, string ms) =>
+                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, string, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc, string ms) =>
                          from o in hdc.users
                          where o.Msisdn == ms
                          select o);
@@ -76,13 +76,13 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<Blocked>> GetBlockedUserForMsisdn
+        public static Func<HikeUsersDb, string, IQueryable<Blocked>> GetBlockedUserForMsisdn
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<Blocked>> q =
-                     CompiledQuery.Compile<HikeDataContext, string, IQueryable<Blocked>>
-                     ((HikeDataContext hdc, string ms) =>
+                Func<HikeUsersDb, string, IQueryable<Blocked>> q =
+                     CompiledQuery.Compile<HikeUsersDb, string, IQueryable<Blocked>>
+                     ((HikeUsersDb hdc, string ms) =>
                          from o in hdc.blockedUsersTable
                          where o.Msisdn == ms
                          select o);
@@ -90,13 +90,13 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<ContactInfo>> GetUsersWithGivenId
+        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetUsersWithGivenId
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<ContactInfo>> q =
-                     CompiledQuery.Compile<HikeDataContext, string, IQueryable<ContactInfo>>
-                     ((HikeDataContext hdc, string i) =>
+                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, string, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc, string i) =>
                          from o in hdc.users
                          where o.Id == i
                          select o);
@@ -104,13 +104,13 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeDataContext, IQueryable<ContactInfo>> GetContactsForOnhikeStatus
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetContactsForOnhikeStatus
         {
             get
             {
-                Func<HikeDataContext, IQueryable<ContactInfo>> q =
-                    CompiledQuery.Compile<HikeDataContext, IQueryable<ContactInfo>>
-                    ((HikeDataContext hdc) =>
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                    CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                    ((HikeUsersDb hdc) =>
                         from o in hdc.users
                         where o.OnHike == false
                         orderby o.Name
@@ -123,26 +123,26 @@ namespace windows_client.DbUtils
 
         #region MessagesTable Queries
 
-        public static Func<HikeDataContext, string, IQueryable<ConvMessage>> GetMessagesForMsisdn
+        public static Func<HikeChatsDb, string, IQueryable<ConvMessage>> GetMessagesForMsisdn
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<ConvMessage>> q =
-                CompiledQuery.Compile<HikeDataContext, string, IQueryable<ConvMessage>>
-                ((HikeDataContext hdc, string myMsisdn) =>
+                Func<HikeChatsDb, string, IQueryable<ConvMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
+                ((HikeChatsDb hdc, string myMsisdn) =>
                     from o in hdc.messages
                     where o.Msisdn == myMsisdn
                     select o);
                 return q;
             }
         }
-        public static Func<HikeDataContext, long, IQueryable<ConvMessage>> GetMessagesForMsgId
+        public static Func<HikeChatsDb, long, IQueryable<ConvMessage>> GetMessagesForMsgId
         {
             get
             {
-                Func<HikeDataContext, long, IQueryable<ConvMessage>> q =
-                     CompiledQuery.Compile<HikeDataContext, long, IQueryable<ConvMessage>>
-                     ((HikeDataContext hdc, long id) =>
+                Func<HikeChatsDb, long, IQueryable<ConvMessage>> q =
+                     CompiledQuery.Compile<HikeChatsDb, long, IQueryable<ConvMessage>>
+                     ((HikeChatsDb hdc, long id) =>
                          from o in hdc.messages
                          where o.MessageId == id
                          select o);
@@ -150,13 +150,13 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeDataContext, IQueryable<ConvMessage>> GetAllMessages
+        public static Func<HikeChatsDb, IQueryable<ConvMessage>> GetAllMessages
         {
             get
             {
-                Func<HikeDataContext, IQueryable<ConvMessage>> q =
-                    CompiledQuery.Compile<HikeDataContext, IQueryable<ConvMessage>>
-                    ((HikeDataContext hdc) =>
+                Func<HikeChatsDb, IQueryable<ConvMessage>> q =
+                    CompiledQuery.Compile<HikeChatsDb, IQueryable<ConvMessage>>
+                    ((HikeChatsDb hdc) =>
                         from o in hdc.messages
                         select o);
                 return q;
@@ -167,26 +167,26 @@ namespace windows_client.DbUtils
 
         #region ConversationTable Queries
 
-        public static Func<HikeDataContext, IQueryable<Conversation>> GetAllConversations
+        public static Func<HikeChatsDb, IQueryable<Conversation>> GetAllConversations
         {
             get
             {
-                Func<HikeDataContext, IQueryable<Conversation>> q =
-                    CompiledQuery.Compile<HikeDataContext, IQueryable<Conversation>>
-                    ((HikeDataContext hdc) =>
+                Func<HikeChatsDb, IQueryable<Conversation>> q =
+                    CompiledQuery.Compile<HikeChatsDb, IQueryable<Conversation>>
+                    ((HikeChatsDb hdc) =>
                         from o in hdc.conversations
                         select o);
                 return q;
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<Conversation>> GetConvForMsisdn
+        public static Func<HikeChatsDb, string, IQueryable<Conversation>> GetConvForMsisdn
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<Conversation>> q =
-                    CompiledQuery.Compile<HikeDataContext, string, IQueryable<Conversation>>
-                    ((HikeDataContext hdc, string _msisdn) =>
+                Func<HikeChatsDb, string, IQueryable<Conversation>> q =
+                    CompiledQuery.Compile<HikeChatsDb, string, IQueryable<Conversation>>
+                    ((HikeChatsDb hdc, string _msisdn) =>
                         from o in hdc.conversations
                         where o.Msisdn == _msisdn
                         select o);
@@ -198,26 +198,26 @@ namespace windows_client.DbUtils
 
         #region MqttTable Queries
 
-        public static Func<HikeDataContext, IQueryable<HikePacket>> GetAllSentMessages
+        public static Func<HikeMqttPersistenceDb, IQueryable<HikePacket>> GetAllSentMessages
         {
             get
             {
-                Func<HikeDataContext, IQueryable<HikePacket>> q =
-                    CompiledQuery.Compile<HikeDataContext, IQueryable<HikePacket>>
-                    ((HikeDataContext hdc) =>
+                Func<HikeMqttPersistenceDb, IQueryable<HikePacket>> q =
+                    CompiledQuery.Compile<HikeMqttPersistenceDb, IQueryable<HikePacket>>
+                    ((HikeMqttPersistenceDb hdc) =>
                         from o in hdc.mqttMessages
                         select o);
                 return q;
             }
         }
 
-        public static Func<HikeDataContext, long, IQueryable<HikePacket>> GetMqttMsgForMsgId
+        public static Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> GetMqttMsgForMsgId
         {
             get
             {
-                Func<HikeDataContext, long, IQueryable<HikePacket>> q =
-                   CompiledQuery.Compile<HikeDataContext, long, IQueryable<HikePacket>>
-                   ((HikeDataContext hdc, long id) =>
+                Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> q =
+                   CompiledQuery.Compile<HikeMqttPersistenceDb, long, IQueryable<HikePacket>>
+                   ((HikeMqttPersistenceDb hdc, long id) =>
                        from o in hdc.mqttMessages
                        where o.MessageId == id
                        select o);
@@ -229,26 +229,26 @@ namespace windows_client.DbUtils
 
         #region MiscTable Queries
 
-        public static Func<HikeDataContext, IQueryable<Thumbnails>> GetAllIcons
+        public static Func<HikeUsersDb, IQueryable<Thumbnails>> GetAllIcons
         {
             get
             {
-                Func<HikeDataContext, IQueryable<Thumbnails>> q =
-                  CompiledQuery.Compile<HikeDataContext, IQueryable<Thumbnails>>
-                  ((HikeDataContext hdc) =>
+                Func<HikeUsersDb, IQueryable<Thumbnails>> q =
+                  CompiledQuery.Compile<HikeUsersDb, IQueryable<Thumbnails>>
+                  ((HikeUsersDb hdc) =>
                       from o in hdc.thumbnails
                       select o);
                 return q;
             }
         }
 
-        public static Func<HikeDataContext, string, IQueryable<Thumbnails>> GetIconForMsisdn
+        public static Func<HikeUsersDb, string, IQueryable<Thumbnails>> GetIconForMsisdn
         {
             get
             {
-                Func<HikeDataContext, string, IQueryable<Thumbnails>> q =
-                   CompiledQuery.Compile<HikeDataContext, string, IQueryable<Thumbnails>>
-                   ((HikeDataContext hdc, string m) =>
+                Func<HikeUsersDb, string, IQueryable<Thumbnails>> q =
+                   CompiledQuery.Compile<HikeUsersDb, string, IQueryable<Thumbnails>>
+                   ((HikeUsersDb hdc, string m) =>
                        from o in hdc.thumbnails
                        where o.Msisdn == m
                        select o);

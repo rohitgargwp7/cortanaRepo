@@ -13,7 +13,7 @@ namespace windows_client.Model
 {
     [Table(Name = "messages")]
     [Index(Columns = "Msisdn,Timestamp ASC", IsUnique = false, Name = "Msg_Idx")]
-    public class ConvMessage : INotifyPropertyChanged
+    public class ConvMessage : INotifyPropertyChanged, INotifyPropertyChanging
     {
 
         private long _messageId; // this corresponds to msgID stored in sender's DB
@@ -113,6 +113,7 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
+                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
                 }
@@ -174,6 +175,7 @@ namespace windows_client.Model
             {
                 if (_isInvite != value)
                 {
+                    NotifyPropertyChanging("IsInvite");
                     _isInvite = value;
                     NotifyPropertyChanged("IsInvite");
                 }
@@ -358,6 +360,20 @@ namespace windows_client.Model
             }
         }
 
+        #endregion
+
+        #region INotifyPropertyChanging Members
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        // Used to notify that a property is about to change
+        private void NotifyPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+            {
+                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+            }
+        }
         #endregion
 
         public JObject serializeDeliveryReportRead()

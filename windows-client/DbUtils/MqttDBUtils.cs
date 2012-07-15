@@ -15,7 +15,7 @@ namespace windows_client.DbUtils
         public static List<HikePacket> getAllSentMessages()
         {
             List<HikePacket> res;
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 res = DbCompiledQueries.GetAllSentMessages(context).ToList<HikePacket>();
                 context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
@@ -27,7 +27,7 @@ namespace windows_client.DbUtils
         public static void addSentMessage(HikePacket packet)
         {
             HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 context.mqttMessages.InsertOnSubmit(mqttMessage);
                 context.SubmitChanges();
@@ -37,7 +37,7 @@ namespace windows_client.DbUtils
 
         public void removeSentMessage(long msgId)
         {
-           using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+           using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(DbCompiledQueries.GetMqttMsgForMsgId(context, msgId));
                 context.SubmitChanges();
@@ -46,7 +46,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllUnsentMessages()
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
             }

@@ -2,9 +2,9 @@
 
 namespace windows_client.Model
 {
-    public class HikeDataContext : DataContext
+    public class HikeChatsDb : DataContext
     {
-        public HikeDataContext(string connectionString)
+        public HikeChatsDb(string connectionString)
             : base(connectionString)
         { }
 
@@ -12,12 +12,28 @@ namespace windows_client.Model
 
         public Table<Conversation> conversations;
 
+    }
+
+    public class HikeUsersDb : DataContext
+    {
+        public HikeUsersDb(string connectionString)
+            : base(connectionString)
+        { }
+
         public Table<ContactInfo> users;
 
         public Table<Blocked> blockedUsersTable;
 
-        public Table<HikePacket> mqttMessages;
-        
         public Table<Thumbnails> thumbnails;
+
+    }
+
+    public class HikeMqttPersistenceDb : DataContext
+    {
+        public HikeMqttPersistenceDb(string connectionString)
+            : base(connectionString)
+        { }
+
+        public Table<HikePacket> mqttMessages;
     }
 }

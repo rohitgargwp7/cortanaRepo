@@ -29,7 +29,9 @@ namespace windows_client
         public static readonly string PIN_SETTING = "pincode";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
-        public static readonly string DBConnectionstring = "Data Source=isostore:/HikeDB.sdf";
+        public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
+        public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
+        public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static readonly string invite_message = "Hey! I\'m using hike to send SMS for free. Download it at http://get.hike.in and start messaging me and other friends for free!";
 
         #endregion
@@ -177,15 +179,33 @@ namespace windows_client
 
             // Create the database if it does not exist.
 
-            using (HikeDataContext db = new HikeDataContext(DBConnectionstring))
+            using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
             {
-
                 if (db.DatabaseExists() == false)
                 {
                     // Create the local database.
                     db.CreateDatabase();
                 }
             }
+
+            using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
+            {
+                if (db.DatabaseExists() == false)
+                {
+                    // Create the local database.
+                    db.CreateDatabase();
+                }
+            }
+
+            using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
+            {
+                if (db.DatabaseExists() == false)
+                {
+                    // Create the local database.
+                    db.CreateDatabase();
+                }
+            }
+
             #endregion
 
             #region Instantiate app instances
