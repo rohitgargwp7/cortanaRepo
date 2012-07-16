@@ -11,24 +11,9 @@ namespace windows_client.converters
 {
     public class ImageConverter : IValueConverter
     {
-        private static BitmapImage defaultBitmapImage;
-        private static Dictionary<string, BitmapImage> imageCache;
-        private static List<string> numbersWithDefaultImage;
-        private static HikePubSub pubSub;
-
-        public ImageConverter()
-        {
-            if (imageCache == null)
-                imageCache = new Dictionary<string, BitmapImage>();
-            if (numbersWithDefaultImage == null)
-                numbersWithDefaultImage = new List<string>();
-            if (defaultBitmapImage == null)
-            {
-                Uri uri = new Uri("/View/images/ic_avatar0.png", UriKind.Relative);
-                defaultBitmapImage = new BitmapImage(uri);
-            }
-            pubSub = new HikePubSub();
-        }
+        private static BitmapImage defaultBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
+        private static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
+        private static List<string> numbersWithDefaultImage = new List<string>();
 
         public static void updateImageInCache(string msisdn, byte[] imageBytes)
         {
@@ -55,7 +40,6 @@ namespace windows_client.converters
             });
 
         }
-
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

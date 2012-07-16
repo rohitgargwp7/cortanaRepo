@@ -8,6 +8,8 @@ using System.IO.IsolatedStorage;
 using windows_client.DbUtils;
 using Microsoft.Phone.Tasks;
 using windows_client.View;
+using System.Threading;
+using Phone.Controls;
 
 namespace windows_client.utils
 {
@@ -75,6 +77,7 @@ namespace windows_client.utils
                 /* If nothing is changed simply return without sending update request*/
                 if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
                 {
+                    Thread.Sleep(1000);
                     SelectUserToMsg.progress.Hide();
                     SelectUserToMsg.canGoBack = true;
                     App.isABScanning = false;
@@ -212,6 +215,7 @@ namespace windows_client.utils
         {
             if (patchJsonObj == null)
             {
+                Thread.Sleep(1000);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     SelectUserToMsg.progress.Hide();
@@ -236,6 +240,7 @@ namespace windows_client.utils
                 UsersTableUtils.updateContacts(updatedContacts);
             }
             ConversationsList.ReloadConversations();
+            App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
             App.isABScanning = false;
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

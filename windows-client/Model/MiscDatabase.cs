@@ -1,6 +1,7 @@
 ﻿using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using System.ComponentModel;
+using Microsoft.Phone.Data.Linq.Mapping;
 
 
 namespace windows_client.Model
@@ -70,7 +71,7 @@ namespace windows_client.Model
     }
 
     [Table(Name = "thumbnails")]
-
+    [Index(Columns = "Msisdn", IsUnique = false, Name = "Thumbnail_Idx")]
     public class Thumbnails : INotifyPropertyChanged, INotifyPropertyChanging
     {
         #region members
