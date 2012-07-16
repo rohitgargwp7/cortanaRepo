@@ -84,6 +84,7 @@ namespace windows_client.Mqtt
 
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
+        private volatile bool disconnectCalled = false;
 
         public HikePacket getPacketIfUnsent(int mqttId)
         {
@@ -117,6 +118,7 @@ namespace windows_client.Mqtt
             {
                 if (mqttConnection != null)
                 {
+                    disconnectCalled = true;
                     mqttConnection.disconnect(new DisconnectCB(reconnect, this));
                     mqttConnection = null;
                 }
@@ -220,13 +222,16 @@ namespace windows_client.Mqtt
 
         public void ping()
         {
-            if (mqttConnection != null)
+            if (disconnectCalled == false)
             {
-                mqttConnection.ping(new PingCB(this));
-            }
-            else
-            {
-                connect();
+                if (mqttConnection != null)
+                {
+                    mqttConnection.ping(new PingCB(this));
+                }
+                else
+                {
+                    connect();
+                }
             }
         }
 
@@ -246,6 +251,7 @@ namespace windows_client.Mqtt
 
         public void connect()
         {
+            disconnectCalled = false;
             if (isConnected())
             {
                 return;
@@ -329,7 +335,8 @@ namespace windows_client.Mqtt
         {
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             mqttConnection = null;
-            connect();
+            if(!disconnectCalled)
+                connect();
         }
 
         public void onPublish(String topic, byte[] body)
