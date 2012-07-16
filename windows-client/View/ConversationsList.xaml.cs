@@ -16,6 +16,7 @@ using Phone.Controls;
 using System.Diagnostics;
 using WP7Contrib.Collections;
 using System.Threading;
+using System.ComponentModel;
 
 namespace windows_client.View
 {
@@ -56,12 +57,31 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
             this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+            bw.RunWorkerAsync();
             LoadMessages();          
             initAppBar();
             initProfilePage();
             registerListeners();
         }
 
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            if ((worker.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                // Perform a time consuming operation and report progress.
+                App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
+            }
+
+        }
         private void initProfilePage()
         {
             msisdn = (string)App.appSettings[App.MSISDN_SETTING];
