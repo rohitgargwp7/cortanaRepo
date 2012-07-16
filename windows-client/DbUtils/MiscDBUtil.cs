@@ -8,21 +8,29 @@ namespace windows_client.DbUtils
     {
         public static void clearDatabase()
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.conversations.DeleteAllOnSubmit<Conversation>(context.GetTable<Conversation>());
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
+                context.SubmitChanges();
+            }
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
                 context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
-                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
+                context.SubmitChanges();
+            }
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+            {
+                context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
                 context.SubmitChanges();
             }
         }
         
         public static void addOrUpdateProfileIcon(string msisdn, byte[] image)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
                 Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();                  
@@ -41,7 +49,7 @@ namespace windows_client.DbUtils
 
         public static void addOrUpdateIcon(string msisdn, byte[] image)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
                 Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();   
@@ -64,7 +72,7 @@ namespace windows_client.DbUtils
 
         public static List<Thumbnails> getAllThumbNails()
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetAllIcons(context).ToList<Thumbnails>();
                 return (res == null || res.Count == 0) ? null : res;                   
@@ -73,7 +81,7 @@ namespace windows_client.DbUtils
 
         public static Thumbnails getThumbNailForMSisdn(string msisdn)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
                 return (res == null || res.Count == 0) ? null : res.First();                   
@@ -82,7 +90,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllThumbnails()
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
             }

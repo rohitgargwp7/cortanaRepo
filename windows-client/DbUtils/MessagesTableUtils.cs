@@ -13,7 +13,7 @@ namespace windows_client.DbUtils
         /* This is shown on chat thread screen*/
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res;
@@ -24,7 +24,7 @@ namespace windows_client.DbUtils
         public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
             List<ConvMessage> res;
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.Last();
@@ -35,7 +35,7 @@ namespace windows_client.DbUtils
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetAllMessages(context).ToList<ConvMessage>();
                 return (res == null || res.Count == 0) ? null : res.ToList();
@@ -46,7 +46,7 @@ namespace windows_client.DbUtils
         /* Adds a chat message to message Table.*/
         public static void addMessage(ConvMessage convMessage)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.InsertOnSubmit(convMessage);
                 context.SubmitChanges();
@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
 
         public static void updateMsgStatus(long msgID, int val)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, msgID).ToList<ConvMessage>();
                 if (res.Count == 1)
@@ -110,7 +110,7 @@ namespace windows_client.DbUtils
 
         public static void updateAllMsgStatus(long[] ids, int status)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
 
                 for (int i = 0; i < ids.Length; i++)
@@ -129,7 +129,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllMessages()
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.SubmitChanges();
@@ -138,7 +138,7 @@ namespace windows_client.DbUtils
 
         public static void deleteMessage(long msgId)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsgId(context, msgId));
                 context.SubmitChanges();
@@ -147,7 +147,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllMessagesForMsisdn(string msisdn)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsisdn(context, msisdn));
                 context.SubmitChanges();
@@ -156,7 +156,7 @@ namespace windows_client.DbUtils
 
         public static void addMessages(List<ConvMessage> messages)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.InsertAllOnSubmit(messages);
                 context.SubmitChanges();

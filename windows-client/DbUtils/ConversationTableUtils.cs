@@ -10,7 +10,7 @@ namespace windows_client.DbUtils
         /* This function gets all the conversations shown on the message list page*/
         public static List<Conversation> getAllConversations()
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 List<Conversation> res = DbCompiledQueries.GetAllConversations(context).ToList<Conversation>();
                 if (res==null || res.Count() == 0)
@@ -25,7 +25,7 @@ namespace windows_client.DbUtils
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
             Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : convMessage.Msisdn,  (contactInfo != null) ? contactInfo.OnHike:!convMessage.IsSms);
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {              
                     context.conversations.InsertOnSubmit(conv);
                     context.SubmitChanges();
@@ -34,7 +34,7 @@ namespace windows_client.DbUtils
 
         public static void deleteAllConversations()
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.conversations.DeleteAllOnSubmit<Conversation>(context.GetTable<Conversation>());
                 context.SubmitChanges();
@@ -43,7 +43,7 @@ namespace windows_client.DbUtils
 
         public static void deleteConversation(string msisdn)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.conversations.DeleteAllOnSubmit<Conversation>(DbCompiledQueries.GetConvForMsisdn(context, msisdn));
                 context.SubmitChanges();
@@ -52,7 +52,7 @@ namespace windows_client.DbUtils
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            using (HikeDataContext context = new HikeDataContext(App.DBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 List<Conversation> res = DbCompiledQueries.GetConvForMsisdn(context, msisdn).ToList<Conversation>();
                 if (res == null || res.Count<Conversation>() == 0)
