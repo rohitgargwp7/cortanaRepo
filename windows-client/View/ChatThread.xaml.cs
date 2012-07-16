@@ -45,7 +45,7 @@ namespace windows_client.View
 
         private ApplicationBar appBar;
         ApplicationBarMenuItem menuItem1;
-        ApplicationBarIconButton inviteUsrIconButton = null;
+        ApplicationBarMenuItem inviteMenuItem = null;
 
         private readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
         private readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
@@ -210,13 +210,11 @@ namespace windows_client.View
             ContactUtils.saveContact(mContactNumber);
         }
 
-        private void initAppBarIconButton()
+        private void initInviteMenuItem()
         {
-            inviteUsrIconButton = new ApplicationBarIconButton();
-            inviteUsrIconButton.IconUri = new Uri("/View/images/appbar.favs.addto.rest.png", UriKind.Relative);
-            inviteUsrIconButton.Text = "invite";
-            inviteUsrIconButton.Click += new EventHandler(inviteUserBtn_Click);
-            inviteUsrIconButton.IsEnabled = true;
+            inviteMenuItem = new ApplicationBarMenuItem();
+            inviteMenuItem.Text = "invite user";
+            inviteMenuItem.Click += new EventHandler(inviteUserBtn_Click);
         }
 
         private void initPageBasedOnState()
@@ -250,8 +248,8 @@ namespace windows_client.View
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
-                initAppBarIconButton();
-                appBar.Buttons.Add(inviteUsrIconButton);
+                initInviteMenuItem();
+                appBar.MenuItems.Add(inviteMenuItem);
             }
             else
             {
@@ -485,15 +483,15 @@ namespace windows_client.View
         {
             if (isOnHike)
             {
-                if (appBar.Buttons.Contains(inviteUsrIconButton))
-                    appBar.Buttons.Remove(inviteUsrIconButton);
+                if (appBar.MenuItems.Contains(inviteMenuItem))
+                    appBar.MenuItems.Remove(inviteMenuItem);
             }
             else
             {
-                if (inviteUsrIconButton == null)
-                    initAppBarIconButton();
-                if (!appBar.Buttons.Contains(inviteUsrIconButton))
-                    appBar.Buttons.Add(inviteUsrIconButton);
+                if (inviteMenuItem == null)
+                    initInviteMenuItem();
+                if (!appBar.MenuItems.Contains(inviteMenuItem))
+                    appBar.MenuItems.Add(inviteMenuItem);
             }
         }
 
