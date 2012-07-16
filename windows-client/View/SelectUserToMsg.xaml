@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Converters="clr-namespace:windows_client.converters"
+    xmlns:GkJumpList="clr-namespace:GK.Phone;assembly=Gk.Phone"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -50,8 +51,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" Background="#efefef" Margin="8,0,2,0" Width="470" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged" BorderThickness="8,3,3,3" Grid.ColumnSpan="2"/>
-            <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin">
-                <ListBox.ItemTemplate>
+
+            <GkJumpList:JumpList x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin" ShowRowHeader="False" ShowHeaders="True" IsPumped="False" PicturePath="{Binding Msisdn,Converter={StaticResource imgConverter}}">
+                <GkJumpList:JumpList.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
                             <Image x:Name="avatar_image" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" 
@@ -67,8 +69,8 @@
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </GkJumpList:JumpList.ItemTemplate>
+            </GkJumpList:JumpList>
         </Grid>
         <StackPanel x:Name="sendMsgPanel" Orientation="Horizontal" Margin="-12,580,0,0" Grid.Row="2">
             <TextBox x:Name="enterMsgTxt" Width="442" TextChanged="enterNameTxt_TextChanged" />

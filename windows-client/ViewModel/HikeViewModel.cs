@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel;
 using windows_client.Model;
 using WP7Contrib.Collections;
+using System.Collections.Generic;
 
 namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged
     {
+        public List<ContactInfo> allContactsList = new List<ContactInfo>();
+
         private ObservableCollection<ConversationListObject> _messageListPageCollection = null;
 
         public ObservableCollection<ConversationListObject> MessageListPageCollection

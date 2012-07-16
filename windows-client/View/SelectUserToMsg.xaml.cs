@@ -8,6 +8,8 @@ using windows_client.utils;
 using Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Media;
+using System.ComponentModel;
+using System.Windows;
 
 namespace windows_client.View
 {
@@ -15,20 +17,18 @@ namespace windows_client.View
     {
         public static MyProgressIndicator progress = null;
         public static bool canGoBack = true;
-        List<ContactInfo> allContactsList;
+
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 239, 239, 239));
 
         public SelectUserToMsg()
         {
-            InitializeComponent();
-            this.DataContext = App.ViewModel;
-            allContactsList = UsersTableUtils.getAllContacts();
-            contactsListBox.ItemsSource = allContactsList;
+            InitializeComponent();         
         }
-
+        
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            contactsListBox.ItemsSource = App.ViewModel.allContactsList;
         }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
@@ -36,7 +36,7 @@ namespace windows_client.View
             string charsEnetered = enterNameTxt.Text.ToLower();
             if (String.IsNullOrEmpty(charsEnetered))
             {
-                contactsListBox.ItemsSource = allContactsList;
+                contactsListBox.ItemsSource = App.ViewModel.allContactsList;
                 return;
             }
             List<ContactInfo> contactsList = getContactInfoFromNameOrPhone(charsEnetered);
@@ -51,11 +51,11 @@ namespace windows_client.View
         private List<ContactInfo> getContactInfoFromNameOrPhone(string charsEnetered)
         {
             List<ContactInfo> contactsList = new List<ContactInfo>();
-            for (int i = 0; i < allContactsList.Count; i++)
+            for (int i = 0; i < App.ViewModel.allContactsList.Count; i++)
             {
-                if (allContactsList[i].Name.ToLower().Contains(charsEnetered) || allContactsList[i].Msisdn.Contains(charsEnetered) || allContactsList[i].PhoneNo.Contains(charsEnetered))
+                if (App.ViewModel.allContactsList[i].Name.ToLower().Contains(charsEnetered) || App.ViewModel.allContactsList[i].Msisdn.Contains(charsEnetered) || App.ViewModel.allContactsList[i].PhoneNo.Contains(charsEnetered))
                 {
-                    contactsList.Add(allContactsList[i]);
+                    contactsList.Add(App.ViewModel.allContactsList[i]);
                 }
             }
             return contactsList;

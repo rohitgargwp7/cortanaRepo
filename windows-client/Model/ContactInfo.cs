@@ -3,10 +3,12 @@ using System.ComponentModel;
 using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
+using Microsoft.Phone.Data.Linq.Mapping;
 
 namespace windows_client.Model
 {
     [Table(Name = "users")]
+    [Index(Columns = "Msisdn", IsUnique = false, Name = "Msisdn_Idx")]
     public class ContactInfo : INotifyPropertyChanged, IComparable<ContactInfo>
     {
         private int _dbId;
@@ -205,18 +207,10 @@ namespace windows_client.Model
             return (this.Name.ToLower().CompareTo(((ContactInfo)rhs).Name.ToLower()));
         }
 
-        public JObject toJSON()
-	    {
-            //JSonWriter wr = new JSonWriter();
-            //wr.WriteObjectBegin();
-            //wr.WriteMember("phone_no", this.PhoneNo);
-            //wr.WriteMember("name", this.Name);
-            //wr.WriteMember("id", this.Id);
-            //wr.WriteObjectEnd();
-            //JSonReader jr = new JSonReader();
-            //IJSonObject obj = jr.ReadAsJSonObject(wr.ToString());
-            return null;
-	    }
+        public override string ToString()
+        {
+            return _name;
+        }
 
         #endregion
 
