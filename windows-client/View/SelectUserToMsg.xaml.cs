@@ -10,25 +10,28 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows;
+using Clarity.Phone.Controls;
+using Clarity.Phone.Controls.Animations;
 
 namespace windows_client.View
 {
-    public partial class SelectUserToMsg : PhoneApplicationPage
+    public partial class SelectUserToMsg : AnimatedBasePage
     {
         public static MyProgressIndicator progress = null;
         public static bool canGoBack = true;
 
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 239, 239, 239));
+       // private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 239, 239, 239));
 
         public SelectUserToMsg()
         {
-            InitializeComponent();         
+            InitializeComponent();
+            contactsListBox.ItemsSource = App.ViewModel.allContactsList;
+            AnimationContext = LayoutRoot;
         }
         
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);
-            contactsListBox.ItemsSource = App.ViewModel.allContactsList;
+            base.OnNavigatedTo(e);          
         }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
@@ -98,8 +101,15 @@ namespace windows_client.View
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            enterNameTxt.Background = textBoxBackground;
+           // enterNameTxt.Background = textBoxBackground;
+        }
 
+        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
+        {
+            if (animationType == AnimationType.NavigateForwardIn)
+                return new SlideUpAnimator() { RootElement = LayoutRoot };
+            else
+                return new SlideDownAnimator() { RootElement = LayoutRoot };
         }
     }
 }

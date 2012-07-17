@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "windows-client", "windows-c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone.Controls", "Phone.Controls\Phone.Controls.csproj", "{BE66B5CF-E495-4BB9-A261-9123B6974011}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PageTransitions", "PageTransitions\PageTransitions.csproj", "{A58FA31E-09AE-4C33-9E77-8C8CB47FCAA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BE66B5CF-E495-4BB9-A261-9123B6974011}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE66B5CF-E495-4BB9-A261-9123B6974011}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE66B5CF-E495-4BB9-A261-9123B6974011}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A58FA31E-09AE-4C33-9E77-8C8CB47FCAA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A58FA31E-09AE-4C33-9E77-8C8CB47FCAA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A58FA31E-09AE-4C33-9E77-8C8CB47FCAA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A58FA31E-09AE-4C33-9E77-8C8CB47FCAA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

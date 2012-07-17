@@ -13,10 +13,12 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Reactive;
 using System.Threading;
+using Clarity.Phone.Controls;
+using Clarity.Phone.Controls.Animations;
 
 namespace windows_client.View
 {
-    public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
+    public partial class ChatThread : AnimatedBasePage, HikePubSub.Listener, INotifyPropertyChanged
     {
         #region CONSTANTS
 
@@ -76,15 +78,15 @@ namespace windows_client.View
         public ChatThread()
         {
             InitializeComponent();
+            AnimationContext = LayoutRoot;
             this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-
+            loadMessages();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
-
-
+           
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -100,29 +102,11 @@ namespace windows_client.View
                 // Perform a time consuming operation and report progress.
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
-                loadMessages();
                 registerListeners();
             }
 
         }
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if ((e.Cancelled == true))
-            {
-
-            }
-
-            else if (!(e.Error == null))
-            {
-
-            }
-
-            else
-            {
-
-            }
-        }
-
+        
         private void initBlockUnblockState()
         {
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
@@ -369,6 +353,15 @@ namespace windows_client.View
                     NavigationService.RemoveBackEntry();
             }
         }
+
+        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
+        {
+            if (animationType == AnimationType.NavigateForwardIn)
+                return new TurnstileFeatherForwardInAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
+            else
+                return new TurnstileFeatherBackwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
+        }
+
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);

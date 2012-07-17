@@ -289,6 +289,10 @@
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PageTransitions\PageTransitions.csproj">
+      <Project>{A58FA31E-09AE-4C33-9E77-8C8CB47FCAA7}</Project>
+      <Name>PageTransitions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Phone.Controls\Phone.Controls.csproj">
       <Project>{BE66B5CF-E495-4BB9-A261-9123B6974011}</Project>
       <Name>Phone.Controls</Name>

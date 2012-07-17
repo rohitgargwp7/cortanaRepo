@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage 
+﻿<cc:AnimatedBasePage 
     x:Class="windows_client.View.ChatThread"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,6 +9,8 @@
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
     xmlns:Converters="clr-namespace:windows_client.converters"
+    xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=PageTransitions"
+    
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -96,4 +98,4 @@
             <Button Background="#0d5585" Height="75" Content="Unblock" Width="250" Margin="0,10,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
     </Grid>
-</phone:PhoneApplicationPage>
+</cc:AnimatedBasePage>
