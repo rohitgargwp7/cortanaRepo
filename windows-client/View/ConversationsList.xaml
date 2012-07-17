@@ -9,12 +9,34 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:Converters="clr-namespace:windows_client.converters"
+        xmlns:GkJumpList="clr-namespace:GK.Phone;assembly=Gk.Phone"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="False" Name="convListPagePivot">
+
+    <!--<toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideRightFadeIn"/>
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeIn"/>
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideRightFadeOut"/>
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeOut"/>
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>-->
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
@@ -79,7 +101,7 @@
 
             <!--Pivot item two-->
             <!--<controls:PivotItem Header="new chat">
-                <Grid x:Name="newChatGrid" Background="Transparent">
+                <Grid x:Name="newChat" Background="Transparent">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="620"/>
@@ -90,14 +112,26 @@
                         <Converters:OnHikeIndicator x:Key="onHikeConverter"></Converters:OnHikeIndicator>
                     </Grid.Resources>
 
+                    <StackPanel Background="White">
+                        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
+                            <Image Source="images\hike_logo_small.png" Margin="25,20,0,0" HorizontalAlignment="Left" Height="34" Width="127"></Image>
+                            <TextBlock Text="new chat" FontFamily="Calibri" FontSize="55" FontStretch="Expanded"  Margin="23,0,0,0" Foreground="Black" Height="56"/>
+                        </StackPanel>
+                    </StackPanel>
+
                     <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.206*"/>
+                            <ColumnDefinition Width="0.794*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <toolkit:PhoneTextBox Background="#efefef" Margin="5,0,0,0" Width="440" x:Name="enterNameTxt" HorizontalAlignment="Stretch" Hint=" search" Text=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged"/>
-                        <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0">
-                            <ListBox.ItemTemplate>
+                        <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" Background="#efefef" Margin="8,0,2,0" Width="470" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged" BorderThickness="8,3,3,3" Grid.ColumnSpan="2"/>
+
+                        <GkJumpList:JumpList x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin" ShowRowHeader="False" ShowHeaders="True" IsPumped="False" PicturePath="{Binding Msisdn,Converter={StaticResource imgConverter}}">
+                            <GkJumpList:JumpList.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
                                         <Image x:Name="avatar_image" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" 
@@ -113,8 +147,8 @@
                                         </StackPanel>
                                     </StackPanel>
                                 </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                            </GkJumpList:JumpList.ItemTemplate>
+                        </GkJumpList:JumpList>
                     </Grid>
                     <StackPanel x:Name="sendMsgPanel" Orientation="Horizontal" Margin="-12,580,0,0" Grid.Row="2">
                         <TextBox x:Name="enterMsgTxt" Width="442" TextChanged="enterNameTxt_TextChanged" />
@@ -122,8 +156,8 @@
                 </Grid>
 
             </controls:PivotItem>-->
-            
-            
+
+
             <controls:PivotItem Header="profile">
                 <Grid x:Name="ProfileGrid">
                     <Grid.RowDefinitions>
