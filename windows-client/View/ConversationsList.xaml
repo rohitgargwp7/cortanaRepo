@@ -9,7 +9,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:Converters="clr-namespace:windows_client.converters"
-    xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=Clarity.PageTransitionSample"
+   xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=PageTransitions"
+    xmlns:GkJumpList="clr-namespace:GK.Phone;assembly=Gk.Phone"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -29,9 +30,9 @@
             <Image x:Name="icon" Source="images\hike_header.png" Height="40"/>
         </StackPanel>
 
-        <controls:Pivot Grid.Row="1" Foreground="Black" Margin="0,-20,0,0" SelectionChanged="Pivot_SelectionChanged">
+        <controls:Pivot Grid.Row="1" Foreground="Black" Margin="0,-20,0,0">
             <!--Pivot item one-->
-            <controls:PivotItem Header="conversations">
+            <controls:PivotItem Header="chats">
                 <Grid x:Name="ConversationList">
                     <Grid.Resources>
                         <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
@@ -78,53 +79,7 @@
                 </Grid>
             </controls:PivotItem>
 
-            <!--Pivot item two-->
-            <!--<controls:PivotItem Header="new chat">
-                <Grid x:Name="newChatGrid" Background="Transparent">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="620"/>
-                        <RowDefinition Height="0*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
-                        <Converters:OnHikeIndicator x:Key="onHikeConverter"></Converters:OnHikeIndicator>
-                    </Grid.Resources>
-
-                    <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <toolkit:PhoneTextBox Background="#efefef" Margin="5,0,0,0" Width="440" x:Name="enterNameTxt" HorizontalAlignment="Stretch" Hint=" search" Text=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged"/>
-                        <ListBox x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
-                                        <Image x:Name="avatar_image" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}"/>
-                                        <StackPanel Orientation="Vertical">
-                                            <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
-                                                <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Image Source="{Binding OnHike, Converter={StaticResource onHikeConverter}}" Height="15" Width="15"/>
-                                                    <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                    <StackPanel x:Name="sendMsgPanel" Orientation="Horizontal" Margin="-12,580,0,0" Grid.Row="2">
-                        <TextBox x:Name="enterMsgTxt" Width="442" TextChanged="enterNameTxt_TextChanged" />
-                    </StackPanel>
-                </Grid>
-
-            </controls:PivotItem>-->
-            
-            
+           
             <controls:PivotItem Header="profile">
                 <Grid x:Name="ProfileGrid">
                     <Grid.RowDefinitions>

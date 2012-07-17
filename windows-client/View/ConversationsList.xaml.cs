@@ -34,7 +34,6 @@ namespace windows_client.View
         public MyProgressIndicator progress = null;
         private HikePubSub mPubSub;
         private readonly IsolatedStorageSettings appSettings;
-        private NLog.Logger logger;
         private static Dictionary<string, ConversationListObject> convMap; // this holds msisdn -> conversation mapping
         public static Dictionary<string, bool> convMap2 = new Dictionary<string, bool>();
         private PhotoChooserTask photoChooserTask;
@@ -53,18 +52,21 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            AnimationContext = LayoutRoot;
-            mPubSub = App.HikePubSubInstance;
-            logger = NLog.LogManager.GetCurrentClassLogger();
-            appSettings = App.appSettings;
-            App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
-            this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
-            convMap = new Dictionary<string, ConversationListObject>();
+            #region Load Hike Contacts
+
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadContacts);
             bw.RunWorkerAsync();
-            //LoadMessages();          
+
+            #endregion
+            AnimationContext = LayoutRoot;
+            mPubSub = App.HikePubSubInstance;
+            appSettings = App.appSettings;
+            App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
+            this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            convMap = new Dictionary<string, ConversationListObject>();           
+            LoadMessages();          
             initAppBar();
             initProfilePage();
             registerListeners();
@@ -295,7 +297,6 @@ namespace windows_client.View
             if (obj == null || "fail" == (string)obj["stat"])
             {
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
-                logger.Info("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     progress.Hide();
@@ -346,22 +347,6 @@ namespace windows_client.View
             });
         }
 
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            PivotItem pItem = e.AddedItems[0] as PivotItem;
-            var panorama = pItem.Parent as Pivot;
-            var selectedIndex = panorama.SelectedIndex;
-            if (selectedIndex == 0)
-            {
-                //appBar.IsVisible = true;
-            }
-            else if (selectedIndex == 1)
-            {
-//                enterNameTxt.Focus();
-                ////appBar.IsVisible = false;
-            }
-        }
-       
         protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
         {
 
@@ -370,6 +355,10 @@ namespace windows_client.View
 
             if (toOrFrom != null)
             {
+                if (toOrFrom.OriginalString.Contains("SelectUserToMsg.xaml"))
+                {
+                    return null;
+                }
                 if (animationType == AnimationType.NavigateForwardOut)
                     return new TurnstileFeatherForwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
                 else
@@ -384,7 +373,6 @@ namespace windows_client.View
             switch (animationType)
             {
                 case AnimationType.NavigateForwardIn:
-                    LoadMessages();
                     //Add code to set data context and bind data
                     //you really only need to do that on forward in. on backward in everything
                     //will be there that existed on forward out

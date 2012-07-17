@@ -83,11 +83,10 @@ namespace windows_client.View
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
             loadMessages();
-            /*bw.WorkerSupportsCancellation = true;
+            bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
-            */
-
+           
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -103,29 +102,11 @@ namespace windows_client.View
                 // Perform a time consuming operation and report progress.
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
-                loadMessages();
                 registerListeners();
             }
 
         }
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if ((e.Cancelled == true))
-            {
-
-            }
-
-            else if (!(e.Error == null))
-            {
-
-            }
-
-            else
-            {
-
-            }
-        }
-
+        
         private void initBlockUnblockState()
         {
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
