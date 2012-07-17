@@ -57,7 +57,7 @@
                 <TextBlock x:Name="txtBlkEnterNumber" Foreground="#4f4f4f" TextWrapping="Wrap" Text="Enter it below to get started" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
                 <StackPanel Orientation="Horizontal" Height="50"  Background="#e3e3df" Width="320" Margin="0,10,0,0" >
                     <Image Source="images\phone_number.png" Margin="15,10,0,10" Height="20" />
-                    <toolkit:PhoneTextBox x:Name="txtEnterPhone" GotFocus="txtEnterPhone_GotFocus" Foreground="Black" BorderThickness="0" InputScope="Number" Margin="0,-8,0,0" Width="250" Height="70" Hint="Phone Number"/>
+                    <toolkit:PhoneTextBox x:Name="txtEnterPhone" GotFocus="txtEnterPhone_GotFocus" Foreground="Black" BorderThickness="0" InputScope="Number" Margin="0,-8,0,0" Width="250" Height="70"/>
                 </StackPanel>
                 <Button BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" x:Name="enterPhoneBtn" Foreground="White" Margin="37,10,37,429" Content="Next" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="72" Click="enterPhoneBtn_Click" Width="344">
                 </Button>
