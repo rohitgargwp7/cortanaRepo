@@ -57,7 +57,7 @@
                 <TextBlock x:Name="txtBlkEnterPin" Foreground="#4f4f4f" TextWrapping="Wrap" Text="Enter it here" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
                 <StackPanel Orientation="Horizontal" Height="50"  Background="#e3e3df" Width="320" Margin="0,10,0,0" >
                     <Image Source="images\sms_pin.png" Margin="15,10,0,10" Height="20" />
-                    <toolkit:PhoneTextBox x:Name="txtBxEnterPin" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" Background="#e3e3df" BorderThickness="0" InputScope="Number" Margin="0,-8,0,0" Width="250" Height="70" Hint="pin"/>
+                    <toolkit:PhoneTextBox x:Name="txtBxEnterPin" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" Background="#e3e3df" BorderThickness="0" InputScope="Number" Margin="0,-8,0,0" Width="250" Height="70"/>
                 </StackPanel>
                 <Button x:Name="enterPhoneBtn" Click="btnEnterPin_Click" BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" Foreground="White" Content="Next" RenderTransformOrigin="0.5,0.5" Height="72" Width="344">
                 </Button>

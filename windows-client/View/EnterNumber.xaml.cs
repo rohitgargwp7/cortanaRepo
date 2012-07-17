@@ -86,6 +86,7 @@ namespace windows_client
         {
             txtEnterPhone.Text = "";
             txtEnterPhone.Background = textBoxBackground;
+            txtEnterPhone.Hint = "Phone Number";
         }
     }
 }

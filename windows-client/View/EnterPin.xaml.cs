@@ -69,7 +69,7 @@ namespace windows_client
         private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Background = textBoxBackground;
-
+            txtBxEnterPin.Hint = "Pin";
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

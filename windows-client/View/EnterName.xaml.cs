@@ -97,6 +97,7 @@ namespace windows_client
         private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
         {
             txtBxEnterName.Background = textBoxBackground;
+            txtBxEnterName.Hint = "Name";
         }
     }
 }
