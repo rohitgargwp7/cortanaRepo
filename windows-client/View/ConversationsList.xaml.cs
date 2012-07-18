@@ -60,6 +60,8 @@ namespace windows_client.View
         {
             InitializeComponent();
             myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            convMap = new Dictionary<string, ConversationListObject>();
+            convMap2 = new Dictionary<string, bool>();
             LoadMessages();
             #region Load App level instances
 
