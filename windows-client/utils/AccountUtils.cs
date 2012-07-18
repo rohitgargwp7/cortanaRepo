@@ -13,7 +13,7 @@ namespace windows_client.utils
     {
         public static readonly string HOST = "im.hike.in";
 
-        private static readonly int PORT = 3001;
+        private static readonly int PORT = 8080;
 
         private static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
 
