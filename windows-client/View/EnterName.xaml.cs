@@ -12,8 +12,6 @@ namespace windows_client
 {
     public partial class EnterName : PhoneApplicationPage
     {
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private string ac_name;
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
 
@@ -22,6 +20,8 @@ namespace windows_client
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
+            App.appSettings[App.PAGE_STATE] = App.PageState.SETNAME_SCREEN;
+            App.appSettings.Save();
         }
 
         private void btnEnterName_Click(object sender, RoutedEventArgs e)
@@ -39,7 +39,7 @@ namespace windows_client
 
             if (obj == null || "ok" != (string)obj["stat"])
             {
-                logger.Info("HTTP", "Unable to set name");
+                //logger.Info("HTTP", "Unable to set name");
                 // SHOW SOME TRY AGAIN MSG etc
                 return;
             }
@@ -62,9 +62,9 @@ namespace windows_client
                 return;
             }
 
-            appSettings[App.NAME_SETTING] = "y";
-            appSettings[App.ACCOUNT_NAME] = ac_name;
-            appSettings.Save();
+            App.appSettings[App.ACCOUNT_NAME] = ac_name;
+            App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
+            App.appSettings.Save();
 
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 

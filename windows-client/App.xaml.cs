@@ -19,14 +19,11 @@ namespace windows_client
 
         #region Hike Specific Constants
 
-        public static string ACCOUNT_NAME = "accountName";
-        public static readonly string ACCEPT_TERMS = "acceptterms";
+        public static readonly string PAGE_STATE = "page_State";
+        public static readonly string ACCOUNT_NAME = "accountName";
         public static readonly string MSISDN_SETTING = "msisdn";
-        public static readonly string NAME_SETTING = "name";
-        public static readonly string ADDRESS_BOOK_SCANNED = "abscanned";
+        public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
         public static readonly string TOKEN_SETTING = "token";
-        public static readonly string MESSAGES_SETTING = "messageid";
-        public static readonly string PIN_SETTING = "pincode";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
@@ -43,7 +40,7 @@ namespace windows_client
         private static bool ab_scanned = false;
         public static bool isABScanning = false;
         private static HikePubSub mPubSubInstance;
-        private static HikeViewModel _viewModel;
+        private static HikeViewModel _viewModel = new HikeViewModel();
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
@@ -54,18 +51,17 @@ namespace windows_client
 
         public static HikeMqttManager MqttManagerInstance
         {
-            get 
+            get
             {
                 return mMqttManager;
             }
-            set 
+            set
             {
                 mMqttManager = value;
             }
-        
-        
-        }
 
+
+        }
 
         public static bool Ab_scanned
         {
@@ -101,13 +97,6 @@ namespace windows_client
             {
                 return _viewModel;
             }
-            set
-            {
-                if (value != _viewModel)
-                {
-                    _viewModel = value;
-                }
-            }
         }
 
         public static DbConversationListener DbListener
@@ -124,11 +113,38 @@ namespace windows_client
                 }
             }
         }
-        
-        #endregion
+
+        public static NetworkManager NetworkManagerInstance
+        {
+            get
+            {
+                return networkManager;
+            }
+            set
+            {
+                if (value != networkManager)
+                {
+                    networkManager = value;
+                }
+            }
+        }
 
         #endregion
 
+        #endregion
+
+        #region Page State
+
+        public enum PageState
+        {
+            WELCOME_SCREEN, // WelcomePage Screen
+            PHONE_SCREEN,   // EnterNumber Screen
+            PIN_SCREEN,     // EnterPin Screen
+            SETNAME_SCREEN, // EnterName Screen
+            CONVLIST_SCREEN, // ConversationsList Screen
+        }
+
+        #endregion
 
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
@@ -208,50 +224,40 @@ namespace windows_client
 
             #endregion
 
-            #region Instantiate app instances
-
-            mPubSubInstance = new HikePubSub(); // instantiate pubsub
-            _viewModel = new HikeViewModel();  // instantiate HikeviewModel 
-            dbListener = new DbConversationListener();
-            mMqttManager = new HikeMqttManager();
-            networkManager = NetworkManager.Instance;
-
-            #endregion
-
         }
 
 
         private void loadPage()
         {
-
+            PageState ps = PageState.WELCOME_SCREEN;
+            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
             Uri nUri = null;
 
-            if (!appSettings.Contains(App.ACCEPT_TERMS) || "f" == appSettings[App.ACCEPT_TERMS].ToString())
+            switch (ps)
             {
-                nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
-                /* test function */
+                case PageState.WELCOME_SCREEN:
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
+                case PageState.PHONE_SCREEN:
+                    nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
+                    break;
+                case PageState.PIN_SCREEN:
+                    nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
+                    break;
+                case PageState.SETNAME_SCREEN:
+                    nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                    if (appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED))
+                    {
+                        ab_scanned = true;
+                    }
+                    break;
+                case PageState.CONVLIST_SCREEN:
+                    nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                    break;
+                default:
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
             }
-            else if (!appSettings.Contains(App.MSISDN_SETTING) || "f" == appSettings[App.MSISDN_SETTING].ToString())
-            {
-                nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
-            }
-            else if (!appSettings.Contains(App.PIN_SETTING) || "f" == appSettings[App.PIN_SETTING].ToString())
-            {
-                nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
-            }
-            else if (!appSettings.Contains(App.NAME_SETTING) || "f" == appSettings[App.NAME_SETTING].ToString())
-            {
-                nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
-                if (appSettings.Contains(App.ADDRESS_BOOK_SCANNED) && "y" == (string)appSettings[App.ADDRESS_BOOK_SCANNED])
-                {
-                    ab_scanned = true;
-                }
-            }
-            else
-            {
-                nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-            }
-
             ((App)Application.Current).RootFrame.Navigate(nUri);
         }
         // Code to execute when the application is launching (eg, from Start)
@@ -308,7 +314,7 @@ namespace windows_client
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
             });
-          
+
         }
 
         #region Phone application initialization

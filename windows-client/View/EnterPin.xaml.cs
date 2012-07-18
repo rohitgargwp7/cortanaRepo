@@ -10,20 +10,20 @@ namespace windows_client
 {
     public partial class EnterPin : PhoneApplicationPage
     {
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
 
         public EnterPin()
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
+            App.appSettings[App.PAGE_STATE] = App.PageState.PIN_SCREEN;
+            App.appSettings.Save();
         }
 
         private void btnEnterPin_Click(object sender, RoutedEventArgs e)
         {  
             string pinEntered =  txtBxEnterPin.Text;
-            string unAuthMsisdn = (string)appSettings["msisdn"];
+            string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
             pinErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
@@ -36,7 +36,7 @@ namespace windows_client
 
             if (obj == null || "fail" == (string)obj["stat"])
             {
-                logger.Info("HTTP", "Unable to create account");
+               // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     pinErrorTxt.Visibility = Visibility.Visible;
@@ -45,8 +45,7 @@ namespace windows_client
                 });
                 return;
             }
-            appSettings[App.PIN_SETTING] = "y";
-            appSettings.Save();
+            
             utils.Utils.savedAccountCredentials(obj);
            
             /*Before calling setName function , simply scan the addressbook*/
@@ -85,6 +84,7 @@ namespace windows_client
         private void goBackLogic()
         {
             App.appSettings.Remove(App.MSISDN_SETTING);
+            App.appSettings.Save();
             if (NavigationService.CanGoBack)
             {
                 NavigationService.GoBack();

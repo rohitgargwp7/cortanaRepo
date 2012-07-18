@@ -11,9 +11,6 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        //public static readonly string HOST = "ec2-122-248-223-107.ap-southeast-1.compute.amazonaws.com"; 46.137.211.136
         public static readonly string HOST = "im.hike.in";
 
         private static readonly int PORT = 3001;
@@ -76,14 +73,14 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });
         }
 
-        public static void postAddressBook(string token, Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
+        public static void postAddressBook(Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
         {
 
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, token, contactListMap, finalCallbackFunction });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, contactListMap, finalCallbackFunction });
         }
 
         public static void updateAddressBook(Dictionary<string, List<ContactInfo>> contacts_to_update, JArray ids_json, postResponseFunction finalCallbackFunction)
@@ -128,7 +125,6 @@ namespace windows_client.utils
             req.Method = "DELETE";
             addToken(req);
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
-            //req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
 
         public static void updateProfileIcon(MemoryStream msSmallImage, postResponseFunction finalCallbackFunction)
@@ -180,9 +176,8 @@ namespace windows_client.utils
                     break;
 
                 case RequestType.POST_ADDRESSBOOK:
-                    string token = vars[2] as string;
-                    Dictionary<string, List<ContactInfo>> contactListMap = vars[3] as Dictionary<string, List<ContactInfo>>;
-                    finalCallbackFunction = vars[4] as postResponseFunction;
+                    Dictionary<string, List<ContactInfo>> contactListMap = vars[2] as Dictionary<string, List<ContactInfo>>;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
                     break;
 
@@ -242,22 +237,18 @@ namespace windows_client.utils
             }
             catch (IOException ioe)
             {
-                logger.Info("AccountUtils", "RequestType : " + type + " , IOException occured : " + ioe);
                 obj = null;
             }
             catch (WebException we)
             {
-                logger.Info("AccountUtils", "RequestType : " + type + " , Webexception occured : " + we);
                 obj = null;
             }
             catch (JsonException je)
             {
-                logger.Info("AccountUtils", "RequestType : " + type + " , Invalid JSON Response", je);
                 obj = null;
             }
             catch (Exception e)
             {
-                logger.Info("AccountUtils", "RequestType : " + type + " , Exception occured : " + e);
                 obj = null;
             }
             finally
@@ -272,19 +263,13 @@ namespace windows_client.utils
             {
                 if ((obj == null) || "fail" == (string)obj["stat"])
                 {
-
-                    logger.Info("HTTP", "Unable to upload address book");
-                    // TODO raise a real exception here
                     return null;
                 }
-                logger.Info("AccountUtils", "Reply from addressbook:" + obj.ToString());
-
-                //JToken bl = (JToken)obj["blocklist"];
+                
                 JArray blocklist = (JArray)obj["blocklist"];
 
                 if (blocklist == null)
                 {
-                    logger.Info("AccountUtils", "Received blocklist as null");
                     return null;
                 }
                 List<string> blockListMsisdns = new List<string>();
@@ -296,12 +281,10 @@ namespace windows_client.utils
             }
             catch (ArgumentException e)
             {
-                logger.Info("AccountUtils", "Improper Argument is passed to the function. Exception : " + e);
                 return null;
             }
             catch (Exception e)
             {
-                logger.Info("AccountUtils", "Exception while processing GETBLOCKLIST function : " + e);
                 return null;
             }
         }
@@ -331,15 +314,11 @@ namespace windows_client.utils
             {
                 if ((obj == null) || "fail" == (string)obj["stat"])
                 {
-
-                    logger.Info("HTTP", "Unable to upload address book");
-                    // TODO raise a real exception here
                     return null;
                 }
                 JObject addressbook = (JObject)obj["addressbook"];
                 if (addressbook == null)
                 {
-                    logger.Info("AccountUtils", "Invalid JSON object. Addressbook empty.");
                     return null;
                 }
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
@@ -364,14 +343,13 @@ namespace windows_client.utils
             }
             catch (ArgumentException)
             {
-                logger.Info("AccountUtils", "Improper Argument is passed to the function.");
                 return null;
             }
             catch (Exception e)
             {
-                logger.Info("AccountUtils", "Exception while processing GETCONTACTLIST function : " + e.ToString());
                 return null;
             }
         }
+
     }
 }

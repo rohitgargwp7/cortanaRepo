@@ -11,15 +11,9 @@ namespace windows_client
 {
     public partial class WelcomePage : PhoneApplicationPage
     {
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        // Constructor
         public WelcomePage()
         {
             InitializeComponent();
-            //Test.Test.AddContactEntries();
-            //Test.Test.insertMessages();
         }
 
         private void getStarted_click(object sender, RoutedEventArgs e)
@@ -36,7 +30,7 @@ namespace windows_client
 
             if ((obj == null))
             {
-                logger.Info("HTTP", "Unable to create account");
+                //logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     GetStarted.Content = "Network Error. Try Again.";
@@ -46,7 +40,6 @@ namespace windows_client
                 });
                 return;
             }
-            appSettings[App.ACCEPT_TERMS] = "y";
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
             if ("fail" == (string)obj["stat"])
             {
@@ -55,8 +48,6 @@ namespace windows_client
             /* account creation successfull */
             else 
             {
-                appSettings[App.PIN_SETTING] = "y";
-                appSettings.Save();
                 utils.Utils.savedAccountCredentials(obj);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
                 /* scan contacts and post addressbook on server*/

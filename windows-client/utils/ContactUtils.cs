@@ -15,10 +15,6 @@ namespace windows_client.utils
 {
     public class ContactUtils
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-        private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
-
         private static Dictionary<string, List<ContactInfo>> contactsMap = null;
         private static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
@@ -40,8 +36,8 @@ namespace windows_client.utils
                 IEnumerable<Contact> contacts = e.Results;
                 Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
                 contactsMap = contactListMap;
-                string token = (string)appSettings["token"];
-                AccountUtils.postAddressBook(token, contactListMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
+                string token = (string)App.appSettings["token"];
+                AccountUtils.postAddressBook(contactListMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
             }
             catch (System.Exception)
             {
@@ -206,8 +202,8 @@ namespace windows_client.utils
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 UsersTableUtils.addBlockList(blockList);
                 App.Ab_scanned = true;
-                appSettings[App.ADDRESS_BOOK_SCANNED] = "y";
-                appSettings.Save();
+                App.appSettings[App.IS_ADDRESS_BOOK_SCANNED] = true;
+                App.appSettings.Save();
             }
         }
 

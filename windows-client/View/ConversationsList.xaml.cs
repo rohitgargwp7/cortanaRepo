@@ -19,6 +19,8 @@ using System.Threading;
 using System.ComponentModel;
 using Clarity.Phone.Controls;
 using Clarity.Phone.Controls.Animations;
+using windows_client.ViewModel;
+using windows_client.Mqtt;
 
 namespace windows_client.View
 {
@@ -31,14 +33,15 @@ namespace windows_client.View
 
         #endregion
 
+        #region Instances
+
         public MyProgressIndicator progress = null;
         private HikePubSub mPubSub;
-        private readonly IsolatedStorageSettings appSettings;
-        private static Dictionary<string, ConversationListObject> convMap; // this holds msisdn -> conversation mapping
-        public static Dictionary<string, bool> convMap2 = new Dictionary<string, bool>();
+        private IsolatedStorageSettings appSettings = App.appSettings;
+        private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
+        public static Dictionary<string, bool> convMap2 = null;
         private PhotoChooserTask photoChooserTask;
         private string msisdn;
-
         private ApplicationBar appBar;
 
         public static Dictionary<string, ConversationListObject> ConvMap
@@ -49,68 +52,89 @@ namespace windows_client.View
             }
         }
 
+        #endregion
+
+        #region Page Based Functions
+
         public ConversationsList()
         {
             InitializeComponent();
-            #region Load Hike Contacts
+            myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            LoadMessages();
+            #region Load App level instances
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
-            bw.DoWork += new DoWorkEventHandler(bw_LoadContacts);
+            bw.DoWork += new DoWorkEventHandler(bw_LoadAppInstances);
             bw.RunWorkerAsync();
 
             #endregion
             AnimationContext = LayoutRoot;
-            mPubSub = App.HikePubSubInstance;
-            appSettings = App.appSettings;
-            App.ViewModel.MessageListPageCollection = new ObservableCollection<ConversationListObject>();
-            this.myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
-            convMap = new Dictionary<string, ConversationListObject>();           
-            LoadMessages();          
             initAppBar();
             initProfilePage();
-            registerListeners();
         }
 
-        private void bw_LoadContacts(object sender, DoWorkEventArgs e)
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
+
+            App.MqttManagerInstance.connect();
+        }
+
+        #endregion
+
+        #region ConvList Page
+
+        private void bw_LoadAppInstances(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
-
             if ((worker.CancellationPending == true))
             {
                 e.Cancel = true;
             }
             else
             {
-                // Perform a time consuming operation and report progress.
+                App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
+                App.DbListener = new DbConversationListener();
+                App.NetworkManagerInstance = NetworkManager.Instance;
+                App.MqttManagerInstance = new HikeMqttManager();
+
+                mPubSub = App.HikePubSubInstance;
+                //Load Hike Contacts
                 App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
+                registerListeners();
             }
-
         }
-        private void initProfilePage()
+
+        private static void LoadMessages()
         {
-            msisdn = (string)App.appSettings[App.MSISDN_SETTING];
-            string name;
-            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            if (name != null)
-                accountName.Text = name;
-            creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
-
-            photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 95;
-            photoChooserTask.PixelWidth = 95;
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
-
-            Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn + "::large");
-            if (profileThumbnail != null)
+            List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
+            if (conversationList == null)
             {
-                MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
-                memStream.Seek(0, SeekOrigin.Begin);
+                return;
+            }
+            if (convMap == null)
+            {
+                convMap = new Dictionary<string, ConversationListObject>();
+                convMap2 = new Dictionary<string, bool>();
+            }
+            for (int i = 0; i < conversationList.Count; i++)
+            {
+                Conversation conv = conversationList[i];
+                ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
+                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
 
-                BitmapImage empImage = new BitmapImage();
-                empImage.SetSource(memStream);
-                avatarImage.Source = empImage;
+                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
+                ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? conv.Msisdn : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
+                    TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
+                convMap.Add(conv.Msisdn, mObj);
+                convMap2.Add(conv.Msisdn, false);
+                //Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //{
+                    App.ViewModel.MessageListPageCollection.Add(mObj);
+                //});
             }
         }
 
@@ -142,6 +166,34 @@ namespace windows_client.View
             convListPagePivot.ApplicationBar = appBar;
         }
 
+        public static void ReloadConversations() // running on some background thread
+        {
+            App.MqttManagerInstance.disconnectFromBroker(false);
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                App.ViewModel.MessageListPageCollection.Clear();
+                convMap.Clear();
+                LoadMessages();
+            });
+
+            App.MqttManagerInstance.connect();
+        }
+
+        private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
+            if (obj == null)
+                return;
+            PhoneApplicationService.Current.State["objFromConversationPage"] = obj;
+            string uri = "/View/ChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        #endregion
+
+        #region Listeners
+
         private void registerListeners()
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
@@ -152,6 +204,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
         }
+
         private void removeListeners()
         {
             mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
@@ -162,6 +215,38 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
         }
+
+        #endregion
+
+        #region Profile Screen
+
+        private void initProfilePage()
+        {
+            msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+            string name;
+            appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
+            if (name != null)
+                accountName.Text = name;
+            creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
+
+            photoChooserTask = new PhotoChooserTask();
+            photoChooserTask.ShowCamera = true;
+            photoChooserTask.PixelHeight = 95;
+            photoChooserTask.PixelWidth = 95;
+            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
+            Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn + "::large");
+            if (profileThumbnail != null)
+            {
+                MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
+                memStream.Seek(0, SeekOrigin.Begin);
+
+                BitmapImage empImage = new BitmapImage();
+                empImage.SetSource(memStream);
+                avatarImage.Source = empImage;
+            }
+        }
+
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
@@ -223,60 +308,9 @@ namespace windows_client.View
             }
         }
 
-        private static void LoadMessages()
-        {
-            List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
-            if (conversationList == null)
-            {
-                return;
-            }
-            for (int i = 0; i < conversationList.Count; i++)
-            {
-                Conversation conv = conversationList[i];
-                ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
-                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
+        #endregion
 
-                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
-                ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? conv.Msisdn : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
-                    TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
-                convMap.Add(conv.Msisdn, mObj);
-                convMap2.Add(conv.Msisdn,false);
-                App.ViewModel.MessageListPageCollection.Add(mObj);
-            }
-        }
-
-        public static void ReloadConversations() // running on some background thread
-        {
-            App.MqttManagerInstance.disconnectFromBroker(false);
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                App.ViewModel.MessageListPageCollection.Clear();
-                convMap.Clear();
-                LoadMessages();
-            });
-            
-            App.MqttManagerInstance.connect();
-        }
-
-        private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
-            if (obj == null)
-                return;
-            PhoneApplicationService.Current.State["objFromConversationPage"] = obj;
-            string uri = "/View/ChatThread.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            while (NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
-
-            App.MqttManagerInstance.connect();
-        }
+        #region Delete Account
 
         private void deleteAccount_Click(object sender, EventArgs e)
         {
@@ -304,7 +338,7 @@ namespace windows_client.View
                 return;
             }
             App.MqttManagerInstance.disconnectFromBroker(false);
-            removeListeners(); 
+            removeListeners();
             appSettings.Clear();
             MiscDBUtil.clearDatabase();            /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -313,6 +347,10 @@ namespace windows_client.View
                 NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
             });
         }
+
+        #endregion
+
+        #region AppBar Button Events
 
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
@@ -346,6 +384,10 @@ namespace windows_client.View
                 NavigationService.Navigate(nextPage);
             });
         }
+
+        #endregion
+
+        #region Transition Animations
 
         protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
         {
@@ -388,6 +430,8 @@ namespace windows_client.View
             base.AnimationsComplete(animationType);
         }
 
+        #endregion
+
         #region PUBSUB
 
         public void onEventReceived(string type, object obj)
@@ -397,7 +441,7 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)obj;
                 ConversationListObject mObj;
                 bool isNewConversation = false;
-                
+
                 /*This is used to avoid cross thread invokation exception*/
                 if (convMap.ContainsKey(convMessage.Msisdn))
                 {

@@ -29,7 +29,7 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = "UNBLOCK";
 
         #endregion
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
         private bool mUserIsBlocked;
@@ -713,7 +713,7 @@ namespace windows_client.View
                 }
                 catch (KeyNotFoundException e)
                 {
-                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                    //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                 }
             }
 
@@ -734,7 +734,7 @@ namespace windows_client.View
                 }
                 catch (KeyNotFoundException e)
                 {
-                    logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                    //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                 }
             }
 
@@ -758,7 +758,7 @@ namespace windows_client.View
                     }
                     catch (KeyNotFoundException e)
                     {
-                        logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                        //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                         continue;
                     }
 
