@@ -98,11 +98,6 @@ namespace windows_client.View
             }
             else
             {
-                App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
-                App.DbListener = new DbConversationListener();
-                App.NetworkManagerInstance = NetworkManager.Instance;
-                App.MqttManagerInstance = new HikeMqttManager();
-
                 mPubSub = App.HikePubSubInstance;
                 //Load Hike Contacts
                 App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
@@ -116,11 +111,6 @@ namespace windows_client.View
             if (conversationList == null)
             {
                 return;
-            }
-            if (convMap == null)
-            {
-                convMap = new Dictionary<string, ConversationListObject>();
-                convMap2 = new Dictionary<string, bool>();
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
@@ -312,6 +302,8 @@ namespace windows_client.View
 
         #endregion
 
+        #region AppBar Button Events
+
         #region Delete Account
 
         private void deleteAccount_Click(object sender, EventArgs e)
@@ -345,15 +337,14 @@ namespace windows_client.View
             MiscDBUtil.clearDatabase();            /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                App.ViewModel.MessageListPageCollection.Clear();
+                App.ViewModel.allContactsList.Clear();
                 progress.Hide();
                 NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
             });
         }
 
         #endregion
-
-        #region AppBar Button Events
-
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
