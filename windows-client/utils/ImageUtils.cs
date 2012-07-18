@@ -1,25 +1,32 @@
 ﻿using System;
+using System.Net;
 using System.Windows;
-using System.Windows.Data;
-using System.IO;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Ink;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using windows_client.DbUtils;
 using windows_client.Model;
+using System.IO;
 
-namespace windows_client.converters
+namespace windows_client.utils
 {
-    public class ImageConverter : IValueConverter
+    public class UserInterfaceUtils
     {
-        private static BitmapImage defaultBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
+        public readonly static BitmapImage onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
+        public readonly static BitmapImage notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));       
+        private static BitmapImage defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
         private static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
         private static List<string> numbersWithDefaultImage = new List<string>();
 
         public static void updateImageInCache(string msisdn, byte[] imageBytes)
         {
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
+           
                 if (!numbersWithDefaultImage.Contains(msisdn) && !imageCache.ContainsKey(msisdn))
                     return;
 
@@ -37,16 +44,11 @@ namespace windows_client.converters
                     imageCache.Remove(msisdn);
                 }
                 imageCache.Add(msisdn, empImage);
-            });
 
         }
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public static BitmapImage getBitMapImage(string msisdn)
         {
-            if (value == null)
-                return null;
-
-            string msisdn = (string)value;
             if (imageCache.ContainsKey(msisdn))
             {
                 BitmapImage cachedImage;
@@ -54,13 +56,13 @@ namespace windows_client.converters
                 return cachedImage;
             }
             if (numbersWithDefaultImage.Contains(msisdn))
-                return defaultBitmapImage;
+                return defaultAvatarBitmapImage;
 
             Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn);
             if (thumbnail == null)
             {
                 numbersWithDefaultImage.Add(msisdn);
-                return defaultBitmapImage;
+                return defaultAvatarBitmapImage;
             }
             MemoryStream memStream = new MemoryStream((byte[])thumbnail.Avatar);
             memStream.Seek(0, SeekOrigin.Begin);
@@ -68,11 +70,6 @@ namespace windows_client.converters
             empImage.SetSource(memStream);
             imageCache[msisdn] = empImage;
             return empImage;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
 
     }

@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -13,7 +15,6 @@ namespace windows_client.Model
         private string _timeStamp;
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
-        private byte[] _avatar;
 
         #endregion
 
@@ -103,19 +104,11 @@ namespace windows_client.Model
             }
         }
 
-        public byte[] Avatar
+        public BitmapImage AvatarImage
         {
             get
             {
-                return _avatar;
-            }
-            set
-            {
-                if (_avatar != value)
-                {
-                    _avatar = value;
-                    NotifyPropertyChanged("Avatar");
-                }
+                return UserInterfaceUtils.getBitMapImage(_msisdn);
             }
         }
 
@@ -139,18 +132,17 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime, byte[] avatarImage)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
             this._lastMessage = lastMessage;
             this._timeStamp = relativeTime;
             this._isOnhike = isOnhike;
-            this._avatar = avatarImage;
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime, byte[] avatarImage)
-            : this(msisdn, contactName, lastMessage, false, relativeTime, avatarImage)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime)
+            : this(msisdn, contactName, lastMessage, false, relativeTime)
         {
 
         }

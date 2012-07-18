@@ -860,7 +860,7 @@ namespace windows_client.View
                 {
                     ConvMessage c = incomingMessages[i];
                     if (!c.IsSent)
-                        c.NotifyPropertyChanged("Msisdn");
+                        c.NotifyPropertyChanged("AvatarImage");
                 }
             }
 

@@ -8,8 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:Converters="clr-namespace:windows_client.converters"
-   xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=PageTransitions"
+    xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=PageTransitions"
     xmlns:GkJumpList="clr-namespace:GK.Phone;assembly=Gk.Phone"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -34,9 +33,7 @@
             <!--Pivot item one-->
             <controls:PivotItem Header="chats">
                 <Grid x:Name="ConversationList">
-                    <Grid.Resources>
-                        <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
-                    </Grid.Resources>
+                   
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -54,8 +51,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal" Margin="22,5,5,5">
-                                        <Image x:Name="avatar_image" Height="65" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}">
+                                        <Image x:Name="avatar_image" Height="65" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding AvatarImage}">
                                         </Image>
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="25 0 0 0">

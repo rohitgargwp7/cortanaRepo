@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
-    xmlns:Converters="clr-namespace:windows_client.converters"
     xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=PageTransitions"
     
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -28,18 +27,6 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
 
-        <Grid.Resources>
-            <Converters:ChatThreadAlignment x:Key="alignmentConverter"></Converters:ChatThreadAlignment>
-            <Converters:ChatBubbleDirection x:Key="bubbleDirectionConverter"/>
-            <Converters:ChatThreadBackground x:Key="bubbleBackgroundConverter"/>
-            <Converters:ChatThreadImageVisible x:Key="chatThreadImageVisibleOrCollapsed"/>
-            <Converters:ChatBubbleMargin x:Key="chatBubbleMargin"/>
-            <Converters:ImageConverter x:Key="imgConverter"/>
-            <Converters:ChatThreadSDRImageShow x:Key="sdrVisibilityConverter"/>
-            <Converters:ChatThreadSDRImage x:Key="sdrImageConverter"/>
-            <Converters:TimestampConverter x:Key="tsConverter"/>
-        </Grid.Resources>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -56,17 +43,17 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
 
-                    <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding IsSent, Converter={StaticResource alignmentConverter}}" 
+                    <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding Alignment}" 
                                   Margin="20,5,20,15"  Grid.RowSpan="2">
-                        <Image Margin="0,0,8,0" Visibility="{Binding MessageStatus, Converter={StaticResource sdrVisibilityConverter}}" Source="{Binding MessageStatus, Converter={StaticResource sdrImageConverter}}" HorizontalAlignment="Right"></Image>
+                        <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" Source="{Binding SdrImage}" HorizontalAlignment="Right"></Image>
 
                         <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" Background="{Binding MsgType, Converter={StaticResource bubbleBackgroundConverter}}">
-                                <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
+                            <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
+                                <Image Visibility="{Binding ChatThreadImageVisibility}" Source="{Binding AvatarImage}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
 
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock Height="Auto" Width="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
-                                    <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Timestamp, Converter={StaticResource tsConverter}}"/>
+                                    <TextBlock Height="Auto" Width="300" Margin="{Binding ChatBubbleMargin}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
+                                    <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
                                 </StackPanel>
                                 <!--<Rectangle Width="2" Height="Auto" Fill="#c8c8c8" Margin="1,2,0,0"></Rectangle>-->
                                 <toolkit:ContextMenuService.ContextMenu>

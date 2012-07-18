@@ -6,7 +6,6 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:Converters="clr-namespace:windows_client.converters"
     xmlns:GkJumpList="clr-namespace:GK.Phone;assembly=Gk.Phone"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=PageTransitions"
@@ -25,15 +24,7 @@
             <RowDefinition Height="620"/>
             <RowDefinition Height="0*"/>
         </Grid.RowDefinitions>
-        <Grid.Resources>
-            <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
-            <Converters:OnHikeIndicator x:Key="onHikeConverter"></Converters:OnHikeIndicator>
-        </Grid.Resources>
-
-        <!--<StackPanel Orientation="Vertical" Margin="-10,75,0, 0">
-            <Image Source="images\hike_header.png"/>
-        </StackPanel>-->
-
+        
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Background="White">
             <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
@@ -54,17 +45,17 @@
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" Background="#efefef" Margin="8,0,2,0" Width="470" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged" BorderThickness="8,3,3,3" Grid.ColumnSpan="2"/>
 
-            <GkJumpList:JumpList x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin" ShowRowHeader="False" ShowHeaders="True" IsPumped="False" PicturePath="{Binding Msisdn,Converter={StaticResource imgConverter}}" DataContext="{Binding}">
+            <GkJumpList:JumpList x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin" ShowRowHeader="False" ShowHeaders="True" IsPumped="False" DataContext="{Binding}">
                 <GkJumpList:JumpList.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
                             <Image x:Name="avatar_image" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}"/>
+                               Source="{Binding AvatarImage}"/>
                             <StackPanel Orientation="Vertical">
                                 <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
                                     <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
                                     <StackPanel Orientation="Horizontal">
-                                        <Image Source="{Binding OnHike, Converter={StaticResource onHikeConverter}}" Height="15" Width="15"/>
+                                        <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
                                         <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                                     </StackPanel>
                                 </StackPanel>

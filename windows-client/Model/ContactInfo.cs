@@ -4,6 +4,8 @@ using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Data.Linq.Mapping;
+using System.Windows.Media.Imaging;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -212,6 +214,24 @@ namespace windows_client.Model
             return _name;
         }
 
+        public BitmapImage AvatarImage
+        {
+            get
+            {
+                return UserInterfaceUtils.getBitMapImage(_msisdn);
+            }
+        }
+
+        public BitmapImage HikeStatusImage
+        {
+            get
+            {
+                if (_onHike)
+                    return UserInterfaceUtils.onHikeImage;
+                else
+                    return UserInterfaceUtils.notOnHikeImage;
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Members

@@ -118,9 +118,8 @@ namespace windows_client.View
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
 
-                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
                 ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? conv.Msisdn : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
-                    TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
+                    TimeUtils.getTimeString(lastMessage.Timestamp));
                 convMap.Add(conv.Msisdn, mObj);
                 convMap2.Add(conv.Msisdn, false);
                 //Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -449,10 +448,8 @@ namespace windows_client.View
                 else
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                    Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
                     mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
-                    thumbnail == null ? null : thumbnail.Avatar);
+                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp));
                     convMap[convMessage.Msisdn] = mObj;
                     isNewConversation = true;
                 }
@@ -499,7 +496,7 @@ namespace windows_client.View
                     ConversationListObject convObj = convMap[msisdn];
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        convObj.NotifyPropertyChanged("Msisdn");
+                        convObj.NotifyPropertyChanged("AvatarImage");
                     });
                 }
                 catch (KeyNotFoundException)

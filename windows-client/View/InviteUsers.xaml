@@ -17,10 +17,6 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
 
-        <Grid.Resources>
-            <Converters:ImageConverter x:Key="imgConverter"></Converters:ImageConverter>
-        </Grid.Resources>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -40,17 +36,10 @@
         <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="0,0,0,0" Tap="inviteListBox_Tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <!--<StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
-                        <Image x:Name="avatar_image" Height="40" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}"
-                               >
-                        </Image>
-                        <TextBlock Text="{Binding Name}" Width="280" Margin="15,15,0,0" FontSize="30" Height="70" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                        <Button Foreground="Black" Content="invite" Width="120" Height="60" Margin="0,0,35,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" Canvas.ZIndex="60" FontSize="21.333"></Button>
-                    </StackPanel>-->
+                   
                     <StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
                         <Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding Msisdn, Converter={StaticResource imgConverter}}"
+                               Source="{Binding AvatarImage}"
                                >
                         </Image>
                         <TextBlock Text="{Binding Name}" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
