@@ -61,6 +61,26 @@ namespace windows_client
         public static class Extras
 	    {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
+            public static readonly string MSISDN = "msisdn";
+            public static readonly string ID = "id";
+            public static readonly string NAME = "name";
+            public static readonly string INVITE = "invite";
+            public static readonly string MSG = "msg";
+            public static readonly string PREF = "pref";
+            public static readonly string EDIT = "edit";
+            public static readonly string IMAGE_PATH = "image-path";
+            public static readonly string SCALE = "scale";
+            public static readonly string OUTPUT_X = "outputX";
+            public static readonly string OUTPUT_Y = "outputY";
+            public static readonly string ASPECT_X = "aspectX";
+            public static readonly string ASPECT_Y = "aspectY";
+            public static readonly string DATA = "data";
+            public static readonly string RETURN_DATA = "return-data";
+            public static readonly string BITMAP = "bitmap";
+            public static readonly string CIRCLE_CROP = "circleCrop";
+            public static readonly string SCALE_UP = "scaleUpIfNeeded";
+            public static readonly string UPDATE_AVAILABLE = "updateAvailable";
+            public static readonly string KEEP_MESSAGE = "keepMessage";
         }
 
     }
