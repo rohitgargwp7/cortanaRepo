@@ -29,7 +29,7 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = "UNBLOCK";
 
         #endregion
-        
+
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
         private bool mUserIsBlocked;
@@ -86,7 +86,7 @@ namespace windows_client.View
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
-           
+
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -106,7 +106,7 @@ namespace windows_client.View
             }
 
         }
-        
+
         private void initBlockUnblockState()
         {
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
@@ -174,6 +174,15 @@ namespace windows_client.View
             sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
             sendIconButton.IsEnabled = true;
             appBar.Buttons.Add(sendIconButton);
+
+            //add icon for smiley
+            ApplicationBarIconButton emoticonsIconButton = new ApplicationBarIconButton();
+            emoticonsIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+            emoticonsIconButton.Text = "smiley";
+            emoticonsIconButton.Click += new EventHandler(emoticonButton_Click);
+            emoticonsIconButton.IsEnabled = true;
+            appBar.Buttons.Add(emoticonsIconButton);
+
 
             menuItem1 = new ApplicationBarMenuItem();
             if (mUserIsBlocked)
@@ -373,33 +382,7 @@ namespace windows_client.View
             removeListeners();
         }
 
-        private void sendMsgBtn_Click(object sender, EventArgs e)
-        {
-            if (mUserIsBlocked)
-                return;
-            string message = sendMsgTxtbox.Text.Trim();
-            if (String.IsNullOrEmpty(message))
-                return;
 
-            if ((!isOnHike && mCredits <= 0) || message == "")
-                return;
-
-            sendMsgTxtbox.Text = "";
-
-            endTypingSent = true;
-            sendTypingNotification(false);
-
-            ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = !isOnHike;
-            this.ChatThreadPageCollection.Add(convMessage);
-            this.myListBox.UpdateLayout();
-            this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-
-            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
-            if (message != "")
-            {
-            }
-        }
 
         /// <summary>
         /// Sends start and end typing notifications
@@ -872,6 +855,83 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
+
+        }
+
+        private void Grid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            object s = e.OriginalSource;
+        }
+
+        private void optionsList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int selectedIndex = optionsList.SelectedIndex;
+            switch (selectedIndex)
+            {
+                case 0: emot0.Visibility = Visibility.Visible;
+                    emot1.Visibility = Visibility.Collapsed;
+                    emot2.Visibility = Visibility.Collapsed;
+                    break;
+                case 1: emot1.Visibility = Visibility.Visible;
+                    emot0.Visibility = Visibility.Collapsed;
+                    emot2.Visibility = Visibility.Collapsed;
+                    break;
+                case 2: emot2.Visibility = Visibility.Visible;
+                    emot0.Visibility = Visibility.Collapsed;
+                    emot1.Visibility = Visibility.Collapsed;
+                    break;
+                default:
+                    emot0.Visibility = Visibility.Visible;
+                    emot1.Visibility = Visibility.Collapsed;
+                    emot2.Visibility = Visibility.Collapsed;
+                    break;
+
+            }
+        }
+
+        private void emoticonButton_Click(object sender, EventArgs e)
+        {
+            emoticonPanel.Visibility = Visibility.Visible;
+        }
+
+        private void sendMsgBtn_Click(object sender, EventArgs e)
+        {
+            if (mUserIsBlocked)
+                return;
+            string message = sendMsgTxtbox.Text.Trim();
+            if (String.IsNullOrEmpty(message))
+                return;
+
+            if ((!isOnHike && mCredits <= 0) || message == "")
+                return;
+
+            sendMsgTxtbox.Text = "";
+
+            endTypingSent = true;
+            sendTypingNotification(false);
+
+            ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = !isOnHike;
+            this.ChatThreadPageCollection.Add(convMessage);
+            this.myListBox.UpdateLayout();
+            this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
+
+            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
+            if (message != "")
+            {
+            }
+        }
+
+
+        private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emoticonPanel.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void emoticonPanel_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //emoticonPanel.Visibility = Visibility.Collapsed;
 
         }
     }
