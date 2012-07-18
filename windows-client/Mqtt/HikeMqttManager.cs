@@ -18,7 +18,6 @@ namespace windows_client.Mqtt
     //    public class HikeMqttManager : Listener
     public class HikeMqttManager : Listener, HikePubSub.Listener
     {
-        private static NLog.Logger logger;
         public MqttConnection mqttConnection;
         private HikePubSub pubSub;
         // constants used to define MQTT connection status
@@ -38,7 +37,7 @@ namespace windows_client.Mqtt
 
         public HikeMqttManager()
         {
-            logger = NLog.LogManager.GetCurrentClassLogger();
+            //logger = NLog.LogManager.GetCurrentClassLogger();
             pubSub = App.HikePubSubInstance;
             pubSub.addListener(HikePubSub.MQTT_PUBLISH, this);
         }

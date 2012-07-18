@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Data.Linq.Mapping;
 using Microsoft.Phone.Data.Linq.Mapping;
 using System.Data.Linq;
-
-
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 
@@ -40,7 +38,7 @@ namespace windows_client.Model
             RECEIVED_UNREAD, /* message received, but currently unread */
             RECEIVED_READ, /* message received an read */
             UNKNOWN
-        };
+        }
 
         public enum ChatBubbleType
         {

@@ -7,8 +7,6 @@ namespace windows_client
 {
     public class HikePubSub
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
         public class Operation
         {
             public readonly string type;
@@ -167,7 +165,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    logger.Info("PubSub", "exception while running", e);
+                    //logger.Info("PubSub", "exception while running", e);
                     continue;
                 }
                 if (op == DONE_OPERATION)

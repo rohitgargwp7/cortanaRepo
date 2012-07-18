@@ -34,13 +34,11 @@ namespace windows_client
 
         private HikePubSub pubSub;
 
-        private static NLog.Logger logger;
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
 
         private NetworkManager()
         {
-            logger = NLog.LogManager.GetCurrentClassLogger();
             pubSub = App.HikePubSubInstance;
         }
 
@@ -70,7 +68,7 @@ namespace windows_client
             }
             catch (JsonReaderException e)
             {
-                logger.Info("WebSocketPublisher", "Invalid JSON message: " + msg +", Exception : "+e);
+                //logger.Info("WebSocketPublisher", "Invalid JSON message: " + msg +", Exception : "+e);
                 return;
             }
             string type = (string)jsonObj[HikeConstants.TYPE];
@@ -87,7 +85,7 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    logger.Info("NETWORK MANAGER", "Invalid JSON", e);
+                    //logger.Info("NETWORK MANAGER", "Invalid JSON", e);
                 }
             }
             else if (START_TYPING == type) /* Start Typing event received*/
@@ -115,7 +113,7 @@ namespace windows_client
                 }
                 catch (FormatException e)
                 {
-                    logger.Info("NETWORK MANAGER", "Exception occured while parsing msgId. Exception : " + e);
+                    //logger.Info("NETWORK MANAGER", "Exception occured while parsing msgId. Exception : " + e);
                     msgID = -1;
                 }
                 updateDB(msgID, (int)ConvMessage.State.SENT_CONFIRMED);
@@ -131,10 +129,10 @@ namespace windows_client
                 }
                 catch (FormatException e)
                 {
-                    logger.Info("NETWORK MANAGER", "Exception occured while parsing msgId. Exception : " + e);
+                    //logger.Info("NETWORK MANAGER", "Exception occured while parsing msgId. Exception : " + e);
                     msgID = -1;
                 }
-                logger.Info("NETWORK MANAGER", "Delivery report received for msgid : " + msgID + "	;	REPORT : DELIVERED");
+                //logger.Info("NETWORK MANAGER", "Delivery report received for msgid : " + msgID + "	;	REPORT : DELIVERED");
                 updateDB(msgID, (int)ConvMessage.State.SENT_DELIVERED);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, msgID);
             }
@@ -143,7 +141,7 @@ namespace windows_client
                 JArray msgIds = (JArray)jsonObj["d"];
                 if (msgIds == null)
                 {
-                    logger.Info("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
+                    //logger.Info("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
                     return;
                 }
 
@@ -152,7 +150,7 @@ namespace windows_client
                 {
                     ids[i] = Int64.Parse(msgIds[i].ToString());
                 }
-                logger.Info("NETWORK MANAGER", "Delivery report received : " + "	;	REPORT : DELIVERED READ");
+                //logger.Info("NETWORK MANAGER", "Delivery report received : " + "	;	REPORT : DELIVERED READ");
                 updateDbBatch(ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, ids);
             }
@@ -179,7 +177,7 @@ namespace windows_client
             }
             else
             {
-                logger.Info("WebSocketPublisher", "Unknown Type:" + type);
+                //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
         }
 
