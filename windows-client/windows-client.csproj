@@ -70,7 +70,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL" />
     <Reference Include="system.data.linq" />
     <Reference Include="System.Servicemodel.Web" />
     <Reference Include="System.Windows" />
@@ -106,13 +105,8 @@
     <Compile Include="DbUtils\MiscDBUtil.cs" />
     <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
-    <Compile Include="db\ConversationDatabase.cs" />
-    <Compile Include="db\DBConstants.cs" />
-    <Compile Include="db\DBException.cs" />
-    <Compile Include="db\HikeUserDatabase_Context.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
-    <Compile Include="Model\ChatThreadPage.cs" />
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabase.cs" />
@@ -127,8 +121,6 @@
     <Compile Include="Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="converters\ImageConverter.cs" />
-    <Compile Include="utils\IsolatedStorageHelper.cs" />
-    <Compile Include="Model\HikeConstants.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />
