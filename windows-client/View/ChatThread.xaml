@@ -88,9 +88,9 @@
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom" Background="White">
 
-            <StackPanel x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus">
+            <StackPanel x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#eeeeec">
 
-                <!--<ListBox Width="Auto" Height="Auto" Name="optionsList" Tap="optionsList_Tap">
+                <ListBox Width="Auto" Height="Auto" Name="optionsList" Tap="optionsList_Tap">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <toolkit:WrapPanel/>
@@ -126,19 +126,19 @@
                             </StackPanel>
                         </ListBoxItem>
                     </ListBox.Items>
-                </ListBox>-->
+                </ListBox>
 
-                <controls:Panorama Grid.Row="1" Foreground="Black" Height="220" >
-                    <controls:PanoramaItem>
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220" >
+                    <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="460"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible">
+                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -146,136 +146,135 @@
                                 </ListBox.ItemsPanel>
 
                                 <ListBox.Items>
-
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_01_bigsmile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_01_bigsmile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_02_happy.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_02_happy.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_03_laugh.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_03_laugh.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_04_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_04_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_05_wink.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_05_wink.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_06_adore.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_06_adore.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_07_kiss.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_07_kiss.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_08_kissed.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_08_kissed.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_09_expressionless.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_09_expressionless.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_10_pudently.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_10_pudently.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_11_satisfied.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_11_satisfied.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_12_giggle.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_12_giggle.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_13_impish.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_13_impish.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_14_disappointment.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_14_disappointment.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_05_wink.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_05_wink.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_06_adore.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_06_adore.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_07_kiss.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_07_kiss.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_08_kissed.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_08_kissed.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_09_expressionless.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_09_expressionless.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_10_pudently.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_10_pudently.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_01_bigsmile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_01_bigsmile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_02_happy.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_02_happy.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_03_laugh.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_03_laugh.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_04_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_04_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_05_wink.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_05_wink.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_06_adore.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_06_adore.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_07_kiss.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_07_kiss.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_08_kissed.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_08_kissed.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_09_expressionless.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_09_expressionless.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_10_pudently.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_10_pudently.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_11_satisfied.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_11_satisfied.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_12_giggle.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_12_giggle.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_13_impish.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_13_impish.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_14_disappointment.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_14_disappointment.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_05_wink.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_05_wink.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_06_adore.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_06_adore.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_07_kiss.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_07_kiss.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_08_kissed.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_08_kissed.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_09_expressionless.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_09_expressionless.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_10_pudently.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_10_pudently.png"/>
                                     </ListBoxItem>
 
                                 </ListBox.Items>
                             </ListBox>
 
                         </Grid>
-                    </controls:PanoramaItem>
+                    </controls:PivotItem>
                     
-                    <controls:PanoramaItem>
-                        <Grid x:Name="emotGrid1">
+                    <controls:PivotItem BorderThickness="0" VerticalAlignment="Top" Height="220" Margin="12,8,12,0">
+                        <Grid x:Name="emotGrid1" Margin="18,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
@@ -293,136 +292,136 @@
                                 <ListBox.Items>
 
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_81_exciting.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_81_exciting.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_82_big_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_82_big_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_83_haha.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_83_haha.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_84_victory.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_84_victory.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_85_red_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_85_red_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_86_amazing.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_86_amazing.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_87_black_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_87_black_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_88_what.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_88_what.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_91_grimace.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_91_grimace.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_81_exciting.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_81_exciting.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_82_big_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_82_big_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_83_haha.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_83_haha.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_84_victory.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_84_victory.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_85_red_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_85_red_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_86_amazing.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_86_amazing.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_87_black_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_87_black_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_88_what.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_88_what.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_91_grimace.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_91_grimace.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_81_exciting.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_81_exciting.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_82_big_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_82_big_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_83_haha.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_83_haha.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_84_victory.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_84_victory.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_85_red_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_85_red_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_86_amazing.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_86_amazing.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_87_black_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_87_black_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_88_what.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_88_what.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_91_grimace.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_91_grimace.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_81_exciting.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_81_exciting.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_82_big_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_82_big_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_83_haha.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_83_haha.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_84_victory.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_84_victory.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_85_red_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_85_red_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_86_amazing.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_86_amazing.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_87_black_heart.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_87_black_heart.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_88_what.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_88_what.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_89_bad_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_90_bad_egg.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_91_grimace.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_91_grimace.png"/>
                                     </ListBoxItem>
 
 
@@ -430,9 +429,9 @@
                             </ListBox>
 
                         </Grid>
-                    </controls:PanoramaItem>
+                    </controls:PivotItem>
                     
-                    <controls:PanoramaItem>
+                    <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid2">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
@@ -451,123 +450,123 @@
                                 <ListBox.Items>
 
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_111_grin.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_111_grin.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_112_happy.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_112_happy.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_113_fake_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_113_fake_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_114_in_love.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_114_in_love.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_115_kiss.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_115_kiss.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_116_straight_face.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_116_straight_face.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_117_meaw.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_117_meaw.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_118_drunk.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_118_drunk.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_119_x_x.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_119_x_x.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_120_youre_kidding_right.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_120_youre_kidding_right.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_122_sweat.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_122_sweat.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_123_nerd.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_123_nerd.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_124_angry.png"/>
-                                    </ListBoxItem>
-
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_111_grin.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_112_happy.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_113_fake_smile.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_114_in_love.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_115_kiss.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_116_straight_face.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_117_meaw.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_118_drunk.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_119_x_x.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_120_youre_kidding_right.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_122_sweat.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_123_nerd.png"/>
-                                    </ListBoxItem>
-                                    <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_124_angry.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_124_angry.png"/>
                                     </ListBoxItem>
 
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_111_grin.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_111_grin.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_112_happy.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_112_happy.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_113_fake_smile.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_113_fake_smile.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_114_in_love.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_114_in_love.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_115_kiss.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_115_kiss.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_116_straight_face.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_116_straight_face.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_117_meaw.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_117_meaw.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_118_drunk.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_118_drunk.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_119_x_x.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_119_x_x.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_120_youre_kidding_right.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_120_youre_kidding_right.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_122_sweat.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_122_sweat.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_123_nerd.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_123_nerd.png"/>
                                     </ListBoxItem>
                                     <ListBoxItem>
-                                        <Image Margin="6" Source="images\emoticons\emo_im_124_angry.png"/>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_124_angry.png"/>
+                                    </ListBoxItem>
+
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_111_grin.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_112_happy.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_113_fake_smile.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_114_in_love.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_115_kiss.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_116_straight_face.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_117_meaw.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_118_drunk.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_119_x_x.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_120_youre_kidding_right.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_122_sweat.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_123_nerd.png"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem>
+                                        <Image Margin="8,6,8,6" Source="images\emoticons\emo_im_124_angry.png"/>
                                     </ListBoxItem>
 
 
@@ -576,8 +575,8 @@
 
                         </Grid>
 
-                    </controls:PanoramaItem>
-                </controls:Panorama>
+                    </controls:PivotItem>
+                </controls:Pivot>
 
 
 

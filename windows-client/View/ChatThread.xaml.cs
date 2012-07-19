@@ -865,28 +865,8 @@ namespace windows_client.View
 
         private void optionsList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-        //    int selectedIndex = optionsList.SelectedIndex;
-        //    switch (selectedIndex)
-        //    {
-        //        case 0: emot0.Visibility = Visibility.Visible;
-        //            emot1.Visibility = Visibility.Collapsed;
-        //            emot2.Visibility = Visibility.Collapsed;
-        //            break;
-        //        case 1: emot1.Visibility = Visibility.Visible;
-        //            emot0.Visibility = Visibility.Collapsed;
-        //            emot2.Visibility = Visibility.Collapsed;
-        //            break;
-        //        case 2: emot2.Visibility = Visibility.Visible;
-        //            emot0.Visibility = Visibility.Collapsed;
-        //            emot1.Visibility = Visibility.Collapsed;
-        //            break;
-        //        default:
-        //            emot0.Visibility = Visibility.Visible;
-        //            emot1.Visibility = Visibility.Collapsed;
-        //            emot2.Visibility = Visibility.Collapsed;
-        //            break;
-
-            //}
+            int selectedIndex = optionsList.SelectedIndex;
+            emoticonPivot.SelectedIndex = selectedIndex;
         }
 
         private void emoticonButton_Click(object sender, EventArgs e)
