@@ -10,12 +10,11 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows;
-using Clarity.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
+
 
 namespace windows_client.View
 {
-    public partial class SelectUserToMsg : AnimatedBasePage
+    public partial class SelectUserToMsg : PhoneApplicationPage
     {
         public static MyProgressIndicator progress = null;
         public static bool canGoBack = true;
@@ -26,7 +25,6 @@ namespace windows_client.View
         {
             InitializeComponent();
             contactsListBox.ItemsSource = App.ViewModel.allContactsList;
-            AnimationContext = LayoutRoot;
         }
         
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -102,14 +100,6 @@ namespace windows_client.View
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
            // enterNameTxt.Background = textBoxBackground;
-        }
-
-        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
-        {
-            if (animationType == AnimationType.NavigateForwardIn)
-                return new SlideUpAnimator() { RootElement = LayoutRoot };
-            else
-                return new SlideDownAnimator() { RootElement = LayoutRoot };
         }
     }
 }

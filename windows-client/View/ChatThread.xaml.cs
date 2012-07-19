@@ -13,12 +13,10 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Reactive;
 using System.Threading;
-using Clarity.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
 
 namespace windows_client.View
 {
-    public partial class ChatThread : AnimatedBasePage, HikePubSub.Listener, INotifyPropertyChanged
+    public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
         #region CONSTANTS
 
@@ -78,7 +76,6 @@ namespace windows_client.View
         public ChatThread()
         {
             InitializeComponent();
-            AnimationContext = LayoutRoot;
             this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
@@ -352,14 +349,6 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-        }
-
-        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
-        {
-            if (animationType == AnimationType.NavigateForwardIn)
-                return new TurnstileFeatherForwardInAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-            else
-                return new TurnstileFeatherBackwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

@@ -17,14 +17,12 @@ using System.Diagnostics;
 using WP7Contrib.Collections;
 using System.Threading;
 using System.ComponentModel;
-using Clarity.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
 using windows_client.ViewModel;
 using windows_client.Mqtt;
 
 namespace windows_client.View
 {
-    public partial class ConversationsList : AnimatedBasePage, HikePubSub.Listener
+    public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
         #region CONSTANTS
 
@@ -71,7 +69,6 @@ namespace windows_client.View
             bw.RunWorkerAsync();
 
             #endregion
-            AnimationContext = LayoutRoot;
             initAppBar();
             initProfilePage();
         }
@@ -375,51 +372,6 @@ namespace windows_client.View
             {
                 NavigationService.Navigate(nextPage);
             });
-        }
-
-        #endregion
-
-        #region Transition Animations
-
-        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
-        {
-
-            //you could factor this into an intermediate base page to have soem other defaults
-            //such as always continuuming to a pivot page or rultes based on the page, direction and where you are goign to/coming from
-
-            if (toOrFrom != null)
-            {
-                if (toOrFrom.OriginalString.Contains("SelectUserToMsg.xaml"))
-                {
-                    return null;
-                }
-                if (animationType == AnimationType.NavigateForwardOut)
-                    return new TurnstileFeatherForwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-                else
-                    return new TurnstileFeatherBackwardInAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-            }
-
-            return base.GetAnimation(animationType, toOrFrom);
-        }
-
-        protected override void AnimationsComplete(AnimationType animationType)
-        {
-            switch (animationType)
-            {
-                case AnimationType.NavigateForwardIn:
-                    //Add code to set data context and bind data
-                    //you really only need to do that on forward in. on backward in everything
-                    //will be there that existed on forward out
-                    break;
-
-                case AnimationType.NavigateBackwardIn:
-                    //reset list so you can select the same element again
-                    myListBox.SelectedIndex = -1;
-                    break;
-            }
-
-
-            base.AnimationsComplete(animationType);
         }
 
         #endregion

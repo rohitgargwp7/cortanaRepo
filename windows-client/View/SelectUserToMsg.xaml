@@ -1,4 +1,4 @@
-﻿<cc:AnimatedBasePage 
+﻿<phone:PhoneApplicationPage 
     x:Class="windows_client.View.SelectUserToMsg"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,8 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:GkJumpList="clr-namespace:GK.Phone;assembly=Gk.Phone"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:cc="clr-namespace:Clarity.Phone.Controls;assembly=PageTransitions"
-    
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -76,4 +74,4 @@
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
-</cc:AnimatedBasePage >
+</phone:PhoneApplicationPage >
