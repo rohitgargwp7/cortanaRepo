@@ -57,10 +57,11 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            //myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
             convMap2 = new Dictionary<string, bool>();
-            LoadMessages();
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             #region Load App level instances
 
             BackgroundWorker bw = new BackgroundWorker();
@@ -97,7 +98,14 @@ namespace windows_client.View
             {
                 mPubSub = App.HikePubSubInstance;
                 //Load Hike Contacts
-                App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
+                //App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
+                LoadMessages();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 registerListeners();
             }
         }
@@ -119,10 +127,7 @@ namespace windows_client.View
                     TimeUtils.getTimeString(lastMessage.Timestamp));
                 convMap.Add(conv.Msisdn, mObj);
                 convMap2.Add(conv.Msisdn, false);
-                //Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //{
-                    App.ViewModel.MessageListPageCollection.Add(mObj);
-                //});
+                App.ViewModel.MessageListPageCollection.Add(mObj);
             }
         }
 
