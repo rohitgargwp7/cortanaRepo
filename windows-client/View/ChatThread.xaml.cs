@@ -13,12 +13,10 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Reactive;
 using System.Threading;
-using Clarity.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
 
 namespace windows_client.View
 {
-    public partial class ChatThread : AnimatedBasePage, HikePubSub.Listener, INotifyPropertyChanged
+    public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
         #region CONSTANTS
 
@@ -78,11 +76,10 @@ namespace windows_client.View
         public ChatThread()
         {
             InitializeComponent();
-            AnimationContext = LayoutRoot;
-            this.myListBox.ItemsSource = chatThreadPageCollection;
+            //this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-            loadMessages();
+            
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
@@ -99,7 +96,15 @@ namespace windows_client.View
             }
             else
             {
-                // Perform a time consuming operation and report progress.
+                loadMessages();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.myListBox.ItemsSource = chatThreadPageCollection;
+                    this.myListBox.UpdateLayout();
+                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
                 registerListeners();
@@ -163,7 +168,7 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Mode = ApplicationBarMode.Minimized;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
 
@@ -274,18 +279,10 @@ namespace windows_client.View
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
-                    incomingMessages.Add(messagesList[i]);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
+                    incomingMessages.Add(messagesList[i]);               
                     this.ChatThreadPageCollection.Add(cm);
-                });
-
             }
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-               {
-                   this.myListBox.UpdateLayout();
-                   this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-               });
+           
             int count = 0;
             for (i = messagesList.Count - limit - 1; i >= 0; i--)
             {
@@ -316,14 +313,9 @@ namespace windows_client.View
                     }
                 }
                 ConvMessage c = messagesList[i];
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    this.ChatThreadPageCollection.Insert(0, c);
-                    this.myListBox.UpdateLayout();
-                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                });
+                this.ChatThreadPageCollection.Insert(0, c);
                 if (count % 5 == 0)
-                    Thread.Sleep(2);
+                    Thread.Sleep(5);
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
@@ -352,14 +344,8 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-        }
-
-        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
-        {
-            if (animationType == AnimationType.NavigateForwardIn)
-                return new TurnstileFeatherForwardInAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-            else
-                return new TurnstileFeatherBackwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -398,13 +384,10 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (message != "")
             {
+                appBar.Mode = ApplicationBarMode.Minimized;
             }
         }
 
-        /// <summary>
-        /// Sends start and end typing notifications
-        /// </summary>
-        /// <param name="notificationType">If it is true then send start typing else send end typing</param>
         private void sendTypingNotification(bool notificationType)
         {
             JObject obj = new JObject();
@@ -445,9 +428,10 @@ namespace windows_client.View
                 return;
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
+                appBar.Mode = ApplicationBarMode.Minimized;
                 return;
             }
-
+            appBar.Mode = ApplicationBarMode.Default;
             lastText = sendMsgTxtbox.Text;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
@@ -860,7 +844,7 @@ namespace windows_client.View
                 {
                     ConvMessage c = incomingMessages[i];
                     if (!c.IsSent)
-                        c.NotifyPropertyChanged("Msisdn");
+                        c.NotifyPropertyChanged("AvatarImage");
                 }
             }
 

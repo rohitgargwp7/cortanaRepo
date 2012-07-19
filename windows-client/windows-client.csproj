@@ -50,9 +50,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Coding4Fun.Phone.Controls">
-      <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
-    </Reference>
     <Reference Include="finalmqtt">
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
@@ -89,15 +86,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="converters\ChatBubbleDirection.cs" />
-    <Compile Include="converters\ChatBubbleMargin.cs" />
-    <Compile Include="converters\ChatThreadAlignment.cs" />
-    <Compile Include="converters\ChatThreadBackground.cs" />
-    <Compile Include="converters\ChatThreadImageVisible.cs" />
-    <Compile Include="converters\ChatThreadSDRImage.cs" />
-    <Compile Include="converters\ChatThreadSDRImageShow.cs" />
-    <Compile Include="converters\OnHikeIndicator.cs" />
-    <Compile Include="converters\TimestampConverter.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -120,10 +108,10 @@
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
-    <Compile Include="converters\ImageConverter.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />
+    <Compile Include="utils\ImageUtils.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
@@ -281,10 +269,6 @@
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PageTransitions\PageTransitions.csproj">
-      <Project>{A58FA31E-09AE-4C33-9E77-8C8CB47FCAA7}</Project>
-      <Name>PageTransitions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Phone.Controls\Phone.Controls.csproj">
       <Project>{BE66B5CF-E495-4BB9-A261-9123B6974011}</Project>
       <Name>Phone.Controls</Name>

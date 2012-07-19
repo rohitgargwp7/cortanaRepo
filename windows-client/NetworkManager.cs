@@ -3,7 +3,8 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using windows_client.Model;
 using windows_client.DbUtils;
-using windows_client.converters;
+using windows_client.utils;
+using System.Windows;
 
 namespace windows_client
 {
@@ -170,9 +171,12 @@ namespace windows_client
                     return;
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                
+
                 MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
-                ImageConverter.updateImageInCache(msisdn, imageBytes);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    UserInterfaceUtils.updateImageInCache(msisdn, imageBytes);
+                });
                 this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
             }
             else

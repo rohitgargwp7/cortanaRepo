@@ -7,8 +7,6 @@ namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged
     {
-        public List<ContactInfo> allContactsList = new List<ContactInfo>();
-
         private ObservableCollection<ConversationListObject> _messageListPageCollection = new ObservableCollection<ConversationListObject>();
 
         public ObservableCollection<ConversationListObject> MessageListPageCollection

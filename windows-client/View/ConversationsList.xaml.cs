@@ -17,14 +17,12 @@ using System.Diagnostics;
 using WP7Contrib.Collections;
 using System.Threading;
 using System.ComponentModel;
-using Clarity.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
 using windows_client.ViewModel;
 using windows_client.Mqtt;
 
 namespace windows_client.View
 {
-    public partial class ConversationsList : AnimatedBasePage, HikePubSub.Listener
+    public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
         #region CONSTANTS
 
@@ -59,10 +57,11 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            //myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
             convMap2 = new Dictionary<string, bool>();
-            LoadMessages();
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             #region Load App level instances
 
             BackgroundWorker bw = new BackgroundWorker();
@@ -71,7 +70,6 @@ namespace windows_client.View
             bw.RunWorkerAsync();
 
             #endregion
-            AnimationContext = LayoutRoot;
             initAppBar();
             initProfilePage();
         }
@@ -81,8 +79,6 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-
-            App.MqttManagerInstance.connect();
         }
 
         #endregion
@@ -99,9 +95,18 @@ namespace windows_client.View
             else
             {
                 mPubSub = App.HikePubSubInstance;
-                //Load Hike Contacts
-                App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
+                LoadMessages();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;                    
+                    appBar.Mode = ApplicationBarMode.Default;
+                    appBar.IsMenuEnabled = true;
+                    appBar.Opacity = 1;
+                });
                 registerListeners();
+                App.MqttManagerInstance.connect();
             }
         }
 
@@ -118,24 +123,21 @@ namespace windows_client.View
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
 
-                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
                 ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? conv.Msisdn : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
-                    TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
+                    TimeUtils.getTimeString(lastMessage.Timestamp));
                 convMap.Add(conv.Msisdn, mObj);
                 convMap2.Add(conv.Msisdn, false);
-                //Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //{
-                    App.ViewModel.MessageListPageCollection.Add(mObj);
-                //});
+                App.ViewModel.MessageListPageCollection.Add(mObj);
             }
         }
 
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Mode = ApplicationBarMode.Minimized;
+            appBar.Opacity = 0;
             appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            appBar.IsMenuEnabled = false;
 
             /* Add icons */
             ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
@@ -338,7 +340,6 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 App.ViewModel.MessageListPageCollection.Clear();
-                App.ViewModel.allContactsList.Clear();
                 progress.Hide();
                 NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
             });
@@ -380,51 +381,6 @@ namespace windows_client.View
 
         #endregion
 
-        #region Transition Animations
-
-        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
-        {
-
-            //you could factor this into an intermediate base page to have soem other defaults
-            //such as always continuuming to a pivot page or rultes based on the page, direction and where you are goign to/coming from
-
-            if (toOrFrom != null)
-            {
-                if (toOrFrom.OriginalString.Contains("SelectUserToMsg.xaml"))
-                {
-                    return null;
-                }
-                if (animationType == AnimationType.NavigateForwardOut)
-                    return new TurnstileFeatherForwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-                else
-                    return new TurnstileFeatherBackwardInAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-            }
-
-            return base.GetAnimation(animationType, toOrFrom);
-        }
-
-        protected override void AnimationsComplete(AnimationType animationType)
-        {
-            switch (animationType)
-            {
-                case AnimationType.NavigateForwardIn:
-                    //Add code to set data context and bind data
-                    //you really only need to do that on forward in. on backward in everything
-                    //will be there that existed on forward out
-                    break;
-
-                case AnimationType.NavigateBackwardIn:
-                    //reset list so you can select the same element again
-                    myListBox.SelectedIndex = -1;
-                    break;
-            }
-
-
-            base.AnimationsComplete(animationType);
-        }
-
-        #endregion
-
         #region PUBSUB
 
         public void onEventReceived(string type, object obj)
@@ -449,10 +405,8 @@ namespace windows_client.View
                 else
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                    Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
                     mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
-                    thumbnail == null ? null : thumbnail.Avatar);
+                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp));
                     convMap[convMessage.Msisdn] = mObj;
                     isNewConversation = true;
                 }
@@ -499,7 +453,7 @@ namespace windows_client.View
                     ConversationListObject convObj = convMap[msisdn];
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        convObj.NotifyPropertyChanged("Msisdn");
+                        convObj.NotifyPropertyChanged("AvatarImage");
                     });
                 }
                 catch (KeyNotFoundException)

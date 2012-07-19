@@ -236,7 +236,6 @@ namespace windows_client.utils
                 UsersTableUtils.updateContacts(updatedContacts);
             }
             ConversationsList.ReloadConversations();
-            App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
             App.isABScanning = false;
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

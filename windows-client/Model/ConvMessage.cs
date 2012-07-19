@@ -6,6 +6,7 @@ using Microsoft.Phone.Data.Linq.Mapping;
 using System.Data.Linq;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.Model
 {
@@ -114,6 +115,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
+                    NotifyPropertyChanged("SdrImage");
                 }
             }
         }
@@ -339,6 +341,102 @@ namespace windows_client.Model
         {
             return TimeUtils.getRelativeTime(Timestamp);
         }
+
+        #region ChatThread Page Bindings for Converters
+
+        public BitmapImage AvatarImage
+        {
+            get
+            {
+                return UserInterfaceUtils.getBitMapImage(_msisdn);
+            }
+        }
+
+        public string SdrImage
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
+                    case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
+                    case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
+                    default: return "images\\ic_tc.png";
+                }
+            }
+        }
+
+        public string Alignment
+        {
+            get
+            {
+                if (IsSent)
+                    return "right";
+                else
+                    return "left";
+            }
+        }
+
+        public string BubbleBackground
+        {
+            get
+            {
+                if (ChatBubbleType.RECEIVED == MsgType)
+                {
+                    return "#eeeeec";
+                }
+                else if (ChatBubbleType.HIKE_SENT == MsgType)
+                {
+                    return "#ccecfe";
+                }
+                else
+                {
+                    return "#e1f4d7";
+                }
+            }
+        }
+
+        public string ChatThreadImageVisibility
+        {
+            get
+            {
+                if (IsSent)
+                    return "collapsed";
+                else
+                    return "visible";
+            }
+        }
+
+        public string ChatBubbleMargin
+        {
+            get
+            {
+                if (IsSent)
+                    return "15,0,10,10";
+                else
+                    return "5,0,10,10";
+            }
+        }
+
+        public string SdrImageVisibility
+        {
+            get
+            {
+                if (IsSent)
+                    return "Visible";
+                else
+                    return "Collapsed";
+            }
+        }
+
+        public string ChatTimeFormat
+        {
+            get
+            {
+                return TimeUtils.getTimeString(_timestamp);
+            }
+        }
+        #endregion
 
         #endregion
 
