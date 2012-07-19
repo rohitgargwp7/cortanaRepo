@@ -106,6 +106,7 @@
     <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="HikeConstants.cs" />
+    <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
