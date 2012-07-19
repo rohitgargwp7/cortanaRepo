@@ -76,10 +76,10 @@ namespace windows_client.View
         public ChatThread()
         {
             InitializeComponent();
-            this.myListBox.ItemsSource = chatThreadPageCollection;
+            //this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-            loadMessages();
+            
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
@@ -96,7 +96,13 @@ namespace windows_client.View
             }
             else
             {
-                // Perform a time consuming operation and report progress.
+                loadMessages();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.myListBox.ItemsSource = chatThreadPageCollection;
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
                 registerListeners();
@@ -160,7 +166,7 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Mode = ApplicationBarMode.Minimized;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
 
@@ -320,7 +326,7 @@ namespace windows_client.View
                     this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                 });
                 if (count % 5 == 0)
-                    Thread.Sleep(2);
+                    Thread.Sleep(5);
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
@@ -349,6 +355,8 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -387,13 +395,10 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (message != "")
             {
+                appBar.Mode = ApplicationBarMode.Minimized;
             }
         }
 
-        /// <summary>
-        /// Sends start and end typing notifications
-        /// </summary>
-        /// <param name="notificationType">If it is true then send start typing else send end typing</param>
         private void sendTypingNotification(bool notificationType)
         {
             JObject obj = new JObject();
@@ -434,9 +439,10 @@ namespace windows_client.View
                 return;
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
+                appBar.Mode = ApplicationBarMode.Minimized;
                 return;
             }
-
+            appBar.Mode = ApplicationBarMode.Default;
             lastText = sendMsgTxtbox.Text;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));

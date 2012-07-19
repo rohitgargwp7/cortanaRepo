@@ -18,18 +18,44 @@ namespace windows_client.View
     {
         public static MyProgressIndicator progress = null;
         public static bool canGoBack = true;
+        public List<ContactInfo> allContactsList = null;
 
        // private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 239, 239, 239));
 
         public SelectUserToMsg()
         {
             InitializeComponent();
-            contactsListBox.ItemsSource = App.ViewModel.allContactsList;
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
+            bw.RunWorkerAsync();
         }
         
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e);          
+            base.OnNavigatedTo(e);
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
+        }
+
+        private void bw_LoadAllContacts(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            if ((worker.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                allContactsList = UsersTableUtils.getAllContacts();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    contactsListBox.ItemsSource = allContactsList;
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+
+                });
+            }
         }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
@@ -37,7 +63,7 @@ namespace windows_client.View
             string charsEnetered = enterNameTxt.Text.ToLower();
             if (String.IsNullOrEmpty(charsEnetered))
             {
-                contactsListBox.ItemsSource = App.ViewModel.allContactsList;
+                contactsListBox.ItemsSource = allContactsList;
                 return;
             }
             List<ContactInfo> contactsList = getContactInfoFromNameOrPhone(charsEnetered);
@@ -52,11 +78,11 @@ namespace windows_client.View
         private List<ContactInfo> getContactInfoFromNameOrPhone(string charsEnetered)
         {
             List<ContactInfo> contactsList = new List<ContactInfo>();
-            for (int i = 0; i < App.ViewModel.allContactsList.Count; i++)
+            for (int i = 0; i < allContactsList.Count; i++)
             {
-                if (App.ViewModel.allContactsList[i].Name.ToLower().Contains(charsEnetered) || App.ViewModel.allContactsList[i].Msisdn.Contains(charsEnetered) || App.ViewModel.allContactsList[i].PhoneNo.Contains(charsEnetered))
+                if (allContactsList[i].Name.ToLower().Contains(charsEnetered) || allContactsList[i].Msisdn.Contains(charsEnetered) || allContactsList[i].PhoneNo.Contains(charsEnetered))
                 {
-                    contactsList.Add(App.ViewModel.allContactsList[i]);
+                    contactsList.Add(allContactsList[i]);
                 }
             }
             return contactsList;

@@ -19,10 +19,10 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="620"/>
-            <RowDefinition Height="0*"/>
+            <RowDefinition Height="586"/>
+            <RowDefinition Height="34*"/>
         </Grid.RowDefinitions>
-        
+
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Background="White">
             <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
@@ -33,10 +33,10 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
-        	<Grid.ColumnDefinitions>
-        		<ColumnDefinition Width="0.206*"/>
-        		<ColumnDefinition Width="0.794*"/>
-        	</Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.206*"/>
+                <ColumnDefinition Width="0.794*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -63,6 +63,10 @@
                 </GkJumpList:JumpList.ItemTemplate>
             </GkJumpList:JumpList>
         </Grid>
+
+        <StackPanel Grid.Row="1">
+            <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" Height="403" />
+        </StackPanel>
         <StackPanel x:Name="sendMsgPanel" Orientation="Horizontal" Margin="-12,580,0,0" Grid.Row="2">
             <TextBox x:Name="enterMsgTxt" Width="442" TextChanged="enterNameTxt_TextChanged" />
         </StackPanel>

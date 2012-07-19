@@ -79,8 +79,6 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-
-            App.MqttManagerInstance.connect();
         }
 
         #endregion
@@ -97,16 +95,18 @@ namespace windows_client.View
             else
             {
                 mPubSub = App.HikePubSubInstance;
-                //Load Hike Contacts
-                //App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
                 LoadMessages();
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
+                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;                    
+                    appBar.Mode = ApplicationBarMode.Default;
+                    appBar.IsMenuEnabled = true;
+                    appBar.Opacity = 1;
                 });
                 registerListeners();
+                App.MqttManagerInstance.connect();
             }
         }
 
@@ -134,9 +134,10 @@ namespace windows_client.View
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Mode = ApplicationBarMode.Minimized;
+            appBar.Opacity = 0;
             appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            appBar.IsMenuEnabled = false;
 
             /* Add icons */
             ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
@@ -339,7 +340,6 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 App.ViewModel.MessageListPageCollection.Clear();
-                App.ViewModel.allContactsList.Clear();
                 progress.Hide();
                 NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
             });
