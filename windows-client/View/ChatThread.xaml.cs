@@ -100,6 +100,8 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     this.myListBox.ItemsSource = chatThreadPageCollection;
+                    this.myListBox.UpdateLayout();
+                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
                 });
@@ -277,18 +279,10 @@ namespace windows_client.View
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
-                    incomingMessages.Add(messagesList[i]);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
+                    incomingMessages.Add(messagesList[i]);               
                     this.ChatThreadPageCollection.Add(cm);
-                });
-
             }
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-               {
-                   this.myListBox.UpdateLayout();
-                   this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-               });
+           
             int count = 0;
             for (i = messagesList.Count - limit - 1; i >= 0; i--)
             {
@@ -319,12 +313,7 @@ namespace windows_client.View
                     }
                 }
                 ConvMessage c = messagesList[i];
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    this.ChatThreadPageCollection.Insert(0, c);
-                    this.myListBox.UpdateLayout();
-                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                });
+                this.ChatThreadPageCollection.Insert(0, c);
                 if (count % 5 == 0)
                     Thread.Sleep(5);
                 if (messagesList[i].IsSent)
