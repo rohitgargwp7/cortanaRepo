@@ -176,6 +176,7 @@ namespace windows_client.View
             {
                 App.ViewModel.MessageListPageCollection.Clear();
                 convMap.Clear();
+                convMap2.Clear();
                 LoadMessages();
             });
 
