@@ -26,7 +26,7 @@ namespace windows_client.View
     {
         #region CONSTANTS
 
-        private readonly string DELETE_ACCOUNT = "Delete Account";
+        private readonly string DELETE_ALL_CONVERSATIONS = "Delete All Conversations";
         private readonly string INVITE_USERS = "Invite Users";
 
         #endregion
@@ -100,7 +100,7 @@ namespace windows_client.View
                 {
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
-                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;                    
+                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
                     appBar.Mode = ApplicationBarMode.Default;
                     appBar.IsMenuEnabled = true;
                     appBar.Opacity = 1;
@@ -149,8 +149,8 @@ namespace windows_client.View
 
             /* Add Menu Items*/
             ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
-            menuItem1.Text = DELETE_ACCOUNT;
-            menuItem1.Click += new EventHandler(deleteAccount_Click);
+            menuItem1.Text = DELETE_ALL_CONVERSATIONS;
+            menuItem1.Click += new EventHandler(deleteAllConvs_Click);
             appBar.MenuItems.Add(menuItem1);
 
             ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
@@ -306,6 +306,25 @@ namespace windows_client.View
 
         #region AppBar Button Events
 
+        private void deleteAllConvs_Click(object sender, EventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting account.", "Delete Account ?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
+            App.MqttManagerInstance.disconnectFromBroker(false);
+            ConversationTableUtils.deleteAllConversations();
+            MessagesTableUtils.deleteAllMessages();
+            convMap.Clear();
+            convMap2.Clear();
+            App.ViewModel.MessageListPageCollection.Clear();
+            progressBar.Visibility = System.Windows.Visibility.Collapsed;
+            progressBar.IsEnabled = false;
+            App.MqttManagerInstance.connect();
+        }
+
         #region Delete Account
 
         private void deleteAccount_Click(object sender, EventArgs e)
@@ -336,7 +355,7 @@ namespace windows_client.View
             App.MqttManagerInstance.disconnectFromBroker(false);
             removeListeners();
             appSettings.Clear();
-            MiscDBUtil.clearDatabase();            /*This is used to avoid cross thread invokation exception*/
+            MiscDBUtil.clearDatabase();
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 App.ViewModel.MessageListPageCollection.Clear();
@@ -391,7 +410,6 @@ namespace windows_client.View
                 ConversationListObject mObj;
                 bool isNewConversation = false;
 
-                /*This is used to avoid cross thread invokation exception*/
                 if (convMap.ContainsKey(convMessage.Msisdn))
                 {
                     mObj = convMap[convMessage.Msisdn];

@@ -25,6 +25,8 @@ namespace windows_client.View
         public SelectUserToMsg()
         {
             InitializeComponent();
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
@@ -34,8 +36,6 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            progressBar.Visibility = System.Windows.Visibility.Visible;
-            progressBar.IsEnabled = true;
         }
 
         private void bw_LoadAllContacts(object sender, DoWorkEventArgs e)
@@ -77,6 +77,8 @@ namespace windows_client.View
 
         private List<ContactInfo> getContactInfoFromNameOrPhone(string charsEnetered)
         {
+            if (allContactsList == null || allContactsList.Count == 0)
+                return null;
             List<ContactInfo> contactsList = new List<ContactInfo>();
             for (int i = 0; i < allContactsList.Count; i++)
             {

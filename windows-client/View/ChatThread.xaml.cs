@@ -27,7 +27,7 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = "UNBLOCK";
 
         #endregion
-        
+
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
 
         private bool mUserIsBlocked;
@@ -79,11 +79,12 @@ namespace windows_client.View
             //this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-            
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
-           
+
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -97,21 +98,13 @@ namespace windows_client.View
             else
             {
                 loadMessages();
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    this.myListBox.ItemsSource = chatThreadPageCollection;
-                    this.myListBox.UpdateLayout();
-                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                    progressBar.IsEnabled = false;
-                });
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
                 registerListeners();
             }
 
         }
-        
+
         private void initBlockUnblockState()
         {
             mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
@@ -260,6 +253,12 @@ namespace windows_client.View
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null || messagesList.Count == 0) // represents there are no chat messages for this msisdn
             {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.myListBox.ItemsSource = chatThreadPageCollection;
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 return;
             }
 
@@ -279,10 +278,10 @@ namespace windows_client.View
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
-                    incomingMessages.Add(messagesList[i]);               
-                    this.ChatThreadPageCollection.Add(cm);
+                    incomingMessages.Add(messagesList[i]);
+                this.ChatThreadPageCollection.Add(cm);
             }
-           
+
             int count = 0;
             for (i = messagesList.Count - limit - 1; i >= 0; i--)
             {
@@ -321,6 +320,14 @@ namespace windows_client.View
                 else
                     incomingMessages.Insert(0, messagesList[i]);
             }
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                this.myListBox.ItemsSource = chatThreadPageCollection;
+                this.myListBox.UpdateLayout();
+                this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
+            });
             if (isPublish)
             {
                 JObject obj = new JObject();
@@ -344,8 +351,6 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-            progressBar.Visibility = System.Windows.Visibility.Visible;
-            progressBar.IsEnabled = true;
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
