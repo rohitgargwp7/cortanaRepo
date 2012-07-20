@@ -161,7 +161,7 @@ namespace windows_client.View
         #endregion
 
         /* Should run on UI thread, based on mUserIsBlocked*/
-        private void initAppBar()
+        private void initAppBar(bool isAddUser)
         {
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Minimized;
@@ -183,10 +183,14 @@ namespace windows_client.View
                 menuItem1.Text = BLOCK_USER;
             menuItem1.Click += new EventHandler(blockUnblock_Click);
             appBar.MenuItems.Add(menuItem1);
-            ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-            menuItem2.Text = "add user";
-            menuItem2.Click += new EventHandler(addUser_Click);
-            appBar.MenuItems.Add(menuItem2);
+
+            if (isAddUser)
+            {
+                ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
+                menuItem2.Text = "add user";
+                menuItem2.Click += new EventHandler(addUser_Click);
+                appBar.MenuItems.Add(menuItem2);
+            }
             chatThreadMainPage.ApplicationBar = appBar;
         }
 
@@ -204,12 +208,19 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
+            bool isAddUser = false;
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
             {
-                ConversationListObject obj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
-                mContactNumber = obj.Msisdn;
-                mContactName = obj.ContactName;
-                isOnHike = obj.IsOnhike;
+                ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
+                mContactNumber = convObj.Msisdn;
+                if (convObj._contactName != null)
+                    mContactName = convObj.ContactName;
+                else
+                {
+                    mContactName = convObj.Msisdn;
+                    isAddUser = true;
+                }
+                isOnHike = convObj.IsOnhike;
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
@@ -229,7 +240,7 @@ namespace windows_client.View
             }
 
             userName.Text = mContactName;
-            initAppBar();
+            initAppBar(isAddUser);
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
@@ -612,6 +623,8 @@ namespace windows_client.View
             {
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
+                ConversationsList.ConvMap.Remove(msg.Msisdn);
+                ConversationsList.convMap2.Remove(msg.Msisdn);
                 delConv = true;
             }
             object[] o = new object[3];

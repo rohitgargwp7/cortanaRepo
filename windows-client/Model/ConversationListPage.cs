@@ -10,7 +10,7 @@ namespace windows_client.Model
         #region member variables
 
         private string _msisdn;
-        private string _contactName;
+        public string _contactName;
         private string _lastMessage;
         private string _timeStamp;
         private bool _isOnhike;
@@ -24,7 +24,10 @@ namespace windows_client.Model
         {
             get
             {
-                return _contactName;
+                if (_contactName != null)
+                    return _contactName;
+                else
+                    return _msisdn;
             }
             set
             {
