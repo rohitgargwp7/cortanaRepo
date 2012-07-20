@@ -27,7 +27,7 @@
             <Image x:Name="icon" Source="images\hike_header.png" Height="40"/>
         </StackPanel>
 
-        <controls:Pivot Grid.Row="1" Foreground="Black" Margin="0,-20,0,0">
+        <controls:Pivot Grid.Row="1" Foreground="Black" Margin="0,-20,0,0" SelectionChanged="Pivot_SelectionChanged">
             <!--Pivot item one-->
             <controls:PivotItem Header="chats">
                 <Grid x:Name="ConversationList">

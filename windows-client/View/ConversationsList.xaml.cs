@@ -26,7 +26,7 @@ namespace windows_client.View
     {
         #region CONSTANTS
 
-        private readonly string DELETE_ALL_CONVERSATIONS = "Delete All Conversations";
+        private readonly string DELETE_ALL_CONVERSATIONS = "Delete All Chats";
         private readonly string INVITE_USERS = "Invite Users";
 
         #endregion
@@ -41,6 +41,8 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private string msisdn;
         private ApplicationBar appBar;
+        ApplicationBarMenuItem delConvsMenu;
+        ApplicationBarMenuItem delAccountMenu;
 
         public static Dictionary<string, ConversationListObject> ConvMap
         {
@@ -148,16 +150,22 @@ namespace windows_client.View
             appBar.Buttons.Add(composeIconButton);
 
             /* Add Menu Items*/
-            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
-            menuItem1.Text = DELETE_ALL_CONVERSATIONS;
-            menuItem1.Click += new EventHandler(deleteAllConvs_Click);
-            appBar.MenuItems.Add(menuItem1);
-
-            ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-            menuItem2.Text = INVITE_USERS;
-            menuItem2.Click += new EventHandler(inviteUsers_Click);
-            appBar.MenuItems.Add(menuItem2);
+            ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
+            inviteUsersMenu.Text = INVITE_USERS;
+            inviteUsersMenu.Click += new EventHandler(inviteUsers_Click);
+            appBar.MenuItems.Add(inviteUsersMenu);
             convListPagePivot.ApplicationBar = appBar;
+
+            delConvsMenu = new ApplicationBarMenuItem();
+            delConvsMenu.Text = DELETE_ALL_CONVERSATIONS;
+            delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
+            appBar.MenuItems.Add(delConvsMenu);
+
+            delAccountMenu = new ApplicationBarMenuItem();
+            delAccountMenu.Text = "delete account";
+            delAccountMenu.Click += new EventHandler(deleteAccount_Click);
+
+            
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -308,10 +316,10 @@ namespace windows_client.View
 
         private void deleteAllConvs_Click(object sender, EventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting account.", "Delete Account ?", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats ?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
-
+            
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
@@ -323,6 +331,7 @@ namespace windows_client.View
             progressBar.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.IsEnabled = false;
             App.MqttManagerInstance.connect();
+           
         }
 
         #region Delete Account
@@ -396,6 +405,27 @@ namespace windows_client.View
             {
                 NavigationService.Navigate(nextPage);
             });
+        }
+
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            PivotItem pItem = e.AddedItems[0] as PivotItem;
+            var panorama = pItem.Parent as Pivot;
+            var selectedIndex = panorama.SelectedIndex;
+            if (selectedIndex == 0)
+            {
+                if (!appBar.MenuItems.Contains(delConvsMenu))
+                    appBar.MenuItems.Add(delConvsMenu);
+                if (appBar.MenuItems.Contains(delAccountMenu))
+                    appBar.MenuItems.Remove(delAccountMenu);
+            }
+            else if (selectedIndex == 1)
+            {
+                if (appBar.MenuItems.Contains(delConvsMenu))
+                    appBar.MenuItems.Remove(delConvsMenu);
+                if (!appBar.MenuItems.Contains(delAccountMenu))
+                    appBar.MenuItems.Add(delAccountMenu);
+            }
         }
 
         #endregion

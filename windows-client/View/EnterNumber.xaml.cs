@@ -73,6 +73,7 @@ namespace windows_client
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
+            enterPhoneBtn.Content = "Next";
             base.OnNavigatedTo(e);
             while(NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
