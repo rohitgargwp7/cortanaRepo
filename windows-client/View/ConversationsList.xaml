@@ -44,7 +44,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!--ContentPanel - place additional content here-->
-                    <ListBox x:Name="myListBox" Grid.ColumnSpan="2" FontSize="26" Tap="btnGetSelected_Click" Margin="0,-30,-25,27" Grid.RowSpan="2" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <ListBox x:Name="myListBox" FontSize="26" Tap="btnGetSelected_Click" Margin="-273,-39,229,36" Grid.RowSpan="2" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
@@ -102,11 +102,7 @@
                     </StackPanel>
 
                     <StackPanel Margin="30, 30, 0,10" Orientation="Vertical" Grid.Row="1">
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="0,15,0,5">
-                            <Image Source="images\purchases.png" Height="35"></Image>
-                            <TextBlock Text="Purchases" Margin="15,4,0,0" FontSize="30"></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="0,15,0,5">
+                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Margin="0,15,0,5">
                             <Image Source="images\notifications.png" Height="35"></Image>
                             <TextBlock Text="Notifications" Margin="15,4,0,0" FontSize="30"></TextBlock>
                         </StackPanel>
