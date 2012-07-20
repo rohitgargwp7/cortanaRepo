@@ -256,6 +256,15 @@ namespace windows_client.View
             int limit = 6;
             bool isPublish = false;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
+            int messageCount = messagesList == null ? 0 : messagesList.Count;
+            if (messageCount < 6)
+            {
+                for (int k = 0; k < 6 - messageCount; k++)
+                {
+                    this.ChatThreadPageCollection.Add(null);
+                }
+            }
+
             if (messagesList == null || messagesList.Count == 0) // represents there are no chat messages for this msisdn
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -387,10 +396,16 @@ namespace windows_client.View
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
+
+            if (ChatThreadPageCollection[0] == null)
+            {
+                this.ChatThreadPageCollection.RemoveAt(0);
+            }
             this.ChatThreadPageCollection.Add(convMessage);
+            
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-
+            
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (message != "")
             {
@@ -602,6 +617,9 @@ namespace windows_client.View
 
             //update Conversation list class
             this.ChatThreadPageCollection.Remove(msg);
+            if (this.ChatThreadPageCollection.Count < 6)
+                this.ChatThreadPageCollection.Insert(0, null);
+
             ConversationListObject obj = ConversationsList.ConvMap[msg.Msisdn];
             /* Remove the message from conversation list */
             if (this.ChatThreadPageCollection.Count > 0)
@@ -681,7 +699,12 @@ namespace windows_client.View
                     // Update UI
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (ChatThreadPageCollection[0] == null)
+                        {
+                            this.ChatThreadPageCollection.RemoveAt(0);
+                        }
                         this.ChatThreadPageCollection.Add(convMessage);
+
                         this.myListBox.UpdateLayout();
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                         //set typing notification as false
