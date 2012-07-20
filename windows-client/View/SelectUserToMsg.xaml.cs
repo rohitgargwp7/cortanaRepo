@@ -20,7 +20,7 @@ namespace windows_client.View
         public static bool canGoBack = true;
         public List<ContactInfo> allContactsList = null;
 
-       // private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 239, 239, 239));
+        private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
 
         public SelectUserToMsg()
         {
@@ -127,7 +127,7 @@ namespace windows_client.View
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-           // enterNameTxt.Background = textBoxBackground;
+            enterNameTxt.BorderBrush = textBoxBorder;
         }
     }
 }
