@@ -47,9 +47,12 @@ namespace windows_client.View
         ApplicationBarMenuItem menuItem1;
         ApplicationBarMenuItem inviteMenuItem = null;
 
-        private readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-        private readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
+        private static readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        private static readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        private static readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
+
+        private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 225, 244, 215));
+        private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 204, 236, 254));
 
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
@@ -232,17 +235,19 @@ namespace windows_client.View
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
                 initInviteMenuItem();
                 appBar.MenuItems.Add(inviteMenuItem);
+                typingTextBoxBorder.BorderBrush = smsBackground;
             }
             else
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+                typingTextBoxBorder.BorderBrush = hikeMsgBackground;
             }
 
             if (mContactNumber == null)
             {
                 // some error handling
             }
-
+            //
         }
 
         private void loadMessages()
@@ -860,7 +865,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
-            sendMsgTxtbox.Background = textBoxBackground;
+            sendMsgTxtbox.Background = whiteBackground;
 
         }
     }
