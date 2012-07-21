@@ -27,6 +27,8 @@ namespace windows_client.View
             InitializeComponent();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
+            this.Loaded += new RoutedEventHandler(SelectUserToMessagePage_Loaded);
+
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
@@ -129,5 +131,11 @@ namespace windows_client.View
         {
             enterNameTxt.BorderBrush = textBoxBorder;
         }
+
+        void SelectUserToMessagePage_Loaded(object sender, RoutedEventArgs e)
+        {
+            SystemTray.IsVisible = false;
+        }
+
     }
 }

@@ -82,6 +82,8 @@ namespace windows_client.View
             //this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
+            this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
+
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             bw.WorkerSupportsCancellation = true;
@@ -413,10 +415,10 @@ namespace windows_client.View
                 this.ChatThreadPageCollection.RemoveAt(0);
             }
             this.ChatThreadPageCollection.Add(convMessage);
-            
+
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-            
+
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
             if (message != "")
             {
@@ -904,5 +906,11 @@ namespace windows_client.View
             sendMsgTxtbox.Background = whiteBackground;
 
         }
+
+        void ChatThreadPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            SystemTray.IsVisible = false;
+        }
+
     }
 }
