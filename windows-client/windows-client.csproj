@@ -218,6 +218,7 @@
     <Content Include="View\images\compose_pressed.png" />
     <Resource Include="View\images\hike_header.png" />
     <Resource Include="View\images\empty_messages_hike_logo.png" />
+    <Content Include="View\images\empty_screen_tip.png" />
     <Content Include="View\images\enter_name.png" />
     <Resource Include="View\images\help.png" />
     <Content Include="View\images\hike_logo_small.png" />

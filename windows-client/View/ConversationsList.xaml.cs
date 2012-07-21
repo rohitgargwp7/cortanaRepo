@@ -81,6 +81,14 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                emptyScreenImage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                emptyScreenImage.Visibility = Visibility.Collapsed;
+            }
         }
 
         #endregion
@@ -103,6 +111,15 @@ namespace windows_client.View
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
                     myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+
+                    if (App.ViewModel.MessageListPageCollection.Count == 0)
+                    {
+                        emptyScreenImage.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        emptyScreenImage.Visibility = Visibility.Collapsed;
+                    }
                     appBar.Mode = ApplicationBarMode.Default;
                     appBar.IsMenuEnabled = true;
                     appBar.Opacity = 1;
@@ -165,7 +182,7 @@ namespace windows_client.View
             delAccountMenu.Text = "delete account";
             delAccountMenu.Click += new EventHandler(deleteAccount_Click);
 
-            
+
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -320,7 +337,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats ?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
-            
+
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
@@ -328,11 +345,13 @@ namespace windows_client.View
             MessagesTableUtils.deleteAllMessages();
             convMap.Clear();
             convMap2.Clear();
+
             App.ViewModel.MessageListPageCollection.Clear();
+            emptyScreenImage.Visibility = Visibility.Visible;
             progressBar.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.IsEnabled = false;
             App.MqttManagerInstance.connect();
-           
+
         }
 
         #region Delete Account
@@ -368,6 +387,7 @@ namespace windows_client.View
             MiscDBUtil.clearDatabase();
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                emptyScreenImage.Visibility = Visibility.Visible;
                 App.ViewModel.MessageListPageCollection.Clear();
                 progress.Hide();
                 NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
@@ -395,6 +415,10 @@ namespace windows_client.View
             convMap.Remove(convObj.Msisdn); // removed entry from map for UI
             convMap2.Remove(convObj.Msisdn); // removed entry from map for DB
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                emptyScreenImage.Visibility = Visibility.Visible;
+            }
             ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
             MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
         }
