@@ -13,7 +13,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True" DataContext="{Binding}">
+    shell:SystemTray.IsVisible="False" DataContext="{Binding}">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -41,9 +41,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="8,0,2,0" Width="460" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged" Grid.ColumnSpan="2"/>
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged" Grid.ColumnSpan="2"/>
 
-            <GkJumpList:JumpList x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="25,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin" ShowRowHeader="False" ShowHeaders="True" IsPumped="False" DataContext="{Binding}">
+            <GkJumpList:JumpList x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="28,0,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin" ShowRowHeader="False" ShowHeaders="True" IsPumped="False" DataContext="{Binding}">
                 <GkJumpList:JumpList.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
