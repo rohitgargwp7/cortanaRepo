@@ -633,9 +633,9 @@ namespace windows_client.View
 
             ConversationListObject obj = ConversationsList.ConvMap[msg.Msisdn];
             /* Remove the message from conversation list */
-            if (this.ChatThreadPageCollection.Count > 0)
+            if (this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1] != null)
             {
-                obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
+                    obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
             }
             else
             {
