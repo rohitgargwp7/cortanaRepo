@@ -82,8 +82,6 @@ namespace windows_client.View
             //this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-            this.Loaded += new RoutedEventHandler(ChatThreadPage_Loaded);
-
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             bw.WorkerSupportsCancellation = true;
@@ -904,13 +902,6 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = whiteBackground;
-
         }
-
-        void ChatThreadPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            SystemTray.IsVisible = false;
-        }
-
     }
 }
