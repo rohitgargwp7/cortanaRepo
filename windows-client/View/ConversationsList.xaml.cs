@@ -132,6 +132,7 @@ namespace windows_client.View
         private static void LoadMessages()
         {
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
+            List<ConversationListObject> sortedConversationObjects = new List<ConversationListObject>();
             if (conversationList == null)
             {
                 return;
@@ -143,11 +144,14 @@ namespace windows_client.View
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
 
                 ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? null : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
-                    TimeUtils.getTimeString(lastMessage.Timestamp));
+                    TimeUtils.getTimeString(lastMessage.Timestamp), lastMessage.Timestamp);
                 convMap.Add(conv.Msisdn, mObj);
                 convMap2.Add(conv.Msisdn, false);
-                App.ViewModel.MessageListPageCollection.Add(mObj);
+                sortedConversationObjects.Add(mObj);
             }
+            sortedConversationObjects.Sort();
+            App.ViewModel.MessageListPageCollection.AddRange(sortedConversationObjects);
+
         }
 
         private void initAppBar()
@@ -479,7 +483,7 @@ namespace windows_client.View
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
                     mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp));
+                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp), convMessage.Timestamp);
                     convMap[convMessage.Msisdn] = mObj;
                     isNewConversation = true;
                 }
