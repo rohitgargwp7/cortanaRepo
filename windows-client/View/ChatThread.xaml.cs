@@ -51,7 +51,7 @@ namespace windows_client.View
         private static readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         private static readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
 
-        private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 207, 237, 191));
+        private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
         private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 177, 224, 251));
 
 

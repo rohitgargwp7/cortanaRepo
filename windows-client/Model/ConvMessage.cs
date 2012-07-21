@@ -391,7 +391,7 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    return "#d7f0c9";
+                    return "#DBF2CF";
                 }
             }
         }
