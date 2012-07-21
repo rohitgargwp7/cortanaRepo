@@ -10,9 +10,11 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     shell:SystemTray.IsVisible="False">
 
+    
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
 
@@ -24,15 +26,15 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Grid.Row="0" HorizontalAlignment="Left">
-            <Image Source="images\hike_header.png" Margin="0,-7,0,0" Height="62" Width="127"></Image>
+            <Image Source="images\hike_logo_small.png" Margin="0,20,0,0" Height="34" Width="127"></Image>
         </StackPanel>
 
         <StackPanel>
-            <TextBlock x:Name="hikeLabel" Text="invite" FontSize="45" Height="70" Margin="35,60,0,0" Width="Auto" Foreground="Black"/>
+            <TextBlock x:Name="hikeLabel" Text="invite" FontSize="60" Height="70" Margin="22,70,0,0" Width="Auto" Foreground="Black"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="0,0,0,0" Tap="inviteListBox_Tap">
+        <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="4,15,0,0" Tap="inviteListBox_Tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                    
