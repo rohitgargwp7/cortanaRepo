@@ -387,11 +387,11 @@ namespace windows_client.Model
                 }
                 else if (ChatBubbleType.HIKE_SENT == MsgType)
                 {
-                    return "#ccecfe";
+                    return "#B1E0FB";
                 }
                 else
                 {
-                    return "#e1f4d7";
+                    return "#d7f0c9";
                 }
             }
         }
