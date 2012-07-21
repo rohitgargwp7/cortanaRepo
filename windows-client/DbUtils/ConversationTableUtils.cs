@@ -15,8 +15,6 @@ namespace windows_client.DbUtils
                 List<Conversation> res = DbCompiledQueries.GetAllConversations(context).ToList<Conversation>();
                 if (res==null || res.Count() == 0)
                     return null;
-                res.Sort();
-                res.Reverse();
                 return res;
             }           
         }
