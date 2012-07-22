@@ -10,14 +10,17 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows;
+using Microsoft.Phone.UserData;
+using System.Threading;
+using Newtonsoft.Json.Linq;
 
 
 namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
-        public static MyProgressIndicator progress = null;
-        public static bool canGoBack = true;
+        public MyProgressIndicator progress = null;
+        public bool canGoBack = true;
         public List<ContactInfo> allContactsList = null;
 
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
@@ -110,7 +113,95 @@ namespace windows_client.View
 
             progress.Show();
             canGoBack = false;
-            ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.makePatchRequest_Callback));
+            ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
+        }
+
+        public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
+        {
+            try
+            {
+                Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
+                Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
+                Dictionary<string, List<ContactInfo>> contacts_to_update = new Dictionary<string, List<ContactInfo>>();
+                foreach (string id in new_contacts_by_id.Keys)
+                {
+                    List<ContactInfo> phList = new_contacts_by_id[id];
+                    if (!hike_contacts_by_id.ContainsKey(id))
+                    {
+                        contacts_to_update.Add(id, phList);
+                        continue;
+                    }
+
+                    List<ContactInfo> hkList = hike_contacts_by_id[id];
+                    if (!ContactUtils.areListsEqual(phList, hkList))
+                    {
+                        contacts_to_update.Add(id, phList);
+                    }
+                    hike_contacts_by_id.Remove(id);
+                }
+                new_contacts_by_id.Clear();
+                new_contacts_by_id = null;
+                /* If nothing is changed simply return without sending update request*/
+                if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
+                {
+                    Thread.Sleep(1000);
+                    progress.Hide();
+                    canGoBack = true;
+                    App.isABScanning = false;
+                    return;
+                }
+
+                JArray ids_json = new JArray();
+                foreach (string id in hike_contacts_by_id.Keys)
+                {
+                    ids_json.Add(id);
+                }
+                ContactUtils.contactsMap = contacts_to_update;
+                ContactUtils.hike_contactsMap = hike_contacts_by_id;
+                AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public void updateAddressBook_Callback(JObject patchJsonObj)
+        {
+            if (patchJsonObj == null)
+            {
+                Thread.Sleep(1000);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    progress.Hide();
+                    canGoBack = true;
+                });
+                return;
+            }
+            List<ContactInfo> updatedContacts = AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
+            List<string> hikeIds = new List<string>();
+            foreach (string id in ContactUtils.hike_contactsMap.Keys)
+            {
+                hikeIds.Add(id);
+            }
+
+            if (hikeIds != null && hikeIds.Count > 0)
+            {
+                /* Delete ids from hike user DB */
+                UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
+            }
+            if (updatedContacts != null && updatedContacts.Count > 0)
+            {
+                UsersTableUtils.updateContacts(updatedContacts);
+            }
+            ConversationsList.ReloadConversations();
+            allContactsList = UsersTableUtils.getAllContacts();
+            App.isABScanning = false;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                contactsListBox.ItemsSource = allContactsList;
+                progress.Hide();
+                canGoBack = true;
+            });
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

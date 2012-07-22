@@ -15,8 +15,8 @@ namespace windows_client.utils
 {
     public class ContactUtils
     {
-        private static Dictionary<string, List<ContactInfo>> contactsMap = null;
-        private static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
+        public static Dictionary<string, List<ContactInfo>> contactsMap = null;
+        public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
         public delegate void contacts_Callback(object sender, ContactsSearchEventArgs e);
 
@@ -45,56 +45,7 @@ namespace windows_client.utils
             }
         }
 
-        public static void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
-        {
-            try
-            {
-                Dictionary<string, List<ContactInfo>> new_contacts_by_id = getContactsListMap(e.Results);
-                Dictionary<string, List<ContactInfo>> hike_contacts_by_id = convertListToMap(UsersTableUtils.getAllContacts());
-                Dictionary<string, List<ContactInfo>> contacts_to_update = new Dictionary<string, List<ContactInfo>>();
-                foreach (string id in new_contacts_by_id.Keys)
-                {
-                    List<ContactInfo> phList = new_contacts_by_id[id];
-                    if (!hike_contacts_by_id.ContainsKey(id))
-                    {
-                        contacts_to_update.Add(id, phList);
-                        continue;
-                    }
-
-                    List<ContactInfo> hkList = hike_contacts_by_id[id];
-                    if (!areListsEqual(phList, hkList))
-                    {
-                        contacts_to_update.Add(id, phList);
-                    }
-                    hike_contacts_by_id.Remove(id);
-                }
-                new_contacts_by_id.Clear();
-                new_contacts_by_id = null;
-                /* If nothing is changed simply return without sending update request*/
-                if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
-                {
-                    Thread.Sleep(1000);
-                    SelectUserToMsg.progress.Hide();
-                    SelectUserToMsg.canGoBack = true;
-                    App.isABScanning = false;
-                    return;
-                }
-
-                JArray ids_json = new JArray();
-                foreach (string id in hike_contacts_by_id.Keys)
-                {
-                    ids_json.Add(id);
-                }
-                contactsMap = contacts_to_update;
-                hike_contactsMap = hike_contacts_by_id;
-                AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        private static bool areListsEqual(List<ContactInfo> list1, List<ContactInfo> list2)
+        public static bool areListsEqual(List<ContactInfo> list1, List<ContactInfo> list2)
         {
             if (list1 != null && list2 != null)
             {
@@ -130,7 +81,7 @@ namespace windows_client.utils
             return false;
         }
 
-        private static Dictionary<string, List<ContactInfo>> convertListToMap(List<ContactInfo> hclist)
+        public static Dictionary<string, List<ContactInfo>> convertListToMap(List<ContactInfo> hclist)
         {
             if (hclist == null)
                 return null;
@@ -152,7 +103,7 @@ namespace windows_client.utils
             return hikeContactListMap;
         }
 
-        private static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
+        public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
 
             Dictionary<string, List<ContactInfo>> contactListMap = null;
@@ -205,43 +156,6 @@ namespace windows_client.utils
                 App.appSettings[App.IS_ADDRESS_BOOK_SCANNED] = true;
                 App.appSettings.Save();
             }
-        }
-
-        public static void updateAddressBook_Callback(JObject patchJsonObj)
-        {
-            if (patchJsonObj == null)
-            {
-                Thread.Sleep(1000);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    SelectUserToMsg.progress.Hide();
-                    SelectUserToMsg.canGoBack = true;
-                });
-                return;
-            }
-            List<ContactInfo> updatedContacts = AccountUtils.getContactList(patchJsonObj, contactsMap);
-            List<string> hikeIds = new List<string>();
-            foreach (string id in hike_contactsMap.Keys)
-            {
-                hikeIds.Add(id);
-            }
-
-            if (hikeIds != null && hikeIds.Count > 0)
-            {
-                /* Delete ids from hike user DB */
-                UsersTableUtils.deleteMultipleRows(hikeIds); // this will delete all rows in HikeUser DB that are not in Addressbook.
-            }
-            if (updatedContacts != null && updatedContacts.Count > 0)
-            {
-                UsersTableUtils.updateContacts(updatedContacts);
-            }
-            ConversationsList.ReloadConversations();
-            App.isABScanning = false;
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-               SelectUserToMsg.progress.Hide();
-               SelectUserToMsg.canGoBack = true;
-            });
         }
 
         public static void saveContact(string phone)
