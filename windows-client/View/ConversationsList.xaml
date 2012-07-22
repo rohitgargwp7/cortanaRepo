@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,20,0, 0">
-            <Image x:Name="icon" Source="images\hike_header.png" Height="40"/>
+            <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,0,0,0"/>
         </StackPanel>
 
         <controls:Pivot Grid.Row="1" Foreground="Black" Margin="0,-20,0,0" SelectionChanged="Pivot_SelectionChanged">
@@ -48,7 +48,7 @@
                         
                     </Image>
                     
-                    <ListBox x:Name="myListBox" Grid.ColumnSpan="2" FontSize="26" Tap="btnGetSelected_Click" Margin="0,-30,-25,27" Grid.RowSpan="2" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <ListBox x:Name="myListBox" Grid.ColumnSpan="2" FontSize="26" Tap="btnGetSelected_Click" Margin="-7,-30,-25,27" Grid.RowSpan="2" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
@@ -58,9 +58,9 @@
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="25, 0, 0, 0">
                                                 <TextBlock Text="{Binding ContactName}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                                                <TextBlock Text="{Binding TimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
+                                                <TextBlock Text="{Binding TimeStamp}" Margin="4,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
                                             </StackPanel>
-                                            <TextBlock Text="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Height="35"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Height="30"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
                                         </StackPanel>
                                     </StackPanel>
                                     <!--<Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>-->
