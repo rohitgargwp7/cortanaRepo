@@ -47,8 +47,8 @@
                                Source="{Binding AvatarImage}">
                         </Image>
                         <TextBlock Text="{Binding Name}" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                        <Button Visibility="{Binding IsInvited, Converter={StaticResource invitedButtonVisiblity}}" Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
-                        <TextBlock Visibility="{Binding IsInvited, Converter={StaticResource invitedStringVisiblity}}" FontSize="23" Text="invited" Foreground="#2e91d3"  Width="120" Height="60" Margin="30,20,0,0" HorizontalAlignment="Right"/>
+                        <Button Visibility="{Binding IsInvited, Converter={StaticResource invitedButtonVisiblity}}" Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="20"/>
+                        <TextBlock Visibility="{Binding IsInvited, Converter={StaticResource invitedStringVisiblity}}" FontSize="21" Text="invited" Foreground="#2e91d3"  Width="120" Height="60" Margin="30,20,0,0" HorizontalAlignment="Right"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
