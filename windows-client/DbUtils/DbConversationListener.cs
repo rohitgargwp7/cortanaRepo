@@ -15,10 +15,10 @@ namespace windows_client.DbUtils
         public DbConversationListener()
         {
             mPubSub = App.HikePubSubInstance;
-            registerListeners();
+            //registerListeners();
         }
 
-        private void registerListeners()
+        public void registerListeners()
         {
             mPubSub.addListener(HikePubSub.MESSAGE_SENT, this);
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
@@ -122,6 +122,7 @@ namespace windows_client.DbUtils
             #region DELETE ACCOUNT
             else if (HikePubSub.DELETE_ACCOUNT == type)
             {
+                removeListeners();
                 MiscDBUtil.clearDatabase();
                 mPubSub.publish(HikePubSub.ACCOUNT_DELETED, null);
             }

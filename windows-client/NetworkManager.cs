@@ -33,6 +33,8 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
+        public static bool turnOffSystem = true;
+
         private HikePubSub pubSub;
 
         private static volatile NetworkManager instance;
@@ -62,6 +64,8 @@ namespace windows_client
 
         public void onMessage(string msg)
         {
+            if (turnOffSystem)
+                return;
             JObject jsonObj = null;
             try
             {
