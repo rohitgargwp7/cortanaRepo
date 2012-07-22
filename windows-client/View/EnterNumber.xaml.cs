@@ -75,9 +75,8 @@ namespace windows_client
         {
             enterPhoneBtn.Content = "Next";
             base.OnNavigatedTo(e);
-            while(NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
         }
+
         void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtEnterPhone.Focus();
