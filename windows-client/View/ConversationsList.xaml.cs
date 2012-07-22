@@ -355,7 +355,6 @@ namespace windows_client.View
             progressBar.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.IsEnabled = false;
             App.MqttManagerInstance.connect();
-
         }
 
         #region Delete Account
@@ -482,13 +481,15 @@ namespace windows_client.View
                 else
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
+                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? null : contact.Name, convMessage.Message,
                     contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp), convMessage.Timestamp);
                     convMap[convMessage.Msisdn] = mObj;
                     isNewConversation = true;
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if(emptyScreenImage.Visibility == Visibility.Visible)
+                        emptyScreenImage.Visibility = Visibility.Collapsed;
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
                 object[] vals = new object[2];
