@@ -393,14 +393,14 @@ namespace windows_client.View
             if (mUserIsBlocked)
                 return;
             string message = sendMsgTxtbox.Text.Trim();
+            sendMsgTxtbox.Text = "";
+
             if (String.IsNullOrEmpty(message))
                 return;
 
             if ((!isOnHike && mCredits <= 0) || message == "")
                 return;
-
-            sendMsgTxtbox.Text = "";
-
+           
             endTypingSent = true;
             sendTypingNotification(false);
 
@@ -682,7 +682,7 @@ namespace windows_client.View
             long time = utils.TimeUtils.getCurrentTimeStamp();
             ConvMessage convMessage = new ConvMessage(App.invite_message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsInvite = true;
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
         }
 
         #region Pubsub Event

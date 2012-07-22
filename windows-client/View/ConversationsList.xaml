@@ -67,7 +67,6 @@
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
-                                            <toolkit:MenuItem Header="Add Shortcut"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                 </StackPanel>

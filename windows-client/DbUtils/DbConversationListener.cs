@@ -49,7 +49,7 @@ namespace windows_client.DbUtils
                 bool isNewConv = (bool)vals[1];
                 MessagesTableUtils.addChatMessage(convMessage, isNewConv);
                 //logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Msisdn);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion
             #region MESSAGE_RECEIVED_READ

@@ -275,12 +275,15 @@ namespace windows_client.Model
         {
         }
 
-        public JObject serialize()
+        public JObject serialize(bool isHikeMsg)
         {
             JObject obj = new JObject();
             JObject data = new JObject();
 
-            data[HikeConstants.HIKE_MESSAGE] = _message;
+            if(isHikeMsg)
+                data[HikeConstants.HIKE_MESSAGE] = _message;
+            else
+                data[HikeConstants.SMS_MESSAGE] = _message;
             data[HikeConstants.TIMESTAMP] = _timestamp;
             data[HikeConstants.MESSAGE_ID] = _messageId;
 
@@ -361,7 +364,7 @@ namespace windows_client.Model
                     case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
                     case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
                     case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
-                    default: return "images\\ic_tc.png";
+                    default: return "";
                 }
             }
         }

@@ -25,7 +25,7 @@ namespace windows_client.View
             long time = utils.TimeUtils.getCurrentTimeStamp();
             ConvMessage convMessage = new ConvMessage(App.invite_message,obj.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsInvite=true;
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
         }
     }
 }
