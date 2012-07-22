@@ -6,15 +6,21 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Converters="clr-namespace:windows_client.Converters"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     shell:SystemTray.IsVisible="False">
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
+
+        <Grid.Resources>
+            <Converters:InvitedButtonVisiblity x:Key="invitedButtonVisiblity"/>
+            <Converters:InvitedStringVisiblity x:Key="invitedStringVisiblity"/>
+        </Grid.Resources>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -35,21 +41,18 @@
         <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="4,15,0,0" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                   
+
                     <StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
                         <Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding AvatarImage}"
-                               >
+                               Source="{Binding AvatarImage}">
                         </Image>
                         <TextBlock Text="{Binding Name}" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                        <Button Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
+                        <Button Visibility="{Binding IsInvited, Converter={StaticResource invitedButtonVisiblity}}" Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
+                        <TextBlock Visibility="{Binding IsInvited, Converter={StaticResource invitedStringVisiblity}}" FontSize="23" Text="invited" Foreground="#2e91d3"  Width="120" Height="60" Margin="30,20,0,0" HorizontalAlignment="Right"/>
                     </StackPanel>
-
-
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
 
         <!--<StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
             <Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 

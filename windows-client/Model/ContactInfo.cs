@@ -20,6 +20,7 @@ namespace windows_client.Model
         private string _phoneNo;
         private bool _onHike;
         private bool _hasCustomPhoto;
+        private bool _isInvited;
 
         //it significantly improves update performance
 
@@ -138,6 +139,43 @@ namespace windows_client.Model
             }
         }
 
+        public bool IsInvited
+        {
+            get
+            {
+                return _isInvited;
+            }
+            set
+            {
+                _isInvited = value;
+                NotifyPropertyChanged("IsInvited");
+            }
+        }
+
+        //public string InvitedStringVisible
+        //{
+        //    get
+        //    {
+        //        if (IsInvited)
+        //            return "visible";
+        //        else
+        //            return "collapsed";
+        //    }
+        //}
+
+        //public string InviteButtonVisible
+        //{
+        //    get
+        //    {
+        //        if (IsInvited)
+        //            return "collapsed";
+        //        else
+        //            return "visible";
+        //    }
+        //}
+
+        
+        
         public ContactInfo()
         {
         }
@@ -165,6 +203,7 @@ namespace windows_client.Model
             this.OnHike = onhike;
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
+            this.IsInvited = false;
         }
 
 
