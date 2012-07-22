@@ -12,8 +12,6 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
     shell:SystemTray.IsVisible="False">
-
-    
     
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
@@ -34,7 +32,7 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="4,15,0,0" Tap="inviteListBox_Tap">
+        <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="4,15,0,0" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                    
@@ -44,7 +42,7 @@
                                >
                         </Image>
                         <TextBlock Text="{Binding Name}" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                        <Button Foreground="Black" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
+                        <Button Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
                     </StackPanel>
 
 
