@@ -79,7 +79,6 @@ namespace windows_client.View
         public ChatThread()
         {
             InitializeComponent();
-            //this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
             progressBar.Visibility = System.Windows.Visibility.Visible;
@@ -164,7 +163,7 @@ namespace windows_client.View
         private void initAppBar(bool isAddUser)
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Minimized;
+            appBar.Mode = ApplicationBarMode.Default;
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
 
@@ -418,10 +417,6 @@ namespace windows_client.View
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
 
             mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
-            if (message != "")
-            {
-                appBar.Mode = ApplicationBarMode.Minimized;
-            }
         }
 
         private void sendTypingNotification(bool notificationType)
@@ -464,10 +459,9 @@ namespace windows_client.View
                 return;
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
-                appBar.Mode = ApplicationBarMode.Minimized;
                 return;
             }
-            appBar.Mode = ApplicationBarMode.Default;
+
             lastText = sendMsgTxtbox.Text;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
