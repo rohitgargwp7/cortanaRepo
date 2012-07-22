@@ -58,7 +58,7 @@
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="25, 0, 0, 0">
                                                 <TextBlock Text="{Binding ContactName}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                                                <TextBlock Text="{Binding TimeStamp}" Margin="4,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
+                                                <TextBlock Text="{Binding TimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
                                             </StackPanel>
                                             <TextBlock Text="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Height="30"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
                                         </StackPanel>
