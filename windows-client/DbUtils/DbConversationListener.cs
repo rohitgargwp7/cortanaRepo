@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using Newtonsoft.Json.Linq;
 using windows_client.Model;
+using System.Windows;
+using System.Windows.Navigation;
+using System;
 
 namespace windows_client.DbUtils
 {
@@ -24,6 +27,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.DELETE_ACCOUNT, this);
         }
 
         private void removeListeners()
@@ -35,6 +39,7 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
             mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.removeListener(HikePubSub.DELETE_ACCOUNT, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -103,7 +108,6 @@ namespace windows_client.DbUtils
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
             #endregion
-
             #region ADD_OR_UPDATE_PROFILE
             else if (HikePubSub.ADD_OR_UPDATE_PROFILE == type)
             {
@@ -115,7 +119,13 @@ namespace windows_client.DbUtils
                 MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
             }
             #endregion
-
+            #region DELETE ACCOUNT
+            else if (HikePubSub.DELETE_ACCOUNT == type)
+            {
+                MiscDBUtil.clearDatabase();
+                mPubSub.publish(HikePubSub.ACCOUNT_DELETED, null);
+            }
+            #endregion
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)

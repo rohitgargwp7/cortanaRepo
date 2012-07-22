@@ -16,8 +16,6 @@ namespace windows_client
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
-            App.appSettings[App.PAGE_STATE] = App.PageState.PHONE_SCREEN;
-            App.appSettings.Save();
         }
 
         private void enterPhoneBtn_Click(object sender, RoutedEventArgs e)
@@ -75,8 +73,16 @@ namespace windows_client
         {
             enterPhoneBtn.Content = "Next";
             base.OnNavigatedTo(e);
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            Uri nextPage = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
         void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtEnterPhone.Focus();

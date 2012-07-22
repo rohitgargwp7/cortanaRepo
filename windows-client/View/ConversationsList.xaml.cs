@@ -227,6 +227,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+            mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
         }
 
         private void removeListeners()
@@ -238,6 +239,7 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+            mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
         }
 
         #endregion
@@ -385,16 +387,9 @@ namespace windows_client.View
                 return;
             }
             App.MqttManagerInstance.disconnectFromBroker(false);
-            removeListeners();
             appSettings.Clear();
-            MiscDBUtil.clearDatabase();
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                emptyScreenImage.Visibility = Visibility.Visible;
-                App.ViewModel.MessageListPageCollection.Clear();
-                progress.Hide();
-                NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
-            });
+            mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
+
         }
 
         #endregion
@@ -543,6 +538,17 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     creditsTxtBlck.Text = Convert.ToString((int)obj);
+                });
+            }
+            else if (HikePubSub.ACCOUNT_DELETED == type)
+            {
+                removeListeners();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    emptyScreenImage.Visibility = Visibility.Visible;
+                    App.ViewModel.MessageListPageCollection.Clear();
+                    progress.Hide();
+                    NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 });
             }
         }

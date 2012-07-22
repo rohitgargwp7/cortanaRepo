@@ -97,6 +97,10 @@ namespace windows_client
 
         public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
 
+        public static readonly string DELETE_ACCOUNT = "deleteAccount";
+
+        public static readonly string ACCOUNT_DELETED = "accountDeleted";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;
