@@ -2,6 +2,7 @@
 using Microsoft.Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
+using System.Windows.Controls;
 
 namespace windows_client.View
 {
@@ -15,10 +16,9 @@ namespace windows_client.View
             inviteListBox.ItemsSource = UsersTableUtils.getAllContactsToInvite();
         }
 
-        private void inviteListBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void inviteButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // UPDATE THE UI TO SHOW THIS IS ALREADY INVITED
-            ContactInfo obj = inviteListBox.SelectedItem as ContactInfo;
+            ContactInfo obj = (sender as Button).DataContext as ContactInfo;
             if (obj == null || obj.OnHike || invitedUsers.ContainsKey(obj))
                 return;
             invitedUsers.Add(obj, true);
