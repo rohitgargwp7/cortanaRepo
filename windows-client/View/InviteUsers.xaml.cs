@@ -19,6 +19,8 @@ namespace windows_client.View
         private void inviteButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             ContactInfo obj = (sender as Button).DataContext as ContactInfo;
+            if (obj.IsInvited)
+                return;
             obj.IsInvited = true;
             if (obj == null || obj.OnHike || invitedUsers.ContainsKey(obj))
                 return;
