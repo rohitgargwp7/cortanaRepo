@@ -15,6 +15,10 @@ using Microsoft.Phone.Reactive;
 using System.Threading;
 using Clarity.Phone.Controls;
 using Clarity.Phone.Controls.Animations;
+using System.Windows.Markup;
+using System.Windows.Documents;
+using System.Windows.Media.Imaging;
+using System.Text.RegularExpressions;
 
 namespace windows_client.View
 {
@@ -912,6 +916,66 @@ namespace windows_client.View
         private void emoticonPanel_LostFocus(object sender, RoutedEventArgs e)
         {
             //emoticonPanel.Visibility = Visibility.Collapsed;
+
+        }
+
+        private static Thickness imgMargin = new Thickness(0,5,0,0);
+
+        private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            var richTextBox = sender as RichTextBox;
+            string messageString = richTextBox.Tag.ToString();
+
+            MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(messageString);
+            Paragraph p = new Paragraph();
+            int startIndex = 0;
+            int endIndex = -1;
+
+
+            for (int i = 0; i < matchCollection.Count; i++)
+            {
+                String emoticon = matchCollection[i].ToString();
+
+                //TODO fix the regex to not return ""
+                if (String.IsNullOrEmpty(emoticon))
+                    continue;
+                
+                int index = matchCollection[i].Index;
+                endIndex = index - 1;
+                
+                if (index > 0)
+                {
+                    Run r = new Run();
+                    r.Text = messageString.Substring(startIndex, endIndex - startIndex + 1);
+                    p.Inlines.Add(r);
+                }
+                
+                startIndex = index + emoticon.Length;
+
+                Uri imgPath;
+                SmileyParser.EmoticonUriHash.TryGetValue(emoticon, out imgPath);
+
+                //TODO check if imgPath is null or not
+                Image img = new Image();
+                img.Source = new BitmapImage(imgPath);
+                img.Height = 40;
+                img.Width = 40;
+                img.Margin = imgMargin;
+
+
+                InlineUIContainer ui = new InlineUIContainer();
+                ui.Child = img;
+                p.Inlines.Add(ui);
+            }
+            if (startIndex < messageString.Length)
+            {
+                Run r2 = new Run();
+                r2.Text = messageString.Substring(startIndex, messageString.Length - startIndex);
+                p.Inlines.Add(r2);
+            }
+
+            richTextBox.Blocks.Clear();
+            richTextBox.Blocks.Add(p);
 
         }
     }
