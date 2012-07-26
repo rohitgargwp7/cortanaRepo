@@ -13,7 +13,7 @@ namespace windows_client.utils
     {
         public static readonly string HOST = "im.hike.in";
 
-        private static readonly int PORT = 3001;
+        private static readonly int PORT = 8080;
 
         private static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
 
@@ -127,13 +127,13 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
 
-        public static void updateProfileIcon(MemoryStream msSmallImage, postResponseFunction finalCallbackFunction)
+        public static void updateProfileIcon(byte [] buffer, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/avatar")) as HttpWebRequest;
-            //addToken(req);
-            req.ContentType = "multipart/form-data";
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/avatar")) as HttpWebRequest;
+            addToken(req);
+            req.ContentType = "application/x-www-form-urlencoded";
             req.Method = "POST";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, msSmallImage, finalCallbackFunction });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, buffer, finalCallbackFunction });
         }
         private static void setParams_Callback(IAsyncResult result)
         {
@@ -195,11 +195,17 @@ namespace windows_client.utils
                     break;
 
                 case RequestType.POST_PROFILE_ICON:
-                    MemoryStream ms = vars[2] as MemoryStream;
-                    byte[] imageBytes = ms.ToArray();
+                   // MemoryStream ms = vars[2] as MemoryStream;
+                    byte[] imageBytes = (byte [])vars[2];
+                    
                     finalCallbackFunction = vars[3] as postResponseFunction;
-                    postStream.Write(imageBytes, 0, imageBytes.Length);
+                    postStream.Write(imageBytes, 0, imageBytes.Length); 	
                     postStream.Close();
+                   /*using (StreamWriter sw = new StreamWriter(postStream))
+                    {
+                        sw.Write(imageBytes);
+                    }
+                    postStream.Close();*/
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
                     return;
 

@@ -80,7 +80,7 @@ namespace windows_client
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(NavigationService.CanGoBack)
+            while(NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
         }
 

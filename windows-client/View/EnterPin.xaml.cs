@@ -16,8 +16,6 @@ namespace windows_client
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
-            App.appSettings[App.PAGE_STATE] = App.PageState.PIN_SCREEN;
-            App.appSettings.Save();
         }
 
         private void btnEnterPin_Click(object sender, RoutedEventArgs e)

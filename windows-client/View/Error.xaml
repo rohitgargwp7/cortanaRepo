@@ -31,9 +31,11 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1">
             <Border BorderBrush="White">
-                <TextBlock x:Name="ErrorText"
+                <ScrollViewer>
+                    <TextBlock x:Name="ErrorText"
                        Style="{StaticResource PhoneTextSmallStyle}"
                        TextWrapping="Wrap" />
+                </ScrollViewer>
             </Border>
         </Grid>
     </Grid>

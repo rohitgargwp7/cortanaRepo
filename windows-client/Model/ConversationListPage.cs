@@ -1,20 +1,22 @@
 ﻿using System.Windows;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
+using windows_client.utils;
+using System;
 
 namespace windows_client.Model
 {
-    public class ConversationListObject : INotifyPropertyChanged
+    public class ConversationListObject : INotifyPropertyChanged, IComparable<ConversationListObject>
     {
         #region member variables
 
         private string _msisdn;
-        private string _contactName;
+        public string _contactName;
         private string _lastMessage;
         private string _timeStamp;
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
-        private byte[] _avatar;
-
+        private long _timestampLong;
         #endregion
 
         #region Properties
@@ -23,7 +25,10 @@ namespace windows_client.Model
         {
             get
             {
-                return _contactName;
+                if (_contactName != null)
+                    return _contactName;
+                else
+                    return _msisdn;
             }
             set
             {
@@ -103,19 +108,27 @@ namespace windows_client.Model
             }
         }
 
-        public byte[] Avatar
+        public long TimestampLong
         {
             get
             {
-                return _avatar;
+                return _timestampLong;
             }
             set
             {
-                if (_avatar != value)
+                if (_timestampLong != value)
                 {
-                    _avatar = value;
-                    NotifyPropertyChanged("Avatar");
+                    _timestampLong = value;
+                    NotifyPropertyChanged("IsOnhike");
                 }
+            }
+        }
+
+        public BitmapImage AvatarImage
+        {
+            get
+            {
+                return UserInterfaceUtils.getBitMapImage(_msisdn);
             }
         }
 
@@ -139,18 +152,18 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime, byte[] avatarImage)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime, long timestamp)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
             this._lastMessage = lastMessage;
             this._timeStamp = relativeTime;
             this._isOnhike = isOnhike;
-            this._avatar = avatarImage;
+            this._timestampLong = timestamp;
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime, byte[] avatarImage)
-            : this(msisdn, contactName, lastMessage, false, relativeTime, avatarImage)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime, long timestamp)
+            : this(msisdn, contactName, lastMessage, false, relativeTime, timestamp)
         {
 
         }
@@ -177,6 +190,30 @@ namespace windows_client.Model
             }
             return (_msisdn == o.Msisdn);
         }
+        //public override int GetHashCode()
+        //{
+        //    const int prime = 31;
+        //    int result = 1;
+        //    result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
+        //    result = prime * result + ((ContactName == null) ? 0 : ContactName.GetHashCode());
+        //    result = prime * result + ((LastMessage == null) ? 0 : LastMessage.GetHashCode());
+        //    result = prime * result + ((TimeStamp == null) ? 0 : TimeStamp.GetHashCode());
+        //    result = prime * result + ((TimestampLong == null) ? 0 : TimestampLong.GetHashCode());
+
+        //    return result;
+        //}
+
+        public int CompareTo(ConversationListObject rhs)
+        {
+            if (this.Equals(rhs))
+            {
+                return 0;
+            }
+            //TODO check is Messages is empty
+            return TimestampLong > rhs.TimestampLong ? -1 : 1;
+        }
+
+
         #endregion
 
         #region INotifyPropertyChanged Members

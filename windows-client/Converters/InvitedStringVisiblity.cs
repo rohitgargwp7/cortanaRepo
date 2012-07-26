@@ -1,22 +1,22 @@
-﻿using System;
+﻿﻿using System;
 using System.Windows.Data;
-using windows_client.utils;
 
-namespace windows_client.converters
+namespace windows_client.Converters
 {
-    public class TimestampConverter : IValueConverter
+    public class InvitedStringVisiblity : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            long timestamp = (long)value;
-            return TimeUtils.getTimeString(timestamp);
+            bool isInvited = (bool)value;
+            if (isInvited)
+            {
+                return "visible";
+            }
+            return "collapsed";
         }
-
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

@@ -13,8 +13,6 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Reactive;
 using System.Threading;
-using Clarity.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
 using System.Windows.Markup;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
@@ -22,7 +20,7 @@ using System.Text.RegularExpressions;
 
 namespace windows_client.View
 {
-    public partial class ChatThread : AnimatedBasePage, HikePubSub.Listener, INotifyPropertyChanged
+    public partial class ChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
         #region CONSTANTS
 
@@ -53,9 +51,12 @@ namespace windows_client.View
         ApplicationBarMenuItem menuItem1;
         ApplicationBarMenuItem inviteMenuItem = null;
 
-        private readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-        private readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
+        private static readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        private static readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        private static readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
+
+        private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
+        private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 177, 224, 251));
 
 
         private string[] imagePathsForList0
@@ -106,11 +107,10 @@ namespace windows_client.View
         public ChatThread()
         {
             InitializeComponent();
-            AnimationContext = LayoutRoot;
-            this.myListBox.ItemsSource = chatThreadPageCollection;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-            loadMessages();
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
@@ -127,7 +127,7 @@ namespace windows_client.View
             }
             else
             {
-                // Perform a time consuming operation and report progress.
+                loadMessages();
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
                 registerListeners();
@@ -188,7 +188,7 @@ namespace windows_client.View
         #endregion
 
         /* Should run on UI thread, based on mUserIsBlocked*/
-        private void initAppBar()
+        private void initAppBar(bool isAddUser)
         {
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -219,10 +219,14 @@ namespace windows_client.View
                 menuItem1.Text = BLOCK_USER;
             menuItem1.Click += new EventHandler(blockUnblock_Click);
             appBar.MenuItems.Add(menuItem1);
-            ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-            menuItem2.Text = "add user";
-            menuItem2.Click += new EventHandler(addUser_Click);
-            appBar.MenuItems.Add(menuItem2);
+
+            if (isAddUser)
+            {
+                ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
+                menuItem2.Text = "add user";
+                menuItem2.Click += new EventHandler(addUser_Click);
+                appBar.MenuItems.Add(menuItem2);
+            }
             chatThreadMainPage.ApplicationBar = appBar;
         }
 
@@ -240,12 +244,19 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
+            bool isAddUser = false;
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
             {
-                ConversationListObject obj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
-                mContactNumber = obj.Msisdn;
-                mContactName = obj.ContactName;
-                isOnHike = obj.IsOnhike;
+                ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
+                mContactNumber = convObj.Msisdn;
+                if (convObj._contactName != null)
+                    mContactName = convObj.ContactName;
+                else
+                {
+                    mContactName = convObj.Msisdn;
+                    isAddUser = true;
+                }
+                isOnHike = convObj.IsOnhike;
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
@@ -265,23 +276,25 @@ namespace windows_client.View
             }
 
             userName.Text = mContactName;
-            initAppBar();
+            initAppBar(isAddUser);
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
                 initInviteMenuItem();
                 appBar.MenuItems.Add(inviteMenuItem);
+                typingTextBoxBorder.BorderBrush = smsBackground;
             }
             else
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
+                typingTextBoxBorder.BorderBrush = hikeMsgBackground;
             }
 
             if (mContactNumber == null)
             {
                 // some error handling
             }
-
+            //
         }
 
         private void loadMessages()
@@ -290,8 +303,23 @@ namespace windows_client.View
             int limit = 6;
             bool isPublish = false;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
+            int messageCount = messagesList == null ? 0 : messagesList.Count;
+            if (messageCount < 6)
+            {
+                for (int k = 0; k < 6 - messageCount; k++)
+                {
+                    this.ChatThreadPageCollection.Add(null);
+                }
+            }
+
             if (messagesList == null || messagesList.Count == 0) // represents there are no chat messages for this msisdn
             {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.myListBox.ItemsSource = chatThreadPageCollection;
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                });
                 return;
             }
 
@@ -312,17 +340,9 @@ namespace windows_client.View
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
                     incomingMessages.Add(messagesList[i]);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    this.ChatThreadPageCollection.Add(cm);
-                });
-
+                this.ChatThreadPageCollection.Add(cm);
             }
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-               {
-                   this.myListBox.UpdateLayout();
-                   this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-               });
+
             int count = 0;
             for (i = messagesList.Count - limit - 1; i >= 0; i--)
             {
@@ -353,19 +373,22 @@ namespace windows_client.View
                     }
                 }
                 ConvMessage c = messagesList[i];
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    this.ChatThreadPageCollection.Insert(0, c);
-                    this.myListBox.UpdateLayout();
-                    this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
-                });
+                this.ChatThreadPageCollection.Insert(0, c);
                 if (count % 5 == 0)
-                    Thread.Sleep(2);
+                    Thread.Sleep(5);
                 if (messagesList[i].IsSent)
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
                     incomingMessages.Insert(0, messagesList[i]);
             }
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                this.myListBox.ItemsSource = chatThreadPageCollection;
+                this.myListBox.UpdateLayout();
+                this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
+            });
             if (isPublish)
             {
                 JObject obj = new JObject();
@@ -395,14 +418,6 @@ namespace windows_client.View
             emotList2.ItemsSource = imagePathsForList2;
         }
 
-        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
-        {
-            if (animationType == AnimationType.NavigateForwardIn)
-                return new TurnstileFeatherForwardInAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-            else
-                return new TurnstileFeatherBackwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-        }
-
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
@@ -414,12 +429,37 @@ namespace windows_client.View
             removeListeners();
         }
 
+        private void sendMsgBtn_Click(object sender, EventArgs e)
+        {
+            if (mUserIsBlocked)
+                return;
+            string message = sendMsgTxtbox.Text.Trim();
+            sendMsgTxtbox.Text = "";
 
+            if (String.IsNullOrEmpty(message))
+                return;
 
-        /// <summary>
-        /// Sends start and end typing notifications
-        /// </summary>
-        /// <param name="notificationType">If it is true then send start typing else send end typing</param>
+            if ((!isOnHike && mCredits <= 0) || message == "")
+                return;
+           
+            endTypingSent = true;
+            sendTypingNotification(false);
+
+            ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = !isOnHike;
+
+            if (ChatThreadPageCollection[0] == null)
+            {
+                this.ChatThreadPageCollection.RemoveAt(0);
+            }
+            this.ChatThreadPageCollection.Add(convMessage);
+
+            this.myListBox.UpdateLayout();
+            this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
+
+            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
+        }
+
         private void sendTypingNotification(bool notificationType)
         {
             JObject obj = new JObject();
@@ -623,16 +663,21 @@ namespace windows_client.View
 
             //update Conversation list class
             this.ChatThreadPageCollection.Remove(msg);
+            if (this.ChatThreadPageCollection.Count < 6)
+                this.ChatThreadPageCollection.Insert(0, null);
+
             ConversationListObject obj = ConversationsList.ConvMap[msg.Msisdn];
             /* Remove the message from conversation list */
-            if (this.ChatThreadPageCollection.Count > 0)
+            if (this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1] != null)
             {
-                obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
+                    obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
             }
             else
             {
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
+                ConversationsList.ConvMap.Remove(msg.Msisdn);
+                ConversationsList.convMap2.Remove(msg.Msisdn);
                 delConv = true;
             }
             object[] o = new object[3];
@@ -678,7 +723,7 @@ namespace windows_client.View
             long time = utils.TimeUtils.getCurrentTimeStamp();
             ConvMessage convMessage = new ConvMessage(App.invite_message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsInvite = true;
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize());
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
         }
 
         #region Pubsub Event
@@ -702,7 +747,12 @@ namespace windows_client.View
                     // Update UI
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (ChatThreadPageCollection[0] == null)
+                        {
+                            this.ChatThreadPageCollection.RemoveAt(0);
+                        }
                         this.ChatThreadPageCollection.Add(convMessage);
+
                         this.myListBox.UpdateLayout();
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                         //set typing notification as false
@@ -875,7 +925,7 @@ namespace windows_client.View
                 {
                     ConvMessage c = incomingMessages[i];
                     if (!c.IsSent)
-                        c.NotifyPropertyChanged("Msisdn");
+                        c.NotifyPropertyChanged("AvatarImage");
                 }
             }
 
@@ -886,8 +936,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
-            sendMsgTxtbox.Background = textBoxBackground;
-
+            sendMsgTxtbox.Background = whiteBackground;
         }
 
         private void Grid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -906,33 +955,6 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Visible;
         }
 
-        private void sendMsgBtn_Click(object sender, EventArgs e)
-        {
-            if (mUserIsBlocked)
-                return;
-            string message = sendMsgTxtbox.Text.Trim();
-            if (String.IsNullOrEmpty(message))
-                return;
-
-            if ((!isOnHike && mCredits <= 0) || message == "")
-                return;
-
-            sendMsgTxtbox.Text = "";
-
-            endTypingSent = true;
-            sendTypingNotification(false);
-
-            ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = !isOnHike;
-            this.ChatThreadPageCollection.Add(convMessage);
-            this.myListBox.UpdateLayout();
-            this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-
-            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
-            if (message != "")
-            {
-            }
-        }
 
 
         private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -952,6 +974,8 @@ namespace windows_client.View
         private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
         {
             var richTextBox = sender as RichTextBox;
+            if (richTextBox.Tag == null)
+                return;
             string messageString = richTextBox.Tag.ToString();
 
             MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(messageString);
@@ -1010,20 +1034,21 @@ namespace windows_client.View
         {
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+            emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             int index = emotList1.SelectedIndex + 80;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
-
+            emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             int index = emotList2.SelectedIndex + 110;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
-
+            emoticonPanel.Visibility = Visibility.Collapsed;
         }
     }
 }

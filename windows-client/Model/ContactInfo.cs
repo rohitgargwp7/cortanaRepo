@@ -4,6 +4,8 @@ using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Data.Linq.Mapping;
+using System.Windows.Media.Imaging;
+using windows_client.utils;
 
 namespace windows_client.Model
 {
@@ -18,6 +20,7 @@ namespace windows_client.Model
         private string _phoneNo;
         private bool _onHike;
         private bool _hasCustomPhoto;
+        private bool _isInvited;
 
         //it significantly improves update performance
 
@@ -136,6 +139,43 @@ namespace windows_client.Model
             }
         }
 
+        public bool IsInvited
+        {
+            get
+            {
+                return _isInvited;
+            }
+            set
+            {
+                _isInvited = value;
+                NotifyPropertyChanged("IsInvited");
+            }
+        }
+
+        //public string InvitedStringVisible
+        //{
+        //    get
+        //    {
+        //        if (IsInvited)
+        //            return "visible";
+        //        else
+        //            return "collapsed";
+        //    }
+        //}
+
+        //public string InviteButtonVisible
+        //{
+        //    get
+        //    {
+        //        if (IsInvited)
+        //            return "collapsed";
+        //        else
+        //            return "visible";
+        //    }
+        //}
+
+        
+        
         public ContactInfo()
         {
         }
@@ -163,6 +203,7 @@ namespace windows_client.Model
             this.OnHike = onhike;
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
+            this.IsInvited = false;
         }
 
 
@@ -212,6 +253,24 @@ namespace windows_client.Model
             return _name;
         }
 
+        public BitmapImage AvatarImage
+        {
+            get
+            {
+                return UserInterfaceUtils.getBitMapImage(_msisdn);
+            }
+        }
+
+        public BitmapImage HikeStatusImage
+        {
+            get
+            {
+                if (_onHike)
+                    return UserInterfaceUtils.onHikeImage;
+                else
+                    return UserInterfaceUtils.notOnHikeImage;
+            }
+        }
         #endregion
 
         #region INotifyPropertyChanged Members

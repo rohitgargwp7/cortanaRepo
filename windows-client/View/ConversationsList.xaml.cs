@@ -17,18 +17,16 @@ using System.Diagnostics;
 using WP7Contrib.Collections;
 using System.Threading;
 using System.ComponentModel;
-using Clarity.Phone.Controls;
-using Clarity.Phone.Controls.Animations;
 using windows_client.ViewModel;
 using windows_client.Mqtt;
 
 namespace windows_client.View
 {
-    public partial class ConversationsList : AnimatedBasePage, HikePubSub.Listener
+    public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
         #region CONSTANTS
 
-        private readonly string DELETE_ACCOUNT = "Delete Account";
+        private readonly string DELETE_ALL_CONVERSATIONS = "Delete All Chats";
         private readonly string INVITE_USERS = "Invite Users";
 
         #endregion
@@ -43,6 +41,8 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private string msisdn;
         private ApplicationBar appBar;
+        ApplicationBarMenuItem delConvsMenu;
+        ApplicationBarMenuItem delAccountMenu;
 
         public static Dictionary<string, ConversationListObject> ConvMap
         {
@@ -59,10 +59,11 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            //myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
             convMap2 = new Dictionary<string, bool>();
-            LoadMessages();
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
             #region Load App level instances
 
             BackgroundWorker bw = new BackgroundWorker();
@@ -71,7 +72,6 @@ namespace windows_client.View
             bw.RunWorkerAsync();
 
             #endregion
-            AnimationContext = LayoutRoot;
             initAppBar();
             initProfilePage();
         }
@@ -81,8 +81,14 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-
-            App.MqttManagerInstance.connect();
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                emptyScreenImage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                emptyScreenImage.Visibility = Visibility.Collapsed;
+            }
         }
 
         #endregion
@@ -98,29 +104,40 @@ namespace windows_client.View
             }
             else
             {
-                App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
-                App.DbListener = new DbConversationListener();
-                App.NetworkManagerInstance = NetworkManager.Instance;
-                App.MqttManagerInstance = new HikeMqttManager();
-
                 mPubSub = App.HikePubSubInstance;
-                //Load Hike Contacts
-                App.ViewModel.allContactsList = UsersTableUtils.getAllContacts();
+                LoadMessages();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+
+                    if (App.ViewModel.MessageListPageCollection.Count == 0)
+                    {
+                        emptyScreenImage.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        emptyScreenImage.Visibility = Visibility.Collapsed;
+                    }
+                    appBar.Mode = ApplicationBarMode.Default;
+                    appBar.IsMenuEnabled = true;
+                    appBar.Opacity = 1;
+                });
+                App.DbListener.registerListeners();
                 registerListeners();
+                NetworkManager.turnOffSystem = false;
+                App.MqttManagerInstance.connect();
             }
         }
 
         private static void LoadMessages()
         {
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
+            List<ConversationListObject> sortedConversationObjects = new List<ConversationListObject>();
             if (conversationList == null)
             {
                 return;
-            }
-            if (convMap == null)
-            {
-                convMap = new Dictionary<string, ConversationListObject>();
-                convMap2 = new Dictionary<string, bool>();
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
@@ -128,24 +145,24 @@ namespace windows_client.View
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
                 ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
 
-                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(conv.Msisdn);
-                ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? conv.Msisdn : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
-                    TimeUtils.getTimeString(lastMessage.Timestamp), thumbnail == null ? null : thumbnail.Avatar);
+                ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? null : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
+                    TimeUtils.getTimeString(lastMessage.Timestamp), lastMessage.Timestamp);
                 convMap.Add(conv.Msisdn, mObj);
                 convMap2.Add(conv.Msisdn, false);
-                //Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //{
-                    App.ViewModel.MessageListPageCollection.Add(mObj);
-                //});
+                sortedConversationObjects.Add(mObj);
             }
+            sortedConversationObjects.Sort();
+            App.ViewModel.MessageListPageCollection.AddRange(sortedConversationObjects);
+
         }
 
         private void initAppBar()
         {
             appBar = new ApplicationBar();
-            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Mode = ApplicationBarMode.Minimized;
+            appBar.Opacity = 0;
             appBar.IsVisible = true;
-            appBar.IsMenuEnabled = true;
+            appBar.IsMenuEnabled = false;
 
             /* Add icons */
             ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
@@ -156,16 +173,22 @@ namespace windows_client.View
             appBar.Buttons.Add(composeIconButton);
 
             /* Add Menu Items*/
-            ApplicationBarMenuItem menuItem1 = new ApplicationBarMenuItem();
-            menuItem1.Text = DELETE_ACCOUNT;
-            menuItem1.Click += new EventHandler(deleteAccount_Click);
-            appBar.MenuItems.Add(menuItem1);
-
-            ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-            menuItem2.Text = INVITE_USERS;
-            menuItem2.Click += new EventHandler(inviteUsers_Click);
-            appBar.MenuItems.Add(menuItem2);
+            ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
+            inviteUsersMenu.Text = INVITE_USERS;
+            inviteUsersMenu.Click += new EventHandler(inviteUsers_Click);
+            appBar.MenuItems.Add(inviteUsersMenu);
             convListPagePivot.ApplicationBar = appBar;
+
+            delConvsMenu = new ApplicationBarMenuItem();
+            delConvsMenu.Text = DELETE_ALL_CONVERSATIONS;
+            delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
+            appBar.MenuItems.Add(delConvsMenu);
+
+            delAccountMenu = new ApplicationBarMenuItem();
+            delAccountMenu.Text = "delete account";
+            delAccountMenu.Click += new EventHandler(deleteAccount_Click);
+
+
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -176,6 +199,7 @@ namespace windows_client.View
             {
                 App.ViewModel.MessageListPageCollection.Clear();
                 convMap.Clear();
+                convMap2.Clear();
                 LoadMessages();
             });
 
@@ -205,6 +229,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+            mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
         }
 
         private void removeListeners()
@@ -216,6 +241,7 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+            mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
         }
 
         #endregion
@@ -252,14 +278,15 @@ namespace windows_client.View
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
+            byte[] buffer = null;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
             MemoryStream msLargeImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
             MemoryStream msSmallImage = new MemoryStream();
             writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
-
+            buffer = msSmallImage.ToArray();
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(msSmallImage, new AccountUtils.postResponseFunction(updateProfile_Callback));
+            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback));
 
             object[] vals = new object[3];
             vals[0] = msisdn;
@@ -312,6 +339,29 @@ namespace windows_client.View
 
         #endregion
 
+        #region AppBar Button Events
+
+        private void deleteAllConvs_Click(object sender, EventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats ?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+
+            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.IsEnabled = true;
+            App.MqttManagerInstance.disconnectFromBroker(false);
+            ConversationTableUtils.deleteAllConversations();
+            MessagesTableUtils.deleteAllMessages();
+            convMap.Clear();
+            convMap2.Clear();
+
+            App.ViewModel.MessageListPageCollection.Clear();
+            emptyScreenImage.Visibility = Visibility.Visible;
+            progressBar.Visibility = System.Windows.Visibility.Collapsed;
+            progressBar.IsEnabled = false;
+            App.MqttManagerInstance.connect();
+        }
+
         #region Delete Account
 
         private void deleteAccount_Click(object sender, EventArgs e)
@@ -339,21 +389,13 @@ namespace windows_client.View
                 });
                 return;
             }
+            NetworkManager.turnOffSystem = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
-            removeListeners();
             appSettings.Clear();
-            MiscDBUtil.clearDatabase();            /*This is used to avoid cross thread invokation exception*/
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                progress.Hide();
-                NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
-            });
+            mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
 
         #endregion
-
-        #region AppBar Button Events
-
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
@@ -374,6 +416,10 @@ namespace windows_client.View
             convMap.Remove(convObj.Msisdn); // removed entry from map for UI
             convMap2.Remove(convObj.Msisdn); // removed entry from map for DB
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                emptyScreenImage.Visibility = Visibility.Visible;
+            }
             ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
             MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
         }
@@ -387,49 +433,25 @@ namespace windows_client.View
             });
         }
 
-        #endregion
-
-        #region Transition Animations
-
-        protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-            //you could factor this into an intermediate base page to have soem other defaults
-            //such as always continuuming to a pivot page or rultes based on the page, direction and where you are goign to/coming from
-
-            if (toOrFrom != null)
+            PivotItem pItem = e.AddedItems[0] as PivotItem;
+            var panorama = pItem.Parent as Pivot;
+            var selectedIndex = panorama.SelectedIndex;
+            if (selectedIndex == 0)
             {
-                if (toOrFrom.OriginalString.Contains("SelectUserToMsg.xaml"))
-                {
-                    return null;
-                }
-                if (animationType == AnimationType.NavigateForwardOut)
-                    return new TurnstileFeatherForwardOutAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
-                else
-                    return new TurnstileFeatherBackwardInAnimator() { ListBox = myListBox, RootElement = LayoutRoot };
+                if (!appBar.MenuItems.Contains(delConvsMenu))
+                    appBar.MenuItems.Add(delConvsMenu);
+                if (appBar.MenuItems.Contains(delAccountMenu))
+                    appBar.MenuItems.Remove(delAccountMenu);
             }
-
-            return base.GetAnimation(animationType, toOrFrom);
-        }
-
-        protected override void AnimationsComplete(AnimationType animationType)
-        {
-            switch (animationType)
+            else if (selectedIndex == 1)
             {
-                case AnimationType.NavigateForwardIn:
-                    //Add code to set data context and bind data
-                    //you really only need to do that on forward in. on backward in everything
-                    //will be there that existed on forward out
-                    break;
-
-                case AnimationType.NavigateBackwardIn:
-                    //reset list so you can select the same element again
-                    myListBox.SelectedIndex = -1;
-                    break;
+                if (appBar.MenuItems.Contains(delConvsMenu))
+                    appBar.MenuItems.Remove(delConvsMenu);
+                if (!appBar.MenuItems.Contains(delAccountMenu))
+                    appBar.MenuItems.Add(delAccountMenu);
             }
-
-
-            base.AnimationsComplete(animationType);
         }
 
         #endregion
@@ -444,7 +466,6 @@ namespace windows_client.View
                 ConversationListObject mObj;
                 bool isNewConversation = false;
 
-                /*This is used to avoid cross thread invokation exception*/
                 if (convMap.ContainsKey(convMessage.Msisdn))
                 {
                     mObj = convMap[convMessage.Msisdn];
@@ -458,15 +479,15 @@ namespace windows_client.View
                 else
                 {
                     ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                    Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
-                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? convMessage.Msisdn : contact.Name, convMessage.Message,
-                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp),
-                    thumbnail == null ? null : thumbnail.Avatar);
+                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? null : contact.Name, convMessage.Message,
+                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp), convMessage.Timestamp);
                     convMap[convMessage.Msisdn] = mObj;
                     isNewConversation = true;
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if(emptyScreenImage.Visibility == Visibility.Visible)
+                        emptyScreenImage.Visibility = Visibility.Collapsed;
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
                 object[] vals = new object[2];
@@ -508,7 +529,7 @@ namespace windows_client.View
                     ConversationListObject convObj = convMap[msisdn];
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        convObj.NotifyPropertyChanged("Msisdn");
+                        convObj.NotifyPropertyChanged("AvatarImage");
                     });
                 }
                 catch (KeyNotFoundException)
@@ -520,6 +541,17 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     creditsTxtBlck.Text = Convert.ToString((int)obj);
+                });
+            }
+            else if (HikePubSub.ACCOUNT_DELETED == type)
+            {
+                removeListeners();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    emptyScreenImage.Visibility = Visibility.Visible;
+                    App.ViewModel.MessageListPageCollection.Clear();
+                    progress.Hide();
+                    NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 });
             }
         }

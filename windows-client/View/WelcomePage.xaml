@@ -11,7 +11,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True"
+    shell:SystemTray.IsVisible="False"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:my="clr-namespace:Microsoft.Phone.Controls.Unsupported">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -59,7 +59,7 @@
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" Orientation="Vertical" Grid.Row="1">
                 <Image Source="images\terms_link.png" Height="43"></Image>
-                <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-40" Width="Auto" BorderThickness="0" Background="#2e91d3" >
+                <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-57" Width="Auto" BorderThickness="0" Background="#2e91d3" VerticalAlignment="Bottom" >
                 </Button>
             </StackPanel>
 

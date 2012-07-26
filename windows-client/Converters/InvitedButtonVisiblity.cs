@@ -1,24 +1,25 @@
-﻿using System;
+﻿﻿using System;
 using System.Windows.Data;
 
-namespace windows_client.converters
+namespace windows_client.Converters
 {
-    public class ChatBubbleMargin : IValueConverter
+    public class InvitedButtonVisiblity : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            bool isSent = (bool)value;
-            if (isSent)
+            bool isInvited = (bool)value;
+            if (isInvited)
             {
-                return "15,0,10,10";
+                return "collapsed";
             }
-            return "5,0,10,10";
+            return "visible";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
         }
+
+
     }
 }
-
