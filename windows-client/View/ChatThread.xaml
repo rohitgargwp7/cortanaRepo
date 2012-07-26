@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -36,7 +37,8 @@
             <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" FontSize="26" Margin="0,0,0,95">
+        <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
+                 FontSize="26" Margin="0,0,0,95" Tap="chatListBox_tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
 
@@ -49,7 +51,7 @@
                                 <Image Visibility="{Binding ChatThreadImageVisibility}" Source="{Binding AvatarImage}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
 
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock Height="Auto" Width="300" Margin="{Binding ChatBubbleMargin}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>
+                                    <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
                                 </StackPanel>
                                 <!--<Rectangle Width="2" Height="Auto" Fill="#c8c8c8" Margin="1,2,0,0"></Rectangle>-->
@@ -68,6 +70,146 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom" Background="White">
+
+            <StackPanel Visibility="Collapsed" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#eeeeec">
+
+                <ListBox Width="Auto" Height="Auto" Name="optionsList" Tap="optionsList_Tap">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <toolkit:WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.Items>
+
+                        <ListBoxItem >
+                            <StackPanel Orientation="Horizontal" >
+                                <StackPanel Orientation="Vertical" Width="150" >
+                                    <Image Margin="3" Height="50"  Source="images\emoticons\emo_im_01_bigsmile.png"/>
+                                    <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
+                                </StackPanel>
+                                <Rectangle Fill="Black" Width="3" Height="Auto" Margin="3,8,3,8"></Rectangle>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical" Width="150">
+                                    <Image Margin="3" Height="50" Source="images\emoticons\emo_im_102_scorn.png"/>
+                                    <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
+                                </StackPanel>
+                                <Rectangle Fill="Black" Width="3" Height="Auto" Margin="3,8,3,8"></Rectangle>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical" Width="150">
+                                    <Image Margin="3" Height="50" Source="images\emoticons\emo_im_111_grin.png"/>
+                                    <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
+                                </StackPanel>
+                            </StackPanel>
+                        </ListBoxItem>
+                    </ListBox.Items>
+                </ListBox>
+
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220" >
+                    <controls:PivotItem Margin="12,8,12,0">
+                        <Grid x:Name="emotGrid0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="460"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
+
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBox.ItemTemplate>
+
+                                    <DataTemplate>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40">
+                                            <Image.Source>
+                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
+                                            </Image.Source>
+                                        </Image>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+
+                        </Grid>
+                    </controls:PivotItem>
+
+                    <controls:PivotItem BorderThickness="0" VerticalAlignment="Top" Height="220" Margin="12,8,12,0">
+                        <Grid x:Name="emotGrid1" Margin="18,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <ListBox Name="emotList1" Height="200" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBox.ItemTemplate>
+
+                                    <DataTemplate>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40">
+                                            <Image.Source>
+                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
+                                            </Image.Source>
+                                        </Image>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                        </Grid>
+                    </controls:PivotItem>
+
+                    <controls:PivotItem Margin="12,8,12,0">
+                        <Grid x:Name="emotGrid2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBox.ItemTemplate>
+
+                                    <DataTemplate>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40">
+                                            <Image.Source>
+                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
+                                            </Image.Source>
+                                        </Image>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                        </Grid>
+
+                    </controls:PivotItem>
+                </controls:Pivot>
+            </StackPanel>
+
             <Image x:Name="typingNotification" Source="images\typing.png" Visibility="Visible" Opacity="0" Height="20" Width="30" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>
             <!--<Rectangle Width="Auto" Height="5" Margin="2,0,0,0" Fill="#AFE1FE"/>-->
 

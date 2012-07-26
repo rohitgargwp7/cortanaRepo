@@ -13,6 +13,10 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Reactive;
 using System.Threading;
+using System.Windows.Markup;
+using System.Windows.Documents;
+using System.Windows.Media.Imaging;
+using System.Text.RegularExpressions;
 
 namespace windows_client.View
 {
@@ -54,6 +58,30 @@ namespace windows_client.View
         private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
         private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 177, 224, 251));
 
+
+        private string[] imagePathsForList0
+        {
+            get
+            {
+                return SmileyParser.emoticonPathsForList0;
+            }
+        }
+
+        private string[] imagePathsForList1
+        {
+            get
+            {
+                return SmileyParser.emoticonPathsForList1;
+            }
+        }
+
+        private string[] imagePathsForList2
+        {
+            get
+            {
+                return SmileyParser.emoticonPathsForList2;
+            }
+        }
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         public List<ConvMessage> IncomingMessages
@@ -174,6 +202,15 @@ namespace windows_client.View
             sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
             sendIconButton.IsEnabled = true;
             appBar.Buttons.Add(sendIconButton);
+
+            //add icon for smiley
+            ApplicationBarIconButton emoticonsIconButton = new ApplicationBarIconButton();
+            emoticonsIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+            emoticonsIconButton.Text = "smiley";
+            emoticonsIconButton.Click += new EventHandler(emoticonButton_Click);
+            emoticonsIconButton.IsEnabled = true;
+            appBar.Buttons.Add(emoticonsIconButton);
+
 
             menuItem1 = new ApplicationBarMenuItem();
             if (mUserIsBlocked)
@@ -366,6 +403,7 @@ namespace windows_client.View
             }
         }
 
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -375,6 +413,9 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
+            emotList0.ItemsSource = imagePathsForList0;
+            emotList1.ItemsSource = imagePathsForList1;
+            emotList2.ItemsSource = imagePathsForList2;
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -896,6 +937,118 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = whiteBackground;
+        }
+
+        private void Grid_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            object s = e.OriginalSource;
+        }
+
+        private void optionsList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int selectedIndex = optionsList.SelectedIndex;
+            emoticonPivot.SelectedIndex = selectedIndex;
+        }
+
+        private void emoticonButton_Click(object sender, EventArgs e)
+        {
+            emoticonPanel.Visibility = Visibility.Visible;
+        }
+
+
+
+        private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emoticonPanel.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void emoticonPanel_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //emoticonPanel.Visibility = Visibility.Collapsed;
+
+        }
+
+        private static Thickness imgMargin = new Thickness(0,5,0,0);
+
+        private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            var richTextBox = sender as RichTextBox;
+            if (richTextBox.Tag == null)
+                return;
+            string messageString = richTextBox.Tag.ToString();
+
+            MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(messageString);
+            Paragraph p = new Paragraph();
+            int startIndex = 0;
+            int endIndex = -1;
+            
+            for (int i = 0; i < matchCollection.Count; i++)
+            {
+                String emoticon = matchCollection[i].ToString();
+
+                //Regex never returns an empty string. Still have added an extra check
+                if (String.IsNullOrEmpty(emoticon))
+                    continue;
+                
+                int index = matchCollection[i].Index;
+                endIndex = index - 1;
+                
+                if (index > 0)
+                {
+                    Run r = new Run();
+                    r.Text = messageString.Substring(startIndex, endIndex - startIndex + 1);
+                    p.Inlines.Add(r);
+                }
+                
+                startIndex = index + emoticon.Length;
+
+                string imgPath;
+                SmileyParser.EmoticonUriHash.TryGetValue(emoticon, out imgPath);
+
+                //TODO check if imgPath is null or not
+                Image img = new Image();
+                img.Source = new BitmapImage(new Uri(imgPath,UriKind.Relative));
+                img.Height = 40;
+                img.Width = 40;
+                img.Margin = imgMargin;
+
+
+                InlineUIContainer ui = new InlineUIContainer();
+                ui.Child = img;
+                p.Inlines.Add(ui);
+            }
+            if (startIndex < messageString.Length)
+            {
+                Run r2 = new Run();
+                r2.Text = messageString.Substring(startIndex, messageString.Length - startIndex);
+                p.Inlines.Add(r2);
+            }
+
+            richTextBox.Blocks.Clear();
+            richTextBox.Blocks.Add(p);
+
+        }
+
+        private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int index = emotList0.SelectedIndex;
+            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+            emoticonPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int index = emotList1.SelectedIndex + 80;
+            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+            emoticonPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int index = emotList2.SelectedIndex + 110;
+            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+            emoticonPanel.Visibility = Visibility.Collapsed;
         }
     }
 }
