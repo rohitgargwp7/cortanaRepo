@@ -948,6 +948,15 @@ namespace windows_client.View
         {
             int selectedIndex = optionsList.SelectedIndex;
             emoticonPivot.SelectedIndex = selectedIndex;
+            if (selectedIndex == 1)
+            {
+                emotList1.Visibility = Visibility.Visible;
+            }
+            else if (selectedIndex == 2)
+            {
+                emotList2.Visibility = Visibility.Visible;
+            }
+
         }
 
         private void emoticonButton_Click(object sender, EventArgs e)
@@ -1049,6 +1058,21 @@ namespace windows_client.View
             int index = emotList2.SelectedIndex + 110;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
             emoticonPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int selectedIndex = emoticonPivot.SelectedIndex;
+            
+            if (selectedIndex == 1)
+            {
+                emotList1.Visibility = Visibility.Visible;
+            }
+            else if (selectedIndex == 2)
+            {
+                emotList2.Visibility = Visibility.Visible;
+            }
+
         }
     }
 }

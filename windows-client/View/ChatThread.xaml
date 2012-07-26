@@ -111,7 +111,7 @@
                     </ListBox.Items>
                 </ListBox>
 
-                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220" >
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220" SelectionChanged="emoticonPivot_SelectionChanged" >
                     <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid0">
                             <Grid.RowDefinitions>
@@ -154,7 +154,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Name="emotList1" Height="200" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
+                            <ListBox Name="emotList1" Height="200" Grid.Row="0" Grid.Column="0" Visibility="Collapsed" Tap="emotList1_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -185,7 +185,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
+                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Collapsed" Tap="emotList2_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
