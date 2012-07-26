@@ -58,6 +58,30 @@ namespace windows_client.View
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
 
 
+        private string[] imagePathsForList0
+        {
+            get
+            {
+                return SmileyParser.emoticonPathsForList0;
+            }
+        }
+
+        private string[] imagePathsForList1
+        {
+            get
+            {
+                return SmileyParser.emoticonPathsForList1;
+            }
+        }
+
+        private string[] imagePathsForList2
+        {
+            get
+            {
+                return SmileyParser.emoticonPathsForList2;
+            }
+        }
+
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         public List<ConvMessage> IncomingMessages
         {
@@ -356,6 +380,7 @@ namespace windows_client.View
             }
         }
 
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -365,6 +390,9 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
+            emotList0.ItemsSource = imagePathsForList0;
+            emotList1.ItemsSource = imagePathsForList1;
+            emotList2.ItemsSource = imagePathsForList2;
         }
 
         protected override Clarity.Phone.Controls.Animations.AnimatorHelperBase GetAnimation(AnimationType animationType, Uri toOrFrom)
@@ -951,12 +979,12 @@ namespace windows_client.View
                 
                 startIndex = index + emoticon.Length;
 
-                Uri imgPath;
+                string imgPath;
                 SmileyParser.EmoticonUriHash.TryGetValue(emoticon, out imgPath);
 
                 //TODO check if imgPath is null or not
                 Image img = new Image();
-                img.Source = new BitmapImage(imgPath);
+                img.Source = new BitmapImage(new Uri(imgPath,UriKind.Relative));
                 img.Height = 40;
                 img.Width = 40;
                 img.Margin = imgMargin;
@@ -986,14 +1014,14 @@ namespace windows_client.View
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            int index = emotList0.SelectedIndex + 81;
+            int index = emotList1.SelectedIndex + 80;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
 
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            int index = emotList0.SelectedIndex + 111;
+            int index = emotList2.SelectedIndex + 110;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
 
         }
