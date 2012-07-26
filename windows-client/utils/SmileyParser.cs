@@ -26,7 +26,6 @@ namespace windows_client
         ":-X",  // 06 adore 
         ":-*",  // 07 kiss 
         "(kissed)",  // 08 kissed 
-        ":-|",  // 09 expressionless 
         ":\\\")",  // 10 pudently 
         "^.^",  // 11 satisfied 
         "(giggle)",  // 12 giggle 
@@ -73,7 +72,6 @@ namespace windows_client
         "DX",  // 53 disgust 
         "(\\\\_/)",  // 54 cocktail 
         "(coffee)",  // 55 coffee 
-        ":-`|",  // 56 cold 
         "B-)",  // 57 cool 
         ":-E",  // 58 despair 
         "(@-))",  // 59 hypnotic 
@@ -167,7 +165,10 @@ namespace windows_client
         "(yuush2)",  // 148 yuush 
         "(brains2)",  // 149 brains 
         "(sleeping2)",  // 150 sleeping 
+        ":-|",  // 09 expressionless 
+        ":-`|",  // 56 cold 
       };
+
 
         public static Uri[] emoticonPaths = 
         {
@@ -179,7 +180,6 @@ namespace windows_client
 			new Uri("/View/images/emoticons/emo_im_06_adore.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_07_kiss.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_08_kissed.png", UriKind.Relative),
-			new Uri("/View/images/emoticons/emo_im_09_expressionless.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_10_pudently.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_11_satisfied.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_12_giggle.png", UriKind.Relative),
@@ -226,7 +226,6 @@ namespace windows_client
 			new Uri("/View/images/emoticons/emo_im_53_disgust.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_54_cocktail.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_55_coffee.png", UriKind.Relative),
-			new Uri("/View/images/emoticons/emo_im_56_cold.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_57_cool.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_58_despair.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_59_hypnotic.png", UriKind.Relative),
@@ -319,7 +318,9 @@ namespace windows_client
 			new Uri("/View/images/emoticons/emo_im_147_ninja.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_148_yuush.png", UriKind.Relative),
 			new Uri("/View/images/emoticons/emo_im_149_brains.png", UriKind.Relative),
-			new Uri("/View/images/emoticons/emo_im_150_sleeping", UriKind.Relative)
+			new Uri("/View/images/emoticons/emo_im_150_sleeping", UriKind.Relative),
+			new Uri("/View/images/emoticons/emo_im_09_expressionless.png", UriKind.Relative),
+            new Uri("/View/images/emoticons/emo_im_56_cold.png", UriKind.Relative),
         };
 
 
@@ -366,21 +367,34 @@ namespace windows_client
             }
         }
 
+        //these characters shoule be escaped for regex
+        // \, *, +, ?, |, {, [, (,), ^, $,., #
+
         private static Regex createPattern()
         {
             StringBuilder patternString = new StringBuilder();
             //            patternString.Append('(');
-            for (int i = 0; i < emoticonStrings.Length; i++)
+            int i = 0;
+            //last two emoticons use '|' which needs to be escaped. 
+            for (i = 0; i < emoticonStrings.Length - 2; i++)
             {
                 patternString.Append(emoticonStrings[i]);
                 patternString.Append('|');
             }
+            patternString.Replace("\\", "\\\\");
+            
+            patternString.Append(emoticonStrings[i].Replace("|", "\\|")).Append('|').Append(emoticonStrings[i + 1].Replace("|", "\\|"));
+
             patternString.Replace(")", "\\)");
             patternString.Replace("(", "\\(");
             patternString.Replace("[", "\\[");
             patternString.Replace("*", "\\*");
+            patternString.Replace(".", "\\.");
+            patternString.Replace("^", "\\^");
+            patternString.Replace("?", "\\?");
+            patternString.Replace("$", "\\$");
 
-            patternString.Replace('|', ')', patternString.Length - 1, 1);
+            patternString.Append(")");
             return new Regex("(" + patternString.ToString());
         }
 
