@@ -28,16 +28,16 @@ namespace windows_client
             ":-*",  // 07 kiss 
             "(kissed)",  // 08 kissed
             ":-|",  // 09 expressionless 
-            ":\\\")",  // 10 pudently 
+            ":\")",  // 10 pudently 
             "^.^",  // 11 satisfied 
             "(giggle)",  // 12 giggle 
             ":-P",  // 13 impish 
-            "=\\\\",  // 14 disappointment 
+            "=\\",  // 14 disappointment 
             ";-)",  // 15 beuptonogood 
             "X[",  // 16 frustrated 
             ":-(",  // 17 sad 
             ":?-(",  // 18 sorry 
-            ":\\'-(",  // 19 cry 
+            ":'-(",  // 19 cry 
             "l-o",  // 20 boring 
             ":0",  // 21 hungry 
             "(scared)",  // 22 scared 
@@ -72,7 +72,7 @@ namespace windows_client
             "$-)",  // 51 easymoney 
             "%-}",  // 52 dizzy 
             "DX",  // 53 disgust 
-            "(\\\\_/)",  // 54 cocktail 
+            "(/)",  // 54 cocktail 
             "(coffee)",  // 55 coffee 
             ":-`|",  // 56 cold 
             "B-)",  // 57 cool 
@@ -97,7 +97,7 @@ namespace windows_client
             "O:-)",  // 76 sweetangel 
             "*-)",  // 77 thinking 
             ":-w",  // 78 waiting 
-            ":-\\",  // 79 whistling 
+            ":-\"",  // 79 whistling 
             "(yawn)",  // 80 yawn 
             "(exciting1)",  // 81 exciting 
             "(big smile1)",  // 82 big smile 
@@ -396,7 +396,7 @@ namespace windows_client
                 {
                     patternString.Append(emoticonStrings[i].Replace("|", "\\|"));
                 }
-                else if (i == 9 || i == 13 || i == 18 || i == 53 || i == 78)
+                else if (i == 13)
                 {
                     patternString.Append(emoticonStrings[i].Replace("\\", "\\\\"));
                 }
