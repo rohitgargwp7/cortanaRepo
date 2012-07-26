@@ -205,7 +205,7 @@ namespace windows_client.View
 
             //add icon for smiley
             ApplicationBarIconButton emoticonsIconButton = new ApplicationBarIconButton();
-            emoticonsIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+            emoticonsIconButton.IconUri = new Uri("/View/images/icon_emoticon.png", UriKind.Relative);
             emoticonsIconButton.Text = "smiley";
             emoticonsIconButton.Click += new EventHandler(emoticonButton_Click);
             emoticonsIconButton.IsEnabled = true;
