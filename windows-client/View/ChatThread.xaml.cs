@@ -930,13 +930,12 @@ namespace windows_client.View
             Paragraph p = new Paragraph();
             int startIndex = 0;
             int endIndex = -1;
-
-
+            
             for (int i = 0; i < matchCollection.Count; i++)
             {
                 String emoticon = matchCollection[i].ToString();
 
-                //TODO fix the regex to not return ""
+                //Regex never returns an empty string. Still have added an extra check
                 if (String.IsNullOrEmpty(emoticon))
                     continue;
                 
@@ -976,6 +975,26 @@ namespace windows_client.View
 
             richTextBox.Blocks.Clear();
             richTextBox.Blocks.Add(p);
+
+        }
+
+        private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int index = emotList0.SelectedIndex;
+            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+        }
+
+        private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int index = emotList0.SelectedIndex + 81;
+            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+
+        }
+
+        private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            int index = emotList0.SelectedIndex + 111;
+            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
 
         }
     }

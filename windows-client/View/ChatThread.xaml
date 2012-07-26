@@ -67,7 +67,7 @@
                                 <Image Visibility="{Binding IsSent, Converter={StaticResource chatThreadImageVisibleOrCollapsed}}" Source="{Binding Msisdn, Converter={StaticResource imgConverter}}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
 
                                 <StackPanel Orientation="Vertical">
-                                    <RichTextBox Tag="{Binding Message}"  TextWrapping="Wrap" Loaded="RichTextBox_Loaded" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}"/>
+                                    <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}"/>
                                     <!--<TextBlock Height="Auto" Width="300" Margin="{Binding IsSent, Converter={StaticResource chatBubbleMargin}}" VerticalAlignment="Stretch" TextWrapping="Wrap" Foreground="Black" Text="{Binding Message}"/>-->
                                     
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Timestamp, Converter={StaticResource tsConverter}}"/>
@@ -140,7 +140,7 @@
                                 <ColumnDefinition Width="460"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0">
+                            <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -284,7 +284,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="200" Grid.Row="0" Grid.Column="0" Name="emotList1" Visibility="Visible">
+                            <ListBox Height="200" Grid.Row="0" Grid.Column="0" Name="emotList1" Visibility="Visible" Tap="emotList1_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel Margin="-3" ItemHeight="60" ItemWidth="60"/>
@@ -442,7 +442,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible">
+                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
