@@ -12,6 +12,8 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
+                var q = from o in context.conversations select o;
+                return q.ToList<Conversation>();
                 List<Conversation> res = DbCompiledQueries.GetAllConversations(context).ToList<Conversation>();
                 if (res==null || res.Count() == 0)
                     return null;
@@ -22,7 +24,7 @@ namespace windows_client.DbUtils
         public static void addConversation(ConvMessage convMessage)
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-            Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.Id : null, (contactInfo != null) ? contactInfo.Name : convMessage.Msisdn,  (contactInfo != null) ? contactInfo.OnHike:!convMessage.IsSms);
+            Conversation conv = new Conversation(convMessage.Msisdn,(contactInfo != null) ? contactInfo.OnHike:!convMessage.IsSms);
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {              
                     context.conversations.InsertOnSubmit(conv);
