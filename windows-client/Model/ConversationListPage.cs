@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
 using System;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -40,7 +41,6 @@ namespace windows_client.Model
             }
         }
 
-
         public string LastMessage
         {
             get
@@ -57,7 +57,6 @@ namespace windows_client.Model
                 }
             }
         }
-
 
         public string TimeStamp
         {
@@ -128,7 +127,12 @@ namespace windows_client.Model
         {
             get
             {
-                return UserInterfaceUtils.getBitMapImage(_msisdn);
+                Stopwatch st = Stopwatch.StartNew();
+                BitmapImage img =  UserInterfaceUtils.getBitMapImage(_msisdn);
+                st.Stop();
+                long elapsedMilliseconds = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to get Image for  msisdn {0} : {1}", _msisdn, elapsedMilliseconds);
+                return img;
             }
         }
 

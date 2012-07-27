@@ -64,6 +64,7 @@ namespace windows_client.Model
             {
                 if (_messageId != value)
                 {
+                    NotifyPropertyChanging("MessageId");
                     _messageId = value;
                 }
             }
@@ -80,6 +81,7 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
+                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value;
                 }
             }
@@ -96,6 +98,7 @@ namespace windows_client.Model
             {
                 if (_message != value)
                 {
+                    NotifyPropertyChanging("Message");
                     _message = value;
                 }
             }
@@ -131,6 +134,7 @@ namespace windows_client.Model
             {
                 if (_timestamp != value)
                 {
+                    NotifyPropertyChanging("Timestamp");
                     _timestamp = value;
                 }
             }
@@ -147,6 +151,7 @@ namespace windows_client.Model
             {
                 if (_mappedMessageId != value)
                 {
+                    NotifyPropertyChanging("MappedMessageId");
                     _mappedMessageId = value;
                 }
             }
