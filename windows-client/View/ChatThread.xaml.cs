@@ -13,6 +13,7 @@ using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Reactive;
 using System.Threading;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -99,7 +100,11 @@ namespace windows_client.View
             }
             else
             {
+                Stopwatch st = Stopwatch.StartNew();
                 loadMessages();
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}",mContactNumber,msec);
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
                 registerListeners();

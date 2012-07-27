@@ -14,11 +14,7 @@ using Microsoft.Phone.Tasks;
 using System.IO;
 using Phone.Controls;
 using System.Diagnostics;
-using WP7Contrib.Collections;
-using System.Threading;
 using System.ComponentModel;
-using windows_client.ViewModel;
-using windows_client.Mqtt;
 
 namespace windows_client.View
 {
@@ -105,13 +101,21 @@ namespace windows_client.View
             else
             {
                 mPubSub = App.HikePubSubInstance;
+                Stopwatch stopwatch = Stopwatch.StartNew();
                 LoadMessages();
+                stopwatch.Stop();
+                long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+                Debug.WriteLine("Total Time to load messages: {0} ms", elapsedMilliseconds);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
+                    stopwatch = Stopwatch.StartNew();
                     myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
-
+                    stopwatch.Stop();
+                    elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+                    Debug.WriteLine("Total Time to load messages to itemsource: {0} ms", elapsedMilliseconds);
+                
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
                     {
                         emptyScreenImage.Visibility = Visibility.Visible;
@@ -133,7 +137,11 @@ namespace windows_client.View
 
         private static void LoadMessages()
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();            
             List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
+            stopwatch.Stop();
+            long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+            Debug.WriteLine("Time to get {0} Conversations: {1} ms",conversationList==null?0:conversationList.Count, elapsedMilliseconds);
             List<ConversationListObject> sortedConversationObjects = new List<ConversationListObject>();
             if (conversationList == null)
             {
@@ -142,18 +150,31 @@ namespace windows_client.View
             for (int i = 0; i < conversationList.Count; i++)
             {
                 Conversation conv = conversationList[i];
+                stopwatch = Stopwatch.StartNew();
                 ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
-                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
+                stopwatch.Stop();
+                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+                Debug.WriteLine("Time to get Last Message for Conversation # {0} with MSISDN {1}: {2} ms",i+1,conv.Msisdn ,elapsedMilliseconds);
 
+                stopwatch = Stopwatch.StartNew();
+                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
+                stopwatch.Stop();
+                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+                Debug.WriteLine("Time to get ContactInfo for Conversation # {0} : {1} ms", i + 1, elapsedMilliseconds);
+                
                 ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? null : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
                     TimeUtils.getTimeString(lastMessage.Timestamp), lastMessage.Timestamp);
                 convMap.Add(conv.Msisdn, mObj);
                 convMap2.Add(conv.Msisdn, false);
                 sortedConversationObjects.Add(mObj);
             }
-            sortedConversationObjects.Sort();
-            App.ViewModel.MessageListPageCollection.AddRange(sortedConversationObjects);
+            stopwatch = Stopwatch.StartNew();
+            sortedConversationObjects.Sort();           
+            stopwatch.Stop();
+            elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+            Debug.WriteLine("Time to get Sort {0} Conversations: {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
 
+            App.ViewModel.MessageListPageCollection.AddRange(sortedConversationObjects);
         }
 
         private void initAppBar()
