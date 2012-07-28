@@ -17,7 +17,6 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
-                context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
                 context.SubmitChanges();
             }
@@ -28,73 +27,32 @@ namespace windows_client.DbUtils
             }
         }
         
-        public static void addOrUpdateProfileIcon(string msisdn, byte[] image)
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
-                Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();                  
-
-                if (thumbnail == null)
-                {
-                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
-                }
-                else
-                {
-                    thumbnail.Avatar = image;
-                }
-                context.SubmitChanges();
-            }
-        }
-
         public static void addOrUpdateIcon(string msisdn, byte[] image)
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
-                Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();   
-
-                if (thumbnail == null)
+                ContactInfo cInfo = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).FirstOrDefault<ContactInfo>();
+                if (cInfo == null)
+                    return;
+                if (cInfo.Avatar != image)
                 {
-                    ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    if (contact == null)
-                        return;
-                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));                    
-                    contact.HasCustomPhoto = true;
+                    cInfo.Avatar = image;
+                    cInfo.HasCustomPhoto = true;
+                    context.SubmitChanges();
                 }
-                else
-                {
-                    thumbnail.Avatar = image;
-                }
-                context.SubmitChanges();
             }
         }
 
-        public static List<Thumbnails> getAllThumbNails()
+       
+        public static byte [] getThumbNailForMSisdn(string msisdn)
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                List<Thumbnails> res = DbCompiledQueries.GetAllIcons(context).ToList<Thumbnails>();
-                return (res == null || res.Count == 0) ? null : res;                   
+                ContactInfo cInfo = DbCompiledQueries.GetContactFromMsisdn(context,msisdn).FirstOrDefault<ContactInfo>();
+                return (cInfo == null ? null : cInfo.Avatar);
             }
         }
 
-        public static Thumbnails getThumbNailForMSisdn(string msisdn)
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
-                return (res == null || res.Count == 0) ? null : res.First();                   
-            }
-        }
-
-        public static void deleteAllThumbnails()
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
-            }
-        }
-
+  
     }
 }

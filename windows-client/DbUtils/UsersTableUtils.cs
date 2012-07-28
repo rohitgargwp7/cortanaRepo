@@ -67,23 +67,6 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static List<ContactInfo> getContactInfoFromName(string name)
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<ContactInfo> res;
-                try
-                {
-                    res = DbCompiledQueries.GetContactFromName(context, name).ToList<ContactInfo>();
-                }
-                catch (Exception)
-                {
-                    res = null;
-                }
-                return (res == null || res.Count == 0) ? null : res;
-            }
-        }
-
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))

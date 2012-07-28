@@ -20,31 +20,21 @@ namespace windows_client.utils
     {
         public readonly static BitmapImage onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
         public readonly static BitmapImage notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));       
-        private static BitmapImage defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
-        private static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
+        public static BitmapImage defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
+        public static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
         private static List<string> numbersWithDefaultImage = new List<string>();
 
         public static void updateImageInCache(string msisdn, byte[] imageBytes)
         {
            
-                if (!numbersWithDefaultImage.Contains(msisdn) && !imageCache.ContainsKey(msisdn))
+                if (imageBytes == null)
                     return;
 
                 MemoryStream memStream = new MemoryStream(imageBytes);
                 memStream.Seek(0, SeekOrigin.Begin);
-
                 BitmapImage empImage = new BitmapImage();
                 empImage.SetSource(memStream);
-                if (numbersWithDefaultImage.Contains(msisdn))
-                {
-                    numbersWithDefaultImage.Remove(msisdn);
-                }
-                else if (imageCache.ContainsKey(msisdn))
-                {
-                    imageCache.Remove(msisdn);
-                }
-                imageCache.Add(msisdn, empImage);
-
+                imageCache[msisdn] = empImage;
         }
 
         public static BitmapImage getBitMapImage(string msisdn)
@@ -55,21 +45,7 @@ namespace windows_client.utils
                 imageCache.TryGetValue(msisdn, out cachedImage);
                 return cachedImage;
             }
-            if (numbersWithDefaultImage.Contains(msisdn))
-                return defaultAvatarBitmapImage;
-
-            Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn);
-            if (thumbnail == null)
-            {
-                numbersWithDefaultImage.Add(msisdn);
-                return defaultAvatarBitmapImage;
-            }
-            MemoryStream memStream = new MemoryStream((byte[])thumbnail.Avatar);
-            memStream.Seek(0, SeekOrigin.Begin);
-            BitmapImage empImage = new BitmapImage();
-            empImage.SetSource(memStream);
-            imageCache[msisdn] = empImage;
-            return empImage;
+            return defaultAvatarBitmapImage;
         }
 
     }

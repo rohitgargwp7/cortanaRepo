@@ -24,8 +24,6 @@ namespace windows_client.Model
 
         public Table<Blocked> blockedUsersTable;
 
-        public Table<Thumbnails> thumbnails;
-
     }
 
     public class HikeMqttPersistenceDb : DataContext

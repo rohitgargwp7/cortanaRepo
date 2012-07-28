@@ -11,7 +11,7 @@ namespace windows_client.Model
 {
     [Table(Name = "users")]
     [Index(Columns = "Msisdn", IsUnique = false, Name = "Msisdn_Idx")]
-    public class ContactInfo : INotifyPropertyChanged, IComparable<ContactInfo>
+    public class ContactInfo : INotifyPropertyChanged,INotifyPropertyChanging ,IComparable<ContactInfo>
     {
         private int _dbId;
         private string _id;
@@ -21,6 +21,7 @@ namespace windows_client.Model
         private bool _onHike;
         private bool _hasCustomPhoto;
         private bool _isInvited;
+        private byte[] _avatar;
 
         //it significantly improves update performance
 
@@ -55,7 +56,9 @@ namespace windows_client.Model
             {
                 if (_id != value)
                 {
+                    NotifyPropertyChanging("Id");
                     _id = value;
+                    NotifyPropertyChanged("Id");
                 }
             }
         }
@@ -71,6 +74,7 @@ namespace windows_client.Model
             {
                 if (_name != value)
                 {
+                    NotifyPropertyChanging("Name");
                     _name = value;
                     NotifyPropertyChanged("Name");
                 }
@@ -88,6 +92,7 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
+                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value;
                     NotifyPropertyChanged("Msisdn");
                 }
@@ -105,6 +110,7 @@ namespace windows_client.Model
             {
                 if (_onHike != value)
                 {
+                    NotifyPropertyChanging("OnHike");
                     _onHike = value;    
                     NotifyPropertyChanged("OnHike");
                 }
@@ -120,6 +126,7 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("PhoneNo");
                 _phoneNo = value;
                 NotifyPropertyChanged("PhoneNo");
             }
@@ -134,11 +141,29 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("HasCustomPhoto");
                 _hasCustomPhoto = value;
                 NotifyPropertyChanged("HasCustomPhoto");
             }
         }
 
+        [Column(DbType = "image", CanBeNull = true)]
+        public byte[] Avatar
+        {
+            get
+            {
+                return _avatar;
+            }
+            set
+            {
+                if (_avatar != value)
+                {
+                    NotifyPropertyChanging("Avatar");
+                    _avatar = value;
+                    NotifyPropertyChanged("Avatar");
+                }
+            }
+        }
         public bool IsInvited
         {
             get
@@ -152,28 +177,7 @@ namespace windows_client.Model
             }
         }
 
-        //public string InvitedStringVisible
-        //{
-        //    get
-        //    {
-        //        if (IsInvited)
-        //            return "visible";
-        //        else
-        //            return "collapsed";
-        //    }
-        //}
-
-        //public string InviteButtonVisible
-        //{
-        //    get
-        //    {
-        //        if (IsInvited)
-        //            return "collapsed";
-        //        else
-        //            return "visible";
-        //    }
-        //}
-
+       
         
         
         public ContactInfo()
@@ -181,21 +185,21 @@ namespace windows_client.Model
         }
 
         public ContactInfo(string number, string name, string phoneNum)
-            : this(null, number, name, false, phoneNum, false)
+            : this(null, number, name, false, phoneNum, false,null)
         {
         }
 
         public ContactInfo(string id, string number, string name, string phoneNum)
-            : this(id, number, name, false, phoneNum, false)
+            : this(id, number, name, false, phoneNum, false,null)
         {
         }
 
         public ContactInfo(string id, string number, string name, bool onHike, string phoneNum):            
-            this(id, number, name, onHike, phoneNum, false)
+            this(id, number, name, onHike, phoneNum, false,null)
         {
         }
 
-        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto)
+        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto,byte [] image)
         {
             this.Id = id;
             this.Msisdn = msisdn;
@@ -204,6 +208,7 @@ namespace windows_client.Model
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
             this.IsInvited = false;
+            _avatar = image;
         }
 
 
@@ -260,7 +265,7 @@ namespace windows_client.Model
                 return UserInterfaceUtils.getBitMapImage(_msisdn);
             }
         }
-
+        
         public BitmapImage HikeStatusImage
         {
             get
@@ -283,6 +288,20 @@ namespace windows_client.Model
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+        #region INotifyPropertyChanging Members
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        // Used to notify that a property is about to change
+        private void NotifyPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+            {
+                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
             }
         }
 

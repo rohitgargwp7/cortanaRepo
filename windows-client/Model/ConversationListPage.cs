@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
 using System;
+using System.IO;
 
 namespace windows_client.Model
 {
@@ -40,7 +41,6 @@ namespace windows_client.Model
             }
         }
 
-
         public string LastMessage
         {
             get
@@ -57,7 +57,6 @@ namespace windows_client.Model
                 }
             }
         }
-
 
         public string TimeStamp
         {
@@ -176,6 +175,7 @@ namespace windows_client.Model
             _timeStamp = null;
             _isOnhike = false;
         }
+
         public override bool Equals(object obj)
         {
             if (obj == null)

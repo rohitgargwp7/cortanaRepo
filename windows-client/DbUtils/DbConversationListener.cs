@@ -115,8 +115,7 @@ namespace windows_client.DbUtils
                 string msisdn = (string)vals[0];
                 MemoryStream msSmallImage = (MemoryStream)vals[1];
                 MemoryStream msLargeImage = (MemoryStream)vals[2];
-                MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
-                MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
+                addOrUpdateProfileIcon(msisdn, msisdn + "::large", msSmallImage.ToArray(),msLargeImage.ToArray());           
             }
             #endregion
             #region DELETE ACCOUNT
@@ -127,6 +126,13 @@ namespace windows_client.DbUtils
                 mPubSub.publish(HikePubSub.ACCOUNT_DELETED, null);
             }
             #endregion
+        }
+
+        private static void addOrUpdateProfileIcon(string key1,string key2, byte []smallImage,byte [] largeImage)
+        {
+            App.appSettings[key1] = smallImage;
+            App.appSettings[key2] = largeImage;
+            App.appSettings.Save();
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)

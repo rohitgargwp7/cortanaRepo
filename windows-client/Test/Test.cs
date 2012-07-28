@@ -73,7 +73,7 @@ namespace windows_client.Test
         }
 
         private static List<ConvMessage> messages = new List<ConvMessage>();
-        public static void AddContactEntries()
+        /*public static void AddContactEntries()
         {
             List<ContactInfo> list = new List<ContactInfo>();
             ContactInfo obj = new ContactInfo("-1", "+919876543210", "Gautam", false, "9876543210", false);
@@ -97,7 +97,7 @@ namespace windows_client.Test
             list.Add(new ContactInfo("-1", "+918826670738", "GK", true, "8826670738", false));
             UsersTableUtils.addContacts(list);
         }
-
+        */
         public static void addMessage(String message, String msisdn)
         {
             //ConvMessage convMessage = new ConvMessage(message, msisdn, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);

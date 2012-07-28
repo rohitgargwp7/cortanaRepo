@@ -22,19 +22,6 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromName
-        {
-            get
-            {
-                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
-                   CompiledQuery.Compile((HikeUsersDb hdc, string chars) =>
-                       from o in hdc.users
-                       where o.Name.Contains(chars) || o.PhoneNo.Contains(chars)
-                       select o);
-                return q;
-            }
-        }
-
         public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromMsisdn
         {
             get
@@ -57,20 +44,6 @@ namespace windows_client.DbUtils
                      CompiledQuery.Compile<HikeUsersDb, IQueryable<Blocked>>
                      ((HikeUsersDb hdc) =>
                          from o in hdc.blockedUsersTable
-                         select o);
-                return q;
-            }
-        }
-
-        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> UpdateOnhikeStatus
-        {
-            get
-            {
-                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
-                     CompiledQuery.Compile<HikeUsersDb, string, IQueryable<ContactInfo>>
-                     ((HikeUsersDb hdc, string ms) =>
-                         from o in hdc.users
-                         where o.Msisdn == ms
                          select o);
                 return q;
             }
@@ -227,35 +200,5 @@ namespace windows_client.DbUtils
 
         #endregion
 
-        #region MiscTable Queries
-
-        public static Func<HikeUsersDb, IQueryable<Thumbnails>> GetAllIcons
-        {
-            get
-            {
-                Func<HikeUsersDb, IQueryable<Thumbnails>> q =
-                  CompiledQuery.Compile<HikeUsersDb, IQueryable<Thumbnails>>
-                  ((HikeUsersDb hdc) =>
-                      from o in hdc.thumbnails
-                      select o);
-                return q;
-            }
-        }
-
-        public static Func<HikeUsersDb, string, IQueryable<Thumbnails>> GetIconForMsisdn
-        {
-            get
-            {
-                Func<HikeUsersDb, string, IQueryable<Thumbnails>> q =
-                   CompiledQuery.Compile<HikeUsersDb, string, IQueryable<Thumbnails>>
-                   ((HikeUsersDb hdc, string m) =>
-                       from o in hdc.thumbnails
-                       where o.Msisdn == m
-                       select o);
-                return q;
-            }
-        }
-
-        #endregion
     }
 }
