@@ -209,7 +209,6 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="View\images\wrong_num.png" />
     <Resource Include="hi.png" />
     <Content Include="View\images\appbar.add.rest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -217,10 +216,7 @@
     <Resource Include="View\images\Application_TileImage_173x173.png" />
     <Resource Include="View\images\appbar.favs.addto.rest.png" />
     <Content Include="View\images\background.png" />
-    <Content Include="View\images\change_pic.png" />
-    <Content Include="View\images\compose_pressed.png" />
     <Resource Include="View\images\hike_header.png" />
-    <Resource Include="View\images\empty_messages_hike_logo.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />
     <Content Include="View\images\emoticons\emo_im_02_happy.png" />
     <Content Include="View\images\emoticons\emo_im_03_laugh.png" />
@@ -378,29 +374,20 @@
     <Content Include="View\images\hike_logo_small.png" />
     <Content Include="View\images\icon_emoticon.png" />
     <Content Include="View\images\icon_refresh.png" />
-    <Content Include="View\images\ic_backtexture.png" />
-    <Content Include="View\images\headerbar.png" />
     <Content Include="View\images\ic_avatar0.png" />
     <Resource Include="View\images\ic_delivered.png" />
-    <Resource Include="View\images\ic_delivered_small.png" />
     <Resource Include="View\images\ic_read.png" />
-    <Resource Include="View\images\ic_read_small.png" />
     <Resource Include="View\images\ic_sent.png" />
-    <Resource Include="View\images\ic_sent_small.png" />
-    <Resource Include="View\images\ic_name_2.png" />
     <Resource Include="View\images\Made_with_love.png" />
-    <Resource Include="View\images\network_error.png" />
     <Resource Include="View\images\notifications.png" />
     <Content Include="View\images\logo_main.png" />
     <Content Include="View\images\phone_number.png" />
     <Resource Include="View\images\privacy.png" />
-    <Resource Include="View\images\purchases.png" />
     <Content Include="View\images\send_button.png" />
     <Content Include="View\images\signup_logo.png" />
     <Content Include="View\images\sms_pin.png" />
     <Resource Include="View\images\splash_logo.png" />
     <Content Include="View\images\splash_text.png" />
-    <Resource Include="View\images\terms_back.png" />
     <Content Include="View\images\ic_block_active.png" />
     <Content Include="View\images\ic_hike_user.png" />
     <Content Include="View\images\ic_sms_user.png" />
@@ -408,21 +395,8 @@
     <Content Include="View\images\terms_link.png" />
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
-    <Content Include="View\images\ic_name_big.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="View\images\ic_phone_big.png" />
-    <Content Include="View\images\tb_name.9.png" />
-    <Content Include="View\images\tb_phone.9.png" />
-    <Content Include="View\images\tb_pin.9.png" />
-    <Content Include="View\images\signup_background.jpg" />
-    <Content Include="View\images\hike_logo.png" />
-    <Content Include="View\images\hi_logo_big.png" />
     <Content Include="View\images\ic_tc.png" />
-    <Content Include="View\images\progress_bar.png" />
-    <Content Include="View\images\signup_loading_bckg.png" />
-    <Content Include="View\images\ic_bottom_button.png" />
-    <Content Include="View\images\tux.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
