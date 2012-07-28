@@ -14,10 +14,6 @@ namespace windows_client.DbUtils
             {
                 var q = from o in context.conversations select o;
                 return q.ToList<Conversation>();
-                List<Conversation> res = DbCompiledQueries.GetAllConversations(context).ToList<Conversation>();
-                if (res==null || res.Count() == 0)
-                    return null;
-                return res;
             }           
         }
 

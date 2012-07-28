@@ -127,15 +127,11 @@ namespace windows_client.Model
         {
             get
             {
-                Stopwatch st = Stopwatch.StartNew();
                 BitmapImage img =  UserInterfaceUtils.getBitMapImage(_msisdn);
-                st.Stop();
-                long elapsedMilliseconds = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to get Image for  msisdn {0} : {1}", _msisdn, elapsedMilliseconds);
                 return img;
             }
         }
-
+        
         public ConvMessage.State MessageStatus
         {
             get
