@@ -167,12 +167,12 @@ namespace windows_client.DbUtils
 
         #region ConversationTable Queries
 
-        public static Func<HikeChatsDb, IQueryable<Conversation>> GetAllConversations
+        public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations
         {
             get
             {
-                Func<HikeChatsDb, IQueryable<Conversation>> q =
-                    CompiledQuery.Compile<HikeChatsDb, IQueryable<Conversation>>
+                Func<HikeChatsDb, IQueryable<ConversationListObject>> q =
+                    CompiledQuery.Compile<HikeChatsDb, IQueryable<ConversationListObject>>
                     ((HikeChatsDb hdc) =>
                         from o in hdc.conversations
                         select o);
@@ -180,12 +180,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeChatsDb, string, IQueryable<Conversation>> GetConvForMsisdn
+        public static Func<HikeChatsDb, string, IQueryable<ConversationListObject>> GetConvForMsisdn
         {
             get
             {
-                Func<HikeChatsDb, string, IQueryable<Conversation>> q =
-                    CompiledQuery.Compile<HikeChatsDb, string, IQueryable<Conversation>>
+                Func<HikeChatsDb, string, IQueryable<ConversationListObject>> q =
+                    CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConversationListObject>>
                     ((HikeChatsDb hdc, string _msisdn) =>
                         from o in hdc.conversations
                         where o.Msisdn == _msisdn

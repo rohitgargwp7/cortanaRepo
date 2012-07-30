@@ -3,6 +3,7 @@ using windows_client.Model;
 using System.Data.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using windows_client.View;
 
 namespace windows_client.DbUtils
 {
@@ -184,15 +185,34 @@ namespace windows_client.DbUtils
             return false;
         }
 
-        public static void deleteMultipleRows(List<string> ids)
+        public static void deleteMultipleRows(List<SelectUserToMsg.DelContacts> ids)
         {
             if(ids == null || ids.Count == 0)
                 return;
+            bool shouldSubmit = false;
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                for (int i = 0; i < ids.Count; i++)
+                using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
-                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i]));
+                    for (int i = 0; i < ids.Count; i++)
+                    {
+                        context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
+                        if (ConversationsList.ConvMap.ContainsKey(ids[i].Msisdn))
+                        {
+                            ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(chats, ids[i].Msisdn).FirstOrDefault();
+                            if (cObj._contactName != null)
+                            {
+                                cObj.ContactName = null;
+                                shouldSubmit = true;
+                            }
+                            ConversationListObject obj = ConversationsList.ConvMap[ids[i].Msisdn];
+                            obj.ContactName = null;
+                        }
+                    }
+                    if (shouldSubmit)
+                    {
+                        chats.SubmitChanges();
+                    }
                 }
                 context.SubmitChanges();
             }

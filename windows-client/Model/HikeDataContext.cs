@@ -10,7 +10,7 @@ namespace windows_client.Model
 
         public Table<ConvMessage> messages;
 
-        public Table<Conversation> conversations;
+        public Table<ConversationListObject> conversations;
 
     }
 

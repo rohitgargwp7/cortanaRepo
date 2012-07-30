@@ -22,12 +22,28 @@ namespace windows_client.utils
         public readonly static BitmapImage notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));       
         private static BitmapImage defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
         private static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
-        private static List<string> numbersWithDefaultImage = new List<string>();
+        private static Dictionary<string, bool> numbersWithDefaultImage = new Dictionary<string, bool>();
+
+        public static BitmapImage DefaultAvatarBitmapImage
+        {
+            get
+            {
+                return defaultAvatarBitmapImage;
+            }
+        }
+
+        public static Dictionary<string, BitmapImage> ImageCache
+        {
+            get
+            {
+                return imageCache;
+            }
+        }
 
         public static void updateImageInCache(string msisdn, byte[] imageBytes)
         {
            
-                if (!numbersWithDefaultImage.Contains(msisdn) && !imageCache.ContainsKey(msisdn))
+                if (!numbersWithDefaultImage.ContainsKey(msisdn) && !imageCache.ContainsKey(msisdn))
                     return;
 
                 MemoryStream memStream = new MemoryStream(imageBytes);
@@ -35,7 +51,7 @@ namespace windows_client.utils
 
                 BitmapImage empImage = new BitmapImage();
                 empImage.SetSource(memStream);
-                if (numbersWithDefaultImage.Contains(msisdn))
+                if (numbersWithDefaultImage.ContainsKey(msisdn))
                 {
                     numbersWithDefaultImage.Remove(msisdn);
                 }
@@ -55,13 +71,13 @@ namespace windows_client.utils
                 imageCache.TryGetValue(msisdn, out cachedImage);
                 return cachedImage;
             }
-            if (numbersWithDefaultImage.Contains(msisdn))
+            if (numbersWithDefaultImage.ContainsKey(msisdn))
                 return defaultAvatarBitmapImage;
 
             Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn);
             if (thumbnail == null)
             {
-                numbersWithDefaultImage.Add(msisdn);
+                numbersWithDefaultImage.Add(msisdn,false);
                 return defaultAvatarBitmapImage;
             }
             MemoryStream memStream = new MemoryStream((byte[])thumbnail.Avatar);

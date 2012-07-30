@@ -146,7 +146,6 @@
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\ContactInfo.cs" />
-    <Compile Include="Model\Conversation.cs" />
     <Compile Include="Model\ConvMessage.cs" />
     <Compile Include="Model\HikeDataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

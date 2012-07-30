@@ -19,7 +19,7 @@ namespace windows_client.Test
 
             clearMessages();
             List<ConvMessage> msgs = MessagesTableUtils.getAllMessages();
-            List<Conversation> convs = ConversationTableUtils.getAllConversations();
+            List<ConversationListObject> convs = ConversationTableUtils.getAllConversations();
 
             //addMessage("Hey 1", "+919876543211");
             //addMessage("Hey 2", "+919876543211");

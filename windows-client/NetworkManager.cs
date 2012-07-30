@@ -5,6 +5,7 @@ using windows_client.Model;
 using windows_client.DbUtils;
 using windows_client.utils;
 using System.Windows;
+using System.Threading;
 
 namespace windows_client
 {
@@ -33,7 +34,7 @@ namespace windows_client
 
         public static readonly string ICON = "ic";
 
-        public static bool turnOffSystem = true;
+        public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
 
@@ -64,8 +65,10 @@ namespace windows_client
 
         public void onMessage(string msg)
         {
-            if (turnOffSystem)
-                return;
+            while (turnOffNetworkManager)
+            {
+                Thread.Sleep(500);
+            }
             JObject jsonObj = null;
             try
             {
@@ -85,8 +88,11 @@ namespace windows_client
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    MessagesTableUtils.addChatMessage(convMessage);
-                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, convMessage);
+                    ConversationListObject obj =  MessagesTableUtils.addChatMessage(convMessage);
+                    object[] vals = new object[2];
+                    vals[0] = convMessage;
+                    vals[1] = obj;
+                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
                 catch (Exception e)
                 {
@@ -177,6 +183,7 @@ namespace windows_client
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
 
                 MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
+                ConversationTableUtils.updateImage(msisdn,imageBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     UserInterfaceUtils.updateImageInCache(msisdn, imageBytes);

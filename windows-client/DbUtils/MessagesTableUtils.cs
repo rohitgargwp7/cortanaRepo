@@ -4,6 +4,7 @@ using windows_client.Model;
 using System.Collections.Generic;
 using windows_client.View;
 using System;
+using windows_client.utils;
 
 namespace windows_client.DbUtils
 {
@@ -67,24 +68,24 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void addChatMessage(ConvMessage convMsg, bool isNewConversation)
+        public static ConversationListObject addChatMessage(ConvMessage convMsg)
         {
-            if (isNewConversation)
+            ConversationListObject obj = null;
+            if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
-                ConversationTableUtils.addConversation(convMsg);
-                ConversationsList.convMap2.Add(convMsg.Msisdn, false);
+                obj = ConversationTableUtils.addConversation(convMsg);
+                ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
+            }
+            else
+            {
+                obj = ConversationsList.ConvMap[convMsg.Msisdn];
+                obj.LastMessage = convMsg.Message;
+                obj.MessageStatus = convMsg.MessageStatus;
+                obj.TimeStamp = convMsg.Timestamp;
+                ConversationTableUtils.updateConversation(obj);
             }
             addMessage(convMsg);
-        }
-
-        public static void addChatMessage(ConvMessage convMsg)
-        {
-            if (!ConversationsList.convMap2.ContainsKey(convMsg.Msisdn))
-            {
-                ConversationTableUtils.addConversation(convMsg);
-                ConversationsList.convMap2.Add(convMsg.Msisdn, false);
-            }
-            addMessage(convMsg);
+            return obj;
         }
 
         public static void updateMsgStatus(long msgID, int val)
@@ -98,7 +99,6 @@ namespace windows_client.DbUtils
                     ConvMessage message = res.First();
                     message.MessageStatus = (ConvMessage.State)val;
                     context.SubmitChanges();
-
                 }
                 else
                 {

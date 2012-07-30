@@ -33,7 +33,6 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
-        public static Dictionary<string, bool> convMap2 = null;
         private PhotoChooserTask photoChooserTask;
         private string msisdn;
         private ApplicationBar appBar;
@@ -57,7 +56,6 @@ namespace windows_client.View
             InitializeComponent();
             //myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
-            convMap2 = new Dictionary<string, bool>();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             #region Load App level instances
@@ -130,51 +128,28 @@ namespace windows_client.View
                 });
                 App.DbListener.registerListeners();
                 registerListeners();
-                NetworkManager.turnOffSystem = false;
+                NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
             }
         }
 
         private static void LoadMessages()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();            
-            List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             Debug.WriteLine("Time to get {0} Conversations: {1} ms",conversationList==null?0:conversationList.Count, elapsedMilliseconds);
-            List<ConversationListObject> sortedConversationObjects = new List<ConversationListObject>();
-            if (conversationList == null)
+            if (conversationList == null || conversationList.Count == 0)
             {
                 return;
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
-                Conversation conv = conversationList[i];
-                stopwatch = Stopwatch.StartNew();
-                ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
-                stopwatch.Stop();
-                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine("Time to get Last Message for Conversation # {0} with MSISDN {1}: {2} ms",i+1,conv.Msisdn ,elapsedMilliseconds);
-
-                stopwatch = Stopwatch.StartNew();
-                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
-                stopwatch.Stop();
-                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine("Time to get ContactInfo for Conversation # {0} : {1} ms", i + 1, elapsedMilliseconds);
-                
-                ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? null : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
-                    TimeUtils.getTimeString(lastMessage.Timestamp), lastMessage.Timestamp);
-                convMap.Add(conv.Msisdn, mObj);
-                convMap2.Add(conv.Msisdn, false);
-                sortedConversationObjects.Add(mObj);
+                ConversationListObject conv = conversationList[i];
+                convMap.Add(conv.Msisdn, conv);
+                App.ViewModel.MessageListPageCollection.Add(conv);
             }
-            stopwatch = Stopwatch.StartNew();
-            sortedConversationObjects.Sort();           
-            stopwatch.Stop();
-            elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Debug.WriteLine("Time to get Sort {0} Conversations: {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
-
-            App.ViewModel.MessageListPageCollection.AddRange(sortedConversationObjects);
         }
 
         private void initAppBar()
@@ -220,7 +195,6 @@ namespace windows_client.View
             {
                 App.ViewModel.MessageListPageCollection.Clear();
                 convMap.Clear();
-                convMap2.Clear();
                 LoadMessages();
             });
 
@@ -374,7 +348,6 @@ namespace windows_client.View
             ConversationTableUtils.deleteAllConversations();
             MessagesTableUtils.deleteAllMessages();
             convMap.Clear();
-            convMap2.Clear();
 
             App.ViewModel.MessageListPageCollection.Clear();
             emptyScreenImage.Visibility = Visibility.Visible;
@@ -410,8 +383,8 @@ namespace windows_client.View
                 });
                 return;
             }
-            NetworkManager.turnOffSystem = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
+            NetworkManager.turnOffNetworkManager = true;
             appSettings.Clear();
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
@@ -435,7 +408,6 @@ namespace windows_client.View
             }
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
             convMap.Remove(convObj.Msisdn); // removed entry from map for UI
-            convMap2.Remove(convObj.Msisdn); // removed entry from map for DB
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -481,41 +453,25 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
-            if (HikePubSub.MESSAGE_RECEIVED == type || HikePubSub.SEND_NEW_MSG == type)
+            if (HikePubSub.MESSAGE_RECEIVED == type)
             {
-                ConvMessage convMessage = (ConvMessage)obj;
-                ConversationListObject mObj;
-                bool isNewConversation = false;
-
-                if (convMap.ContainsKey(convMessage.Msisdn))
+                object[] vals = (object[])obj; 
+                ConversationListObject mObj = (ConversationListObject)vals[1];
+                if (convMap.ContainsKey(mObj.Msisdn))
                 {
-                    mObj = convMap[convMessage.Msisdn];
-                    mObj.LastMessage = convMessage.Message;
-                    mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         App.ViewModel.MessageListPageCollection.Remove(mObj);
                     });
                 }
-                else
-                {
-                    ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? null : contact.Name, convMessage.Message,
-                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp), convMessage.Timestamp);
-                    convMap[convMessage.Msisdn] = mObj;
-                    isNewConversation = true;
-                }
+                convMap[mObj.Msisdn] = mObj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if(emptyScreenImage.Visibility == Visibility.Visible)
                         emptyScreenImage.Visibility = Visibility.Collapsed;
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
-                object[] vals = new object[2];
-                vals[0] = convMessage;
-                vals[1] = isNewConversation;
-                if (HikePubSub.SEND_NEW_MSG == type)
-                    mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+               
             }
             else if (HikePubSub.MSG_READ == type)
             {

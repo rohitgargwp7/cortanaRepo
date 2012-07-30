@@ -158,10 +158,39 @@ namespace windows_client.View
                 }
                 ContactUtils.contactsMap = contacts_to_update;
                 ContactUtils.hike_contactsMap = hike_contacts_by_id;
+
+                App.MqttManagerInstance.disconnectFromBroker(false);
+                NetworkManager.turnOffNetworkManager = true;
                 AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
             }
             catch (Exception)
             {
+            }
+        }
+
+        public class DelContacts
+        {
+            private string _id;
+            private string _msisdn;
+
+            public string Id
+            {
+                get
+                {
+                    return _id;
+                }
+            }
+            public string Msisdn
+            {
+                get
+                {
+                    return _msisdn;
+                }
+            }
+            public DelContacts(string id,string msisdn)
+            {
+                _id = id;
+                _msisdn = msisdn;
             }
         }
 
@@ -170,6 +199,8 @@ namespace windows_client.View
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
+                App.MqttManagerInstance.connect();
+                NetworkManager.turnOffNetworkManager = false;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     progress.Hide();
@@ -177,11 +208,13 @@ namespace windows_client.View
                 });
                 return;
             }
+
             List<ContactInfo> updatedContacts = AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
-            List<string> hikeIds = new List<string>();
+            List<DelContacts> hikeIds = new List<DelContacts>();
             foreach (string id in ContactUtils.hike_contactsMap.Keys)
             {
-                hikeIds.Add(id);
+                DelContacts dCn = new DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
+                hikeIds.Add(dCn);
             }
 
             if (hikeIds != null && hikeIds.Count > 0)
@@ -192,10 +225,14 @@ namespace windows_client.View
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
+                ConversationTableUtils.updateConversation(updatedContacts);
             }
-            ConversationsList.ReloadConversations();
+            //ConversationsList.ReloadConversations();
             allContactsList = UsersTableUtils.getAllContacts();
             App.isABScanning = false;
+            App.MqttManagerInstance.connect();
+            NetworkManager.turnOffNetworkManager = false;
+            
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 contactsListBox.ItemsSource = allContactsList;

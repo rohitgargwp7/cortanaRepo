@@ -48,12 +48,17 @@ namespace windows_client.DbUtils
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
             {
-                object[] vals = (object[])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
+                ConvMessage convMessage = (ConvMessage)obj;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                bool isNewConv = (bool)vals[1];
-                MessagesTableUtils.addChatMessage(convMessage, isNewConv);
-                //logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Msisdn);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if(App.ViewModel.MessageListPageCollection.Contains(convObj))
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(convObj);
+                    }
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                });
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion

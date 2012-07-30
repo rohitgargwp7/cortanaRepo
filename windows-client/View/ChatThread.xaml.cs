@@ -461,7 +461,7 @@ namespace windows_client.View
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
 
-            mPubSub.publish(HikePubSub.SEND_NEW_MSG, convMessage);
+            mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
         }
 
         private void sendTypingNotification(bool notificationType)
@@ -681,7 +681,6 @@ namespace windows_client.View
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
                 ConversationsList.ConvMap.Remove(msg.Msisdn);
-                ConversationsList.convMap2.Remove(msg.Msisdn);
                 delConv = true;
             }
             object[] o = new object[3];
@@ -739,7 +738,8 @@ namespace windows_client.View
 
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
-                ConvMessage convMessage = (ConvMessage)obj;
+                object[] vals = (object[])obj;
+                ConvMessage convMessage = (ConvMessage)vals[0];
                 /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
                 {

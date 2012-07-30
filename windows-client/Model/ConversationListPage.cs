@@ -4,24 +4,32 @@ using System.Windows.Media.Imaging;
 using windows_client.utils;
 using System;
 using System.Diagnostics;
+using System.Data.Linq.Mapping;
+using System.Data.Linq;
+using System.IO;
+using Microsoft.Phone.Data.Linq.Mapping;
 
 namespace windows_client.Model
 {
-    public class ConversationListObject : INotifyPropertyChanged, IComparable<ConversationListObject>
+    [Table(Name = "conversations")]
+    public class ConversationListObject : INotifyPropertyChanged,INotifyPropertyChanging ,IComparable<ConversationListObject>
     {
         #region member variables
 
         private string _msisdn;
         public string _contactName;
         private string _lastMessage;
-        private string _timeStamp;
+        private long _timeStamp;
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
-        private long _timestampLong;
+        private byte[] _avatar;
         #endregion
 
+        [Column(IsVersion = true)]
+        private Binary version;
         #region Properties
 
+        [Column]
         public string ContactName
         {
             get
@@ -35,12 +43,14 @@ namespace windows_client.Model
             {
                 if (_contactName != value)
                 {
+                    NotifyPropertyChanging("ContactName");
                     _contactName = value;
                     NotifyPropertyChanged("ContactName");
                 }
             }
         }
 
+        [Column]
         public string LastMessage
         {
             get
@@ -51,14 +61,15 @@ namespace windows_client.Model
             {
                 if (_lastMessage != value)
                 {
-
+                    NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
                     NotifyPropertyChanged("LastMessage");
                 }
             }
         }
 
-        public string TimeStamp
+        [Column]
+        public long TimeStamp
         {
             get
             {
@@ -68,13 +79,14 @@ namespace windows_client.Model
             {
                 if (_timeStamp != value)
                 {
-                   
+                    NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
-                
+                    NotifyPropertyChanged("TimeStamp");
                 }
             }
         }
 
+        [Column(IsPrimaryKey = true)]
         public string Msisdn
         {
             get
@@ -85,11 +97,14 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
+                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value;
+                    NotifyPropertyChanged("Msisdn");
                 }
             }
         }
 
+        [Column]
         public bool IsOnhike
         {
             get
@@ -100,26 +115,36 @@ namespace windows_client.Model
             {
                 if (_isOnhike != value)
                 {
-                   
+                    NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
                     NotifyPropertyChanged("IsOnhike");
                 }
             }
         }
 
-        public long TimestampLong
+        [Column]
+        public byte [] Avatar
         {
             get
             {
-                return _timestampLong;
+                return _avatar;
             }
             set
             {
-                if (_timestampLong != value)
+                if (_avatar != value)
                 {
-                    _timestampLong = value;
-                    NotifyPropertyChanged("IsOnhike");
+                    NotifyPropertyChanging("Avatar");
+                    _avatar = value;
+                    NotifyPropertyChanged("Avatar");
                 }
+            }
+        }
+
+        public string FormattedTimeStamp
+        {
+            get
+            {
+                return TimeUtils.getTimeString(_timeStamp);
             }
         }
 
@@ -127,11 +152,28 @@ namespace windows_client.Model
         {
             get
             {
-                BitmapImage img =  UserInterfaceUtils.getBitMapImage(_msisdn);
-                return img;
+                if (UserInterfaceUtils.ImageCache.ContainsKey(_msisdn))
+                {
+                    BitmapImage cachedImage;
+                    UserInterfaceUtils.ImageCache.TryGetValue(_msisdn, out cachedImage);
+                    return cachedImage;
+                }
+                if (_avatar == null)
+                {
+                    return UserInterfaceUtils.DefaultAvatarBitmapImage;
+                }
+                else
+                {
+                    MemoryStream memStream = new MemoryStream(_avatar);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage empImage = new BitmapImage();
+                    empImage.SetSource(memStream);
+                    UserInterfaceUtils.ImageCache[_msisdn] = empImage;
+                    return empImage;
+                }
             }
         }
-        
+
         public ConvMessage.State MessageStatus
         {
             get
@@ -152,18 +194,18 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, string relativeTime, long timestamp)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp,byte [] avatar)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
             this._lastMessage = lastMessage;
-            this._timeStamp = relativeTime;
+            this._timeStamp = timestamp;
             this._isOnhike = isOnhike;
-            this._timestampLong = timestamp;
+            this._avatar = avatar;
         }
 
         public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime, long timestamp)
-            : this(msisdn, contactName, lastMessage, false, relativeTime, timestamp)
+            : this(msisdn, contactName, lastMessage, false, timestamp,null)
         {
 
         }
@@ -173,9 +215,21 @@ namespace windows_client.Model
             _msisdn = null;
             _contactName = null;
             _lastMessage = null;
-            _timeStamp = null;
+            _timeStamp = 0;
             _isOnhike = false;
+            _avatar = null;
         }
+
+        public int CompareTo(ConversationListObject rhs)
+        {
+            if (this.Equals(rhs))
+            {
+                return 0;
+            }
+            //TODO check is Messages is empty
+            return TimeStamp > rhs.TimeStamp ? -1 : 1;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -190,29 +244,6 @@ namespace windows_client.Model
             }
             return (_msisdn == o.Msisdn);
         }
-        //public override int GetHashCode()
-        //{
-        //    const int prime = 31;
-        //    int result = 1;
-        //    result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
-        //    result = prime * result + ((ContactName == null) ? 0 : ContactName.GetHashCode());
-        //    result = prime * result + ((LastMessage == null) ? 0 : LastMessage.GetHashCode());
-        //    result = prime * result + ((TimeStamp == null) ? 0 : TimeStamp.GetHashCode());
-        //    result = prime * result + ((TimestampLong == null) ? 0 : TimestampLong.GetHashCode());
-
-        //    return result;
-        //}
-
-        public int CompareTo(ConversationListObject rhs)
-        {
-            if (this.Equals(rhs))
-            {
-                return 0;
-            }
-            //TODO check is Messages is empty
-            return TimestampLong > rhs.TimestampLong ? -1 : 1;
-        }
-
 
         #endregion
 
@@ -233,5 +264,18 @@ namespace windows_client.Model
         }
         #endregion
 
+        #region INotifyPropertyChanging Members
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        // Used to notify that a property is about to change
+        private void NotifyPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+            {
+                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+            }
+        }
+        #endregion
     }
 }
