@@ -50,6 +50,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Coding4Fun.Phone.Controls">
+      <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="finalmqtt">
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>

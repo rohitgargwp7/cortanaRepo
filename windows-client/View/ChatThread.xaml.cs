@@ -17,6 +17,7 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using WP7Contrib.Collections;
+using Coding4Fun.Phone.Controls;
 
 namespace windows_client.View
 {
@@ -131,7 +132,7 @@ namespace windows_client.View
                 loadMessages();
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}",mContactNumber,msec);
+                Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
                 initBlockUnblockState();
                 mCredits = (int)App.appSettings[App.SMS_SETTING];
                 registerListeners();
@@ -278,7 +279,7 @@ namespace windows_client.View
                 }
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
             }
-
+           
             userName.Text = mContactName;
             initAppBar(isAddUser);
             if (!isOnHike)
@@ -445,7 +446,7 @@ namespace windows_client.View
 
             if ((!isOnHike && mCredits <= 0) || message == "")
                 return;
-           
+
             endTypingSent = true;
             sendTypingNotification(false);
 
@@ -674,7 +675,7 @@ namespace windows_client.View
             /* Remove the message from conversation list */
             if (this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1] != null)
             {
-                    obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
+                obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
             }
             else
             {
@@ -761,6 +762,19 @@ namespace windows_client.View
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);
                         //set typing notification as false
                         typingNotification.Opacity = 0;
+                    });
+                }
+                else
+                {
+                    cObj = vals[1] as ConversationListObject;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ToastPrompt toast = new ToastPrompt();
+                        toast.Title = cObj.ContactName;
+                        toast.Message = convMessage.Message;
+                        toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
+                        toast.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(toast_Tap);
+                        toast.Show();
                     });
                 }
             }
@@ -937,6 +951,12 @@ namespace windows_client.View
         }
 
         #endregion
+        ConversationListObject cObj = null;
+        void toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State["objFromConversationPage"] = cObj;
+            NavigationService.Navigate(new Uri("/View/ChatThread.xaml?Id=1", UriKind.Relative));
+        }
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -982,7 +1002,7 @@ namespace windows_client.View
 
         }
 
-        private static Thickness imgMargin = new Thickness(0,5,0,0);
+        private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
 
         private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
         {
@@ -995,7 +1015,7 @@ namespace windows_client.View
             Paragraph p = new Paragraph();
             int startIndex = 0;
             int endIndex = -1;
-            
+
             for (int i = 0; i < matchCollection.Count; i++)
             {
                 String emoticon = matchCollection[i].ToString();
@@ -1003,17 +1023,17 @@ namespace windows_client.View
                 //Regex never returns an empty string. Still have added an extra check
                 if (String.IsNullOrEmpty(emoticon))
                     continue;
-                
+
                 int index = matchCollection[i].Index;
                 endIndex = index - 1;
-                
+
                 if (index > 0)
                 {
                     Run r = new Run();
                     r.Text = messageString.Substring(startIndex, endIndex - startIndex + 1);
                     p.Inlines.Add(r);
                 }
-                
+
                 startIndex = index + emoticon.Length;
 
                 string imgPath;
@@ -1021,7 +1041,7 @@ namespace windows_client.View
 
                 //TODO check if imgPath is null or not
                 Image img = new Image();
-                img.Source = new BitmapImage(new Uri(imgPath,UriKind.Relative));
+                img.Source = new BitmapImage(new Uri(imgPath, UriKind.Relative));
                 img.Height = 40;
                 img.Width = 40;
                 img.Margin = imgMargin;
@@ -1067,7 +1087,7 @@ namespace windows_client.View
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int selectedIndex = emoticonPivot.SelectedIndex;
-            
+
             if (selectedIndex == 1)
             {
                 emotList1.Visibility = Visibility.Visible;
