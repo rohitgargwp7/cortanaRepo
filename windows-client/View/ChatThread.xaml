@@ -32,9 +32,12 @@
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Grid.Row="0" HorizontalAlignment="Left">
-            <Image Source="images\hike_logo_small.png" Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127"></Image>
-            <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
+        <StackPanel x:Name="HikeTitle" Orientation="Horizontal" Width="480">
+            <StackPanel Orientation="Vertical" Width="369">
+                <Image Source="images\hike_logo_small.png" Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127"></Image>
+                <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
+            </StackPanel>
+                <Image Name="userImage" Width="60" Height="60"></Image>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
         <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
@@ -48,7 +51,6 @@
 
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
-                                <Image Visibility="{Binding ChatThreadImageVisibility}" Source="{Binding AvatarImage}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
 
                                 <StackPanel Orientation="Vertical">
                                     <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>

@@ -115,7 +115,6 @@ namespace windows_client.View
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
             bw.RunWorkerAsync();
-
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -279,7 +278,8 @@ namespace windows_client.View
                 }
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
             }
-           
+
+            userImage.Source = UserInterfaceUtils.getBitMapImage(mContactNumber);
             userName.Text = mContactName;
             initAppBar(isAddUser);
             if (!isOnHike)

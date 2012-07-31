@@ -404,17 +404,6 @@ namespace windows_client.Model
             }
         }
 
-        public string ChatThreadImageVisibility
-        {
-            get
-            {
-                if (IsSent)
-                    return "collapsed";
-                else
-                    return "visible";
-            }
-        }
-
         public string ChatBubbleMargin
         {
             get
