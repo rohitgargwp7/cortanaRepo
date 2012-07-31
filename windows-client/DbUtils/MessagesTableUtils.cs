@@ -60,7 +60,7 @@ namespace windows_client.DbUtils
                     if (currentPage != null)
                     {
                         if (convMessage.IsSent)
-                            currentPage.MsgMap.Add(msgId, convMessage);
+                            currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
                         else
                             currentPage.IncomingMessages.Add(convMessage);
                     }
