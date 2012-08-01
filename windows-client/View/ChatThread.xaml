@@ -19,7 +19,6 @@
         <Style x:Key="ListBoxItemStretchContentStyle" TargetType="ListBoxItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         </Style>
-
     </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -37,7 +36,7 @@
                 <Image Source="images\hike_logo_small.png" Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127"></Image>
                 <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
             </StackPanel>
-                <Image Name="userImage" Width="60" Height="60"></Image>
+            <Image Name="userImage" Width="60" Height="60"></Image>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
         <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
@@ -56,16 +55,14 @@
                                     <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
                                 </StackPanel>
-                                <!--<Rectangle Width="2" Height="Auto" Fill="#c8c8c8" Margin="1,2,0,0"></Rectangle>-->
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu Name="ctxMenu">
-                                        <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
-                                        <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
-                                        <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                        <toolkit:MenuItem Header="Copy"  Tap="MenuItem_Tap_Copy"/>
+                                        <toolkit:MenuItem Header="Forward"  Tap="MenuItem_Tap_Forward"/>
+                                        <toolkit:MenuItem Header="Delete"  Tap="MenuItem_Tap_Delete"/>
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
                             </StackPanel>
-                            <!--<Rectangle Width="Auto" Height="2" Margin="2,0,0,0" Fill="#c8c8c8"></Rectangle>-->
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
@@ -147,7 +144,7 @@
                         </Grid>
                     </controls:PivotItem>
 
-                    <controls:PivotItem BorderThickness="0" VerticalAlignment="Top" Height="220" Margin="12,8,12,0">
+                    <controls:PivotItem CacheMode="BitmapCache" BorderThickness="0" VerticalAlignment="Top" Height="220" Margin="12,8,12,0">
                         <Grid x:Name="emotGrid1" Margin="18,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
@@ -205,9 +202,7 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-
                         </Grid>
-
                     </controls:PivotItem>
                 </controls:Pivot>
             </StackPanel>
