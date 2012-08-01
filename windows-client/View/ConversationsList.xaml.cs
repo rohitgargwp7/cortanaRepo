@@ -537,6 +537,8 @@ namespace windows_client.View
 
         #endregion
 
+
+        #region Emoticons
         private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
 
         private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
@@ -596,5 +598,6 @@ namespace windows_client.View
             richTextBox.Blocks.Clear();
             richTextBox.Blocks.Add(p);
         }
+        #endregion
     }
 }
