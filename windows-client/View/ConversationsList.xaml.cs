@@ -541,6 +541,7 @@ namespace windows_client.View
 
         private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
         {
+            //TODO read message upto the length it woud be shown on screen
             var richTextBox = sender as RichTextBox;
             if (richTextBox.Tag == null)
                 return;
@@ -577,8 +578,8 @@ namespace windows_client.View
                 //TODO check if imgPath is null or not
                 Image img = new Image();
                 img.Source = new BitmapImage(new Uri(imgPath, UriKind.Relative));
-                img.Height = 40;
-                img.Width = 40;
+                img.Height = 25;
+                img.Width = 25;
                 img.Margin = imgMargin;
 
 
@@ -595,9 +596,6 @@ namespace windows_client.View
 
             richTextBox.Blocks.Clear();
             richTextBox.Blocks.Add(p);
-
-
         }
-
     }
 }
