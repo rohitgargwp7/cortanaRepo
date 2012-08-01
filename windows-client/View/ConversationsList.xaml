@@ -62,10 +62,12 @@
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
                                             </StackPanel>
                                             <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->
-                                            <RichTextBox Tag="{Binding LastMessage}" FontSize="22" Margin="30 0 0 2" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
+                                            <StackPanel Orientation="Horizontal" Margin="30 0 0 2">
+                                                <Ellipse Visibility="{Binding IsLastMessageUnread}" Width="16" Height="16" Fill="{StaticResource PhoneAccentBrush}"></Ellipse>
+                                                <RichTextBox Tag="{Binding LastMessage}" FontSize="22" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+                                            </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
-                                    <!--<Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>-->
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
