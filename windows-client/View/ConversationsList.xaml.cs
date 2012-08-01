@@ -203,7 +203,7 @@ namespace windows_client.View
             App.MqttManagerInstance.connect();
         }
 
-        private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
             if (obj == null)
@@ -322,7 +322,7 @@ namespace windows_client.View
             //}
         }
 
-        private void onProfilePicButtonClick(object sender, RoutedEventArgs e)
+        private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
             {
@@ -398,7 +398,7 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("Are you sure about deleting conversation.", "Delete Conversation ?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
@@ -593,7 +593,6 @@ namespace windows_client.View
                 r2.Text = messageString.Substring(startIndex, messageString.Length - startIndex);
                 p.Inlines.Add(r2);
             }
-
             richTextBox.Blocks.Clear();
             richTextBox.Blocks.Add(p);
         }
