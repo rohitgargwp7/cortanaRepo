@@ -32,7 +32,7 @@
             <controls:PivotItem Header="chats">
                 <Grid x:Name="ConversationList">
 
-                        <Grid.RowDefinitions>
+                    <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -42,10 +42,13 @@
 
                     <!--ContentPanel - place additional content here-->
 
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Height="456" Width="292" Visibility="Collapsed" Source="images\empty_screen_tip.png" Margin="0,90,0,0">
-                        
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Height="456" Width="292" Opacity="0" Margin="0,90,0,0">
+                        <Image.Source>
+                            <BitmapImage UriSource="images\empty_screen_tip.png" CreateOptions="BackgroundCreation"/>
+                        </Image.Source>
+
                     </Image>
-                    
+
                     <ListBox Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Click" Margin="-7,-30,-25,27" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

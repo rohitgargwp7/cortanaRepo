@@ -77,11 +77,11 @@ namespace windows_client.View
                 NavigationService.RemoveBackEntry();
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Visibility = Visibility.Visible;
+                emptyScreenImage.Opacity = 1;
             }
             else
             {
-                emptyScreenImage.Visibility = Visibility.Collapsed;
+                emptyScreenImage.Opacity = 0;
             }
         }
 
@@ -113,14 +113,14 @@ namespace windows_client.View
                     stopwatch.Stop();
                     elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
                     Debug.WriteLine("Total Time to load messages to itemsource: {0} ms", elapsedMilliseconds);
-                
+
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
                     {
-                        emptyScreenImage.Visibility = Visibility.Visible;
+                        emptyScreenImage.Opacity = 1;
                     }
                     else
                     {
-                        emptyScreenImage.Visibility = Visibility.Collapsed;
+                        emptyScreenImage.Opacity = 0;
                     }
                     appBar.Mode = ApplicationBarMode.Default;
                     appBar.IsMenuEnabled = true;
@@ -139,7 +139,7 @@ namespace windows_client.View
             List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Debug.WriteLine("Time to get {0} Conversations: {1} ms",conversationList==null?0:conversationList.Count, elapsedMilliseconds);
+            Debug.WriteLine("Time to get {0} Conversations: {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
             if (conversationList == null || conversationList.Count == 0)
             {
                 return;
@@ -411,7 +411,7 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Visibility = Visibility.Visible;
+                emptyScreenImage.Opacity = 1;
             }
             ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
             MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
@@ -455,7 +455,7 @@ namespace windows_client.View
         {
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
-                object[] vals = (object[])obj; 
+                object[] vals = (object[])obj;
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (convMap.ContainsKey(mObj.Msisdn))
                 {
@@ -467,11 +467,11 @@ namespace windows_client.View
                 convMap[mObj.Msisdn] = mObj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if(emptyScreenImage.Visibility == Visibility.Visible)
-                        emptyScreenImage.Visibility = Visibility.Collapsed;
+                    if (emptyScreenImage.Visibility == Visibility.Visible)
+                        emptyScreenImage.Opacity = 0;
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
-               
+
             }
             else if (HikePubSub.MSG_READ == type)
             {
@@ -525,7 +525,7 @@ namespace windows_client.View
                 removeListeners();
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    emptyScreenImage.Visibility = Visibility.Visible;
+                    emptyScreenImage.Opacity = 1;
                     App.ViewModel.MessageListPageCollection.Clear();
                     progress.Hide();
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
