@@ -33,7 +33,11 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Orientation="Horizontal" Width="480">
             <StackPanel Orientation="Vertical" Width="369">
-                <Image Source="images\hike_logo_small.png" Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127"></Image>
+                <Image  Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127">
+                    <Image.Source>
+                        <BitmapImage UriSource="images\hike_logo_small.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                    </Image.Source>
+                </Image>
                 <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
             </StackPanel>
             <Image Name="userImage" Width="60" Height="60"></Image>
@@ -46,7 +50,11 @@
 
                     <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding Alignment}" 
                                   Margin="20,5,20,15"  Grid.RowSpan="2">
-                        <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" Source="{Binding SdrImage}" HorizontalAlignment="Right"></Image>
+                        <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" HorizontalAlignment="Right">
+                            <Image.Source>
+                                <BitmapImage UriSource="{Binding SdrImage}" CreateOptions="BackgroundCreation"></BitmapImage>
+                            </Image.Source>
+                        </Image>
 
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
@@ -84,7 +92,11 @@
                         <ListBoxItem >
                             <StackPanel Orientation="Horizontal" >
                                 <StackPanel Orientation="Vertical" Width="150" >
-                                    <Image Margin="3" Height="50"  Source="images\emoticons\emo_im_01_bigsmile.png"/>
+                                    <Image Margin="3" Height="50">
+                                        <Image.Source>
+                                            <BitmapImage UriSource="images\emoticons\emo_im_01_bigsmile.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                                        </Image.Source>
+                                    </Image>
                                     <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
                                 </StackPanel>
                                 <Rectangle Fill="Black" Width="3" Height="Auto" Margin="3,8,3,8"></Rectangle>
@@ -93,7 +105,11 @@
                         <ListBoxItem>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel Orientation="Vertical" Width="150">
-                                    <Image Margin="3" Height="50" Source="images\emoticons\emo_im_102_scorn.png"/>
+                                    <Image Margin="3" Height="50">
+                                        <Image.Source>
+                                            <BitmapImage UriSource="images\emoticons\emo_im_102_scorn.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                                        </Image.Source>
+                                    </Image>
                                     <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
                                 </StackPanel>
                                 <Rectangle Fill="Black" Width="3" Height="Auto" Margin="3,8,3,8"></Rectangle>
@@ -102,7 +118,12 @@
                         <ListBoxItem>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel Orientation="Vertical" Width="150">
-                                    <Image Margin="3" Height="50" Source="images\emoticons\emo_im_111_grin.png"/>
+                                    <Image Margin="3" Height="50">
+                                        <Image.Source>
+                                            <BitmapImage UriSource="images\emoticons\emo_im_111_grin.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                                        </Image.Source>
+
+                                    </Image>
                                     <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
                                 </StackPanel>
                             </StackPanel>
@@ -138,9 +159,7 @@
                                         </Image>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
-
                             </ListBox>
-
                         </Grid>
                     </controls:PivotItem>
 
