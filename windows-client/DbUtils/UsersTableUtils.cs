@@ -68,6 +68,15 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<ContactInfo> getAllContactsByGroup()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users orderby user.Name select user;
+                return users.ToList<ContactInfo>();
+            }
+        }
+
         public static List<ContactInfo> getContactInfoFromName(string name)
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
