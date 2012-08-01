@@ -61,7 +61,7 @@
                                                 <TextBlock Text="{Binding ContactName}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
                                             </StackPanel>
-                                            <TextBlock Text="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Height="30"  Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
+                                            <RichTextBox Tag="{Binding LastMessage}" FontSize="20" Margin="30 0 0 2" Loaded="RichTextBox_Loaded" Height="30" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
                                         </StackPanel>
                                     </StackPanel>
                                     <!--<Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>-->
