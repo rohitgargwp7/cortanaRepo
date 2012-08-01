@@ -6,7 +6,6 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:GkJumpList="clr-namespace:GK.Phone;assembly=Gk.Phone"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -42,12 +41,46 @@
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black" TextChanged="enterNameTxt_TextChanged" Grid.ColumnSpan="2"/>
 
-            <GkJumpList:JumpList x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="28,10,0,0" Grid.ColumnSpan="2" d:LayoutOverrides="VerticalMargin" ShowRowHeader="False" ShowHeaders="True" IsPumped="False" DataContext="{Binding}">
-                <GkJumpList:JumpList.ItemTemplate>
+            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="1" Tap="contactSelected_Click" Margin="28,10,0,0" Grid.ColumnSpan="2" 
+                          VerticalAlignment="Stretch" 
+                          HorizontalAlignment="Stretch"
+                          IsBouncy="True"
+                          IsFlatList="False" Background="White">
+                <toolkit:LongListSelector.GroupItemsPanel>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </toolkit:LongListSelector.GroupItemsPanel>
+
+                <toolkit:LongListSelector.GroupItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{Binding GroupBackgroundBrush}" Width="99" Height="99" Margin="6" 
+                                IsHitTestVisible="{Binding HasItems}">
+                            <TextBlock Text="{Binding Title}" 
+                            Style="{StaticResource PhoneTextExtraLargeStyle}"
+                            Margin="{StaticResource PhoneTouchTargetOverhang}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"                                        
+                            VerticalAlignment="Bottom"/>
+                        </Border>
+                    </DataTemplate>
+                </toolkit:LongListSelector.GroupItemTemplate>
+
+                <toolkit:LongListSelector.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Border Background="Transparent">
+                            <Border Background="{StaticResource PhoneAccentBrush}" 
+                        Width="55" Height="55" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Title}" 
+                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Style="{StaticResource PhoneTextLargeStyle}"
+                                VerticalAlignment="Bottom"/>
+                            </Border>
+                        </Border>
+                    </DataTemplate>
+                </toolkit:LongListSelector.GroupHeaderTemplate>
+                <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
-                            <Image x:Name="avatar_image" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="{Binding AvatarImage}"/>
                             <StackPanel Orientation="Vertical">
                                 <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
                                     <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
@@ -59,8 +92,8 @@
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
-                </GkJumpList:JumpList.ItemTemplate>
-            </GkJumpList:JumpList>
+                </toolkit:LongListSelector.ItemTemplate>
+            </toolkit:LongListSelector>
         </Grid>
 
         <StackPanel Grid.Row="1">
