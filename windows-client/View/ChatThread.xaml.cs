@@ -535,6 +535,8 @@ namespace windows_client.View
             if (String.IsNullOrEmpty(message))
                 return;
 
+            emoticonPanel.Visibility = Visibility.Collapsed;
+
             if ((!isOnHike && mCredits <= 0) || message == "")
                 return;
 
