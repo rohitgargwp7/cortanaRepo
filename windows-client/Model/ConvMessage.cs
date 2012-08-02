@@ -356,7 +356,7 @@ namespace windows_client.Model
         {
             get
             {
-                return UserInterfaceUtils.getBitMapImage(_msisdn);
+                return UI_Utils.Instance.getBitMapImage(_msisdn);
             }
         }
 

@@ -203,7 +203,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
             }
 
-            userImage.Source = UserInterfaceUtils.getBitMapImage(mContactNumber);
+            userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
             userName.Text = mContactName;
             initAppBar(isAddUser);
             if (!isOnHike)

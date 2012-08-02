@@ -153,24 +153,32 @@ namespace windows_client.Model
         {
             get
             {
-                if (UserInterfaceUtils.ImageCache.ContainsKey(_msisdn))
+                try
                 {
-                    BitmapImage cachedImage;
-                    UserInterfaceUtils.ImageCache.TryGetValue(_msisdn, out cachedImage);
-                    return cachedImage;
+                    if (UI_Utils.Instance.ImageCache.ContainsKey(_msisdn))
+                    {
+                        BitmapImage cachedImage;
+                        App.UI_UtilsInstance.ImageCache.TryGetValue(_msisdn, out cachedImage);
+                        return cachedImage;
+                    }
+                    if (_avatar == null)
+                    {
+                        return UI_Utils.Instance.DefaultAvatarBitmapImage;
+                    }
+                    else
+                    {
+                        MemoryStream memStream = new MemoryStream(_avatar);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage();
+                        empImage.SetSource(memStream);
+                        App.UI_UtilsInstance.ImageCache[_msisdn] = empImage;
+                        return empImage;
+                    }
                 }
-                if (_avatar == null)
+                catch (Exception e)
                 {
-                    return UserInterfaceUtils.DefaultAvatarBitmapImage;
-                }
-                else
-                {
-                    MemoryStream memStream = new MemoryStream(_avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage();
-                    empImage.SetSource(memStream);
-                    UserInterfaceUtils.ImageCache[_msisdn] = empImage;
-                    return empImage;
+                    Debug.WriteLine("Exception in Avatar Image : {0}",e.ToString());
+                    return null;
                 }
             }
         }
@@ -304,7 +312,13 @@ namespace windows_client.Model
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception)
+                    {
+                    }
                 });
             }
         }

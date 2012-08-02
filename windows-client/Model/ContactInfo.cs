@@ -257,7 +257,7 @@ namespace windows_client.Model
         {
             get
             {
-                return UserInterfaceUtils.getBitMapImage(_msisdn);
+                return UI_Utils.Instance.getBitMapImage(_msisdn);
             }
         }
 
@@ -266,9 +266,9 @@ namespace windows_client.Model
             get
             {
                 if (_onHike)
-                    return UserInterfaceUtils.onHikeImage;
+                    return UI_Utils.Instance.OnHikeImage;
                 else
-                    return UserInterfaceUtils.notOnHikeImage;
+                    return UI_Utils.Instance.NotOnHikeImage;
             }
         }
         #endregion
