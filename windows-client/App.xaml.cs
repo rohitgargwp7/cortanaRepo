@@ -44,7 +44,7 @@ namespace windows_client
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
-
+        private static UI_Utils ui_utils;
         #endregion
 
         #region instances getters and setters
@@ -129,6 +129,20 @@ namespace windows_client
             }
         }
 
+        public static UI_Utils UI_UtilsInstance
+        {
+            get
+            {
+                return ui_utils;
+            }
+            set
+            {
+                if (value != ui_utils)
+                {
+                    ui_utils = value;
+                }
+            }
+        }
         #endregion
 
         #endregion
@@ -228,6 +242,7 @@ namespace windows_client
             App.DbListener = new DbConversationListener();
             App.NetworkManagerInstance = NetworkManager.Instance;
             App.MqttManagerInstance = new HikeMqttManager();
+            App.UI_UtilsInstance = UI_Utils.Instance;
         }
 
 

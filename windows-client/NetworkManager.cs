@@ -186,7 +186,7 @@ namespace windows_client
                 ConversationTableUtils.updateImage(msisdn,imageBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    UserInterfaceUtils.updateImageInCache(msisdn, imageBytes);
+                    App.UI_UtilsInstance.updateImageInCache(msisdn, imageBytes);
                 });
                 this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
             }
