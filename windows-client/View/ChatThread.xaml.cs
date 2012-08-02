@@ -571,7 +571,7 @@ namespace windows_client.View
 
         #region CONTEXT MENU
 
-        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        private void MenuItem_Tap_Copy(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
 
@@ -583,7 +583,7 @@ namespace windows_client.View
             Clipboard.SetText(msg.Message);
         }
 
-        private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
+        private void MenuItem_Tap_Forward(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
 
@@ -596,7 +596,7 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
 

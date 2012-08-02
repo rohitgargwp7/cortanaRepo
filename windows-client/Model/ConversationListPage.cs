@@ -8,6 +8,7 @@ using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using System.IO;
 using Microsoft.Phone.Data.Linq.Mapping;
+using System.Windows.Media;
 
 namespace windows_client.Model
 {
@@ -182,6 +183,50 @@ namespace windows_client.Model
             }
         }
 
+        public string LastMessageColor
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.RECEIVED_UNREAD:
+
+                        Color currentAccentColorHex =
+                        (Color)Application.Current.Resources["PhoneAccentColor"];
+                        return currentAccentColorHex.ToString();
+                    default: return "gray";
+                }
+            }
+        }
+
+        public bool IsLastMessageUnread
+        {
+            get
+            {
+                if (ConvMessage.State.RECEIVED_UNREAD == _messageStatus)
+                    return true;
+                return false;
+            }
+        }
+
+
+        public string SdrImage
+        {
+            get
+            {
+                switch (_messageStatus)
+                {
+                    case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
+                    case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
+                    case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
+                    default: return "";
+                }
+            }
+        }
+
+
+
+
         public ConvMessage.State MessageStatus
         {
             get
@@ -197,6 +242,7 @@ namespace windows_client.Model
                     {
                         _messageStatus = value;
                         NotifyPropertyChanged("MessageStatus");
+                        NotifyPropertyChanged("SdrImage");
                     }
                 }
             }

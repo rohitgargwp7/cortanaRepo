@@ -49,7 +49,7 @@
 
                     </Image>
 
-                    <ListBox Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Click" Margin="-7,-30,-25,27" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <ListBox Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="-7,-30,-25,27" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
@@ -62,13 +62,15 @@
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
                                             </StackPanel>
                                             <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->
-                                            <RichTextBox Tag="{Binding LastMessage}" FontSize="22" Margin="30 0 0 2" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top" Foreground="Gray"/>
+                                            <StackPanel Orientation="Horizontal" Margin="30 0 0 2">
+                                                <Ellipse Visibility="{Binding IsLastMessageUnread}" Width="16" Height="16" Fill="{StaticResource PhoneAccentBrush}"></Ellipse>
+                                                <RichTextBox Tag="{Binding LastMessage}" FontSize="22" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+                                            </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
-                                    <!--<Rectangle Fill="LightGray" Height="1" HorizontalAlignment="Stretch" Width="700"/>-->
                                     <toolkit:ContextMenuService.ContextMenu>
                                         <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                            <toolkit:MenuItem Header="Delete" Tap="MenuItem_Tap_Delete"/>
                                         </toolkit:ContextMenu>
                                     </toolkit:ContextMenuService.ContextMenu>
                                 </StackPanel>
@@ -89,7 +91,7 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0">
-                        <Button Height="Auto" Click="onProfilePicButtonClick">
+                        <Button Height="Auto" Tap="onProfilePicButtonTap">
                             <StackPanel Orientation="Horizontal" Margin="-15">
                                 <Border BorderBrush="Black" BorderThickness="3">
                                     <Image x:Name="avatarImage" Height="80"  Source="images\ic_avatar0.png" />
