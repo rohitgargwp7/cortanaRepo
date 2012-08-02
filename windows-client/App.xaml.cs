@@ -224,6 +224,10 @@ namespace windows_client
 
             #endregion
 
+            #region InitializeEmoticons
+            SmileyParser.loadEmoticons();
+            #endregion
+
             App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
             App.DbListener = new DbConversationListener();
             App.NetworkManagerInstance = NetworkManager.Instance;

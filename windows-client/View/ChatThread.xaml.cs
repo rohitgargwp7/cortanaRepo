@@ -70,27 +70,27 @@ namespace windows_client.View
 
         #region PROPERTY
 
-        private string[] imagePathsForList0
+        private BitmapImage[] imagePathsForList0
         {
             get
             {
-                return SmileyParser.emoticonPathsForList0;
+                return SmileyParser._emoticonImagesForList0;
             }
         }
 
-        private string[] imagePathsForList1
+        private BitmapImage[] imagePathsForList1
         {
             get
             {
-                return SmileyParser.emoticonPathsForList1;
+                return SmileyParser._emoticonImagesForList1;
             }
         }
 
-        private string[] imagePathsForList2
+        private BitmapImage[] imagePathsForList2
         {
             get
             {
-                return SmileyParser.emoticonPathsForList2;
+                return SmileyParser._emoticonImagesForList2;
             }
         }
 
@@ -645,14 +645,14 @@ namespace windows_client.View
         {
             int selectedIndex = optionsList.SelectedIndex;
             emoticonPivot.SelectedIndex = selectedIndex;
-            if (selectedIndex == 1)
-            {
-                emotList1.Visibility = Visibility.Visible;
-            }
-            else if (selectedIndex == 2)
-            {
-                emotList2.Visibility = Visibility.Visible;
-            }
+            //if (selectedIndex == 1)
+            //{
+            //    emotList1.Visibility = Visibility.Visible;
+            //}
+            //else if (selectedIndex == 2)
+            //{
+            //    emotList2.Visibility = Visibility.Visible;
+            //}
 
         }
 
@@ -705,16 +705,12 @@ namespace windows_client.View
 
                 startIndex = index + emoticon.Length;
 
-                string imgPath;
-                SmileyParser.EmoticonUriHash.TryGetValue(emoticon, out imgPath);
-
                 //TODO check if imgPath is null or not
                 Image img = new Image();
-                img.Source = new BitmapImage(new Uri(imgPath, UriKind.Relative));
+                img.Source = SmileyParser.lookUpFromCache(emoticon);
                 img.Height = 40;
                 img.Width = 40;
                 img.Margin = imgMargin;
-
 
                 InlineUIContainer ui = new InlineUIContainer();
                 ui.Child = img;
@@ -757,14 +753,14 @@ namespace windows_client.View
         {
             int selectedIndex = emoticonPivot.SelectedIndex;
 
-            if (selectedIndex == 1)
-            {
-                emotList1.Visibility = Visibility.Visible;
-            }
-            else if (selectedIndex == 2)
-            {
-                emotList2.Visibility = Visibility.Visible;
-            }
+            //if (selectedIndex == 1)
+            //{
+            //    emotList1.Visibility = Visibility.Visible;
+            //}
+            //else if (selectedIndex == 2)
+            //{
+            //    emotList2.Visibility = Visibility.Visible;
+            //}
 
         }
 

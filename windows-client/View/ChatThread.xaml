@@ -152,10 +152,7 @@
                                 <ListBox.ItemTemplate>
 
                                     <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40">
-                                            <Image.Source>
-                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
-                                            </Image.Source>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
                                         </Image>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -172,7 +169,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Name="emotList1" Height="200" Grid.Row="0" Grid.Column="0" Visibility="Collapsed" Tap="emotList1_Tap">
+                            <ListBox Name="emotList1" Height="200" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -182,10 +179,7 @@
                                 <ListBox.ItemTemplate>
 
                                     <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40">
-                                            <Image.Source>
-                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
-                                            </Image.Source>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
                                         </Image>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -203,7 +197,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Collapsed" Tap="emotList2_Tap">
+                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -213,10 +207,7 @@
                                 <ListBox.ItemTemplate>
 
                                     <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40">
-                                            <Image.Source>
-                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
-                                            </Image.Source>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
                                         </Image>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

@@ -574,16 +574,12 @@ namespace windows_client.View
 
                 startIndex = index + emoticon.Length;
 
-                string imgPath;
-                SmileyParser.EmoticonUriHash.TryGetValue(emoticon, out imgPath);
-
                 //TODO check if imgPath is null or not
                 Image img = new Image();
-                img.Source = new BitmapImage(new Uri(imgPath, UriKind.Relative));
+                img.Source = SmileyParser.lookUpFromCache(emoticon);
                 img.Height = 25;
                 img.Width = 25;
                 img.Margin = imgMargin;
-
 
                 InlineUIContainer ui = new InlineUIContainer();
                 ui.Child = img;
