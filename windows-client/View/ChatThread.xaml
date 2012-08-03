@@ -43,7 +43,7 @@
             <Image Name="userImage" Width="60" Height="60"></Image>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
+        <ListBox x:Name="myListBox" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
                  FontSize="26" Margin="0,0,0,95" Tap="chatListBox_tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -132,7 +132,7 @@
                     </ListBox.Items>
                 </ListBox>
 
-                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220" SelectionChanged="emoticonPivot_SelectionChanged" >
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220">
                     <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid0">
                             <Grid.RowDefinitions>
