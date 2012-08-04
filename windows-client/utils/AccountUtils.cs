@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using SharpCompress.Writer.GZip;
+using SharpCompress.Compressor.Deflate;
+using SharpCompress.Compressor;
+using System.Text;
 
 namespace windows_client.utils
 {
@@ -70,6 +74,7 @@ namespace windows_client.utils
             //req.Headers["X-MSISDN"] = "918826670738";
             req.Method = "POST";
             req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });
         }
 
@@ -80,6 +85,7 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, contactListMap, finalCallbackFunction });
         }
 
@@ -89,6 +95,7 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "PATCH";
             req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPDATE_ADDRESSBOOK, contacts_to_update, ids_json, finalCallbackFunction });
         }
 
@@ -98,6 +105,7 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.INVITE, phone_no, finalCallbackFunction });
         }
 
@@ -106,6 +114,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, finalCallbackFunction });
         }
 
@@ -115,6 +124,7 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, finalCallbackFunction });
         }
 
@@ -127,12 +137,13 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
 
-        public static void updateProfileIcon(byte [] buffer, postResponseFunction finalCallbackFunction)
+        public static void updateProfileIcon(byte[] buffer, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/avatar")) as HttpWebRequest;
             addToken(req);
             req.ContentType = "application/x-www-form-urlencoded";
             req.Method = "POST";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, buffer, finalCallbackFunction });
         }
         private static void setParams_Callback(IAsyncResult result)
@@ -195,23 +206,17 @@ namespace windows_client.utils
                     break;
 
                 case RequestType.POST_PROFILE_ICON:
-                   // MemoryStream ms = vars[2] as MemoryStream;
-                    byte[] imageBytes = (byte [])vars[2];
-                    
+                    byte[] imageBytes = (byte[])vars[2];
                     finalCallbackFunction = vars[3] as postResponseFunction;
-                    postStream.Write(imageBytes, 0, imageBytes.Length); 	
+                    postStream.Write(imageBytes, 0, imageBytes.Length);
                     postStream.Close();
-                   /*using (StreamWriter sw = new StreamWriter(postStream))
-                    {
-                        sw.Write(imageBytes);
-                    }
-                    postStream.Close();*/
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
                     return;
 
                 default:
                     break;
             }
+
             using (StreamWriter sw = new StreamWriter(postStream))
             {
                 string json = data.ToString(Newtonsoft.Json.Formatting.None);
@@ -219,6 +224,102 @@ namespace windows_client.utils
             }
             postStream.Close();
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+        }
+
+        public static string Decompress(string compressedText)
+        {
+            byte[] byteArray;
+
+            //Transform string into byte[]
+            try
+            {
+                byteArray = Convert.FromBase64String(compressedText);
+            }
+            catch
+            {
+                return compressedText;
+            }
+
+            //Prepare for decompress
+            MemoryStream ms = new MemoryStream(byteArray);
+            GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress);
+
+            //Decompress
+            byte[] buffer = StreamToByteArray(gzip);
+
+            //Transform byte[] unzip data to string
+            StringBuilder sb = new StringBuilder();
+
+            //Read the number of bytes GZipStream red and do not a for each bytes in resultByteArray;
+            for (int i = 0; i < buffer.Length; i++)
+                sb.Append((char)buffer[i]);
+
+            gzip.Close();
+            ms.Close();
+
+            gzip.Dispose();
+            ms.Dispose();
+
+            return sb.ToString();
+        }
+        public static byte[] StreamToByteArray(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            MemoryStream ms = new MemoryStream();
+
+            int read;
+
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                ms.Write(buffer, 0, read);
+
+            return ms.ToArray();
+        }
+        public static byte[] Compress(string text)
+        {
+            // if (text.Length < 300)
+            // return text;
+
+            //Transform string into byte[]  
+            byte[] byteArray = new byte[text.Length];
+
+            int index = 0;
+
+            //Redo this w/o ToCharArray conversion
+            foreach (char item in text.ToCharArray())
+                byteArray[index++] = (byte)item;
+
+            //Prepare for compress
+            MemoryStream ms = new MemoryStream();
+            GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true);
+
+            //Compress
+            gzip.Write(byteArray, 0, byteArray.Length);
+            gzip.Close();
+
+            //Transform byte[] zip data to string
+            byteArray = ms.ToArray();
+
+            ms.Close();
+            gzip.Dispose();
+            ms.Dispose();
+            return byteArray;
+            //return Convert.ToBase64String(byteArray);
+        }
+
+        private static string decompressResponse(Stream responseStream)
+        {
+            string data;
+            using (var outStream = new MemoryStream())
+            using (var zipStream = new GZipStream(responseStream, CompressionMode.Decompress))
+            {
+                zipStream.CopyTo(outStream);
+                outStream.Seek(0, SeekOrigin.Begin);
+                using (var reader = new StreamReader(outStream, Encoding.UTF8))
+                {
+                    data = reader.ReadToEnd();
+                }
+            }
+            return data;
         }
 
         private static void json_Callback(IAsyncResult result)
@@ -235,9 +336,16 @@ namespace windows_client.utils
             {
                 response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
                 Stream responseStream = response.GetResponseStream();
-                using (var reader = new StreamReader(responseStream))
+                if (string.Equals(response.Headers[HttpRequestHeader.ContentEncoding], "gzip", StringComparison.OrdinalIgnoreCase))
                 {
-                    data = reader.ReadToEnd();
+                    data = decompressResponse(responseStream);
+                }
+                else
+                {
+                    using (var reader = new StreamReader(responseStream))
+                    {
+                        data = reader.ReadToEnd();
+                    }
                 }
                 obj = JObject.Parse(data);
             }
@@ -271,7 +379,7 @@ namespace windows_client.utils
                 {
                     return null;
                 }
-                
+
                 JArray blocklist = (JArray)obj["blocklist"];
 
                 if (blocklist == null)
