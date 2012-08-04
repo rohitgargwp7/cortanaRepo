@@ -43,7 +43,7 @@
             <Image Name="userImage" Width="60" Height="60"></Image>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
+        <ListBox x:Name="myListBox" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
                  FontSize="26" Margin="0,0,0,95" Tap="chatListBox_tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -60,7 +60,8 @@
                             <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
 
                                 <StackPanel Orientation="Vertical">
-                                    <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
+                                    <!--<RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>-->
+                                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
                                 </StackPanel>
                                 <toolkit:ContextMenuService.ContextMenu>
@@ -131,7 +132,7 @@
                     </ListBox.Items>
                 </ListBox>
 
-                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220" SelectionChanged="emoticonPivot_SelectionChanged" >
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220">
                     <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid0">
                             <Grid.RowDefinitions>

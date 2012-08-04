@@ -199,13 +199,13 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsLastMessageUnread
+        public Visibility IsLastMessageUnread
         {
             get
             {
                 if (ConvMessage.State.RECEIVED_UNREAD == _messageStatus)
-                    return true;
-                return false;
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
             }
         }
 
