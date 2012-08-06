@@ -60,8 +60,8 @@
                             <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
 
                                 <StackPanel Orientation="Vertical">
-                                    <!--<RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>-->
-                                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>
+                                    <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
+                                    <!--<TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>-->
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
                                 </StackPanel>
                                 <toolkit:ContextMenuService.ContextMenu>
