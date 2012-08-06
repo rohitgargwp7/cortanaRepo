@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using windows_client.View;
 using System;
 using windows_client.utils;
+using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -92,13 +93,11 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, msgID).ToList<ConvMessage>();
-                if (res.Count == 1)
+                ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
+                if (message != null)
                 {
-
-                    ConvMessage message = res.First();
                     message.MessageStatus = (ConvMessage.State)val;
-                    context.SubmitChanges();
+                    SubmitWithConflictResolve(context);
                 }
                 else
                 {
@@ -122,8 +121,7 @@ namespace windows_client.DbUtils
                         message.MessageStatus = (ConvMessage.State)status;
                     }
                 }
-                context.SubmitChanges();
-
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -132,7 +130,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -141,7 +139,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsgId(context, msgId));
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -150,7 +148,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsisdn(context, msisdn));
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -163,5 +161,24 @@ namespace windows_client.DbUtils
             }
         }
 
+        internal static void SubmitWithConflictResolve(HikeChatsDb context)
+        {
+            try
+            {
+                context.SubmitChanges(ConflictMode.ContinueOnConflict);
+            }
+            catch (ChangeConflictException e)
+            {
+                Console.WriteLine(e.Message);
+                // Automerge database values for members that client
+                // has not modified.
+                foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                {
+                    occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
+                }
+            }
+            // Submit succeeds on second try.
+            context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+        }
     }
 }

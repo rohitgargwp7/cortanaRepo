@@ -17,7 +17,7 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.InsertOnSubmit(userBlocked);
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -29,7 +29,7 @@ namespace windows_client.DbUtils
                 if (res == null || res.Count == 0)
                     return;
                 context.blockedUsersTable.DeleteAllOnSubmit(res);
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -116,7 +116,7 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
         #endregion
@@ -177,7 +177,7 @@ namespace windows_client.DbUtils
                 {
                     cInfo.OnHike = (bool)joined;
                 }
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -220,10 +220,10 @@ namespace windows_client.DbUtils
                     }
                     if (shouldSubmit)
                     {
-                        chats.SubmitChanges();
+                        MessagesTableUtils.SubmitWithConflictResolve(chats);
                     }
                 }
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -237,7 +237,7 @@ namespace windows_client.DbUtils
                 {
                     context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
                 }
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -256,6 +256,26 @@ namespace windows_client.DbUtils
                 List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();
                 return (res==null || res.Count == 0) ? null : res;
             }
+        }
+
+        private static void SubmitWithConflictResolve(HikeUsersDb context)
+        {
+            try
+            {
+                context.SubmitChanges(ConflictMode.ContinueOnConflict);
+            }
+            catch (ChangeConflictException e)
+            {
+                Console.WriteLine(e.Message);
+                // Automerge database values for members that client
+                // has not modified.
+                foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                {
+                    occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
+                }
+            }
+            // Submit succeeds on second try.
+            context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
     }
 }

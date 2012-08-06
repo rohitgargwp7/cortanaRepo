@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using windows_client.utils;
 using windows_client.View;
+using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -27,7 +28,7 @@ namespace windows_client.DbUtils
                 if (obj != null)
                 {
                     obj.Avatar = image;
-                    context.SubmitChanges();
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
                 }
             } 
         }
@@ -51,7 +52,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.conversations.DeleteAllOnSubmit<ConversationListObject>(context.GetTable<ConversationListObject>());
-                context.SubmitChanges();
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
 
@@ -60,7 +61,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.conversations.DeleteAllOnSubmit<ConversationListObject>(DbCompiledQueries.GetConvForMsisdn(context, msisdn));
-                context.SubmitChanges();
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
 
@@ -76,7 +77,7 @@ namespace windows_client.DbUtils
                     ConversationListObject conv = res[i];
                     conv.IsOnhike = (bool)joined;
                 }
-                context.SubmitChanges();
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
 
@@ -88,7 +89,7 @@ namespace windows_client.DbUtils
                 cObj.MessageStatus = obj.MessageStatus;
                 cObj.LastMessage = obj.LastMessage;
                 cObj.TimeStamp = obj.TimeStamp;
-                context.SubmitChanges();
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
 
@@ -114,7 +115,7 @@ namespace windows_client.DbUtils
                 }
                 if (shouldSubmit)
                 {
-                    context.SubmitChanges();
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
                 }
             }
         }

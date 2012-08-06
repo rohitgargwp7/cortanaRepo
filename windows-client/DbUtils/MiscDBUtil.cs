@@ -1,6 +1,8 @@
 ﻿using windows_client.Model;
 using System.Linq;
 using System.Collections.Generic;
+using System.Data.Linq;
+using System.Diagnostics;
 
 namespace windows_client.DbUtils
 {
@@ -12,19 +14,73 @@ namespace windows_client.DbUtils
             {
                 context.conversations.DeleteAllOnSubmit<ConversationListObject>(context.GetTable<ConversationListObject>());
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
-                context.SubmitChanges();
+                try
+                {
+                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+
+                catch (ChangeConflictException e)
+                {
+                    Debug.WriteLine(e.Message);
+                    // Automerge database values for members that client
+                    // has not modified.
+                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    {
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+
+                // Submit succeeds on second try.
+                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+
             }
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
                 context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
-                context.SubmitChanges();
+                try
+                {
+                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+
+                catch (ChangeConflictException e)
+                {
+                    Debug.WriteLine(e.Message);
+                    // Automerge database values for members that client
+                    // has not modified.
+                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    {
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+
+                // Submit succeeds on second try.
+                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+
             }
             using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
-                context.SubmitChanges();
+                try
+                {
+                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+
+                catch (ChangeConflictException e)
+                {
+                    Debug.WriteLine(e.Message);
+                    // Automerge database values for members that client
+                    // has not modified.
+                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    {
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+
+                // Submit succeeds on second try.
+                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+
             }
         }
         
@@ -43,7 +99,23 @@ namespace windows_client.DbUtils
                 {
                     thumbnail.Avatar = image;
                 }
-                context.SubmitChanges();
+                try
+                {
+                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+
+                catch (ChangeConflictException e)
+                {
+                    Debug.WriteLine(e.Message);
+                    // Automerge database values for members that client
+                    // has not modified.
+                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    {
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+                // Submit succeeds on second try.
+                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
         }
 
@@ -66,7 +138,23 @@ namespace windows_client.DbUtils
                 {
                     thumbnail.Avatar = image;
                 }
-                context.SubmitChanges();
+                try
+                {
+                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+
+                catch (ChangeConflictException e)
+                {
+                    Debug.WriteLine(e.Message);
+                    // Automerge database values for members that client
+                    // has not modified.
+                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    {
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+                // Submit succeeds on second try.
+                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
         }
 
