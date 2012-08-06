@@ -10,6 +10,7 @@ using windows_client.utils;
 using windows_client.ViewModel;
 using windows_client.Mqtt;
 using windows_client.View;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -333,6 +334,7 @@ namespace windows_client
             // Running on a device / emulator without debugging
             e.Handled = true;
             Error.Exception = e.ExceptionObject;
+            Debug.WriteLine("UNHANDLED EXCEPTION : {0}",e);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
