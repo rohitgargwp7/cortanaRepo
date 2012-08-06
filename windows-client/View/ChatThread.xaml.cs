@@ -923,7 +923,10 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ToastPrompt toast = new ToastPrompt();
-                        toast.Title = cObj.ContactName;
+                        if (cObj.ContactName != null)
+                            toast.Title = cObj.ContactName;
+                        else
+                            toast.Title = cObj.Msisdn;
                         toast.Message = convMessage.Message;
                         toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
                         toast.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(toast_Tap);

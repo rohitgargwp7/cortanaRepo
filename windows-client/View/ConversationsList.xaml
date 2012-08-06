@@ -58,7 +58,7 @@
                                         </Image>
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="25, 0, 0, 0">
-                                                <TextBlock Text="{Binding ContactName}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
+                                                <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
                                             </StackPanel>
                                             <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->

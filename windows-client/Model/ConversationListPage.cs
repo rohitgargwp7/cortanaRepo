@@ -35,10 +35,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_contactName != null)
-                    return _contactName;
-                else
-                    return _msisdn;
+                return _contactName;
             }
             set
             {
@@ -141,6 +138,17 @@ namespace windows_client.Model
             }
         }
 
+        public string NameToShow
+        {
+            get
+            {
+                if (_contactName != null)
+                    return _contactName;
+                else
+                    return _msisdn;
+            }
+        }
+
         public string FormattedTimeStamp
         {
             get
@@ -177,7 +185,7 @@ namespace windows_client.Model
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Exception in Avatar Image : {0}",e.ToString());
+                    Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
                     return null;
                 }
             }
