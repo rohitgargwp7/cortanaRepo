@@ -11,7 +11,7 @@ namespace windows_client.Model
 {
     [Table(Name = "users")]
     [Index(Columns = "Msisdn", IsUnique = false, Name = "Msisdn_Idx")]
-    public class ContactInfo : INotifyPropertyChanged, IComparable<ContactInfo>
+    public class ContactInfo : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ContactInfo>
     {
         private int _dbId;
         private string _id;
@@ -44,7 +44,7 @@ namespace windows_client.Model
                 }
             }
         }
-        [Column]
+        [Column(UpdateCheck=UpdateCheck.Never)]
         public string Id
         {
             get
@@ -55,6 +55,7 @@ namespace windows_client.Model
             {
                 if (_id != value)
                 {
+                    NotifyPropertyChanging("Id");
                     _id = value;
                 }
             }
@@ -71,6 +72,7 @@ namespace windows_client.Model
             {
                 if (_name != value)
                 {
+                    NotifyPropertyChanging("Name");
                     _name = value;
                     NotifyPropertyChanged("Name");
                 }
@@ -88,6 +90,7 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
+                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value;
                     NotifyPropertyChanged("Msisdn");
                 }
@@ -105,6 +108,7 @@ namespace windows_client.Model
             {
                 if (_onHike != value)
                 {
+                    NotifyPropertyChanging("OnHike");
                     _onHike = value;    
                     NotifyPropertyChanged("OnHike");
                 }
@@ -120,6 +124,7 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("PhoneNo");
                 _phoneNo = value;
                 NotifyPropertyChanged("PhoneNo");
             }
@@ -134,6 +139,7 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("HasCustomPhoto");
                 _hasCustomPhoto = value;
                 NotifyPropertyChanged("HasCustomPhoto");
             }
@@ -147,6 +153,7 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("IsInvited");
                 _isInvited = value;
                 NotifyPropertyChanged("IsInvited");
             }
@@ -286,6 +293,20 @@ namespace windows_client.Model
             }
         }
 
+        #endregion
+
+        #region INotifyPropertyChanging Members
+
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        // Used to notify that a property is about to change
+        private void NotifyPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+            {
+                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+            }
+        }
         #endregion
     }
 }
