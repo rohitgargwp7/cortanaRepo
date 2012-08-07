@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.IO.IsolatedStorage;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-using Microsoft.Phone.Tasks;
 using Newtonsoft.Json.Linq;
-using Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
+using Microsoft.Phone.Shell;
+using Microsoft.Phone.Tasks;
+using System.IO;
+using Phone.Controls;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Windows.Documents;
 
 namespace windows_client.View
 {
@@ -33,7 +35,6 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
-        public static Dictionary<string, bool> convMap2 = null;
         private PhotoChooserTask photoChooserTask;
         private string msisdn;
         private ApplicationBar appBar;
@@ -55,8 +56,8 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
+            //myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
             convMap = new Dictionary<string, ConversationListObject>();
-            convMap2 = new Dictionary<string, bool>();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             #region Load App level instances
@@ -78,11 +79,11 @@ namespace windows_client.View
                 NavigationService.RemoveBackEntry();
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Visibility = Visibility.Visible;
+                emptyScreenImage.Opacity = 1;
             }
             else
             {
-                emptyScreenImage.Visibility = Visibility.Collapsed;
+                emptyScreenImage.Opacity = 0;
             }
         }
 
@@ -117,11 +118,11 @@ namespace windows_client.View
 
                     if (App.ViewModel.MessageListPageCollection.Count == 0)
                     {
-                        emptyScreenImage.Visibility = Visibility.Visible;
+                        emptyScreenImage.Opacity = 1;
                     }
                     else
                     {
-                        emptyScreenImage.Visibility = Visibility.Collapsed;
+                        emptyScreenImage.Opacity = 0;
                     }
                     appBar.Mode = ApplicationBarMode.Default;
                     appBar.IsMenuEnabled = true;
@@ -129,7 +130,7 @@ namespace windows_client.View
                 });
                 App.DbListener.registerListeners();
                 registerListeners();
-                NetworkManager.turnOffSystem = false;
+                NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
             }
         }
@@ -137,48 +138,20 @@ namespace windows_client.View
         private static void LoadMessages()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            List<Conversation> conversationList = ConversationTableUtils.getAllConversations();
+            List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             Debug.WriteLine("Time to get {0} Conversations: {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
-            List<ConversationListObject> sortedConversationObjects = new List<ConversationListObject>();
-            if (conversationList == null)
+            if (conversationList == null || conversationList.Count == 0)
             {
                 return;
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
-                Conversation conv = conversationList[i];
-                stopwatch = Stopwatch.StartNew();
-                ConvMessage lastMessage = MessagesTableUtils.getLastMessageForMsisdn(conv.Msisdn); // why we are not getting only lastmsg as string 
-                stopwatch.Stop();
-                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine("Time to get Last Message for Conversation # {0} with MSISDN {1}: {2} ms", i + 1, conv.Msisdn, elapsedMilliseconds);
-
-                stopwatch = Stopwatch.StartNew();
-                ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(conv.Msisdn);
-                stopwatch.Stop();
-                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine("Time to get ContactInfo for Conversation # {0} : {1} ms", i + 1, elapsedMilliseconds);
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    UserInterfaceUtils.updateImageInCache(conv.Msisdn, contact == null ? null : contact.Avatar);
-                });
-                ConversationListObject mObj = new ConversationListObject((contact == null) ? conv.Msisdn : contact.Msisdn, (contact == null) ? null : contact.Name, lastMessage.Message, (contact == null) ? conv.OnHike : contact.OnHike,
-                    TimeUtils.getTimeString(lastMessage.Timestamp), lastMessage.Timestamp);
-                convMap.Add(conv.Msisdn, mObj);
-                convMap2.Add(conv.Msisdn, false);
-                sortedConversationObjects.Add(mObj);
+                ConversationListObject conv = conversationList[i];
+                convMap.Add(conv.Msisdn, conv);
+                App.ViewModel.MessageListPageCollection.Add(conv);
             }
-            stopwatch = Stopwatch.StartNew();
-            sortedConversationObjects.Sort();
-            stopwatch.Stop();
-            elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Debug.WriteLine("Time to get Sort {0} Conversations: {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
-
-            App.ViewModel.MessageListPageCollection.AddRange(sortedConversationObjects);
-
         }
 
         private void initAppBar()
@@ -224,14 +197,13 @@ namespace windows_client.View
             {
                 App.ViewModel.MessageListPageCollection.Clear();
                 convMap.Clear();
-                convMap2.Clear();
                 LoadMessages();
             });
 
             App.MqttManagerInstance.connect();
         }
 
-        private void btnGetSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
             if (obj == null)
@@ -288,12 +260,12 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            byte[] profileThumbnail = null;
-            App.appSettings.TryGetValue(msisdn + "::large", out profileThumbnail);
+            Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn + "::large");
             if (profileThumbnail != null)
             {
-                MemoryStream memStream = new MemoryStream(profileThumbnail);
+                MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
                 memStream.Seek(0, SeekOrigin.Begin);
+
                 BitmapImage empImage = new BitmapImage();
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;
@@ -350,7 +322,7 @@ namespace windows_client.View
             //}
         }
 
-        private void onProfilePicButtonClick(object sender, RoutedEventArgs e)
+        private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
             {
@@ -378,7 +350,6 @@ namespace windows_client.View
             ConversationTableUtils.deleteAllConversations();
             MessagesTableUtils.deleteAllMessages();
             convMap.Clear();
-            convMap2.Clear();
 
             App.ViewModel.MessageListPageCollection.Clear();
             emptyScreenImage.Visibility = Visibility.Visible;
@@ -414,8 +385,8 @@ namespace windows_client.View
                 });
                 return;
             }
-            NetworkManager.turnOffSystem = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
+            NetworkManager.turnOffNetworkManager = true;
             appSettings.Clear();
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
@@ -427,7 +398,7 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show("Are you sure about deleting conversation.", "Delete Conversation ?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
@@ -439,11 +410,10 @@ namespace windows_client.View
             }
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
             convMap.Remove(convObj.Msisdn); // removed entry from map for UI
-            convMap2.Remove(convObj.Msisdn); // removed entry from map for DB
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
-                emptyScreenImage.Visibility = Visibility.Visible;
+                emptyScreenImage.Opacity = 1;
             }
             ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
             MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
@@ -485,45 +455,25 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
-            if (HikePubSub.MESSAGE_RECEIVED == type || HikePubSub.SEND_NEW_MSG == type)
+            if (HikePubSub.MESSAGE_RECEIVED == type)
             {
-                ConvMessage convMessage = (ConvMessage)obj;
-                ConversationListObject mObj;
-                bool isNewConversation = false;
-
-                if (convMap.ContainsKey(convMessage.Msisdn))
+                object[] vals = (object[])obj;
+                ConversationListObject mObj = (ConversationListObject)vals[1];
+                if (convMap.ContainsKey(mObj.Msisdn))
                 {
-                    mObj = convMap[convMessage.Msisdn];
-                    mObj.LastMessage = convMessage.Message;
-                    mObj.TimeStamp = TimeUtils.getTimeString(convMessage.Timestamp);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         App.ViewModel.MessageListPageCollection.Remove(mObj);
                     });
                 }
-                else
-                {
-                    ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        UserInterfaceUtils.updateImageInCache(convMessage.Msisdn, contact == null ? null : contact.Avatar);
-                    });
-                    mObj = new ConversationListObject(convMessage.Msisdn, contact == null ? null : contact.Name, convMessage.Message,
-                    contact == null ? !convMessage.IsSms : contact.OnHike, TimeUtils.getTimeString(convMessage.Timestamp), convMessage.Timestamp);
-                    convMap[convMessage.Msisdn] = mObj;
-                    isNewConversation = true;
-                }
+                convMap[mObj.Msisdn] = mObj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (emptyScreenImage.Visibility == Visibility.Visible)
-                        emptyScreenImage.Visibility = Visibility.Collapsed;
+                        emptyScreenImage.Opacity = 0;
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
-                object[] vals = new object[2];
-                vals[0] = convMessage;
-                vals[1] = isNewConversation;
-                if (HikePubSub.SEND_NEW_MSG == type)
-                    mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+
             }
             else if (HikePubSub.MSG_READ == type)
             {
@@ -577,7 +527,7 @@ namespace windows_client.View
                 removeListeners();
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    emptyScreenImage.Visibility = Visibility.Visible;
+                    emptyScreenImage.Opacity = 1;
                     App.ViewModel.MessageListPageCollection.Clear();
                     progress.Hide();
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
@@ -587,5 +537,63 @@ namespace windows_client.View
 
         #endregion
 
+
+        #region Emoticons
+        private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
+
+        private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            //TODO read message upto the length it woud be shown on screen
+            var richTextBox = sender as RichTextBox;
+            if (richTextBox.Tag == null)
+                return;
+            string messageString = richTextBox.Tag.ToString();
+
+            MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(messageString);
+            Paragraph p = new Paragraph();
+            int startIndex = 0;
+            int endIndex = -1;
+
+            for (int i = 0; i < matchCollection.Count; i++)
+            {
+                String emoticon = matchCollection[i].ToString();
+
+                //Regex never returns an empty string. Still have added an extra check
+                if (String.IsNullOrEmpty(emoticon))
+                    continue;
+
+                int index = matchCollection[i].Index;
+                endIndex = index - 1;
+
+                if (index > 0)
+                {
+                    Run r = new Run();
+                    r.Text = messageString.Substring(startIndex, endIndex - startIndex + 1);
+                    p.Inlines.Add(r);
+                }
+
+                startIndex = index + emoticon.Length;
+
+                //TODO check if imgPath is null or not
+                Image img = new Image();
+                img.Source = SmileyParser.lookUpFromCache(emoticon);
+                img.Height = 25;
+                img.Width = 25;
+                img.Margin = imgMargin;
+
+                InlineUIContainer ui = new InlineUIContainer();
+                ui.Child = img;
+                p.Inlines.Add(ui);
+            }
+            if (startIndex < messageString.Length)
+            {
+                Run r2 = new Run();
+                r2.Text = messageString.Substring(startIndex, messageString.Length - startIndex);
+                p.Inlines.Add(r2);
+            }
+            richTextBox.Blocks.Clear();
+            richTextBox.Blocks.Add(p);
+        }
+        #endregion
     }
 }

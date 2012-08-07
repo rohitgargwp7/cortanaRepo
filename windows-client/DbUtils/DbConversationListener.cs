@@ -4,6 +4,7 @@ using windows_client.Model;
 using System.Windows;
 using System.Windows.Navigation;
 using System;
+using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -48,12 +49,17 @@ namespace windows_client.DbUtils
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
             {
-                object[] vals = (object[])obj;
-                ConvMessage convMessage = (ConvMessage)vals[0];
+                ConvMessage convMessage = (ConvMessage)obj;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                bool isNewConv = (bool)vals[1];
-                MessagesTableUtils.addChatMessage(convMessage, isNewConv);
-                //logger.Info("DBCONVERSATION LISTENER", "Sending Message : " + convMessage.Message + " ; to : " + convMessage.Msisdn);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if(App.ViewModel.MessageListPageCollection.Contains(convObj))
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(convObj);
+                    }
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                });
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion
@@ -72,15 +78,18 @@ namespace windows_client.DbUtils
                 long msgId = (long)o[0];
                 MessagesTableUtils.deleteMessage(msgId); // delete msg with given msgId from messages table
 
+                ConversationListObject c = (ConversationListObject)o[1];
                 bool delConv = (bool)o[2];
                 if (delConv)
                 {
-                    string msisdn = (string)o[1];
                     // delete the conversation from DB.
-                    ConversationTableUtils.deleteConversation(msisdn);
+                    ConversationTableUtils.deleteConversation(c.Msisdn);
                 }
-
-                MessagesTableUtils.deleteMessage(msgId);
+                else
+                {
+                   //update conversation
+                    ConversationTableUtils.updateConversation(c);
+                }
                 // TODO :: persistence.removeMessage(msgId);
             }
             #endregion
@@ -115,7 +124,8 @@ namespace windows_client.DbUtils
                 string msisdn = (string)vals[0];
                 MemoryStream msSmallImage = (MemoryStream)vals[1];
                 MemoryStream msLargeImage = (MemoryStream)vals[2];
-                addOrUpdateProfileIcon(msisdn, msisdn + "::large", msSmallImage.ToArray(),msLargeImage.ToArray());           
+                MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
+                MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
             }
             #endregion
             #region DELETE ACCOUNT
@@ -126,13 +136,6 @@ namespace windows_client.DbUtils
                 mPubSub.publish(HikePubSub.ACCOUNT_DELETED, null);
             }
             #endregion
-        }
-
-        private static void addOrUpdateProfileIcon(string key1,string key2, byte []smallImage,byte [] largeImage)
-        {
-            App.appSettings[key1] = smallImage;
-            App.appSettings[key2] = largeImage;
-            App.appSettings.Save();
         }
 
         private JObject blockUnblockSerialize(string type, string msisdn)
@@ -151,7 +154,8 @@ namespace windows_client.DbUtils
 
         private void updateDbBatch(long[] ids, int status)
         {
-            MessagesTableUtils.updateAllMsgStatus(ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(ids, status);
+            ConversationTableUtils.updateLastMsgStatus(msisdn,status);
         }
 
     }

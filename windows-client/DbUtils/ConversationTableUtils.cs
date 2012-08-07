@@ -2,38 +2,57 @@
 using windows_client.Model;
 using System.Linq;
 using System.Collections.Generic;
+using windows_client.utils;
+using windows_client.View;
+using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
     public class ConversationTableUtils
     {
         /* This function gets all the conversations shown on the message list page*/
-        public static List<Conversation> getAllConversations()
+        public static List<ConversationListObject> getAllConversations()
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                var q = from o in context.conversations select o;
-                return q.ToList<Conversation>();
+                var q = from o in context.conversations orderby o.TimeStamp descending select o;
+                return q.ToList();
             }           
         }
 
-        public static void addConversation(ConvMessage convMessage)
+        public static void updateImage(string msisdn,byte [] image)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConversationListObject obj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault<ConversationListObject>();
+                if (obj != null)
+                {
+                    obj.Avatar = image;
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
+                }
+            } 
+        }
+        public static ConversationListObject addConversation(ConvMessage convMessage)
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-            Conversation conv = new Conversation(convMessage.Msisdn, (contactInfo != null) ? contactInfo.OnHike : !convMessage.IsSms);
+            Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+            ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
+                contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail==null?null:thumbnail.Avatar,convMessage.MessageStatus);
+            
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {              
-                    context.conversations.InsertOnSubmit(conv);
+                    context.conversations.InsertOnSubmit(obj);
                     context.SubmitChanges();
-            }          
+            }
+            return obj;
         }
 
         public static void deleteAllConversations()
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                context.conversations.DeleteAllOnSubmit<Conversation>(context.GetTable<Conversation>());
-                context.SubmitChanges();
+                context.conversations.DeleteAllOnSubmit<ConversationListObject>(context.GetTable<ConversationListObject>());
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
 
@@ -41,8 +60,8 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                context.conversations.DeleteAllOnSubmit<Conversation>(DbCompiledQueries.GetConvForMsisdn(context, msisdn));
-                context.SubmitChanges();
+                context.conversations.DeleteAllOnSubmit<ConversationListObject>(DbCompiledQueries.GetConvForMsisdn(context, msisdn));
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
 
@@ -50,15 +69,69 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                List<Conversation> res = DbCompiledQueries.GetConvForMsisdn(context, msisdn).ToList<Conversation>();
-                if (res == null || res.Count<Conversation>() == 0)
+                List<ConversationListObject> res = DbCompiledQueries.GetConvForMsisdn(context, msisdn).ToList<ConversationListObject>();
+                if (res == null || res.Count<ConversationListObject>() == 0)
                     return;
                 for (int i = 0; i < res.Count;i++ )
                 {
-                    Conversation conv = res[i];
-                    conv.OnHike = (bool)joined;
+                    ConversationListObject conv = res[i];
+                    conv.IsOnhike = (bool)joined;
                 }
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        public static void updateConversation(ConversationListObject obj)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
+                cObj.MessageStatus =  obj.MessageStatus;
+                cObj.LastMessage = obj.LastMessage;
+                cObj.TimeStamp = obj.TimeStamp;
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        internal static void updateConversation(List<ContactInfo> cn)
+        {
+            bool shouldSubmit = false;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                for (int i = 0; i < cn.Count; i++)
+                {
+                    if (ConversationsList.ConvMap.ContainsKey(cn[i].Msisdn))
+                    {
+                        ConversationListObject obj = ConversationsList.ConvMap[cn[i].Msisdn]; //update UI
+                        obj.ContactName = cn[i].Name;
+
+                        ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
+                        if (cObj.ContactName != cn[i].Name)
+                        {
+                            cObj.ContactName = cn[i].Name;
+                            shouldSubmit = true;
+                        }
+                    }
+                }
+                if (shouldSubmit)
+                {
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
+                }
+            }
+        }
+
+        public static void updateLastMsgStatus(string msisdn, int status)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault<ConversationListObject>();
+                cObj.MessageStatus = (ConvMessage.State)status;
                 context.SubmitChanges();
+            }
+            
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault();
             }
         }
     }

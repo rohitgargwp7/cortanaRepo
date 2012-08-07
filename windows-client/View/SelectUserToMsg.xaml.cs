@@ -21,9 +21,74 @@ namespace windows_client.View
     {
         public MyProgressIndicator progress = null;
         public bool canGoBack = true;
-        public List<ContactInfo> allContactsList = null;
-
+        public List<Group<ContactInfo>> groupedList = null;
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+
+        public class Group<T> : IEnumerable<T>
+        {
+            public Group(string name, List<T> items)
+            {
+                this.Title = name;
+                this.Items = items;
+            }
+
+            public override bool Equals(object obj)
+            {
+                Group<T> that = obj as Group<T>;
+
+                return (that != null) && (this.Title.Equals(that.Title));
+            }
+            public override int GetHashCode()
+            {
+                return this.Title.GetHashCode();
+            }
+            public string Title
+            {
+                get;
+                set;
+            }
+
+            public IList<T> Items
+            {
+                get;
+                set;
+            }
+            public bool HasItems
+            {
+                get
+                {
+                    return (Items==null || Items.Count ==0)?false:true;
+                }
+            }
+
+            /// <summary>
+            /// This is used to colour the tiles - greying out those that have no entries
+            /// </summary>
+            public Brush GroupBackgroundBrush
+            {
+                get
+                {
+                    return (SolidColorBrush)Application.Current.Resources[(HasItems) ? "PhoneAccentBrush" : "PhoneChromeBrush"];
+                }
+            }
+            #region IEnumerable<T> Members
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                return this.Items.GetEnumerator();
+            }
+
+            #endregion
+
+            #region IEnumerable Members
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return this.Items.GetEnumerator();
+            }
+
+            #endregion
+        }
 
         public SelectUserToMsg()
         {
@@ -35,7 +100,7 @@ namespace windows_client.View
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
             bw.RunWorkerAsync();
         }
-        
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -50,10 +115,11 @@ namespace windows_client.View
             }
             else
             {
-                allContactsList = UsersTableUtils.getAllContacts();
+                List<ContactInfo>  allContactsList = UsersTableUtils.getAllContactsByGroup();
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    contactsListBox.ItemsSource = allContactsList;
+                    groupedList = getGroupedList(allContactsList);
+                    contactsListBox.ItemsSource = groupedList;
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
 
@@ -61,36 +127,75 @@ namespace windows_client.View
             }
         }
 
+        private List<Group<ContactInfo>> getGroupedList(List<ContactInfo> allContactsList)
+        {
+            if (allContactsList == null || allContactsList.Count == 0)
+                return null;
+            
+            List<Group<ContactInfo>> glist = createGroups();              
+            for (int i = 0; i < allContactsList.Count; i++)
+            {
+                ContactInfo c = allContactsList[i];
+                string ch = GetCaptionGroup(c);
+                // calculate the index into the list
+                int index = (ch == "#") ? 0 : ch[0] - 'a' + 1;
+                // and add the entry
+                glist[index].Items.Add(c);
+            }
+            return glist;
+        }
+
+        private List<Group<ContactInfo>> createGroups()
+        {
+            string Groups = "#abcdefghijklmnopqrstuvwxyz";
+            List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>();
+            foreach (char c in Groups)
+            {
+                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new List<ContactInfo>());
+                glist.Add(g);
+            }
+            return glist;
+        }
+
+        private static string GetCaptionGroup(ContactInfo c)
+        {
+            char key = char.ToLower(c.Name[0]);
+            if (key < 'a' || key > 'z')
+            {
+                key = '#';
+            }
+            return key.ToString();
+        }
+
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
             string charsEnetered = enterNameTxt.Text.ToLower();
             if (String.IsNullOrEmpty(charsEnetered))
             {
-                contactsListBox.ItemsSource = allContactsList;
+                contactsListBox.ItemsSource = groupedList;
                 return;
             }
-            List<ContactInfo> contactsList = getContactInfoFromNameOrPhone(charsEnetered);
-            if (contactsList == null || contactsList.Count == 0)
-            {
-                contactsListBox.ItemsSource = null;
-                return;
-            }
-            contactsListBox.ItemsSource = contactsList;
+            List<Group<ContactInfo>> glistFiltered = getFilteredContactsFromNameOrPhone(charsEnetered);
+            contactsListBox.ItemsSource = glistFiltered;
         }
 
-        private List<ContactInfo> getContactInfoFromNameOrPhone(string charsEnetered)
+        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhone(string charsEnetered)
         {
-            if (allContactsList == null || allContactsList.Count == 0)
+            if (groupedList == null || groupedList.Count == 0)
                 return null;
-            List<ContactInfo> contactsList = new List<ContactInfo>();
-            for (int i = 0; i < allContactsList.Count; i++)
+            List<Group<ContactInfo>> glistFiltered = createGroups();
+            for (int i = 0; i < groupedList.Count; i++)
             {
-                if (allContactsList[i].Name.ToLower().Contains(charsEnetered) || allContactsList[i].Msisdn.Contains(charsEnetered) || allContactsList[i].PhoneNo.Contains(charsEnetered))
+                for(int j=0;j<(groupedList[i].Items==null?0:groupedList[i].Items.Count);j++)
                 {
-                    contactsList.Add(allContactsList[i]);
-                }
+                    ContactInfo cn = groupedList[i].Items[j];
+                    if (cn.Name.ToLower().Contains(charsEnetered) || cn.Msisdn.Contains(charsEnetered) || cn.PhoneNo.Contains(charsEnetered))
+                    {
+                        glistFiltered[i].Items.Add(cn);
+                    }
+                }              
             }
-            return contactsList;
+            return glistFiltered;
         }
 
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -158,10 +263,39 @@ namespace windows_client.View
                 }
                 ContactUtils.contactsMap = contacts_to_update;
                 ContactUtils.hike_contactsMap = hike_contacts_by_id;
+
+                App.MqttManagerInstance.disconnectFromBroker(false);
+                NetworkManager.turnOffNetworkManager = true;
                 AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
             }
             catch (Exception)
             {
+            }
+        }
+
+        public class DelContacts
+        {
+            private string _id;
+            private string _msisdn;
+
+            public string Id
+            {
+                get
+                {
+                    return _id;
+                }
+            }
+            public string Msisdn
+            {
+                get
+                {
+                    return _msisdn;
+                }
+            }
+            public DelContacts(string id, string msisdn)
+            {
+                _id = id;
+                _msisdn = msisdn;
             }
         }
 
@@ -170,6 +304,8 @@ namespace windows_client.View
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
+                App.MqttManagerInstance.connect();
+                NetworkManager.turnOffNetworkManager = false;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     progress.Hide();
@@ -177,11 +313,13 @@ namespace windows_client.View
                 });
                 return;
             }
+
             List<ContactInfo> updatedContacts = AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
-            List<string> hikeIds = new List<string>();
+            List<DelContacts> hikeIds = new List<DelContacts>();
             foreach (string id in ContactUtils.hike_contactsMap.Keys)
             {
-                hikeIds.Add(id);
+                DelContacts dCn = new DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
+                hikeIds.Add(dCn);
             }
 
             if (hikeIds != null && hikeIds.Count > 0)
@@ -192,13 +330,18 @@ namespace windows_client.View
             if (updatedContacts != null && updatedContacts.Count > 0)
             {
                 UsersTableUtils.updateContacts(updatedContacts);
+                ConversationTableUtils.updateConversation(updatedContacts);
             }
-            ConversationsList.ReloadConversations();
-            allContactsList = UsersTableUtils.getAllContacts();
+
+            List<ContactInfo> allContactsList = UsersTableUtils.getAllContacts();
             App.isABScanning = false;
+            App.MqttManagerInstance.connect();
+            NetworkManager.turnOffNetworkManager = false;
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                contactsListBox.ItemsSource = allContactsList;
+                groupedList = getGroupedList(allContactsList);
+                contactsListBox.ItemsSource = groupedList;
                 progress.Hide();
                 canGoBack = true;
             });

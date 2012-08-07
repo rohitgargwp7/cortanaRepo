@@ -1,6 +1,8 @@
 ﻿using windows_client.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Linq;
+using System.Diagnostics;
 
 namespace windows_client.DbUtils
 {
@@ -40,7 +42,23 @@ namespace windows_client.DbUtils
            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(DbCompiledQueries.GetMqttMsgForMsgId(context, msgId));
-                context.SubmitChanges();
+                try
+                {
+                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+
+                catch (ChangeConflictException e)
+                {
+                    Debug.WriteLine(e.Message);
+                    // Automerge database values for members that client
+                    // has not modified.
+                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    {
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+                // Submit succeeds on second try.
+                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
         }
 
@@ -49,6 +67,23 @@ namespace windows_client.DbUtils
             using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
+                try
+                {
+                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                }
+
+                catch (ChangeConflictException e)
+                {
+                    Debug.WriteLine(e.Message);
+                    // Automerge database values for members that client
+                    // has not modified.
+                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    {
+                        occ.Resolve(RefreshMode.KeepChanges);
+                    }
+                }
+                // Submit succeeds on second try.
+                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
         }
 

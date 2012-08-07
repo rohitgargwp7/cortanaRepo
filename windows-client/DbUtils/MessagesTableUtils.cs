@@ -4,6 +4,8 @@ using windows_client.Model;
 using System.Collections.Generic;
 using windows_client.View;
 using System;
+using windows_client.utils;
+using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -59,7 +61,7 @@ namespace windows_client.DbUtils
                     if (currentPage != null)
                     {
                         if (convMessage.IsSent)
-                            currentPage.MsgMap.Add(msgId, convMessage);
+                            currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
                         else
                             currentPage.IncomingMessages.Add(convMessage);
                     }
@@ -67,38 +69,35 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void addChatMessage(ConvMessage convMsg, bool isNewConversation)
+        public static ConversationListObject addChatMessage(ConvMessage convMsg)
         {
-            if (isNewConversation)
+            ConversationListObject obj = null;
+            if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
-                ConversationTableUtils.addConversation(convMsg);
-                ConversationsList.convMap2.Add(convMsg.Msisdn, false);
+                obj = ConversationTableUtils.addConversation(convMsg);
+                ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
+            }
+            else
+            {
+                obj = ConversationsList.ConvMap[convMsg.Msisdn];
+                obj.LastMessage = convMsg.Message;
+                obj.MessageStatus = convMsg.MessageStatus;
+                obj.TimeStamp = convMsg.Timestamp;
+                ConversationTableUtils.updateConversation(obj);
             }
             addMessage(convMsg);
-        }
-
-        public static void addChatMessage(ConvMessage convMsg)
-        {
-            if (!ConversationsList.convMap2.ContainsKey(convMsg.Msisdn))
-            {
-                ConversationTableUtils.addConversation(convMsg);
-                ConversationsList.convMap2.Add(convMsg.Msisdn, false);
-            }
-            addMessage(convMsg);
+            return obj;
         }
 
         public static void updateMsgStatus(long msgID, int val)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, msgID).ToList<ConvMessage>();
-                if (res.Count == 1)
+                ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
+                if (message != null)
                 {
-
-                    ConvMessage message = res.First();
                     message.MessageStatus = (ConvMessage.State)val;
-                    context.SubmitChanges();
-
+                    SubmitWithConflictResolve(context);
                 }
                 else
                 {
@@ -108,11 +107,11 @@ namespace windows_client.DbUtils
 
         }
 
-        public static void updateAllMsgStatus(long[] ids, int status)
+        public static string updateAllMsgStatus(long[] ids, int status)
         {
+            string msisdn = null;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-
                 for (int i = 0; i < ids.Length; i++)
                 {
                     List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).ToList<ConvMessage>();
@@ -120,11 +119,12 @@ namespace windows_client.DbUtils
                     {
                         ConvMessage message = res.First();
                         message.MessageStatus = (ConvMessage.State)status;
+                        msisdn = message.Msisdn;
                     }
                 }
-                context.SubmitChanges();
-
+                SubmitWithConflictResolve(context);
             }
+            return msisdn;
         }
 
         public static void deleteAllMessages()
@@ -132,7 +132,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -141,7 +141,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsgId(context, msgId));
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -150,7 +150,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(DbCompiledQueries.GetMessagesForMsisdn(context, msisdn));
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -163,5 +163,24 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static void SubmitWithConflictResolve(HikeChatsDb context)
+        {
+            try
+            {
+                context.SubmitChanges(ConflictMode.ContinueOnConflict);
+            }
+            catch (ChangeConflictException e)
+            {
+                Console.WriteLine(e.Message);
+                // Automerge database values for members that client
+                // has not modified.
+                foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                {
+                    occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
+                }
+            }
+            // Submit succeeds on second try.
+            context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+        }
     }
 }

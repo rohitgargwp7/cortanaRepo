@@ -11,7 +11,7 @@ namespace windows_client.Model
 {
     [Table(Name = "users")]
     [Index(Columns = "Msisdn", IsUnique = false, Name = "Msisdn_Idx")]
-    public class ContactInfo : INotifyPropertyChanged,INotifyPropertyChanging ,IComparable<ContactInfo>
+    public class ContactInfo : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ContactInfo>
     {
         private int _dbId;
         private string _id;
@@ -21,7 +21,6 @@ namespace windows_client.Model
         private bool _onHike;
         private bool _hasCustomPhoto;
         private bool _isInvited;
-        private byte[] _avatar;
 
         //it significantly improves update performance
 
@@ -45,7 +44,7 @@ namespace windows_client.Model
                 }
             }
         }
-        [Column]
+        [Column(UpdateCheck=UpdateCheck.Never)]
         public string Id
         {
             get
@@ -58,7 +57,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Id");
                     _id = value;
-                    NotifyPropertyChanged("Id");
                 }
             }
         }
@@ -147,23 +145,6 @@ namespace windows_client.Model
             }
         }
 
-        [Column(DbType = "image", CanBeNull = true)]
-        public byte[] Avatar
-        {
-            get
-            {
-                return _avatar;
-            }
-            set
-            {
-                if (_avatar != value)
-                {
-                    NotifyPropertyChanging("Avatar");
-                    _avatar = value;
-                    NotifyPropertyChanged("Avatar");
-                }
-            }
-        }
         public bool IsInvited
         {
             get
@@ -172,12 +153,34 @@ namespace windows_client.Model
             }
             set
             {
+                NotifyPropertyChanging("IsInvited");
                 _isInvited = value;
                 NotifyPropertyChanged("IsInvited");
             }
         }
 
-       
+        //public string InvitedStringVisible
+        //{
+        //    get
+        //    {
+        //        if (IsInvited)
+        //            return "visible";
+        //        else
+        //            return "collapsed";
+        //    }
+        //}
+
+        //public string InviteButtonVisible
+        //{
+        //    get
+        //    {
+        //        if (IsInvited)
+        //            return "collapsed";
+        //        else
+        //            return "visible";
+        //    }
+        //}
+
         
         
         public ContactInfo()
@@ -185,21 +188,21 @@ namespace windows_client.Model
         }
 
         public ContactInfo(string number, string name, string phoneNum)
-            : this(null, number, name, false, phoneNum, false,null)
+            : this(null, number, name, false, phoneNum, false)
         {
         }
 
         public ContactInfo(string id, string number, string name, string phoneNum)
-            : this(id, number, name, false, phoneNum, false,null)
+            : this(id, number, name, false, phoneNum, false)
         {
         }
 
         public ContactInfo(string id, string number, string name, bool onHike, string phoneNum):            
-            this(id, number, name, onHike, phoneNum, false,null)
+            this(id, number, name, onHike, phoneNum, false)
         {
         }
 
-        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto,byte [] image)
+        public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto)
         {
             this.Id = id;
             this.Msisdn = msisdn;
@@ -208,7 +211,6 @@ namespace windows_client.Model
             this.PhoneNo = phoneNo;
             this.HasCustomPhoto = hasCustomPhoto;
             this.IsInvited = false;
-            _avatar = image;
         }
 
 
@@ -262,18 +264,18 @@ namespace windows_client.Model
         {
             get
             {
-                return UserInterfaceUtils.getBitMapImage(_msisdn);
+                return UI_Utils.Instance.getBitMapImage(_msisdn);
             }
         }
-        
+
         public BitmapImage HikeStatusImage
         {
             get
             {
                 if (_onHike)
-                    return UserInterfaceUtils.onHikeImage;
+                    return UI_Utils.Instance.OnHikeImage;
                 else
-                    return UserInterfaceUtils.notOnHikeImage;
+                    return UI_Utils.Instance.NotOnHikeImage;
             }
         }
         #endregion
@@ -292,6 +294,7 @@ namespace windows_client.Model
         }
 
         #endregion
+
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
@@ -304,7 +307,6 @@ namespace windows_client.Model
                 PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
             }
         }
-
         #endregion
     }
 }

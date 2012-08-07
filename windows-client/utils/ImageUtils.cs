@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using windows_client.DbUtils;
@@ -16,28 +7,99 @@ using System.IO;
 
 namespace windows_client.utils
 {
-    public class UserInterfaceUtils
+    public class UI_Utils
     {
-        public readonly static BitmapImage onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
-        public readonly static BitmapImage notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));       
-        public static BitmapImage defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
-        public static Dictionary<string, BitmapImage> imageCache = new Dictionary<string, BitmapImage>();
-        private static List<string> numbersWithDefaultImage = new List<string>();
+        private BitmapImage onHikeImage = null;
+        private BitmapImage notOnHikeImage = null;
+        private BitmapImage defaultAvatarBitmapImage = null;
+        private Dictionary<string, BitmapImage> imageCache = null;
+        private Dictionary<string, bool> numbersWithDefaultImage = null;
 
-        public static void updateImageInCache(string msisdn, byte[] imageBytes)
+        private static volatile UI_Utils instance = null;
+        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+
+        private UI_Utils()
         {
-           
-                if (imageBytes == null)
-                    return;
-
-                MemoryStream memStream = new MemoryStream(imageBytes);
-                memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage empImage = new BitmapImage();
-                empImage.SetSource(memStream);
-                imageCache[msisdn] = empImage;
+            onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
+            notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));
+            defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
+            imageCache = new Dictionary<string, BitmapImage>();
+            numbersWithDefaultImage = new Dictionary<string, bool>();
         }
 
-        public static BitmapImage getBitMapImage(string msisdn)
+        public static UI_Utils Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new UI_Utils();
+                    }
+                }
+
+                return instance;
+            }
+        }
+
+        public BitmapImage NotOnHikeImage
+        {
+            get
+            {
+                return notOnHikeImage;
+            }
+        }
+
+        public BitmapImage OnHikeImage
+        {
+            get
+            {
+                return onHikeImage;
+            }
+        }
+
+        public BitmapImage DefaultAvatarBitmapImage
+        {
+            get
+            {
+                return defaultAvatarBitmapImage;
+            }
+        }
+
+        public Dictionary<string, BitmapImage> ImageCache
+        {
+            get
+            {
+                return imageCache;
+            }
+        }
+
+        public void updateImageInCache(string msisdn, byte[] imageBytes)
+        {
+
+            if (!numbersWithDefaultImage.ContainsKey(msisdn) && !imageCache.ContainsKey(msisdn))
+                return;
+
+            MemoryStream memStream = new MemoryStream(imageBytes);
+            memStream.Seek(0, SeekOrigin.Begin);
+
+            BitmapImage empImage = new BitmapImage();
+            empImage.SetSource(memStream);
+            if (numbersWithDefaultImage.ContainsKey(msisdn))
+            {
+                numbersWithDefaultImage.Remove(msisdn);
+            }
+            else if (imageCache.ContainsKey(msisdn))
+            {
+                imageCache.Remove(msisdn);
+            }
+            imageCache.Add(msisdn, empImage);
+
+        }
+
+        public BitmapImage getBitMapImage(string msisdn)
         {
             if (imageCache.ContainsKey(msisdn))
             {
@@ -45,7 +107,21 @@ namespace windows_client.utils
                 imageCache.TryGetValue(msisdn, out cachedImage);
                 return cachedImage;
             }
-            return defaultAvatarBitmapImage;
+            if (numbersWithDefaultImage.ContainsKey(msisdn))
+                return defaultAvatarBitmapImage;
+
+            Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn);
+            if (thumbnail == null)
+            {
+                numbersWithDefaultImage.Add(msisdn, false);
+                return defaultAvatarBitmapImage;
+            }
+            MemoryStream memStream = new MemoryStream((byte[])thumbnail.Avatar);
+            memStream.Seek(0, SeekOrigin.Begin);
+            BitmapImage empImage = new BitmapImage();
+            empImage.SetSource(memStream);
+            imageCache[msisdn] = empImage;
+            return empImage;
         }
 
     }

@@ -3,6 +3,7 @@ using windows_client.Model;
 using System.Data.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using windows_client.View;
 
 namespace windows_client.DbUtils
 {
@@ -16,7 +17,7 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.InsertOnSubmit(userBlocked);
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -28,7 +29,7 @@ namespace windows_client.DbUtils
                 if (res == null || res.Count == 0)
                     return;
                 context.blockedUsersTable.DeleteAllOnSubmit(res);
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -67,6 +68,32 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<ContactInfo> getAllContactsByGroup()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users orderby user.Name select user;
+                return users.ToList<ContactInfo>();
+            }
+        }
+
+        public static List<ContactInfo> getContactInfoFromName(string name)
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                List<ContactInfo> res;
+                try
+                {
+                    res = DbCompiledQueries.GetContactFromName(context, name).ToList<ContactInfo>();
+                }
+                catch (Exception)
+                {
+                    res = null;
+                }
+                return (res == null || res.Count == 0) ? null : res;
+            }
+        }
+
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -89,7 +116,7 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
         #endregion
@@ -150,7 +177,7 @@ namespace windows_client.DbUtils
                 {
                     cInfo.OnHike = (bool)joined;
                 }
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -167,17 +194,36 @@ namespace windows_client.DbUtils
             return false;
         }
 
-        public static void deleteMultipleRows(List<string> ids)
+        public static void deleteMultipleRows(List<SelectUserToMsg.DelContacts> ids)
         {
             if(ids == null || ids.Count == 0)
                 return;
+            bool shouldSubmit = false;
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                for (int i = 0; i < ids.Count; i++)
+                using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
-                    context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i]));
+                    for (int i = 0; i < ids.Count; i++)
+                    {
+                        context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
+                        if (ConversationsList.ConvMap.ContainsKey(ids[i].Msisdn))
+                        {
+                            ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(chats, ids[i].Msisdn).FirstOrDefault();
+                            if (cObj.ContactName != null)
+                            {
+                                cObj.ContactName = null;
+                                shouldSubmit = true;
+                            }
+                            ConversationListObject obj = ConversationsList.ConvMap[ids[i].Msisdn];
+                            obj.ContactName = null;
+                        }
+                    }
+                    if (shouldSubmit)
+                    {
+                        MessagesTableUtils.SubmitWithConflictResolve(chats);
+                    }
                 }
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -191,7 +237,7 @@ namespace windows_client.DbUtils
                 {
                     context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
                 }
-                context.SubmitChanges();
+                SubmitWithConflictResolve(context);
             }
         }
 
@@ -210,6 +256,26 @@ namespace windows_client.DbUtils
                 List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();
                 return (res==null || res.Count == 0) ? null : res;
             }
+        }
+
+        private static void SubmitWithConflictResolve(HikeUsersDb context)
+        {
+            try
+            {
+                context.SubmitChanges(ConflictMode.ContinueOnConflict);
+            }
+            catch (ChangeConflictException e)
+            {
+                Console.WriteLine(e.Message);
+                // Automerge database values for members that client
+                // has not modified.
+                foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                {
+                    occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
+                }
+            }
+            // Submit succeeds on second try.
+            context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
     }
 }

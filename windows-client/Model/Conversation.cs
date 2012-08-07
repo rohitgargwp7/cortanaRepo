@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data.Linq;
 namespace windows_client.Model
 {
-    [Table(Name = "conversations")]
+    [Table(Name="conversations")]
     public class Conversation : INotifyPropertyChanged, INotifyPropertyChanging
     {
 
@@ -39,7 +39,7 @@ namespace windows_client.Model
                 }
             }
         }
-
+      
         [Column]
         public bool OnHike
         {
@@ -67,31 +67,31 @@ namespace windows_client.Model
             if (GetType() != obj.GetType())
                 return false;
             Conversation other = (Conversation)obj;
-
+          
             if (Msisdn == null)
             {
                 if (other.Msisdn != null)
                     return false;
             }
-            else if (Msisdn.CompareTo(other.Msisdn) != 0)
+            else if (Msisdn.CompareTo(other.Msisdn)!=0)
                 return false;
             if (OnHike != other.OnHike)
                 return false;
             return true;
         }
 
-        public override int GetHashCode()
+        public override int  GetHashCode()
         {
-            const int prime = 31;
-            int result = 1;
-            result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
-            result = prime * result + (OnHike ? 1231 : 1237);
-            return result;
-        }
+		    const int prime = 31;
+		    int result = 1;
+		    result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
+		    result = prime * result + (OnHike ? 1231 : 1237);
+		    return result;
+	    }
 
         public Conversation()
         {
-
+            
         }
 
         public Conversation(string msisdn, bool onhike)

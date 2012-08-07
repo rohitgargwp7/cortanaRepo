@@ -64,6 +64,7 @@ namespace windows_client.Model
             {
                 if (_messageId != value)
                 {
+                    NotifyPropertyChanging("MessageId");
                     _messageId = value;
                 }
             }
@@ -80,6 +81,7 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
+                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value;
                 }
             }
@@ -96,6 +98,7 @@ namespace windows_client.Model
             {
                 if (_message != value)
                 {
+                    NotifyPropertyChanging("Message");
                     _message = value;
                 }
             }
@@ -131,6 +134,7 @@ namespace windows_client.Model
             {
                 if (_timestamp != value)
                 {
+                    NotifyPropertyChanging("Timestamp");
                     _timestamp = value;
                 }
             }
@@ -147,6 +151,7 @@ namespace windows_client.Model
             {
                 if (_mappedMessageId != value)
                 {
+                    NotifyPropertyChanging("MappedMessageId");
                     _mappedMessageId = value;
                 }
             }
@@ -351,7 +356,7 @@ namespace windows_client.Model
         {
             get
             {
-                return UserInterfaceUtils.getBitMapImage(_msisdn);
+                return UI_Utils.Instance.getBitMapImage(_msisdn);
             }
         }
 
@@ -396,17 +401,6 @@ namespace windows_client.Model
                 {
                     return "#DBF2CF";
                 }
-            }
-        }
-
-        public string ChatThreadImageVisibility
-        {
-            get
-            {
-                if (IsSent)
-                    return "collapsed";
-                else
-                    return "visible";
             }
         }
 

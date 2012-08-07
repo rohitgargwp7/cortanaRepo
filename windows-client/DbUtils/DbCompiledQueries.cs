@@ -22,6 +22,19 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromName
+        {
+            get
+            {
+                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
+                   CompiledQuery.Compile((HikeUsersDb hdc, string chars) =>
+                       from o in hdc.users
+                       where o.Name.Contains(chars) || o.PhoneNo.Contains(chars)
+                       select o);
+                return q;
+            }
+        }
+
         public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromMsisdn
         {
             get
@@ -44,6 +57,20 @@ namespace windows_client.DbUtils
                      CompiledQuery.Compile<HikeUsersDb, IQueryable<Blocked>>
                      ((HikeUsersDb hdc) =>
                          from o in hdc.blockedUsersTable
+                         select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> UpdateOnhikeStatus
+        {
+            get
+            {
+                Func<HikeUsersDb, string, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, string, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc, string ms) =>
+                         from o in hdc.users
+                         where o.Msisdn == ms
                          select o);
                 return q;
             }
@@ -140,12 +167,12 @@ namespace windows_client.DbUtils
 
         #region ConversationTable Queries
 
-        public static Func<HikeChatsDb, IQueryable<Conversation>> GetAllConversations
+        public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations
         {
             get
             {
-                Func<HikeChatsDb, IQueryable<Conversation>> q =
-                    CompiledQuery.Compile<HikeChatsDb, IQueryable<Conversation>>
+                Func<HikeChatsDb, IQueryable<ConversationListObject>> q =
+                    CompiledQuery.Compile<HikeChatsDb, IQueryable<ConversationListObject>>
                     ((HikeChatsDb hdc) =>
                         from o in hdc.conversations
                         select o);
@@ -153,12 +180,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeChatsDb, string, IQueryable<Conversation>> GetConvForMsisdn
+        public static Func<HikeChatsDb, string, IQueryable<ConversationListObject>> GetConvForMsisdn
         {
             get
             {
-                Func<HikeChatsDb, string, IQueryable<Conversation>> q =
-                    CompiledQuery.Compile<HikeChatsDb, string, IQueryable<Conversation>>
+                Func<HikeChatsDb, string, IQueryable<ConversationListObject>> q =
+                    CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConversationListObject>>
                     ((HikeChatsDb hdc, string _msisdn) =>
                         from o in hdc.conversations
                         where o.Msisdn == _msisdn
@@ -200,5 +227,35 @@ namespace windows_client.DbUtils
 
         #endregion
 
+        #region MiscTable Queries
+
+        public static Func<HikeUsersDb, IQueryable<Thumbnails>> GetAllIcons
+        {
+            get
+            {
+                Func<HikeUsersDb, IQueryable<Thumbnails>> q =
+                  CompiledQuery.Compile<HikeUsersDb, IQueryable<Thumbnails>>
+                  ((HikeUsersDb hdc) =>
+                      from o in hdc.thumbnails
+                      select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeUsersDb, string, IQueryable<Thumbnails>> GetIconForMsisdn
+        {
+            get
+            {
+                Func<HikeUsersDb, string, IQueryable<Thumbnails>> q =
+                   CompiledQuery.Compile<HikeUsersDb, string, IQueryable<Thumbnails>>
+                   ((HikeUsersDb hdc, string m) =>
+                       from o in hdc.thumbnails
+                       where o.Msisdn == m
+                       select o);
+                return q;
+            }
+        }
+
+        #endregion
     }
 }

@@ -10,6 +10,7 @@ using windows_client.utils;
 using windows_client.ViewModel;
 using windows_client.Mqtt;
 using windows_client.View;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -44,7 +45,7 @@ namespace windows_client
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
-
+        private static UI_Utils ui_utils;
         #endregion
 
         #region instances getters and setters
@@ -129,6 +130,20 @@ namespace windows_client
             }
         }
 
+        public static UI_Utils UI_UtilsInstance
+        {
+            get
+            {
+                return ui_utils;
+            }
+            set
+            {
+                if (value != ui_utils)
+                {
+                    ui_utils = value;
+                }
+            }
+        }
         #endregion
 
         #endregion
@@ -224,10 +239,15 @@ namespace windows_client
 
             #endregion
 
+            #region InitializeEmoticons
+            SmileyParser.loadEmoticons();
+            #endregion
+
             App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
             App.DbListener = new DbConversationListener();
             App.NetworkManagerInstance = NetworkManager.Instance;
             App.MqttManagerInstance = new HikeMqttManager();
+            App.UI_UtilsInstance = UI_Utils.Instance;
         }
 
 
@@ -314,6 +334,7 @@ namespace windows_client
             // Running on a device / emulator without debugging
             e.Handled = true;
             Error.Exception = e.ExceptionObject;
+            Debug.WriteLine("UNHANDLED EXCEPTION : {0}",e);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);

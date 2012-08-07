@@ -19,7 +19,6 @@
         <Style x:Key="ListBoxItemStretchContentStyle" TargetType="ListBoxItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         </Style>
-
     </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
@@ -32,38 +31,47 @@
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Grid.Row="0" HorizontalAlignment="Left">
-            <Image Source="images\hike_logo_small.png" Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127"></Image>
-            <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
+        <StackPanel x:Name="HikeTitle" Orientation="Horizontal" Width="480">
+            <StackPanel Orientation="Vertical" Width="369">
+                <Image  Margin="20,20,0,15" HorizontalAlignment="Left" Height="34" Width="127">
+                    <Image.Source>
+                        <BitmapImage UriSource="images\hike_logo_small.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                    </Image.Source>
+                </Image>
+                <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="45" Height="64" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
+            </StackPanel>
+            <Image Name="userImage" Width="60" Height="60"></Image>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="myListBox" Grid.Row="1" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
+        <ListBox x:Name="myListBox" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
                  FontSize="26" Margin="0,0,0,95" Tap="chatListBox_tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
 
                     <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding Alignment}" 
                                   Margin="20,5,20,15"  Grid.RowSpan="2">
-                        <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" Source="{Binding SdrImage}" HorizontalAlignment="Right"></Image>
+                        <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" HorizontalAlignment="Right">
+                            <Image.Source>
+                                <BitmapImage UriSource="{Binding SdrImage}" CreateOptions="BackgroundCreation"></BitmapImage>
+                            </Image.Source>
+                        </Image>
 
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
-                                <Image Visibility="{Binding ChatThreadImageVisibility}" Source="{Binding AvatarImage}" Margin="8" Height="45" VerticalAlignment="Top" HorizontalAlignment="Left"></Image>
 
                                 <StackPanel Orientation="Vertical">
                                     <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
+                                    <!--<TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>-->
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
                                 </StackPanel>
-                                <!--<Rectangle Width="2" Height="Auto" Fill="#c8c8c8" Margin="1,2,0,0"></Rectangle>-->
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu Name="ctxMenu">
-                                        <toolkit:MenuItem Header="Copy"  Click="MenuItem_Click_Copy"/>
-                                        <toolkit:MenuItem Header="Forward"  Click="MenuItem_Click_Forward"/>
-                                        <toolkit:MenuItem Header="Delete"  Click="MenuItem_Click_Delete"/>
+                                        <toolkit:MenuItem Header="Copy"  Tap="MenuItem_Tap_Copy"/>
+                                        <toolkit:MenuItem Header="Forward"  Tap="MenuItem_Tap_Forward"/>
+                                        <toolkit:MenuItem Header="Delete"  Tap="MenuItem_Tap_Delete"/>
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
                             </StackPanel>
-                            <!--<Rectangle Width="Auto" Height="2" Margin="2,0,0,0" Fill="#c8c8c8"></Rectangle>-->
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
@@ -85,7 +93,11 @@
                         <ListBoxItem >
                             <StackPanel Orientation="Horizontal" >
                                 <StackPanel Orientation="Vertical" Width="150" >
-                                    <Image Margin="3" Height="50"  Source="images\emoticons\emo_im_01_bigsmile.png"/>
+                                    <Image Margin="3" Height="50">
+                                        <Image.Source>
+                                            <BitmapImage UriSource="images\emoticons\emo_im_01_bigsmile.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                                        </Image.Source>
+                                    </Image>
                                     <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
                                 </StackPanel>
                                 <Rectangle Fill="Black" Width="3" Height="Auto" Margin="3,8,3,8"></Rectangle>
@@ -94,7 +106,11 @@
                         <ListBoxItem>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel Orientation="Vertical" Width="150">
-                                    <Image Margin="3" Height="50" Source="images\emoticons\emo_im_102_scorn.png"/>
+                                    <Image Margin="3" Height="50">
+                                        <Image.Source>
+                                            <BitmapImage UriSource="images\emoticons\emo_im_102_scorn.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                                        </Image.Source>
+                                    </Image>
                                     <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
                                 </StackPanel>
                                 <Rectangle Fill="Black" Width="3" Height="Auto" Margin="3,8,3,8"></Rectangle>
@@ -103,7 +119,12 @@
                         <ListBoxItem>
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel Orientation="Vertical" Width="150">
-                                    <Image Margin="3" Height="50" Source="images\emoticons\emo_im_111_grin.png"/>
+                                    <Image Margin="3" Height="50">
+                                        <Image.Source>
+                                            <BitmapImage UriSource="images\emoticons\emo_im_111_grin.png" CreateOptions="BackgroundCreation"></BitmapImage>
+                                        </Image.Source>
+
+                                    </Image>
                                     <Rectangle Fill="Blue" Height="4" Width="Auto"></Rectangle>
                                 </StackPanel>
                             </StackPanel>
@@ -111,7 +132,7 @@
                     </ListBox.Items>
                 </ListBox>
 
-                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220" SelectionChanged="emoticonPivot_SelectionChanged" >
+                <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" Foreground="Black" Height="220">
                     <controls:PivotItem Margin="12,8,12,0">
                         <Grid x:Name="emotGrid0">
                             <Grid.RowDefinitions>
@@ -132,20 +153,15 @@
                                 <ListBox.ItemTemplate>
 
                                     <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40">
-                                            <Image.Source>
-                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
-                                            </Image.Source>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
                                         </Image>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
-
                             </ListBox>
-
                         </Grid>
                     </controls:PivotItem>
 
-                    <controls:PivotItem BorderThickness="0" VerticalAlignment="Top" Height="220" Margin="12,8,12,0">
+                    <controls:PivotItem CacheMode="BitmapCache" BorderThickness="0" VerticalAlignment="Top" Height="220" Margin="12,8,12,0">
                         <Grid x:Name="emotGrid1" Margin="18,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
@@ -154,7 +170,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Name="emotList1" Height="200" Grid.Row="0" Grid.Column="0" Visibility="Collapsed" Tap="emotList1_Tap">
+                            <ListBox Name="emotList1" Height="200" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList1_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -164,10 +180,7 @@
                                 <ListBox.ItemTemplate>
 
                                     <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40">
-                                            <Image.Source>
-                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
-                                            </Image.Source>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
                                         </Image>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -185,7 +198,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Collapsed" Tap="emotList2_Tap">
+                            <ListBox Height="200" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" Tap="emotList2_Tap">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
@@ -195,17 +208,12 @@
                                 <ListBox.ItemTemplate>
 
                                     <DataTemplate>
-                                        <Image Margin="8,6,8,6" Height="40" Width="40">
-                                            <Image.Source>
-                                                <BitmapImage UriSource="{Binding}" CreateOptions="BackgroundCreation"/>
-                                            </Image.Source>
+                                        <Image Margin="8,6,8,6" Height="40" Width="40" Source="{Binding}">
                                         </Image>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-
                         </Grid>
-
                     </controls:PivotItem>
                 </controls:Pivot>
             </StackPanel>

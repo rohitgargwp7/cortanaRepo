@@ -10,7 +10,7 @@ namespace windows_client.Model
 
         public Table<ConvMessage> messages;
 
-        public Table<Conversation> conversations;
+        public Table<ConversationListObject> conversations;
 
     }
 
@@ -23,6 +23,8 @@ namespace windows_client.Model
         public Table<ContactInfo> users;
 
         public Table<Blocked> blockedUsersTable;
+
+        public Table<Thumbnails> thumbnails;
 
     }
 

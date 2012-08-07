@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace windows_client
 {
@@ -170,7 +171,52 @@ namespace windows_client
             "(sleeping2)",  // 150 sleeping 
       };
 
-        public static string[] emoticonPathsForList0 = 
+
+        public static BitmapImage[] _emoticonImagesForList0 = null;
+        public static BitmapImage[] _emoticonImagesForList1 = null;
+        public static BitmapImage[] _emoticonImagesForList2 = null;
+
+
+        public static void loadEmoticons()
+        {
+            int emoticon0Size = 80;
+            int emoticon1Size = 30;
+            int emoticon2Size = 39;
+
+            _emoticonImagesForList0 = new BitmapImage[emoticon0Size];
+            int i, j, k = 0;
+            for (i = 0; i < emoticon0Size; i++)
+            {
+                _emoticonImagesForList0[i] = new BitmapImage();
+                _emoticonImagesForList0[i].CreateOptions = BitmapCreateOptions.BackgroundCreation;
+                _emoticonImagesForList0[i].UriSource = new Uri(emoticonPaths[i], UriKind.Relative);    
+            }
+
+            _emoticonImagesForList1 = new BitmapImage[emoticon1Size];
+            for (j = 0; j < emoticon1Size; j++)
+            {
+                _emoticonImagesForList1[j] = new BitmapImage();
+                _emoticonImagesForList1[j].CreateOptions = BitmapCreateOptions.BackgroundCreation;
+                _emoticonImagesForList1[j].UriSource = new Uri(emoticonPaths[i+j], UriKind.Relative);
+            }
+
+            _emoticonImagesForList2 = new BitmapImage[emoticon2Size];
+            for (k = 0; k < emoticon2Size; k++)
+            {
+                _emoticonImagesForList2[k] = new BitmapImage();
+                _emoticonImagesForList2[k].CreateOptions = BitmapCreateOptions.BackgroundCreation;
+                _emoticonImagesForList2[k].UriSource = new Uri(emoticonPaths[i+j+k], UriKind.Relative);
+            }
+        }
+
+        //static void imageOpenedHandler(object sender, RoutedEventArgs e)
+        //{
+        //    BitmapImage image = (BitmapImage)sender;
+        //    image.PixelHeight = 40;
+        //    image.PixelWidth = 40;
+        //}
+
+        public static string[] emoticonPaths = 
         {
         	"/View/images/emoticons/emo_im_01_bigsmile.png",
 			"/View/images/emoticons/emo_im_02_happy.png",
@@ -252,10 +298,7 @@ namespace windows_client
 			"/View/images/emoticons/emo_im_78_waiting.png",
 			"/View/images/emoticons/emo_im_79_whistling.png",
 			"/View/images/emoticons/emo_im_80_yawn.png",
-        };
 
-        public static string[] emoticonPathsForList1 = 
-        {   
             "/View/images/emoticons/emo_im_81_exciting.png",
 			"/View/images/emoticons/emo_im_82_big_smile.png",
 			"/View/images/emoticons/emo_im_83_haha.png",
@@ -286,11 +329,8 @@ namespace windows_client
 			"/View/images/emoticons/emo_im_108_unhappy.png",
 			"/View/images/emoticons/emo_im_109_electric_shock.png",
 			"/View/images/emoticons/emo_im_110_beaten.png",
-        };
-
-        public static string[] emoticonPathsForList2 = 
-            {
-			"/View/images/emoticons/emo_im_111_grin.png",
+        
+            "/View/images/emoticons/emo_im_111_grin.png",
 			"/View/images/emoticons/emo_im_112_happy.png",
 			"/View/images/emoticons/emo_im_113_fake_smile.png",
 			"/View/images/emoticons/emo_im_114_in_love.png",
@@ -343,26 +383,39 @@ namespace windows_client
             }
         }
 
-        private static Dictionary<string, string> _emoticonUriHash;
-        public static Dictionary<string, string> EmoticonUriHash
+
+        public static BitmapImage lookUpFromCache(string emoticon)
+        {
+            int imgIndex;
+            SmileyParser.EmoticonUriHash.TryGetValue(emoticon, out imgIndex);
+
+            if (imgIndex < _emoticonImagesForList0.Length)
+            {
+                return _emoticonImagesForList0[imgIndex];
+            }
+            else if (imgIndex < _emoticonImagesForList0.Length + _emoticonImagesForList1.Length)
+            {
+                return _emoticonImagesForList0[imgIndex - _emoticonImagesForList0.Length];
+            }
+            else 
+            {
+                return _emoticonImagesForList0[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length];
+            }
+        }
+
+
+        private static Dictionary<string, int> _emoticonUriHash;
+        public static Dictionary<string, int> EmoticonUriHash
         {
             get
             {
                 if (_emoticonUriHash == null)
                 {
-                    int i,j,k=0;
-                    _emoticonUriHash = new Dictionary<string, string>();
-                    for (i = 0; i < emoticonPathsForList0.Length; i++)
+                    int i = 0;
+                    _emoticonUriHash = new Dictionary<string, int>();
+                    for (i = 0; i < emoticonStrings.Length; i++)
                     {
-                        _emoticonUriHash.Add(emoticonStrings[i], emoticonPathsForList0[i]);
-                    }
-                    for (j=0; j < emoticonPathsForList1.Length; j++)
-                    {
-                        _emoticonUriHash.Add(emoticonStrings[i+j], emoticonPathsForList1[j]);
-                    }
-                    for (k = 0; k < emoticonPathsForList2.Length; k++)
-                    {
-                        _emoticonUriHash.Add(emoticonStrings[i+j+k], emoticonPathsForList2[k]);
+                        _emoticonUriHash.Add(emoticonStrings[i], i);
                     }
                 }
                 return _emoticonUriHash;
