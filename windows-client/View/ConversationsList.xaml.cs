@@ -352,7 +352,7 @@ namespace windows_client.View
             convMap.Clear();
 
             App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenImage.Visibility = Visibility.Visible;
+            emptyScreenImage.Opacity = 1;
             progressBar.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.IsEnabled = false;
             App.MqttManagerInstance.connect();
