@@ -209,7 +209,7 @@ namespace windows_client.DbUtils
                         if (ConversationsList.ConvMap.ContainsKey(ids[i].Msisdn))
                         {
                             ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(chats, ids[i].Msisdn).FirstOrDefault();
-                            if (cObj._contactName != null)
+                            if (cObj.ContactName != null)
                             {
                                 cObj.ContactName = null;
                                 shouldSubmit = true;

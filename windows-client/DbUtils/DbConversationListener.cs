@@ -4,6 +4,7 @@ using windows_client.Model;
 using System.Windows;
 using System.Windows.Navigation;
 using System;
+using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -77,15 +78,18 @@ namespace windows_client.DbUtils
                 long msgId = (long)o[0];
                 MessagesTableUtils.deleteMessage(msgId); // delete msg with given msgId from messages table
 
+                ConversationListObject c = (ConversationListObject)o[1];
                 bool delConv = (bool)o[2];
                 if (delConv)
                 {
-                    string msisdn = (string)o[1];
                     // delete the conversation from DB.
-                    ConversationTableUtils.deleteConversation(msisdn);
+                    ConversationTableUtils.deleteConversation(c.Msisdn);
                 }
-
-                MessagesTableUtils.deleteMessage(msgId);
+                else
+                {
+                   //update conversation
+                    ConversationTableUtils.updateConversation(c);
+                }
                 // TODO :: persistence.removeMessage(msgId);
             }
             #endregion
@@ -150,7 +154,8 @@ namespace windows_client.DbUtils
 
         private void updateDbBatch(long[] ids, int status)
         {
-            MessagesTableUtils.updateAllMsgStatus(ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(ids, status);
+            ConversationTableUtils.updateLastMsgStatus(msisdn,status);
         }
 
     }

@@ -18,7 +18,7 @@ namespace windows_client.Model
         #region member variables
 
         private string _msisdn;
-        public string _contactName;
+        private string _contactName;
         private string _lastMessage;
         private long _timeStamp;
         private bool _isOnhike;
@@ -80,6 +80,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
                     NotifyPropertyChanged("TimeStamp");
+                    NotifyPropertyChanged("FormattedTimeStamp");
                 }
             }
         }
@@ -198,7 +199,6 @@ namespace windows_client.Model
                 switch (_messageStatus)
                 {
                     case ConvMessage.State.RECEIVED_UNREAD:
-
                         Color currentAccentColorHex =
                         (Color)Application.Current.Resources["PhoneAccentColor"];
                         return currentAccentColorHex.ToString();
@@ -217,7 +217,6 @@ namespace windows_client.Model
             }
         }
 
-
         public string SdrImage
         {
             get
@@ -232,9 +231,7 @@ namespace windows_client.Model
             }
         }
 
-
-
-
+        [Column(IsDbGenerated = false, UpdateCheck = UpdateCheck.Always)]
         public ConvMessage.State MessageStatus
         {
             get
@@ -245,18 +242,15 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
-                    //TODO check ((_messageStatus != null) ? _messageStatus : 0) <= value
-                    if (_messageStatus != value)
-                    {
-                        _messageStatus = value;
-                        NotifyPropertyChanged("MessageStatus");
-                        NotifyPropertyChanged("SdrImage");
-                    }
+                    NotifyPropertyChanging("MessageStatus");
+                    _messageStatus = value;
+                    NotifyPropertyChanged("MessageStatus");
+                    NotifyPropertyChanged("IsLastMessageUnread");
                 }
             }
         }
-
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar)
+        
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
@@ -264,22 +258,18 @@ namespace windows_client.Model
             this._timeStamp = timestamp;
             this._isOnhike = isOnhike;
             this._avatar = avatar;
+            this._messageStatus = msgStatus;
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, string relativeTime, long timestamp)
-            : this(msisdn, contactName, lastMessage, false, timestamp, null)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus)
+            : this(msisdn, contactName, lastMessage, false, timestamp, null,msgStatus)
         {
 
         }
 
         public ConversationListObject()
         {
-            _msisdn = null;
-            _contactName = null;
-            _lastMessage = null;
-            _timeStamp = 0;
-            _isOnhike = false;
-            _avatar = null;
+            
         }
 
         public int CompareTo(ConversationListObject rhs)

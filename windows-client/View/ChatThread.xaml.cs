@@ -178,7 +178,7 @@ namespace windows_client.View
             {
                 ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
                 mContactNumber = convObj.Msisdn;
-                if (convObj._contactName != null)
+                if (convObj.ContactName != null)
                     mContactName = convObj.ContactName;
                 else
                 {
@@ -400,8 +400,8 @@ namespace windows_client.View
                 obj.Add(HikeConstants.DATA, ids);
 
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
                 mPubSub.publish(HikePubSub.MSG_READ, mContactNumber); // this is to notify ConvList. This can be done on UI directly
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
                 isPublish = false;
             }
         }
@@ -605,7 +605,10 @@ namespace windows_client.View
             /* Remove the message from conversation list */
             if (this.ChatThreadPageCollection.Count > 0)
             {
+                //This updates the Conversation list.
                 obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
+                obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
+                obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Timestamp;
             }
             else
             {
@@ -616,7 +619,7 @@ namespace windows_client.View
             }
             object[] o = new object[3];
             o[0] = msg.MessageId;
-            o[1] = obj.Msisdn;
+            o[1] = obj;
             o[2] = delConv;
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
         }

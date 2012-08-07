@@ -107,11 +107,11 @@ namespace windows_client.DbUtils
 
         }
 
-        public static void updateAllMsgStatus(long[] ids, int status)
+        public static string updateAllMsgStatus(long[] ids, int status)
         {
+            string msisdn = null;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-
                 for (int i = 0; i < ids.Length; i++)
                 {
                     List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).ToList<ConvMessage>();
@@ -119,10 +119,12 @@ namespace windows_client.DbUtils
                     {
                         ConvMessage message = res.First();
                         message.MessageStatus = (ConvMessage.State)status;
+                        msisdn = message.Msisdn;
                     }
                 }
                 SubmitWithConflictResolve(context);
             }
+            return msisdn;
         }
 
         public static void deleteAllMessages()
@@ -161,7 +163,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        internal static void SubmitWithConflictResolve(HikeChatsDb context)
+        public static void SubmitWithConflictResolve(HikeChatsDb context)
         {
             try
             {

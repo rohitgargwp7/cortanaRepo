@@ -16,7 +16,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 var q = from o in context.conversations orderby o.TimeStamp descending select o;
-                return q.ToList<ConversationListObject>();
+                return q.ToList();
             }           
         }
 
@@ -37,7 +37,7 @@ namespace windows_client.DbUtils
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
             Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
-                contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail==null?null:thumbnail.Avatar);
+                contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail==null?null:thumbnail.Avatar,convMessage.MessageStatus);
             
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {              
@@ -86,7 +86,7 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
-                cObj.MessageStatus = obj.MessageStatus;
+                cObj.MessageStatus =  obj.MessageStatus;
                 cObj.LastMessage = obj.LastMessage;
                 cObj.TimeStamp = obj.TimeStamp;
                 MessagesTableUtils.SubmitWithConflictResolve(context);
@@ -106,7 +106,7 @@ namespace windows_client.DbUtils
                         obj.ContactName = cn[i].Name;
 
                         ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
-                        if (cObj._contactName != cn[i].Name)
+                        if (cObj.ContactName != cn[i].Name)
                         {
                             cObj.ContactName = cn[i].Name;
                             shouldSubmit = true;
@@ -117,6 +117,21 @@ namespace windows_client.DbUtils
                 {
                     MessagesTableUtils.SubmitWithConflictResolve(context);
                 }
+            }
+        }
+
+        public static void updateLastMsgStatus(string msisdn, int status)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault<ConversationListObject>();
+                cObj.MessageStatus = (ConvMessage.State)status;
+                context.SubmitChanges();
+            }
+            
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault();
             }
         }
     }
