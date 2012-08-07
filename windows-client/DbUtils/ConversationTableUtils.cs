@@ -126,12 +126,7 @@ namespace windows_client.DbUtils
             {
                 ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault<ConversationListObject>();
                 cObj.MessageStatus = (ConvMessage.State)status;
-                context.SubmitChanges();
-            }
-            
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {
-                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault();
+                MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
     }
