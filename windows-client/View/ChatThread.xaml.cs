@@ -16,8 +16,8 @@ using Newtonsoft.Json.Linq;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
-using WP7Contrib.Collections;
 using Coding4Fun.Phone.Controls;
+using System.Collections.ObjectModel;
 
 namespace windows_client.View
 {
