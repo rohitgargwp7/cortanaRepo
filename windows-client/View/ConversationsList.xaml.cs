@@ -17,6 +17,8 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
+using Microsoft.Phone.Notification;
+using System.Text;
 
 namespace windows_client.View
 {
@@ -56,7 +58,42 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            //myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+            this.Loaded += ConversationPage_Loaded;
+            HttpNotificationChannel pushChannel;
+
+            // The name of our push channel.
+            string channelName = "HikeApp";
+
+            // Try to find the push channel.
+            pushChannel = HttpNotificationChannel.Find(channelName);
+
+            // If the channel was not found, then create a new connection to the push service.
+            if (pushChannel == null)
+            {
+                pushChannel = new HttpNotificationChannel(channelName);
+
+                // Register for all the events before attempting to open the channel.
+                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+                // Register for this notification only if you need to receive the notifications while your application is running.
+                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+                pushChannel.Open();
+                // Bind this new channel for toast events.
+                pushChannel.BindToShellToast();
+                pushChannel.BindToShellTile();
+            }
+            else
+            {
+                // The channel was already open, so just register for all the events.
+                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+
+                // Register for this notification only if you need to receive the notifications while your application is running.
+                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+
+                System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                //AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+            }
             convMap = new Dictionary<string, ConversationListObject>();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
@@ -71,6 +108,47 @@ namespace windows_client.View
             initAppBar();
             initProfilePage();
         }
+
+        void ConversationPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            String msisdn;
+            this.NavigationContext.QueryString.TryGetValue("msisdn", out msisdn);
+            if (!String.IsNullOrEmpty(msisdn))
+            {
+                //string uri = "/View/ChatThread.xaml?msisdn=" + t2;
+                //NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
+            //Dispatcher.BeginInvoke(() =>
+            //{
+           //    MessageBox.Show("Msisdn is " + msisdn);
+            //});
+        }
+
+        //Push notifications
+        #region push notifications
+        public void postPushNotification_Callback(JObject obj)
+        {
+        }
+
+        void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
+        {
+            AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+        }
+
+        void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
+        {
+            // Error handling logic
+            Dispatcher.BeginInvoke(() =>
+                MessageBox.Show(String.Format("A push notification {0} error occurred.  {1} ({2}) {3}",
+                    e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
+                    );
+        }
+
+        void PushChannel_ShellToastNotificationReceived(object sender, NotificationEventArgs e)
+        {
+        }
+        #endregion
+
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
