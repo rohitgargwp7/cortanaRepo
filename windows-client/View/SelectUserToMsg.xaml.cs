@@ -104,6 +104,39 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ApplicationBar appBar = new ApplicationBar();
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = true;
+            selectUserPage.ApplicationBar = appBar;
+
+            /* Add Menu Items*/
+            ApplicationBarMenuItem refreshContacts = new ApplicationBarMenuItem();
+            refreshContacts.Text = "Refresh Contacts";
+            refreshContacts.Click += new EventHandler(refreshContacts_Click);
+            appBar.MenuItems.Add(refreshContacts);
+
+            /* represents group chat */
+            if (this.NavigationContext.QueryString.ContainsKey("param"))
+            {
+                /* Add icons */
+                ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+                composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+                composeIconButton.Text = "compose";
+                composeIconButton.Click += new EventHandler(startGroup_Click);
+                composeIconButton.IsEnabled = true;
+                appBar.Buttons.Add(composeIconButton);
+                contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
+                selectedContacts.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                appBar.Mode = ApplicationBarMode.Minimized;
+                contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelected_Click);
+            }
+        }
+
+        private void startGroup_Click(object sender, EventArgs e)
+        {
         }
 
         private void bw_LoadAllContacts(object sender, DoWorkEventArgs e)
@@ -207,6 +240,15 @@ namespace windows_client.View
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+            if (contact == null)
+                return;
+            selectedContacts.Text += contact.Name;
+            selectedContacts.Text += ",";
         }
 
         private void refreshContacts_Click(object sender, EventArgs e)

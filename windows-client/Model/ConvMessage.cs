@@ -24,7 +24,7 @@ namespace windows_client.Model
         private bool _isInvite;
         private bool _isSent;
         private bool _isSms;
-        private ConversationListObject mConversation = null;
+        private string _groupParticipant;
         private MessageMetadata metadata;
 
 
@@ -153,10 +153,27 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MappedMessageId");
                     _mappedMessageId = value;
+                    NotifyPropertyChanged("MappedMessageId");
                 }
             }
         }
-
+        [Column]
+        public string GroupParticipant
+        {
+            get
+            {
+                return _groupParticipant;
+            }
+            set
+            {
+                if (_groupParticipant != value)
+                {
+                    NotifyPropertyChanging("GroupParticipant");
+                    _groupParticipant = value;
+                    NotifyPropertyChanged("GroupParticipant");
+                }
+            }
+        }
 
         public ChatBubbleType MsgType
         {
@@ -209,19 +226,6 @@ namespace windows_client.Model
             {
                 if (value != _isSms)
                     _isSms = value;
-            }
-        }
-
-        public ConversationListObject Conversation
-        {
-            get
-            {
-                return mConversation;
-            }
-            set
-            {
-                if (value != mConversation)
-                    mConversation = value;
             }
         }
 
