@@ -103,12 +103,15 @@ namespace windows_client
 
         public static readonly string INVITEE_NUM_CHANGED = "inviteeNoChanged";
 
-        public static readonly String GROUP_LEFT = "groupLeft";
+        public static readonly string GROUP_LEFT = "groupLeft";
 
-        public static readonly String GROUP_END = "groupEnd";
+        public static readonly string GROUP_END = "groupEnd";
 
-        public static readonly String GROUP_NAME_CHANGED = "groupNameChanged";
+        public static readonly string GROUP_NAME_CHANGED = "groupNameChanged";
 
+        public static readonly string PARTICIPANT_JOINED_GROUP = "participantJoinedGroup";
+
+        public static readonly string PARTICIPANT_LEFT_GROUP = "participantLeftGroup";
 
         private readonly Thread mThread;
 

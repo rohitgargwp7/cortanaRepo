@@ -61,6 +61,8 @@ namespace windows_client
         public static object ALL_INVITEE_JOINED = "aij";
         public static string TOTAL_CREDITS_PER_MONTH = "tc";
 
+        public static string GROUP_PARTICIPANT_SEPARATOR = ",";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";

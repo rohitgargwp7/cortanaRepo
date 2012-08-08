@@ -13,12 +13,15 @@ using System.Windows;
 using Microsoft.Phone.UserData;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 
 namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        public List<string> groupMsisdns = null;
+        public List<string> groupNames = null;
         public MyProgressIndicator progress = null;
         public bool canGoBack = true;
         public List<Group<ContactInfo>> groupedList = null;
@@ -137,6 +140,11 @@ namespace windows_client.View
 
         private void startGroup_Click(object sender, EventArgs e)
         {
+            PhoneApplicationService.Current.State["groupChat"] = true;
+            PhoneApplicationService.Current.State["groupMsidns"] = groupMsisdns;
+            PhoneApplicationService.Current.State["groupNames"] = groupNames;
+            string uri = "/View/ChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
         private void bw_LoadAllContacts(object sender, DoWorkEventArgs e)
@@ -247,6 +255,15 @@ namespace windows_client.View
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null)
                 return;
+            if (groupMsisdns == null)
+                groupMsisdns = new List<string>();
+            groupMsisdns.Add(contact.Msisdn);
+            groupMsisdns.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
+
+            if (groupNames == null)
+                groupNames = new List<string>();
+            groupNames.Add(contact.Name);
+            groupNames.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
             selectedContacts.Text += contact.Name;
             selectedContacts.Text += ",";
         }
