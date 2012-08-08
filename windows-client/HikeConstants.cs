@@ -57,9 +57,12 @@ namespace windows_client
         public static readonly int UPDATE_AVAILABLE = 2;
         public static readonly int CRITICAL_UPDATE = 1;
         public static readonly int NO_UPDATE = 0;
+        public static string ALL_INVITEE = "ai";
+        public static object ALL_INVITEE_JOINED = "aij";
+        public static string TOTAL_CREDITS_PER_MONTH = "tc";
 
         public static class Extras
-	    {
+        {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
             public static readonly string MSISDN = "msisdn";
             public static readonly string ID = "id";

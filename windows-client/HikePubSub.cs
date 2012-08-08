@@ -101,6 +101,8 @@ namespace windows_client
 
         public static readonly string ACCOUNT_DELETED = "accountDeleted";
 
+        public static readonly string INVITEE_NUM_CHANGED = "inviteeNoChanged";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;
