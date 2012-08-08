@@ -352,7 +352,7 @@ namespace windows_client.View
             convMap.Clear();
 
             App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenImage.Visibility = Visibility.Visible;
+            emptyScreenImage.Opacity = 1;
             progressBar.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.IsEnabled = false;
             App.MqttManagerInstance.connect();
@@ -436,7 +436,7 @@ namespace windows_client.View
             if (selectedIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Add(delConvsMenu);
+                    appBar.MenuItems.Insert(1,delConvsMenu);
                 if (appBar.MenuItems.Contains(delAccountMenu))
                     appBar.MenuItems.Remove(delAccountMenu);
             }
@@ -445,7 +445,7 @@ namespace windows_client.View
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
                 if (!appBar.MenuItems.Contains(delAccountMenu))
-                    appBar.MenuItems.Add(delAccountMenu);
+                    appBar.MenuItems.Insert(0,delAccountMenu);
             }
         }
 

@@ -30,6 +30,8 @@ namespace windows_client
 
         public static readonly string END_TYPING = "et";
 
+        public static readonly string INVITE_INFO = "ii";
+
         public static readonly string INVITE = "i";
 
         public static readonly string ICON = "ic";
@@ -189,6 +191,27 @@ namespace windows_client
                     App.UI_UtilsInstance.updateImageInCache(msisdn, imageBytes);
                 });
                 this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+            }
+            else if (INVITE_INFO == type)
+            {
+                JObject data;
+                JToken temp;
+                jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+                if (temp == null)
+                    return;
+                data = temp.ToObject<JObject>();
+                int invited = (int)data[HikeConstants.ALL_INVITEE];
+                int invited_joined = (int)data[HikeConstants.ALL_INVITEE_JOINED];
+                String totalCreditsPerMonth = (string)data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
+                App.appSettings[App.INVITED] = invited;
+                App.appSettings[App.INVITED_JOINED] = invited_joined;
+                
+                if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
+                {
+                    App.appSettings[App.TOTAL_CREDITS_PER_MONTH]= totalCreditsPerMonth;
+                }
+                App.appSettings.Save();
+                this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
             }
             else
             {
