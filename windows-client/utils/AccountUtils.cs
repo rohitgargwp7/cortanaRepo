@@ -60,7 +60,7 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON, POST_PUSHNOTIFICATION_DATA
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -70,8 +70,7 @@ namespace windows_client.utils
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
-
-            //req.Headers["X-MSISDN"] = "918826670738";
+            //req.Headers["X-MSISDN"] = "919810116420";
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -80,7 +79,6 @@ namespace windows_client.utils
 
         public static void postAddressBook(Dictionary<string, List<ContactInfo>> contactListMap, postResponseFunction finalCallbackFunction)
         {
-
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
@@ -146,6 +144,16 @@ namespace windows_client.utils
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PROFILE_ICON, buffer, finalCallbackFunction });
         }
+
+        public static void postPushNotification(string uri, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/device")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PUSHNOTIFICATION_DATA, uri, finalCallbackFunction });
+        }
+
         private static void setParams_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -162,6 +170,7 @@ namespace windows_client.utils
                     string unAuthMSISDN = vars[3] as string;
                     finalCallbackFunction = vars[4] as postResponseFunction;
                     data.Add("set_cookie", "0");
+                    data.Add("devicetype", "windows");
                     if (pin != null)
                     {
                         data.Add("msisdn", unAuthMSISDN);
@@ -212,6 +221,13 @@ namespace windows_client.utils
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
                     return;
+
+                case RequestType.POST_PUSHNOTIFICATION_DATA:
+                    string uri = (string)vars[2];
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    data.Add("dev_token", uri);
+                    data.Add("dev_type", "windows");
+                    break;
 
                 default:
                     break;
