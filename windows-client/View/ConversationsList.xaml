@@ -63,7 +63,7 @@
                                             </StackPanel>
                                             <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->
                                             <StackPanel Orientation="Horizontal" Margin="30 0 0 2">
-                                                <Ellipse Visibility="{Binding IsLastMessageUnread}" Width="16" Height="16" Fill="{StaticResource PhoneAccentBrush}"></Ellipse>
+                                                <!--<Ellipse Visibility="{Binding IsLastMessageUnread}" Width="16" Height="16" Fill="{StaticResource PhoneAccentBrush}"></Ellipse>-->
                                                 <RichTextBox Tag="{Binding LastMessage}" FontSize="22" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
                                             </StackPanel>
                                         </StackPanel>
