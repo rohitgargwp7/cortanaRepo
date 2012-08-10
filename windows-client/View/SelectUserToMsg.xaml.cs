@@ -133,12 +133,12 @@ namespace windows_client.View
             if (this.NavigationContext.QueryString.ContainsKey("param"))
             {
                 /* Add icons */
-                ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
-                composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
-                composeIconButton.Text = "compose";
-                composeIconButton.Click += new EventHandler(startGroup_Click);
-                composeIconButton.IsEnabled = true;
-                appBar.Buttons.Add(composeIconButton);
+                ApplicationBarIconButton doneIconButton = new ApplicationBarIconButton();
+                doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+                doneIconButton.Text = "Done";
+                doneIconButton.Click += new EventHandler(startGroup_Click);
+                doneIconButton.IsEnabled = true;
+                appBar.Buttons.Add(doneIconButton);
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
                 selectedContacts.Visibility = System.Windows.Visibility.Visible;
             }
