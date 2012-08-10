@@ -119,6 +119,7 @@ namespace windows_client.utils
             MemoryStream memStream = new MemoryStream((byte[])thumbnail.Avatar);
             memStream.Seek(0, SeekOrigin.Begin);
             BitmapImage empImage = new BitmapImage();
+            empImage.CreateOptions = BitmapCreateOptions.BackgroundCreation;
             empImage.SetSource(memStream);
             imageCache[msisdn] = empImage;
             return empImage;
