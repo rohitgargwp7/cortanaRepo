@@ -15,7 +15,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        public static readonly string HOST = "staging.im.hike.in";
+        public static readonly string HOST = "im.hike.in";
 
         private static readonly int PORT = 8080;
 
