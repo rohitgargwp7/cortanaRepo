@@ -27,9 +27,7 @@ namespace windows_client.View
         public bool canGoBack = true;
         public List<Group<ContactInfo>> groupedList = null;
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-        private bool textChangedFromTap = false;
         private string charsEntered;
-        private bool isCharEntered = false;
         private bool typedTextDeleted = true;
 
         public class Group<T> : IEnumerable<T>
@@ -255,13 +253,11 @@ namespace windows_client.View
             int c = e.PlatformKeyCode;
             if (Char.IsLetterOrDigit((char)c))
             {
-                isCharEntered = true;
                 charsEntered += Char.ToLower((char)c);
             }
             else if (e.Key == Key.Back)
             {
                 typedTextDeleted = true;
-                isCharEntered = true;
                 int indexOfLastColon = enterNameTxt.Text.LastIndexOf(';');
                 if (indexOfLastColon == enterNameTxt.Text.Length - 1)
                 {
@@ -275,7 +271,7 @@ namespace windows_client.View
                     enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfLastColonSpace + 2);
                     enterNameTxt.Select(indexOfLastColonSpace + 2, 0);
                 }
-                if(typedTextDeleted)
+                if (typedTextDeleted)
                     charsEntered = charsEntered.Substring(0, charsEntered.Length - 1);
             }
         }
@@ -284,30 +280,24 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (textChangedFromTap)
-            {
-                textChangedFromTap = false;
-                return;
-            }
+            enterNameTxt.Focus();
             if (String.IsNullOrEmpty(enterNameTxt.Text))
             {
                 return;
             }
-            if (!isCharEntered)
-                return;
-            isCharEntered = false;
+            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
             if (String.IsNullOrEmpty(charsEntered))
             {
                 contactsListBox.ItemsSource = groupedList;
                 return;
             }
+
             List<Group<ContactInfo>> glistFiltered = getFilteredContactsFromNameOrPhone(charsEntered);
             contactsListBox.ItemsSource = glistFiltered;
         }
 
         private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            textChangedFromTap = true;
             charsEntered = "";
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null)
@@ -321,12 +311,14 @@ namespace windows_client.View
                 groupNames = new List<string>();
             groupNames.Add(contact.Name);
             groupNames.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
-            
+
             string contactNameTemp = "";
-            if(!String.IsNullOrEmpty(enterNameTxt.Text))
+            if (!String.IsNullOrEmpty(enterNameTxt.Text))
                 contactNameTemp = enterNameTxt.Text.Substring(0, enterNameTxt.Text.LastIndexOf("; ") + 2);
             contactNameTemp += contact.Name + "; ";
             enterNameTxt.Text = contactNameTemp;
+            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+            charsEntered = "";
         }
 
         private void refreshContacts_Click(object sender, EventArgs e)
