@@ -547,7 +547,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
-            sendMsgTxtbox.Background = hikeMsgBackground;
+            sendMsgTxtbox.Background = textBoxBackground;
         }
 
         void toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
