@@ -271,7 +271,10 @@ namespace windows_client.View
             delAccountMenu.Text = "delete account";
             delAccountMenu.Click += new EventHandler(deleteAccount_Click);
 
-
+            ApplicationBarMenuItem groupChatMenuItem = new ApplicationBarMenuItem();
+            groupChatMenuItem.Text = "Group Chat";
+            groupChatMenuItem.Click += new EventHandler(createGroup_Click);
+            appBar.MenuItems.Add(groupChatMenuItem);
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -312,6 +315,8 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
+            mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
+            mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
 
         private void removeListeners()
@@ -324,6 +329,8 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
+            mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
+            mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
 
         #endregion
@@ -477,6 +484,12 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void createGroup_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml?param=grpChat", UriKind.Relative));
+        }
+
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
@@ -626,7 +639,6 @@ namespace windows_client.View
         }
 
         #endregion
-
 
         #region Emoticons
         private static Thickness imgMargin = new Thickness(0, 5, 0, 0);

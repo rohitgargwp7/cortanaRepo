@@ -103,6 +103,16 @@ namespace windows_client
 
         public static readonly string INVITEE_NUM_CHANGED = "inviteeNoChanged";
 
+        public static readonly string GROUP_LEFT = "groupLeft";
+
+        public static readonly string GROUP_END = "groupEnd";
+
+        public static readonly string GROUP_NAME_CHANGED = "groupNameChanged";
+
+        public static readonly string PARTICIPANT_JOINED_GROUP = "participantJoinedGroup";
+
+        public static readonly string PARTICIPANT_LEFT_GROUP = "participantLeftGroup";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;
@@ -118,14 +128,14 @@ namespace windows_client
                 mThread = new Thread(new ThreadStart(startPubSub));
                 mThread.Start();
             }
-            catch(ThreadStartException e)
+            catch (ThreadStartException e)
             {
                 // do something here
             }
         }
 
         public void addListener(string type, Listener listener)
-	    {
+        {
             lock (listeners) // enter synchronization here i.e only one thread can enter this part
             {
                 List<Listener> list;
@@ -137,7 +147,7 @@ namespace windows_client
                 }
                 list.Add(listener);
             }
-	    }
+        }
 
         public bool publish(string type, object o)
         {
@@ -152,8 +162,8 @@ namespace windows_client
 
         public void removeListener(string type, Listener listener)
         {
-            List<Listener> l; 
-            listeners.TryGetValue(type , out l);
+            List<Listener> l;
+            listeners.TryGetValue(type, out l);
             if (l != null)
             {
                 l.Remove(listener);
@@ -184,7 +194,7 @@ namespace windows_client
                 object o = op.payload;
 
                 List<Listener> list;
-              
+
                 lock (listeners)  // seems not required here
                 {
                     listeners.TryGetValue(type, out list);

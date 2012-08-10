@@ -174,6 +174,8 @@ namespace windows_client.View
         private void initPageBasedOnState()
         {
             bool isAddUser = false;
+
+            #region OBJECT FROM CONVLIST PAGE
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
             {
                 ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
@@ -188,6 +190,8 @@ namespace windows_client.View
                 isOnHike = convObj.IsOnhike;
                 PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
+            #endregion
+            #region OBJECT FROM SELECT USER PAGE
             else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
             {
                 ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State["objFromSelectUserPage"];
@@ -203,6 +207,13 @@ namespace windows_client.View
                 }
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
             }
+            #endregion
+            #region OBJECT FROM SELECT GROUP PAGE
+            else if (PhoneApplicationService.Current.State.ContainsKey("groupChat"))
+            {
+               //TODO
+            }
+            #endregion
 
             userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
             userName.Text = mContactName;

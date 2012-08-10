@@ -13,12 +13,15 @@ using System.Windows;
 using Microsoft.Phone.UserData;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 
 namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        public List<string> groupMsisdns = null;
+        public List<string> groupNames = null;
         public MyProgressIndicator progress = null;
         public bool canGoBack = true;
         public List<Group<ContactInfo>> groupedList = null;
@@ -104,6 +107,44 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ApplicationBar appBar = new ApplicationBar();
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = true;
+            selectUserPage.ApplicationBar = appBar;
+
+            /* Add Menu Items*/
+            ApplicationBarMenuItem refreshContacts = new ApplicationBarMenuItem();
+            refreshContacts.Text = "Refresh Contacts";
+            refreshContacts.Click += new EventHandler(refreshContacts_Click);
+            appBar.MenuItems.Add(refreshContacts);
+
+            /* represents group chat */
+            if (this.NavigationContext.QueryString.ContainsKey("param"))
+            {
+                /* Add icons */
+                ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+                composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+                composeIconButton.Text = "compose";
+                composeIconButton.Click += new EventHandler(startGroup_Click);
+                composeIconButton.IsEnabled = true;
+                appBar.Buttons.Add(composeIconButton);
+                contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
+                selectedContacts.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                appBar.Mode = ApplicationBarMode.Minimized;
+                contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelected_Click);
+            }
+        }
+
+        private void startGroup_Click(object sender, EventArgs e)
+        {
+            PhoneApplicationService.Current.State["groupChat"] = true;
+            PhoneApplicationService.Current.State["groupMsidns"] = groupMsisdns;
+            PhoneApplicationService.Current.State["groupNames"] = groupNames;
+            string uri = "/View/ChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
         private void bw_LoadAllContacts(object sender, DoWorkEventArgs e)
@@ -207,6 +248,24 @@ namespace windows_client.View
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+            if (contact == null)
+                return;
+            if (groupMsisdns == null)
+                groupMsisdns = new List<string>();
+            groupMsisdns.Add(contact.Msisdn);
+            groupMsisdns.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
+
+            if (groupNames == null)
+                groupNames = new List<string>();
+            groupNames.Add(contact.Name);
+            groupNames.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
+            selectedContacts.Text += contact.Name;
+            selectedContacts.Text += ",";
         }
 
         private void refreshContacts_Click(object sender, EventArgs e)
