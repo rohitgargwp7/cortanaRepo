@@ -140,7 +140,6 @@ namespace windows_client.View
                 doneIconButton.IsEnabled = true;
                 appBar.Buttons.Add(doneIconButton);
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
-                selectedContacts.Visibility = System.Windows.Visibility.Visible;
             }
             else
             {
