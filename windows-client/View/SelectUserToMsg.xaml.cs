@@ -30,7 +30,7 @@ namespace windows_client.View
         private bool textChangedFromTap = false;
         private string charsEntered;
         private bool isCharEntered = false;
-
+        private bool typedTextDeleted = true;
 
         public class Group<T> : IEnumerable<T>
         {
@@ -260,7 +260,7 @@ namespace windows_client.View
             }
             else if (e.Key == Key.Back)
             {
-                bool typedTextDeleted = true;
+                typedTextDeleted = true;
                 isCharEntered = true;
                 int indexOfLastColon = enterNameTxt.Text.LastIndexOf(';');
                 if (indexOfLastColon == enterNameTxt.Text.Length - 1)
@@ -321,9 +321,12 @@ namespace windows_client.View
                 groupNames = new List<string>();
             groupNames.Add(contact.Name);
             groupNames.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
-            string contactNameTemp = contact.Name + "; ";
-            enterNameTxt.Text += contactNameTemp;
-            //            enterNameTxt.Text += ",";
+            
+            string contactNameTemp = "";
+            if(!String.IsNullOrEmpty(enterNameTxt.Text))
+                contactNameTemp = enterNameTxt.Text.Substring(0, enterNameTxt.Text.LastIndexOf("; ") + 2);
+            contactNameTemp += contact.Name + "; ";
+            enterNameTxt.Text = contactNameTemp;
         }
 
         private void refreshContacts_Click(object sender, EventArgs e)
