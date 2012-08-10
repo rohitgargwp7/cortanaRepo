@@ -6,6 +6,8 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using System.Windows;
 using System.Threading;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace windows_client
 {
@@ -213,6 +215,54 @@ namespace windows_client
                 App.appSettings.Save();
                 this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
             }
+
+            #region GROUP CHAT RELATED
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
+            {
+                JArray arr = (JArray)jsonObj[HikeConstants.DATA];
+                if (arr==null || !arr.HasValues)
+                {
+                    return;
+                }
+                ConvMessage convMessage = new ConvMessage(jsonObj, false);                
+                ConversationListObject obj =  MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
+               
+                Debug.WriteLine("NetworkManager", "Group is new");
+                
+                object[] vals = new object[2];
+                vals[0] = convMessage;
+                vals[1] = obj;
+                
+                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+            }
+            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE.equals(type)) //Group chat leave
+            {
+                String groupId = jsonObj.optString(HikeConstants.TO);
+                String msisdn = jsonObj.optString(HikeConstants.FROM);
+                if (this.convDb.setParticipantLeft(groupId, msisdn) > 0)
+                {
+                    saveGroupStatusMsg(jsonObj);
+                }
+            }*/
+            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
+            {
+                String groupname = (string)jsonObj[HikeConstants.DATA];
+                String groupId = (string)jsonObj[HikeConstants.TO];
+
+                if (this.convDb.setGroupName(groupId, groupname) > 0)
+                {
+                    this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
+                }
+            }
+            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END.equals(type)) //Group chat end
+            {
+                String groupId = jsonObj.optString(HikeConstants.TO);
+                if (this.convDb.setGroupDead(groupId) > 0)
+                {
+                    saveGroupStatusMsg(jsonObj);
+                }
+            }*/
+            #endregion
             else
             {
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);

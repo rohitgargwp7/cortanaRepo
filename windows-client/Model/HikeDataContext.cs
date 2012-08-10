@@ -12,6 +12,9 @@ namespace windows_client.Model
 
         public Table<ConversationListObject> conversations;
 
+        public Table<GroupInfo> groupInfo;
+
+        public Table<GroupMembers> groupMembers;
     }
 
     public class HikeUsersDb : DataContext

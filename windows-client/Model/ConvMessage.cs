@@ -7,6 +7,7 @@ using System.Data.Linq;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media.Imaging;
+using System.Text;
 
 namespace windows_client.Model
 {
@@ -26,7 +27,7 @@ namespace windows_client.Model
         private bool _isSms;
         private string _groupParticipant;
         private MessageMetadata metadata;
-
+        private ParticipantInfoState participantInfoState;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -47,6 +48,33 @@ namespace windows_client.Model
             HIKE_SENT,
             SMS_SENT
         }
+
+        public enum ParticipantInfoState
+        {
+            NO_INFO, // This is a normal message
+            PARTICIPANT_LEFT, // The participant has left
+            PARTICIPANT_JOINED, // The participant has joined
+            GROUP_END // Group chat has ended
+        }
+
+        public static ParticipantInfoState fromJSON(JObject obj)
+        {
+            string type = (string)obj[HikeConstants.TYPE];
+            if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
+            {
+                return ParticipantInfoState.PARTICIPANT_JOINED;
+            }
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
+            {
+                return ParticipantInfoState.PARTICIPANT_LEFT;
+            }
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
+            {
+                return ParticipantInfoState.GROUP_END;
+            }
+            return ParticipantInfoState.NO_INFO;
+        }
+
 
         #region Messages Table member
 
@@ -229,6 +257,19 @@ namespace windows_client.Model
             }
         }
 
+        public ParticipantInfoState GrpParticipantState
+        {
+            get 
+            {
+                return participantInfoState;
+            }
+            set
+            {
+                if (value != participantInfoState)
+                    participantInfoState = value;
+            }
+        }
+
         public ConvMessage(string message, string msisdn, long timestamp, State msgState)
             : this(message, msisdn, timestamp, msgState, -1, -1)
         {
@@ -251,7 +292,19 @@ namespace windows_client.Model
 
         public ConvMessage(JObject obj)
         {
-            _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
+            JToken val = null;
+            obj.TryGetValue(HikeConstants.TO,out val);
+            if (val != null) // represents group message
+            {
+                _msisdn = val.ToString();
+                _groupParticipant = (string)obj[HikeConstants.FROM];
+            }
+            else
+            {
+                _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
+                _groupParticipant = null;
+            }
+            
             JObject data = (JObject)obj[HikeConstants.DATA];
             JToken msg;
 
@@ -278,6 +331,7 @@ namespace windows_client.Model
             this._messageId = -1;
             string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
             this.MappedMessageId = System.Int64.Parse(mappedMsgID);
+            participantInfoState = ParticipantInfoState.NO_INFO;
         }
 
         public ConvMessage()
@@ -289,7 +343,7 @@ namespace windows_client.Model
             JObject obj = new JObject();
             JObject data = new JObject();
 
-            if(isHikeMsg)
+            if (isHikeMsg)
                 data[HikeConstants.HIKE_MESSAGE] = _message;
             else
                 data[HikeConstants.SMS_MESSAGE] = _message;
@@ -490,5 +544,44 @@ namespace windows_client.Model
             }
             return obj;
         }
+
+        public ConvMessage(JObject obj, bool isSelfGenerated)
+        {
+            // GCL or GCJ
+            // If the message is a group message we get a TO field consisting of the Group ID
+            string toVal = obj[HikeConstants.TO].ToString();
+            this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
+            this._groupParticipant = toVal == null ? (string)obj[HikeConstants.FROM] : null;
+
+            this.participantInfoState = fromJSON(obj);
+
+            this.metadata = new MessageMetadata(obj);
+            if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
+            {
+                JArray arr = (JArray)obj[HikeConstants.DATA];
+                StringBuilder newParticipants = new StringBuilder();
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    JObject nameMsisdn = arr[i].ToObject<JObject>();
+                    newParticipants.Append((string)nameMsisdn[HikeConstants.NAME] + ", ");
+                }
+                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " " + "joined conversation";
+            }
+            else
+            {
+                if (this.participantInfoState == ParticipantInfoState.GROUP_END)
+                {
+                    this._message = "group chat end";
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                    //this._message = ((GroupConversation)groupConversation).getGroupParticipant(obj.getString(HikeConstants.DATA)).getContactInfo().getFirstName() +  " " + "left conversation";
+                }
+            }
+            this._timestamp = TimeUtils.getCurrentTimeStamp() / 1000;
+            this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
+        }
+
     }
 }

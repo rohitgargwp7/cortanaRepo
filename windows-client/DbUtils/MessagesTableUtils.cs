@@ -6,6 +6,7 @@ using windows_client.View;
 using System;
 using windows_client.utils;
 using System.Data.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.DbUtils
 {
@@ -67,6 +68,35 @@ namespace windows_client.DbUtils
                     }
                 });
             }
+        }
+
+        // this is called in case of gcj
+        public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj)
+        {            
+            ConversationListObject obj = null;
+            List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
+            if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
+            {               
+                string groupName = Utils.defaultGroupName(gmList); // here name shud be what stored in contacts
+                obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
+                ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
+
+                GroupTableUtils.addGroupParticipants(gmList);
+                GroupInfo gi = new GroupInfo(gmList[0].GroupId, null, convMsg.GroupParticipant, true);
+                GroupTableUtils.addGroupInfo(gi);
+            }
+            else // add a member to a group
+            {
+                List<GroupMembers> existingMembers = GroupTableUtils.getGroupMembers(convMsg.Msisdn);
+                obj = ConversationsList.ConvMap[convMsg.Msisdn];
+                //obj.ContactName = groupName;
+                obj.LastMessage = convMsg.Message;
+                obj.MessageStatus = convMsg.MessageStatus;
+                obj.TimeStamp = convMsg.Timestamp;
+                ConversationTableUtils.updateConversation(obj);
+            }
+            addMessage(convMsg);
+            return obj;
         }
 
         public static ConversationListObject addChatMessage(ConvMessage convMsg)

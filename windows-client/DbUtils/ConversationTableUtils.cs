@@ -32,6 +32,24 @@ namespace windows_client.DbUtils
                 }
             } 
         }
+
+        public static ConversationListObject addGroupConversation(ConvMessage convMessage,string groupName)
+        {
+             /*
+             * Msisdn : GroupId
+             * Contactname : GroupOwner
+             */
+            ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
+                true, convMessage.Timestamp, null, convMessage.MessageStatus);
+
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                context.conversations.InsertOnSubmit(obj);
+                context.SubmitChanges();
+            }
+            return obj;
+        }
+
         public static ConversationListObject addConversation(ConvMessage convMessage)
         {
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);

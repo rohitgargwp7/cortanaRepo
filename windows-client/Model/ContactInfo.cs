@@ -159,29 +159,6 @@ namespace windows_client.Model
             }
         }
 
-        //public string InvitedStringVisible
-        //{
-        //    get
-        //    {
-        //        if (IsInvited)
-        //            return "visible";
-        //        else
-        //            return "collapsed";
-        //    }
-        //}
-
-        //public string InviteButtonVisible
-        //{
-        //    get
-        //    {
-        //        if (IsInvited)
-        //            return "collapsed";
-        //        else
-        //            return "visible";
-        //    }
-        //}
-
-        
         
         public ContactInfo()
         {

@@ -324,6 +324,8 @@ namespace windows_client.View
             enterNameTxt.Text = contactNameTemp;
             enterNameTxt.Select(enterNameTxt.Text.Length, 0);
             charsEntered = "";
+            selectedContacts.Text += contact.Name;
+            selectedContacts.Text += ",";
         }
 
         private void refreshContacts_Click(object sender, EventArgs e)

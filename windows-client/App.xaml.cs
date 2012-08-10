@@ -337,7 +337,7 @@ namespace windows_client
             // Running on a device / emulator without debugging
             e.Handled = true;
             Error.Exception = e.ExceptionObject;
-            Debug.WriteLine("UNHANDLED EXCEPTION : {0}",e);
+            Debug.WriteLine("UNHANDLED EXCEPTION : {0}",e.ExceptionObject.StackTrace);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);

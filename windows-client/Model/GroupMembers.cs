@@ -27,6 +27,13 @@ namespace windows_client.Model
         [Column(IsVersion = true)]
         private Binary version;
 
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
+        public int Id
+        {
+            get;
+            set;
+        }
+
         [Column]
         public string GroupId
         {
@@ -97,6 +104,22 @@ namespace windows_client.Model
                     NotifyPropertyChanged("HasLeft");
                 }
             }
+        }
+
+        public GroupMembers()
+        {
+        }
+
+        public GroupMembers(string gId, string msisdn, string name, bool hasLeft)
+        {
+            _groupId = gId;
+            _msisdn = msisdn;
+            _name = name;
+            _hasLeft = hasLeft;
+        }
+
+        public GroupMembers(string gId, string msisdn, string name):this(gId,msisdn,name,false)
+        {
         }
 
         #region INotifyPropertyChanged Members

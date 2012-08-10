@@ -7,6 +7,37 @@ namespace windows_client.DbUtils
 {
     public static class DbCompiledQueries
     {
+        #region GroupTable Queries
+
+        public static Func<HikeChatsDb,string ,IQueryable<GroupMembers>> GetGroupMembersForGroupID
+        {
+            get
+            {
+                Func<HikeChatsDb,string ,IQueryable<GroupMembers>> q =
+                     CompiledQuery.Compile<HikeChatsDb, string, IQueryable<GroupMembers>>
+                     ((HikeChatsDb hdc,string grpId) =>
+                         from o in hdc.groupMembers
+                         where o.GroupId == grpId 
+                         select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, string, IQueryable<GroupMembers>> GetActiveGroupMembersForGroupID
+        {
+            get
+            {
+                Func<HikeChatsDb, string, IQueryable<GroupMembers>> q =
+                     CompiledQuery.Compile<HikeChatsDb, string, IQueryable<GroupMembers>>
+                     ((HikeChatsDb hdc, string grpId) =>
+                         from o in hdc.groupMembers
+                         where o.GroupId == grpId && o.HasLeft == false
+                         select o);
+                return q;
+            }
+        }
+        #endregion
+
         #region UsersTable Queries
 
         public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllContacts

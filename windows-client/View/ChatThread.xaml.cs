@@ -32,7 +32,7 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = "UNBLOCK";
 
         private string mContactNumber;
-        private string mContactName;
+        private string mContactName = null;
         private string lastText = "";
 
         private bool mUserIsBlocked;
@@ -209,10 +209,34 @@ namespace windows_client.View
             }
             #endregion
             #region OBJECT FROM SELECT GROUP PAGE
+
             else if (PhoneApplicationService.Current.State.ContainsKey("groupChat"))
             {
-               //TODO
+                // here always create a new group
+                string uid = AccountUtils.Token;
+                string groupId = mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
+                List<string> selectedParticipantMsisdn = PhoneApplicationService.Current.State["groupMsidns"] as List<string>;
+                List<string> selectedParticipantNames = PhoneApplicationService.Current.State["groupNames"] as List<string>;
+                PhoneApplicationService.Current.State.Remove("groupChat");
+                PhoneApplicationService.Current.State.Remove("groupMsidns");
+                PhoneApplicationService.Current.State.Remove("groupNames");
+
+                List<GroupMembers> participantList = new List<GroupMembers>(selectedParticipantMsisdn.Count);
+                for (int i = 0; i < selectedParticipantMsisdn.Count; i++)
+                {
+                    GroupMembers gm = new GroupMembers(groupId, selectedParticipantMsisdn[i], selectedParticipantNames[i]);
+                    participantList.Add(gm);
+                }
+                JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, participantList);
+               
+                GroupTableUtils.addGroupParticipants(participantList);
+
+                ConvMessage cm = new ConvMessage(obj,true);
+                sendMsg(cm);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                mContactName = string.IsNullOrEmpty(mContactName)==true?Utils.defaultGroupName(participantList):mContactName;
             }
+
             #endregion
 
             userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
@@ -235,7 +259,34 @@ namespace windows_client.View
             {
                 // some error handling
             }
-            //
+        }
+
+        private JObject createGroupJsonPacket(string type, List<GroupMembers> grpList)
+        {
+            JObject obj = new JObject();
+            try
+            {
+                obj[HikeConstants.TYPE] = type;
+                obj[HikeConstants.TO] = grpList[0].GroupId;
+                if (type == (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN))
+                {
+                    JArray array = new JArray();
+                    for (int i = 0; i < grpList.Count; i++)
+                    {
+                        JObject nameMsisdn = new JObject();
+                        nameMsisdn[HikeConstants.NAME] = grpList[i].Name;
+                        nameMsisdn[HikeConstants.MSISDN] = grpList[i].Msisdn;
+                        array.Add(nameMsisdn);
+                    }
+                    obj[HikeConstants.DATA] = array;
+                }
+                Debug.WriteLine("GROUP JSON : "+obj.ToString());
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("ConvMessage", "invalid json message", e);
+            }
+            return obj;
         }
 
         #region APP BAR
@@ -550,7 +601,12 @@ namespace windows_client.View
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
+            sendMsg(convMessage);
+           
+        }
 
+        private void sendMsg(ConvMessage convMessage)
+        {
             this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);

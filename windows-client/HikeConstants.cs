@@ -4,33 +4,33 @@ namespace windows_client
 {
     public class HikeConstants
     {
-        public static readonly String MESSAGE = "msg";
-        public static readonly String UI_TOPIC = "/u";
-        public static readonly String APP_TOPIC = "/a";
-        public static readonly String SERVICE_TOPIC = "/s";
-        public static readonly String PUBLISH_TOPIC = "/p";
+        public static readonly string MESSAGE = "msg";
+        public static readonly string UI_TOPIC = "/u";
+        public static readonly string APP_TOPIC = "/a";
+        public static readonly string SERVICE_TOPIC = "/s";
+        public static readonly string PUBLISH_TOPIC = "/p";
 
-        public static readonly String TYPE = "t";
-        public static readonly String DATA = "d";
-        public static readonly String TO = "to";
-        public static readonly String FROM = "f";
+        public static readonly string TYPE = "t";
+        public static readonly string DATA = "d";
+        public static readonly string TO = "to";
+        public static readonly string FROM = "f";
 
-        public static readonly String HIKE_MESSAGE = "hm";
-        public static readonly String SMS_MESSAGE = "sm";
-        public static readonly String TIMESTAMP = "ts";
-        public static readonly String MESSAGE_ID = "i";
-        public static readonly String METADATA = "md";
-        public static readonly String METADATA_DND = "dnd";
-        public static readonly String ANALYTICS_EVENT = "ae";
+        public static readonly string HIKE_MESSAGE = "hm";
+        public static readonly string SMS_MESSAGE = "sm";
+        public static readonly string TIMESTAMP = "ts";
+        public static readonly string MESSAGE_ID = "i";
+        public static readonly string METADATA = "md";
+        public static readonly string METADATA_DND = "dnd";
+        public static readonly string ANALYTICS_EVENT = "ae";
 
-        public static readonly String SOUND_PREF = "soundPref";
-        public static readonly String VIBRATE_PREF = "vibratePref";
-        public static readonly String HIKEBOT = "TD-HIKE";
+        public static readonly string SOUND_PREF = "soundPref";
+        public static readonly string VIBRATE_PREF = "vibratePref";
+        public static readonly string HIKEBOT = "TD-HIKE";
 
-        public static readonly String DONE = "Done";
-        public static readonly String PIN_ERROR = "PinError";
-        public static readonly String ADDRESS_BOOK_ERROR = "AddressBookError";
-        public static readonly String CHANGE_NUMBER = "ChangeNumber";
+        public static readonly string DONE = "Done";
+        public static readonly string PIN_ERROR = "PinError";
+        public static readonly string ADDRESS_BOOK_ERROR = "AddressBookError";
+        public static readonly string CHANGE_NUMBER = "ChangeNumber";
         /* how long to wait between sending publish and receiving an acknowledgement */
 
         public static readonly long MESSAGE_DELIVERY_TIMEOUT = 5 * 1000;
@@ -51,7 +51,7 @@ namespace windows_client
         public static readonly int RECONNECT_TIME = 10; /* 10 seconds */
 
         public static readonly int HIKE_SYSTEM_NOTIFICATION = 0;
-        public static readonly String ADAPTER_NAME = "hikeadapter";
+        public static readonly string ADAPTER_NAME = "hikeadapter";
 
         /* constants for defining what to do after checking for updates*/
         public static readonly int UPDATE_AVAILABLE = 2;
@@ -62,6 +62,8 @@ namespace windows_client
         public static string TOTAL_CREDITS_PER_MONTH = "tc";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
+        public static string MSISDN="msisdn";
+        public static string NAME = "name";
 
         public static class Extras
         {
@@ -88,5 +90,13 @@ namespace windows_client
             public static readonly string KEEP_MESSAGE = "keepMessage";
         }
 
+        public static class MqttMessageTypes
+        {
+
+            public static readonly string GROUP_CHAT_JOIN = "gcj";
+            public static readonly string GROUP_CHAT_LEAVE = "gcl";
+            public static readonly string GROUP_CHAT_END = "gce";
+            public static readonly string GROUP_CHAT_NAME = "gcn";
+        }
     }
 }

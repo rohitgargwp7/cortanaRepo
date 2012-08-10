@@ -22,6 +22,16 @@ namespace windows_client.Model
         string _groupOwner;
         bool _groupAlive;
 
+        public GroupInfo() { }
+
+        public GroupInfo(string grpId,string grpName,string grpOwner,bool isGrpAlive)
+        {
+            _groupId = grpId;
+            _groupName = grpName;
+            _groupOwner = grpOwner;
+            _groupAlive = isGrpAlive;
+        }
+
         [Column(IsVersion = true)]
         private Binary version;
 
