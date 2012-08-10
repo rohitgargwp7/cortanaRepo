@@ -631,6 +631,19 @@ namespace windows_client.View
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 });
             }
+
+            #region GROUP NAME CHANGED
+
+            else if (HikePubSub.GROUP_NAME_CHANGED == type)
+            {
+                object[] vals = (object[])obj;
+                string groupId = (string)vals[0];
+                string groupName = (string)vals[1];
+                ConversationListObject cObj = convMap[groupId];
+                cObj.ContactName = groupName;
+            }
+
+            #endregion
         }
 
         #endregion

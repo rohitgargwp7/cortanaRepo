@@ -44,6 +44,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("ContactName");
                     _contactName = value;
                     NotifyPropertyChanged("ContactName");
+                    NotifyPropertyChanged("NameToShow");
                 }
             }
         }

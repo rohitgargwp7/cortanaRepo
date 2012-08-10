@@ -50,5 +50,15 @@ namespace windows_client.DbUtils
             }
             
         }
+
+        public static void updateGroupName(string groupId, string groupName)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                cObj.GroupName = groupName;
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
     }
 }

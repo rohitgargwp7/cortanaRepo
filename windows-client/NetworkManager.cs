@@ -244,15 +244,17 @@ namespace windows_client
                     saveGroupStatusMsg(jsonObj);
                 }
             }*/
-            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
             {
-                String groupname = (string)jsonObj[HikeConstants.DATA];
-                String groupId = (string)jsonObj[HikeConstants.TO];
+                string groupName = (string)jsonObj[HikeConstants.DATA];
+                string groupId = (string)jsonObj[HikeConstants.TO];
 
-                if (this.convDb.setGroupName(groupId, groupname) > 0)
-                {
-                    this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
-                }
+                object[] vals = new object[2];
+                vals[0] = groupId;
+                vals[1] = groupName;
+                this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
+                ConversationTableUtils.updateGroupName(groupId,groupName);
+                GroupTableUtils.updateGroupName(groupId, groupName);
             }
             /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END.equals(type)) //Group chat end
             {

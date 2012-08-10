@@ -36,6 +36,21 @@ namespace windows_client.DbUtils
                 return q;
             }
         }
+
+        public static Func<HikeChatsDb, string, IQueryable<GroupInfo>> GetGroupInfoForID
+        {
+            get
+            {
+                Func<HikeChatsDb, string, IQueryable<GroupInfo>> q =
+                     CompiledQuery.Compile<HikeChatsDb, string, IQueryable<GroupInfo>>
+                     ((HikeChatsDb hdc, string grpId) =>
+                         from o in hdc.groupInfo
+                         where o.GroupId == grpId
+                         select o);
+                return q;
+            }
+        }
+
         #endregion
 
         #region UsersTable Queries

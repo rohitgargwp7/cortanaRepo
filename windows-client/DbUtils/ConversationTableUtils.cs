@@ -110,7 +110,15 @@ namespace windows_client.DbUtils
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
-
+        public static void updateGroupName(string grpId,string groupName)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, grpId).FirstOrDefault();
+                cObj.ContactName = groupName;
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
         internal static void updateConversation(List<ContactInfo> cn)
         {
             bool shouldSubmit = false;

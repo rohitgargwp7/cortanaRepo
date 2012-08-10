@@ -228,13 +228,13 @@ namespace windows_client.View
                     participantList.Add(gm);
                 }
                 JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, participantList);
-               
+
                 GroupTableUtils.addGroupParticipants(participantList);
 
-                ConvMessage cm = new ConvMessage(obj,true);
+                ConvMessage cm = new ConvMessage(obj, true);
                 sendMsg(cm);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                mContactName = string.IsNullOrEmpty(mContactName)==true?Utils.defaultGroupName(participantList):mContactName;
+                mContactName = string.IsNullOrEmpty(mContactName) == true ? Utils.defaultGroupName(participantList) : mContactName;
             }
 
             #endregion
@@ -280,7 +280,7 @@ namespace windows_client.View
                     }
                     obj[HikeConstants.DATA] = array;
                 }
-                Debug.WriteLine("GROUP JSON : "+obj.ToString());
+                Debug.WriteLine("GROUP JSON : " + obj.ToString());
             }
             catch (Exception e)
             {
@@ -502,6 +502,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
+            mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
 
         private void removeListeners()
@@ -516,6 +517,7 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.TYPING_CONVERSATION, this);
             mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
+            mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
         #endregion
 
@@ -602,7 +604,7 @@ namespace windows_client.View
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
             sendMsg(convMessage);
-           
+
         }
 
         private void sendMsg(ConvMessage convMessage)
@@ -1170,6 +1172,25 @@ namespace windows_client.View
                     ConvMessage c = incomingMessages[i];
                     if (!c.IsSent)
                         c.NotifyPropertyChanged("AvatarImage");
+                }
+            }
+
+            #endregion
+
+            #region GROUP NAME CHANGED
+
+            else if (HikePubSub.GROUP_NAME_CHANGED == type)
+            {
+                object[] vals = (object[])obj;
+                string groupId = (string)vals[0];
+                string groupName = (string)vals[1];
+                if (mContactNumber == groupId)
+                {
+                    mContactName = groupName;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        userName.Text = mContactName;
+                    });
                 }
             }
 
