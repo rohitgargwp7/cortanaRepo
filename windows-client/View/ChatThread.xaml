@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:c4fToolkit="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -56,14 +57,29 @@
                             </Image.Source>
                         </Image>
 
-                        <StackPanel Orientation="Vertical">
+                        <c4fToolkit:ChatBubble  ChatBubbleDirection="{Binding ChatBubbleDirection}" Background="{Binding BubbleBackground}">
+                            <StackPanel Width="315" Orientation="Vertical">
+                                <RichTextBox Tag="{Binding Message}" Foreground="Black" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
+                                <!--<TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>-->
+                                <TextBlock FontSize="15" Margin="0,2,15,2" Height="25" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
+                            </StackPanel>
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu Name="ctxMenu">
+                                    <toolkit:MenuItem Header="Copy"  Tap="MenuItem_Tap_Copy"/>
+                                    <toolkit:MenuItem Header="Forward"  Tap="MenuItem_Tap_Forward"/>
+                                    <toolkit:MenuItem Header="Delete"  Tap="MenuItem_Tap_Delete"/>
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
+                        </c4fToolkit:ChatBubble>
+
+                        <!--<StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
 
                                 <StackPanel Orientation="Vertical">
                                     <RichTextBox Tag="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
-                                    <!--<TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>-->
                                     <TextBlock FontSize="15" Height="25" Margin="0,2,15,2" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
                                 </StackPanel>
+                                
                                 <toolkit:ContextMenuService.ContextMenu>
                                     <toolkit:ContextMenu Name="ctxMenu">
                                         <toolkit:MenuItem Header="Copy"  Tap="MenuItem_Tap_Copy"/>
@@ -72,7 +88,8 @@
                                     </toolkit:ContextMenu>
                                 </toolkit:ContextMenuService.ContextMenu>
                             </StackPanel>
-                        </StackPanel>
+                        </StackPanel>-->
+                        
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
