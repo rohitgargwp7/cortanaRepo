@@ -29,7 +29,9 @@ namespace windows_client.View
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
         private string charsEntered;
         private bool typedTextDeleted = true;
-
+        private readonly int maxSMSUsersAllowed = 5;
+        private readonly int maxUsersAllowed = 10;
+        private int smsUserCount = 0;
         public class Group<T> : IEnumerable<T>
         {
             public Group(string name, List<T> items)
@@ -268,6 +270,8 @@ namespace windows_client.View
                         enterNameTxt.Text = "";
                         return;
                     }
+                    groupMsisdns.RemoveAt(groupMsisdns.Count - 1);
+                    groupNames.RemoveAt(groupNames.Count - 1);
                     enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfLastColonSpace + 2);
                     enterNameTxt.Select(indexOfLastColonSpace + 2, 0);
                 }
@@ -276,11 +280,9 @@ namespace windows_client.View
             }
         }
 
-
-
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-            enterNameTxt.Focus();
+//            enterNameTxt.Focus();
             if (String.IsNullOrEmpty(enterNameTxt.Text))
             {
                 return;
@@ -291,7 +293,6 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = groupedList;
                 return;
             }
-
             List<Group<ContactInfo>> glistFiltered = getFilteredContactsFromNameOrPhone(charsEntered);
             contactsListBox.ItemsSource = glistFiltered;
         }
@@ -300,18 +301,22 @@ namespace windows_client.View
         {
             charsEntered = "";
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+
             if (contact == null)
                 return;
             if (groupMsisdns == null)
                 groupMsisdns = new List<string>();
+            if (smsUserCount == maxSMSUsersAllowed || groupMsisdns.Count == maxUsersAllowed)
+                return;
+
             groupMsisdns.Add(contact.Msisdn);
-            groupMsisdns.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
 
             if (groupNames == null)
                 groupNames = new List<string>();
             groupNames.Add(contact.Name);
-            groupNames.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
 
+            if (!contact.OnHike)
+                smsUserCount++;
             string contactNameTemp = "";
             if (!String.IsNullOrEmpty(enterNameTxt.Text))
                 contactNameTemp = enterNameTxt.Text.Substring(0, enterNameTxt.Text.LastIndexOf("; ") + 2);
