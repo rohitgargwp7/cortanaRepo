@@ -92,7 +92,7 @@ namespace windows_client.View
                 pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
                 System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                //AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
             }
             convMap = new Dictionary<string, ConversationListObject>();
             progressBar.Visibility = System.Windows.Visibility.Visible;
@@ -120,7 +120,7 @@ namespace windows_client.View
             }
             //Dispatcher.BeginInvoke(() =>
             //{
-           //    MessageBox.Show("Msisdn is " + msisdn);
+            //    MessageBox.Show("Msisdn is " + msisdn);
             //});
         }
 
@@ -243,7 +243,7 @@ namespace windows_client.View
             /* Add icons */
             ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
-            composeIconButton.Text = "compose";
+            composeIconButton.Text = "Compose";
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
@@ -254,7 +254,6 @@ namespace windows_client.View
             groupChatIconButton.Click += new EventHandler(createGroup_Click);
             groupChatIconButton.IsEnabled = true;
             appBar.Buttons.Add(groupChatIconButton);
-
 
             /* Add Menu Items*/
             ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
@@ -488,6 +487,11 @@ namespace windows_client.View
 
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+        }
+
+        private void groupChatBtn_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }

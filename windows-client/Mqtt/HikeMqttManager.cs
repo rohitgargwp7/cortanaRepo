@@ -98,6 +98,8 @@ namespace windows_client.Mqtt
             password = (string)App.appSettings[App.TOKEN_SETTING];
             uid = topic = (string)App.appSettings[App.UID_SETTING];
             clientId = (string)App.appSettings[App.MSISDN_SETTING];
+            if (!String.IsNullOrEmpty(clientId))
+                clientId += ":1";
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 

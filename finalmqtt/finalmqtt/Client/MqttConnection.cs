@@ -420,6 +420,10 @@ namespace finalmqtt.Client
         protected void handleMessage(ConnAckMessage msg)
         {
             connackReceived = true;
+            if (msg.getStatus() != ConnAckMessage.ConnectionStatus.ACCEPTED)
+            {
+                connectCallback.onFailure(new ConnectionException("Unable to connect to server", msg.getStatus()));
+            }
             if (mqttListener != null)
                 mqttListener.onConnected();
             connectCallback.onSuccess();
