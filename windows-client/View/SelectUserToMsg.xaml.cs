@@ -14,6 +14,7 @@ using Microsoft.Phone.UserData;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using System.Windows.Input;
 
 
 namespace windows_client.View
@@ -26,6 +27,10 @@ namespace windows_client.View
         public bool canGoBack = true;
         public List<Group<ContactInfo>> groupedList = null;
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+        private bool textChangedFromTap = false;
+        private string charsEntered;
+        private bool isCharEntered = false;
+
 
         public class Group<T> : IEnumerable<T>
         {
@@ -60,7 +65,7 @@ namespace windows_client.View
             {
                 get
                 {
-                    return (Items==null || Items.Count ==0)?false:true;
+                    return (Items == null || Items.Count == 0) ? false : true;
                 }
             }
 
@@ -102,6 +107,12 @@ namespace windows_client.View
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
             bw.RunWorkerAsync();
+            this.Loaded += new RoutedEventHandler(SelectUserPage_Loaded);
+        }
+
+        void SelectUserPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -156,7 +167,7 @@ namespace windows_client.View
             }
             else
             {
-                List<ContactInfo>  allContactsList = UsersTableUtils.getAllContactsByGroup();
+                List<ContactInfo> allContactsList = UsersTableUtils.getAllContactsByGroup();
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     groupedList = getGroupedList(allContactsList);
@@ -172,8 +183,8 @@ namespace windows_client.View
         {
             if (allContactsList == null || allContactsList.Count == 0)
                 return null;
-            
-            List<Group<ContactInfo>> glist = createGroups();              
+
+            List<Group<ContactInfo>> glist = createGroups();
             for (int i = 0; i < allContactsList.Count; i++)
             {
                 ContactInfo c = allContactsList[i];
@@ -208,18 +219,6 @@ namespace windows_client.View
             return key.ToString();
         }
 
-        private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string charsEnetered = enterNameTxt.Text.ToLower();
-            if (String.IsNullOrEmpty(charsEnetered))
-            {
-                contactsListBox.ItemsSource = groupedList;
-                return;
-            }
-            List<Group<ContactInfo>> glistFiltered = getFilteredContactsFromNameOrPhone(charsEnetered);
-            contactsListBox.ItemsSource = glistFiltered;
-        }
-
         private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhone(string charsEnetered)
         {
             if (groupedList == null || groupedList.Count == 0)
@@ -227,14 +226,14 @@ namespace windows_client.View
             List<Group<ContactInfo>> glistFiltered = createGroups();
             for (int i = 0; i < groupedList.Count; i++)
             {
-                for(int j=0;j<(groupedList[i].Items==null?0:groupedList[i].Items.Count);j++)
+                for (int j = 0; j < (groupedList[i].Items == null ? 0 : groupedList[i].Items.Count); j++)
                 {
                     ContactInfo cn = groupedList[i].Items[j];
                     if (cn.Name.ToLower().Contains(charsEnetered) || cn.Msisdn.Contains(charsEnetered) || cn.PhoneNo.Contains(charsEnetered))
                     {
                         glistFiltered[i].Items.Add(cn);
                     }
-                }              
+                }
             }
             return glistFiltered;
         }
@@ -250,8 +249,66 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
+
+        private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            int c = e.PlatformKeyCode;
+            if (Char.IsLetterOrDigit((char)c))
+            {
+                isCharEntered = true;
+                charsEntered += Char.ToLower((char)c);
+            }
+            else if (e.Key == Key.Back)
+            {
+                bool typedTextDeleted = true;
+                isCharEntered = true;
+                int indexOfLastColon = enterNameTxt.Text.LastIndexOf(';');
+                if (indexOfLastColon == enterNameTxt.Text.Length - 1)
+                {
+                    typedTextDeleted = false;
+                    int indexOfLastColonSpace = enterNameTxt.Text.LastIndexOf("; ");
+                    if (indexOfLastColonSpace == -1)
+                    {
+                        enterNameTxt.Text = "";
+                        return;
+                    }
+                    enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfLastColonSpace + 2);
+                    enterNameTxt.Select(indexOfLastColonSpace + 2, 0);
+                }
+                if(typedTextDeleted)
+                    charsEntered = charsEntered.Substring(0, charsEntered.Length - 1);
+            }
+        }
+
+
+
+        private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (textChangedFromTap)
+            {
+                textChangedFromTap = false;
+                return;
+            }
+            if (String.IsNullOrEmpty(enterNameTxt.Text))
+            {
+                return;
+            }
+            if (!isCharEntered)
+                return;
+            isCharEntered = false;
+            if (String.IsNullOrEmpty(charsEntered))
+            {
+                contactsListBox.ItemsSource = groupedList;
+                return;
+            }
+            List<Group<ContactInfo>> glistFiltered = getFilteredContactsFromNameOrPhone(charsEntered);
+            contactsListBox.ItemsSource = glistFiltered;
+        }
+
         private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            textChangedFromTap = true;
+            charsEntered = "";
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null)
                 return;
@@ -264,8 +321,9 @@ namespace windows_client.View
                 groupNames = new List<string>();
             groupNames.Add(contact.Name);
             groupNames.Add(HikeConstants.GROUP_PARTICIPANT_SEPARATOR);
-            selectedContacts.Text += contact.Name;
-            selectedContacts.Text += ",";
+            string contactNameTemp = contact.Name + "; ";
+            enterNameTxt.Text += contactNameTemp;
+            //            enterNameTxt.Text += ",";
         }
 
         private void refreshContacts_Click(object sender, EventArgs e)
@@ -422,6 +480,8 @@ namespace windows_client.View
         {
             enterNameTxt.BorderBrush = textBoxBorder;
         }
+
+
 
     }
 }
