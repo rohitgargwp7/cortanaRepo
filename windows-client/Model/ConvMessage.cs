@@ -582,7 +582,7 @@ namespace windows_client.Model
             {
                 if (this.participantInfoState == ParticipantInfoState.GROUP_END)
                 {
-                    this._message = "group chat end";
+                    this._message = "This group chat has end";
                 }
                 else
                 {

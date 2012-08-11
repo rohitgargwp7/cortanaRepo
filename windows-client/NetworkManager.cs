@@ -8,6 +8,7 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
+using windows_client.View;
 
 namespace windows_client
 {
@@ -235,10 +236,10 @@ namespace windows_client
                 
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
-            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE.equals(type)) //Group chat leave
+            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
             {
-                String groupId = jsonObj.optString(HikeConstants.TO);
-                String msisdn = jsonObj.optString(HikeConstants.FROM);
+                string groupId = (string)jsonObj[HikeConstants.TO];
+                string fromMsisdn = (string)jsonObj[HikeConstants.FROM;
                 if (this.convDb.setParticipantLeft(groupId, msisdn) > 0)
                 {
                     saveGroupStatusMsg(jsonObj);
@@ -251,19 +252,29 @@ namespace windows_client
 
                 object[] vals = new object[2];
                 vals[0] = groupId;
-                vals[1] = groupName;
-                this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
+                vals[1] = groupName;               
                 ConversationTableUtils.updateGroupName(groupId,groupName);
-                GroupTableUtils.updateGroupName(groupId, groupName);
+                bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
+                if(goAhead)
+                    this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
+
             }
-            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END.equals(type)) //Group chat end
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type) //Group chat end
             {
-                String groupId = jsonObj.optString(HikeConstants.TO);
-                if (this.convDb.setGroupDead(groupId) > 0)
+                string groupId = (string)jsonObj[HikeConstants.TO];
+                bool goAhead = GroupTableUtils.SetGroupDead(groupId);
+                if (goAhead)
                 {
-                    saveGroupStatusMsg(jsonObj);
+                    ConvMessage convMessage = new ConvMessage(jsonObj, false);
+                    ConversationListObject cObj = ConversationsList.ConvMap[convMessage.Msisdn];
+                    object[] vals = new object[2];
+                    vals[0] = convMessage;
+                    vals[1] = cObj;
+                    
+                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    this.pubSub.publish(HikePubSub.GROUP_END, groupId);
                 }
-            }*/
+            }
             #endregion
             else
             {

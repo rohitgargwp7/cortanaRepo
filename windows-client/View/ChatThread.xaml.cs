@@ -143,7 +143,6 @@ namespace windows_client.View
             emotList2.ItemsSource = imagePathsForList2;
         }
 
-
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -174,23 +173,35 @@ namespace windows_client.View
         private void initPageBasedOnState()
         {
             bool isAddUser = false;
-
+            bool isGroupChat = false;
             #region OBJECT FROM CONVLIST PAGE
+
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
             {
                 ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
+                PhoneApplicationService.Current.State.Remove("objFromConversationPage");
                 mContactNumber = convObj.Msisdn;
-                if (convObj.ContactName != null)
-                    mContactName = convObj.ContactName;
+
+                if (Utils.isGroupConversation(mContactNumber)) // represents group chat
+                {
+                    isGroupChat = true;
+                }
+
                 else
                 {
-                    mContactName = convObj.Msisdn;
-                    isAddUser = true;
+                    if (convObj.ContactName != null)
+                        mContactName = convObj.ContactName;
+                    else
+                    {
+                        mContactName = convObj.Msisdn;
+                        isAddUser = true;
+                    }
                 }
                 isOnHike = convObj.IsOnhike;
-                PhoneApplicationService.Current.State.Remove("objFromConversationPage");
             }
+
             #endregion
+
             #region OBJECT FROM SELECT USER PAGE
             else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
             {
@@ -208,6 +219,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
             }
             #endregion
+
             #region OBJECT FROM SELECT GROUP PAGE
 
             else if (PhoneApplicationService.Current.State.ContainsKey("groupChat"))
@@ -241,7 +253,7 @@ namespace windows_client.View
 
             userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
             userName.Text = mContactName;
-            initAppBar(isAddUser);
+            initAppBar(isGroupChat,isAddUser);
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
@@ -251,11 +263,6 @@ namespace windows_client.View
             else
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
-            }
-
-            if (mContactNumber == null)
-            {
-                // some error handling
             }
         }
 
@@ -290,7 +297,7 @@ namespace windows_client.View
         #region APP BAR
 
         /* Should run on UI thread, based on mUserIsBlocked*/
-        private void initAppBar(bool isAddUser)
+        private void initAppBar(bool isGroupChat,bool isAddUser)
         {
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -313,21 +320,54 @@ namespace windows_client.View
             emoticonsIconButton.IsEnabled = true;
             appBar.Buttons.Add(emoticonsIconButton);
 
-
-            menuItem1 = new ApplicationBarMenuItem();
-            if (mUserIsBlocked)
-                menuItem1.Text = UNBLOCK_USER;
-            else
-                menuItem1.Text = BLOCK_USER;
-            menuItem1.Click += new EventHandler(blockUnblock_Click);
-            appBar.MenuItems.Add(menuItem1);
-
-            if (isAddUser)
+            if (isGroupChat)
             {
-                ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-                menuItem2.Text = "add user";
-                menuItem2.Click += new EventHandler(addUser_Click);
-                appBar.MenuItems.Add(menuItem2);
+                ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
+                leaveMenuItem.Text = "leave group";
+                leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
+                appBar.MenuItems.Add(leaveMenuItem);
+
+                GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                if (gi != null)
+                {
+                    if (gi.GroupOwner != (string)App.appSettings[App.MSISDN_SETTING]) // represents current user is not group owner
+                    {
+                        menuItem1 = new ApplicationBarMenuItem();
+                        if (mUserIsBlocked)
+                        {
+                            menuItem1.Text = UNBLOCK_USER + " group owner";
+                        }
+                        else
+                        {
+                            menuItem1.Text = BLOCK_USER + " group owner";
+                        }
+                        menuItem1.Click += new EventHandler(blockUnblock_Click);
+                        appBar.MenuItems.Add(menuItem1);
+                    }
+                }
+            }
+            else
+            {
+
+                menuItem1 = new ApplicationBarMenuItem();
+                if (mUserIsBlocked)
+                {
+                    menuItem1.Text = UNBLOCK_USER;
+                }
+                else
+                {
+                    menuItem1.Text = BLOCK_USER;
+                }
+                menuItem1.Click += new EventHandler(blockUnblock_Click);
+                appBar.MenuItems.Add(menuItem1);
+
+                if (isAddUser)
+                {
+                    ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
+                    menuItem2.Text = "add user";
+                    menuItem2.Click += new EventHandler(addUser_Click);
+                    appBar.MenuItems.Add(menuItem2);
+                }
             }
             chatThreadMainPage.ApplicationBar = appBar;
         }
@@ -501,6 +541,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
+            mPubSub.addListener(HikePubSub.GROUP_END, this);
         }
 
         private void removeListeners()
@@ -516,6 +557,7 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
+            mPubSub.removeListener(HikePubSub.GROUP_END, this);
         }
         #endregion
 
@@ -524,6 +566,11 @@ namespace windows_client.View
         private void addUser_Click(object sender, EventArgs e)
         {
             ContactUtils.saveContact(mContactNumber);
+        }
+
+        private void leaveGroup_Click(object sender, EventArgs e)
+        {
+            
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -1193,6 +1240,30 @@ namespace windows_client.View
             }
 
             #endregion
+
+            #region GROUP END
+
+            else if (HikePubSub.GROUP_END == type)
+            {
+                string groupId = (string)obj;
+                
+                if (mContactNumber == groupId)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        groupChatEnd();
+                    });
+                }
+            }
+
+            #endregion
+        }
+
+        private void groupChatEnd()
+        {
+            /* Madhur Complete this.*/
+            sendMsgTxtbox.IsEnabled = false;
+            appBar.IsMenuEnabled = false;
         }
 
         #endregion

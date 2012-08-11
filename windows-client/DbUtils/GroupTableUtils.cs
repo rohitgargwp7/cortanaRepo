@@ -51,13 +51,38 @@ namespace windows_client.DbUtils
             
         }
 
-        public static void updateGroupName(string groupId, string groupName)
+        public static bool updateGroupName(string groupId, string groupName)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                if (cObj == null)
+                    return false;
                 cObj.GroupName = groupName;
                 MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+            return true;
+        }
+
+        public static bool SetGroupDead(string groupId)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                if (cObj == null)
+                    return false;
+                cObj.GroupAlive = false;
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+            return true;
+        }
+
+        public static GroupInfo getGroupInfoForId(string groupId)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                return cObj;
             }
         }
     }
