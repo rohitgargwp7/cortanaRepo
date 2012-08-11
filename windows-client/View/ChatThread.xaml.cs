@@ -247,12 +247,10 @@ namespace windows_client.View
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
                 initInviteMenuItem();
                 appBar.MenuItems.Add(inviteMenuItem);
-                typingTextBoxBorder.BorderBrush = smsBackground;
             }
             else
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
-                typingTextBoxBorder.BorderBrush = hikeMsgBackground;
             }
 
             if (mContactNumber == null)
@@ -618,7 +616,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
-            sendMsgTxtbox.Background = whiteBackground;
+            sendMsgTxtbox.Background = textBoxBackground;
         }
 
         void toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)

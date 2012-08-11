@@ -443,6 +443,17 @@ namespace windows_client.Model
             }
         }
 
+        public string ChatBubbleDirection
+        {
+            get
+            {
+                if (IsSent)
+                    return "LowerRight";
+                else
+                    return "UpperLeft";
+            }
+        }
+
         public string BubbleBackground
         {
             get
@@ -453,11 +464,11 @@ namespace windows_client.Model
                 }
                 else if (ChatBubbleType.HIKE_SENT == MsgType)
                 {
-                    return "#B1E0FB";
+                    return "#1ba1e2";
                 }
                 else
                 {
-                    return "#DBF2CF";
+                    return "#a3d250";
                 }
             }
         }
