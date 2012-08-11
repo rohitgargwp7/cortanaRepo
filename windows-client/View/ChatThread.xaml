@@ -45,7 +45,7 @@
                     </Border>
                     <StackPanel Orientation="Vertical" Height="65">
                         <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="34" Height="44" Margin="18,-4,0,0" Width="Auto" Foreground="Black"/>
-                        <TextBlock x:Name="typeNotification" FontSize="18" Text="Typing..." Height="32" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>
+                        <!--<TextBlock x:Name="typeNotification" FontSize="18" Text="Typing..." Height="32" Margin="18,0,0,0" Width="Auto" Foreground="Black"/>-->
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
@@ -56,7 +56,6 @@
                  FontSize="26" Margin="0,0,0,95" Tap="chatListBox_tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-
                     <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding Alignment}" 
                                   Margin="20,5,20,15"  Grid.RowSpan="2">
                         <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" HorizontalAlignment="Right">
@@ -102,18 +101,14 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Bottom" Background="White">
-
             <StackPanel Visibility="Collapsed" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#eeeeec">
-
                 <ListBox Width="Auto" Height="Auto" Name="optionsList" Tap="optionsList_Tap">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <toolkit:WrapPanel/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
-
                     <ListBox.Items>
-
                         <ListBoxItem >
                             <StackPanel Orientation="Horizontal" >
                                 <StackPanel Orientation="Vertical" Width="150" >
@@ -167,7 +162,6 @@
                             </Grid.ColumnDefinitions>
 
                             <ListBox Height="200" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
-
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <toolkit:WrapPanel ItemHeight="60" ItemWidth="60"/>
