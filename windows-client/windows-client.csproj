@@ -404,7 +404,6 @@
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="View\images\ic_phone_big.png" />
-    <Content Include="View\images\ic_tc.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
