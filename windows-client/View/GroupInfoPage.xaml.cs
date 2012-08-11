@@ -19,8 +19,11 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-            string groupdId = PhoneApplicationService.Current.State["objFromChatThreadPage"] as string;
-            activeGroupMembers = GroupTableUtils.getGroupMembers(groupdId);
+
+            string groupId = PhoneApplicationService.Current.State["objFromChatThreadPage"] as string;
+            GroupInfo groupInfo = GroupTableUtils.getGroupInfoForId(groupId);
+            this.groupName.Text = groupInfo.GroupName;
+            activeGroupMembers = GroupTableUtils.getGroupMembers(groupId);
             this.groupChatParticipants.ItemsSource = activeGroupMembers;
         }
 

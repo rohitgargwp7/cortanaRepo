@@ -44,8 +44,8 @@
                     </StackPanel>
                 </Button>
                 <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
-                    <TextBlock x:Name="accountName"  Foreground="Black" FontSize="25" Text="Group Name"/>
-                    <TextBlock Text="Holiday Plans" Foreground="Black" FontSize="35"></TextBlock>
+                    <TextBlock Foreground="Black" FontSize="25" Text="Group Name"/>
+                    <TextBlock x:Name="groupName" Foreground="Black" FontSize="35"></TextBlock>
                 </StackPanel>
             </StackPanel>
 
