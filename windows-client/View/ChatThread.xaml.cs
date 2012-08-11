@@ -580,7 +580,7 @@ namespace windows_client.View
 
         private void groupInfo_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State["objFromChatThreadPage"] = cObj.Msisdn;
+            PhoneApplicationService.Current.State["objFromChatThreadPage"] = mContactNumber;
             NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
         }
 
