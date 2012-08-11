@@ -322,6 +322,11 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
+                ApplicationBarMenuItem groupInfoMenuItem = new ApplicationBarMenuItem();
+                groupInfoMenuItem.Text = "group info";
+                groupInfoMenuItem.Click += new EventHandler(groupInfo_Click);
+                appBar.MenuItems.Add(groupInfoMenuItem);
+
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
                 leaveMenuItem.Text = "leave group";
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
@@ -572,6 +577,13 @@ namespace windows_client.View
         {
             
         }
+
+        private void groupInfo_Click(object sender, EventArgs e)
+        {
+            PhoneApplicationService.Current.State["objFromChatThreadPage"] = cObj.Msisdn;
+            NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
+        }
+
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
