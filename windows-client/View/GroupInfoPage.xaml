@@ -34,31 +34,37 @@
             </Grid.RowDefinitions>
 
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="30, 10, 0,0">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0" Height="100">
                 <Button Height="Auto">
                     <StackPanel Orientation="Horizontal" Margin="-15">
                         <Border BorderBrush="Black" BorderThickness="3">
-                            <Image x:Name="avatarImage" Height="80"  Source="images\ic_avatar0.png" />
+                            <Image x:Name="avatarImage" Height="80" Width="80"  Source="images\ic_avatar0.png" />
                         </Border>
                     </StackPanel>
                 </Button>
 
                 <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
-                    <TextBlock x:Name="accountName"  Foreground="Black" FontSize="35" Text="Group Name"/>
-                        <TextBlock Text="Free SMS remaining: " Foreground="#8d8d8d"></TextBlock>
+                    <TextBlock x:Name="accountName"  Foreground="Black" FontSize="25" Text="Group Name"/>
+                    <TextBlock Text="Holiday Plans" Foreground="Black" FontSize="35"></TextBlock>
                 </StackPanel>
             </StackPanel>
+            <ListBox x:Name="groupChatParticipants">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Height="30" Width="30" Fill="Blue"></Rectangle>
+                            <TextBlock Text="{Binding Name}" FontSize="30"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-            <StackPanel Margin="30, 30, 0,10" Orientation="Vertical" Grid.Row="1">
+            <!--<StackPanel Margin="30, 30, 0,10" Orientation="Vertical" Grid.Row="1">
                 <StackPanel  Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
                     <Image Source="images\notifications.png" Height="35"></Image>
                     <TextBlock Text="Participants" Margin="15,4,0,0" FontSize="30"></TextBlock>
                 </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="2">
-                <Image Source="images\Made_with_love.png" Height="20" Margin="0,0,0,10"/>
-
-            </StackPanel>
+            </StackPanel>-->
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
