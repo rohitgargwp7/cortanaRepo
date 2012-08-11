@@ -570,7 +570,21 @@ namespace windows_client.View
 
         private void leaveGroup_Click(object sender, EventArgs e)
         {
-            
+            /*
+             * 1. Delete from DB (pubsub)
+             * 2. Remove from ConvList page
+             * 3. GoBack
+             */
+            JObject jObj = new JObject();
+            jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
+            jObj[HikeConstants.TO] = mContactNumber;
+
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
+            mPubSub.publish(HikePubSub.GROUP_LEFT,mContactNumber);
+            ConversationListObject cObj = ConversationsList.ConvMap[mContactNumber];
+            App.ViewModel.MessageListPageCollection.Remove(cObj);
+            ConversationsList.ConvMap.Remove(mContactNumber);
+            NavigationService.GoBack();
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)

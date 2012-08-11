@@ -29,6 +29,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
             mPubSub.addListener(HikePubSub.DELETE_ACCOUNT, this);
+            mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
         }
 
         private void removeListeners()
@@ -41,6 +42,7 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
             mPubSub.removeListener(HikePubSub.DELETE_ACCOUNT, this);
+            mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -134,6 +136,22 @@ namespace windows_client.DbUtils
                 removeListeners();
                 MiscDBUtil.clearDatabase();
                 mPubSub.publish(HikePubSub.ACCOUNT_DELETED, null);
+            }
+            #endregion
+            #region GROUP LEFT
+            else if (HikePubSub.GROUP_LEFT == type)
+            {
+                /*
+                 * 1. Delete conversation with this groupId
+                 * 2. Delete ConvMessages
+                 * 3. Delete GroupInfo
+                 * 4. Delete GroupMembers
+                 */
+                string groupId = (string)obj;
+                ConversationTableUtils.deleteConversation(groupId);
+                MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
+                GroupTableUtils.deleteGroupWithId(groupId);
+                GroupTableUtils.deleteGroupMembersWithId(groupId);
             }
             #endregion
         }

@@ -85,5 +85,23 @@ namespace windows_client.DbUtils
                 return cObj;
             }
         }
+
+        public static void deleteGroupWithId(string groupId)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                context.groupInfo.DeleteAllOnSubmit<GroupInfo>(DbCompiledQueries.GetGroupInfoForID(context, groupId));
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        public static void deleteGroupMembersWithId(string groupId)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                context.groupMembers.DeleteAllOnSubmit<GroupMembers>(DbCompiledQueries.GetGroupMembersForGroupID(context, groupId));
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
     }
 }
