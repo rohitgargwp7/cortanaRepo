@@ -82,7 +82,7 @@ namespace windows_client.DbUtils
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
 
                 GroupTableUtils.addGroupParticipants(gmList);
-                GroupInfo gi = new GroupInfo(gmList[0].GroupId, null, convMsg.GroupParticipant, true);
+                GroupInfo gi = new GroupInfo(gmList[0].GroupId, groupName, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
             else // add a member to a group

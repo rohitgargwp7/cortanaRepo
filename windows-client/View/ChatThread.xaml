@@ -50,6 +50,7 @@
                 </StackPanel>
             </StackPanel>
         </StackPanel>
+
         <!--ContentPanel - place additional content here-->
         <ListBox x:Name="myListBox" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStretchContentStyle}" 
                  FontSize="26" Margin="0,0,0,95" Tap="chatListBox_tap">
@@ -63,7 +64,6 @@
                                 <BitmapImage UriSource="{Binding SdrImage}" CreateOptions="BackgroundCreation"></BitmapImage>
                             </Image.Source>
                         </Image>
-
                         <c4fToolkit:ChatBubble  ChatBubbleDirection="{Binding ChatBubbleDirection}" Background="{Binding BubbleBackground}">
                             <StackPanel Width="315" Orientation="Vertical">
                                 <RichTextBox Tag="{Binding Message}" Foreground="Black" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>

@@ -151,6 +151,7 @@ namespace windows_client.View
         private void startGroup_Click(object sender, EventArgs e)
         {
             PhoneApplicationService.Current.State["groupChat"] = true;
+            PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             PhoneApplicationService.Current.State["groupMsidns"] = groupMsisdns;
             PhoneApplicationService.Current.State["groupNames"] = groupNames;
             string uri = "/View/ChatThread.xaml";
@@ -247,7 +248,6 @@ namespace windows_client.View
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
-
 
         private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -479,8 +479,5 @@ namespace windows_client.View
         {
             enterNameTxt.BorderBrush = textBoxBorder;
         }
-
-
-
     }
 }

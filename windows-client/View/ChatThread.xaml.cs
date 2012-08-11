@@ -155,11 +155,6 @@ namespace windows_client.View
 
         }
 
-        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-            base.OnNavigatingFrom(e);
-        }
-
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
@@ -187,16 +182,14 @@ namespace windows_client.View
                     isGroupChat = true;
                 }
 
+                if (convObj.ContactName != null)
+                    mContactName = convObj.ContactName;
                 else
                 {
-                    if (convObj.ContactName != null)
-                        mContactName = convObj.ContactName;
-                    else
-                    {
-                        mContactName = convObj.Msisdn;
-                        isAddUser = true;
-                    }
+                    mContactName = convObj.Msisdn;
+                    isAddUser = true;
                 }
+
                 isOnHike = convObj.IsOnhike;
             }
 
@@ -253,7 +246,7 @@ namespace windows_client.View
 
             userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
             userName.Text = mContactName;
-            initAppBar(isGroupChat,isAddUser);
+            initAppBar(isGroupChat, isAddUser);
             if (!isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
@@ -297,7 +290,7 @@ namespace windows_client.View
         #region APP BAR
 
         /* Should run on UI thread, based on mUserIsBlocked*/
-        private void initAppBar(bool isGroupChat,bool isAddUser)
+        private void initAppBar(bool isGroupChat, bool isAddUser)
         {
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -580,7 +573,7 @@ namespace windows_client.View
             jObj[HikeConstants.TO] = mContactNumber;
 
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
-            mPubSub.publish(HikePubSub.GROUP_LEFT,mContactNumber);
+            mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
             ConversationListObject cObj = ConversationsList.ConvMap[mContactNumber];
             App.ViewModel.MessageListPageCollection.Remove(cObj);
             ConversationsList.ConvMap.Remove(mContactNumber);
@@ -1260,7 +1253,7 @@ namespace windows_client.View
             else if (HikePubSub.GROUP_END == type)
             {
                 string groupId = (string)obj;
-                
+
                 if (mContactNumber == groupId)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>

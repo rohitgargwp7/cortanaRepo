@@ -256,7 +256,7 @@ namespace windows_client.Model
                     _isSms = value;
             }
         }
-
+       
         public ParticipantInfoState GrpParticipantState
         {
             get 
