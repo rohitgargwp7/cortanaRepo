@@ -30,7 +30,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
 
@@ -48,23 +47,16 @@
                     <TextBlock Text="Holiday Plans" Foreground="Black" FontSize="35"></TextBlock>
                 </StackPanel>
             </StackPanel>
-            <ListBox x:Name="groupChatParticipants">
+            <ListBox x:Name="groupChatParticipants" Grid.Row="1" Margin="35,30,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Rectangle Height="30" Width="30" Fill="Blue"></Rectangle>
-                            <TextBlock Text="{Binding Name}" FontSize="30"></TextBlock>
+                            <Rectangle Height="30" Width="30" Fill="#1ba1e2"></Rectangle>
+                            <TextBlock Foreground="Black" Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
-            <!--<StackPanel Margin="30, 30, 0,10" Orientation="Vertical" Grid.Row="1">
-                <StackPanel  Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
-                    <Image Source="images\notifications.png" Height="35"></Image>
-                    <TextBlock Text="Participants" Margin="15,4,0,0" FontSize="30"></TextBlock>
-                </StackPanel>
-            </StackPanel>-->
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
