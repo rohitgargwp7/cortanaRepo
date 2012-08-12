@@ -46,7 +46,8 @@ namespace windows_client
             ac_name = txtBxEnterName.Text;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
-//            enterNameBtn.Content = "Scanning contacts";
+            enterNameBtn.Opacity = 1;
+            enterNameBtn.Text = "Scanning contacts";
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
         }
 
@@ -86,7 +87,7 @@ namespace windows_client
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             {
-//                enterNameBtn.Content = "Getting you in";
+                enterNameBtn.Text = "Getting you in";
                 Thread.Sleep(3 * 1000);
                 NavigationService.Navigate(nextPage);
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
