@@ -23,6 +23,7 @@ namespace windows_client.View
         public bool canGoBack = true;
         public List<Group<ContactInfo>> groupedList = null;
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+        private ApplicationBar appBar;
 
         public class Group<T> : IEnumerable<T>
         {
@@ -99,6 +100,20 @@ namespace windows_client.View
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
             bw.RunWorkerAsync();
+
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Opacity = 1;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = false;
+
+            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
+            composeIconButton.Text = "Refresh Contacts";
+            composeIconButton.Click += new EventHandler(refreshContacts_Click);
+            composeIconButton.IsEnabled = true;
+            appBar.Buttons.Add(composeIconButton);
+            selectUserToMsg.ApplicationBar = appBar;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
