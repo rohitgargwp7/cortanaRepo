@@ -2,12 +2,37 @@
 using Newtonsoft.Json.Linq;
 using windows_client.Model;
 using System.Collections.Generic;
+using windows_client.DbUtils;
 
 namespace windows_client.utils
 {
     public class Utils
     {
+        private static Dictionary<string, GroupParticipant> groupCache = null;
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
+
+        public static Dictionary<string, GroupParticipant> GroupCache
+        {
+            get
+            {
+                return groupCache;
+            }
+            set
+            {
+                if (value != groupCache)
+                    groupCache = value;
+            }
+        }
+        public static GroupParticipant getGroupParticipant(string name,string msisdn)
+        {
+            if (groupCache.ContainsKey(msisdn))
+                return groupCache[msisdn];
+            ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+            GroupParticipant gp =  new GroupParticipant(cInfo != null?cInfo.Name:name,msisdn,cInfo != null?cInfo.OnHike:true);
+            groupCache.Add(msisdn, gp);
+            // App.appSettings[App.GROUPS_CACHE] = groupCache; Doing this while app is closing
+            return gp;
+        }
 
         public static void savedAccountCredentials(JObject obj)
         {

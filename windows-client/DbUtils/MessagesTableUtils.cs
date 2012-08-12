@@ -76,7 +76,7 @@ namespace windows_client.DbUtils
             ConversationListObject obj = null;
             List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
-            {               
+            {
                 string groupName = Utils.defaultGroupName(gmList); // here name shud be what stored in contacts
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
@@ -150,8 +150,11 @@ namespace windows_client.DbUtils
                 ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
                 if (message != null)
                 {
-                    message.MessageStatus = (ConvMessage.State)val;
-                    SubmitWithConflictResolve(context);
+                    if ((int)message.MessageStatus < val)
+                    {
+                        message.MessageStatus = (ConvMessage.State)val;
+                        SubmitWithConflictResolve(context);
+                    }
                 }
                 else
                 {
@@ -172,9 +175,12 @@ namespace windows_client.DbUtils
                     ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
                     if (message != null)
                     {
-                        message.MessageStatus = (ConvMessage.State)status;
-                        msisdn = message.Msisdn;
-                        shouldSubmit = true;
+                        if ((int)message.MessageStatus < status)
+                        {
+                            message.MessageStatus = (ConvMessage.State)status;
+                            msisdn = message.Msisdn;
+                            shouldSubmit = true;
+                        }
                     }
                 }
                 if(shouldSubmit)

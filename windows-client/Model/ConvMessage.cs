@@ -8,6 +8,8 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media.Imaging;
 using System.Text;
+using windows_client.DbUtils;
+using System.Collections.Generic;
 
 namespace windows_client.Model
 {
@@ -318,6 +320,10 @@ namespace windows_client.Model
                 _message = (string)data[HikeConstants.HIKE_MESSAGE];
                 _isSms = false;
             }
+            if (_groupParticipant != null) // reprsents group chat
+            {
+                _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant).Name + " - " + _message;
+            }
 
             Timestamp = (long)data[HikeConstants.TIMESTAMP];
 
@@ -574,7 +580,9 @@ namespace windows_client.Model
                 for (int i = 0; i < arr.Count; i++)
                 {
                     JObject nameMsisdn = arr[i].ToObject<JObject>();
-                    newParticipants.Append((string)nameMsisdn[HikeConstants.NAME] + ", ");
+                    string msisdn = (string)nameMsisdn[HikeConstants.MSISDN];
+                    string name = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn).Name;
+                    newParticipants.Append(name + ", ");
                 }
                 this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " joined the group chat";
             }
@@ -586,12 +594,11 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    this._message = _groupParticipant + " " + "left conversation";
+                    this._message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant).Name + " " + "left conversation";
                 }
             }
             this._timestamp = TimeUtils.getCurrentTimeStamp() / 1000;
             this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
         }
-
     }
 }

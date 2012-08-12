@@ -11,6 +11,7 @@ using windows_client.ViewModel;
 using windows_client.Mqtt;
 using windows_client.View;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace windows_client
 {
@@ -34,6 +35,7 @@ namespace windows_client
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
         public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
+        public static readonly string GROUPS_CACHE = "GroupsCache";
        
         #endregion
 
@@ -49,6 +51,8 @@ namespace windows_client
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
+        private static Dictionary<string, GroupParticipant> groupsCache = null;
+
         #endregion
 
         #region instances getters and setters
@@ -147,6 +151,7 @@ namespace windows_client
                 }
             }
         }
+
         #endregion
 
         #endregion
@@ -246,13 +251,17 @@ namespace windows_client
             SmileyParser.loadEmoticons();
             #endregion
 
+            if (!App.appSettings.Contains(App.GROUPS_CACHE))
+                App.appSettings.Add(App.GROUPS_CACHE, new Dictionary<string, GroupParticipant>());
+
+            Utils.GroupCache = (Dictionary<string, GroupParticipant>)App.appSettings[App.GROUPS_CACHE];
+            
             App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
             App.DbListener = new DbConversationListener();
             App.NetworkManagerInstance = NetworkManager.Instance;
             App.MqttManagerInstance = new HikeMqttManager();
             App.UI_UtilsInstance = UI_Utils.Instance;
         }
-
 
         private void loadPage()
         {
@@ -305,12 +314,16 @@ namespace windows_client
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
+            App.appSettings.Save();
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
+            App.appSettings.Save();
         }
 
         // Code to execute if a navigation fails

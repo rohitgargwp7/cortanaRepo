@@ -93,7 +93,7 @@ namespace windows_client
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    ConversationListObject obj =  MessagesTableUtils.addChatMessage(convMessage);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage);
                     object[] vals = new object[2];
                     vals[0] = convMessage;
                     vals[1] = obj;
@@ -188,7 +188,7 @@ namespace windows_client
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
 
                 MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
-                ConversationTableUtils.updateImage(msisdn,imageBytes);
+                ConversationTableUtils.updateImage(msisdn, imageBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.UI_UtilsInstance.updateImageInCache(msisdn, imageBytes);
@@ -208,10 +208,10 @@ namespace windows_client
                 String totalCreditsPerMonth = (string)data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
                 App.appSettings[App.INVITED] = invited;
                 App.appSettings[App.INVITED_JOINED] = invited_joined;
-                
+
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
-                    App.appSettings[App.TOTAL_CREDITS_PER_MONTH]= totalCreditsPerMonth;
+                    App.appSettings[App.TOTAL_CREDITS_PER_MONTH] = totalCreditsPerMonth;
                 }
                 App.appSettings.Save();
                 this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
@@ -222,21 +222,35 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
                 JArray arr = (JArray)jsonObj[HikeConstants.DATA];
-                if (arr==null || !arr.HasValues)
+                if (arr == null || !arr.HasValues)
                 {
                     return;
                 }
-                ConvMessage convMessage = new ConvMessage(jsonObj, false);                
-                ConversationListObject obj =  MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
+                ConvMessage convMessage = new ConvMessage(jsonObj, false);
+                ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
                     return;
                 Debug.WriteLine("NetworkManager", "Group is new");
-                
+
                 object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = obj;
-                
+
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+            }
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
+            {
+                string groupName = (string)jsonObj[HikeConstants.DATA];
+                string groupId = (string)jsonObj[HikeConstants.TO];
+
+                object[] vals = new object[2];
+                vals[0] = groupId;
+                vals[1] = groupName;
+                ConversationTableUtils.updateGroupName(groupId, groupName);
+                bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
+                if (goAhead)
+                    this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
+
             }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
             {
@@ -250,50 +264,24 @@ namespace windows_client
                 string groupId = (string)jsonObj[HikeConstants.TO];
                 string fromMsisdn = (string)jsonObj[HikeConstants.FROM];
 
-                if (ConversationsList.ConvMap.ContainsKey(groupId))
+                ConvMessage convMsg = new ConvMessage(jsonObj, false);
+                ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg);
+                GroupTableUtils.setParticipantLeft(groupId, fromMsisdn);
+                GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
+                if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
                 {
-                    ConversationListObject obj = ConversationsList.ConvMap[groupId];
-                    GroupTableUtils.setParticipantLeft(groupId, msisdn);
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
-                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                    {
-                        List<GroupMembers> existingMembers = GroupTableUtils.getActiveGroupMembers(groupId);
-                        obj.ContactName = Utils.defaultGroupName(existingMembers);
-                    }
-
-                    ConvMessage convMsg = new ConvMessage(jsonObj, false);
-                    obj.LastMessage = convMsg.Message;
-                    obj.MessageStatus = convMsg.MessageStatus;
-                    obj.TimeStamp = convMsg.Timestamp;
-                    ConversationTableUtils.updateConversation(obj);
-
-                    object[] vals = new object[2];
-                    vals[0] = convMsg;
-                    vals[1] = obj;
-                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                    this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, jsonObj);
-                    
+                    List<GroupMembers> existingMembers = GroupTableUtils.getActiveGroupMembers(groupId);
+                    cObj.ContactName = Utils.defaultGroupName(existingMembers);
                 }
-                else
-                {
-                    return;
-                }
+
                
-            }
-            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
-            {
-                string groupName = (string)jsonObj[HikeConstants.DATA];
-                string groupId = (string)jsonObj[HikeConstants.TO];
-
                 object[] vals = new object[2];
-                vals[0] = groupId;
-                vals[1] = groupName;               
-                ConversationTableUtils.updateGroupName(groupId,groupName);
-                bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
-                if(goAhead)
-                    this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
-
+                vals[0] = convMsg;
+                vals[1] = cObj;
+                this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, jsonObj);
             }
+
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type) //Group chat end
             {
                 string groupId = (string)jsonObj[HikeConstants.TO];
@@ -301,13 +289,12 @@ namespace windows_client
                 if (goAhead)
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj, false);
-                    ConversationListObject cObj = null;
-                    ConversationsList.ConvMap.TryGetValue(convMessage.Msisdn,out cObj);
+                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage);
                     if (cObj == null)
                         return;
                     object[] vals = new object[2];
                     vals[0] = convMessage;
-                    vals[1] = cObj;                   
+                    vals[1] = cObj;
                     this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     this.pubSub.publish(HikePubSub.GROUP_END, groupId);
                 }

@@ -97,6 +97,7 @@
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupMembers.cs" />
+    <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabase.cs" />
