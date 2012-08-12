@@ -32,6 +32,8 @@ namespace windows_client.View
         private readonly int maxSMSUsersAllowed = 5;
         private readonly int maxUsersAllowed = 10;
         private int smsUserCount = 0;
+        private ApplicationBar appBar;
+
         public class Group<T> : IEnumerable<T>
         {
             public Group(string name, List<T> items)
@@ -113,6 +115,20 @@ namespace windows_client.View
         void SelectUserPage_Loaded(object sender, RoutedEventArgs e)
         {
             enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
+
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Opacity = 1;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = false;
+
+            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
+            composeIconButton.Text = "Refresh Contacts";
+            composeIconButton.Click += new EventHandler(refreshContacts_Click);
+            composeIconButton.IsEnabled = true;
+            appBar.Buttons.Add(composeIconButton);
+            selectUserPage.ApplicationBar = appBar;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

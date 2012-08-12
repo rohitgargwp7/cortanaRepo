@@ -17,11 +17,6 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
 
-        <Grid.Resources>
-            <Converters:InvitedButtonVisiblity x:Key="invitedButtonVisiblity"/>
-            <Converters:InvitedStringVisiblity x:Key="invitedStringVisiblity"/>
-        </Grid.Resources>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -43,39 +38,15 @@
                 <DataTemplate>
 
                     <StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
-                        <Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                        <!--<Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 
                                Source="{Binding AvatarImage}">
-                        </Image>
+                        </Image>-->
                         <TextBlock Text="{Binding Name}" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                        <Button Visibility="{Binding IsInvited, Converter={StaticResource invitedButtonVisiblity}}" Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="20"/>
-                        <TextBlock Visibility="{Binding IsInvited, Converter={StaticResource invitedStringVisiblity}}" FontSize="21" Text="invited" Foreground="#2e91d3"  Width="120" Height="60" Margin="30,20,0,0" HorizontalAlignment="Right"/>
+                        <Button Visibility="{Binding InviteButtonVisible}" Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="20"/>
+                        <TextBlock Visibility="{Binding InvitedStringVisible}" FontSize="21" Text="invited" Foreground="#2e91d3"  Width="120" Height="60" Margin="30,20,0,0" HorizontalAlignment="Right"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        <!--<StackPanel Orientation="Horizontal" Margin="22,5,5,5" Height="70">
-            <Image x:Name="avatar_image" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                               Source="\View\images\ic_avatar0.png"
-                               >
-            </Image>
-            <TextBlock Text="Madhur" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-            <Button Foreground="Black" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="18"/>
-        </StackPanel>-->
-
-
     </Grid>
-
-    <!--Sample code showing usage of ApplicationBar-->
-    <!--<phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
-                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>-->
-
 </phone:PhoneApplicationPage>
