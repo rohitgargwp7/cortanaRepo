@@ -61,7 +61,8 @@
                 </StackPanel>
                 <!--<Button BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" x:Name="enterPhoneBtn" Foreground="White" Margin="37,10,37,429" Content="Next" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="72" Click="enterPhoneBtn_Click" Width="344">
                 </Button>-->
-                <toolkit:PerformanceProgressBar x:Name="progressBar" Foreground="Black" Background="#FFF2F6F8" IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" Margin="0,90,0,0" />
+                <TextBlock x:Name="enterPhoneBtn" FontSize="22" Foreground="Black" Opacity="0" Margin="130,80,0,0"></TextBlock>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,10,0,0" Foreground="Black" Background="#FFF2F6F8" IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
                 <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="msisdnErrorTxt" Text="Invalid MSISDN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
             </StackPanel>
         </Grid>

@@ -40,7 +40,8 @@ namespace windows_client
             string phoneNumber = txtEnterPhone.Text;
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
-            //enterPhoneBtn.Content = "Verifying your number";
+            enterPhoneBtn.Opacity = 1;
+            enterPhoneBtn.Text = "Verifying your number";
             msisdnErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
@@ -88,7 +89,7 @@ namespace windows_client
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-//            enterPhoneBtn.Content = "Next";
+            enterPhoneBtn.Opacity = 0;
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
