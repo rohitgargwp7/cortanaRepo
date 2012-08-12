@@ -5,25 +5,42 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.IO.IsolatedStorage;
 using System.Windows.Media;
+using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
     public partial class EnterNumber : PhoneApplicationPage
     {
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private ApplicationBar appBar;
 
         public EnterNumber()
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
+
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Opacity = 1;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = false;
+
+            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            composeIconButton.Text = "Next";
+            composeIconButton.Click += new EventHandler(enterPhoneBtn_Click);
+            composeIconButton.IsEnabled = true;
+            appBar.Buttons.Add(composeIconButton);
+            enterNumber.ApplicationBar = appBar;
+
         }
 
-        private void enterPhoneBtn_Click(object sender, RoutedEventArgs e)
+        private void enterPhoneBtn_Click(object sender, EventArgs e)
         {
             string phoneNumber = txtEnterPhone.Text;
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
-            enterPhoneBtn.Content = "Verifying your number";
+            //enterPhoneBtn.Content = "Verifying your number";
             msisdnErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
@@ -71,7 +88,7 @@ namespace windows_client
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            enterPhoneBtn.Content = "Next";
+//            enterPhoneBtn.Content = "Next";
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
