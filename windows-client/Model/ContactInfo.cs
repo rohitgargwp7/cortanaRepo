@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Data.Linq.Mapping;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
+using System.Windows;
 
 namespace windows_client.Model
 {
@@ -156,10 +157,33 @@ namespace windows_client.Model
                 NotifyPropertyChanging("IsInvited");
                 _isInvited = value;
                 NotifyPropertyChanged("IsInvited");
+                NotifyPropertyChanged("InvitedStringVisible");
+                NotifyPropertyChanged("InviteButtonVisible");
             }
         }
 
-        
+        public Visibility InvitedStringVisible
+        {
+            get
+            {
+                if (IsInvited)
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility InviteButtonVisible
+        {
+            get
+            {
+                if (IsInvited)
+                    return Visibility.Collapsed;
+                else
+                    return Visibility.Visible;
+            }
+        }
+
         public ContactInfo()
         {
         }
