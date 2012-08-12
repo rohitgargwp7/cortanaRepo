@@ -493,7 +493,7 @@ namespace windows_client.View
 
         private void groupChatBtn_Click(object sender, EventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml?param=grpChat", UriKind.Relative));
         }
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
