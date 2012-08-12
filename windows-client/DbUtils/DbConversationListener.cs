@@ -30,6 +30,8 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
             mPubSub.addListener(HikePubSub.DELETE_ACCOUNT, this);
             mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
+            mPubSub.addListener(HikePubSub.BLOCK_GROUPOWNER, this);
+            mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
         }
 
         private void removeListeners()
@@ -43,6 +45,8 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
             mPubSub.removeListener(HikePubSub.DELETE_ACCOUNT, this);
             mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
+            mPubSub.removeListener(HikePubSub.BLOCK_GROUPOWNER, this);
+            mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -152,6 +156,28 @@ namespace windows_client.DbUtils
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
                 GroupTableUtils.deleteGroupMembersWithId(groupId);
+            }
+            #endregion
+            #region BLOCK GROUP OWNER
+            else if (HikePubSub.BLOCK_USER == type)
+            {
+                object[] vals = (object[])obj;
+                string groupId = (string)vals[0];
+                string groupOwner = (string)vals[1];
+                UsersTableUtils.block(groupId);
+                JObject blockObj = blockUnblockSerialize("b", groupOwner);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, blockObj);
+            }
+            #endregion
+            #region UNBLOCK GROUP OWNER
+            else if (HikePubSub.UNBLOCK_USER == type)
+            {
+                object[] vals = (object[])obj;
+                string groupId = (string)vals[0];
+                string groupOwner = (string)vals[1];
+                UsersTableUtils.unblock(groupId);
+                JObject unblockObj = blockUnblockSerialize("ub", groupOwner);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
             #endregion
         }

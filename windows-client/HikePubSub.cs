@@ -85,6 +85,10 @@ namespace windows_client
 
         public static readonly string UNBLOCK_USER = "unblockUser";
 
+        public static readonly string UNBLOCK_GROUPOWNER = "unblockGroupOwner";
+
+        public static readonly string BLOCK_GROUPOWNER = "blockGroupOwner";
+
         public static readonly string ICON_CHANGED = "iconChanged";
 
         public static readonly string USER_JOINED = "userJoined";
@@ -118,6 +122,7 @@ namespace windows_client
         private readonly BlockingQueue mQueue;
 
         private Dictionary<string, List<Listener>> listeners;
+
 
         public HikePubSub()
         {

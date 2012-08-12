@@ -562,8 +562,8 @@ namespace windows_client.Model
             // If the message is a group message we get a TO field consisting of the Group ID
             string toVal = obj[HikeConstants.TO].ToString();
             this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
-            this._groupParticipant = toVal == null ? (string)obj[HikeConstants.FROM] : null;
-
+            this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.FROM] : null;
+            
             this.participantInfoState = fromJSON(obj);
 
             this.metadata = new MessageMetadata(obj);
@@ -576,7 +576,7 @@ namespace windows_client.Model
                     JObject nameMsisdn = arr[i].ToObject<JObject>();
                     newParticipants.Append((string)nameMsisdn[HikeConstants.NAME] + ", ");
                 }
-                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " " + "joined conversation";
+                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " joined the group chat";
             }
             else
             {
@@ -586,8 +586,7 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    throw new NotImplementedException();
-                    //this._message = ((GroupConversation)groupConversation).getGroupParticipant(obj.getString(HikeConstants.DATA)).getContactInfo().getFirstName() +  " " + "left conversation";
+                    this._message = _groupParticipant + " " + "left conversation";
                 }
             }
             this._timestamp = TimeUtils.getCurrentTimeStamp() / 1000;

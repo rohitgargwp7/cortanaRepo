@@ -507,6 +507,12 @@ namespace windows_client.View
                 return;
             }
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
+            if(convObj != null)
+                deleteConversation(convObj);
+        }
+
+        private void deleteConversation(ConversationListObject convObj)
+        {
             convMap.Remove(convObj.Msisdn); // removed entry from map for UI
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -515,6 +521,16 @@ namespace windows_client.View
             }
             ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
             MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
+            if (Utils.isGroupConversation(convObj.Msisdn))
+            {
+                JObject jObj = new JObject();
+                jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
+                jObj[HikeConstants.TO] = convObj.Msisdn;
+
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
+                GroupTableUtils.deleteGroupMembersWithId(convObj.Msisdn);
+                GroupTableUtils.deleteGroupWithId(convObj.Msisdn);
+            }
         }
 
         private void inviteUsers_Click(object sender, EventArgs e)

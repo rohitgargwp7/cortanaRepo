@@ -122,6 +122,23 @@ namespace windows_client.Model
         {
         }
 
+        public override bool Equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (GetType() != obj.GetType())
+                return false;
+            GroupMembers other = (GroupMembers)obj;
+
+            if (GroupId != other.GroupId)
+                return false;
+            if (Msisdn != other.Msisdn)
+                return false;
+            return true;
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

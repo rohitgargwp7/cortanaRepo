@@ -9,6 +9,20 @@ namespace windows_client.DbUtils
     {
         #region GroupTable Queries
 
+        public static Func<HikeChatsDb, string, string, IQueryable<GroupMembers>> GetGroupMembers
+        {
+            get
+            {
+                Func<HikeChatsDb, string,string,IQueryable<GroupMembers>> q =
+                     CompiledQuery.Compile<HikeChatsDb, string, string, IQueryable<GroupMembers>>
+                     ((HikeChatsDb hdc, string grpId,string msisdn) =>
+                         from o in hdc.groupMembers
+                         where o.GroupId == grpId && o.Msisdn == msisdn
+                         select o);
+                return q;
+            }
+        }
+
         public static Func<HikeChatsDb,string ,IQueryable<GroupMembers>> GetGroupMembersForGroupID
         {
             get

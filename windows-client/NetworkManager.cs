@@ -218,6 +218,7 @@ namespace windows_client
             }
 
             #region GROUP CHAT RELATED
+
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
                 JArray arr = (JArray)jsonObj[HikeConstants.DATA];
@@ -227,7 +228,8 @@ namespace windows_client
                 }
                 ConvMessage convMessage = new ConvMessage(jsonObj, false);                
                 ConversationListObject obj =  MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
-               
+                if (obj == null)
+                    return;
                 Debug.WriteLine("NetworkManager", "Group is new");
                 
                 object[] vals = new object[2];
@@ -236,15 +238,48 @@ namespace windows_client
                 
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
-            /*else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
             {
+                /*
+                     * 1. Update Conversation list name if groupName is not set.
+                     * 2. Update DB.
+                     * 3. Notify GroupInfo page (if opened)
+                     * 4. Notify Chat Thread page if opened.
+                     */
+
                 string groupId = (string)jsonObj[HikeConstants.TO];
-                string fromMsisdn = (string)jsonObj[HikeConstants.FROM;
-                if (this.convDb.setParticipantLeft(groupId, msisdn) > 0)
+                string fromMsisdn = (string)jsonObj[HikeConstants.FROM];
+
+                if (ConversationsList.ConvMap.ContainsKey(groupId))
                 {
-                    saveGroupStatusMsg(jsonObj);
+                    ConversationListObject obj = ConversationsList.ConvMap[groupId];
+                    GroupTableUtils.setParticipantLeft(groupId, msisdn);
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
+                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
+                    {
+                        List<GroupMembers> existingMembers = GroupTableUtils.getActiveGroupMembers(groupId);
+                        obj.ContactName = Utils.defaultGroupName(existingMembers);
+                    }
+
+                    ConvMessage convMsg = new ConvMessage(jsonObj, false);
+                    obj.LastMessage = convMsg.Message;
+                    obj.MessageStatus = convMsg.MessageStatus;
+                    obj.TimeStamp = convMsg.Timestamp;
+                    ConversationTableUtils.updateConversation(obj);
+
+                    object[] vals = new object[2];
+                    vals[0] = convMsg;
+                    vals[1] = obj;
+                    this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, jsonObj);
+                    
                 }
-            }*/
+                else
+                {
+                    return;
+                }
+               
+            }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
             {
                 string groupName = (string)jsonObj[HikeConstants.DATA];
@@ -266,11 +301,13 @@ namespace windows_client
                 if (goAhead)
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj, false);
-                    ConversationListObject cObj = ConversationsList.ConvMap[convMessage.Msisdn];
+                    ConversationListObject cObj = null;
+                    ConversationsList.ConvMap.TryGetValue(convMessage.Msisdn,out cObj);
+                    if (cObj == null)
+                        return;
                     object[] vals = new object[2];
                     vals[0] = convMessage;
-                    vals[1] = cObj;
-                    
+                    vals[1] = cObj;                   
                     this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     this.pubSub.publish(HikePubSub.GROUP_END, groupId);
                 }

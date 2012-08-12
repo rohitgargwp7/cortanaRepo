@@ -23,7 +23,7 @@ namespace windows_client.View
             string groupId = PhoneApplicationService.Current.State["objFromChatThreadPage"] as string;
             GroupInfo groupInfo = GroupTableUtils.getGroupInfoForId(groupId);
             this.groupName.Text = groupInfo.GroupName;
-            activeGroupMembers = GroupTableUtils.getGroupMembers(groupId);
+            activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             this.groupChatParticipants.ItemsSource = activeGroupMembers;
         }
 

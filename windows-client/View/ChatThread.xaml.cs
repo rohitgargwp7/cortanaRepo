@@ -31,10 +31,12 @@ namespace windows_client.View
         private readonly string BLOCK_USER = "BLOCK";
         private readonly string UNBLOCK_USER = "UNBLOCK";
 
+        private string groupOwner = null;
         private string mContactNumber;
         private string mContactName = null;
         private string lastText = "";
 
+        private bool isGroupChat = false;
         private bool mUserIsBlocked;
         private bool isOnHike;
         private bool animatedOnce = false;
@@ -168,7 +170,7 @@ namespace windows_client.View
         private void initPageBasedOnState()
         {
             bool isAddUser = false;
-            bool isGroupChat = false;
+
             #region OBJECT FROM CONVLIST PAGE
 
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
@@ -240,6 +242,8 @@ namespace windows_client.View
                 sendMsg(cm);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 mContactName = string.IsNullOrEmpty(mContactName) == true ? Utils.defaultGroupName(participantList) : mContactName;
+                isOnHike = true;
+                isGroupChat = true;
             }
 
             #endregion
@@ -326,6 +330,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(leaveMenuItem);
 
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                groupOwner = gi.GroupOwner;
                 if (gi != null)
                 {
                     if (gi.GroupOwner != (string)App.appSettings[App.MSISDN_SETTING]) // represents current user is not group owner
@@ -591,20 +596,27 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
         }
 
-
         private void blockUnblock_Click(object sender, EventArgs e)
         {
             if (mUserIsBlocked) // UNBLOCK REQUEST
             {
-                mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
+                if (isGroupChat)
+                {
+                    mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, isGroupChat ? groupOwner : mContactNumber);
+                }
+                else
+                    mPubSub.publish(HikePubSub.UNBLOCK_USER, isGroupChat ? groupOwner : mContactNumber);
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
                 showOverlay(false);
-                //sendMsgTxtbox.Foreground = "WhiteSmoke";
             }
             else     // BLOCK REQUEST
             {
-                mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
+                if (isGroupChat)
+                {
+                }
+                else
+                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, isGroupChat ? groupOwner : mContactNumber);
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
                 showOverlay(true); //true means show block animation
@@ -668,7 +680,6 @@ namespace windows_client.View
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
             sendMsg(convMessage);
-
         }
 
         private void sendMsg(ConvMessage convMessage)
@@ -1039,8 +1050,11 @@ namespace windows_client.View
                 if (convMessage.Msisdn == mContactNumber)
                 {
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
+                    if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
+                    {
+                        mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
+                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
+                    }
                     mPubSub.publish(HikePubSub.MSG_READ, convMessage.Msisdn);
 
                     // Update UI
@@ -1104,7 +1118,8 @@ namespace windows_client.View
                     ConvMessage msg = msgMap[msgId];
                     if (msg != null)
                     {
-                        msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
+                        if ((int)msg.MessageStatus < (int)ConvMessage.State.SENT_DELIVERED)
+                            msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
                     }
                 }
                 catch (KeyNotFoundException e)

@@ -41,7 +41,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static List<GroupMembers> getGroupMembers(string grpId)
+        public static List<GroupMembers> getActiveGroupMembers(string grpId)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
@@ -100,6 +100,18 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.groupMembers.DeleteAllOnSubmit<GroupMembers>(DbCompiledQueries.GetGroupMembersForGroupID(context, groupId));
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        public static void setParticipantLeft(string groupId, string msisdn)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupMembers gm = DbCompiledQueries.GetGroupMembers(context, groupId, msisdn).FirstOrDefault<GroupMembers>();
+                if (gm == null)
+                    return;
+                gm.HasLeft = true;
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }

@@ -82,14 +82,23 @@ namespace windows_client.DbUtils
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
 
                 GroupTableUtils.addGroupParticipants(gmList);
-                GroupInfo gi = new GroupInfo(gmList[0].GroupId, groupName, convMsg.GroupParticipant, true);
+                GroupInfo gi = new GroupInfo(gmList[0].GroupId, null, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
             else // add a member to a group
             {
-                List<GroupMembers> existingMembers = GroupTableUtils.getGroupMembers(convMsg.Msisdn);
+                List<GroupMembers> existingMembers = GroupTableUtils.getActiveGroupMembers(convMsg.Msisdn);
+                List<GroupMembers> actualMembersToAdd = getNewMembers(gmList, existingMembers);
+                if (actualMembersToAdd == null)
+                    return null;
                 obj = ConversationsList.ConvMap[convMsg.Msisdn];
-                //obj.ContactName = groupName;
+                GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
+                if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
+                {
+                    existingMembers.AddRange(actualMembersToAdd);
+                    obj.ContactName = Utils.defaultGroupName(existingMembers);
+                }
+               
                 obj.LastMessage = convMsg.Message;
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
@@ -97,6 +106,21 @@ namespace windows_client.DbUtils
             }
             addMessage(convMsg);
             return obj;
+        }
+
+        private static List<GroupMembers> getNewMembers(List<GroupMembers> gmList, List<GroupMembers> existingMembers)
+        {
+            List<GroupMembers> newGrpUserList = null;
+            for (int j = 0; j < gmList.Count; j++)
+            {
+                if (!existingMembers.Contains(gmList[j]))
+                {
+                    if (newGrpUserList == null)
+                        newGrpUserList = new List<GroupMembers>();
+                    newGrpUserList.Add(gmList[j]);
+                }
+            }
+            return newGrpUserList;
         }
 
         public static ConversationListObject addChatMessage(ConvMessage convMsg)
@@ -139,20 +163,22 @@ namespace windows_client.DbUtils
 
         public static string updateAllMsgStatus(long[] ids, int status)
         {
+            bool shouldSubmit = false;
             string msisdn = null;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 for (int i = 0; i < ids.Length; i++)
                 {
-                    List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).ToList<ConvMessage>();
-                    if (res.Count == 1)
+                    ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, ids[i]).FirstOrDefault<ConvMessage>();
+                    if (message != null)
                     {
-                        ConvMessage message = res.First();
                         message.MessageStatus = (ConvMessage.State)status;
                         msisdn = message.Msisdn;
+                        shouldSubmit = true;
                     }
                 }
-                SubmitWithConflictResolve(context);
+                if(shouldSubmit)
+                    SubmitWithConflictResolve(context);
             }
             return msisdn;
         }
