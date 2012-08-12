@@ -7,6 +7,7 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
 using System.Text;
+using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
@@ -14,6 +15,7 @@ namespace windows_client
     {
         private string ac_name;
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private ApplicationBar appBar;
 
 
         public EnterName()
@@ -22,14 +24,29 @@ namespace windows_client
             this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
             App.appSettings[App.PAGE_STATE] = App.PageState.SETNAME_SCREEN;
             App.appSettings.Save();
+
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Opacity = 1;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = false;
+
+            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            composeIconButton.Text = "done";
+            composeIconButton.Click += new EventHandler(btnEnterPin_Click);
+            composeIconButton.IsEnabled = true;
+            appBar.Buttons.Add(composeIconButton);
+            enterName.ApplicationBar = appBar;
+
         }
 
-        private void btnEnterName_Click(object sender, RoutedEventArgs e)
+        private void btnEnterPin_Click(object sender, EventArgs e)
         {
             ac_name = txtBxEnterName.Text;
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
-            enterNameBtn.Content = "Scanning contacts";
+//            enterNameBtn.Content = "Scanning contacts";
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
         }
 
@@ -69,7 +86,7 @@ namespace windows_client
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             {
-                enterNameBtn.Content = "Getting you in";
+//                enterNameBtn.Content = "Getting you in";
                 Thread.Sleep(3 * 1000);
                 NavigationService.Navigate(nextPage);
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
