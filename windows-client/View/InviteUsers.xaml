@@ -16,12 +16,6 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
-
-        <Grid.Resources>
-            <Converters:InvitedButtonVisiblity x:Key="invitedButtonVisiblity"/>
-            <Converters:InvitedStringVisiblity x:Key="invitedStringVisiblity"/>
-        </Grid.Resources>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
