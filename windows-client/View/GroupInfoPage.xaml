@@ -39,7 +39,7 @@
                 <Button Height="Auto">
                     <StackPanel Orientation="Horizontal" Margin="-15">
                         <Border BorderBrush="Black" BorderThickness="3">
-                            <Image x:Name="avatarImage" Height="80" Width="80"  Source="images\ic_avatar0.png" />
+                            <Image x:Name="groupImage" Height="80" Width="80" Tap="onGroupProfileTap" Source="images\ic_avatar0.png" />
                         </Border>
                     </StackPanel>
                 </Button>
