@@ -5,20 +5,37 @@ using windows_client.utils;
 using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
+using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
     public partial class EnterPin : PhoneApplicationPage
     {
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private ApplicationBar appBar;
 
         public EnterPin()
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
+
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Opacity = 1;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = false;
+
+            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            composeIconButton.Text = "Next";
+            composeIconButton.Click += new EventHandler(btnEnterPin_Click);
+            composeIconButton.IsEnabled = true;
+            appBar.Buttons.Add(composeIconButton);
+            enterPin.ApplicationBar = appBar;
+
         }
 
-        private void btnEnterPin_Click(object sender, RoutedEventArgs e)
+        private void btnEnterPin_Click(object sender, EventArgs e)
         {  
             string pinEntered =  txtBxEnterPin.Text;
             string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
