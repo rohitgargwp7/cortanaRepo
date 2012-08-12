@@ -99,16 +99,5 @@
         <StackPanel Grid.Row="1">
             <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" Height="403" />
         </StackPanel>
-        <!--<StackPanel x:Name="sendMsgPanel" Orientation="Horizontal" Margin="-12,580,0,0" Grid.Row="2">
-            <TextBox x:Name="enterMsgTxt" Width="442" TextChanged="enterNameTxt_TextChanged" />
-        </StackPanel>-->
     </Grid>
-    <!--<phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" Mode="Minimized">
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="Refresh Contacts" Click="refreshContacts_Click"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>-->
-
 </phone:PhoneApplicationPage >
