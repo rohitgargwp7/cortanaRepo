@@ -370,7 +370,7 @@ namespace windows_client.View
             writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
             buffer = msSmallImage.ToArray();
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback));
+            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
 
             object[] vals = new object[3];
             vals[0] = msisdn;

@@ -135,9 +135,15 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
 
-        public static void updateProfileIcon(byte[] buffer, postResponseFunction finalCallbackFunction)
+        public static void updateProfileIcon(byte[] buffer, postResponseFunction finalCallbackFunction, string groudId)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/avatar")) as HttpWebRequest;
+            Uri requestUri;
+            if (String.IsNullOrEmpty(groudId))
+                requestUri = new Uri(BASE + "/account/avatar");
+            else
+                requestUri = new Uri(BASE + "/group/" + groudId + "/avatar");
+
+            HttpWebRequest req = HttpWebRequest.Create(requestUri) as HttpWebRequest;
             addToken(req);
             req.ContentType = "application/x-www-form-urlencoded";
             req.Method = "POST";
