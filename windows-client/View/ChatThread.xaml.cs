@@ -602,10 +602,13 @@ namespace windows_client.View
             {
                 if (isGroupChat)
                 {
-                    mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, isGroupChat ? groupOwner : mContactNumber);
+                    object[] vals = new object[2];
+                    vals[0] = mContactNumber;
+                    vals[1] = groupOwner;
+                    mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, vals);
                 }
                 else
-                    mPubSub.publish(HikePubSub.UNBLOCK_USER, isGroupChat ? groupOwner : mContactNumber);
+                    mPubSub.publish(HikePubSub.UNBLOCK_USER,mContactNumber);
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
                 showOverlay(false);
@@ -614,9 +617,13 @@ namespace windows_client.View
             {
                 if (isGroupChat)
                 {
+                    object[] vals = new object[2];
+                    vals[0] = mContactNumber;
+                    vals[1] = groupOwner;
+                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, vals);
                 }
                 else
-                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, isGroupChat ? groupOwner : mContactNumber);
+                    mPubSub.publish(HikePubSub.BLOCK_USER,mContactNumber);
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
                 showOverlay(true); //true means show block animation

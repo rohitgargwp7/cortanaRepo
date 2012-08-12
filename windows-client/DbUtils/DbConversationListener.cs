@@ -159,7 +159,7 @@ namespace windows_client.DbUtils
             }
             #endregion
             #region BLOCK GROUP OWNER
-            else if (HikePubSub.BLOCK_USER == type)
+            else if (HikePubSub.BLOCK_GROUPOWNER == type)
             {
                 object[] vals = (object[])obj;
                 string groupId = (string)vals[0];
@@ -170,7 +170,7 @@ namespace windows_client.DbUtils
             }
             #endregion
             #region UNBLOCK GROUP OWNER
-            else if (HikePubSub.UNBLOCK_USER == type)
+            else if (HikePubSub.UNBLOCK_GROUPOWNER == type)
             {
                 object[] vals = (object[])obj;
                 string groupId = (string)vals[0];
