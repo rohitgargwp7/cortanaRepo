@@ -93,7 +93,7 @@ namespace windows_client
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage,false);
                     object[] vals = new object[2];
                     vals[0] = convMessage;
                     vals[1] = obj;
@@ -265,7 +265,7 @@ namespace windows_client
                 string fromMsisdn = (string)jsonObj[HikeConstants.FROM];
 
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
-                ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg);
+                ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg,false);
                 GroupTableUtils.setParticipantLeft(groupId, fromMsisdn);
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
@@ -289,7 +289,7 @@ namespace windows_client
                 if (goAhead)
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj, false);
-                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage);
+                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage,false);
                     if (cObj == null)
                         return;
                     object[] vals = new object[2];

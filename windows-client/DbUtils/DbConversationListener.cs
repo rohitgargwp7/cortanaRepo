@@ -57,10 +57,10 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                bool shouldPublish = (bool)vals[1];
-                //ConvMessage convMessage = (ConvMessage)obj;
+                bool isNewGroup = (bool)vals[1];
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage);
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
+                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if(App.ViewModel.MessageListPageCollection.Contains(convObj))
@@ -69,7 +69,8 @@ namespace windows_client.DbUtils
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                 });
-                if(shouldPublish)
+
+                if (!isNewGroup)
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion

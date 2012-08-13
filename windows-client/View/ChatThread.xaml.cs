@@ -242,14 +242,15 @@ namespace windows_client.View
                 bw.DoWork += new DoWorkEventHandler(createGroup_Async);
                 bw.RunWorkerAsync(memberList);
 
-                ConvMessage cm = new ConvMessage(obj, true);
-                sendMsg(cm,false);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(memberList) : mContactName;
                 isOnHike = true;
                 isGroupChat = true;
-                PhoneApplicationService.Current.State.Remove("groupChat");
 
+                ConvMessage cm = new ConvMessage(obj, true);
+                sendMsg(cm, true);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+             
+                PhoneApplicationService.Current.State.Remove("groupChat");
             }
 
             #endregion
@@ -713,10 +714,10 @@ namespace windows_client.View
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
-            sendMsg(convMessage,true);
+            sendMsg(convMessage,false);
         }
 
-        private void sendMsg(ConvMessage convMessage,bool shouldPublish)
+        private void sendMsg(ConvMessage convMessage,bool isNewGroup)
         {
             this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
@@ -724,7 +725,9 @@ namespace windows_client.View
 
             object[] vals = new object[2];
             vals[0] = convMessage;
-            vals[1] = shouldPublish;
+            vals[1] = isNewGroup;
+            if (isNewGroup)
+                PhoneApplicationService.Current.State[mContactNumber] = mContactName;
             mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
         }
 

@@ -123,12 +123,12 @@ namespace windows_client.DbUtils
             return newGrpUserList;
         }
 
-        public static ConversationListObject addChatMessage(ConvMessage convMsg)
+        public static ConversationListObject addChatMessage(ConvMessage convMsg,bool isNewGroup)
         {
             ConversationListObject obj = null;
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
-                obj = ConversationTableUtils.addConversation(convMsg);
+                obj = ConversationTableUtils.addConversation(convMsg,isNewGroup);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else

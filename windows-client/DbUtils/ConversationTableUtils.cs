@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using windows_client.utils;
 using windows_client.View;
 using System.Data.Linq;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.DbUtils
 {
@@ -50,13 +51,26 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addConversation(ConvMessage convMessage)
+        public static ConversationListObject addConversation(ConvMessage convMessage,bool isNewGroup)
         {
-            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-            Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
-            ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
-                contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail==null?null:thumbnail.Avatar,convMessage.MessageStatus);
-            
+            ConversationListObject obj = null;
+            if (isNewGroup)
+            {
+                string groupName = convMessage.Msisdn;
+                if(PhoneApplicationService.Current.State.ContainsKey(convMessage.Msisdn))
+                {
+                    groupName = (string)PhoneApplicationService.Current.State[convMessage.Msisdn];
+                    PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
+                }
+                obj = new ConversationListObject(convMessage.Msisdn,groupName,convMessage.Message,true,convMessage.Timestamp,null,ConvMessage.State.SENT_UNCONFIRMED);
+            }
+            else
+            {
+                ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
+                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+                obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
+                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail == null ? null : thumbnail.Avatar, convMessage.MessageStatus);
+            }
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {              
                     context.conversations.InsertOnSubmit(obj);
