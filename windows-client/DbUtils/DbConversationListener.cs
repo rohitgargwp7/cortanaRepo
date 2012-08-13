@@ -135,7 +135,9 @@ namespace windows_client.DbUtils
                 MemoryStream msSmallImage = (MemoryStream)vals[1];
                 MemoryStream msLargeImage = (MemoryStream)vals[2];
                 MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
-                MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
+                //null in case of group profile pic
+                if(msLargeImage!=null)
+                    MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
             }
             #endregion
             #region DELETE ACCOUNT

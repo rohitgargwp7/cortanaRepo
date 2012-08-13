@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace windows_client.View
 {
-    public partial class GroupInfoPage : PhoneApplicationPage
+    public partial class GroupInfoPage : PhoneApplicationPage, HikePubSub.Listener
     {
         private List<GroupMembers> activeGroupMembers;
         private PhotoChooserTask photoChooserTask;
@@ -33,7 +33,7 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId + "::large");
+            BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
             if (groupProfileBitmap != null)
             {
                 groupImage.Source = groupProfileBitmap;
@@ -48,7 +48,41 @@ namespace windows_client.View
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             this.groupChatParticipants.ItemsSource = activeGroupMembers;
         }
+        #region PUBSUB
+        private void registerListeners()
+        {
+            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+        }
+        public void onEventReceived(string type, object obj)
+        {
+            if (HikePubSub.UPDATE_UI == type)
+            {
+                BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
 
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (groupProfileBitmap != null)
+                    {
+                        groupImage.Source = groupProfileBitmap;
+                    }
+                });
+
+            }
+        }
+        #endregion
+
+        #region SET GROUP PIC
+        private void onGroupProfileTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            try
+            {
+                photoChooserTask.Show();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                MessageBox.Show("An error occurred.");
+            }
+        }
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
             if (e.TaskResult == TaskResult.OK)
@@ -80,10 +114,10 @@ namespace windows_client.View
             BitmapImage image = (BitmapImage)sender;
             byte[] buffer = null;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            MemoryStream msLargeImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+            //MemoryStream msLargeImage = new MemoryStream();
+            //writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
             MemoryStream msSmallImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
+            writeableBitmap.SaveJpeg(msSmallImage, 45, 45, 0, 95);
             buffer = msSmallImage.ToArray();
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
@@ -91,27 +125,15 @@ namespace windows_client.View
             object[] vals = new object[3];
             vals[0] = groupId;
             vals[1] = msSmallImage;
-            vals[2] = msLargeImage;
+            vals[2] = null;
             mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
         }
 
         public void updateProfile_Callback(JObject obj)
         {
         }
+        #endregion
 
-
-
-        private void onGroupProfileTap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            try
-            {
-                photoChooserTask.Show();
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                MessageBox.Show("An error occurred.");
-            }
-        }
 
         private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
