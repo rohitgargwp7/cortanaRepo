@@ -38,7 +38,6 @@ namespace windows_client.View
             {
                 groupImage.Source = groupProfileBitmap;
             }
-
         }
 
         private void initPageBasedOnState()
@@ -114,6 +113,21 @@ namespace windows_client.View
             }
         }
 
+        private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //TODO start this loop from end, after sorting is done on onHike status
+            for (int i = 0; i < activeGroupMembers.Count; i++)
+            {
+                if (!Utils.getGroupParticipant(activeGroupMembers[i].Name, activeGroupMembers[i].Msisdn).IsOnHike)
+                {
+                    long time = utils.TimeUtils.getCurrentTimeStamp();
+                    ConvMessage convMessage = new ConvMessage(App.invite_message, activeGroupMembers[i].Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                    convMessage.IsInvite = true;
+                    App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                }
+            }
+
+        }
 
     }
 }
