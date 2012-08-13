@@ -123,7 +123,6 @@ namespace windows_client.View
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
             selectUserPage.ApplicationBar = appBar;
-
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
