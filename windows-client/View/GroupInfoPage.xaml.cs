@@ -17,6 +17,7 @@ namespace windows_client.View
     public partial class GroupInfoPage : PhoneApplicationPage, HikePubSub.Listener
     {
         private List<GroupMembers> activeGroupMembers;
+        private ObservableCollection<GroupMembers> groupMembers = new ObservableCollection<GroupMembers>();
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
@@ -46,12 +47,16 @@ namespace windows_client.View
             groupId = gi.GroupId;
             this.groupName.Text = gi.GroupName;
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
-            this.groupChatParticipants.ItemsSource = activeGroupMembers;
+            for (int i = 0; i < activeGroupMembers.Count; i++)
+                groupMembers.Add(activeGroupMembers[i]);
+            this.groupChatParticipants.ItemsSource = groupMembers;
         }
         #region PUBSUB
         private void registerListeners()
         {
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+            mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
         }
         public void onEventReceived(string type, object obj)
         {
@@ -66,7 +71,33 @@ namespace windows_client.View
                         groupImage.Source = groupProfileBitmap;
                     }
                 });
+            }
+            else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
+            {
+                JObject json = (JObject)obj;
+                string joinedGroupId = (string)json[HikeConstants.TO];
+                if (joinedGroupId == groupId)
+                { 
+                
+                }
 
+            }
+            else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
+            {
+                JObject json = (JObject)obj;
+                string leaveGroupId = (string)json[HikeConstants.TO];
+                if (leaveGroupId == groupId)
+                {
+                    string leaveMsisdn = (string)json[HikeConstants.DATA];
+                    int i = 0;
+                    for (; i < groupMembers.Count; i++)
+                    {
+                        if (groupMembers[i].Msisdn == leaveMsisdn) ;
+                        break;
+                    }
+                    groupMembers.RemoveAt(i);
+                    activeGroupMembers.RemoveAt(i);
+                }
             }
         }
         #endregion
