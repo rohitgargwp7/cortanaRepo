@@ -109,7 +109,6 @@ namespace windows_client.View
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
             bw.RunWorkerAsync();
-            this.Loaded += new RoutedEventHandler(SelectUserPage_Loaded);
 
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -125,10 +124,6 @@ namespace windows_client.View
             appBar.Buttons.Add(composeIconButton);
             selectUserPage.ApplicationBar = appBar;
 
-        }
-
-        void SelectUserPage_Loaded(object sender, RoutedEventArgs e)
-        {
             enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
         }
 
