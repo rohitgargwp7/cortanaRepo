@@ -301,6 +301,7 @@ namespace windows_client.View
                 {
                     gi = new GroupInfo(mContactNumber, null, groupOwner, true);
                     GroupTableUtils.addGroupInfo(gi);
+                    gi.GroupName = mContactName;
                 }
             }
 
