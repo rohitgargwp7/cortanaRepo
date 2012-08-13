@@ -43,6 +43,7 @@ namespace windows_client
 
         #region instances
 
+        public static string MSISDN;
         private static bool ab_scanned = false;
         public static bool isABScanning = false;
         private static HikePubSub mPubSubInstance;
@@ -212,6 +213,7 @@ namespace windows_client
             if (appSettings.Contains(App.TOKEN_SETTING) && null != appSettings[App.TOKEN_SETTING])
             {
                 AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
+                App.MSISDN = (string)appSettings[App.MSISDN_SETTING];
             }
 
             #region CreateDatabases

@@ -81,7 +81,7 @@ namespace windows_client.DbUtils
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
 
-                GroupTableUtils.addGroupParticipants(gmList);
+                GroupTableUtils.addGroupMembers(gmList);
                 GroupInfo gi = new GroupInfo(gmList[0].GroupId, null, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }

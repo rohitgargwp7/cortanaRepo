@@ -222,28 +222,34 @@ namespace windows_client.View
                 // here always create a new group
                 string uid = AccountUtils.Token;
                 string groupId = mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
-                List<string> selectedParticipantMsisdn = PhoneApplicationService.Current.State["groupMsidns"] as List<string>;
-                List<string> selectedParticipantNames = PhoneApplicationService.Current.State["groupNames"] as List<string>;
-                PhoneApplicationService.Current.State.Remove("groupChat");
-                PhoneApplicationService.Current.State.Remove("groupMsidns");
-                PhoneApplicationService.Current.State.Remove("groupNames");
+                groupOwner = App.MSISDN;
+                List<ContactInfo> contactsForGroup = PhoneApplicationService.Current.State["groupChat"] as List<ContactInfo>;
 
-                List<GroupMembers> participantList = new List<GroupMembers>(selectedParticipantMsisdn.Count);
-                for (int i = 0; i < selectedParticipantMsisdn.Count; i++)
+                List<GroupMembers> memberList = new List<GroupMembers>(contactsForGroup.Count);
+                for (int i = 0; i < contactsForGroup.Count; i++)
                 {
-                    GroupMembers gm = new GroupMembers(groupId, selectedParticipantMsisdn[i], selectedParticipantNames[i]);
-                    participantList.Add(gm);
+                    GroupMembers gm = new GroupMembers(groupId, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
+                    memberList.Add(gm);
+                    if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
+                    {
+                        Utils.GroupCache.Add(contactsForGroup[i].Msisdn, new GroupParticipant(contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
+                    }
                 }
-                JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, participantList);
+                JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, memberList);
 
-                GroupTableUtils.addGroupParticipants(participantList);
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.WorkerSupportsCancellation = true;
+                bw.DoWork += new DoWorkEventHandler(createGroup_Async);
+                bw.RunWorkerAsync(memberList);
 
                 ConvMessage cm = new ConvMessage(obj, true);
-                sendMsg(cm);
+                sendMsg(cm,false);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                mContactName = string.IsNullOrEmpty(mContactName) == true ? Utils.defaultGroupName(participantList) : mContactName;
+                mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(memberList) : mContactName;
                 isOnHike = true;
                 isGroupChat = true;
+                PhoneApplicationService.Current.State.Remove("groupChat");
+
             }
 
             #endregion
@@ -261,6 +267,23 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
+        }
+
+        private void createGroup_Async(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<GroupMembers> memberList = (List<GroupMembers>)e.Argument;
+            if ((worker.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                GroupInfo gi = new GroupInfo(mContactNumber, null, groupOwner, true);
+                GroupTableUtils.addGroupMembers(memberList);
+                GroupTableUtils.addGroupInfo(gi);
+            }
+
         }
 
         private JObject createGroupJsonPacket(string type, List<GroupMembers> grpList)
@@ -329,11 +352,14 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
 
-                GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                groupOwner = gi.GroupOwner;
-                if (gi != null)
+                if (groupOwner == null) // case where someone else created the group
                 {
-                    if (gi.GroupOwner != (string)App.appSettings[App.MSISDN_SETTING]) // represents current user is not group owner
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    groupOwner = gi != null ?  gi.GroupOwner : null;
+                }
+                if (groupOwner != null)
+                {
+                    if (groupOwner != App.MSISDN) // represents current user is not group owner
                     {
                         menuItem1 = new ApplicationBarMenuItem();
                         if (mUserIsBlocked)
@@ -409,6 +435,7 @@ namespace windows_client.View
             }
 
         }
+
         private void loadMessages()
         {
             int i;
@@ -686,16 +713,19 @@ namespace windows_client.View
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
-            sendMsg(convMessage);
+            sendMsg(convMessage,true);
         }
 
-        private void sendMsg(ConvMessage convMessage)
+        private void sendMsg(ConvMessage convMessage,bool shouldPublish)
         {
             this.ChatThreadPageCollection.Add(convMessage);
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
 
-            mPubSub.publish(HikePubSub.MESSAGE_SENT, convMessage);
+            object[] vals = new object[2];
+            vals[0] = convMessage;
+            vals[1] = shouldPublish;
+            mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
         }
 
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)

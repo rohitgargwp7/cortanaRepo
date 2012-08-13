@@ -21,8 +21,7 @@ namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
-        public List<string> groupMsisdns = null;
-        public List<string> groupNames = null;
+        public List<ContactInfo> contactsForgroup = null;
         public MyProgressIndicator progress = null;
         public bool canGoBack = true;
         public List<Group<ContactInfo>> groupedList = null;
@@ -33,7 +32,7 @@ namespace windows_client.View
         private readonly int maxUsersAllowed = 10;
         private int smsUserCount = 0;
         private ApplicationBar appBar;
-
+        private ApplicationBarIconButton doneIconButton = null;
         public class Group<T> : IEnumerable<T>
         {
             public Group(string name, List<T> items)
@@ -109,6 +108,7 @@ namespace windows_client.View
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
             bw.RunWorkerAsync();
+            enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
 
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -123,8 +123,6 @@ namespace windows_client.View
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
             selectUserPage.ApplicationBar = appBar;
-
-            enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -133,7 +131,9 @@ namespace windows_client.View
             if (this.NavigationContext.QueryString.ContainsKey("param"))
             {
                 /* Add icons */
-                ApplicationBarIconButton doneIconButton = new ApplicationBarIconButton();
+                if(doneIconButton != null)
+                    return;
+                doneIconButton = new ApplicationBarIconButton();
                 doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
                 doneIconButton.Text = "Done";
                 doneIconButton.Click += new EventHandler(startGroup_Click);
@@ -145,10 +145,8 @@ namespace windows_client.View
 
         private void startGroup_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State["groupChat"] = true;
+            PhoneApplicationService.Current.State["groupChat"] = contactsForgroup;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
-            PhoneApplicationService.Current.State["groupMsidns"] = groupMsisdns;
-            PhoneApplicationService.Current.State["groupNames"] = groupNames;
             string uri = "/View/ChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -264,8 +262,7 @@ namespace windows_client.View
                         enterNameTxt.Text = "";
                         return;
                     }
-                    groupMsisdns.RemoveAt(groupMsisdns.Count - 1);
-                    groupNames.RemoveAt(groupNames.Count - 1);
+                    contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
                     enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfLastColonSpace + 2);
                     enterNameTxt.Select(indexOfLastColonSpace + 2, 0);
                 }
@@ -298,16 +295,12 @@ namespace windows_client.View
 
             if (contact == null)
                 return;
-            if (groupMsisdns == null)
-                groupMsisdns = new List<string>();
-            if (smsUserCount == maxSMSUsersAllowed || groupMsisdns.Count == maxUsersAllowed)
+            if (contactsForgroup == null)
+                contactsForgroup = new List<ContactInfo>();
+            if (smsUserCount == maxSMSUsersAllowed || contactsForgroup.Count == maxUsersAllowed)
                 return;
 
-            groupMsisdns.Add(contact.Msisdn);
-
-            if (groupNames == null)
-                groupNames = new List<string>();
-            groupNames.Add(contact.Name);
+            contactsForgroup.Add(contact);
 
             if (!contact.OnHike)
                 smsUserCount++;
