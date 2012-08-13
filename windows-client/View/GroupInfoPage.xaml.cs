@@ -20,7 +20,7 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
-
+        private GroupInfo gi;
 
         public GroupInfoPage()
         {
@@ -42,9 +42,9 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-            groupId = PhoneApplicationService.Current.State["objFromChatThreadPage"] as string;
-            GroupInfo groupInfo = GroupTableUtils.getGroupInfoForId(groupId);
-            this.groupName.Text = groupInfo.GroupName;
+            gi = PhoneApplicationService.Current.State["objFromChatThreadPage"] as GroupInfo;
+            groupId = gi.GroupId;
+            this.groupName.Text = gi.GroupName;
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             this.groupChatParticipants.ItemsSource = activeGroupMembers;
         }
@@ -127,6 +127,13 @@ namespace windows_client.View
                 }
             }
 
+        }
+
+        private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State["existingGroupMembers"] = activeGroupMembers;
+            PhoneApplicationService.Current.State["groupInfoFromGroupProfile"] = gi;
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml?param=grpChat", UriKind.Relative));
         }
 
     }
