@@ -20,14 +20,14 @@ namespace windows_client.DbUtils
        /// <summary>
        /// Adds a list of participants to the group
        /// </summary>
-       /// <param name="participantList"></param>
-        public static void addGroupParticipants(List<GroupMembers> participantList)
+       /// <param name="memberList"></param>
+        public static void addGroupMembers(List<GroupMembers> memberList)
         {
-            if(participantList == null || participantList.Count == 0)
+            if(memberList == null || memberList.Count == 0)
                 return;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                context.groupMembers.InsertAllOnSubmit(participantList);
+                context.groupMembers.InsertAllOnSubmit(memberList);
                 context.SubmitChanges();
             }
         }

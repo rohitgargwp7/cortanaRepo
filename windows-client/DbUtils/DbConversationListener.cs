@@ -55,7 +55,10 @@ namespace windows_client.DbUtils
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
             {
-                ConvMessage convMessage = (ConvMessage)obj;
+                object[] vals = (object[])obj;
+                ConvMessage convMessage = (ConvMessage)vals[0];
+                bool shouldPublish = (bool)vals[1];
+                //ConvMessage convMessage = (ConvMessage)obj;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -66,7 +69,8 @@ namespace windows_client.DbUtils
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                 });
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                if(shouldPublish)
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion
             #region MESSAGE_RECEIVED_READ
