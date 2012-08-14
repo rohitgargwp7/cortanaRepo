@@ -14,13 +14,14 @@ using Newtonsoft.Json.Linq;
 
 namespace windows_client.View
 {
-    public partial class GroupInfoPage : PhoneApplicationPage
+    public partial class GroupInfoPage : PhoneApplicationPage, HikePubSub.Listener
     {
         private List<GroupMembers> activeGroupMembers;
+        private ObservableCollection<GroupMembers> groupMembers = new ObservableCollection<GroupMembers>();
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
-
+        private GroupInfo gi;
 
         public GroupInfoPage()
         {
@@ -33,23 +34,87 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId + "::large");
+            BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
             if (groupProfileBitmap != null)
             {
                 groupImage.Source = groupProfileBitmap;
             }
-
         }
 
         private void initPageBasedOnState()
         {
-            groupId = PhoneApplicationService.Current.State["objFromChatThreadPage"] as string;
-            GroupInfo groupInfo = GroupTableUtils.getGroupInfoForId(groupId);
-            this.groupName.Text = groupInfo.GroupName;
+            gi = PhoneApplicationService.Current.State["objFromChatThreadPage"] as GroupInfo;
+            groupId = gi.GroupId;
+            this.groupName.Text = gi.GroupName;
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
-            this.groupChatParticipants.ItemsSource = activeGroupMembers;
+            for (int i = 0; i < activeGroupMembers.Count; i++)
+                groupMembers.Add(activeGroupMembers[i]);
+            this.groupChatParticipants.ItemsSource = groupMembers;
         }
 
+        #region PUBSUB
+        private void registerListeners()
+        {
+            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+            mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
+        }
+        public void onEventReceived(string type, object obj)
+        {
+            if (HikePubSub.UPDATE_UI == type)
+            {
+                BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (groupProfileBitmap != null)
+                    {
+                        groupImage.Source = groupProfileBitmap;
+                    }
+                });
+            }
+            else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
+            {
+                JObject json = (JObject)obj;
+                string joinedGroupId = (string)json[HikeConstants.TO];
+                if (joinedGroupId == groupId)
+                { 
+                
+                }
+
+            }
+            else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
+            {
+                JObject json = (JObject)obj;
+                string leaveGroupId = (string)json[HikeConstants.TO];
+                if (leaveGroupId == groupId)
+                {
+                    string leaveMsisdn = (string)json[HikeConstants.DATA];
+                    int i = 0;
+                    for (; i < groupMembers.Count; i++)
+                    {
+                        if (groupMembers[i].Msisdn == leaveMsisdn) ;
+                        break;
+                    }
+                    groupMembers.RemoveAt(i);
+                    activeGroupMembers.RemoveAt(i);
+                }
+            }
+        }
+        #endregion
+
+        #region SET GROUP PIC
+        private void onGroupProfileTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            try
+            {
+                photoChooserTask.Show();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                MessageBox.Show("An error occurred.");
+            }
+        }
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
             if (e.TaskResult == TaskResult.OK)
@@ -81,10 +146,10 @@ namespace windows_client.View
             BitmapImage image = (BitmapImage)sender;
             byte[] buffer = null;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            MemoryStream msLargeImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+            //MemoryStream msLargeImage = new MemoryStream();
+            //writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
             MemoryStream msSmallImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
+            writeableBitmap.SaveJpeg(msSmallImage, 45, 45, 0, 95);
             buffer = msSmallImage.ToArray();
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
@@ -92,28 +157,38 @@ namespace windows_client.View
             object[] vals = new object[3];
             vals[0] = groupId;
             vals[1] = msSmallImage;
-            vals[2] = msLargeImage;
+            vals[2] = null;
             mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
         }
 
         public void updateProfile_Callback(JObject obj)
         {
         }
+        #endregion
 
 
-
-        private void onGroupProfileTap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            try
+            //TODO start this loop from end, after sorting is done on onHike status
+            for (int i = 0; i < activeGroupMembers.Count; i++)
             {
-                photoChooserTask.Show();
+                if (!Utils.getGroupParticipant(activeGroupMembers[i].Name, activeGroupMembers[i].Msisdn).IsOnHike)
+                {
+                    long time = utils.TimeUtils.getCurrentTimeStamp();
+                    ConvMessage convMessage = new ConvMessage(App.invite_message, activeGroupMembers[i].Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                    convMessage.IsInvite = true;
+                    App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                }
             }
-            catch (System.InvalidOperationException ex)
-            {
-                MessageBox.Show("An error occurred.");
-            }
+
         }
 
+        private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State["existingGroupMembers"] = activeGroupMembers;
+            PhoneApplicationService.Current.State["groupInfoFromGroupProfile"] = gi;
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml?param=grpChat", UriKind.Relative));
+        }
 
     }
 }

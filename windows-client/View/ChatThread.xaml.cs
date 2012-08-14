@@ -57,6 +57,8 @@ namespace windows_client.View
         private Dictionary<long, ConvMessage> msgMap = new Dictionary<long, ConvMessage>(); // this holds msgId -> message mapping
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
 
+        private GroupInfo gi = null;
+
         #endregion
 
         #region UI VALUES
@@ -219,10 +221,23 @@ namespace windows_client.View
 
             else if (PhoneApplicationService.Current.State.ContainsKey("groupChat"))
             {
-                // here always create a new group
-                string uid = AccountUtils.Token;
-                string groupId = mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
-                groupOwner = App.MSISDN;
+                string groupId;
+                //add members to existing group
+                if (PhoneApplicationService.Current.State.ContainsKey("groupInfoFromGroupProfile"))
+                {
+                    gi = PhoneApplicationService.Current.State["groupInfoFromGroupProfile"] as GroupInfo;
+                    groupId = gi.GroupId;
+                    groupOwner = gi.GroupOwner;
+                    PhoneApplicationService.Current.State.Remove("groupInfoFromGroupProfile");
+                }
+                else
+                {
+                    // here always create a new group
+                    string uid = AccountUtils.Token;
+                    groupId = mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
+                    groupOwner = App.MSISDN;
+                }
+                mContactNumber = groupId;
                 List<ContactInfo> contactsForGroup = PhoneApplicationService.Current.State["groupChat"] as List<ContactInfo>;
 
                 List<GroupMembers> memberList = new List<GroupMembers>(contactsForGroup.Count);
@@ -280,9 +295,12 @@ namespace windows_client.View
             }
             else
             {
-                GroupInfo gi = new GroupInfo(mContactNumber, null, groupOwner, true);
                 GroupTableUtils.addGroupMembers(memberList);
-                GroupTableUtils.addGroupInfo(gi);
+                if (gi == null)
+                {
+                    gi = new GroupInfo(mContactNumber, null, groupOwner, true);
+                    GroupTableUtils.addGroupInfo(gi);
+                }
             }
 
         }
@@ -355,7 +373,7 @@ namespace windows_client.View
 
                 if (groupOwner == null) // case where someone else created the group
                 {
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
                     groupOwner = gi != null ?  gi.GroupOwner : null;
                 }
                 if (groupOwner != null)
@@ -620,7 +638,7 @@ namespace windows_client.View
 
         private void groupInfo_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State["objFromChatThreadPage"] = mContactNumber;
+            PhoneApplicationService.Current.State["objFromChatThreadPage"] = gi;
             NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
         }
 
@@ -727,7 +745,12 @@ namespace windows_client.View
             vals[0] = convMessage;
             vals[1] = isNewGroup;
             if (isNewGroup)
+            {
                 PhoneApplicationService.Current.State[mContactNumber] = mContactName;
+                JObject metaData = new JObject();
+                metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
+                convMessage.SetMetaData = new MessageMetadata(metaData);
+            }
             mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
         }
 

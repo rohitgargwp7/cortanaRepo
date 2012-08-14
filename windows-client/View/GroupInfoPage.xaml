@@ -45,12 +45,12 @@
                 </Button>
                 <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
                     <TextBlock Foreground="Black" FontSize="25" Text="Group Name"/>
-                    <TextBlock x:Name="groupName" Foreground="Black" FontSize="35"></TextBlock>
+                    <TextBlock x:Name="groupName" Text="Sample" Foreground="Black" FontSize="35"></TextBlock>
                 </StackPanel>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="35,30,0,0">
-                <Image Source="images\add_users.png" Width="30" Height="30"></Image>
+                <Image Source="images\add_users.png" Tap="AddParticipants_Tap" Width="30" Height="30"></Image>
                 <TextBlock Text="Participants" Foreground="Black" FontSize="35" Margin="20,0,0,0"></TextBlock>
             </StackPanel>
             <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="35,5,0,0">
@@ -64,7 +64,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Row="3">
-                <Button Content="Invite SMS participants to hike" Height="90" FontSize="20" BorderThickness="2" BorderBrush="Black" Width="380" Foreground="Black"></Button>
+                <Button Content="Invite SMS participants to hike" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" BorderBrush="Black" Width="380" Foreground="Black"></Button>
             </StackPanel>
             
         </Grid>

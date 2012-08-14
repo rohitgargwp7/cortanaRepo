@@ -205,6 +205,39 @@ namespace windows_client.Model
             }
         }
 
+        [Column]
+        public string MetaData
+        {
+            get
+            {
+                if(metadata != null)
+                    return metadata.Serialize;
+                return null;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    JObject jObj = JObject.Parse(value);
+                    metadata = new MessageMetadata(jObj);
+                    participantInfoState = metadata.ParticipantState;
+                }
+                else
+                {
+                    metadata = null;
+                }
+            }
+        }
+
+        public MessageMetadata SetMetaData
+        {
+            set
+            {
+                if (value != metadata)
+                    metadata = value;
+            }
+        }
+
         public ChatBubbleType MsgType
         {
             get

@@ -129,6 +129,8 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, grpId).FirstOrDefault();
+                if (cObj == null)
+                    return;
                 cObj.ContactName = groupName;
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
@@ -165,6 +167,8 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault<ConversationListObject>();
+                if (cObj == null)
+                    return;
                 cObj.MessageStatus = (ConvMessage.State)status;
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }

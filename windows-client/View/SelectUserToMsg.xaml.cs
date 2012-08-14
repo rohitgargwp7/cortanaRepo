@@ -31,8 +31,10 @@ namespace windows_client.View
         private readonly int maxSMSUsersAllowed = 5;
         private readonly int maxUsersAllowed = 10;
         private int smsUserCount = 0;
+        private int existingGroupUsers = 0;
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
+
         public class Group<T> : IEnumerable<T>
         {
             public Group(string name, List<T> items)
@@ -131,7 +133,7 @@ namespace windows_client.View
             if (this.NavigationContext.QueryString.ContainsKey("param"))
             {
                 /* Add icons */
-                if(doneIconButton != null)
+                if (doneIconButton != null)
                     return;
                 doneIconButton = new ApplicationBarIconButton();
                 doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
@@ -140,6 +142,23 @@ namespace windows_client.View
                 doneIconButton.IsEnabled = true;
                 appBar.Buttons.Add(doneIconButton);
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
+            }
+            if (PhoneApplicationService.Current.State.ContainsKey("existingGroupMembers"))
+            {
+                List<GroupMembers> activeGroupMembers = PhoneApplicationService.Current.State["existingGroupMembers"] as List<GroupMembers>;
+                PhoneApplicationService.Current.State.Remove("existingGroupMembers");
+
+                //TODO start this loop from end, after sorting is done on onHike status
+                smsUserCount = 0;
+                existingGroupUsers = 0;
+                for (int i = 0; i < activeGroupMembers.Count; i++)
+                {
+                    if (!Utils.getGroupParticipant(activeGroupMembers[i].Name, activeGroupMembers[i].Msisdn).IsOnHike)
+                    {
+                        smsUserCount++;
+                    }
+                    existingGroupUsers++;
+                }
             }
         }
 
@@ -273,7 +292,7 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-//            enterNameTxt.Focus();
+            //            enterNameTxt.Focus();
             if (String.IsNullOrEmpty(enterNameTxt.Text))
             {
                 return;
@@ -297,13 +316,14 @@ namespace windows_client.View
                 return;
             if (contactsForgroup == null)
                 contactsForgroup = new List<ContactInfo>();
-            if (smsUserCount == maxSMSUsersAllowed || contactsForgroup.Count == maxUsersAllowed)
+            if (smsUserCount == maxSMSUsersAllowed || existingGroupUsers == maxUsersAllowed)
                 return;
 
             contactsForgroup.Add(contact);
 
             if (!contact.OnHike)
                 smsUserCount++;
+            existingGroupUsers++;
             string contactNameTemp = "";
             if (!String.IsNullOrEmpty(enterNameTxt.Text))
                 contactNameTemp = enterNameTxt.Text.Substring(0, enterNameTxt.Text.LastIndexOf("; ") + 2);

@@ -227,6 +227,7 @@ namespace windows_client
                     return;
                 }
                 ConvMessage convMessage = new ConvMessage(jsonObj, false);
+                convMessage.SetMetaData = new MessageMetadata(jsonObj);
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
                     return;
