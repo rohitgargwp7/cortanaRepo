@@ -762,7 +762,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[mContactNumber] = mContactName;
                 JObject metaData = new JObject();
                 metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
-                convMessage.SetMetaData = new MessageMetadata(metaData);
+                convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
                 splitUserJoinedMessage(convMessage);
             }
             else
