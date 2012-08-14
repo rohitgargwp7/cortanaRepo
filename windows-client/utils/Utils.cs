@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Model;
 using System.Collections.Generic;
 using windows_client.DbUtils;
+using System;
 
 namespace windows_client.utils
 {
@@ -95,6 +96,45 @@ namespace windows_client.utils
                 gmList.Add(gm);
             }
             return gmList;
+        }
+
+        public static int CompareByName<T>(T a, T b)
+        {
+            string name1 = a.ToString();
+            string name2 = b.ToString();
+            if (String.IsNullOrEmpty(name1))
+            {
+                if (String.IsNullOrEmpty(name2))
+                {
+                    return 0;
+                }
+                //b is greater
+                return -1;
+            }
+            else
+            {
+                if (String.IsNullOrEmpty(name2))
+                {
+                    //a is greater
+                    return 1;
+                }
+            }
+            if (name1.StartsWith("+"))
+            {
+                if (name2.StartsWith("+"))
+                {
+                    return name1.CompareTo(name2);
+                }
+                return -1;
+            }
+            else
+            {
+                if (name2.StartsWith("+"))
+                {
+                    return 1;
+                }
+                return name1.CompareTo(name2);
+            }
         }
     }
 }
