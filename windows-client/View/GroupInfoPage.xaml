@@ -57,7 +57,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Rectangle Height="25" Width="25" Fill="#1ba1e2"></Rectangle>
+                            <Rectangle Height="25" Width="25" Fill="{Binding SquareColor}"></Rectangle>
                             <TextBlock Foreground="Black" Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
                         </StackPanel>
                     </DataTemplate>

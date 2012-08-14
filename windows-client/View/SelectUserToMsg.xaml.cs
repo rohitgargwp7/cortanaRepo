@@ -118,12 +118,12 @@ namespace windows_client.View
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 
-            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
-            composeIconButton.Text = "Refresh Contacts";
-            composeIconButton.Click += new EventHandler(refreshContacts_Click);
-            composeIconButton.IsEnabled = true;
-            appBar.Buttons.Add(composeIconButton);
+            ApplicationBarIconButton refreshIconButton = new ApplicationBarIconButton();
+            refreshIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
+            refreshIconButton.Text = "Refresh Contacts";
+            refreshIconButton.Click += new EventHandler(refreshContacts_Click);
+            refreshIconButton.IsEnabled = true;
+            appBar.Buttons.Add(refreshIconButton);
             selectUserPage.ApplicationBar = appBar;
         }
 
@@ -142,6 +142,10 @@ namespace windows_client.View
                 doneIconButton.IsEnabled = true;
                 appBar.Buttons.Add(doneIconButton);
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
+            }
+            else
+            {
+                contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelected_Click);
             }
             if (PhoneApplicationService.Current.State.ContainsKey("existingGroupMembers"))
             {
