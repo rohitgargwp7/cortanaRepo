@@ -12,6 +12,8 @@ using System.Data.Linq.Mapping;
 using System.ComponentModel;
 using System.Data.Linq;
 using Microsoft.Phone.Data.Linq.Mapping;
+using windows_client.utils;
+using windows_client.View;
 
 namespace windows_client.Model
 {
@@ -23,6 +25,11 @@ namespace windows_client.Model
         string _msisdn;
         string _name;
         bool _hasLeft;
+
+        //TODO move all colors in a a single file
+        private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 163, 210, 80));
+        private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 27, 161, 226));
+
 
         [Column(IsVersion = true)]
         private Binary version;
@@ -103,6 +110,18 @@ namespace windows_client.Model
                     _hasLeft = value;
                     NotifyPropertyChanged("HasLeft");
                 }
+            }
+        }
+
+        public SolidColorBrush SquareColor
+        {
+            get 
+            {
+                if (Utils.getGroupParticipant(Name, Msisdn).IsOnHike)
+                {
+                    return hikeMsgBackground;
+                }
+                return smsBackground;
             }
         }
 
