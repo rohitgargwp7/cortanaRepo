@@ -21,6 +21,7 @@ namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        private bool isGroupChat = false;
         public List<ContactInfo> contactsForgroup = null;
         public MyProgressIndicator progress = null;
         public bool canGoBack = true;
@@ -110,7 +111,6 @@ namespace windows_client.View
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
             bw.RunWorkerAsync();
-            enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
 
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -135,6 +135,7 @@ namespace windows_client.View
                 /* Add icons */
                 if (doneIconButton != null)
                     return;
+                isGroupChat = true;
                 doneIconButton = new ApplicationBarIconButton();
                 doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
                 doneIconButton.Text = "Done";
@@ -142,6 +143,7 @@ namespace windows_client.View
                 doneIconButton.IsEnabled = true;
                 appBar.Buttons.Add(doneIconButton);
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
+                enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
             }
             else
             {
@@ -296,12 +298,17 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //            enterNameTxt.Focus();
-            if (String.IsNullOrEmpty(enterNameTxt.Text))
+            if (isGroupChat)
             {
-                return;
+                if (String.IsNullOrEmpty(enterNameTxt.Text))
+                {
+                    return;
+                }
+                enterNameTxt.Select(enterNameTxt.Text.Length, 0);
             }
-            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+            else
+                charsEntered = enterNameTxt.Text.ToLower();
+
             if (String.IsNullOrEmpty(charsEntered))
             {
                 contactsListBox.ItemsSource = groupedList;
