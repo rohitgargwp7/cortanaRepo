@@ -229,6 +229,31 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility ChatBubbleVisiblity
+        {
+            get{
+
+                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
+                {
+                    return Visibility.Collapsed;
+                }
+                return Visibility.Visible;
+            }
+        }
+
+        public Visibility NotificationMessageVisiblity
+        {
+            get
+            {
+
+                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
+            }
+        }
+
         public MessageMetadata SetMetaData
         {
             set
@@ -617,7 +642,7 @@ namespace windows_client.Model
                     string name = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn).Name;
                     newParticipants.Append(name + ", ");
                 }
-                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " joined the group chat";
+                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + ", joined the group chat";
             }
             else
             {

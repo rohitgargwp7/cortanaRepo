@@ -47,6 +47,7 @@ namespace windows_client.View
             groupId = gi.GroupId;
             this.groupName.Text = gi.GroupName;
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
+            activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
             for (int i = 0; i < activeGroupMembers.Count; i++)
                 groupMembers.Add(activeGroupMembers[i]);
             this.groupChatParticipants.ItemsSource = groupMembers;

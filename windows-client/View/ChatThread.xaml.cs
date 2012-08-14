@@ -734,23 +734,48 @@ namespace windows_client.View
             convMessage.IsSms = !isOnHike;
             sendMsg(convMessage,false);
         }
+        private void splitUserJoinedMessage(ConvMessage convMessage)
+        {
+            if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.NO_INFO)
+            {
+                string[] names = convMessage.Message.Split(',');
+                int i = 0;
+                for (; i < names.Length - 2; i++)
+                {
+                    ConvMessage c = new ConvMessage(names[i].Trim() + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
+                    this.ChatThreadPageCollection.Add(c);
+                }
+                convMessage.Message = names[i].Trim() + " has joined the Group Chat";
+                this.ChatThreadPageCollection.Add(convMessage);
+            }
+            else
+            {
+                this.ChatThreadPageCollection.Add(convMessage);
+            }
+        }
 
         private void sendMsg(ConvMessage convMessage,bool isNewGroup)
         {
-            this.ChatThreadPageCollection.Add(convMessage);
-            this.myListBox.UpdateLayout();
-            this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-
-            object[] vals = new object[2];
-            vals[0] = convMessage;
-            vals[1] = isNewGroup;
+            //user joined
             if (isNewGroup)
             {
                 PhoneApplicationService.Current.State[mContactNumber] = mContactName;
                 JObject metaData = new JObject();
                 metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
                 convMessage.SetMetaData = new MessageMetadata(metaData);
+                splitUserJoinedMessage(convMessage);
             }
+            else
+            {
+                this.ChatThreadPageCollection.Add(convMessage);
+            }
+            this.myListBox.UpdateLayout();
+            this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
+
+            object[] vals = new object[2];
+            vals[0] = convMessage;
+            vals[1] = isNewGroup;
+           
             mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
         }
 
@@ -1123,6 +1148,7 @@ namespace windows_client.View
                     // Update UI
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        //user left
                         this.ChatThreadPageCollection.Add(convMessage);
                         this.myListBox.UpdateLayout();
                         this.myListBox.ScrollIntoView(chatThreadPageCollection[chatThreadPageCollection.Count - 1]);

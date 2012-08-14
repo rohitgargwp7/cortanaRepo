@@ -158,6 +158,15 @@ namespace windows_client.Model
             return true;
         }
 
+        public override string ToString()
+        {
+            if(String.IsNullOrEmpty(_name))
+            {
+                return _msisdn;
+            }
+            return _name;
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
