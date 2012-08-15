@@ -139,7 +139,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey("isGroupChat"))
             {
                 isGroupChat = (bool)PhoneApplicationService.Current.State["isGroupChat"];
-                PhoneApplicationService.Current.State.Remove("isgroupChat");
+                PhoneApplicationService.Current.State.Remove("isGroupChat");
             }
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
