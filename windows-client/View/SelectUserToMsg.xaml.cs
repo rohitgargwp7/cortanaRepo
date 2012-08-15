@@ -171,7 +171,6 @@ namespace windows_client.View
                 /* Add icons */
                 if (doneIconButton != null)
                     return;
-                isGroupChat = true;
                 doneIconButton = new ApplicationBarIconButton();
                 doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
                 doneIconButton.Text = "Done";
