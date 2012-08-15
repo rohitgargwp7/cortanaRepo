@@ -21,6 +21,7 @@ namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        int xyz = 1; // this is used to avoid double calling of Text changed function in Textbox
         private bool isGroupChat = false;
         public List<ContactInfo> contactsForgroup = null;
         public MyProgressIndicator progress = null;
@@ -360,10 +361,17 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (xyz % 2 == 0)
+            {
+                xyz++;
+                return;
+            }
+            xyz++;
             if (isGroupChat)
             {
                 if (String.IsNullOrEmpty(enterNameTxt.Text))
                 {
+                    contactsListBox.ItemsSource = groupedList;
                     return;
                 }
                 enterNameTxt.Select(enterNameTxt.Text.Length, 0);
