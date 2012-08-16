@@ -28,7 +28,7 @@ namespace windows_client.Model
         private bool _isSent;
         private bool _isSms;
         private string _groupParticipant;
-        private MessageMetadata metadata;
+        private string metadataJsonString;
         private ParticipantInfoState participantInfoState;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
@@ -61,6 +61,8 @@ namespace windows_client.Model
 
         public static ParticipantInfoState fromJSON(JObject obj)
         {
+            if (obj == null)
+                return ParticipantInfoState.NO_INFO;
             string type = (string)obj[HikeConstants.TYPE];
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
             {
@@ -206,36 +208,19 @@ namespace windows_client.Model
         }
 
         [Column]
-        public string MetaData
+        public string MetaDataString
         {
             get
             {
-                if(metadata != null)
-                    return metadata.Serialize;
-                return null;
+                return metadataJsonString;
             }
             set
             {
-                if (value != null)
-                {
-                    JObject jObj = JObject.Parse(value);
-                    metadata = new MessageMetadata(jObj);
-                    participantInfoState = metadata.ParticipantState;
-                }
+                metadataJsonString = value;
+                if (string.IsNullOrEmpty(metadataJsonString))
+                    participantInfoState = ParticipantInfoState.NO_INFO;
                 else
-                {
-                    metadata = null;
-                }
-            }
-        }
-
-
-        public MessageMetadata SetMetaData
-        {
-            set
-            {
-                if (value != metadata)
-                    metadata = value;
+                    participantInfoState = fromJSON(JObject.Parse(metadataJsonString));
             }
         }
 
@@ -292,10 +277,10 @@ namespace windows_client.Model
                     _isSms = value;
             }
         }
-       
+
         public ParticipantInfoState GrpParticipantState
         {
-            get 
+            get
             {
                 return participantInfoState;
             }
@@ -360,7 +345,7 @@ namespace windows_client.Model
         public ConvMessage(JObject obj)
         {
             JToken val = null;
-            obj.TryGetValue(HikeConstants.TO,out val);
+            obj.TryGetValue(HikeConstants.TO, out val);
             if (val != null) // represents group message
             {
                 _msisdn = val.ToString();
@@ -371,7 +356,7 @@ namespace windows_client.Model
                 _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
                 _groupParticipant = null;
             }
-            
+
             JObject data = (JObject)obj[HikeConstants.DATA];
             JToken msg;
 
@@ -634,10 +619,10 @@ namespace windows_client.Model
             string toVal = obj[HikeConstants.TO].ToString();
             this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
             this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.FROM] : null;
-            
+
             this.participantInfoState = fromJSON(obj);
 
-            this.metadata = new MessageMetadata(obj);
+            this.metadataJsonString = obj.ToString(Newtonsoft.Json.Formatting.None);
             if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
             {
                 JArray arr = (JArray)obj[HikeConstants.DATA];

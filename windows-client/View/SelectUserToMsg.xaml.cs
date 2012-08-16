@@ -21,6 +21,8 @@ namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        int xyz = 1; // this is used to avoid double calling of Text changed function in Textbox
+        private bool isGroupChat = false;
         public List<ContactInfo> contactsForgroup = null;
         public MyProgressIndicator progress = null;
         public bool canGoBack = true;
@@ -34,6 +36,36 @@ namespace windows_client.View
         private int existingGroupUsers = 0;
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
+        private Dictionary<string, List<MsisdnCordinates>> msisdnPositions = null;
+
+        public class MsisdnCordinates
+        {
+            private int _groupIdx;
+            private int _listIdx;
+            ContactInfo _cInfo;
+
+            public MsisdnCordinates(int grId, int liId,ContactInfo c)
+            {
+                _groupIdx = grId;
+                _listIdx = liId;
+                _cInfo = c;
+            }
+            public int GroupIdx
+            {
+                get { return _groupIdx; }
+                set { _groupIdx = value; }
+            }
+            public int ListIdx
+            {
+                get { return _listIdx; }
+                set { _listIdx = value; }
+            }
+            public ContactInfo Contact
+            {
+                get { return _cInfo; }
+                set { _cInfo = value; }
+            }
+        }
 
         public class Group<T> : IEnumerable<T>
         {
@@ -104,13 +136,17 @@ namespace windows_client.View
         public SelectUserToMsg()
         {
             InitializeComponent();
+            if (PhoneApplicationService.Current.State.ContainsKey("isGroupChat"))
+            {
+                isGroupChat = (bool)PhoneApplicationService.Current.State["isGroupChat"];
+                PhoneApplicationService.Current.State.Remove("isGroupChat");
+            }
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
             bw.RunWorkerAsync();
-            enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
 
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -125,12 +161,12 @@ namespace windows_client.View
             refreshIconButton.IsEnabled = true;
             appBar.Buttons.Add(refreshIconButton);
             selectUserPage.ApplicationBar = appBar;
+            initPage();
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        private void initPage()
         {
-            base.OnNavigatedTo(e);
-            if (this.NavigationContext.QueryString.ContainsKey("param"))
+            if (isGroupChat)
             {
                 /* Add icons */
                 if (doneIconButton != null)
@@ -142,6 +178,7 @@ namespace windows_client.View
                 doneIconButton.IsEnabled = true;
                 appBar.Buttons.Add(doneIconButton);
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
+                enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
             }
             else
             {
@@ -199,7 +236,8 @@ namespace windows_client.View
         {
             if (allContactsList == null || allContactsList.Count == 0)
                 return null;
-
+            if (isGroupChat)
+                msisdnPositions = new Dictionary<string, List<MsisdnCordinates>>();
             List<Group<ContactInfo>> glist = createGroups();
             for (int i = 0; i < allContactsList.Count; i++)
             {
@@ -209,6 +247,19 @@ namespace windows_client.View
                 int index = (ch == "#") ? 0 : ch[0] - 'a' + 1;
                 // and add the entry
                 glist[index].Items.Add(c);
+                if (isGroupChat)
+                {
+                    if (msisdnPositions.ContainsKey(c.Msisdn))
+                    {
+                        msisdnPositions[c.Msisdn].Add(new MsisdnCordinates(index, glist[index].Items.IndexOf(c), c));
+                    }
+                    else
+                    {
+                        List<MsisdnCordinates> list = new List<MsisdnCordinates>();
+                        list.Add(new MsisdnCordinates(index, glist[index].Items.IndexOf(c), c));
+                        msisdnPositions.Add(c.Msisdn, list);
+                    }
+                }
             }
             return glist;
         }
@@ -285,7 +336,9 @@ namespace windows_client.View
                         enterNameTxt.Text = "";
                         return;
                     }
+                    ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
                     contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
+                    addBackDeletedContacts(cn);
                     enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfLastColonSpace + 2);
                     enterNameTxt.Select(indexOfLastColonSpace + 2, 0);
                 }
@@ -294,14 +347,37 @@ namespace windows_client.View
             }
         }
 
+        private void addBackDeletedContacts(ContactInfo contact)
+        {
+            List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
+            for (int j = 0; j < ml.Count; j++)
+            {
+                groupedList[ml[j].GroupIdx].Items.Insert(ml[j].ListIdx,ml[j].Contact);
+            }
+            contactsListBox.ItemsSource = null;
+            contactsListBox.ItemsSource = groupedList;
+        }
+
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //            enterNameTxt.Focus();
-            if (String.IsNullOrEmpty(enterNameTxt.Text))
+            if (xyz % 2 == 0)
             {
+                xyz++;
                 return;
             }
-            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+            xyz++;
+            if (isGroupChat)
+            {
+                if (String.IsNullOrEmpty(enterNameTxt.Text))
+                {
+                    contactsListBox.ItemsSource = groupedList;
+                    return;
+                }
+                enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+            }
+            else
+                charsEntered = enterNameTxt.Text.ToLower();
+
             if (String.IsNullOrEmpty(charsEntered))
             {
                 contactsListBox.ItemsSource = groupedList;
@@ -335,6 +411,25 @@ namespace windows_client.View
             enterNameTxt.Text = contactNameTemp;
             enterNameTxt.Select(enterNameTxt.Text.Length, 0);
             charsEntered = "";
+            deleteContactFromGroupList(contact);
+        }
+
+        private void deleteContactFromGroupList(ContactInfo contact)
+        {
+            List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
+            for (int j = 0; j < ml.Count; j++)
+            {
+                groupedList[ml[j].GroupIdx].Items.RemoveAt(ml[j].ListIdx);
+                //string ch = GetCaptionGroup(contact);
+                //int index = (ch == "#") ? 0 : ch[0] - 'a' + 1;
+                //for (int i = 0; i < groupedList[index].Items.Count; i++)
+                //{
+                //    groupedList[index].Items[i].Equals(contact);
+                //    groupedList[index].Items.RemoveAt(i);
+                //}
+            }
+            contactsListBox.ItemsSource = null;
+            contactsListBox.ItemsSource = groupedList;
         }
 
         private void refreshContacts_Click(object sender, EventArgs e)

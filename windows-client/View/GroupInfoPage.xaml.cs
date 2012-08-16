@@ -45,7 +45,7 @@ namespace windows_client.View
         {
             gi = PhoneApplicationService.Current.State["objFromChatThreadPage"] as GroupInfo;
             groupId = gi.GroupId;
-            this.groupName.Text = gi.GroupName;
+            this.groupName.Text = gi.GroupName; // nope wrong
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
             for (int i = 0; i < activeGroupMembers.Count; i++)

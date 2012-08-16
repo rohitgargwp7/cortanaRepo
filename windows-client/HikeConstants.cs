@@ -99,6 +99,7 @@ namespace windows_client
             public static readonly string GROUP_CHAT_LEAVE = "gcl";
             public static readonly string GROUP_CHAT_END = "gce";
             public static readonly string GROUP_CHAT_NAME = "gcn";
+            public static readonly string REQUEST_ACCOUNT_INFO = "rai";
         }
     }
 }

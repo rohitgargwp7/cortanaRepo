@@ -4,6 +4,8 @@ using windows_client.Model;
 using System.Collections.Generic;
 using windows_client.DbUtils;
 using System;
+using System.Diagnostics;
+using System;
 
 namespace windows_client.utils
 {
@@ -24,12 +26,12 @@ namespace windows_client.utils
                     groupCache = value;
             }
         }
-        public static GroupParticipant getGroupParticipant(string name,string msisdn)
+        public static GroupParticipant getGroupParticipant(string name, string msisdn)
         {
             if (groupCache.ContainsKey(msisdn))
                 return groupCache[msisdn];
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp =  new GroupParticipant(cInfo != null?cInfo.Name:name,msisdn,cInfo != null?cInfo.OnHike:true);
+            GroupParticipant gp = new GroupParticipant(cInfo != null ? cInfo.Name : name, msisdn, cInfo != null ? cInfo.OnHike : true);
             groupCache.Add(msisdn, gp);
             // App.appSettings[App.GROUPS_CACHE] = groupCache; Doing this while app is closing
             return gp;
@@ -134,6 +136,23 @@ namespace windows_client.utils
                     return 1;
                 }
                 return name1.CompareTo(name2);
+            }
+        }
+        /**
+       * Requests the server to send an account info packet
+       */
+        public static void requestAccountInfo()
+        {
+            Debug.WriteLine("Utils", "Requesting account info");
+            JObject requestAccountInfo = new JObject();
+            try
+            {
+                requestAccountInfo.Add(HikeConstants.TYPE, HikeConstants.MqttMessageTypes.REQUEST_ACCOUNT_INFO);
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, requestAccountInfo);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Utils", "Invalid JSON", e);
             }
         }
     }

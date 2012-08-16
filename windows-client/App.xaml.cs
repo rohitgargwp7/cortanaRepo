@@ -24,6 +24,7 @@ namespace windows_client
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
         public static readonly string MSISDN_SETTING = "msisdn";
+        public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
         public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
