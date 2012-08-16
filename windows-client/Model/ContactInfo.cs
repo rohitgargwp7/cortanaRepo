@@ -203,6 +203,11 @@ namespace windows_client.Model
         {
         }
 
+        public ContactInfo(string number, string name, bool onHike) :
+            this(null, number, name, onHike, number, false)
+        {
+        }
+
         public ContactInfo(string id, string msisdn, string name, bool onhike, string phoneNo, bool hasCustomPhoto)
         {
             this.Id = id;
