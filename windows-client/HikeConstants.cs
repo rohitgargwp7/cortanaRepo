@@ -66,6 +66,9 @@ namespace windows_client
         public static string NAME = "name";
         public static string NEW_USER="nu";
         public static string DND_NUMBERS = "dndnumbers";
+        public static string START_NEW_GROUP = "start_new_group";
+        public static string EXISTING_GROUP_MEMBERS = "existing_group_members";
+        public static string IS_EXISTING_GROUP = "is_existing_group";
 
         public static class Extras
         {

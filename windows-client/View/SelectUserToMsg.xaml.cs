@@ -139,17 +139,14 @@ namespace windows_client.View
         {
             InitializeComponent();
             /* Case whe this page is called from GroupInfo page*/
-            if (PhoneApplicationService.Current.State.ContainsKey("existingGroupMembers"))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
                 isGroupChat = true;
 
             /* Case when this page is called from create group button.*/
-            if (PhoneApplicationService.Current.State.ContainsKey("isGroupChat"))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
             {
-                isGroupChat = (bool)PhoneApplicationService.Current.State["isGroupChat"];
-                PhoneApplicationService.Current.State.Remove("isGroupCshat");
-                if (contactsForgroup == null)
-                    contactsForgroup = new List<ContactInfo>();
-                contactsForgroup.Add(new ContactInfo(App.MSISDN,(string)App.appSettings[App.ACCOUNT_NAME],true));
+                isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             }
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
@@ -228,11 +225,10 @@ namespace windows_client.View
                 msisdnPositions = new Dictionary<string, List<MsisdnCordinates>>();
             List<Group<ContactInfo>> glist = createGroups();
 
-            if (PhoneApplicationService.Current.State.ContainsKey("existingGroupMembers"))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
                 isExistingGroup = true;
-                activeExistingGroupMembers = PhoneApplicationService.Current.State["existingGroupMembers"] as List<GroupMembers>;
-                PhoneApplicationService.Current.State.Remove("existingGroupMembers");
+                activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupMembers>;
 
                 //TODO start this loop from end, after sorting is done on onHike status
                 smsUserCount = 0;
@@ -536,9 +532,21 @@ namespace windows_client.View
         private void startGroup_Click(object sender, EventArgs e)
         {
             PhoneApplicationService.Current.State["groupChat"] = contactsForgroup;
-            PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
-            string uri = "/View/ChatThread.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            PhoneApplicationService.Current.State["fromSelectUserPage"] = true; // this is added to remove the back entry from the stack on chat thread page.
+
+            if (PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS))
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
+                PhoneApplicationService.Current.State[HikeConstants.IS_EXISTING_GROUP] = true;
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+                NavigationService.GoBack();
+            }
+            else
+            {
+                string uri = "/View/ChatThread.xaml";
+                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
         }
 
         private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

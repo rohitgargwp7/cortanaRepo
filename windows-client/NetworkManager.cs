@@ -70,6 +70,8 @@ namespace windows_client
 
         public void onMessage(string msg)
         {
+            if (string.IsNullOrEmpty(msg))
+                return;
             while (turnOffNetworkManager)
             {
                 Thread.Sleep(500);

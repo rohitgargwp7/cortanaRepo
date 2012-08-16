@@ -482,7 +482,7 @@ namespace windows_client.View
 
         private void createGroup_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State["isGroupChat"] = true; 
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true; 
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
