@@ -37,6 +37,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
         private Dictionary<string, List<MsisdnCordinates>> msisdnPositions = null;
+        private Stack<int> indexOfAddedContacts = new Stack<int>();
 
         public class MsisdnCordinates
         {
@@ -44,7 +45,7 @@ namespace windows_client.View
             private int _listIdx;
             ContactInfo _cInfo;
 
-            public MsisdnCordinates(int grId, int liId,ContactInfo c)
+            public MsisdnCordinates(int grId, int liId, ContactInfo c)
             {
                 _groupIdx = grId;
                 _listIdx = liId;
@@ -326,21 +327,24 @@ namespace windows_client.View
             else if (e.Key == Key.Back)
             {
                 typedTextDeleted = true;
-                int indexOfLastColon = enterNameTxt.Text.LastIndexOf(';');
-                if (indexOfLastColon == enterNameTxt.Text.Length - 1)
+
+                if (indexOfAddedContacts.Count > 0 && indexOfAddedContacts.Peek() == enterNameTxt.Text.Length)
                 {
                     typedTextDeleted = false;
-                    int indexOfLastColonSpace = enterNameTxt.Text.LastIndexOf("; ");
-                    if (indexOfLastColonSpace == -1)
-                    {
-                        enterNameTxt.Text = "";
-                        return;
-                    }
+                    indexOfAddedContacts.Pop();
                     ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
                     contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
                     addBackDeletedContacts(cn);
-                    enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfLastColonSpace + 2);
-                    enterNameTxt.Select(indexOfLastColonSpace + 2, 0);
+                    if (indexOfAddedContacts.Count != 0)
+                    {
+                        enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfAddedContacts.Peek() + 1);
+                    }
+                    else
+                    {
+                        enterNameTxt.Text = "";
+                    }
+                    enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+
                 }
                 if (typedTextDeleted)
                     charsEntered = charsEntered.Substring(0, charsEntered.Length - 1);
@@ -352,7 +356,7 @@ namespace windows_client.View
             List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
             for (int j = 0; j < ml.Count; j++)
             {
-                groupedList[ml[j].GroupIdx].Items.Insert(ml[j].ListIdx,ml[j].Contact);
+                groupedList[ml[j].GroupIdx].Items.Insert(ml[j].ListIdx, ml[j].Contact);
             }
             contactsListBox.ItemsSource = null;
             contactsListBox.ItemsSource = groupedList;
@@ -406,10 +410,17 @@ namespace windows_client.View
             existingGroupUsers++;
             string contactNameTemp = "";
             if (!String.IsNullOrEmpty(enterNameTxt.Text))
-                contactNameTemp = enterNameTxt.Text.Substring(0, enterNameTxt.Text.LastIndexOf("; ") + 2);
+            {
+                if (indexOfAddedContacts.Count > 0)
+                {
+                    int lastIndex = indexOfAddedContacts.Peek();
+                    contactNameTemp = enterNameTxt.Text.Substring(0, lastIndex + 1);
+                }
+            }
             contactNameTemp += contact.Name + "; ";
             enterNameTxt.Text = contactNameTemp;
             enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+            indexOfAddedContacts.Push(enterNameTxt.Text.Length - 1);
             charsEntered = "";
             deleteContactFromGroupList(contact);
         }
