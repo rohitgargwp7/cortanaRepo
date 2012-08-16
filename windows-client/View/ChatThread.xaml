@@ -56,29 +56,37 @@
                  FontSize="26" Margin="0,0,0,95" Tap="chatListBox_tap">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding Alignment}" 
-                                  Margin="20,5,20,15"  Grid.RowSpan="2">
-                        <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" HorizontalAlignment="Right">
-                            <Image.Source>
-                                <BitmapImage UriSource="{Binding SdrImage}" CreateOptions="BackgroundCreation"></BitmapImage>
-                            </Image.Source>
-                        </Image>
-                        <c4fToolkit:ChatBubble  ChatBubbleDirection="{Binding ChatBubbleDirection}" Background="{Binding BubbleBackground}">
-                            <StackPanel Width="315" Orientation="Vertical">
-                                <RichTextBox Tag="{Binding Message}" Foreground="Black" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
-                                <!--<TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>-->
-                                <TextBlock FontSize="15" Margin="0,2,15,2" Height="25" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
+                    <StackPanel Orientation="Vertical">
+                        <Border BorderBrush="Gray" Margin="0,5,0,5" BorderThickness="3" Width="400" Visibility="{Binding NotificationMessageVisiblity}">
+                            <StackPanel Orientation="Horizontal" Width="380" Margin="15,0,0,0" Visibility="{Binding NotificationMessageVisiblity}">
+                                <Image Source="images\ic_hike_user.png"></Image>
+                                <TextBlock Text="{Binding Message}" Foreground="Black" Margin="4,0,0,0" FontSize="22"></TextBlock>
                             </StackPanel>
-                            <toolkit:ContextMenuService.ContextMenu>
-                                <toolkit:ContextMenu Name="ctxMenu">
-                                    <toolkit:MenuItem Header="Copy"  Tap="MenuItem_Tap_Copy"/>
-                                    <toolkit:MenuItem Header="Forward"  Tap="MenuItem_Tap_Forward"/>
-                                    <toolkit:MenuItem Header="Delete"  Tap="MenuItem_Tap_Delete"/>
-                                </toolkit:ContextMenu>
-                            </toolkit:ContextMenuService.ContextMenu>
-                        </c4fToolkit:ChatBubble>
+                        </Border>
 
-                        <!--<StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal" Height="Auto"  VerticalAlignment="Stretch" HorizontalAlignment="{Binding Alignment}" 
+                                  Margin="20,5,20,15"  Grid.RowSpan="2" Visibility="{Binding ChatBubbleVisiblity}">
+                            <Image Margin="0,0,8,0" Visibility="{Binding SdrImageVisibility}" HorizontalAlignment="Right">
+                                <Image.Source>
+                                    <BitmapImage UriSource="{Binding SdrImage}" CreateOptions="BackgroundCreation"></BitmapImage>
+                                </Image.Source>
+                            </Image>
+                            <c4fToolkit:ChatBubble  ChatBubbleDirection="{Binding ChatBubbleDirection}" Background="{Binding BubbleBackground}">
+                                <StackPanel Width="315" Orientation="Vertical">
+                                    <RichTextBox Tag="{Binding Message}" Foreground="Black" TextWrapping="Wrap" MaxWidth="360" Loaded="RichTextBox_Loaded" Margin="{Binding ChatBubbleMargin}"/>
+                                    <!--<TextBlock Text="{Binding Message}" TextWrapping="Wrap" MaxWidth="360" Margin="{Binding ChatBubbleMargin}"/>-->
+                                    <TextBlock FontSize="15" Margin="0,2,15,2" Height="25" HorizontalAlignment="Right" Foreground="Black" Text="{Binding ChatTimeFormat}"/>
+                                </StackPanel>
+                                <toolkit:ContextMenuService.ContextMenu>
+                                    <toolkit:ContextMenu Name="ctxMenu">
+                                        <toolkit:MenuItem Header="Copy"  Tap="MenuItem_Tap_Copy"/>
+                                        <toolkit:MenuItem Header="Forward"  Tap="MenuItem_Tap_Forward"/>
+                                        <toolkit:MenuItem Header="Delete"  Tap="MenuItem_Tap_Delete"/>
+                                    </toolkit:ContextMenu>
+                                </toolkit:ContextMenuService.ContextMenu>
+                            </c4fToolkit:ChatBubble>
+
+                            <!--<StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Background="{Binding BubbleBackground}">
 
                                 <StackPanel Orientation="Vertical">
@@ -95,7 +103,7 @@
                                 </toolkit:ContextMenuService.ContextMenu>
                             </StackPanel>
                         </StackPanel>-->
-
+                        </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
