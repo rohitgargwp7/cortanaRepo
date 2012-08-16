@@ -229,30 +229,6 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility ChatBubbleVisiblity
-        {
-            get{
-
-                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
-                {
-                    return Visibility.Collapsed;
-                }
-                return Visibility.Visible;
-            }
-        }
-
-        public Visibility NotificationMessageVisiblity
-        {
-            get
-            {
-
-                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
-                {
-                    return Visibility.Visible;
-                }
-                return Visibility.Collapsed;
-            }
-        }
 
         public MessageMetadata SetMetaData
         {
@@ -326,7 +302,38 @@ namespace windows_client.Model
             set
             {
                 if (value != participantInfoState)
+                {
                     participantInfoState = value;
+                    NotifyPropertyChanged("GrpParticipantState");
+                    NotifyPropertyChanged("ChatBubbleVisiblity");
+                    NotifyPropertyChanged("NotificationMessageVisiblity");
+
+                }
+            }
+        }
+        public Visibility ChatBubbleVisiblity
+        {
+            get
+            {
+
+                if (GrpParticipantState != ConvMessage.ParticipantInfoState.NO_INFO)
+                {
+                    return Visibility.Collapsed;
+                }
+                return Visibility.Visible;
+            }
+        }
+
+        public Visibility NotificationMessageVisiblity
+        {
+            get
+            {
+
+                if (GrpParticipantState != ConvMessage.ParticipantInfoState.NO_INFO)
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
             }
         }
 

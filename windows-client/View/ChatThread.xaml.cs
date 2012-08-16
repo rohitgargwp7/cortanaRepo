@@ -491,7 +491,12 @@ namespace windows_client.View
                     msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 else
                     incomingMessages.Add(messagesList[i]);
-                this.ChatThreadPageCollection.Add(cm);
+                if (cm.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                    this.ChatThreadPageCollection.Add(cm);
+                else
+                {
+                    splitUserJoinedMessage(cm);
+                }
             }
 
             int count = 0;
@@ -736,17 +741,26 @@ namespace windows_client.View
         }
         private void splitUserJoinedMessage(ConvMessage convMessage)
         {
-            if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.NO_INFO)
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
-                string[] names = convMessage.Message.Split(',');
+                string[] names;
+
+                int spaceIndex = convMessage.Message.IndexOf(' ');
+                if (convMessage.Message.IndexOf(',') == -1)
+                    names = new string[] {convMessage.Message.Substring(0, spaceIndex)};
+                else
+                    names = convMessage.Message.Split(',');
                 int i = 0;
-                for (; i < names.Length - 2; i++)
+                for (; i < names.Length - 1; i++)
                 {
-                    ConvMessage c = new ConvMessage(names[i].Trim() + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
+                    string name = names[i].Trim();
+                    int spaceIdx = name.IndexOf(' ');
+                    if (spaceIdx != -1)
+                        name = name.Substring(0, spaceIdx);
+                    ConvMessage c = new ConvMessage(name + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
+                    c.GrpParticipantState = convMessage.GrpParticipantState;
                     this.ChatThreadPageCollection.Add(c);
                 }
-                convMessage.Message = names[i].Trim() + " has joined the Group Chat";
-                this.ChatThreadPageCollection.Add(convMessage);
             }
             else
             {
