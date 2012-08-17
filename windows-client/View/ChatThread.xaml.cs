@@ -222,22 +222,22 @@ namespace windows_client.View
             else if (PhoneApplicationService.Current.State.ContainsKey("groupChat"))
             {
                 string groupId;
-                //add members to existing group
-                if (PhoneApplicationService.Current.State.ContainsKey("groupInfoFromGroupProfile"))
-                {
-                    gi = PhoneApplicationService.Current.State["groupInfoFromGroupProfile"] as GroupInfo;
-                    groupId = gi.GroupId;
-                    groupOwner = gi.GroupOwner;
-                    PhoneApplicationService.Current.State.Remove("groupInfoFromGroupProfile");
-                }
-                else
+                bool isExistingGroup = false;
+                if (!PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP)) // this is new group creation
                 {
                     // here always create a new group
                     string uid = AccountUtils.Token;
                     groupId = mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
                     groupOwner = App.MSISDN;
+                    mContactNumber = groupId;
                 }
-                mContactNumber = groupId;
+                else
+                {
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                    groupId = mContactNumber;
+                    isExistingGroup = true;
+                }
+                
                 List<ContactInfo> contactsForGroup = PhoneApplicationService.Current.State["groupChat"] as List<ContactInfo>;
 
                 List<GroupMembers> memberList = new List<GroupMembers>(contactsForGroup.Count);

@@ -70,6 +70,8 @@ namespace windows_client
 
         public void onMessage(string msg)
         {
+            if (string.IsNullOrEmpty(msg))
+                return;
             while (turnOffNetworkManager)
             {
                 Thread.Sleep(500);
@@ -269,6 +271,8 @@ namespace windows_client
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg,false);
                 GroupTableUtils.setParticipantLeft(groupId, fromMsisdn);
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
+                if (gi == null)
+                    return;
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
                 {
                     List<GroupMembers> existingMembers = GroupTableUtils.getActiveGroupMembers(groupId);

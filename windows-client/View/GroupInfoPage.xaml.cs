@@ -186,9 +186,10 @@ namespace windows_client.View
 
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State["existingGroupMembers"] = activeGroupMembers;
-            PhoneApplicationService.Current.State["groupInfoFromGroupProfile"] = gi;
-            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml?param=grpChat", UriKind.Relative));
+            //existingGroupMembers
+            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = activeGroupMembers;
+            PhoneApplicationService.Current.State["isAddNewParticipants"] = true;
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
     }
