@@ -269,7 +269,7 @@ namespace windows_client
 
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg,false);
-                GroupTableUtils.setParticipantLeft(groupId, fromMsisdn);
+                GroupTableUtils.removeParticipantFromGroup(groupId, fromMsisdn);
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
                 if (gi == null)
                     return;
@@ -305,6 +305,11 @@ namespace windows_client
                 }
             }
             #endregion
+
+            else if (HikeConstants.MqttMessageTypes.ACCOUNT_INFO == type)
+            {
+                //TODO
+            }
             else
             {
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
