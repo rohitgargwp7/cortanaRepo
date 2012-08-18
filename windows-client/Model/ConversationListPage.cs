@@ -246,7 +246,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("IsLastMessageUnread");
+                    NotifyPropertyChanged("LastMessageColor");
                 }
             }
         }
