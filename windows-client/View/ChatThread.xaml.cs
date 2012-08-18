@@ -18,6 +18,7 @@ using windows_client.Model;
 using windows_client.utils;
 using Coding4Fun.Phone.Controls;
 using System.Collections.ObjectModel;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
@@ -258,7 +259,7 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
-            if (!isGroupAlive)
+            if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
         }
 
@@ -446,6 +447,10 @@ namespace windows_client.View
                     menuItem2.Click += new EventHandler(addUser_Click);
                     appBar.MenuItems.Add(menuItem2);
                 }
+                ApplicationBarMenuItem callMenuItem = new ApplicationBarMenuItem();
+                callMenuItem.Text = "call";
+                callMenuItem.Click += new EventHandler(callUser_Click);
+                appBar.MenuItems.Add(callMenuItem);
             }
             chatThreadMainPage.ApplicationBar = appBar;
         }
@@ -671,6 +676,14 @@ namespace windows_client.View
         #endregion
 
         #region APPBAR CLICK EVENTS
+
+        private void callUser_Click(object sender, EventArgs e)
+        {
+            PhoneCallTask phoneCallTask = new PhoneCallTask();
+            phoneCallTask.PhoneNumber = mContactNumber;
+            phoneCallTask.DisplayName = mContactName;
+            phoneCallTask.Show();
+        }
 
         private void addUser_Click(object sender, EventArgs e)
         {
