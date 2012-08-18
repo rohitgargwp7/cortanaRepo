@@ -21,7 +21,6 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
-        private GroupInfo gi;
 
         public GroupInfoPage()
         {
@@ -43,9 +42,16 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
-            gi = PhoneApplicationService.Current.State["objFromChatThreadPage"] as GroupInfo;
-            groupId = gi.GroupId;
-            this.groupName.Text = gi.GroupName; // nope wrong
+            groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
+            string groupName = PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] as string;
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_ID_FROM_CHATTHREAD);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME_FROM_CHATTHREAD);
+
+            GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
+            if (gi == null)
+                return;
+            this.groupName.Text = groupName;
+         
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
             for (int i = 0; i < activeGroupMembers.Count; i++)
@@ -65,7 +71,6 @@ namespace windows_client.View
             if (HikePubSub.UPDATE_UI == type)
             {
                 BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
-
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (groupProfileBitmap != null)
@@ -105,6 +110,7 @@ namespace windows_client.View
         #endregion
 
         #region SET GROUP PIC
+
         private void onGroupProfileTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
@@ -167,7 +173,6 @@ namespace windows_client.View
         }
         #endregion
 
-
         private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             //TODO start this loop from end, after sorting is done on onHike status
@@ -186,7 +191,6 @@ namespace windows_client.View
 
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //existingGroupMembers
             PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = activeGroupMembers;
             PhoneApplicationService.Current.State["isAddNewParticipants"] = true;
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));

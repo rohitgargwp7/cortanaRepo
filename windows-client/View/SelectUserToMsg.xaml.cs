@@ -531,7 +531,7 @@ namespace windows_client.View
 
         private void startGroup_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State["groupChat"] = contactsForgroup;
+            PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = contactsForgroup;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true; // this is added to remove the back entry from the stack on chat thread page.
 
             if (PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS))
