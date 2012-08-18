@@ -69,6 +69,10 @@ namespace windows_client
         public static string START_NEW_GROUP = "start_new_group";
         public static string EXISTING_GROUP_MEMBERS = "existing_group_members";
         public static string IS_EXISTING_GROUP = "is_existing_group";
+        public static string GROUP_ID_FROM_CHATTHREAD = "groupIdFromChatThreadPage";
+        public static string GROUP_NAME_FROM_CHATTHREAD = "groupNameFromChatThreadPage";
+        public static string GROUP_CHAT = "groupChat";
+        public static string IS_NEW_INSTALLATION = "is_new_installation";
 
         public static class Extras
         {
@@ -103,6 +107,7 @@ namespace windows_client
             public static readonly string GROUP_CHAT_END = "gce";
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
+            public static string ACCOUNT_INFO = "ai";
         }
     }
 }
