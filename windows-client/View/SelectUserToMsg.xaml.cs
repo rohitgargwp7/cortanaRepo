@@ -39,6 +39,9 @@ namespace windows_client.View
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
         private Dictionary<string, List<MsisdnCordinates>> msisdnPositions = null;
+        private Stack<int> indexOfAddedContacts = new Stack<int>();
+        private bool textChangedFromDelete = false;
+        private StringBuilder stringBuilderForContactNames = new StringBuilder();
 
         public class MsisdnCordinates
         {
@@ -46,7 +49,7 @@ namespace windows_client.View
             private int _listIdx;
             ContactInfo _cInfo;
 
-            public MsisdnCordinates(int grId, int liId,ContactInfo c)
+            public MsisdnCordinates(int grId, int liId, ContactInfo c)
             {
                 _groupIdx = grId;
                 _listIdx = liId;
@@ -153,7 +156,7 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
-            bw.RunWorkerAsync();           
+            bw.RunWorkerAsync();
             initPage();
         }
 
@@ -347,6 +350,22 @@ namespace windows_client.View
                 return;
             }
             xyz++;
+
+            if (!textChangedFromDelete)
+            {
+                if (indexOfAddedContacts.Count > 0)
+                {
+                    if (enterNameTxt.Text.Length > (indexOfAddedContacts.Peek() + 1))
+                    {
+                        charsEntered += enterNameTxt.Text.Substring(enterNameTxt.Text.Length - 1);
+                    }
+                }
+                else
+                {
+                    charsEntered = enterNameTxt.Text;
+                }
+            }
+            textChangedFromDelete = false;
             if (isGroupChat)
             {
                 if (String.IsNullOrEmpty(enterNameTxt.Text))
@@ -551,38 +570,37 @@ namespace windows_client.View
 
         private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            int c = e.PlatformKeyCode;
-            if (Char.IsLetterOrDigit((char)c))
-            {
-                charsEntered += Char.ToLower((char)c);
-            }
-            else if (e.Key == Key.Back)
+            if (e.Key == Key.Back)
             {
                 typedTextDeleted = true;
-                int indexOfLastColon = enterNameTxt.Text.LastIndexOf(';');
-                if (indexOfLastColon == enterNameTxt.Text.Length - 1)
+
+                if (indexOfAddedContacts.Count > 0 && indexOfAddedContacts.Peek() == enterNameTxt.Text.Length)
                 {
                     typedTextDeleted = false;
-                    int indexOfLastColonSpace = enterNameTxt.Text.LastIndexOf("; ");
-                    if (indexOfLastColonSpace == -1)
-                    {
-                        enterNameTxt.Text = "";
-                        return;
-                    }
+                    indexOfAddedContacts.Pop();
                     ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
                     contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
-                    existingGroupUsers--;
-                    if (existingGroupUsers < 3 || (existingGroupUsers - defaultGroupmembers) <= 0)
-                        doneIconButton.IsEnabled = false;
-                    addBackDeletedContacts(cn); // this 
-                    enterNameTxt.Text = enterNameTxt.Text.Substring(0, indexOfLastColonSpace + 2);
-                    enterNameTxt.Select(indexOfLastColonSpace + 2, 0);
+                    addBackDeletedContacts(cn);
+
+                    stringBuilderForContactNames.Clear();
+                    for (int i = 0; i < contactsForgroup.Count; i++)
+                    {
+                        stringBuilderForContactNames.Append(contactsForgroup[i].Name).Append("; ");
+                    }
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                    enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+
                 }
                 if (typedTextDeleted)
-                    charsEntered = charsEntered.Substring(0, charsEntered.Length - 1);
+                {
+                    if (!String.IsNullOrEmpty(charsEntered))
+                    {
+                        charsEntered = charsEntered.Substring(0, charsEntered.Length - 1);
+                        textChangedFromDelete = true;
+                    }
+                }
             }
         }
-
         private void addBackDeletedContacts(ContactInfo contact)
         {
             List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
@@ -597,7 +615,6 @@ namespace windows_client.View
 
         private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            charsEntered = "";
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
 
             if (contact == null)
@@ -612,12 +629,16 @@ namespace windows_client.View
             if (!contact.OnHike)
                 smsUserCount++;
             existingGroupUsers++;
-            string contactNameTemp = "";
-            if (!String.IsNullOrEmpty(enterNameTxt.Text))
-                contactNameTemp = enterNameTxt.Text.Substring(0, enterNameTxt.Text.LastIndexOf("; ") + 2);
-            contactNameTemp += contact.Name + "; ";
-            enterNameTxt.Text = contactNameTemp;
+            stringBuilderForContactNames.Clear();
+            for (int i = 0; i < contactsForgroup.Count; i++)
+            {
+                stringBuilderForContactNames.Append(contactsForgroup[i].Name).Append("; ");
+            }
+            enterNameTxt.Text = stringBuilderForContactNames.ToString();
             enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+
+            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+            indexOfAddedContacts.Push(enterNameTxt.Text.Length - 1);
             charsEntered = "";
             deleteContactFromGroupList(contact);
             if (existingGroupUsers >= 3)
@@ -634,7 +655,7 @@ namespace windows_client.View
             contactsListBox.ItemsSource = null;
             contactsListBox.ItemsSource = groupedList;
         }
-     
+
         #endregion
     }
 }
