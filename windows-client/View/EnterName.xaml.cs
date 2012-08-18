@@ -89,6 +89,7 @@ namespace windows_client
             {
                 enterNameBtn.Text = "Getting you in";
                 Thread.Sleep(3 * 1000);
+                PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
                 NavigationService.Navigate(nextPage);
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
                 progressBar.IsEnabled = false;
