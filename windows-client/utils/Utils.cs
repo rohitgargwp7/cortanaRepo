@@ -31,7 +31,7 @@ namespace windows_client.utils
             if (groupCache.ContainsKey(msisdn))
                 return groupCache[msisdn];
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp = new GroupParticipant(cInfo != null ? cInfo.Name : name, msisdn, cInfo != null ? cInfo.OnHike : true);
+            GroupParticipant gp = new GroupParticipant(cInfo != null ? getFirstName(cInfo.Name) : name, msisdn, cInfo != null ? cInfo.OnHike : true);
             groupCache.Add(msisdn, gp);
             // App.appSettings[App.GROUPS_CACHE] = groupCache; Doing this while app is closing
             return gp;
@@ -66,19 +66,19 @@ namespace windows_client.utils
                     groupParticipants.Add(participantList[i]);
                 }
             }
-            //groupParticipants.Sort();   // TODO IMPLEMENT SORT
+            groupParticipants.Sort(Utils.CompareByName<GroupMembers>); 
 
             switch (groupParticipants.Count)
             {
                 case 0:
                     return "";
                 case 1:
-                    return groupParticipants[0].Name;
+                    return Utils.getFirstName(groupParticipants[0].Name);
                 case 2:
-                    return groupParticipants[0].Name + " and "
-                    + groupParticipants[1].Name;
+                    return Utils.getFirstName(groupParticipants[0].Name) + " and "
+                    + Utils.getFirstName(groupParticipants[1].Name);
                 default:
-                    return groupParticipants[0].Name + " and "
+                    return Utils.getFirstName(groupParticipants[0].Name) + " and "
                     + (groupParticipants.Count - 1) + " others";
             }
         }
@@ -93,7 +93,7 @@ namespace windows_client.utils
             {
                 JObject nameMsisdn = (JObject)array[i];
                 string contactNum = (string)nameMsisdn[HikeConstants.MSISDN];
-                string contactName = (string)nameMsisdn[HikeConstants.NAME];
+                string contactName = getGroupParticipant((string)nameMsisdn[HikeConstants.NAME],contactNum).Name;
                 GroupMembers gm = new GroupMembers((string)jsonObject[HikeConstants.TO], contactNum, contactName);
                 gmList.Add(gm);
             }
@@ -155,5 +155,52 @@ namespace windows_client.utils
                 Debug.WriteLine("Utils", "Invalid JSON", e);
             }
         }
+
+        public static ConvMessage [] splitUserJoinedMessage(ConvMessage convMessage)
+        {
+            string[] names= null;
+            ConvMessage[] c = null;
+
+            if (convMessage.Message.IndexOf(',') == -1) // only one name in message ex "abc joined the group chat"
+            {
+                int spaceIndex = convMessage.Message.IndexOf(" ");
+            
+                ConvMessage cm = new ConvMessage(convMessage.Message.Substring(0, spaceIndex) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
+                cm.GrpParticipantState = convMessage.GrpParticipantState;
+                c = new ConvMessage[1];
+                c[0] = cm;
+                return c;
+            }
+                
+            else
+                names = convMessage.Message.Split(','); // ex : "a,b joined the group chat"
+           
+            c = new ConvMessage[names.Length];
+            int i = 0;
+            for (; i < names.Length-1; i++)
+            {
+                c[i] = new ConvMessage(names[i] + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
+                c[i].GrpParticipantState = convMessage.GrpParticipantState;
+            }
+            names[i] = names[i].Trim();
+            int idx = names[i].IndexOf(" ");
+            c[i] = new ConvMessage(names[i].Substring(0,idx) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
+            c[i].GrpParticipantState = convMessage.GrpParticipantState;
+            return c;
+        }
+
+
+        public static string getFirstName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return null;
+            name = name.Trim();
+            int idx = name.IndexOf(" ");
+            if (idx != -1)
+                return name.Substring(0, idx);
+            else
+                return name;
+        }
+
     }
 }
