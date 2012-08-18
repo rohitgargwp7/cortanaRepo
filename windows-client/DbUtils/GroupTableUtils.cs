@@ -104,14 +104,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void setParticipantLeft(string groupId, string msisdn)
+        public static void removeParticipantFromGroup(string groupId, string msisdn)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                GroupMembers gm = DbCompiledQueries.GetGroupMembers(context, groupId, msisdn).FirstOrDefault<GroupMembers>();
-                if (gm == null)
-                    return;
-                gm.HasLeft = true;
+                var q = from o in context.groupMembers where o.GroupId == groupId && o.Msisdn == msisdn select o;
+                context.groupMembers.DeleteAllOnSubmit<GroupMembers>(q);
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
