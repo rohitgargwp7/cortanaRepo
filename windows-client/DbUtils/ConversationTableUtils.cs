@@ -118,6 +118,8 @@ namespace windows_client.DbUtils
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
+                if (cObj.ContactName != obj.ContactName)
+                    cObj.ContactName = obj.ContactName;
                 cObj.MessageStatus =  obj.MessageStatus;
                 cObj.LastMessage = obj.LastMessage;
                 cObj.TimeStamp = obj.TimeStamp;
