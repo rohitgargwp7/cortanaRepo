@@ -111,17 +111,7 @@ namespace windows_client.View
 
         void ConversationPage_Loaded(object sender, RoutedEventArgs e)
         {
-            String msisdn;
-            this.NavigationContext.QueryString.TryGetValue("msisdn", out msisdn);
-            if (!String.IsNullOrEmpty(msisdn))
-            {
-                //string uri = "/View/ChatThread.xaml?msisdn=" + t2;
-                //NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-            }
-            //Dispatcher.BeginInvoke(() =>
-            //{
-            //    MessageBox.Show("Msisdn is " + msisdn);
-            //});
+           
         }
 
         //Push notifications
@@ -210,6 +200,11 @@ namespace windows_client.View
                 registerListeners();
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
+                {
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_NEW_INSTALLATION);
+                    Utils.requestAccountInfo();
+                }
             }
         }
 
@@ -304,7 +299,6 @@ namespace windows_client.View
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             mPubSub.addListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.addListener(HikePubSub.MSG_READ, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
@@ -318,7 +312,6 @@ namespace windows_client.View
         {
             mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
             mPubSub.removeListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.removeListener(HikePubSub.MSG_READ, this);
             mPubSub.removeListener(HikePubSub.USER_JOINED, this);
             mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
@@ -589,19 +582,6 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
 
-            }
-            else if (HikePubSub.MSG_READ == type)
-            {
-                string msisdn = (string)obj;
-                try
-                {
-                    ConversationListObject convObj = convMap[msisdn];
-                    convObj.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    //TODO : update the UI here also.
-                }
-                catch (KeyNotFoundException)
-                {
-                }
             }
             else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
             {

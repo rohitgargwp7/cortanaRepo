@@ -66,8 +66,6 @@ namespace windows_client
         /* broadcast when a message is received from the sender abd is being read now */
         public static readonly string MESSAGE_RECEIVED_READ = "messageReceivedRead";
 
-        public static readonly string MSG_READ = "msgRead";
-
         /* publishes a message via mqtt to the server */
         public static readonly string MQTT_PUBLISH = "serviceSend";
 
