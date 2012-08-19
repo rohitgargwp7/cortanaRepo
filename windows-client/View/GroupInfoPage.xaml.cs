@@ -26,8 +26,8 @@ namespace windows_client.View
         public GroupInfoPage()
         {
             InitializeComponent();
-            initPageBasedOnState();
             mPubSub = App.HikePubSubInstance;
+            initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = 95;
@@ -51,6 +51,7 @@ namespace windows_client.View
             for (int i = 0; i < activeGroupMembers.Count; i++)
                 groupMembers.Add(activeGroupMembers[i]);
             this.groupChatParticipants.ItemsSource = groupMembers;
+            registerListeners();
         }
 
         #region PUBSUB
@@ -79,8 +80,26 @@ namespace windows_client.View
                 JObject json = (JObject)obj;
                 string joinedGroupId = (string)json[HikeConstants.TO];
                 if (joinedGroupId == groupId)
-                { 
-                
+                {
+                    JToken participantsToken;
+                    json.TryGetValue(HikeConstants.DATA, out participantsToken);
+                    if (participantsToken != null)
+                    {
+                        JArray j = participantsToken.ToObject<JArray>();
+                        IEnumerable<JToken> participantsList = j.Children<JToken>();
+
+                        using (var participantInfoEnumerator = participantsList.GetEnumerator())
+                        {
+                            while (participantInfoEnumerator.MoveNext())
+                            {
+                                // Do something with sequenceEnum.Current.
+                                string name = (string)participantInfoEnumerator.Current.ToObject<JObject>()[HikeConstants.NAME];
+                                string msisdn = (string)participantInfoEnumerator.Current.ToObject<JObject>()[HikeConstants.MSISDN];
+                                GroupMembers groupMembers = new GroupMembers(groupId, msisdn, name);
+                                AddUserJoinedToCollection(groupMembers);
+                            }
+                        }
+                    }
                 }
 
             }
@@ -92,17 +111,35 @@ namespace windows_client.View
                 {
                     string leaveMsisdn = (string)json[HikeConstants.DATA];
                     int i = 0;
-                    for (; i < groupMembers.Count; i++)
+                    for (; i < activeGroupMembers.Count; i++)
                     {
-                        if (groupMembers[i].Msisdn == leaveMsisdn) ;
-                        break;
+                        if (activeGroupMembers[i].Msisdn == leaveMsisdn)
+                            break;
                     }
-                    groupMembers.RemoveAt(i);
                     activeGroupMembers.RemoveAt(i);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                            groupMembers.RemoveAt(i);
+                    });
                 }
             }
         }
         #endregion
+
+        private void AddUserJoinedToCollection(GroupMembers gMembers)
+        {
+            int i = 0;
+            for (; i < activeGroupMembers.Count; i++)
+            {
+                if (Utils.CompareByName<GroupMembers>(activeGroupMembers[i], gMembers) > 0)
+                    break;
+            }
+            activeGroupMembers.Insert(i, gMembers);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                groupMembers.Insert(i, gMembers);
+            });
+        }
 
         #region SET GROUP PIC
         private void onGroupProfileTap(object sender, System.Windows.Input.GestureEventArgs e)
