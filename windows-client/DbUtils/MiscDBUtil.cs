@@ -10,10 +10,13 @@ namespace windows_client.DbUtils
     {
         public static void clearDatabase()
         {
+            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.conversations.DeleteAllOnSubmit<ConversationListObject>(context.GetTable<ConversationListObject>());
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
+                context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
+                context.groupMembers.DeleteAllOnSubmit<GroupMembers>(context.GetTable<GroupMembers>());
                 try
                 {
                     context.SubmitChanges(ConflictMode.ContinueOnConflict);
@@ -34,6 +37,8 @@ namespace windows_client.DbUtils
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
 
             }
+            #endregion
+            #region DELETE USERS, BLOCKLIST, THUMBNAILS 
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
@@ -59,6 +64,8 @@ namespace windows_client.DbUtils
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
 
             }
+            #endregion
+            #region DELETE MQTTPERSISTED MESSAGES
             using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
             {
                 context.mqttMessages.DeleteAllOnSubmit<HikePacket>(context.GetTable<HikePacket>());
@@ -80,8 +87,8 @@ namespace windows_client.DbUtils
 
                 // Submit succeeds on second try.
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
-
             }
+            #endregion
         }
         
         public static void addOrUpdateProfileIcon(string msisdn, byte[] image)

@@ -21,6 +21,7 @@ namespace windows_client
         {
             if (isClicked)
                 return;
+            App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             isClicked = true;
             GetStarted.Content = "Pulling your digits.";
             progressBar.Visibility = System.Windows.Visibility.Visible;

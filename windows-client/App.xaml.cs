@@ -12,6 +12,7 @@ using windows_client.Mqtt;
 using windows_client.View;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace windows_client
 {
@@ -43,7 +44,7 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-
+        BackgroundWorker bw ;
         public static string MSISDN;
         private static bool ab_scanned = false;
         public static bool isABScanning = false;
@@ -299,6 +300,30 @@ namespace windows_client
             }
             ((App)Application.Current).RootFrame.Navigate(nUri);
         }
+
+        public static void clearAllDatabasesAsync()
+        {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += new DoWorkEventHandler(clearAllDbsAsync);
+            bw.RunWorkerAsync();
+        }
+
+        private static void clearAllDbsAsync(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            if ((worker.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                MiscDBUtil.clearDatabase();
+            }
+
+        }
+
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)

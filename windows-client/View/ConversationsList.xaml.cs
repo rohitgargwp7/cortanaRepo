@@ -18,7 +18,6 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
-using System.Text;
 
 namespace windows_client.View
 {
@@ -59,7 +58,6 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            this.Loaded += ConversationPage_Loaded;
             HttpNotificationChannel pushChannel;
 
             // The name of our push channel.
@@ -108,11 +106,6 @@ namespace windows_client.View
             #endregion
             initAppBar();
             initProfilePage();
-        }
-
-        void ConversationPage_Loaded(object sender, RoutedEventArgs e)
-        {
-           
         }
 
         //Push notifications
@@ -469,8 +462,8 @@ namespace windows_client.View
                 });
                 return;
             }
-            App.MqttManagerInstance.disconnectFromBroker(false);
             NetworkManager.turnOffNetworkManager = true;
+            App.MqttManagerInstance.disconnectFromBroker(false);
             appSettings.Clear();
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
@@ -488,11 +481,6 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
-
-        //private void groupChatBtn_Click(object sender, EventArgs e)
-        //{
-        //    NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml?param=grpChat", UriKind.Relative));
-        //}
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
