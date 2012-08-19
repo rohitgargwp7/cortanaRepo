@@ -95,9 +95,10 @@ namespace windows_client.Mqtt
 
         private bool init()
         {
-            password = (string)App.appSettings[App.TOKEN_SETTING];
-            uid = topic = (string)App.appSettings[App.UID_SETTING];
-            clientId = (string)App.appSettings[App.MSISDN_SETTING];
+            App.appSettings.TryGetValue<string>(App.TOKEN_SETTING, out password);
+            App.appSettings.TryGetValue<string>(App.UID_SETTING, out topic);
+            App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out clientId);
+            uid = topic;
             if (!String.IsNullOrEmpty(clientId))
                 clientId += ":1";
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
@@ -143,7 +144,10 @@ namespace windows_client.Mqtt
 
             if (mqttConnection == null)
             {
-                init();
+                if (!init())
+                {
+                    return;
+                }
                 mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
                 mqttConnection.MqttListener = this;
             }
