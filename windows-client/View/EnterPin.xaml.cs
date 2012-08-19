@@ -11,8 +11,10 @@ namespace windows_client
 {
     public partial class EnterPin : PhoneApplicationPage
     {
+        string pinEntered;
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
         private ApplicationBar appBar;
+        ApplicationBarIconButton nextIconButton;
 
         public EnterPin()
         {
@@ -25,19 +27,22 @@ namespace windows_client
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 
-            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            composeIconButton.Text = "Next";
-            composeIconButton.Click += new EventHandler(btnEnterPin_Click);
-            composeIconButton.IsEnabled = true;
-            appBar.Buttons.Add(composeIconButton);
+            nextIconButton = new ApplicationBarIconButton();
+            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            nextIconButton.Text = "Next";
+            nextIconButton.Click += new EventHandler(btnEnterPin_Click);
+            nextIconButton.IsEnabled = false;
+            appBar.Buttons.Add(nextIconButton);
             enterPin.ApplicationBar = appBar;
 
         }
 
         private void btnEnterPin_Click(object sender, EventArgs e)
         {  
-            string pinEntered =  txtBxEnterPin.Text;
+            pinEntered =  txtBxEnterPin.Text.Trim();
+            if (string.IsNullOrEmpty(pinEntered))
+                return;
+            nextIconButton.IsEnabled = false;
             string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
             pinErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Visibility = System.Windows.Visibility.Visible;
@@ -58,6 +63,8 @@ namespace windows_client
                     progressBar.Visibility = Visibility.Collapsed;
                     progressBar.IsEnabled = false;
                 });
+                if (!string.IsNullOrWhiteSpace(pinEntered))
+                    nextIconButton.IsEnabled = true;
                 return;
             }
             
@@ -109,6 +116,14 @@ namespace windows_client
                 Uri nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
                 NavigationService.Navigate(nextPage);
             }            
+        }
+
+        private void txtBxEnterPin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text))
+                nextIconButton.IsEnabled = true;
+            else
+                nextIconButton.IsEnabled = false;
         }
     }
 }

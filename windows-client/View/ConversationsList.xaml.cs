@@ -18,7 +18,6 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
-using System.Text;
 
 namespace windows_client.View
 {
@@ -42,6 +41,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarMenuItem delAccountMenu;
+        ApplicationBarIconButton composeIconButton;
 
         public static Dictionary<string, ConversationListObject> ConvMap
         {
@@ -58,7 +58,6 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            this.Loaded += ConversationPage_Loaded;
             HttpNotificationChannel pushChannel;
 
             // The name of our push channel.
@@ -107,21 +106,6 @@ namespace windows_client.View
             #endregion
             initAppBar();
             initProfilePage();
-        }
-
-        void ConversationPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            String msisdn;
-            this.NavigationContext.QueryString.TryGetValue("msisdn", out msisdn);
-            if (!String.IsNullOrEmpty(msisdn))
-            {
-                //string uri = "/View/ChatThread.xaml?msisdn=" + t2;
-                //NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-            }
-            //Dispatcher.BeginInvoke(() =>
-            //{
-            //    MessageBox.Show("Msisdn is " + msisdn);
-            //});
         }
 
         //Push notifications
@@ -210,6 +194,11 @@ namespace windows_client.View
                 registerListeners();
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
+                {
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_NEW_INSTALLATION);
+                    Utils.requestAccountInfo();
+                }
             }
         }
 
@@ -241,7 +230,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             /* Add icons */
-            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = "Compose";
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
@@ -304,7 +293,6 @@ namespace windows_client.View
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             mPubSub.addListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.addListener(HikePubSub.MSG_READ, this);
             mPubSub.addListener(HikePubSub.USER_JOINED, this);
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
@@ -318,7 +306,6 @@ namespace windows_client.View
         {
             mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
             mPubSub.removeListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.removeListener(HikePubSub.MSG_READ, this);
             mPubSub.removeListener(HikePubSub.USER_JOINED, this);
             mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
@@ -430,7 +417,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats ?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
-
+            disableAppBar();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
@@ -442,6 +429,7 @@ namespace windows_client.View
             emptyScreenImage.Opacity = 1;
             progressBar.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.IsEnabled = false;
+            enableAppBar();
             App.MqttManagerInstance.connect();
         }
 
@@ -457,6 +445,7 @@ namespace windows_client.View
                 progress = new MyProgressIndicator();
             }
 
+            disableAppBar();
             progress.Show();
             AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
         }
@@ -468,12 +457,13 @@ namespace windows_client.View
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    enableAppBar();
                     progress.Hide();
                 });
                 return;
             }
-            App.MqttManagerInstance.disconnectFromBroker(false);
             NetworkManager.turnOffNetworkManager = true;
+            App.MqttManagerInstance.disconnectFromBroker(false);
             appSettings.Clear();
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
@@ -491,11 +481,6 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
-
-        //private void groupChatBtn_Click(object sender, EventArgs e)
-        //{
-        //    NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml?param=grpChat", UriKind.Relative));
-        //}
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -589,19 +574,6 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
 
-            }
-            else if (HikePubSub.MSG_READ == type)
-            {
-                string msisdn = (string)obj;
-                try
-                {
-                    ConversationListObject convObj = convMap[msisdn];
-                    convObj.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    //TODO : update the UI here also.
-                }
-                catch (KeyNotFoundException)
-                {
-                }
             }
             else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
             {
@@ -722,5 +694,16 @@ namespace windows_client.View
             richTextBox.Blocks.Add(p);
         }
         #endregion
+
+        private void disableAppBar()
+        {
+            composeIconButton.IsEnabled = false;
+            appBar.IsMenuEnabled = false;
+        }
+        private void enableAppBar()
+        {
+            composeIconButton.IsEnabled = true;
+            appBar.IsMenuEnabled = true;
+        }
     }
 }

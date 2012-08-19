@@ -91,6 +91,7 @@ namespace windows_client.DbUtils
                 List<GroupMembers> actualMembersToAdd = getNewMembers(gmList, existingMembers);
                 if (actualMembersToAdd == null)
                     return null;
+                GroupTableUtils.addGroupMembers(actualMembersToAdd);
                 obj = ConversationsList.ConvMap[convMsg.Msisdn];
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set

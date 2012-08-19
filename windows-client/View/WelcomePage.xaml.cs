@@ -11,6 +11,7 @@ namespace windows_client
 {
     public partial class WelcomePage : PhoneApplicationPage
     {
+        private bool isClicked = false;
         public WelcomePage()
         {
             InitializeComponent();
@@ -18,6 +19,10 @@ namespace windows_client
 
         private void getStarted_click(object sender, RoutedEventArgs e)
         {
+            if (isClicked)
+                return;
+            App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
+            isClicked = true;
             GetStarted.Content = "Pulling your digits.";
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
@@ -38,6 +43,7 @@ namespace windows_client
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
                 });
+                isClicked = false;
                 return;
             }
             /* This case is when you are on wifi and need to go to fallback screen to register.*/

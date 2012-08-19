@@ -301,7 +301,7 @@ namespace windows_client.Model
             get
             {
 
-                if (GrpParticipantState != ConvMessage.ParticipantInfoState.NO_INFO)
+                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     return Visibility.Collapsed;
                 }
@@ -314,7 +314,7 @@ namespace windows_client.Model
             get
             {
 
-                if (GrpParticipantState != ConvMessage.ParticipantInfoState.NO_INFO)
+                if (participantInfoState != ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     return Visibility.Visible;
                 }
@@ -629,12 +629,14 @@ namespace windows_client.Model
                 StringBuilder newParticipants = new StringBuilder();
                 for (int i = 0; i < arr.Count; i++)
                 {
-                    JObject nameMsisdn = arr[i].ToObject<JObject>();
+                    JObject nameMsisdn = (JObject)arr[i];
                     string msisdn = (string)nameMsisdn[HikeConstants.MSISDN];
+                    if (msisdn == App.MSISDN)
+                        continue;
                     string name = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn).Name;
                     newParticipants.Append(name + ", ");
                 }
-                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + ", joined the group chat";
+                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " joined the group chat";
             }
             else
             {
@@ -647,8 +649,8 @@ namespace windows_client.Model
                     this._message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant).Name + " " + "left conversation";
                 }
             }
-            this._timestamp = TimeUtils.getCurrentTimeStamp() / 1000;
-            this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
+            this._timestamp = TimeUtils.getCurrentTimeStamp();
+            this.MessageStatus = isSelfGenerated?State.RECEIVED_READ:State.RECEIVED_UNREAD;
         }
     }
 }

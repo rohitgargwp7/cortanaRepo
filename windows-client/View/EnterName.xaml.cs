@@ -16,7 +16,7 @@ namespace windows_client
         private string ac_name;
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
         private ApplicationBar appBar;
-
+        ApplicationBarIconButton nextIconButton;
 
         public EnterName()
         {
@@ -31,19 +31,20 @@ namespace windows_client
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 
-            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            composeIconButton.Text = "done";
-            composeIconButton.Click += new EventHandler(btnEnterPin_Click);
-            composeIconButton.IsEnabled = true;
-            appBar.Buttons.Add(composeIconButton);
+            nextIconButton = new ApplicationBarIconButton();
+            nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            nextIconButton.Text = "done";
+            nextIconButton.Click += new EventHandler(btnEnterPin_Click);
+            nextIconButton.IsEnabled = true;
+            appBar.Buttons.Add(nextIconButton);
             enterName.ApplicationBar = appBar;
 
         }
 
         private void btnEnterPin_Click(object sender, EventArgs e)
         {
-            ac_name = txtBxEnterName.Text;
+            nextIconButton.IsEnabled = false;
+            ac_name = txtBxEnterName.Text.Trim();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             enterNameBtn.Opacity = 1;
@@ -57,6 +58,8 @@ namespace windows_client
 
             if (obj == null || "ok" != (string)obj["stat"])
             {
+                if (!string.IsNullOrWhiteSpace(ac_name))
+                    nextIconButton.IsEnabled = true;
                 //logger.Info("HTTP", "Unable to set name");
                 // SHOW SOME TRY AGAIN MSG etc
                 return;
@@ -89,6 +92,7 @@ namespace windows_client
             {
                 enterNameBtn.Text = "Getting you in";
                 Thread.Sleep(3 * 1000);
+                PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
                 NavigationService.Navigate(nextPage);
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
                 progressBar.IsEnabled = false;
@@ -116,6 +120,14 @@ namespace windows_client
         {
             txtBxEnterName.Background = textBoxBackground;
             txtBxEnterName.Hint = "Name";
+        }
+
+        private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtBxEnterName.Text))
+                nextIconButton.IsEnabled = true;
+            else
+                nextIconButton.IsEnabled = false;
         }
     }
 }

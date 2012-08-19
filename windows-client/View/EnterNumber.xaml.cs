@@ -11,8 +11,10 @@ namespace windows_client
 {
     public partial class EnterNumber : PhoneApplicationPage
     {
+        string phoneNumber;
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
         private ApplicationBar appBar;
+        ApplicationBarIconButton nextIconButton;
 
         public EnterNumber()
         {
@@ -25,21 +27,22 @@ namespace windows_client
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 
-            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            composeIconButton.Text = "Next";
-            composeIconButton.Click += new EventHandler(enterPhoneBtn_Click);
-            composeIconButton.IsEnabled = true;
-            appBar.Buttons.Add(composeIconButton);
+            nextIconButton = new ApplicationBarIconButton();
+            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            nextIconButton.Text = "Next";
+            nextIconButton.Click += new EventHandler(enterPhoneBtn_Click);
+            nextIconButton.IsEnabled = false;
+            appBar.Buttons.Add(nextIconButton);
             enterNumber.ApplicationBar = appBar;
 
         }
 
         private void enterPhoneBtn_Click(object sender, EventArgs e)
         {
-            string phoneNumber = txtEnterPhone.Text;
+            phoneNumber = txtEnterPhone.Text.Trim();
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
+            nextIconButton.IsEnabled = false;
             enterPhoneBtn.Opacity = 1;
             enterPhoneBtn.Text = "Verifying your number";
             msisdnErrorTxt.Visibility = Visibility.Collapsed;
@@ -59,6 +62,8 @@ namespace windows_client
                     progressBar.Visibility = Visibility.Collapsed;
                     progressBar.IsEnabled = false;
                 });
+                if (!string.IsNullOrWhiteSpace(phoneNumber))
+                    nextIconButton.IsEnabled = true;
                 return;
             }
             string unauthedMSISDN = (string)obj["msisdn"];
@@ -111,6 +116,14 @@ namespace windows_client
             txtEnterPhone.Text = "";
             txtEnterPhone.Background = textBoxBackground;
             txtEnterPhone.Hint = "Phone Number";
+        }
+
+        private void txtEnterPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
+                nextIconButton.IsEnabled = true;
+            else
+                nextIconButton.IsEnabled = false;
         }
     }
 }
