@@ -58,41 +58,6 @@ namespace windows_client.View
         public ConversationsList()
         {
             InitializeComponent();
-            HttpNotificationChannel pushChannel;
-
-            // The name of our push channel.
-            string channelName = "HikeApp";
-
-            // Try to find the push channel.
-            pushChannel = HttpNotificationChannel.Find(channelName);
-
-            // If the channel was not found, then create a new connection to the push service.
-            if (pushChannel == null)
-            {
-                pushChannel = new HttpNotificationChannel(channelName);
-
-                // Register for all the events before attempting to open the channel.
-                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                // Register for this notification only if you need to receive the notifications while your application is running.
-                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-                pushChannel.Open();
-                // Bind this new channel for toast events.
-                pushChannel.BindToShellToast();
-                pushChannel.BindToShellTile();
-            }
-            else
-            {
-                // The channel was already open, so just register for all the events.
-                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-
-                // Register for this notification only if you need to receive the notifications while your application is running.
-                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-
-                System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-            }
             convMap = new Dictionary<string, ConversationListObject>();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
@@ -199,6 +164,44 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.IS_NEW_INSTALLATION);
                     Utils.requestAccountInfo();
                 }
+
+                #region PUSH NOTIFICATIONS STUFF
+                HttpNotificationChannel pushChannel;
+
+                // The name of our push channel.
+                string channelName = "HikeApp";
+
+                // Try to find the push channel.
+                pushChannel = HttpNotificationChannel.Find(channelName);
+
+                // If the channel was not found, then create a new connection to the push service.
+                if (pushChannel == null)
+                {
+                    pushChannel = new HttpNotificationChannel(channelName);
+
+                    // Register for all the events before attempting to open the channel.
+                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+                    // Register for this notification only if you need to receive the notifications while your application is running.
+                    pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+                    pushChannel.Open();
+                    // Bind this new channel for toast events.
+                    pushChannel.BindToShellToast();
+                    pushChannel.BindToShellTile();
+                }
+                else
+                {
+                    // The channel was already open, so just register for all the events.
+                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+
+                    // Register for this notification only if you need to receive the notifications while your application is running.
+                    pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+
+                    System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                    AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                }
+                #endregion
             }
         }
 
