@@ -47,7 +47,6 @@ namespace windows_client.View
         private int mCredits;
         private long lastTextChangedTime;
 
-        ConversationListObject cObj = null; // used for toast
         private HikePubSub mPubSub;
         private IScheduler scheduler = Scheduler.NewThread;
 
@@ -843,12 +842,6 @@ namespace windows_client.View
             sendMsgTxtbox.Background = textBoxBackground;
         }
 
-        void toast_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            PhoneApplicationService.Current.State["objFromConversationPage"] = cObj;
-            NavigationService.Navigate(new Uri("/View/ChatThread.xaml?Id=1", UriKind.Relative));
-        }
-
         #endregion
 
         #region CONTEXT MENU
@@ -1216,7 +1209,7 @@ namespace windows_client.View
                 }
                 else // this is to show toast notification
                 {
-                    cObj = vals[1] as ConversationListObject;
+                    ConversationListObject cObj = vals[1] as ConversationListObject;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ToastPrompt toast = new ToastPrompt();
@@ -1226,7 +1219,6 @@ namespace windows_client.View
                             toast.Title = cObj.Msisdn;
                         toast.Message = convMessage.Message;
                         toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
-                        toast.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(toast_Tap);
                         toast.Show();
                     });
                 }
@@ -1393,12 +1385,10 @@ namespace windows_client.View
 
             else if (HikePubSub.UPDATE_UI == type)
             {
-                for (int i = 0; i < incomingMessages.Count; i++)
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    ConvMessage c = incomingMessages[i];
-                    if (!c.IsSent)
-                        c.NotifyPropertyChanged("AvatarImage");
-                }
+                        userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
+                });
             }
 
             #endregion
