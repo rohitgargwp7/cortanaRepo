@@ -17,7 +17,7 @@ namespace windows_client.View
     public partial class GroupInfoPage : PhoneApplicationPage, HikePubSub.Listener
     {
         private List<GroupMembers> activeGroupMembers;
-        private ObservableCollection<GroupMembers> groupMembers = new ObservableCollection<GroupMembers>();
+        private ObservableCollection<GroupMembers> groupMembersOC = new ObservableCollection<GroupMembers>();
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
@@ -55,8 +55,8 @@ namespace windows_client.View
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
             for (int i = 0; i < activeGroupMembers.Count; i++)
-                groupMembers.Add(activeGroupMembers[i]);
-            this.groupChatParticipants.ItemsSource = groupMembers;
+                groupMembersOC.Add(activeGroupMembers[i]);
+            this.groupChatParticipants.ItemsSource = groupMembersOC;
             registerListeners();
         }
 
@@ -124,7 +124,7 @@ namespace windows_client.View
                     activeGroupMembers.RemoveAt(i);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                            groupMembers.RemoveAt(i);
+                            groupMembersOC.RemoveAt(i);
                     });
                 }
             }
@@ -142,7 +142,7 @@ namespace windows_client.View
             activeGroupMembers.Insert(i, gMembers);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                groupMembers.Insert(i, gMembers);
+                groupMembersOC.Insert(i, gMembers);
             });
         }
 
