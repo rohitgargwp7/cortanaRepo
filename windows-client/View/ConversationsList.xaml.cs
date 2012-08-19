@@ -42,6 +42,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarMenuItem delAccountMenu;
+        ApplicationBarIconButton composeIconButton;
 
         public static Dictionary<string, ConversationListObject> ConvMap
         {
@@ -236,7 +237,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             /* Add icons */
-            ApplicationBarIconButton composeIconButton = new ApplicationBarIconButton();
+            composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = "Compose";
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
@@ -423,7 +424,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats ?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
-
+            disableAppBar();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
@@ -435,6 +436,7 @@ namespace windows_client.View
             emptyScreenImage.Opacity = 1;
             progressBar.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.IsEnabled = false;
+            enableAppBar();
             App.MqttManagerInstance.connect();
         }
 
@@ -450,6 +452,7 @@ namespace windows_client.View
                 progress = new MyProgressIndicator();
             }
 
+            disableAppBar();
             progress.Show();
             AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
         }
@@ -461,6 +464,7 @@ namespace windows_client.View
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    enableAppBar();
                     progress.Hide();
                 });
                 return;
@@ -702,5 +706,16 @@ namespace windows_client.View
             richTextBox.Blocks.Add(p);
         }
         #endregion
+
+        private void disableAppBar()
+        {
+            composeIconButton.IsEnabled = false;
+            appBar.IsMenuEnabled = false;
+        }
+        private void enableAppBar()
+        {
+            composeIconButton.IsEnabled = true;
+            appBar.IsMenuEnabled = true;
+        }
     }
 }

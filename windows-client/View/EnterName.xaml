@@ -62,7 +62,7 @@
                 <TextBlock Foreground="#4f4f4f" TextWrapping="Wrap" Text="What's your name?" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
                 <StackPanel Orientation="Horizontal" Height="50"  Background="#e3e3df" Width="320" Margin="0,10,0,0" >
                     <Image Source="images\enter_name.png" Margin="15,10,0,10" Height="20" />
-                    <toolkit:PhoneTextBox x:Name="txtBxEnterName" GotFocus="txtBxEnterName_GotFocus" Foreground="Black" Background="#e3e3df" BorderThickness="0" Margin="0,-8,0,0" Width="250" Height="70"/>
+                    <toolkit:PhoneTextBox x:Name="txtBxEnterName" GotFocus="txtBxEnterName_GotFocus" Foreground="Black" Background="#e3e3df" BorderThickness="0" Margin="0,-8,0,0" Width="250" Height="70" TextChanged="txtBxEnterName_TextChanged" />
                 </StackPanel>
                 <!--<Button x:Name="enterNameBtn" BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" Foreground="White" Margin="37,10,37,429" Content="Lets hike" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="72" Click="btnEnterName_Click" Width="344">
                 </Button>-->

@@ -1214,7 +1214,7 @@ namespace windows_client.View
                         typingNotification.Opacity = 0;
                     });
                 }
-                else
+                else // this is to show toast notification
                 {
                     cObj = vals[1] as ConversationListObject;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -1451,5 +1451,13 @@ namespace windows_client.View
 
         #endregion
 
+        // this should be called when one gets tap here msg.
+        private void smsUser_Click(object sender, EventArgs e)
+        {
+            SmsComposeTask sms = new Microsoft.Phone.Tasks.SmsComposeTask();
+            sms.To = mContactNumber; // set phone number
+            sms.Body = ""; // set body
+            sms.Show();
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
-        int xyz = 1; // this is used to avoid double calling of Text changed function in Textbox
+        bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
         private bool isGroupChat = false;
         public List<ContactInfo> contactsForgroup = null;
@@ -36,12 +36,15 @@ namespace windows_client.View
         private int smsUserCount = 0;
         private int existingGroupUsers = 1; // 1 because owner of the group is already included
         private int defaultGroupmembers = 0;
-        private ApplicationBar appBar;
-        private ApplicationBarIconButton doneIconButton = null;
+       
         private Dictionary<string, List<MsisdnCordinates>> msisdnPositions = null;
         private Stack<int> indexOfAddedContacts = new Stack<int>();
         private bool textChangedFromDelete = false;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
+
+        private ApplicationBar appBar;
+        private ApplicationBarIconButton doneIconButton = null;
+        ApplicationBarIconButton refreshIconButton = null;
 
         public class MsisdnCordinates
         {
@@ -168,7 +171,7 @@ namespace windows_client.View
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 
-            ApplicationBarIconButton refreshIconButton = new ApplicationBarIconButton();
+            refreshIconButton = new ApplicationBarIconButton();
             refreshIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
             refreshIconButton.Text = "Refresh Contacts";
             refreshIconButton.Click += new EventHandler(refreshContacts_Click);
@@ -312,7 +315,7 @@ namespace windows_client.View
 
         #endregion
 
-        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhone(string charsEnetered)
+        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhone(string charsEntered)
         {
             if (groupedList == null || groupedList.Count == 0)
                 return null;
@@ -322,13 +325,22 @@ namespace windows_client.View
                 for (int j = 0; j < (groupedList[i].Items == null ? 0 : groupedList[i].Items.Count); j++)
                 {
                     ContactInfo cn = groupedList[i].Items[j];
-                    if (cn.Name.ToLower().Contains(charsEnetered) || cn.Msisdn.Contains(charsEnetered) || cn.PhoneNo.Contains(charsEnetered))
+                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
                     {
                         glistFiltered[i].Items.Add(cn);
                     }
                 }
             }
+            if (isNumber(charsEntered))
+            {
+            }
             return glistFiltered;
+        }
+
+        private bool isNumber(string charsEntered)
+        {
+            long i = 0;
+            return long.TryParse(charsEntered,out i); 
         }
 
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -344,12 +356,12 @@ namespace windows_client.View
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (xyz % 2 == 0) // this is done to avoid twice calling of "enterNameTxt_TextChanged" function
+            if (xyz) // this is done to avoid twice calling of "enterNameTxt_TextChanged" function
             {
-                xyz++;
+                xyz = !xyz;
                 return;
             }
-            xyz++;
+            xyz = !xyz;
 
             if (!textChangedFromDelete)
             {
@@ -413,6 +425,7 @@ namespace windows_client.View
                 progress = new MyProgressIndicator();
             }
 
+            disableAppBar();
             progress.Show();
             canGoBack = false;
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
@@ -448,6 +461,7 @@ namespace windows_client.View
                 {
                     Thread.Sleep(1000);
                     progress.Hide();
+                    enableAppBar();
                     canGoBack = true;
                     App.isABScanning = false;
                     return;
@@ -506,6 +520,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     progress.Hide();
+                    enableAppBar();
                     canGoBack = true;
                 });
                 return;
@@ -540,6 +555,7 @@ namespace windows_client.View
                 groupedList = getGroupedList(allContactsList);
                 contactsListBox.ItemsSource = groupedList;
                 progress.Hide();
+                enableAppBar();
                 canGoBack = true;
             });
         }
@@ -590,6 +606,12 @@ namespace windows_client.View
                     enterNameTxt.Text = stringBuilderForContactNames.ToString();
                     enterNameTxt.Select(enterNameTxt.Text.Length, 0);
 
+                    // update user count
+                    if (!cn.OnHike)
+                        smsUserCount--;
+                    existingGroupUsers--;
+                    if (existingGroupUsers < 3)
+                        doneIconButton.IsEnabled = false;
                 }
                 if (typedTextDeleted)
                 {
@@ -657,5 +679,20 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void disableAppBar()
+        {
+            refreshIconButton.IsEnabled = false;
+            if (isGroupChat)
+                doneIconButton.IsEnabled = false;
+        }
+
+        private void enableAppBar()
+        {
+            refreshIconButton.IsEnabled = true;
+            if (isGroupChat && existingGroupUsers >= 3)
+                doneIconButton.IsEnabled = true;
+        }
+
     }
 }
