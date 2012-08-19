@@ -466,14 +466,6 @@ namespace windows_client.Model
 
         #region ChatThread Page Bindings for Converters
 
-        public BitmapImage AvatarImage
-        {
-            get
-            {
-                return UI_Utils.Instance.getBitMapImage(_msisdn);
-            }
-        }
-
         public string SdrImage
         {
             get

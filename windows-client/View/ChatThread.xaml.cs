@@ -19,6 +19,7 @@ using windows_client.utils;
 using Coding4Fun.Phone.Controls;
 using System.Collections.ObjectModel;
 using Microsoft.Phone.Tasks;
+using System.IO;
 
 namespace windows_client.View
 {
@@ -208,6 +209,7 @@ namespace windows_client.View
                 }
 
                 isOnHike = convObj.IsOnhike;
+                userImage.Source = convObj.AvatarImage;
             }
 
             #endregion
@@ -227,6 +229,25 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove("forwardedText");
                 }
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
+                if (obj.HasCustomPhoto)
+                {
+                    Thumbnails pic = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
+                    if (pic == null || pic.Avatar == null)
+                    {
+                        userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                    }
+                    else
+                    {
+                        byte[] _avatar = pic.Avatar;
+                        MemoryStream memStream = new MemoryStream(_avatar);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage();
+                        empImage.SetSource(memStream);
+                        userImage.Source = empImage;
+                    }
+                }
+                else
+                    userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
             }
             #endregion
 
@@ -241,11 +262,12 @@ namespace windows_client.View
                 processGroupJoin(true);
                 isOnHike = true;
                 isGroupChat = true;
+                userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; //TODO show new group default image
             }
 
             #endregion
 
-            userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
+
             userName.Text = mContactName;
             initAppBar(isGroupChat, isAddUser);
             if (!isOnHike)
@@ -288,7 +310,7 @@ namespace windows_client.View
             bw.RunWorkerAsync(groupMemberList);
 
             mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(groupMemberList) : mContactName;
-            
+
             ConvMessage cm = new ConvMessage(obj, true);
             sendMsg(cm, true);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // inform others about group
@@ -516,7 +538,7 @@ namespace windows_client.View
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
                     isPublish = true;
-                    if(messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                         ids.Add(Convert.ToString(messagesList[i].MappedMessageId));
                     dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
@@ -531,7 +553,7 @@ namespace windows_client.View
                     this.ChatThreadPageCollection.Add(cm);
                 else
                 {
-                    ConvMessage [] cArr = Utils.splitUserJoinedMessage(cm);
+                    ConvMessage[] cArr = Utils.splitUserJoinedMessage(cm);
                     for (int ij = 0; ij < cArr.Length; ij++)
                     {
                         this.ChatThreadPageCollection.Add(cArr[ij]);
@@ -577,7 +599,7 @@ namespace windows_client.View
                     ConvMessage[] cArr = Utils.splitUserJoinedMessage(c);
                     for (int ij = 0; ij < cArr.Length; ij++)
                     {
-                        this.ChatThreadPageCollection.Insert(ij,cArr[ij]);
+                        this.ChatThreadPageCollection.Insert(ij, cArr[ij]);
                     }
                 }
 
@@ -817,7 +839,7 @@ namespace windows_client.View
                 JObject metaData = new JObject();
                 metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
                 convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
-                ConvMessage [] cArr = Utils.splitUserJoinedMessage(convMessage);
+                ConvMessage[] cArr = Utils.splitUserJoinedMessage(convMessage);
                 for (int i = 0; i < cArr.Length; i++)
                 {
                     this.ChatThreadPageCollection.Add(cArr[i]);
@@ -1385,9 +1407,20 @@ namespace windows_client.View
 
             else if (HikePubSub.UPDATE_UI == type)
             {
+                object[] vals = (object[])obj;
+                string msisdn = (string)vals[0];
+                if (msisdn != mContactNumber)
+                    return;
+                byte[] _avatar = (byte[])vals[1];
+                if (_avatar == null)
+                    return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                        userImage.Source = UI_Utils.Instance.getBitMapImage(mContactNumber);
+                    MemoryStream memStream = new MemoryStream(_avatar);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage empImage = new BitmapImage(); // here we can resuse existing image (how ??)
+                    empImage.SetSource(memStream);
+                    userImage.Source = empImage;
                 });
             }
 

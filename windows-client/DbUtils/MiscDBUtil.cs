@@ -130,16 +130,14 @@ namespace windows_client.DbUtils
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
-                Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();   
-
+                Thumbnails thumbnail = DbCompiledQueries.GetIconForMsisdn(context, msisdn).FirstOrDefault<Thumbnails>();
                 if (thumbnail == null)
                 {
-                    ContactInfo contact = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    ContactInfo contact = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).FirstOrDefault<ContactInfo>();
                     if (contact == null)
                         return;
-                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));                    
                     contact.HasCustomPhoto = true;
+                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));                                       
                 }
                 else
                 {

@@ -188,14 +188,13 @@ namespace windows_client
                     return;
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = imageBytes;
 
+                this.pubSub.publish(HikePubSub.UPDATE_UI, vals);
                 MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
                 ConversationTableUtils.updateImage(msisdn, imageBytes);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    App.UI_UtilsInstance.updateImageInCache(msisdn, imageBytes);
-                });
-                this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
             }
             else if (INVITE_INFO == type)
             {

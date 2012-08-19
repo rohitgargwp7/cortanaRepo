@@ -44,7 +44,6 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        BackgroundWorker bw ;
         public static string MSISDN;
         private static bool ab_scanned = false;
         public static bool isABScanning = false;
@@ -212,7 +211,7 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
             /* Load App token if its there*/
-            if (appSettings.Contains(App.TOKEN_SETTING) && null != appSettings[App.TOKEN_SETTING])
+            if (appSettings.Contains(App.TOKEN_SETTING))
             {
                 AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
                 App.MSISDN = (string)appSettings[App.MSISDN_SETTING];

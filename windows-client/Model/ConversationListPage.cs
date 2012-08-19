@@ -136,6 +136,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("Avatar");
                     _avatar = value;
                     NotifyPropertyChanged("Avatar");
+                    NotifyPropertyChanged("AvatarImage");
                 }
             }
         }
@@ -165,12 +166,6 @@ namespace windows_client.Model
             {
                 try
                 {
-                    if (UI_Utils.Instance.ImageCache.ContainsKey(_msisdn))
-                    {
-                        BitmapImage cachedImage;
-                        App.UI_UtilsInstance.ImageCache.TryGetValue(_msisdn, out cachedImage);
-                        return cachedImage;
-                    }
                     if (_avatar == null)
                     {
                         return UI_Utils.Instance.DefaultAvatarBitmapImage;
@@ -181,7 +176,6 @@ namespace windows_client.Model
                         memStream.Seek(0, SeekOrigin.Begin);
                         BitmapImage empImage = new BitmapImage();
                         empImage.SetSource(memStream);
-                        App.UI_UtilsInstance.ImageCache[_msisdn] = empImage;
                         return empImage;
                     }
                 }

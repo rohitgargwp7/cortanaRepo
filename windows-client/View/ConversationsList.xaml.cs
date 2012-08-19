@@ -37,7 +37,6 @@ namespace windows_client.View
         private IsolatedStorageSettings appSettings = App.appSettings;
         private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
         private PhotoChooserTask photoChooserTask;
-        private string msisdn;
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarMenuItem delAccountMenu;
@@ -90,7 +89,7 @@ namespace windows_client.View
                 // Register for this notification only if you need to receive the notifications while your application is running.
                 pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
-                System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                Debug.WriteLine(pushChannel.ChannelUri.ToString());
                 AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
             }
             convMap = new Dictionary<string, ConversationListObject>();
@@ -258,7 +257,6 @@ namespace windows_client.View
             groupChatIconButton.Click += new EventHandler(createGroup_Click);
             groupChatIconButton.IsEnabled = true;
             appBar.MenuItems.Add(groupChatIconButton);
-
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -321,7 +319,6 @@ namespace windows_client.View
 
         private void initProfilePage()
         {
-            msisdn = (string)App.appSettings[App.MSISDN_SETTING];
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
@@ -334,7 +331,7 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(msisdn + "::large");
+            Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(App.MSISDN + "::large");
             if (profileThumbnail != null)
             {
                 MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
@@ -360,7 +357,7 @@ namespace windows_client.View
             AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
 
             object[] vals = new object[3];
-            vals[0] = msisdn;
+            vals[0] = App.MSISDN;
             vals[1] = msSmallImage;
             vals[2] = msLargeImage;
             mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
@@ -589,13 +586,19 @@ namespace windows_client.View
             }
             else if (HikePubSub.UPDATE_UI == type)
             {
-                string msisdn = (string)obj;
+                object[] vals = (object[])obj;
+                string msisdn = (string)vals[0];
+                if (!convMap.ContainsKey(msisdn))
+                    return;
+
+                ConversationListObject convObj = convMap[msisdn];
+                byte[] _avatar = (byte[])vals[1];
                 try
                 {
-                    ConversationListObject convObj = convMap[msisdn];
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        convObj.NotifyPropertyChanged("AvatarImage");
+                        convObj.Avatar = _avatar;
+                        //convObj.NotifyPropertyChanged("AvatarImage");
                     });
                 }
                 catch (KeyNotFoundException)

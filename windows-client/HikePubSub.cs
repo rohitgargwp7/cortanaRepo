@@ -125,7 +125,7 @@ namespace windows_client
         public HikePubSub()
         {
             listeners = new Dictionary<string, List<Listener>>();
-            mQueue = new BlockingQueue(2000);
+            mQueue = new BlockingQueue(100);
             try
             {
                 mThread = new Thread(new ThreadStart(startPubSub));

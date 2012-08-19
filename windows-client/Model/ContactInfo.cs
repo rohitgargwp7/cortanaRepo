@@ -266,14 +266,6 @@ namespace windows_client.Model
             return _name;
         }
 
-        public BitmapImage AvatarImage
-        {
-            get
-            {
-                return UI_Utils.Instance.getBitMapImage(_msisdn);
-            }
-        }
-
         public BitmapImage HikeStatusImage
         {
             get

@@ -33,10 +33,17 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
-            if (groupProfileBitmap != null)
+            Thumbnails pic = MiscDBUtil.getThumbNailForMSisdn(groupId);
+            if (pic == null || pic.Avatar == null)
+                groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; // TODO : change to default groupImage once done
+            else
             {
-                groupImage.Source = groupProfileBitmap;
+                byte[] _avatar = pic.Avatar;
+                MemoryStream memStream = new MemoryStream(_avatar);
+                memStream.Seek(0, SeekOrigin.Begin);
+                BitmapImage empImage = new BitmapImage();
+                empImage.SetSource(memStream);
+                groupImage.Source = empImage;
             }
         }
 
@@ -51,7 +58,7 @@ namespace windows_client.View
             if (gi == null)
                 return;
             this.groupName.Text = groupName;
-         
+
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
             for (int i = 0; i < activeGroupMembers.Count; i++)
@@ -70,13 +77,26 @@ namespace windows_client.View
         {
             if (HikePubSub.UPDATE_UI == type)
             {
-                BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
+                object[] vals = (object[])obj;
+                string msisdn = (string)vals[0];
+                if (msisdn != groupId)
+                    return;
+                byte[] _avatar = (byte[])vals[1];
+                if (_avatar == null)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                        return;
+                    });
+                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (groupProfileBitmap != null)
-                    {
-                        groupImage.Source = groupProfileBitmap;
-                    }
+                    MemoryStream memStream = new MemoryStream(_avatar);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage empImage = new BitmapImage();
+                    empImage.SetSource(memStream);
+                    groupImage.Source = empImage;
                 });
             }
             else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
@@ -84,8 +104,8 @@ namespace windows_client.View
                 JObject json = (JObject)obj;
                 string joinedGroupId = (string)json[HikeConstants.TO];
                 if (joinedGroupId == groupId)
-                { 
-                
+                {
+
                 }
 
             }
