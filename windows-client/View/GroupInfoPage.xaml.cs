@@ -51,7 +51,7 @@ namespace windows_client.View
             if (gi == null)
                 return;
             this.groupName.Text = groupName;
-         
+
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
             for (int i = 0; i < activeGroupMembers.Count; i++)
@@ -63,28 +63,28 @@ namespace windows_client.View
         #region PUBSUB
         private void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
         }
         public void onEventReceived(string type, object obj)
         {
-            if (HikePubSub.UPDATE_UI == type)
+            JObject json = (JObject)obj;
+            string eventGroupId = (string)json[HikeConstants.TO];
+            if (eventGroupId == groupId)
             {
-                BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (HikePubSub.UPDATE_UI == type)
                 {
-                    if (groupProfileBitmap != null)
+                    BitmapImage groupProfileBitmap = UI_Utils.Instance.getBitMapImage(groupId);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        groupImage.Source = groupProfileBitmap;
-                    }
-                });
-            }
-            else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
-            {
-                JObject json = (JObject)obj;
-                string joinedGroupId = (string)json[HikeConstants.TO];
-                if (joinedGroupId == groupId)
+                        if (groupProfileBitmap != null)
+                        {
+                            groupImage.Source = groupProfileBitmap;
+                        }
+                    });
+                }
+                else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
                 {
                     JToken participantsToken;
                     json.TryGetValue(HikeConstants.DATA, out participantsToken);
@@ -105,14 +105,9 @@ namespace windows_client.View
                             }
                         }
                     }
-                }
 
-            }
-            else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
-            {
-                JObject json = (JObject)obj;
-                string leaveGroupId = (string)json[HikeConstants.TO];
-                if (leaveGroupId == groupId)
+                }
+                else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
                 {
                     string leaveMsisdn = (string)json[HikeConstants.DATA];
                     int i = 0;
@@ -124,7 +119,7 @@ namespace windows_client.View
                     activeGroupMembers.RemoveAt(i);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                            groupMembersOC.RemoveAt(i);
+                        groupMembersOC.RemoveAt(i);
                     });
                 }
             }
