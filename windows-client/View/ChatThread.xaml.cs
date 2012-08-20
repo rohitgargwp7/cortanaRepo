@@ -545,11 +545,14 @@ namespace windows_client.View
                 }
                 ConvMessage cm = messagesList[i];
                 if (messagesList[i].IsSent)
-                    msgMap.Add(messagesList[i].MessageId, messagesList[i]);
+                {
+                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                        msgMap.Add(messagesList[i].MessageId, messagesList[i]);
+                }
                 else
                     incomingMessages.Add(messagesList[i]);
 
-                if (cm.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                if (cm.GrpParticipantState != ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                     this.ChatThreadPageCollection.Add(cm);
                 else
                 {
@@ -592,7 +595,7 @@ namespace windows_client.View
                     }
                 }
                 ConvMessage c = messagesList[i];
-                if (c.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                if (c.GrpParticipantState != ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                     this.ChatThreadPageCollection.Insert(0, c);
                 else
                 {
