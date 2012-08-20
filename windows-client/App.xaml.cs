@@ -13,6 +13,7 @@ using windows_client.View;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace windows_client
 {
@@ -341,6 +342,7 @@ namespace windows_client
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            updateConversations();
             App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
             App.appSettings.Save();
         }
@@ -349,6 +351,7 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            updateConversations();
             App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
             App.appSettings.Save();
         }
@@ -356,6 +359,7 @@ namespace windows_client
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
+            updateConversations();
             MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
                 return;
@@ -369,6 +373,7 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            updateConversations();
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger
@@ -383,6 +388,31 @@ namespace windows_client
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
             });
 
+        }
+
+        private void updateConversations()
+        {
+            bool shouldUpdate = false;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                
+                for (int i = 0; i < App.ViewModel.ConvMsisdnsToUpdate.Count; i++)
+                {
+                    string msisdn = App.ViewModel.ConvMsisdnsToUpdate[i];
+                    if (ConversationsList.ConvMap.ContainsKey(msisdn))
+                    {
+                        ConversationListObject obj = ConversationsList.ConvMap[msisdn];
+                        IQueryable<ConversationListObject> q = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn);
+                        ConversationListObject cObj = q.FirstOrDefault();
+                        cObj.MessageStatus = obj.MessageStatus;
+                        cObj.LastMessage = obj.LastMessage;
+                        cObj.TimeStamp = obj.TimeStamp;
+                        shouldUpdate = true;
+                    }
+                }
+                if(shouldUpdate)
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
         }
 
         #region Phone application initialization

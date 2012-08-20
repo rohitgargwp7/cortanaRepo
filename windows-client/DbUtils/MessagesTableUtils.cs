@@ -7,20 +7,21 @@ using System;
 using windows_client.utils;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace windows_client.DbUtils
 {
     public class MessagesTableUtils
     {
+        private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {
-                List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(context, msisdn).ToList<ConvMessage>();
-                return (res == null || res.Count == 0) ? null : res;
-            }
+
+            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(chatsDbContext, msisdn).ToList<ConvMessage>();
+            return (res == null || res.Count == 0) ? null : res;
+          
         }
 
         /* This queries messages table and get the last message for given msisdn*/
@@ -72,7 +73,7 @@ namespace windows_client.DbUtils
 
         // this is called in case of gcj
         public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj)
-        {            
+        {
             ConversationListObject obj = null;
             List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
@@ -99,7 +100,7 @@ namespace windows_client.DbUtils
                     existingMembers.AddRange(actualMembersToAdd);
                     obj.ContactName = Utils.defaultGroupName(existingMembers);
                 }
-               
+
                 obj.LastMessage = convMsg.Message;
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
@@ -124,12 +125,12 @@ namespace windows_client.DbUtils
             return newGrpUserList;
         }
 
-        public static ConversationListObject addChatMessage(ConvMessage convMsg,bool isNewGroup)
+        public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup)
         {
             ConversationListObject obj = null;
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
-                obj = ConversationTableUtils.addConversation(convMsg,isNewGroup);
+                obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else
@@ -138,9 +139,16 @@ namespace windows_client.DbUtils
                 obj.LastMessage = convMsg.Message;
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
-                ConversationTableUtils.updateConversation(obj);
+                
+                App.ViewModel.ConvMsisdnsToUpdate.Add(convMsg.Msisdn);
+                //ConversationTableUtils.updateConversation(obj);
             }
+            Stopwatch st1 = Stopwatch.StartNew();
             addMessage(convMsg);
+            st1.Stop();
+            long msec1 = st1.ElapsedMilliseconds;
+            Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                
             return obj;
         }
 
@@ -184,7 +192,7 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                if(shouldSubmit)
+                if (shouldSubmit)
                     SubmitWithConflictResolve(context);
             }
             return msisdn;
