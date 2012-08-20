@@ -103,7 +103,7 @@ namespace windows_client.Model
         }
 
 
-        [Column(DbType="image", CanBeNull = false)]
+        [Column(DbType="image", CanBeNull = true)]
         public byte[] Avatar
         {
             get
@@ -134,6 +134,7 @@ namespace windows_client.Model
         }
 
         #endregion
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
