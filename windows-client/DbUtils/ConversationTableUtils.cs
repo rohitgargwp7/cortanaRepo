@@ -14,7 +14,7 @@ namespace windows_client.DbUtils
         /* This function gets all the conversations shown on the message list page*/
         public static List<ConversationListObject> getAllConversations()
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring+";Max Buffer Size=1024"))
             {
                 var q = from o in context.conversations orderby o.TimeStamp descending select o;
                 return q.ToList();
@@ -115,7 +115,7 @@ namespace windows_client.DbUtils
 
         public static void updateConversation(ConversationListObject obj)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + "; Max Buffer Size = 2048"))
             {
                 ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
                 if (cObj.ContactName != obj.ContactName)
