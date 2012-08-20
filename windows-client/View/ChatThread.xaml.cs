@@ -1432,8 +1432,7 @@ namespace windows_client.View
 
         private void groupChatEnd()
         {
-            /* Madhur Complete this.*/
-            sendMsgTxtbox.IsEnabled = false;
+            sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
