@@ -115,12 +115,17 @@ namespace windows_client
 
         public static readonly string PARTICIPANT_LEFT_GROUP = "participantLeftGroup";
 
+        public static readonly string DELETE_CONVERSATION = "deleteConversation";
+
+        public static readonly string DELETE_ALL_CONVERSATIONS="deleteAllConversations";
+
+        public static string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;
 
         private Dictionary<string, List<Listener>> listeners;
-
 
         public HikePubSub()
         {

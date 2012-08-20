@@ -113,5 +113,23 @@ namespace windows_client.DbUtils
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
+
+        public static void deleteAllGroupMembers()
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                context.groupMembers.DeleteAllOnSubmit<GroupMembers>(context.GetTable<GroupMembers>());
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        public static void deleteAllGroups()
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
     }
 }

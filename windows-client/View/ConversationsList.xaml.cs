@@ -298,6 +298,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
+            mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }
 
         private void removeListeners()
@@ -311,6 +312,7 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
+            mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }
 
         #endregion
@@ -417,17 +419,8 @@ namespace windows_client.View
             disableAppBar();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
-            App.MqttManagerInstance.disconnectFromBroker(false);
-            ConversationTableUtils.deleteAllConversations();
-            MessagesTableUtils.deleteAllMessages();
-            convMap.Clear();
-
-            App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenImage.Opacity = 1;
-            progressBar.Visibility = System.Windows.Visibility.Collapsed;
-            progressBar.IsEnabled = false;
-            enableAppBar();
-            App.MqttManagerInstance.connect();
+            NetworkManager.turnOffNetworkManager = true;
+            mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
         }
 
         #region Delete Account
@@ -469,7 +462,7 @@ namespace windows_client.View
 
         private void createGroup_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true; 
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
@@ -490,7 +483,7 @@ namespace windows_client.View
                 return;
             }
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
-            if(convObj != null)
+            if (convObj != null)
                 deleteConversation(convObj);
         }
 
@@ -502,18 +495,15 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 1;
             }
-            ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
-            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
-            if (Utils.isGroupConversation(convObj.Msisdn))
+
+            if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
             {
                 JObject jObj = new JObject();
                 jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
                 jObj[HikeConstants.TO] = convObj.Msisdn;
-
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
-                GroupTableUtils.deleteGroupMembersWithId(convObj.Msisdn);
-                GroupTableUtils.deleteGroupWithId(convObj.Msisdn);
             }
+            mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
         }
 
         private void inviteUsers_Click(object sender, EventArgs e)
@@ -533,7 +523,7 @@ namespace windows_client.View
             if (selectedIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Insert(1,delConvsMenu);
+                    appBar.MenuItems.Insert(1, delConvsMenu);
                 if (appBar.MenuItems.Contains(delAccountMenu))
                     appBar.MenuItems.Remove(delAccountMenu);
             }
@@ -542,7 +532,7 @@ namespace windows_client.View
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
                 if (!appBar.MenuItems.Contains(delAccountMenu))
-                    appBar.MenuItems.Insert(0,delAccountMenu);
+                    appBar.MenuItems.Insert(0, delAccountMenu);
             }
         }
 
@@ -622,6 +612,19 @@ namespace windows_client.View
                     progress.Hide();
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 });
+            }
+            else if (HikePubSub.DELETED_ALL_CONVERSATIONS == type)
+            {
+                convMap.Clear();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    App.ViewModel.MessageListPageCollection.Clear();
+                    emptyScreenImage.Opacity = 1;
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                    enableAppBar();
+                });
+                NetworkManager.turnOffNetworkManager = false;
             }
 
             #region GROUP NAME CHANGED

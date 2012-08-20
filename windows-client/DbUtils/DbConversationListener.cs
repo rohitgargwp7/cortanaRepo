@@ -5,6 +5,9 @@ using System.Windows;
 using System.Windows.Navigation;
 using System;
 using System.Data.Linq;
+using System.ComponentModel;
+using windows_client.utils;
+using windows_client.View;
 
 namespace windows_client.DbUtils
 {
@@ -32,6 +35,8 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.addListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
+            mPubSub.addListener(HikePubSub.DELETE_CONVERSATION,this);
+            mPubSub.addListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
         }
 
         private void removeListeners()
@@ -47,6 +52,8 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.removeListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
+            mPubSub.removeListener(HikePubSub.DELETE_CONVERSATION,this);
+            mPubSub.removeListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -186,6 +193,40 @@ namespace windows_client.DbUtils
                 JObject unblockObj = blockUnblockSerialize("ub", groupOwner);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
+            else if (HikePubSub.DELETE_CONVERSATION == type)
+            {
+                string convMsisdn = (string)obj;
+                if (Utils.isGroupConversation(convMsisdn)) // if Group Conversation delete groups too
+                {
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.WorkerSupportsCancellation = true;
+                    bw.DoWork += new DoWorkEventHandler(deleteGroupsAsync);
+                    bw.RunWorkerAsync(convMsisdn);
+                }
+                MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
+                ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
+            }
+            else if (HikePubSub.DELETE_ALL_CONVERSATIONS == type)
+            {
+                MessagesTableUtils.deleteAllMessages();
+                ConversationTableUtils.deleteAllConversations();
+                foreach (string convMsisdn in ConversationsList.ConvMap.Keys)
+                {
+                    if (Utils.isGroupConversation(convMsisdn))
+                    {
+                        JObject jObj = new JObject();
+                        jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
+                        jObj[HikeConstants.TO] = convMsisdn;
+                        App.MqttManagerInstance.mqttPublishToServer(jObj);
+                    }
+                }
+                
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.WorkerSupportsCancellation = true;
+                bw.DoWork += new DoWorkEventHandler(deleteAllGroupsAsync);
+                bw.RunWorkerAsync();
+                mPubSub.publish(HikePubSub.DELETED_ALL_CONVERSATIONS, null);
+            }
             #endregion
         }
 
@@ -209,5 +250,33 @@ namespace windows_client.DbUtils
             ConversationTableUtils.updateLastMsgStatus(msisdn,status);
         }
 
+        private void deleteGroupsAsync(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            string msisdn = (string)e.Argument;
+            if ((worker.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                GroupTableUtils.deleteGroupMembersWithId(msisdn);
+                GroupTableUtils.deleteGroupWithId(msisdn);
+            }
+        }
+
+        private void deleteAllGroupsAsync(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;           
+            if ((worker.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                GroupTableUtils.deleteAllGroupMembers();
+                GroupTableUtils.deleteAllGroups();
+            }
+        }
     }
 }
