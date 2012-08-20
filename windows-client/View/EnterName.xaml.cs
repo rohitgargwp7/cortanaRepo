@@ -35,7 +35,7 @@ namespace windows_client
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             nextIconButton.Text = "done";
             nextIconButton.Click += new EventHandler(btnEnterPin_Click);
-            nextIconButton.IsEnabled = true;
+            nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterName.ApplicationBar = appBar;
 
