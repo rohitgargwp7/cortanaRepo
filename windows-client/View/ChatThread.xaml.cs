@@ -550,7 +550,10 @@ namespace windows_client.View
                         msgMap.Add(messagesList[i].MessageId, messagesList[i]);
                 }
                 else
+                {
+                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                     incomingMessages.Add(messagesList[i]);
+                }
 
                 if (cm.GrpParticipantState != ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                     this.ChatThreadPageCollection.Add(cm);
