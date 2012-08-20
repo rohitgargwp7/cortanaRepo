@@ -239,6 +239,7 @@ namespace windows_client
                 vals[1] = obj;
 
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
             }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
             {

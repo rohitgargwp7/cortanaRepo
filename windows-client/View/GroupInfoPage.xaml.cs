@@ -17,7 +17,7 @@ namespace windows_client.View
     public partial class GroupInfoPage : PhoneApplicationPage, HikePubSub.Listener
     {
         private List<GroupMembers> activeGroupMembers;
-        private ObservableCollection<GroupMembers> groupMembers = new ObservableCollection<GroupMembers>();
+        private ObservableCollection<GroupMembers> groupMembersOC = new ObservableCollection<GroupMembers>();
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
@@ -25,8 +25,8 @@ namespace windows_client.View
         public GroupInfoPage()
         {
             InitializeComponent();
-            initPageBasedOnState();
             mPubSub = App.HikePubSubInstance;
+            initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = 95;
@@ -62,14 +62,15 @@ namespace windows_client.View
             activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
             activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
             for (int i = 0; i < activeGroupMembers.Count; i++)
-                groupMembers.Add(activeGroupMembers[i]);
-            this.groupChatParticipants.ItemsSource = groupMembers;
+                groupMembersOC.Add(activeGroupMembers[i]);
+            this.groupChatParticipants.ItemsSource = groupMembersOC;
+            registerListeners();
         }
 
         #region PUBSUB
         private void registerListeners()
         {
-            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
         }
@@ -102,32 +103,65 @@ namespace windows_client.View
             else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
                 JObject json = (JObject)obj;
-                string joinedGroupId = (string)json[HikeConstants.TO];
-                if (joinedGroupId == groupId)
+                string eventGroupId = (string)json[HikeConstants.TO];
+                if (eventGroupId != groupId)
+                    return;
+                JToken participantsToken;
+                json.TryGetValue(HikeConstants.DATA, out participantsToken);
+                if (participantsToken != null)
                 {
+                    JArray j = participantsToken.ToObject<JArray>();
+                    IEnumerable<JToken> participantsList = j.Children<JToken>();
 
+                    using (var participantInfoEnumerator = participantsList.GetEnumerator())
+                    {
+                        while (participantInfoEnumerator.MoveNext())
+                        {
+                            // Do something with sequenceEnum.Current.
+                            string name = (string)participantInfoEnumerator.Current.ToObject<JObject>()[HikeConstants.NAME];
+                            string msisdn = (string)participantInfoEnumerator.Current.ToObject<JObject>()[HikeConstants.MSISDN];
+                            GroupMembers groupMembers = new GroupMembers(groupId, msisdn, name);
+                            AddUserJoinedToCollection(groupMembers);
+                        }
+                    }
                 }
-
             }
             else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
             {
                 JObject json = (JObject)obj;
-                string leaveGroupId = (string)json[HikeConstants.TO];
-                if (leaveGroupId == groupId)
+                string eventGroupId = (string)json[HikeConstants.TO];
+                if (eventGroupId != groupId)
+                    return;
+                string leaveMsisdn = (string)json[HikeConstants.DATA];
+                int i = 0;
+                for (; i < activeGroupMembers.Count; i++)
                 {
-                    string leaveMsisdn = (string)json[HikeConstants.DATA];
-                    int i = 0;
-                    for (; i < groupMembers.Count; i++)
-                    {
-                        if (groupMembers[i].Msisdn == leaveMsisdn) ;
+                    if (activeGroupMembers[i].Msisdn == leaveMsisdn)
                         break;
-                    }
-                    groupMembers.RemoveAt(i);
-                    activeGroupMembers.RemoveAt(i);
                 }
+                activeGroupMembers.RemoveAt(i);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    groupMembersOC.RemoveAt(i);
+                });
             }
         }
         #endregion
+
+        private void AddUserJoinedToCollection(GroupMembers gMembers)
+        {
+            int i = 0;
+            for (; i < activeGroupMembers.Count; i++)
+            {
+                if (Utils.CompareByName<GroupMembers>(activeGroupMembers[i], gMembers) > 0)
+                    break;
+            }
+            activeGroupMembers.Insert(i, gMembers);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                groupMembersOC.Insert(i, gMembers);
+            });
+        }
 
         #region SET GROUP PIC
 
