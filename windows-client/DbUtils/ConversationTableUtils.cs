@@ -14,9 +14,9 @@ namespace windows_client.DbUtils
         /* This function gets all the conversations shown on the message list page*/
         public static List<ConversationListObject> getAllConversations()
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring+";Max Buffer Size=1024"))
+            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring+";Max Buffer Size=1024"))
             {
-                var q = from o in context.conversations orderby o.TimeStamp descending select o;
+                var q = from o in DbCompiledQueries.chatsDbContext.conversations orderby o.TimeStamp descending select o;
                 return q.ToList();
             }           
         }

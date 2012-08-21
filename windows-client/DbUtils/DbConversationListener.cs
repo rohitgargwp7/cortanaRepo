@@ -19,7 +19,7 @@ namespace windows_client.DbUtils
         public DbConversationListener()
         {
             mPubSub = App.HikePubSubInstance;
-            //registerListeners();
+            registerListeners();
         }
 
         public void registerListeners()

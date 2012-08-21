@@ -13,15 +13,13 @@ namespace windows_client.DbUtils
 {
     public class MessagesTableUtils
     {
-        private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
+        //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
         {
-
-            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(chatsDbContext, msisdn).ToList<ConvMessage>();
-            return (res == null || res.Count == 0) ? null : res;
-          
+            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(DbCompiledQueries.chatsDbContext, msisdn).ToList<ConvMessage>();
+            return (res == null || res.Count == 0) ? null : res;          
         }
 
         /* This queries messages table and get the last message for given msisdn*/
