@@ -6,11 +6,79 @@ using windows_client.DbUtils;
 using System;
 using System.Diagnostics;
 using System;
+using System.Windows.Media;
+using System.Windows;
 
 namespace windows_client.utils
 {
     public class Utils
     {
+        public class Group<T> : IEnumerable<T>
+        {
+            public Group(string name, List<T> items)
+            {
+                this.Title = name;
+                this.Items = items;
+            }
+
+            public override bool Equals(object obj)
+            {
+                Group<T> that = obj as Group<T>;
+
+                return (that != null) && (this.Title.Equals(that.Title));
+            }
+            public override int GetHashCode()
+            {
+                return this.Title.GetHashCode();
+            }
+            public string Title
+            {
+                get;
+                set;
+            }
+
+            public List<T> Items
+            {
+                get;
+                set;
+            }
+            public bool HasItems
+            {
+                get
+                {
+                    return (Items == null || Items.Count == 0) ? false : true;
+                }
+            }
+
+            /// <summary>
+            /// This is used to colour the tiles - greying out those that have no entries
+            /// </summary>
+            public Brush GroupBackgroundBrush
+            {
+                get
+                {
+                    return (SolidColorBrush)Application.Current.Resources[(HasItems) ? "PhoneAccentBrush" : "PhoneChromeBrush"];
+                }
+            }
+            #region IEnumerable<T> Members
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                return this.Items.GetEnumerator();
+            }
+
+            #endregion
+
+            #region IEnumerable Members
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return this.Items.GetEnumerator();
+            }
+
+            #endregion
+        }
+
         private static Dictionary<string, GroupParticipant> groupCache = null;
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
@@ -39,8 +107,9 @@ namespace windows_client.utils
 
         public static void savedAccountCredentials(JObject obj)
         {
+            App.MSISDN = (string)obj["msisdn"]; 
             AccountUtils.Token = (string)obj["token"];
-            appSettings[App.MSISDN_SETTING] = (string)obj["msisdn"];
+            appSettings[App.MSISDN_SETTING] = App.MSISDN;
             appSettings[App.UID_SETTING] = (string)obj["uid"];
             appSettings[App.TOKEN_SETTING] = (string)obj["token"];
             appSettings[App.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];

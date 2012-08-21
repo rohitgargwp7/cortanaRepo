@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using windows_client.DbUtils;
 using windows_client.Model;
 using System.IO;
+using System.Windows.Media;
 
 namespace windows_client.utils
 {
@@ -12,7 +13,10 @@ namespace windows_client.utils
         private BitmapImage onHikeImage = null;
         private BitmapImage notOnHikeImage = null;
         private BitmapImage defaultAvatarBitmapImage = null;
-        
+
+        public readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 163, 210, 80));
+        public readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 27, 161, 226));
+
         private static volatile UI_Utils instance = null;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
 

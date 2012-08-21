@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -17,34 +18,86 @@
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="646"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Grid.Row="0" HorizontalAlignment="Left">
-            <Image Source="images\hike_logo_small.png" Margin="0,20,0,0" Height="34" Width="127"></Image>
-        </StackPanel>
-
-        <StackPanel>
-            <TextBlock x:Name="hikeLabel" Text="invite" FontSize="60" Height="70" Margin="22,70,0,0" Width="Auto" Foreground="Black"/>
+        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
+            <Image Source="images\hike_logo_small.png" Margin="25,20,0,0" HorizontalAlignment="Left" Height="34" Width="127"></Image>
+            <TextBlock Text="invite" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Foreground="Black" Height="80"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ListBox x:Name="inviteListBox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="26" Margin="4,15,0,0" >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
 
-                    <StackPanel Orientation="Horizontal" Margin="8,5,5,5" Height="70">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Name}" Width="250" Margin="15,0,0,0" FontSize="32" Height="40" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                            <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="16,0,0,0" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black"
+                                 TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,45"
+                          VerticalAlignment="Stretch" 
+                          HorizontalAlignment="Stretch"
+                          IsBouncy="True"
+                          IsFlatList="False" Background="White">
+                <toolkit:LongListSelector.GroupItemsPanel>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </toolkit:LongListSelector.GroupItemsPanel>
+
+                <toolkit:LongListSelector.GroupItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{Binding GroupBackgroundBrush}" Width="99" Height="99" Margin="6" 
+                                IsHitTestVisible="{Binding HasItems}">
+                            <TextBlock Text="{Binding Title}" 
+                            Style="{StaticResource PhoneTextExtraLargeStyle}"
+                            Margin="{StaticResource PhoneTouchTargetOverhang}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"                                        
+                            VerticalAlignment="Bottom"/>
+                        </Border>
+                    </DataTemplate>
+                </toolkit:LongListSelector.GroupItemTemplate>
+
+                <toolkit:LongListSelector.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Border Background="Transparent">
+                            <Border Background="{StaticResource PhoneAccentBrush}" 
+                        Width="55" Height="55" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Title}" 
+                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Style="{StaticResource PhoneTextLargeStyle}"
+                                VerticalAlignment="Bottom"/>
+                            </Border>
+                        </Border>
+                    </DataTemplate>
+                </toolkit:LongListSelector.GroupHeaderTemplate>
+                <toolkit:LongListSelector.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
+                                        <Button Visibility="{Binding InviteButtonVisible}" Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="20"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
+                                        <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
                         </StackPanel>
-                        <Button Visibility="{Binding InviteButtonVisible}" Foreground="Black" Click="inviteButton_Click" Content="invite" Width="120" Height="60" Margin="0,0,70,0" BorderBrush="Black" BorderThickness="3" HorizontalAlignment="Right" FontSize="20"/>
-                        <TextBlock Visibility="{Binding InvitedStringVisible}" FontSize="21" Text="invited" Foreground="#2e91d3"  Width="120" Height="60" Margin="30,20,0,0" HorizontalAlignment="Right"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                    </DataTemplate>
+                </toolkit:LongListSelector.ItemTemplate>
+            </toolkit:LongListSelector>
+        </Grid>
+
+        <StackPanel Grid.Row="1">
+            <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" Height="403" />
+        </StackPanel>
     </Grid>
 </phone:PhoneApplicationPage>
