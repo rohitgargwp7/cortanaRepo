@@ -30,12 +30,12 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Rectangle Name="BubbleBg" Fill="#1ba1e2" Grid.Column="1" Grid.RowSpan="2" />
+                <Rectangle Name="BubbleBg" Grid.Column="1" Grid.RowSpan="2" />
                 <local:LinkifiedTextBox Grid.Column="1" Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Margin="0,6,0,0" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStamp, Converter={StaticResource TimeConverter}, Mode=OneTime}" Foreground="#99FFFFFF" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="{StaticResource PhoneFontSizeNormal}" />
-                <Image x:Name="SDRImage" Margin="0,0,10,0" Height="20" Source="View\images\ic_read.png" Grid.Column="0" Grid.RowSpan="2"></Image>
+                <Image x:Name="SDRImage" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
             </Grid>
-            <Path Grid.Column="1" Name="BubblePoint" Fill="#1ba1e2" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" />
+            <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" />
 		</Grid>
 	</Grid>
 </local:MyChatBubble>
