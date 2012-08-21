@@ -12,7 +12,10 @@ namespace windows_client.utils
         private BitmapImage onHikeImage = null;
         private BitmapImage notOnHikeImage = null;
         private BitmapImage defaultAvatarBitmapImage = null;
-        
+        private BitmapImage sent = null;
+        private BitmapImage delivered = null;
+        private BitmapImage read = null;
+
         private static volatile UI_Utils instance = null;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
 
@@ -21,6 +24,9 @@ namespace windows_client.utils
             onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
             notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));
             defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
+            sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
+            delivered = new BitmapImage(new Uri("/View/images/ic_delivered.png", UriKind.Relative));
+            read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
         }
 
         public static UI_Utils Instance
@@ -61,6 +67,13 @@ namespace windows_client.utils
             get
             {
                 return defaultAvatarBitmapImage;
+            }
+        }
+        public BitmapImage MessageReadBitmapImage
+        {
+            get
+            {
+                return read;
             }
         }
 
