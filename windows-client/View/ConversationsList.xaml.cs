@@ -32,7 +32,7 @@ namespace windows_client.View
 
         #region Instances
 
-        public MyProgressIndicator progress = null;
+        public MyProgressIndicator progress = null; // there should be just one instance of this.
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
@@ -56,20 +56,42 @@ namespace windows_client.View
 
         public ConversationsList()
         {
+            Stopwatch stPage = Stopwatch.StartNew();
             InitializeComponent();
+            App.instantiateClasses();
+            initAppBar();
+
             convMap = new Dictionary<string, ConversationListObject>();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
-            #region Load App level instances
+           
+            mPubSub = App.HikePubSubInstance;
+            registerListeners();
+
+            #region LOAD MESSAGES
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAppInstances);
+            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
             bw.RunWorkerAsync();
 
             #endregion
-            initAppBar();
+
+            #region InitializeEmoticons
+
+            Stopwatch st = Stopwatch.StartNew();
+            SmileyParser.loadEmoticons();
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
+
+            #endregion
+
             initProfilePage();
+            stPage.Stop();
+            long tinmsec = stPage.ElapsedMilliseconds;
+            Debug.WriteLine("Conversations List Page : Total Loading time : {0}", tinmsec);
         }
 
         //Push notifications
@@ -104,13 +126,9 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
                 emptyScreenImage.Opacity = 1;
-            }
             else
-            {
                 emptyScreenImage.Opacity = 0;
-            }
         }
 
         #endregion
@@ -119,43 +137,30 @@ namespace windows_client.View
 
         private void bw_LoadAppInstances(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
+            LoadMessages();
+        }
+
+        /* This function will run on UI Thread */
+        private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled) { }
+            else if (e.Error != null) { }
             else
             {
-                mPubSub = App.HikePubSubInstance;
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                LoadMessages();
-                stopwatch.Stop();
-                long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine("Total Time to load messages: {0} ms", elapsedMilliseconds);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                    progressBar.IsEnabled = false;
-                    stopwatch = Stopwatch.StartNew();
-                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
-                    stopwatch.Stop();
-                    elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                    Debug.WriteLine("Total Time to load messages to itemsource: {0} ms", elapsedMilliseconds);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
 
-                    if (App.ViewModel.MessageListPageCollection.Count == 0)
-                    {
-                        emptyScreenImage.Opacity = 1;
-                    }
-                    else
-                    {
-                        emptyScreenImage.Opacity = 0;
-                    }
-                    appBar.Mode = ApplicationBarMode.Default;
-                    appBar.IsMenuEnabled = true;
-                    appBar.Opacity = 1;
-                });
-                App.DbListener.registerListeners();
-                registerListeners();
+                myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+
+                if (App.ViewModel.MessageListPageCollection.Count == 0)
+                    emptyScreenImage.Opacity = 1;
+                else
+                    emptyScreenImage.Opacity = 0;
+
+                appBar.Mode = ApplicationBarMode.Default;
+                appBar.IsMenuEnabled = true;
+                appBar.Opacity = 1;
+
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
@@ -164,6 +169,7 @@ namespace windows_client.View
                     Utils.requestAccountInfo();
                 }
 
+                // move to seperate thread later
                 #region PUSH NOTIFICATIONS STUFF
                 HttpNotificationChannel pushChannel;
 
@@ -210,7 +216,7 @@ namespace windows_client.View
             List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Debug.WriteLine("Time to get {0} Conversations: {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
+            Debug.WriteLine("Time to get {0} Conversations from DB : {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
             if (conversationList == null || conversationList.Count == 0)
             {
                 return;
@@ -336,7 +342,13 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
+            Stopwatch st = Stopwatch.StartNew();
             Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(App.MSISDN + "::large");
+            //byte [] _avatar = (byte [])App.appSettings[App.MSISDN];
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to fetch profile image : {0}",msec);
+
             if (profileThumbnail != null)
             {
                 MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
@@ -612,6 +624,7 @@ namespace windows_client.View
                 {
                     emptyScreenImage.Opacity = 1;
                     App.ViewModel.MessageListPageCollection.Clear();
+                    convMap.Clear();
                     progress.Hide();
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 });
