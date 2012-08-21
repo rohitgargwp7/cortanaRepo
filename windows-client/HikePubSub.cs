@@ -206,7 +206,6 @@ namespace windows_client
                 lock (listeners)  // seems not required here
                 {
                     listeners.TryGetValue(type, out list);
-                    //list = listeners[type];
                 }
                 if (list == null)
                 {
