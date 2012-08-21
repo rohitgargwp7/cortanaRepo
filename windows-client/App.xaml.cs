@@ -39,12 +39,13 @@ namespace windows_client
         public static readonly string INVITED_JOINED = "invitedJoined";
         public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
         public static readonly string GROUPS_CACHE = "GroupsCache";
-       
+
         #endregion
 
         #region Hike specific instances and functions
 
         #region instances
+        public static bool isDbCreated = false;
         public static string MSISDN;
         private static bool ab_scanned = false;
         public static bool isABScanning = false;
@@ -58,7 +59,7 @@ namespace windows_client
 
         #endregion
 
-        #region instances getters and setters
+        #region PROPERTIES
 
         public static HikeMqttManager MqttManagerInstance
         {
@@ -217,118 +218,17 @@ namespace windows_client
                 AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
                 App.MSISDN = (string)appSettings[App.MSISDN_SETTING];
             }
-
-            #region CreateDatabases
-
-            // Create the database if it does not exist.
-
-            using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
-            {
-                if (db.DatabaseExists() == false)
-                {
-                    // Create the local database.
-                    db.CreateDatabase();
-                }
-            }
-
-            using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
-            {
-                if (db.DatabaseExists() == false)
-                {
-                    // Create the local database.
-                    db.CreateDatabase();
-                }
-            }
-
-            using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
-            {
-                if (db.DatabaseExists() == false)
-                {
-                    // Create the local database.
-                    db.CreateDatabase();
-                }
-            }
-
-            #endregion
-
-            #region InitializeEmoticons
-            SmileyParser.loadEmoticons();
-            #endregion
-
-            if (!App.appSettings.Contains(App.GROUPS_CACHE))
-                App.appSettings.Add(App.GROUPS_CACHE, new Dictionary<string, GroupParticipant>());
-
-            Utils.GroupCache = (Dictionary<string, GroupParticipant>)App.appSettings[App.GROUPS_CACHE];
-            
-            App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
-            App.DbListener = new DbConversationListener();
-            App.NetworkManagerInstance = NetworkManager.Instance;
-            App.MqttManagerInstance = new HikeMqttManager();
-            App.UI_UtilsInstance = UI_Utils.Instance;
-        }
-
-        private void loadPage()
-        {
-            PageState ps = PageState.WELCOME_SCREEN;
-            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
-            Uri nUri = null;
-
-            switch (ps)
-            {
-                case PageState.WELCOME_SCREEN:
-                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
-                    break;
-                case PageState.PHONE_SCREEN:
-                    nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
-                    break;
-                case PageState.PIN_SCREEN:
-                    nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
-                    break;
-                case PageState.SETNAME_SCREEN:
-                    nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
-                    if (appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED))
-                    {
-                        ab_scanned = true;
-                    }
-                    break;
-                case PageState.CONVLIST_SCREEN:
-                    nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-                    break;
-                default:
-                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
-                    break;
-            }
-            ((App)Application.Current).RootFrame.Navigate(nUri);
-        }
-
-        public static void clearAllDatabasesAsync()
-        {
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.DoWork += new DoWorkEventHandler(clearAllDbsAsync);
-            bw.RunWorkerAsync();
-        }
-
-        private static void clearAllDbsAsync(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                MiscDBUtil.clearDatabase();
-            }
-
         }
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            Stopwatch st = Stopwatch.StartNew();
             loadPage();
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("App : Time to load page : {0}", msec);
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -382,7 +282,7 @@ namespace windows_client
             // Running on a device / emulator without debugging
             e.Handled = true;
             Error.Exception = e.ExceptionObject;
-            Debug.WriteLine("UNHANDLED EXCEPTION : {0}",e.ExceptionObject.StackTrace);
+            Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
@@ -390,36 +290,11 @@ namespace windows_client
 
         }
 
-        private void updateConversations()
-        {
-            bool shouldUpdate = false;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {
-                
-                for (int i = 0; i < App.ViewModel.ConvMsisdnsToUpdate.Count; i++)
-                {
-                    string msisdn = App.ViewModel.ConvMsisdnsToUpdate[i];
-                    if (ConversationsList.ConvMap.ContainsKey(msisdn))
-                    {
-                        ConversationListObject obj = ConversationsList.ConvMap[msisdn];
-                        IQueryable<ConversationListObject> q = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn);
-                        ConversationListObject cObj = q.FirstOrDefault();
-                        cObj.MessageStatus = obj.MessageStatus;
-                        cObj.LastMessage = obj.LastMessage;
-                        cObj.TimeStamp = obj.TimeStamp;
-                        shouldUpdate = true;
-                    }
-                }
-                if(shouldUpdate)
-                    MessagesTableUtils.SubmitWithConflictResolve(context);
-            }
-        }
-
         #region Phone application initialization
 
         // Avoid double-initialization
         private bool phoneApplicationInitialized = false;
-        
+
         // Do not add any additional code to this method
         private void InitializePhoneApplication()
         {
@@ -450,5 +325,176 @@ namespace windows_client
         }
 
         #endregion
+
+        private void loadPage()
+        {
+            PageState ps = PageState.WELCOME_SCREEN;
+            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
+            Uri nUri = null;
+
+            switch (ps)
+            {
+                case PageState.WELCOME_SCREEN:
+                    createDatabaseAsync();
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
+                case PageState.PHONE_SCREEN:
+                    createDatabaseAsync();
+                    nUri = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
+                    break;
+                case PageState.PIN_SCREEN:
+                    createDatabaseAsync();
+                    nUri = new Uri("/View/EnterPin.xaml", UriKind.Relative);
+                    break;
+                case PageState.SETNAME_SCREEN:
+                    createDatabaseAsync();
+                    nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                    if (appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED))
+                    {
+                        ab_scanned = true;
+                    }
+                    break;
+                case PageState.CONVLIST_SCREEN:
+                    nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                    break;
+                default:
+                    nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                    break;
+            }
+            ((App)Application.Current).RootFrame.Navigate(nUri);
+        }
+
+        public static void instantiateClasses()
+        {
+
+            if (!App.appSettings.Contains(App.GROUPS_CACHE))
+            {
+                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                appSettings.Add(App.GROUPS_CACHE, Utils.GroupCache);
+                appSettings.Save();
+            }
+
+            else
+                Utils.GroupCache = (Dictionary<string, GroupParticipant>)App.appSettings[App.GROUPS_CACHE];
+
+            Stopwatch st = Stopwatch.StartNew();
+            if (App.HikePubSubInstance == null)
+                App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
+
+            st.Reset();
+            st.Start();
+            if(App.DbListener == null)
+                App.DbListener = new DbConversationListener();
+            st.Stop();
+            msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
+
+            st.Reset();
+            st.Start();
+            App.NetworkManagerInstance = NetworkManager.Instance;
+            st.Stop();
+            msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
+
+            st.Reset();
+            st.Start();
+            if (App.MqttManagerInstance == null)
+                App.MqttManagerInstance = new HikeMqttManager();
+            st.Stop();
+            msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
+
+            st.Reset();
+            st.Start();
+            App.UI_UtilsInstance = UI_Utils.Instance;
+            st.Stop();
+            msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
+        }
+
+        public static void createDatabaseAsync()
+        {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += new DoWorkEventHandler(createDbsAsync);
+            bw.RunWorkerAsync();
+        }
+
+        private static void createDbsAsync(object sender, DoWorkEventArgs e)
+        {
+            // Create the database if it does not exist.
+            Stopwatch st = Stopwatch.StartNew();
+            using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
+            {
+                if (db.DatabaseExists() == false)
+                    db.CreateDatabase();
+            }
+
+            using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
+            {
+                if (db.DatabaseExists() == false)
+                    db.CreateDatabase();
+            }
+
+            using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
+            {
+                if (db.DatabaseExists() == false)
+                    db.CreateDatabase();
+            }
+            isDbCreated = true;
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
+        }
+
+        public static void clearAllDatabasesAsync()
+        {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += new DoWorkEventHandler(clearAllDbsAsync);
+            bw.RunWorkerAsync();
+        }
+
+        private static void clearAllDbsAsync(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            if ((worker.CancellationPending == true))
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                MiscDBUtil.clearDatabase();
+            }
+
+        }
+
+        private void updateConversations()
+        {
+            bool shouldUpdate = false;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+
+                for (int i = 0; i < App.ViewModel.ConvMsisdnsToUpdate.Count; i++)
+                {
+                    string msisdn = App.ViewModel.ConvMsisdnsToUpdate[i];
+                    if (ConversationsList.ConvMap.ContainsKey(msisdn))
+                    {
+                        ConversationListObject obj = ConversationsList.ConvMap[msisdn];
+                        IQueryable<ConversationListObject> q = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn);
+                        ConversationListObject cObj = q.FirstOrDefault();
+                        cObj.MessageStatus = obj.MessageStatus;
+                        cObj.LastMessage = obj.LastMessage;
+                        cObj.TimeStamp = obj.TimeStamp;
+                        shouldUpdate = true;
+                    }
+                }
+                if (shouldUpdate)
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
     }
 }
