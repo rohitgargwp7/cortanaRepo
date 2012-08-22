@@ -23,8 +23,8 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Rectangle Grid.RowSpan="2" Fill="#eeeeec" />
-                <local:LinkifiedTextBox Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Margin="0,6,0,0" />
-                <TextBlock Grid.Row="1" Text="{Binding TimeStamp, Mode=OneTime}" Foreground="#99FFFFFF" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="{StaticResource PhoneFontSizeNormal}" />
+                <local:LinkifiedTextBox Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Foreground="Black" Margin="0,6,0,0" />
+                <TextBlock Grid.Row="1" Text="{Binding TimeStamp, Mode=OneTime}" Foreground="Black" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="{StaticResource PhoneFontSizeNormal}" />
             </Grid>
         </Grid>
     </Grid>
