@@ -784,7 +784,8 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        chatBubble = new SentChatBubble(convMessage);
+                        chatBubble = new SentChatBubble(convMessage,
+                            new RoutedEventHandler(MenuItem_Click_Copy), new RoutedEventHandler(MenuItem_Click_Forward));
                         if (convMessage.MessageId != -1)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else
@@ -792,7 +793,8 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage);
+                        chatBubble = new ReceivedChatBubble(convMessage, 
+                            new RoutedEventHandler(MenuItem_Click_Copy), new RoutedEventHandler(MenuItem_Click_Forward));
                     }
                     if (addToLast)
                     {
@@ -958,68 +960,20 @@ namespace windows_client.View
         #endregion
 
         #region CONTEXT MENU
+        //TODO - 1) replace click events with tap
+        // 2) Add delete event
+        private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
+        {
+            MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
+            PhoneApplicationService.Current.State["forwardedText"] = chatBubble.Text;
+            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+        }
 
-        //private void MenuItem_Tap_Copy(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
-
-        //    if (selectedListBoxItem == null)
-        //    {
-        //        return;
-        //    }
-        //    ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
-        //    Clipboard.SetText(msg.Message);
-        //}
-
-        //private void MenuItem_Tap_Forward(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
-
-        //    if (selectedListBoxItem == null)
-        //    {
-        //        return;
-        //    }
-        //    ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
-        //    PhoneApplicationService.Current.State["forwardedText"] = msg.Message;
-        //    NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
-        //}
-
-        //private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
-
-        //    if (selectedListBoxItem == null)
-        //    {
-        //        return;
-        //    }
-        //    bool delConv = false;
-        //    ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
-
-        //    //update Conversation list class
-        //    this.ChatThreadPageCollection.Remove(msg);
-
-        //    ConversationListObject obj = ConversationsList.ConvMap[msg.Msisdn];
-        //    /* Remove the message from conversation list */
-        //    if (this.ChatThreadPageCollection.Count > 0)
-        //    {
-        //        //This updates the Conversation list.
-        //        obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Message;
-        //        obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
-        //        obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Timestamp;
-        //    }
-        //    else
-        //    {
-        //        // no message is left, simply remove the object from Conversation list 
-        //        App.ViewModel.MessageListPageCollection.Remove(obj);
-        //        ConversationsList.ConvMap.Remove(msg.Msisdn);
-        //        delConv = true;
-        //    }
-        //    object[] o = new object[3];
-        //    o[0] = msg.MessageId;
-        //    o[1] = obj;
-        //    o[2] = delConv;
-        //    mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
-        //}
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        {
+            MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
+            Clipboard.SetText(chatBubble.Text);
+        }
 
         #endregion
 

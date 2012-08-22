@@ -9,9 +9,13 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using windows_client.Model;
 
-namespace windows_client.Controls {
-    public partial class ReceivedChatBubble : MyChatBubble {
-        public ReceivedChatBubble(ConvMessage cm) {
+namespace windows_client.Controls
+{
+    public partial class ReceivedChatBubble : MyChatBubble
+    {
+        public ReceivedChatBubble(ConvMessage cm, RoutedEventHandler copyClick, RoutedEventHandler forwardClick)
+            : base(copyClick, forwardClick)
+        {
             // Required to initialize variables
             InitializeComponent();
             this.Text = cm.Message;

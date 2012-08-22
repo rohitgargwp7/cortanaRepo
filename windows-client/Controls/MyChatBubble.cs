@@ -9,6 +9,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+using System.Windows.Navigation;
 
 namespace windows_client.Controls
 {
@@ -31,19 +33,47 @@ namespace windows_client.Controls
             }
         }
 
-        public MyChatBubble() {
-            // Create context menu
-            //ContextMenu menu = new ContextMenu();
-            //menu.IsZoomEnabled = false;
-
-            //MenuItem copy = new MenuItem();
-            //copy.Header = "copy";
-            //copy.Click += (s, e) => {
-            //    System.Windows.Clipboard.SetText(Text);
-            //};
-
-            //menu.Items.Add(copy);
-            //ContextMenuService.SetContextMenu(this, menu);
+        public MyChatBubble() 
+        {
         }
+
+        public MyChatBubble(RoutedEventHandler copyClick, RoutedEventHandler forwardClick)
+        {
+            ContextMenu menu = new ContextMenu();
+            menu.IsZoomEnabled = false;
+
+            MenuItem copy = new MenuItem();
+            copy.Header = "copy";
+            copy.Click += copyClick;
+            menu.Items.Add(copy);
+            ContextMenuService.SetContextMenu(this, menu);
+
+            MenuItem forward = new MenuItem();
+            forward.Header = "forward";
+            forward.Click += forwardClick;
+            menu.Items.Add(forward);
+            ContextMenuService.SetContextMenu(this, menu);
+        
+        }
+
+        void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = (sender is MyChatBubble);
+            int i = 32;
+            i++;
+        }
+
+
+        void MenuItem_Tap_Copy(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Clipboard.SetText(this.Text);
+        }
+
+        //private void MenuItem_Tap_Forward(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    PhoneApplicationService.Current.State["forwardedText"] = this.Text;
+        //    NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Absolute));
+        //}
+
     }
 }
