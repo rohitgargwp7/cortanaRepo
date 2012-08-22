@@ -282,7 +282,7 @@ namespace windows_client.View
             if (obj == null)
                 return;
             PhoneApplicationService.Current.State["objFromConversationPage"] = obj;
-            string uri = "/View/ChatThread.xaml";
+            string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
