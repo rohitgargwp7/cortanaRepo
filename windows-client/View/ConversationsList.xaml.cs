@@ -32,7 +32,7 @@ namespace windows_client.View
 
         #region Instances
 
-        public MyProgressIndicator progress = null;
+        public MyProgressIndicator progress = null; // there should be just one instance of this.
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
@@ -56,20 +56,42 @@ namespace windows_client.View
 
         public ConversationsList()
         {
+            Stopwatch stPage = Stopwatch.StartNew();
             InitializeComponent();
+            App.instantiateClasses();
+            initAppBar();
+
             convMap = new Dictionary<string, ConversationListObject>();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
-            #region Load App level instances
+           
+            mPubSub = App.HikePubSubInstance;
+            registerListeners();
+
+            #region LOAD MESSAGES
 
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.DoWork += new DoWorkEventHandler(bw_LoadAppInstances);
+            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
             bw.RunWorkerAsync();
 
             #endregion
-            initAppBar();
+
+            #region InitializeEmoticons
+
+            Stopwatch st = Stopwatch.StartNew();
+            SmileyParser.loadEmoticons();
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
+
+            #endregion
+
             initProfilePage();
+            stPage.Stop();
+            long tinmsec = stPage.ElapsedMilliseconds;
+            Debug.WriteLine("Conversations List Page : Total Loading time : {0}", tinmsec);
         }
 
         //Push notifications
@@ -104,13 +126,9 @@ namespace windows_client.View
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
                 emptyScreenImage.Opacity = 1;
-            }
             else
-            {
                 emptyScreenImage.Opacity = 0;
-            }
         }
 
         #endregion
@@ -119,43 +137,30 @@ namespace windows_client.View
 
         private void bw_LoadAppInstances(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
+            LoadMessages();
+        }
+
+        /* This function will run on UI Thread */
+        private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled) { }
+            else if (e.Error != null) { }
             else
             {
-                mPubSub = App.HikePubSubInstance;
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                LoadMessages();
-                stopwatch.Stop();
-                long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                Debug.WriteLine("Total Time to load messages: {0} ms", elapsedMilliseconds);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                    progressBar.IsEnabled = false;
-                    stopwatch = Stopwatch.StartNew();
-                    myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
-                    stopwatch.Stop();
-                    elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                    Debug.WriteLine("Total Time to load messages to itemsource: {0} ms", elapsedMilliseconds);
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
 
-                    if (App.ViewModel.MessageListPageCollection.Count == 0)
-                    {
-                        emptyScreenImage.Opacity = 1;
-                    }
-                    else
-                    {
-                        emptyScreenImage.Opacity = 0;
-                    }
-                    appBar.Mode = ApplicationBarMode.Default;
-                    appBar.IsMenuEnabled = true;
-                    appBar.Opacity = 1;
-                });
-                App.DbListener.registerListeners();
-                registerListeners();
+                myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+
+                if (App.ViewModel.MessageListPageCollection.Count == 0)
+                    emptyScreenImage.Opacity = 1;
+                else
+                    emptyScreenImage.Opacity = 0;
+
+                appBar.Mode = ApplicationBarMode.Default;
+                appBar.IsMenuEnabled = true;
+                appBar.Opacity = 1;
+
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
@@ -164,6 +169,7 @@ namespace windows_client.View
                     Utils.requestAccountInfo();
                 }
 
+                // move to seperate thread later
                 #region PUSH NOTIFICATIONS STUFF
                 HttpNotificationChannel pushChannel;
 
@@ -210,7 +216,7 @@ namespace windows_client.View
             List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Debug.WriteLine("Time to get {0} Conversations: {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
+            Debug.WriteLine("Time to get {0} Conversations from DB : {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
             if (conversationList == null || conversationList.Count == 0)
             {
                 return;
@@ -301,6 +307,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
+            mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }
 
         private void removeListeners()
@@ -314,6 +321,7 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
+            mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }
 
         #endregion
@@ -334,7 +342,13 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
+            Stopwatch st = Stopwatch.StartNew();
             Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(App.MSISDN + "::large");
+            //byte [] _avatar = (byte [])App.appSettings[App.MSISDN];
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to fetch profile image : {0}",msec);
+
             if (profileThumbnail != null)
             {
                 MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
@@ -420,17 +434,8 @@ namespace windows_client.View
             disableAppBar();
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
-            App.MqttManagerInstance.disconnectFromBroker(false);
-            ConversationTableUtils.deleteAllConversations();
-            MessagesTableUtils.deleteAllMessages();
-            convMap.Clear();
-
-            App.ViewModel.MessageListPageCollection.Clear();
-            emptyScreenImage.Opacity = 1;
-            progressBar.Visibility = System.Windows.Visibility.Collapsed;
-            progressBar.IsEnabled = false;
-            enableAppBar();
-            App.MqttManagerInstance.connect();
+            NetworkManager.turnOffNetworkManager = true;
+            mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
         }
 
         #region Delete Account
@@ -472,7 +477,7 @@ namespace windows_client.View
 
         private void createGroup_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true; 
+            PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
@@ -493,7 +498,7 @@ namespace windows_client.View
                 return;
             }
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
-            if(convObj != null)
+            if (convObj != null)
                 deleteConversation(convObj);
         }
 
@@ -505,18 +510,15 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 1;
             }
-            ConversationTableUtils.deleteConversation(convObj.Msisdn); // removed entry from conversation table
-            MessagesTableUtils.deleteAllMessagesForMsisdn(convObj.Msisdn); //removed all chat messages for this msisdn
-            if (Utils.isGroupConversation(convObj.Msisdn))
+
+            if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
             {
                 JObject jObj = new JObject();
                 jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
                 jObj[HikeConstants.TO] = convObj.Msisdn;
-
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
-                GroupTableUtils.deleteGroupMembersWithId(convObj.Msisdn);
-                GroupTableUtils.deleteGroupWithId(convObj.Msisdn);
             }
+            mPubSub.publish(HikePubSub.DELETE_CONVERSATION, convObj.Msisdn);
         }
 
         private void inviteUsers_Click(object sender, EventArgs e)
@@ -536,7 +538,7 @@ namespace windows_client.View
             if (selectedIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Insert(1,delConvsMenu);
+                    appBar.MenuItems.Insert(1, delConvsMenu);
                 if (appBar.MenuItems.Contains(delAccountMenu))
                     appBar.MenuItems.Remove(delAccountMenu);
             }
@@ -545,7 +547,7 @@ namespace windows_client.View
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
                 if (!appBar.MenuItems.Contains(delAccountMenu))
-                    appBar.MenuItems.Insert(0,delAccountMenu);
+                    appBar.MenuItems.Insert(0, delAccountMenu);
             }
         }
 
@@ -622,9 +624,23 @@ namespace windows_client.View
                 {
                     emptyScreenImage.Opacity = 1;
                     App.ViewModel.MessageListPageCollection.Clear();
+                    convMap.Clear();
                     progress.Hide();
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 });
+            }
+            else if (HikePubSub.DELETED_ALL_CONVERSATIONS == type)
+            {
+                convMap.Clear();
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    App.ViewModel.MessageListPageCollection.Clear();
+                    emptyScreenImage.Opacity = 1;
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                    enableAppBar();
+                });
+                NetworkManager.turnOffNetworkManager = false;
             }
 
             #region GROUP NAME CHANGED

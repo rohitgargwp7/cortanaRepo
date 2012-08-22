@@ -71,7 +71,6 @@ namespace windows_client.Model
     }
 
     [Table(Name = "thumbnails")]
-    [Index(Columns = "Msisdn", IsUnique = false, Name = "Thumbnail_Idx")]
     public class Thumbnails : INotifyPropertyChanged, INotifyPropertyChanging
     {
         #region members
@@ -103,7 +102,7 @@ namespace windows_client.Model
         }
 
 
-        [Column(DbType="image", CanBeNull = false)]
+        [Column(DbType="image", CanBeNull = true)]
         public byte[] Avatar
         {
             get
@@ -134,6 +133,7 @@ namespace windows_client.Model
         }
 
         #endregion
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -5,8 +5,11 @@ using System.Data.Linq;
 
 namespace windows_client.DbUtils
 {
-    public static class DbCompiledQueries
+    public class DbCompiledQueries
     {
+        public static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring);
+        public static HikeUsersDb usersDbContext = new HikeUsersDb(App.UsersDBConnectionstring);
+
         #region GroupTable Queries
 
         public static Func<HikeChatsDb, string, string, IQueryable<GroupMembers>> GetGroupMembers

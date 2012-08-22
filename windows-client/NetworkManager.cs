@@ -134,8 +134,8 @@ namespace windows_client
                     //logger.Info("NETWORK MANAGER", "Exception occured while parsing msgId. Exception : " + e);
                     msgID = -1;
                 }
-                updateDB(msgID, (int)ConvMessage.State.SENT_CONFIRMED);
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
+                updateDB(msgID, (int)ConvMessage.State.SENT_CONFIRMED);
             }
             else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
             {
@@ -151,8 +151,8 @@ namespace windows_client
                     msgID = -1;
                 }
                 //logger.Info("NETWORK MANAGER", "Delivery report received for msgid : " + msgID + "	;	REPORT : DELIVERED");
-                updateDB(msgID, (int)ConvMessage.State.SENT_DELIVERED);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, msgID);
+                updateDB(msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
             else if (MESSAGE_READ == type) // Message read by recipient
             {

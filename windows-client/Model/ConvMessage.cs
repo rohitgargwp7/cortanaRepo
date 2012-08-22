@@ -565,7 +565,12 @@ namespace windows_client.Model
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                        try
+                        {
+                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                        }
+                        catch (Exception e)
+                        { }
                     });
             }
         }
@@ -581,7 +586,12 @@ namespace windows_client.Model
         {
             if (PropertyChanging != null)
             {
-                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                try
+                {
+                    PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                }
+                catch (Exception)
+                { }
             }
         }
         #endregion

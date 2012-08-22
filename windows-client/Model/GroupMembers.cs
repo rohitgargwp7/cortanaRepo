@@ -27,10 +27,7 @@ namespace windows_client.Model
         bool _hasLeft;
 
         //TODO move all colors in a a single file
-        private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 163, 210, 80));
-        private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 27, 161, 226));
-
-
+       
         [Column(IsVersion = true)]
         private Binary version;
 
@@ -119,9 +116,9 @@ namespace windows_client.Model
             {
                 if (Utils.getGroupParticipant(Name, Msisdn).IsOnHike)
                 {
-                    return hikeMsgBackground;
+                    return UI_Utils.hikeMsgBackground;
                 }
-                return smsBackground;
+                return UI_Utils.smsBackground;
             }
         }
 

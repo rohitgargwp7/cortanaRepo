@@ -355,29 +355,34 @@ namespace windows_client.Mqtt
             if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
             {
                 JObject json = (JObject)obj;
-                JToken data;
-                json.TryGetValue(HikeConstants.TYPE, out data);
-                string objType = data.ToString();
-                json.TryGetValue("d", out data);
-                JObject dataObj;
-                int msgId;
-
-                if (objType == NetworkManager.MESSAGE)
-                {
-                    dataObj = JObject.FromObject(data);
-                    JToken messageIdToken;
-                    dataObj.TryGetValue("i", out messageIdToken);
-                    msgId = Convert.ToInt32(messageIdToken.ToString());
-                }
-                else
-                {
-                    msgId = -1;
-                }
-                String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
-                byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
-                HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
-                send(packet, 1);
+                mqttPublishToServer(json);
             }
+        }
+
+        public void mqttPublishToServer(JObject json)
+        {
+            JToken data;
+            json.TryGetValue(HikeConstants.TYPE, out data);
+            string objType = data.ToString();
+            json.TryGetValue("d", out data);
+            JObject dataObj;
+            int msgId;
+
+            if (objType == NetworkManager.MESSAGE)
+            {
+                dataObj = JObject.FromObject(data);
+                JToken messageIdToken;
+                dataObj.TryGetValue("i", out messageIdToken);
+                msgId = Convert.ToInt32(messageIdToken.ToString());
+            }
+            else
+            {
+                msgId = -1;
+            }
+            String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
+            byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
+            HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
+            send(packet, 1);
         }
 
     }

@@ -7,6 +7,21 @@ namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged
     {
+        private List<string> _convMsisdnsToUpdate = new List<string>();
+
+        public List<string> ConvMsisdnsToUpdate
+        {
+            get
+            {
+                return _convMsisdnsToUpdate;
+            }
+            set
+            {
+                if (value != _convMsisdnsToUpdate)
+                    _convMsisdnsToUpdate = value;
+            }
+        }
+
         private ObservableCollection<ConversationListObject> _messageListPageCollection = new ObservableCollection<ConversationListObject>();
 
         public ObservableCollection<ConversationListObject> MessageListPageCollection

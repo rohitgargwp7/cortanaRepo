@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
-using System.Collections.Generic;
-using windows_client.DbUtils;
-using windows_client.Model;
-using System.IO;
 using System.Windows.Media;
 using System.Windows.Documents;
 using System.Text.RegularExpressions;

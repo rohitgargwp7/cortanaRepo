@@ -44,7 +44,7 @@ namespace windows_client.DbUtils
 
         public static void addContacts(List<ContactInfo> contacts)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring+"; Max Buffer Size = 2048"))
             {
                 context.users.InsertAllOnSubmit(contacts);
                 context.SubmitChanges();

@@ -146,6 +146,8 @@ namespace windows_client.utils
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
 
+            while (!App.isDbCreated)
+                Thread.Sleep(50);
             if (addressbook != null)
             {
                 UsersTableUtils.deleteAllContacts();

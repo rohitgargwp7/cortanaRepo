@@ -35,7 +35,7 @@ namespace windows_client
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             nextIconButton.Text = "done";
             nextIconButton.Click += new EventHandler(btnEnterPin_Click);
-            nextIconButton.IsEnabled = true;
+            nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterName.ApplicationBar = appBar;
 
@@ -86,12 +86,11 @@ namespace windows_client
             App.appSettings[App.ACCOUNT_NAME] = ac_name;
             App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
             App.appSettings.Save();
-
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             {
                 enterNameBtn.Text = "Getting you in";
-                Thread.Sleep(3 * 1000);
+                Thread.Sleep(2 * 1000);
                 PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
                 NavigationService.Navigate(nextPage);
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;

@@ -326,7 +326,12 @@ namespace windows_client.Model
         {
             if (PropertyChanging != null)
             {
-                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                try
+                {
+                    PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                }
+                catch (Exception)
+                { }
             }
         }
         #endregion
