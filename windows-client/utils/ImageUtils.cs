@@ -14,7 +14,7 @@ namespace windows_client.utils
         public static readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         public static readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
         public static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
-        public static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 177, 224, 251));
+        public static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
 
         private BitmapImage onHikeImage = null;
         private BitmapImage notOnHikeImage = null;
