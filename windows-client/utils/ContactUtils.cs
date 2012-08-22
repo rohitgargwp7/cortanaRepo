@@ -155,8 +155,7 @@ namespace windows_client.utils
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 UsersTableUtils.addBlockList(blockList);
                 App.Ab_scanned = true;
-                App.appSettings[App.IS_ADDRESS_BOOK_SCANNED] = true;
-                App.appSettings.Save();
+                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED,true);
             }
         }
 

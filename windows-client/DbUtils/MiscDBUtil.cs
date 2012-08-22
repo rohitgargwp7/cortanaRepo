@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data.Linq;
 using System.Diagnostics;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.DbUtils
 {

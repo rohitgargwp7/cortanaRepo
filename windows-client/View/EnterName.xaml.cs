@@ -22,9 +22,8 @@ namespace windows_client
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
-            App.appSettings[App.PAGE_STATE] = App.PageState.SETNAME_SCREEN;
-            App.appSettings.Save();
-
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
+           
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
@@ -83,9 +82,10 @@ namespace windows_client
                 return;
             }
 
-            App.appSettings[App.ACCOUNT_NAME] = ac_name;
-            App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
-            App.appSettings.Save();
+            //TODO :: Make WriteToIsolatedStorage in such a way that it takes list of key value pairs and save just once.
+            App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             {

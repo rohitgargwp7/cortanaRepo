@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
+using System.Collections;
 
 namespace windows_client.View
 {
@@ -32,6 +33,7 @@ namespace windows_client.View
 
         #region Instances
 
+        private bool firstLoad = true;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
@@ -58,36 +60,7 @@ namespace windows_client.View
         {
             Stopwatch stPage = Stopwatch.StartNew();
             InitializeComponent();
-            App.instantiateClasses();
-            initAppBar();
-
-            convMap = new Dictionary<string, ConversationListObject>();
-            progressBar.Visibility = System.Windows.Visibility.Visible;
-            progressBar.IsEnabled = true;
-           
-            mPubSub = App.HikePubSubInstance;
-            registerListeners();
-
-            #region LOAD MESSAGES
-
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.DoWork += new DoWorkEventHandler(bw_LoadAppInstances);
-            bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
-            bw.RunWorkerAsync();
-
-            #endregion
-
-            #region InitializeEmoticons
-
-            Stopwatch st = Stopwatch.StartNew();
-            SmileyParser.loadEmoticons();
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
-
-            #endregion
-
+            initAppBar();           
             initProfilePage();
             stPage.Stop();
             long tinmsec = stPage.ElapsedMilliseconds;
@@ -125,6 +98,35 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            if (firstLoad)
+            {
+                App.instantiateClasses();
+                convMap = new Dictionary<string, ConversationListObject>();
+                progressBar.Visibility = System.Windows.Visibility.Visible;
+                progressBar.IsEnabled = true;
+                mPubSub = App.HikePubSubInstance;
+                registerListeners();
+                #region LOAD MESSAGES
+
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.WorkerSupportsCancellation = true;
+                bw.DoWork += new DoWorkEventHandler(bw_LoadAppInstances);
+                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
+                bw.RunWorkerAsync();
+
+                #endregion
+
+                #region InitializeEmoticons
+
+                Stopwatch st = Stopwatch.StartNew();
+                SmileyParser.loadEmoticons();
+                firstLoad = false;
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
+
+                #endregion
+            }
             if (App.ViewModel.MessageListPageCollection.Count == 0)
                 emptyScreenImage.Opacity = 1;
             else
@@ -213,7 +215,17 @@ namespace windows_client.View
         private static void LoadMessages()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
+            List<ConversationListObject> conversationList = new List<ConversationListObject>();
+            foreach (var key in App.appSettings.Keys)
+            {
+                string k = key.ToString();
+                if (k.StartsWith("CONV::"))
+                {
+                    ConversationListObject co =  (ConversationListObject)App.appSettings[k];
+                    conversationList.Add(co);
+                }
+            }
+            //List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             Debug.WriteLine("Time to get {0} Conversations from DB : {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
@@ -343,15 +355,15 @@ namespace windows_client.View
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Stopwatch st = Stopwatch.StartNew();
-            Thumbnails profileThumbnail = MiscDBUtil.getThumbNailForMSisdn(App.MSISDN + "::large");
-            //byte [] _avatar = (byte [])App.appSettings[App.MSISDN];
+            byte [] _avatar = null;
+            App.appSettings.TryGetValue(HikeConstants.MY_PROFILE_PIC,out _avatar);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to fetch profile image : {0}",msec);
 
-            if (profileThumbnail != null)
+            if (_avatar != null)
             {
-                MemoryStream memStream = new MemoryStream(profileThumbnail.Avatar);
+                MemoryStream memStream = new MemoryStream(_avatar);
                 memStream.Seek(0, SeekOrigin.Begin);
 
                 BitmapImage empImage = new BitmapImage();
@@ -372,7 +384,6 @@ namespace windows_client.View
             buffer = msSmallImage.ToArray();
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
-
             object[] vals = new object[3];
             vals[0] = App.MSISDN;
             vals[1] = msSmallImage;

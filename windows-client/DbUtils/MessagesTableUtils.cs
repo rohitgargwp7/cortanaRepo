@@ -137,8 +137,8 @@ namespace windows_client.DbUtils
                 obj.LastMessage = convMsg.Message;
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
-                
-                App.ViewModel.ConvMsisdnsToUpdate.Add(convMsg.Msisdn);
+                App.WriteToIsoStorageSettings("CONV::" + convMsg.Msisdn,obj);
+                //App.ViewModel.ConvMsisdnsToUpdate.Add(convMsg.Msisdn);
                 //ConversationTableUtils.updateConversation(obj);
             }
             Stopwatch st1 = Stopwatch.StartNew();

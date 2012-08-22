@@ -80,8 +80,8 @@ namespace windows_client
                 return;
             }
             /*If all well*/
-            App.appSettings[App.MSISDN_SETTING] = unauthedMSISDN;
-            App.appSettings.Save();
+            App.WriteToIsoStorageSettings(App.MSISDN_SETTING, unauthedMSISDN);
+           
             Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 

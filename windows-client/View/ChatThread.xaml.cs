@@ -292,6 +292,10 @@ namespace windows_client.View
             {
                 GroupMembers gm = new GroupMembers(mContactNumber, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
                 groupMemberList.Add(gm);
+                if (Utils.GroupCache == null)
+                {
+                    Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                }
                 if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
                 {
                     Utils.GroupCache.Add(contactsForGroup[i].Msisdn, new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
@@ -1340,8 +1344,7 @@ namespace windows_client.View
                             animatedOnce = false;
                         if (!animatedOnce)
                         {
-                            App.appSettings[HikeConstants.Extras.ANIMATED_ONCE] = true;
-                            App.appSettings.Save();
+                            App.WriteToIsoStorageSettings(HikeConstants.Extras.ANIMATED_ONCE, true);
                         }
                     }
 

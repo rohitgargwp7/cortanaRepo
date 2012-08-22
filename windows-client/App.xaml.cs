@@ -57,6 +57,8 @@ namespace windows_client
         private static UI_Utils ui_utils;
         private static Dictionary<string, GroupParticipant> groupsCache = null;
 
+        private static object lockObj = new object();
+
         #endregion
 
         #region PROPERTIES
@@ -243,8 +245,9 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             updateConversations();
-            App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
-            App.appSettings.Save();
+            if (Utils.GroupCache == null)
+                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -252,8 +255,9 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             updateConversations();
-            App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
-            App.appSettings.Save();
+            if (Utils.GroupCache == null)
+                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
         // Code to execute if a navigation fails
@@ -370,8 +374,7 @@ namespace windows_client
             if (!App.appSettings.Contains(App.GROUPS_CACHE))
             {
                 Utils.GroupCache = new Dictionary<string, GroupParticipant>();
-                appSettings.Add(App.GROUPS_CACHE, Utils.GroupCache);
-                appSettings.Save();
+                WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             }
 
             else
@@ -486,6 +489,8 @@ namespace windows_client
                         ConversationListObject obj = ConversationsList.ConvMap[msisdn];
                         IQueryable<ConversationListObject> q = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn);
                         ConversationListObject cObj = q.FirstOrDefault();
+                        if (cObj == null)
+                            return;
                         cObj.MessageStatus = obj.MessageStatus;
                         cObj.LastMessage = obj.LastMessage;
                         cObj.TimeStamp = obj.TimeStamp;
@@ -494,6 +499,19 @@ namespace windows_client
                 }
                 if (shouldUpdate)
                     MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        /* This function should always be used to store values to isolated storage
+         * Its a thread safe implemenatation to save values.
+         * */
+
+        public static void WriteToIsoStorageSettings(string key, object value)
+        {
+            lock (lockObj)
+            {
+                appSettings[key] = value;
+                appSettings.Save();
             }
         }
     }

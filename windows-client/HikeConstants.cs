@@ -73,6 +73,7 @@ namespace windows_client
         public static string GROUP_NAME_FROM_CHATTHREAD = "groupNameFromChatThreadPage";
         public static string GROUP_CHAT = "groupChat";
         public static string IS_NEW_INSTALLATION = "is_new_installation";
+        public static string MY_PROFILE_PIC = "my_profile_pic";
 
         public static class Extras
         {

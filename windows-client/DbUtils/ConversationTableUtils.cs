@@ -71,11 +71,13 @@ namespace windows_client.DbUtils
                 obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                     contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail == null ? null : thumbnail.Avatar, convMessage.MessageStatus);
             }
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            App.WriteToIsoStorageSettings("CONV::" + convMessage.Msisdn, obj);
+            
+            /*using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {              
                     context.conversations.InsertOnSubmit(obj);
                     context.SubmitChanges();
-            }
+            }*/
             return obj;
         }
 
