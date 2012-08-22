@@ -57,7 +57,7 @@ namespace windows_client.Controls
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
-        public void SetSDRImage(ConvMessage.State msgState)
+        public void SetSentMessageStatus(ConvMessage.State msgState)
         {
 
             if ((int)messageState < (int)msgState)
