@@ -7,6 +7,7 @@ using System;
 using windows_client.utils;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
+using windows_client.Controls;
 
 namespace windows_client.DbUtils
 {
@@ -58,13 +59,20 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    var currentPage = ((App)Application.Current).RootFrame.Content as ChatThread;
+                    var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                     if (currentPage != null)
                     {
                         if (convMessage.IsSent)
-                            currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
-                        else
-                            currentPage.IncomingMessages.Add(convMessage);
+                        {
+                            SentChatBubble sentChatBubble;
+                            currentPage.ConvMessageSentBubbleMap.TryGetValue(convMessage, out sentChatBubble);
+                            currentPage.ConvMessageSentBubbleMap.Remove(convMessage);
+                            currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                        }
+                        //if (convMessage.IsSent)
+                        //    currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
+                        //else
+                        //    currentPage.IncomingMessages.Add(convMessage);
                     }
                 });
             }
