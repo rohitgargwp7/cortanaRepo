@@ -17,12 +17,13 @@ namespace windows_client.Controls
 {
     public partial class SentChatBubble : MyChatBubble {
         private SolidColorBrush bubbleColor;
+        private ConvMessage.State messageState;
         public SentChatBubble(ConvMessage cm) 
         {
             // Required to initialize variables
             InitializeComponent();
 
-            this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
+//            this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
             this.Text = cm.Message;
             this.TimeStamp = DateTime.Now;
             //IsSms is false for group chat
@@ -34,12 +35,46 @@ namespace windows_client.Controls
             {
                 bubbleColor = UI_Utils.hikeMsgBackground;
             }
+            switch (cm.MessageStatus)
+            { 
+                case ConvMessage.State.SENT_CONFIRMED:
+                    this.SDRImage.Source = UI_Utils.Instance.MessageSentBitmapImage;
+                    break;
+                case ConvMessage.State.SENT_DELIVERED:
+                    this.SDRImage.Source = UI_Utils.Instance.MessageDeliveredBitmapImage;
+                    break;
+                case ConvMessage.State.SENT_DELIVERED_READ:
+                    this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
+                    break;
+                default:
+                    break;
+
+            }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
-        public void SetSDRImage(BitmapImage bm)
+        public void SetSDRImage(ConvMessage.State msgState)
         {
-            this.SDRImage.Source = bm;
+
+            if ((int)messageState < (int)msgState)
+            {
+                messageState = msgState;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    switch (messageState)
+                    { 
+                        case ConvMessage.State.SENT_CONFIRMED:
+                            this.SDRImage.Source = UI_Utils.Instance.MessageSentBitmapImage;
+                            break;
+                        case ConvMessage.State.SENT_DELIVERED:
+                            this.SDRImage.Source = UI_Utils.Instance.MessageDeliveredBitmapImage;
+                            break;
+                        case ConvMessage.State.SENT_DELIVERED_READ:
+                            this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
+                            break;
+                    }
+                });
+            }
         }
     }
 }
