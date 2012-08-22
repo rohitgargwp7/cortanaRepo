@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using windows_client.Utilities;
+using windows_client.utils;
 
 namespace windows_client.Controls
 {
@@ -21,7 +21,7 @@ namespace windows_client.Controls
 
         private void ChangedText(DependencyPropertyChangedEventArgs e) {
             if (e.OldValue != e.NewValue) {
-                Paragraph richtext = TextBoxHelper.Linkify((string) e.NewValue);
+                Paragraph richtext = UI_Utils.Linkify((string) e.NewValue);
                 RichText.Blocks.Add(richtext);
             }
         }
