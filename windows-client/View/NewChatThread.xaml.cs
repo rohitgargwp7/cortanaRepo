@@ -129,20 +129,6 @@ namespace windows_client.View
                 return _convMessageSentBubbleMap;
             }
         }
-
-        //public ObservableCollection<ConvMessage> ChatThreadPageCollection
-        //{
-        //    get
-        //    {
-        //        return chatThreadPageCollection;
-        //    }
-        //    set
-        //    {
-        //        chatThreadPageCollection = value;
-        //        NotifyPropertyChanged("ChatThreadPageCollection");
-        //    }
-        //}
-
         #endregion
 
         #region PAGE BASED FUNCTIONS
@@ -410,7 +396,7 @@ namespace windows_client.View
 
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
-            sendIconButton.IconUri = new Uri("/View/images/send_button.png", UriKind.Relative);
+            sendIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
             sendIconButton.Text = "send";
             sendIconButton.Click += new EventHandler(sendMsgBtn_Click);
             sendIconButton.IsEnabled = true;
@@ -530,8 +516,6 @@ namespace windows_client.View
             int limit = 6;
             bool isPublish = false;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
-            //int messageCount = messagesList == null ? 0 : messagesList.Count;
-
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -556,18 +540,6 @@ namespace windows_client.View
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
                 AddMessageToUI(messagesList[i], true);
-
-                
-                //if (cm.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                //    this.ChatThreadPageCollection.Add(cm);
-                //else
-                //{
-                //    ConvMessage[] cArr = Utils.splitUserJoinedMessage(cm);
-                //    for (int ij = 0; ij < cArr.Length; ij++)
-                //    {
-                //        this.ChatThreadPageCollection.Add(cArr[ij]);
-                //    }
-                //}
             }
 
             int count = 0;
@@ -913,7 +885,7 @@ namespace windows_client.View
             sendMsg(convMessage, false);
         }
 
-        public static string[] splitUserJoinedMessage(ConvMessage convMessage)
+        private string[] splitUserJoinedMessage(ConvMessage convMessage)
         {
             string[] names = null;
             string[] tokens = null;
@@ -988,15 +960,6 @@ namespace windows_client.View
         {
             int selectedIndex = optionsList.SelectedIndex;
             emoticonPivot.SelectedIndex = selectedIndex;
-            //if (selectedIndex == 1)
-            //{
-            //    emotList1.Visibility = Visibility.Visible;
-            //}
-            //else if (selectedIndex == 2)
-            //{
-            //    emotList2.Visibility = Visibility.Visible;
-            //}
-
         }
 
         private void emoticonButton_Click(object sender, EventArgs e)
@@ -1016,61 +979,6 @@ namespace windows_client.View
 
         }
 
-        private void RichTextBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            var richTextBox = sender as RichTextBox;
-            if (richTextBox.Tag == null)
-                return;
-            string messageString = richTextBox.Tag.ToString();
-
-            MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(messageString);
-            Paragraph p = new Paragraph();
-            int startIndex = 0;
-            int endIndex = -1;
-
-            for (int i = 0; i < matchCollection.Count; i++)
-            {
-                String emoticon = matchCollection[i].ToString();
-
-                //Regex never returns an empty string. Still have added an extra check
-                if (String.IsNullOrEmpty(emoticon))
-                    continue;
-
-                int index = matchCollection[i].Index;
-                endIndex = index - 1;
-
-                if (index > 0)
-                {
-                    Run r = new Run();
-                    r.Text = messageString.Substring(startIndex, endIndex - startIndex + 1);
-                    p.Inlines.Add(r);
-                }
-
-                startIndex = index + emoticon.Length;
-
-                //TODO check if imgPath is null or not
-                Image img = new Image();
-                img.Source = SmileyParser.lookUpFromCache(emoticon);
-                img.Height = 40;
-                img.Width = 40;
-                img.Margin = imgMargin;
-
-                InlineUIContainer ui = new InlineUIContainer();
-                ui.Child = img;
-                p.Inlines.Add(ui);
-            }
-            if (startIndex < messageString.Length)
-            {
-                Run r2 = new Run();
-                r2.Text = messageString.Substring(startIndex, messageString.Length - startIndex);
-                p.Inlines.Add(r2);
-            }
-
-            richTextBox.Blocks.Clear();
-            richTextBox.Blocks.Add(p);
-
-        }
-
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             int index = emotList0.SelectedIndex;
@@ -1080,14 +988,14 @@ namespace windows_client.View
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            int index = emotList1.SelectedIndex + 80;
+            int index = emotList1.SelectedIndex + SmileyParser.emoticon0Size;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            int index = emotList2.SelectedIndex + 110;
+            int index = emotList2.SelectedIndex + SmileyParser.emoticon0Size + SmileyParser.emoticon1Size;
             sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
@@ -1302,7 +1210,7 @@ namespace windows_client.View
                     if (msg != null)
                     {
 //                        msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
-                        msg.SetSDRImage(ConvMessage.State.SENT_CONFIRMED);
+                        msg.SetSentMessageStatus(ConvMessage.State.SENT_CONFIRMED);
                     }
                 }
                 catch (KeyNotFoundException e)
@@ -1323,9 +1231,7 @@ namespace windows_client.View
                     SentChatBubble msg = msgMap[msgId];
                     if (msg != null)
                     {
-                        //if ((int)msg.MessageStatus < (int)ConvMessage.State.SENT_DELIVERED)
-                        //    msg.MessageStatus = ConvMessage.State.SENT_DELIVERED;
-                        msg.SetSDRImage(ConvMessage.State.SENT_DELIVERED);
+                        msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED);
                     }
                 }
                 catch (KeyNotFoundException e)
@@ -1349,8 +1255,7 @@ namespace windows_client.View
                         SentChatBubble msg = msgMap[ids[i]];
                         if (msg != null)
                         {
-                            //msg.MessageStatus = ConvMessage.State.SENT_DELIVERED_READ;
-                            msg.SetSDRImage(ConvMessage.State.SENT_DELIVERED_READ);
+                            msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED_READ);
                             msgMap.Remove(ids[i]);
                         }
                     }
@@ -1359,7 +1264,6 @@ namespace windows_client.View
                         //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
                         continue;
                     }
-
                 }
             }
 
