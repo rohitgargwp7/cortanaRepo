@@ -9,6 +9,8 @@ namespace windows_client.DbUtils
 {
     public class UsersTableUtils
     {
+        private static HikeUsersDb usersDbContext = new HikeUsersDb(App.UsersDBConnectionstring);
+
         #region user table
 
         public static void block(string msisdn)
@@ -44,6 +46,8 @@ namespace windows_client.DbUtils
 
         public static void addContacts(List<ContactInfo> contacts)
         {
+            if (contacts == null)
+                return;
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring+"; Max Buffer Size = 2048"))
             {
                 context.users.InsertAllOnSubmit(contacts);
@@ -53,12 +57,12 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContacts()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            //using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
                 {
-                    res = DbCompiledQueries.GetAllContacts(context).ToList<ContactInfo>();
+                    res = DbCompiledQueries.GetAllContacts(usersDbContext).ToList<ContactInfo>();
                 }
                 catch (ArgumentNullException)
                 {
@@ -70,27 +74,10 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsByGroup()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            //using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                var users = from user in context.users orderby user.Name select user;
+                var users = from user in usersDbContext.users orderby user.Name select user;
                 return users.ToList<ContactInfo>();
-            }
-        }
-
-        public static List<ContactInfo> getContactInfoFromName(string name)
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<ContactInfo> res;
-                try
-                {
-                    res = DbCompiledQueries.GetContactFromName(context, name).ToList<ContactInfo>();
-                }
-                catch (Exception)
-                {
-                    res = null;
-                }
-                return (res == null || res.Count == 0) ? null : res;
             }
         }
 
