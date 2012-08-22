@@ -176,12 +176,12 @@ namespace windows_client
         public static BitmapImage[] _emoticonImagesForList1 = null;
         public static BitmapImage[] _emoticonImagesForList2 = null;
 
+        public static int emoticon0Size = 80;
+        public static int emoticon1Size = 30;
+        public static int emoticon2Size = 39;
 
         public static void loadEmoticons()
         {
-            int emoticon0Size = 80;
-            int emoticon1Size = 30;
-            int emoticon2Size = 39;
 
             _emoticonImagesForList0 = new BitmapImage[emoticon0Size];
             int i, j, k = 0;
