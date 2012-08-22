@@ -14,26 +14,29 @@ using System.Windows.Navigation;
 
 namespace windows_client.Controls
 {
-    public class MyChatBubble : UserControl {
+    public class MyChatBubble : UserControl
+    {
 
         public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
 
-        public string Text {
+        public string Text
+        {
             get { return (string)GetValue(TextProperty); }
             set { SetValue(TextProperty, value); }
         }
 
-        public static DependencyProperty TimeStampProperty = DependencyProperty.Register("TimeStamp", typeof(DateTime), typeof(MyChatBubble), new PropertyMetadata(DateTime.Now));
+        public static DependencyProperty TimeStampProperty = DependencyProperty.Register("TimeStamp", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
 
-        public DateTime TimeStamp {
-            get { return (DateTime)GetValue(TimeStampProperty); }
-            set {
-                if (value > DateTime.Now) value = DateTime.Now;
-                SetValue(TimeStampProperty, value); 
+        public string TimeStamp
+        {
+            get { return (string)GetValue(TimeStampProperty); }
+            set
+            {
+                SetValue(TimeStampProperty, value);
             }
         }
 
-        public MyChatBubble() 
+        public MyChatBubble()
         {
         }
 
@@ -53,7 +56,7 @@ namespace windows_client.Controls
             forward.Click += forwardClick;
             menu.Items.Add(forward);
             ContextMenuService.SetContextMenu(this, menu);
-        
+
         }
 
         void AddButton_Click(object sender, RoutedEventArgs e)

@@ -29,7 +29,7 @@ namespace windows_client.Controls
             //            this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
 
             this.Text = cm.Message;
-            this.TimeStamp = DateTime.Now;
+            this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
             //IsSms is false for group chat
             if (cm.IsSms)
             {
