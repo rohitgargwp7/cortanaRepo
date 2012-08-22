@@ -1340,8 +1340,7 @@ namespace windows_client.View
                             animatedOnce = false;
                         if (!animatedOnce)
                         {
-                            App.appSettings[HikeConstants.Extras.ANIMATED_ONCE] = true;
-                            App.appSettings.Save();
+                            App.WriteToIsoStorageSettings(HikeConstants.Extras.ANIMATED_ONCE, true);
                         }
                     }
 

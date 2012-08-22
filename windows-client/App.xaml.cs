@@ -39,6 +39,7 @@ namespace windows_client
         public static readonly string INVITED_JOINED = "invitedJoined";
         public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
         public static readonly string GROUPS_CACHE = "GroupsCache";
+        public static object lockObj = new object();
 
         #endregion
 
@@ -243,8 +244,7 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             updateConversations();
-            App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
-            App.appSettings.Save();
+            WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -252,8 +252,7 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             updateConversations();
-            App.appSettings[App.GROUPS_CACHE] = Utils.GroupCache;
-            App.appSettings.Save();
+            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
         // Code to execute if a navigation fails
@@ -370,8 +369,7 @@ namespace windows_client
             if (!App.appSettings.Contains(App.GROUPS_CACHE))
             {
                 Utils.GroupCache = new Dictionary<string, GroupParticipant>();
-                appSettings.Add(App.GROUPS_CACHE, Utils.GroupCache);
-                appSettings.Save();
+                WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             }
 
             else
@@ -386,7 +384,7 @@ namespace windows_client
 
             st.Reset();
             st.Start();
-            if(App.DbListener == null)
+            if (App.DbListener == null)
                 App.DbListener = new DbConversationListener();
             st.Stop();
             msec = st.ElapsedMilliseconds;
@@ -494,6 +492,35 @@ namespace windows_client
                 }
                 if (shouldUpdate)
                     MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
+        /* This function should always be used to store values to isolated storage
+         * Its a thread safe implemenatation to save values.
+        * */
+
+        public static void WriteToIsoStorageSettings(List<KeyValuePair<string,object>> kvlist)
+        {
+            if(kvlist == null)
+                return;
+            lock (lockObj)
+            {
+                for (int i = 0; i < kvlist.Count; i++)
+                {
+                    string key = kvlist[i].Key;
+                    object value = kvlist[i].Value;
+                    appSettings[key] = value;
+                }
+                appSettings.Save();
+            }
+        }
+
+        public static void WriteToIsoStorageSettings(string key, object value)
+        {
+            lock (lockObj)
+            {
+                appSettings[key] = value;
+                appSettings.Save();
             }
         }
     }

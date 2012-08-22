@@ -117,8 +117,7 @@ namespace windows_client
             else if (SMS_CREDITS == type) /* SMS CREDITS */
             {
                 int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
-                App.appSettings[App.SMS_SETTING] = sms_credits;
-                App.appSettings.Save();
+                App.WriteToIsoStorageSettings(App.SMS_SETTING,sms_credits);
                 this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
             }
             else if (SERVER_REPORT == type) /* Represents Server has received the msg you sent */
@@ -318,12 +317,20 @@ namespace windows_client
 
         private void updateDB(long msgID, int status)
         {
+            Stopwatch st = Stopwatch.StartNew();
             MessagesTableUtils.updateMsgStatus(msgID, status);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
 
         private void updateDbBatch(long[] ids, int status)
         {
+            Stopwatch st = Stopwatch.StartNew();
             MessagesTableUtils.updateAllMsgStatus(ids, status);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
         }
     }
 }

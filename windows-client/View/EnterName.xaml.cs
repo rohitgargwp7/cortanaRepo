@@ -22,8 +22,7 @@ namespace windows_client
         {
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
-            App.appSettings[App.PAGE_STATE] = App.PageState.SETNAME_SCREEN;
-            App.appSettings.Save();
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
 
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -58,8 +57,11 @@ namespace windows_client
 
             if (obj == null || "ok" != (string)obj["stat"])
             {
+                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.IsEnabled = false;
                 if (!string.IsNullOrWhiteSpace(ac_name))
                     nextIconButton.IsEnabled = true;
+                enterNameBtn.Text = "Error !! Name not set.... Try Again";
                 //logger.Info("HTTP", "Unable to set name");
                 // SHOW SOME TRY AGAIN MSG etc
                 return;
@@ -68,7 +70,7 @@ namespace windows_client
             nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
 
             int count = 1;
-            while (!App.Ab_scanned && count <=20)
+            while (!App.Ab_scanned && count <= 20)
             {
                 if (!App.isABScanning)
                 {
@@ -77,15 +79,32 @@ namespace windows_client
                 Thread.Sleep(1 * 1000); //sleep for one second
                 count++;
             }
-            if (!App.Ab_scanned) // timeout occured
+            while (!App.Ab_scanned) // timeout occured
             {
-                // SHOW NETWORK ERROR
-                return;
+                MessageBoxResult result = MessageBox.Show("Scanning contacts timed out.", "TRY AGAIN ?", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.IsEnabled = false;
+                    // show some log msg
+                    enterNameBtn.Text = "Check Network !!";
+                    return;
+                }
+                enterNameBtn.Text = "";
+                count = 1;
+                while (!App.Ab_scanned && count <= 40)
+                {
+                    if (!App.isABScanning)
+                    {
+                        ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
+                    }
+                    Thread.Sleep(1 * 1000); //sleep for one second
+                    count++;
+                }
             }
 
-            App.appSettings[App.ACCOUNT_NAME] = ac_name;
-            App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
-            App.appSettings.Save();
+            App.WriteToIsoStorageSettings(App.ACCOUNT_NAME,ac_name);
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             {

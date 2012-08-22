@@ -10,6 +10,7 @@ using Microsoft.Phone.Tasks;
 using windows_client.View;
 using System.Threading;
 using Phone.Controls;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
@@ -105,7 +106,7 @@ namespace windows_client.utils
 
         public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
-
+            int count = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
             if (contacts == null)
                 return null;
@@ -113,9 +114,14 @@ namespace windows_client.utils
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
-
+ 
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber))
+                    {
+                        count++;
+                        continue;
+                    }
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName, ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
@@ -131,6 +137,7 @@ namespace windows_client.utils
                     }
                 }
             }
+            Debug.WriteLine("Total contacts with no phone number : {0}",count);
             return contactListMap;
         }
 
@@ -154,10 +161,9 @@ namespace windows_client.utils
                 UsersTableUtils.deleteBlocklist();
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 UsersTableUtils.addBlockList(blockList);
-                App.Ab_scanned = true;
-                App.appSettings[App.IS_ADDRESS_BOOK_SCANNED] = true;
-                App.appSettings.Save();
+                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED, true);
             }
+            App.Ab_scanned = true;
         }
 
         public static void saveContact(string phone)
