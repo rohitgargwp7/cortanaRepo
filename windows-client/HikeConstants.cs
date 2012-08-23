@@ -76,7 +76,7 @@ namespace windows_client
 
         public static string USER_JOINED = " has joined the group chat";
         public static string USER_LEFT = " has left the group chat";
-        public static string GROUP_CHAT_END = "This group chat has ended";
+        public static string GROUP_CHAT_END = "This group chat has end.";
 
         public static class Extras
         {
