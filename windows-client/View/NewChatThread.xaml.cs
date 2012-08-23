@@ -539,6 +539,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    Scroller.Opacity = 1;
                     progressBar.Visibility = System.Windows.Visibility.Collapsed;
                     progressBar.IsEnabled = false;
                 });
@@ -598,6 +599,7 @@ namespace windows_client.View
             }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                Scroller.Opacity = 1;
                 ScrollToBottom();
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
                 progressBar.IsEnabled = false;
