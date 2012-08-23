@@ -43,7 +43,7 @@
 
                     <!--ContentPanel - place additional content here-->
 
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Height="456" Width="292" Opacity="0" Margin="0,90,0,0">
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Height="428" Width="292" Opacity="0" Margin="0,108,5,0">
                         <Image.Source>
                             <BitmapImage UriSource="images\empty_screen_tip.png" CreateOptions="BackgroundCreation"/>
                         </Image.Source>
