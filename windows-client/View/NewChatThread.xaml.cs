@@ -45,6 +45,9 @@ namespace windows_client.View
         private bool isOnHike;
         private bool animatedOnce = false;
         private bool endTypingSent = true;
+        private bool isTypingNotificationActive = false;
+        private bool isTypingNotificationEnabled = true;
+        private bool isReshowTypingNotification = false;
 
         private int mCredits;
         private long lastTextChangedTime;
@@ -61,7 +64,7 @@ namespace windows_client.View
         private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
         private Dictionary<ConvMessage, SentChatBubble> _convMessageSentBubbleMap = new Dictionary<ConvMessage, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
-        
+
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         List<GroupMembers> groupMemberList = null;
 
@@ -76,7 +79,8 @@ namespace windows_client.View
         private static readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
         private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
         private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 177, 224, 251));
-        private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
+        private static Thickness imgMargin = new Thickness(0, 5, 0, 15);
+        private static Image typingNotificationImage;
 
         #endregion
 
@@ -147,6 +151,16 @@ namespace windows_client.View
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
+            if (typingNotificationImage == null)
+            {
+                typingNotificationImage = new Image();
+                typingNotificationImage.Source = UI_Utils.Instance.TypingNotificationBitmap;
+                typingNotificationImage.Height = 28;
+                typingNotificationImage.Width = 55;
+                typingNotificationImage.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+                typingNotificationImage.Visibility = Visibility.Visible;
+                typingNotificationImage.Margin = imgMargin;
+            }
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -727,9 +741,14 @@ namespace windows_client.View
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, vals);
                 }
                 else
+                {
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
-                emoticonsIconButton.IsEnabled = true;
-                sendIconButton.IsEnabled = true;
+
+                    emoticonsIconButton.IsEnabled = true;
+                    sendIconButton.IsEnabled = true;
+
+                    isTypingNotificationEnabled = true;
+                }
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
                 showOverlay(false);
@@ -744,9 +763,16 @@ namespace windows_client.View
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, vals);
                 }
                 else
+                {
                     mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
-                emoticonsIconButton.IsEnabled = false;
-                sendIconButton.IsEnabled = false;
+
+                    emoticonsIconButton.IsEnabled = false;
+                    sendIconButton.IsEnabled = false;
+
+                    isTypingNotificationEnabled = false;
+                    emoticonPanel.Visibility = Visibility.Collapsed;
+                }
+
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
                 showOverlay(true); //true means show block animation
@@ -756,7 +782,7 @@ namespace windows_client.View
         /*
          * If addToLast is true then insert the message in the end, else in the begining 
          */
-         
+
         private void AddMessageToUI(ConvMessage convMessage, bool addToLast)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -775,8 +801,9 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, 
+                        chatBubble = new ReceivedChatBubble(convMessage,
                             new RoutedEventHandler(MenuItem_Click_Copy), new RoutedEventHandler(MenuItem_Click_Forward));
+
                     }
                     if (addToLast)
                     {
@@ -793,7 +820,7 @@ namespace windows_client.View
                     string[] names = splitUserJoinedMessage(convMessage);
                     for (int i = 0; i < names.Length; i++)
                     {
-                        MyChatBubble chatBubble = new NotificationChatBubble(names[i]+HikeConstants.USER_JOINED, true);
+                        MyChatBubble chatBubble = new NotificationChatBubble(names[i] + HikeConstants.USER_JOINED, true);
                         if (addToLast)
                         {
                             this.MessageList.Children.Add(chatBubble);
@@ -924,7 +951,6 @@ namespace windows_client.View
 
         private void sendMsg(ConvMessage convMessage, bool isNewGroup)
         {
-            //user joined
             if (isNewGroup)
             {
                 PhoneApplicationService.Current.State[mContactNumber] = mContactName;
@@ -932,7 +958,17 @@ namespace windows_client.View
                 metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
                 convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             }
+            if (isTypingNotificationActive)
+            {
+                HideTypingNotification();
+                isReshowTypingNotification = true;
+            }
             AddMessageToUI(convMessage, true);
+            if (isReshowTypingNotification)
+            {
+                ShowTypingNotification();
+                isReshowTypingNotification = false;
+            }
 
             object[] vals = new object[2];
             vals[0] = convMessage;
@@ -1151,6 +1187,28 @@ namespace windows_client.View
             }
         }
 
+        private void ShowTypingNotification()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (isTypingNotificationEnabled && !isTypingNotificationActive)
+                    this.MessageList.Children.Add(typingNotificationImage);
+                isTypingNotificationActive = true;
+                ScrollToBottom();
+            });
+        }
+
+        private void HideTypingNotification()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (!isTypingNotificationEnabled || isTypingNotificationActive)
+                    this.MessageList.Children.Remove(typingNotificationImage);
+                if (isTypingNotificationActive)
+                    isTypingNotificationActive = false;
+            });
+        }
+
         #endregion
 
         #region INotifyPropertyChanged Members
@@ -1189,13 +1247,8 @@ namespace windows_client.View
                     }
                     updateLastMsgColor(convMessage.Msisdn);
                     // Update UI
-                    AddMessageToUI(convMessage,true);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        //user left
-                        //set typing notification as false
-                        typingNotification.Opacity = 0;
-                    });
+                    HideTypingNotification();
+                    AddMessageToUI(convMessage, true);
                 }
                 else // this is to show toast notification
                 {
@@ -1226,7 +1279,7 @@ namespace windows_client.View
                     SentChatBubble msg = msgMap[msgId];
                     if (msg != null)
                     {
-//                        msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
+                        //                        msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_CONFIRMED);
                     }
                 }
@@ -1342,13 +1395,7 @@ namespace windows_client.View
             {
                 if (mContactNumber == (obj as string))
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        typingNotification.Opacity = 1;
-
-                        //hikeLabel.Text = mContactName;// +" is typing.";
-                        // handle auto removing
-                    });
+                    ShowTypingNotification();
                 }
             }
 
@@ -1360,11 +1407,7 @@ namespace windows_client.View
             {
                 if (mContactNumber == (obj as string))
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        typingNotification.Opacity = 0;
-                        //hikeLabel.Text = mContactName;
-                    });
+                    HideTypingNotification();
                 }
             }
 
@@ -1482,6 +1525,43 @@ namespace windows_client.View
             emotHeaderRect2.Opacity = 1;
             emoticonPivot.SelectedIndex = 2;
             string name = this.Name;
+        }
+
+        private void MessageList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emoticonPanel.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (emoticonPivot.SelectedIndex)
+            {
+                case 0:
+                    emotHeaderBorder0.Opacity = 1;
+                    emotHeaderRect0.Opacity = 1;
+                    emotHeaderBorder1.Opacity = 0;
+                    emotHeaderRect1.Opacity = 0;
+                    emotHeaderBorder2.Opacity = 0;
+                    emotHeaderRect2.Opacity = 0;
+                    break;
+                case 1:
+                    emotHeaderBorder0.Opacity = 0;
+                    emotHeaderRect0.Opacity = 0;
+                    emotHeaderBorder1.Opacity = 1;
+                    emotHeaderRect1.Opacity = 1;
+                    emotHeaderBorder2.Opacity = 0;
+                    emotHeaderRect2.Opacity = 0;
+                    break;
+                case 2:
+                    emotHeaderBorder0.Opacity = 0;
+                    emotHeaderRect0.Opacity = 0;
+                    emotHeaderBorder1.Opacity = 0;
+                    emotHeaderRect1.Opacity = 0;
+                    emotHeaderBorder2.Opacity = 1;
+                    emotHeaderRect2.Opacity = 1;
+                    break;
+            }
         }
     }
 }
