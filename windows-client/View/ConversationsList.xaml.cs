@@ -246,11 +246,17 @@ namespace windows_client.View
             appBar.Buttons.Add(composeIconButton);
 
             /* Add Menu Items*/
-            ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
-            inviteUsersMenu.Text = INVITE_USERS;
-            inviteUsersMenu.Click += new EventHandler(inviteUsers_Click);
-            appBar.MenuItems.Add(inviteUsersMenu);
+            //ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
+            //inviteUsersMenu.Text = INVITE_USERS;
+            //inviteUsersMenu.Click += new EventHandler(inviteUsers_Click);
+            //appBar.MenuItems.Add(inviteUsersMenu);
             convListPagePivot.ApplicationBar = appBar;
+
+            ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
+            groupChatIconButton.Text = "Group Chat";
+            groupChatIconButton.Click += new EventHandler(createGroup_Click);
+            groupChatIconButton.IsEnabled = true;
+            appBar.MenuItems.Add(groupChatIconButton);
 
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = DELETE_ALL_CONVERSATIONS;
@@ -261,11 +267,6 @@ namespace windows_client.View
             delAccountMenu.Text = "delete account";
             delAccountMenu.Click += new EventHandler(deleteAccount_Click);
 
-            ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
-            groupChatIconButton.Text = "Group Chat";
-            groupChatIconButton.Click += new EventHandler(createGroup_Click);
-            groupChatIconButton.IsEnabled = true;
-            appBar.MenuItems.Add(groupChatIconButton);
         }
 
         public static void ReloadConversations() // running on some background thread
