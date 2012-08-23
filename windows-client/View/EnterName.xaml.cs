@@ -47,7 +47,7 @@ namespace windows_client
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             enterNameBtn.Opacity = 1;
-            enterNameBtn.Text = "Scanning contacts.Kindly wait for a minute or two.";
+            enterNameBtn.Text = "Scanning contacts.";
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
         }
 
