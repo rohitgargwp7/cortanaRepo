@@ -50,7 +50,7 @@
 
         <!--ContentPanel - place additional content here-->
         <ScrollViewer Grid.Row="1" Name="Scroller" Margin="24,0,20,0">
-            <StackPanel Name="MessageList" Margin="0,0,5,0" VerticalAlignment="Bottom">
+            <StackPanel Name="MessageList" Margin="0,0,15,0" VerticalAlignment="Bottom">
 
             </StackPanel>
         </ScrollViewer>
@@ -211,7 +211,8 @@
                 </Grid>
             </StackPanel>
 
-            <Image x:Name="typingNotification" Source="images\typing.png" Visibility="Visible" Opacity="0" Height="20" Width="30" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>
+            <!--<Image x:Name="typingNotification" Source="images\typing.png" Visibility="Visible" Opacity="0" Height="20" Width="30" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>-->
+            <!--<Image x:Name="typingNotification2" Source="images\typing.png" Visibility="Visible" Height="22" Width="45" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>-->
             <Rectangle Width="Auto" Height="2" Margin="0,0,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <toolkit:PhoneTextBox Background="#eeeeec" BorderThickness="0" x:Name="sendMsgTxtbox" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top"/>
@@ -219,10 +220,10 @@
         </StackPanel>
         <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
 
-        <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,20,25,0" Orientation="Vertical">
-            <Image Source="images\ic_block_active.png" Height="40"></Image>
-            <TextBlock HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="You have blocked this user. Unblock to continue hiking" Foreground="#FFFFFF" FontSize="32"></TextBlock>
-            <Button Background="#0d5585" Height="75" Content="Unblock" Width="250" Margin="0,10,0,0" Click="blockUnblock_Click"></Button>
+        <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
+            <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
+            <TextBlock HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="You have blocked this user. Unblock to continue hiking" Foreground="#FFFFFF" FontSize="30"></TextBlock>
+            <Button Height="75" Content="Unblock" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
     </Grid>
 </phone:PhoneApplicationPage>
