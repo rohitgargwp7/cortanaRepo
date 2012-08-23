@@ -435,6 +435,8 @@ namespace windows_client.View
                         if (mUserIsBlocked)
                         {
                             menuItem1.Text = UNBLOCK_USER + " group owner";
+                            emoticonsIconButton.IsEnabled = false;
+                            sendIconButton.IsEnabled = false;
                         }
                         else
                         {
@@ -452,6 +454,8 @@ namespace windows_client.View
                 if (mUserIsBlocked)
                 {
                     menuItem1.Text = UNBLOCK_USER;
+                    emoticonsIconButton.IsEnabled = false;
+                    sendIconButton.IsEnabled = false;
                 }
                 else
                 {
@@ -724,6 +728,8 @@ namespace windows_client.View
                 }
                 else
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
+                emoticonsIconButton.IsEnabled = true;
+                sendIconButton.IsEnabled = true;
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
                 showOverlay(false);
@@ -739,6 +745,8 @@ namespace windows_client.View
                 }
                 else
                     mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
+                emoticonsIconButton.IsEnabled = false;
+                sendIconButton.IsEnabled = false;
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
                 showOverlay(true); //true means show block animation
