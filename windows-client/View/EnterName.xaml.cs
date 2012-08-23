@@ -14,7 +14,7 @@ namespace windows_client
     public partial class EnterName : PhoneApplicationPage
     {
         private string ac_name;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -138,8 +138,8 @@ namespace windows_client
 
         private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtBxEnterName.Background = textBoxBackground;
             txtBxEnterName.Hint = "Name";
+            txtBxEnterName.Foreground = textBoxBackground;
         }
 
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

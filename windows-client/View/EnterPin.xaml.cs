@@ -12,7 +12,7 @@ namespace windows_client
     public partial class EnterPin : PhoneApplicationPage
     {
         string pinEntered;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -89,8 +89,8 @@ namespace windows_client
 
         private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtBxEnterPin.Background = textBoxBackground;
             txtBxEnterPin.Hint = "Pin";
+            txtBxEnterPin.Foreground = textBoxBackground;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

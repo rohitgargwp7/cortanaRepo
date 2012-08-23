@@ -12,7 +12,7 @@ namespace windows_client
     public partial class EnterNumber : PhoneApplicationPage
     {
         string phoneNumber;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -113,8 +113,8 @@ namespace windows_client
         private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
         {
             txtEnterPhone.Text = "";
-            txtEnterPhone.Background = textBoxBackground;
             txtEnterPhone.Hint = "Phone Number";
+            txtEnterPhone.Foreground = textBoxBackground;
         }
 
         private void txtEnterPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
