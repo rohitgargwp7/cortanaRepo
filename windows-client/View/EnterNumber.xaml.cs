@@ -94,6 +94,14 @@ namespace windows_client
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             enterPhoneBtn.Opacity = 0;
+            if (String.IsNullOrWhiteSpace(txtEnterPhone.Text))
+            {
+                nextIconButton.IsEnabled = false;
+            }
+            else
+            {
+                nextIconButton.IsEnabled = true;
+            }
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
@@ -112,7 +120,6 @@ namespace windows_client
 
         private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtEnterPhone.Text = "";
             txtEnterPhone.Hint = "Phone Number";
             txtEnterPhone.Foreground = textBoxBackground;
         }
@@ -120,9 +127,14 @@ namespace windows_client
         private void txtEnterPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
+            {
                 nextIconButton.IsEnabled = true;
+                txtEnterPhone.Foreground = textBoxBackground;
+            }
             else
+            {
                 nextIconButton.IsEnabled = false;
+            }
         }
     }
 }
