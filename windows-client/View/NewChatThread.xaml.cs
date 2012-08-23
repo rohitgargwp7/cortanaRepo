@@ -758,6 +758,7 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
                     isTypingNotificationEnabled = false;
+                    emoticonPanel.Visibility = Visibility.Collapsed;
                 }
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
@@ -1511,6 +1512,43 @@ namespace windows_client.View
             emotHeaderRect2.Opacity = 1;
             emoticonPivot.SelectedIndex = 2;
             string name = this.Name;
+        }
+
+        private void MessageList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emoticonPanel.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (emoticonPivot.SelectedIndex)
+            {
+                case 0:
+                    emotHeaderBorder0.Opacity = 1;
+                    emotHeaderRect0.Opacity = 1;
+                    emotHeaderBorder1.Opacity = 0;
+                    emotHeaderRect1.Opacity = 0;
+                    emotHeaderBorder2.Opacity = 0;
+                    emotHeaderRect2.Opacity = 0;
+                    break;
+                case 1:
+                    emotHeaderBorder0.Opacity = 0;
+                    emotHeaderRect0.Opacity = 0;
+                    emotHeaderBorder1.Opacity = 1;
+                    emotHeaderRect1.Opacity = 1;
+                    emotHeaderBorder2.Opacity = 0;
+                    emotHeaderRect2.Opacity = 0;
+                    break;
+                case 2:
+                    emotHeaderBorder0.Opacity = 0;
+                    emotHeaderRect0.Opacity = 0;
+                    emotHeaderBorder1.Opacity = 0;
+                    emotHeaderRect1.Opacity = 0;
+                    emotHeaderBorder2.Opacity = 1;
+                    emotHeaderRect2.Opacity = 1;
+                    break;
+            }
         }
     }
 }
