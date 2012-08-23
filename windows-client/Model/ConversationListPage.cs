@@ -122,7 +122,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column]
+        [Column(DbType = "image", CanBeNull = true)]
         public byte[] Avatar
         {
             get
