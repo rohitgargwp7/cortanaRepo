@@ -47,7 +47,7 @@
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
-            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,45"
+            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsBouncy="True"
