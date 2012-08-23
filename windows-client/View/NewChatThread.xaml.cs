@@ -956,11 +956,11 @@ namespace windows_client.View
             object s = e.OriginalSource;
         }
 
-        private void optionsList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            int selectedIndex = optionsList.SelectedIndex;
-            emoticonPivot.SelectedIndex = selectedIndex;
-        }
+        //private void optionsList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    int selectedIndex = optionsList.SelectedIndex;
+        //    emoticonPivot.SelectedIndex = selectedIndex;
+        //}
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
@@ -1431,6 +1431,41 @@ namespace windows_client.View
             sms.To = mContactNumber; // set phone number
             sms.Body = ""; // set body
             sms.Show();
+        }
+
+        private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderBorder0.Opacity = 1;
+            emotHeaderRect0.Opacity = 1;
+            emotHeaderBorder1.Opacity = 0;
+            emotHeaderRect1.Opacity = 0;
+            emotHeaderBorder2.Opacity = 0;
+            emotHeaderRect2.Opacity = 0;
+            emoticonPivot.SelectedIndex = 0;
+        }
+
+        private void emotHeaderRect1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderBorder0.Opacity = 0;
+            emotHeaderRect0.Opacity = 0;
+            emotHeaderBorder1.Opacity = 1;
+            emotHeaderRect1.Opacity = 1;
+            emotHeaderBorder2.Opacity = 0;
+            emotHeaderRect2.Opacity = 0;
+            emoticonPivot.SelectedIndex = 1;
+
+        }
+
+        private void emotHeaderRect2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            emotHeaderBorder0.Opacity = 0;
+            emotHeaderRect0.Opacity = 0;
+            emotHeaderBorder1.Opacity = 0;
+            emotHeaderRect1.Opacity = 0;
+            emotHeaderBorder2.Opacity = 1;
+            emotHeaderRect2.Opacity = 1;
+            emoticonPivot.SelectedIndex = 2;
+            string name = this.Name;
         }
     }
 }
