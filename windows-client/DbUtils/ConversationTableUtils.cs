@@ -11,6 +11,7 @@ namespace windows_client.DbUtils
 {
     public class ConversationTableUtils
     {
+        private static object lockObj = new object();
         /* This function gets all the conversations shown on the message list page*/
         public static List<ConversationListObject> getAllConversations()
         {
@@ -18,10 +19,10 @@ namespace windows_client.DbUtils
             {
                 var q = from o in DbCompiledQueries.chatsDbContext.conversations orderby o.TimeStamp descending select o;
                 return q.ToList();
-            }           
+            }
         }
 
-        public static void updateImage(string msisdn,byte [] image)
+        public static void updateImage(string msisdn, byte[] image)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
@@ -31,15 +32,15 @@ namespace windows_client.DbUtils
                     obj.Avatar = image;
                     MessagesTableUtils.SubmitWithConflictResolve(context);
                 }
-            } 
+            }
         }
 
-        public static ConversationListObject addGroupConversation(ConvMessage convMessage,string groupName)
+        public static ConversationListObject addGroupConversation(ConvMessage convMessage, string groupName)
         {
-             /*
-             * Msisdn : GroupId
-             * Contactname : GroupOwner
-             */
+            /*
+            * Msisdn : GroupId
+            * Contactname : GroupOwner
+            */
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
                 true, convMessage.Timestamp, null, convMessage.MessageStatus);
 
@@ -51,18 +52,18 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        public static ConversationListObject addConversation(ConvMessage convMessage,bool isNewGroup)
+        public static ConversationListObject addConversation(ConvMessage convMessage, bool isNewGroup)
         {
             ConversationListObject obj = null;
             if (isNewGroup)
             {
                 string groupName = convMessage.Msisdn;
-                if(PhoneApplicationService.Current.State.ContainsKey(convMessage.Msisdn))
+                if (PhoneApplicationService.Current.State.ContainsKey(convMessage.Msisdn))
                 {
                     groupName = (string)PhoneApplicationService.Current.State[convMessage.Msisdn];
                     PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
                 }
-                obj = new ConversationListObject(convMessage.Msisdn,groupName,convMessage.Message,true,convMessage.Timestamp,null,ConvMessage.State.SENT_UNCONFIRMED);
+                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, ConvMessage.State.SENT_UNCONFIRMED);
             }
             else
             {
@@ -72,9 +73,9 @@ namespace windows_client.DbUtils
                     contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail == null ? null : thumbnail.Avatar, convMessage.MessageStatus);
             }
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {              
-                    context.conversations.InsertOnSubmit(obj);
-                    context.SubmitChanges();
+            {
+                context.conversations.InsertOnSubmit(obj);
+                context.SubmitChanges();
             }
             return obj;
         }
@@ -104,7 +105,7 @@ namespace windows_client.DbUtils
                 List<ConversationListObject> res = DbCompiledQueries.GetConvForMsisdn(context, msisdn).ToList<ConversationListObject>();
                 if (res == null || res.Count<ConversationListObject>() == 0)
                     return;
-                for (int i = 0; i < res.Count;i++ )
+                for (int i = 0; i < res.Count; i++)
                 {
                     ConversationListObject conv = res[i];
                     conv.IsOnhike = (bool)joined;
@@ -115,18 +116,21 @@ namespace windows_client.DbUtils
 
         public static void updateConversation(ConversationListObject obj)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + "; Max Buffer Size = 2048"))
+            lock (lockObj)
             {
-                ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
-                if (cObj.ContactName != obj.ContactName)
-                    cObj.ContactName = obj.ContactName;
-                cObj.MessageStatus =  obj.MessageStatus;
-                cObj.LastMessage = obj.LastMessage;
-                cObj.TimeStamp = obj.TimeStamp;
-                MessagesTableUtils.SubmitWithConflictResolve(context);
+                using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + "; Max Buffer Size = 2048"))
+                {
+                    ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
+                    if (cObj.ContactName != obj.ContactName)
+                        cObj.ContactName = obj.ContactName;
+                    cObj.MessageStatus = obj.MessageStatus;
+                    cObj.LastMessage = obj.LastMessage;
+                    cObj.TimeStamp = obj.TimeStamp;
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
+                }
             }
         }
-        public static bool updateGroupName(string grpId,string groupName)
+        public static bool updateGroupName(string grpId, string groupName)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
