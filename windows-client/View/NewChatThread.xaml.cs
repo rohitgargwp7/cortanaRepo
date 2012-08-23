@@ -739,6 +739,10 @@ namespace windows_client.View
                 else
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
+
+                    emoticonsIconButton.IsEnabled = true;
+                    sendIconButton.IsEnabled = true;
+
                     isTypingNotificationEnabled = true;
                 }
                 mUserIsBlocked = false;
@@ -757,9 +761,14 @@ namespace windows_client.View
                 else
                 {
                     mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
+
+                    emoticonsIconButton.IsEnabled = false;
+                    sendIconButton.IsEnabled = false;
+
                     isTypingNotificationEnabled = false;
                     emoticonPanel.Visibility = Visibility.Collapsed;
                 }
+
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
                 showOverlay(true); //true means show block animation
@@ -1107,7 +1116,6 @@ namespace windows_client.View
                 // DO OTHER STUFF TODO 
             }
         }
-
         private void showOverlay(bool show)
         {
             if (show)
@@ -1120,6 +1128,8 @@ namespace windows_client.View
                 MessageList.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
+                emoticonsIconButton.IsEnabled = false;
+                sendIconButton.IsEnabled = false;
             }
             else
             {
@@ -1131,7 +1141,8 @@ namespace windows_client.View
                 MessageList.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
-
+                emoticonsIconButton.IsEnabled = true;
+                sendIconButton.IsEnabled = true;
             }
 
         }
