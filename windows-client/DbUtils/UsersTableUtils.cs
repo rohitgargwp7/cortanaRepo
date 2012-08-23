@@ -83,12 +83,12 @@ namespace windows_client.DbUtils
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            //using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
                 {
-                    res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
+                    res = DbCompiledQueries.GetContactFromMsisdn(usersDbContext, msisdn).ToList<ContactInfo>();
                 }
                 catch (Exception)
                 {
@@ -238,9 +238,9 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsToInvite()
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+           // using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();
+                List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(usersDbContext).ToList<ContactInfo>();
                 return (res==null || res.Count == 0) ? null : res;
             }
         }

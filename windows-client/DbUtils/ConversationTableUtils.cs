@@ -126,16 +126,22 @@ namespace windows_client.DbUtils
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
         }
-        public static void updateGroupName(string grpId,string groupName)
+        public static bool updateGroupName(string grpId,string groupName)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, grpId).FirstOrDefault();
                 if (cObj == null)
-                    return;
-                cObj.ContactName = groupName;
-                MessagesTableUtils.SubmitWithConflictResolve(context);
+                    return false; ;
+                if (cObj.ContactName != groupName)
+                {
+                    cObj.ContactName = groupName;
+                    MessagesTableUtils.SubmitWithConflictResolve(context);
+                }
+                else
+                    return false;
             }
+            return true;
         }
         internal static void updateConversation(List<ContactInfo> cn)
         {

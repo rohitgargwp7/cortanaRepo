@@ -129,6 +129,9 @@ namespace windows_client.DbUtils
             ConversationListObject obj = null;
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
+                if (Utils.isGroupConversation(convMsg.Msisdn)) // if its a group chat msg and group does not exist , simply ignore msg.
+                    return null;
+                
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
             }

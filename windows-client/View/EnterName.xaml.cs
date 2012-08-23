@@ -47,7 +47,7 @@ namespace windows_client
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             enterNameBtn.Opacity = 1;
-            enterNameBtn.Text = "Scanning contacts";
+            enterNameBtn.Text = "Scanning contacts.Kindly wait for a minute or two.";
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
         }
 
@@ -70,7 +70,7 @@ namespace windows_client
             nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
 
             int count = 1;
-            while (!App.Ab_scanned && count <= 20)
+            while (!App.Ab_scanned && count <= 120)
             {
                 if (!App.isABScanning)
                 {
@@ -81,16 +81,18 @@ namespace windows_client
             }
             while (!App.Ab_scanned) // timeout occured
             {
-                MessageBoxResult result = MessageBox.Show("Scanning contacts timed out.", "TRY AGAIN ?", MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.Cancel)
-                {
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                    progressBar.IsEnabled = false;
-                    // show some log msg
-                    enterNameBtn.Text = "Check Network !!";
-                    return;
-                }
-                enterNameBtn.Text = "";
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        MessageBoxResult result = MessageBox.Show("Scanning contacts taking time.", "Continue ?", MessageBoxButton.OKCancel);
+                        if (result == MessageBoxResult.Cancel)
+                        {
+                            progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                            progressBar.IsEnabled = false;
+                            // show some log msg
+                            enterNameBtn.Text = "Try Again Later!!";
+                            return;
+                        }
+                    });
                 count = 1;
                 while (!App.Ab_scanned && count <= 40)
                 {
