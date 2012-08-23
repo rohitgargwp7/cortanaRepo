@@ -155,8 +155,8 @@ namespace windows_client.View
             {
                 typingNotificationImage = new Image();
                 typingNotificationImage.Source = UI_Utils.Instance.TypingNotificationBitmap;
-                typingNotificationImage.Height = 22;
-                typingNotificationImage.Width = 45;
+                typingNotificationImage.Height = 28;
+                typingNotificationImage.Width = 55;
                 typingNotificationImage.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                 typingNotificationImage.Visibility = Visibility.Visible;
                 typingNotificationImage.Margin = imgMargin;
