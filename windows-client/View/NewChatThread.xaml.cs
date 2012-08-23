@@ -1127,10 +1127,12 @@ namespace windows_client.View
         {
             if (show)
             {
-                LayoutRoot.Background = blackBackground;
-                HikeTitle.Opacity = 0.25;
-                MessageList.Opacity = 0.25;
-                bottomPanel.Opacity = 0.25;
+                //LayoutRoot.Background = blackBackground;
+                //HikeTitle.Opacity = 0.25;
+                //MessageList.Opacity = 0.25;
+                //bottomPanel.Opacity = 0.25;
+
+                overlayRectangle.Opacity = 0.85;
                 HikeTitle.IsHitTestVisible = false;
                 MessageList.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
@@ -1140,10 +1142,12 @@ namespace windows_client.View
             }
             else
             {
-                LayoutRoot.Background = whiteBackground;
-                HikeTitle.Opacity = 1;
-                MessageList.Opacity = 1;
-                bottomPanel.Opacity = 1;
+                //LayoutRoot.Background = whiteBackground;
+                //HikeTitle.Opacity = 1;
+                //MessageList.Opacity = 1;
+                //bottomPanel.Opacity = 1;
+                overlayRectangle.Opacity = 0;
+
                 HikeTitle.IsHitTestVisible = true;
                 MessageList.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
