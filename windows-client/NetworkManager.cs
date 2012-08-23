@@ -274,6 +274,8 @@ namespace windows_client
 
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg,false);
+                if (cObj == null)
+                    return;
                 GroupTableUtils.removeParticipantFromGroup(groupId, fromMsisdn);
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
                 if (gi == null)

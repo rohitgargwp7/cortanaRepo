@@ -9,8 +9,6 @@ namespace windows_client.DbUtils
 {
     public class UsersTableUtils
     {
-        private static HikeUsersDb usersDbContext = new HikeUsersDb(App.UsersDBConnectionstring);
-
         #region user table
 
         public static void block(string msisdn)
@@ -57,12 +55,12 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContacts()
         {
-            //using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
                 {
-                    res = DbCompiledQueries.GetAllContacts(usersDbContext).ToList<ContactInfo>();
+                    res = DbCompiledQueries.GetAllContacts(context).ToList<ContactInfo>();
                 }
                 catch (ArgumentNullException)
                 {
@@ -74,21 +72,21 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsByGroup()
         {
-            //using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                var users = from user in usersDbContext.users orderby user.Name select user;
+                var users = from user in context.users orderby user.Name select user;
                 return users.ToList<ContactInfo>();
             }
         }
 
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
-            //using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<ContactInfo> res;
                 try
                 {
-                    res = DbCompiledQueries.GetContactFromMsisdn(usersDbContext, msisdn).ToList<ContactInfo>();
+                    res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
                 }
                 catch (Exception)
                 {
@@ -238,9 +236,9 @@ namespace windows_client.DbUtils
 
         public static List<ContactInfo> getAllContactsToInvite()
         {
-           // using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(usersDbContext).ToList<ContactInfo>();
+                List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();
                 return (res==null || res.Count == 0) ? null : res;
             }
         }

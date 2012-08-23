@@ -937,6 +937,13 @@ namespace windows_client.View
 
         private void sendMsg(ConvMessage convMessage, bool isNewGroup)
         {
+            if (isNewGroup)
+            {
+                PhoneApplicationService.Current.State[mContactNumber] = mContactName;
+                JObject metaData = new JObject();
+                metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
+                convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
+            }
             if (isTypingNotificationActive)
             {
                 HideTypingNotification();
