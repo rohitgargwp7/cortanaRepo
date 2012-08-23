@@ -449,8 +449,6 @@ namespace windows_client.View
                         if (mUserIsBlocked)
                         {
                             menuItem1.Text = UNBLOCK_USER + " group owner";
-                            emoticonsIconButton.IsEnabled = false;
-                            sendIconButton.IsEnabled = false;
                         }
                         else
                         {
@@ -468,8 +466,6 @@ namespace windows_client.View
                 if (mUserIsBlocked)
                 {
                     menuItem1.Text = UNBLOCK_USER;
-                    emoticonsIconButton.IsEnabled = false;
-                    sendIconButton.IsEnabled = false;
                 }
                 else
                 {
@@ -1120,7 +1116,6 @@ namespace windows_client.View
                 // DO OTHER STUFF TODO 
             }
         }
-
         private void showOverlay(bool show)
         {
             if (show)
@@ -1133,6 +1128,8 @@ namespace windows_client.View
                 MessageList.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
+                emoticonsIconButton.IsEnabled = false;
+                sendIconButton.IsEnabled = false;
             }
             else
             {
@@ -1144,7 +1141,8 @@ namespace windows_client.View
                 MessageList.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
-
+                emoticonsIconButton.IsEnabled = true;
+                sendIconButton.IsEnabled = true;
             }
 
         }
