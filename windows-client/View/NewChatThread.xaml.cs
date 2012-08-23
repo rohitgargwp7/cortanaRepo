@@ -917,6 +917,13 @@ namespace windows_client.View
         private void sendMsg(ConvMessage convMessage, bool isNewGroup)
         {
             //user joined
+            if (isNewGroup)
+            {
+                PhoneApplicationService.Current.State[mContactNumber] = mContactName;
+                JObject metaData = new JObject();
+                metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
+                convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
+            }
             AddMessageToUI(convMessage, true);
 
             object[] vals = new object[2];
