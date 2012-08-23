@@ -55,16 +55,17 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
                                     <StackPanel Orientation="Horizontal" Margin="22,5,5,5">
-                                        <Image x:Name="avatar_image" Height="65" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding AvatarImage}">
-                                        </Image>
+                                        <Border BorderThickness="2" BorderBrush="Black" Height="68">
+                                            <Image x:Name="avatar_image" Height="65" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding AvatarImage}"/>
+                                        </Border>
+
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="25, 0, 0, 0">
                                                 <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
                                             </StackPanel>
                                             <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->
-                                            <StackPanel Orientation="Horizontal" Margin="30 0 0 2">
-                                                <!--<Ellipse Visibility="{Binding IsLastMessageUnread}" Width="16" Height="16" Fill="{StaticResource PhoneAccentBrush}"></Ellipse>-->
+                                            <StackPanel Orientation="Horizontal" Margin="15 0 0 2">
                                                 <RichTextBox Tag="{Binding LastMessage}" FontSize="22" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
                                             </StackPanel>
                                         </StackPanel>
@@ -91,7 +92,7 @@
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4, 10, 0,0">
                         <Button Height="Auto" Tap="onProfilePicButtonTap">
                             <StackPanel Orientation="Horizontal" Margin="-15">
                                 <Border BorderBrush="Black" BorderThickness="3">
@@ -109,7 +110,7 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Margin="30, 30, 0,10" Orientation="Vertical" Grid.Row="1">
+                    <StackPanel Margin="0, 30, 0,10" Orientation="Vertical" Grid.Row="1">
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
                             <Image Source="images\notifications.png" Height="35"></Image>
                             <TextBlock Text="Notifications" Margin="15,4,0,0" FontSize="30"></TextBlock>
