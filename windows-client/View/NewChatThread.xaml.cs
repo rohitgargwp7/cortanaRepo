@@ -305,6 +305,11 @@ namespace windows_client.View
             {
                 GroupMembers gm = new GroupMembers(mContactNumber, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
                 groupMemberList.Add(gm);
+                if (Utils.GroupCache == null)
+                {
+                    Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+                }
                 if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
                 {
                     Utils.GroupCache.Add(contactsForGroup[i].Msisdn, new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
@@ -844,7 +849,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    MyChatBubble chatBubble = new NotificationChatBubble(HikeConstants.GROUP_CHAT, true);
+                    MyChatBubble chatBubble = new NotificationChatBubble(HikeConstants.GROUP_CHAT_END, true);
                     if (addToLast)
                     {
                         this.MessageList.Children.Add(chatBubble);

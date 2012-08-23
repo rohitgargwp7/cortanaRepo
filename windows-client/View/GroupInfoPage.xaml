@@ -44,8 +44,10 @@
                     </StackPanel>
                 </Button>
                 <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
-                    <TextBlock Foreground="Black" FontSize="25" Text="Group Name"/>
-                    <TextBlock x:Name="groupName" Text="Sample" Foreground="Black" FontSize="35"></TextBlock>
+                    <TextBlock Foreground="Black" FontSize="25" Opacity="0.6" Text="Group Name" Margin="0,2,0,0"/>
+                    <StackPanel Background="#e5e5e5" Orientation="Vertical" Margin="0,12,0,5" Height="Auto">
+                        <TextBlock Margin="10,0,0,5"  TextWrapping="Wrap" x:Name="groupName" Text="Sample" Foreground="Black" FontSize="30" Width="290"></TextBlock>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
 
@@ -66,7 +68,7 @@
             <StackPanel Grid.Row="3">
                 <Button Content="Invite SMS participants to hike" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" BorderBrush="Black" Width="380" Foreground="Black"></Button>
             </StackPanel>
-            
+
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
