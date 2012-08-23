@@ -719,6 +719,8 @@ namespace windows_client.View
 
         private void leaveGroup_Click(object sender, EventArgs e)
         {
+            if (!ConversationsList.ConvMap.ContainsKey(mContactNumber))
+                return;
             /*
              * 1. Delete from DB (pubsub)
              * 2. Remove from ConvList page
@@ -1340,8 +1342,7 @@ namespace windows_client.View
                             animatedOnce = false;
                         if (!animatedOnce)
                         {
-                            App.appSettings[HikeConstants.Extras.ANIMATED_ONCE] = true;
-                            App.appSettings.Save();
+                            App.WriteToIsoStorageSettings(HikeConstants.Extras.ANIMATED_ONCE, true);
                         }
                     }
 

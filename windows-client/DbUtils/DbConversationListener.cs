@@ -27,7 +27,6 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.MESSAGE_SENT, this);
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
             mPubSub.addListener(HikePubSub.MESSAGE_DELETED, this);
-            mPubSub.addListener(HikePubSub.MESSAGE_FAILED, this);
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
@@ -44,7 +43,6 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.MESSAGE_SENT, this);
             mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED_READ, this);
             mPubSub.removeListener(HikePubSub.MESSAGE_DELETED, this);
-            mPubSub.removeListener(HikePubSub.MESSAGE_FAILED, this);
             mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
             mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
@@ -109,12 +107,6 @@ namespace windows_client.DbUtils
                     ConversationTableUtils.updateConversation(c);
                 }
                 // TODO :: persistence.removeMessage(msgId);
-            }
-            #endregion
-            #region MESSAGE_FAILED
-            else if (HikePubSub.MESSAGE_FAILED == type)  // server got msg from client 1 and sent back received msg receipt
-            {
-                updateDB(obj, (int)ConvMessage.State.SENT_FAILED);
             }
             #endregion
             #region BLOCK_USER
@@ -236,12 +228,6 @@ namespace windows_client.DbUtils
             obj[HikeConstants.TYPE] = type;
             obj[HikeConstants.DATA] = msisdn;
             return obj;
-        }
-
-        private void updateDB(object obj, int status)
-        {
-            long msgID = (long)obj;
-            MessagesTableUtils.updateMsgStatus(msgID, status);
         }
 
         private void updateDbBatch(long[] ids, int status)

@@ -96,7 +96,8 @@ namespace windows_client
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             base.OnBackKeyPress(e);
-            goBackLogic(); 
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
         }
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
         {

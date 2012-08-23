@@ -305,7 +305,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
-            mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }
@@ -319,7 +318,6 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
-            mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }
