@@ -130,9 +130,6 @@
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
-    <Compile Include="View\Chat.xaml.cs">
-      <DependentUpon>Chat.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ChatThread.xaml.cs">
       <DependentUpon>ChatThread.xaml</DependentUpon>
     </Compile>
@@ -192,10 +189,6 @@
     <Page Include="Controls\SentChatBubble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Chat.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ChatThread.xaml">
       <Generator>MSBuild:Compile</Generator>
