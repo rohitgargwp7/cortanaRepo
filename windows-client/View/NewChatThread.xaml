@@ -63,7 +63,7 @@
 
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="White">
-            <StackPanel Visibility="Collapsed" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
+            <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
 
                 <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="220">
                     <controls:PivotItem Margin="12,8,12,0">
