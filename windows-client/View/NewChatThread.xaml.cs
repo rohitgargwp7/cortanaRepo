@@ -308,7 +308,7 @@ namespace windows_client.View
                 if (Utils.GroupCache == null)
                 {
                     Utils.GroupCache = new Dictionary<string, GroupParticipant>();
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
                 if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
                 {
@@ -1131,7 +1131,7 @@ namespace windows_client.View
                 //HikeTitle.Opacity = 0.25;
                 //MessageList.Opacity = 0.25;
                 //bottomPanel.Opacity = 0.25;
-
+                overlayRectangle.Visibility = System.Windows.Visibility.Visible;
                 overlayRectangle.Opacity = 0.85;
                 HikeTitle.IsHitTestVisible = false;
                 MessageList.IsHitTestVisible = false;
@@ -1139,6 +1139,7 @@ namespace windows_client.View
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
                 sendIconButton.IsEnabled = false;
+                //                sendMsgTxtbox.IsHitTestVisible = false;
             }
             else
             {
@@ -1146,7 +1147,8 @@ namespace windows_client.View
                 //HikeTitle.Opacity = 1;
                 //MessageList.Opacity = 1;
                 //bottomPanel.Opacity = 1;
-                overlayRectangle.Opacity = 0;
+                overlayRectangle.Visibility = System.Windows.Visibility.Collapsed;
+
 
                 HikeTitle.IsHitTestVisible = true;
                 MessageList.IsHitTestVisible = true;
@@ -1154,6 +1156,7 @@ namespace windows_client.View
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
                 emoticonsIconButton.IsEnabled = true;
                 sendIconButton.IsEnabled = true;
+                //                sendMsgTxtbox.IsHitTestVisible = true;
             }
 
         }
