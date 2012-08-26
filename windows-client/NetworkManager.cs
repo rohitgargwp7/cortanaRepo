@@ -96,6 +96,8 @@ namespace windows_client
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage,false);
+                    if (obj == null)
+                        return;
                     object[] vals = new object[2];
                     vals[0] = convMessage;
                     vals[1] = obj;
@@ -173,7 +175,8 @@ namespace windows_client
             }
             else if ((USER_JOINED == type) || (USER_LEFT == type))
             {
-                string uMsisdn = (string)jsonObj[HikeConstants.DATA];
+                JObject o = (JObject)jsonObj[HikeConstants.DATA];
+                string uMsisdn = (string)o[HikeConstants.MSISDN];
                 bool joined = USER_JOINED == type;
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
@@ -245,10 +248,13 @@ namespace windows_client
                 string groupName = (string)jsonObj[HikeConstants.DATA];
                 string groupId = (string)jsonObj[HikeConstants.TO];
 
+                bool groupExist = ConversationTableUtils.updateGroupName(groupId, groupName);
+                if (!groupExist)
+                    return;
                 object[] vals = new object[2];
                 vals[0] = groupId;
                 vals[1] = groupName;
-                ConversationTableUtils.updateGroupName(groupId, groupName);
+                
                 bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                 if (goAhead)
                     this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
@@ -268,6 +274,8 @@ namespace windows_client
 
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg,false);
+                if (cObj == null)
+                    return;
                 GroupTableUtils.removeParticipantFromGroup(groupId, fromMsisdn);
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
                 if (gi == null)
@@ -317,12 +325,20 @@ namespace windows_client
 
         private void updateDB(long msgID, int status)
         {
+            Stopwatch st = Stopwatch.StartNew();
             MessagesTableUtils.updateMsgStatus(msgID, status);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
 
         private void updateDbBatch(long[] ids, int status)
         {
+            Stopwatch st = Stopwatch.StartNew();
             MessagesTableUtils.updateAllMsgStatus(ids, status);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
         }
     }
 }

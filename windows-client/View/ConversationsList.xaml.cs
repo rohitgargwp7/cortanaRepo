@@ -205,6 +205,8 @@ namespace windows_client.View
                     // Register for this notification only if you need to receive the notifications while your application is running.
                     pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
+                    if (pushChannel.ChannelUri == null)
+                        return;
                     System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
                     AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
                 }
@@ -258,11 +260,17 @@ namespace windows_client.View
             appBar.Buttons.Add(composeIconButton);
 
             /* Add Menu Items*/
-            ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
-            inviteUsersMenu.Text = INVITE_USERS;
-            inviteUsersMenu.Click += new EventHandler(inviteUsers_Click);
-            appBar.MenuItems.Add(inviteUsersMenu);
+            //ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
+            //inviteUsersMenu.Text = INVITE_USERS;
+            //inviteUsersMenu.Click += new EventHandler(inviteUsers_Click);
+            //appBar.MenuItems.Add(inviteUsersMenu);
             convListPagePivot.ApplicationBar = appBar;
+
+            ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
+            groupChatIconButton.Text = "Group Chat";
+            groupChatIconButton.Click += new EventHandler(createGroup_Click);
+            groupChatIconButton.IsEnabled = true;
+            appBar.MenuItems.Add(groupChatIconButton);
 
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = DELETE_ALL_CONVERSATIONS;
@@ -273,11 +281,6 @@ namespace windows_client.View
             delAccountMenu.Text = "delete account";
             delAccountMenu.Click += new EventHandler(deleteAccount_Click);
 
-            ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
-            groupChatIconButton.Text = "Group Chat";
-            groupChatIconButton.Click += new EventHandler(createGroup_Click);
-            groupChatIconButton.IsEnabled = true;
-            appBar.MenuItems.Add(groupChatIconButton);
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -300,7 +303,7 @@ namespace windows_client.View
             if (obj == null)
                 return;
             PhoneApplicationService.Current.State["objFromConversationPage"] = obj;
-            string uri = "/View/ChatThread.xaml";
+            string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
@@ -317,7 +320,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
-            mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }
@@ -331,7 +333,6 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
-            mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
         }

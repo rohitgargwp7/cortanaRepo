@@ -23,15 +23,23 @@
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
-        
-            <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-                <Image Source="images\hike_logo_small.png" Margin="25,20,0,0" HorizontalAlignment="Left" Height="34" Width="127"></Image>
-                <TextBlock Text="new chat" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Foreground="Black" Height="80"/>
-            </StackPanel>
-        
+
+        <!--<Image  Margin="1,25,0,15" HorizontalAlignment="Left" Height="40" Width="127">
+            <Image.Source>
+                <BitmapImage UriSource="images\hike_header.png" CreateOptions="BackgroundCreation"></BitmapImage>
+            </Image.Source>
+        </Image>-->
+
+
+
+        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
+            <Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>
+            <TextBlock Text="new chat" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Foreground="Black" Height="80"/>
+        </StackPanel>
+
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
-           
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -39,7 +47,7 @@
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
-            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,45"
+            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsBouncy="True"
@@ -78,14 +86,12 @@
                 </toolkit:LongListSelector.GroupHeaderTemplate>
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
-                                    <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
-                                        <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
-                                    </StackPanel>
+                        <StackPanel Orientation="Vertical" Margin="-18,0,0,0">
+                            <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
+                                <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
+                                    <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>

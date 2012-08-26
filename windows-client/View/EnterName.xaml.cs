@@ -14,7 +14,7 @@ namespace windows_client
     public partial class EnterName : PhoneApplicationPage
     {
         private string ac_name;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -23,7 +23,6 @@ namespace windows_client
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
-           
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
@@ -47,55 +46,34 @@ namespace windows_client
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             enterNameBtn.Opacity = 1;
-            enterNameBtn.Text = "Scanning contacts";
+            enterNameBtn.Text = "Scanning contacts.";
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
         }
 
         private void setName_Callback(JObject obj)
         {
-            Uri nextPage = null;
-
             if (obj == null || "ok" != (string)obj["stat"])
             {
-                if (!string.IsNullOrWhiteSpace(ac_name))
-                    nextIconButton.IsEnabled = true;
-                //logger.Info("HTTP", "Unable to set name");
-                // SHOW SOME TRY AGAIN MSG etc
-                return;
-            }
-           
-            nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-
-            int count = 1;
-            while (!App.Ab_scanned && count <=20)
-            {
-                if (!App.isABScanning)
-                {
-                    ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
-                }
-                Thread.Sleep(1 * 1000); //sleep for one second
-                count++;
-            }
-            if (!App.Ab_scanned) // timeout occured
-            {
-                // SHOW NETWORK ERROR
-                return;
-            }
-
-            //TODO :: Make WriteToIsolatedStorage in such a way that it takes list of key value pairs and save just once.
-            App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-            
-            /*This is used to avoid cross thread invokation exception*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => 
-            {
-                enterNameBtn.Text = "Getting you in";
-                Thread.Sleep(2 * 1000);
-                PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
-                NavigationService.Navigate(nextPage);
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
                 progressBar.IsEnabled = false;
-            });
+                if (!string.IsNullOrWhiteSpace(ac_name))
+                    nextIconButton.IsEnabled = true;
+                enterNameBtn.Text = "Error !! Name not set.... Try Again";
+                return;
+            }
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
+        }
+
+        public void processEnterName()
+        {
+            Uri nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+            enterNameBtn.Text = "Getting you in";
+            Thread.Sleep(2 * 1000);
+            PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
+            NavigationService.Navigate(nextPage);
+            progressBar.Visibility = System.Windows.Visibility.Collapsed;
+            progressBar.IsEnabled = false;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -117,8 +95,8 @@ namespace windows_client
 
         private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtBxEnterName.Background = textBoxBackground;
             txtBxEnterName.Hint = "Name";
+            txtBxEnterName.Foreground = textBoxBackground;
         }
 
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

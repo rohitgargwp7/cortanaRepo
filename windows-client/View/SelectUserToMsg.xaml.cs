@@ -350,7 +350,7 @@ namespace windows_client.View
                 return;
             PhoneApplicationService.Current.State["objFromSelectUserPage"] = contact;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
-            string uri = "/View/ChatThread.xaml";
+            string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
@@ -579,7 +579,7 @@ namespace windows_client.View
             }
             else
             {
-                string uri = "/View/ChatThread.xaml";
+                string uri = "/View/NewChatThread.xaml";
                 NavigationService.Navigate(new Uri(uri, UriKind.Relative));
             }
         }

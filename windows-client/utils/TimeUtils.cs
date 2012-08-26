@@ -20,11 +20,11 @@ namespace windows_client.utils
             if (span.Days < 1)
             {
                 messageTimeString.Append(String.Format("{0:00}",(messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}",(messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
-                return messageTimeString.ToString(); ;
+                return messageTimeString.ToString();
             }
             else if (span.Days < 7)
             {
-                return messageTime.DayOfWeek.ToString();
+                return messageTime.DayOfWeek.ToString().Substring(0, 3);
             }//TODO count no of days in that year
             else if (span.Days < 365)
             {
@@ -36,9 +36,40 @@ namespace windows_client.utils
                 messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month).Append("/").Append(messageTime.Year%100);
                 return messageTimeString.ToString();
             }
-
         }
 
+        public static string getTimeStringForChatThread(long timestamp)
+        {
+            long ticks = timestamp * 10000000;
+            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+            DateTime messageTime = new DateTime(ticks);
+            DateTime now = DateTime.UtcNow;
+
+            TimeSpan span = now.Subtract(messageTime);
+            messageTime = messageTime.AddHours(5);
+            messageTime = messageTime.AddMinutes(30);
+
+            StringBuilder messageTimeString = new StringBuilder();
+            if (span.Days < 1)
+            {
+                messageTimeString.Append(String.Format("{0:00}", (messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}", (messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
+                return messageTimeString.ToString();
+            }
+            else if (span.Days < 7)
+            {
+                messageTimeString.Append(messageTime.DayOfWeek.ToString().Substring(0, 3));
+            }//TODO count no of days in that year
+            else if (span.Days < 365)
+            {
+                messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month);
+            }
+            else
+            {
+                messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month).Append("/").Append(messageTime.Year % 100);
+            }
+            messageTimeString.Append(", ").Append(String.Format("{0:00}", (messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}", (messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
+            return messageTimeString.ToString();
+        }
 
         public static string getRelativeTime(long timestamp)
         {

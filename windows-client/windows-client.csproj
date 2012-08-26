@@ -83,6 +83,22 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LinkifiedTextBoxReceive.xaml.cs">
+      <DependentUpon>LinkifiedTextBoxReceive.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyChatBubble.cs" />
+    <Compile Include="Controls\NotificationChatBubble.xaml.cs">
+      <DependentUpon>NotificationChatBubble.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LinkifiedTextBox.xaml.cs">
+      <DependentUpon>LinkifiedTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ReceivedChatBubble.xaml.cs">
+      <DependentUpon>ReceivedChatBubble.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SentChatBubble.xaml.cs">
+      <DependentUpon>SentChatBubble.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -141,6 +157,9 @@
     <Compile Include="View\InviteUsers.xaml.cs">
       <DependentUpon>InviteUsers.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\NewChatThread.xaml.cs">
+      <DependentUpon>NewChatThread.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SelectUserToMsg.xaml.cs">
       <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
     </Compile>
@@ -158,6 +177,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\LinkifiedTextBoxReceive.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\NotificationChatBubble.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\LinkifiedTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ReceivedChatBubble.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SentChatBubble.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\ChatThread.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -187,6 +226,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\InviteUsers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -385,9 +428,9 @@
     <Content Include="View\images\icon_send.png" />
     <Content Include="View\images\icon_tick.png" />
     <Content Include="View\images\ic_avatar0.png" />
-    <Resource Include="View\images\ic_delivered.png" />
-    <Resource Include="View\images\ic_read.png" />
-    <Resource Include="View\images\ic_sent.png" />
+    <Content Include="View\images\ic_delivered.png" />
+    <Content Include="View\images\ic_read.png" />
+    <Content Include="View\images\ic_sent.png" />
     <Resource Include="View\images\Made_with_love.png" />
     <Resource Include="View\images\notifications.png" />
     <Content Include="View\images\logo_main.png" />

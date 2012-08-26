@@ -12,7 +12,7 @@ namespace windows_client
     public partial class EnterNumber : PhoneApplicationPage
     {
         string phoneNumber;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 227, 227, 223));
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -81,7 +81,7 @@ namespace windows_client
             }
             /*If all well*/
             App.WriteToIsoStorageSettings(App.MSISDN_SETTING, unauthedMSISDN);
-           
+
             Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 
@@ -95,6 +95,14 @@ namespace windows_client
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             enterPhoneBtn.Opacity = 0;
+            if (String.IsNullOrWhiteSpace(txtEnterPhone.Text))
+            {
+                nextIconButton.IsEnabled = false;
+            }
+            else
+            {
+                nextIconButton.IsEnabled = true;
+            }
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
@@ -113,17 +121,21 @@ namespace windows_client
 
         private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtEnterPhone.Text = "";
-            txtEnterPhone.Background = textBoxBackground;
             txtEnterPhone.Hint = "Phone Number";
+            txtEnterPhone.Foreground = textBoxBackground;
         }
 
         private void txtEnterPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
+            {
                 nextIconButton.IsEnabled = true;
+                txtEnterPhone.Foreground = textBoxBackground;
+            }
             else
+            {
                 nextIconButton.IsEnabled = false;
+            }
         }
     }
 }

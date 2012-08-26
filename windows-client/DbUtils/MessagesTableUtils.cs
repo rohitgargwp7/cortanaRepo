@@ -7,7 +7,9 @@ using System;
 using windows_client.utils;
 using System.Data.Linq;
 using Newtonsoft.Json.Linq;
+using windows_client.Controls;
 using System.Diagnostics;
+using System.Threading;
 
 namespace windows_client.DbUtils
 {
@@ -19,7 +21,7 @@ namespace windows_client.DbUtils
         public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
         {
             List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(DbCompiledQueries.chatsDbContext, msisdn).ToList<ConvMessage>();
-            return (res == null || res.Count == 0) ? null : res;          
+            return (res == null || res.Count == 0) ? null : res;
         }
 
         /* This queries messages table and get the last message for given msisdn*/
@@ -48,7 +50,7 @@ namespace windows_client.DbUtils
         /* Adds a chat message to message Table.*/
         public static void addMessage(ConvMessage convMessage)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 context.messages.InsertOnSubmit(convMessage);
                 context.SubmitChanges();
@@ -57,13 +59,20 @@ namespace windows_client.DbUtils
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    var currentPage = ((App)Application.Current).RootFrame.Content as ChatThread;
+                    var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                     if (currentPage != null)
                     {
                         if (convMessage.IsSent)
-                            currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
-                        else
-                            currentPage.IncomingMessages.Add(convMessage);
+                        {
+                            SentChatBubble sentChatBubble;
+                            currentPage.ConvMessageSentBubbleMap.TryGetValue(convMessage, out sentChatBubble);
+                            currentPage.ConvMessageSentBubbleMap.Remove(convMessage);
+                            currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                        }
+                        //if (convMessage.IsSent)
+                        //    currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
+                        //else
+                        //    currentPage.IncomingMessages.Add(convMessage);
                     }
                 });
             }
@@ -128,6 +137,9 @@ namespace windows_client.DbUtils
             ConversationListObject obj = null;
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
+                if (Utils.isGroupConversation(convMsg.Msisdn)&& !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
+                    return null;
+                
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
             }
@@ -137,6 +149,7 @@ namespace windows_client.DbUtils
                 obj.LastMessage = convMsg.Message;
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
+
                 App.WriteToIsoStorageSettings("CONV::" + convMsg.Msisdn,obj);
                 //App.ViewModel.ConvMsisdnsToUpdate.Add(convMsg.Msisdn);
                 //ConversationTableUtils.updateConversation(obj);
@@ -146,13 +159,19 @@ namespace windows_client.DbUtils
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;
             Debug.WriteLine("Time to add chat msg : {0}", msec1);
-                
             return obj;
+        }
+
+        private static void updateConvThreadPool(object p)
+        {
+            ConversationListObject obj = (ConversationListObject)p;
+            ConversationTableUtils.updateConversation(obj);
+            App.ViewModel.ConvMsisdnsToUpdate.Remove(obj.Msisdn);
         }
 
         public static void updateMsgStatus(long msgID, int val)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring+";Max Buffer Size = 1024"))
             {
                 ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
                 if (message != null)
@@ -171,11 +190,17 @@ namespace windows_client.DbUtils
 
         }
 
+        /// <summary>
+        /// Thread safe function to update msg status
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public static string updateAllMsgStatus(long[] ids, int status)
         {
             bool shouldSubmit = false;
             string msisdn = null;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
                 for (int i = 0; i < ids.Length; i++)
                 {
@@ -192,8 +217,10 @@ namespace windows_client.DbUtils
                 }
                 if (shouldSubmit)
                     SubmitWithConflictResolve(context);
+                shouldSubmit = false;
+                return msisdn;
             }
-            return msisdn;
+
         }
 
         public static void deleteAllMessages()
@@ -248,7 +275,7 @@ namespace windows_client.DbUtils
                     occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                 }
             }
-            // Submit succeeds on second try.
+            // Submit succeeds on second try.           
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
     }

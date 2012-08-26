@@ -75,6 +75,10 @@ namespace windows_client
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
 
+        public static string USER_JOINED = " has joined the group chat";
+        public static string USER_LEFT = " has left the group chat";
+        public static string GROUP_CHAT_END = "This group chat has end.";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
