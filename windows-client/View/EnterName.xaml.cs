@@ -53,8 +53,6 @@ namespace windows_client
 
         private void setName_Callback(JObject obj)
         {
-            Uri nextPage = null;
-
             if (obj == null || "ok" != (string)obj["stat"])
             {
                 progressBar.Visibility = System.Windows.Visibility.Collapsed;
@@ -62,61 +60,21 @@ namespace windows_client
                 if (!string.IsNullOrWhiteSpace(ac_name))
                     nextIconButton.IsEnabled = true;
                 enterNameBtn.Text = "Error !! Name not set.... Try Again";
-                //logger.Info("HTTP", "Unable to set name");
-                // SHOW SOME TRY AGAIN MSG etc
                 return;
             }
-           
-            nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-
-            int count = 1;
-            while (!App.Ab_scanned && count <= 120)
-            {
-                if (!App.isABScanning)
-                {
-                    ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
-                }
-                Thread.Sleep(1 * 1000); //sleep for one second
-                count++;
-            }
-            while (!App.Ab_scanned) // timeout occured
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        MessageBoxResult result = MessageBox.Show("Scanning contacts taking time.", "Continue ?", MessageBoxButton.OKCancel);
-                        if (result == MessageBoxResult.Cancel)
-                        {
-                            progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                            progressBar.IsEnabled = false;
-                            // show some log msg
-                            enterNameBtn.Text = "Try Again Later!!";
-                            return;
-                        }
-                    });
-                count = 1;
-                while (!App.Ab_scanned && count <= 40)
-                {
-                    if (!App.isABScanning)
-                    {
-                        ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
-                    }
-                    Thread.Sleep(1 * 1000); //sleep for one second
-                    count++;
-                }
-            }
-
-            App.WriteToIsoStorageSettings(App.ACCOUNT_NAME,ac_name);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-            /*This is used to avoid cross thread invokation exception*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => 
-            {
-                enterNameBtn.Text = "Getting you in";
-                Thread.Sleep(2 * 1000);
-                PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
-                NavigationService.Navigate(nextPage);
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                progressBar.IsEnabled = false;
-            });
+            App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
+        }
+
+        public void processEnterName()
+        {
+            Uri nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+            enterNameBtn.Text = "Getting you in";
+            Thread.Sleep(2 * 1000);
+            PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
+            NavigationService.Navigate(nextPage);
+            progressBar.Visibility = System.Windows.Visibility.Collapsed;
+            progressBar.IsEnabled = false;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

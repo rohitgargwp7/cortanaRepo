@@ -203,6 +203,8 @@ namespace windows_client.View
                     // Register for this notification only if you need to receive the notifications while your application is running.
                     pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
+                    if (pushChannel.ChannelUri == null)
+                        return;
                     System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
                     AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
                 }

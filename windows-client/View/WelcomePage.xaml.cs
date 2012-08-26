@@ -40,9 +40,9 @@ namespace windows_client
         {
             if (isClicked)
                 return;
-            App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
+            if(App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
+                App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             isClicked = true;
-//            GetStarted.Content = "Pulling your digits.";
             progressBar.Visibility = System.Windows.Visibility.Visible;
             progressBar.IsEnabled = true;
             AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));

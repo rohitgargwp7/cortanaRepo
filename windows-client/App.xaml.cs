@@ -39,6 +39,7 @@ namespace windows_client
         public static readonly string INVITED_JOINED = "invitedJoined";
         public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
         public static readonly string GROUPS_CACHE = "GroupsCache";
+        public static readonly string IS_DB_CREATED = "is_db_created";
         public static object lockObj = new object();
 
         #endregion
@@ -46,7 +47,6 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        public static bool isDbCreated = false;
         public static string MSISDN;
         private static bool ab_scanned = false;
         public static bool isABScanning = false;
@@ -352,6 +352,10 @@ namespace windows_client
                     {
                         ab_scanned = true;
                     }
+                    else
+                    {
+                        ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
+                    }
                     break;
                 case PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -415,59 +419,46 @@ namespace windows_client
 
         public static void createDatabaseAsync()
         {
+            if (App.appSettings.Contains(App.IS_DB_CREATED)) // shows db are created
+                return;
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += new DoWorkEventHandler(createDbsAsync);
+            bw.DoWork += (s,e) => 
+            {
+                // Create the database if it does not exist.
+                Stopwatch st = Stopwatch.StartNew();
+                using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
+                {
+                    if (db.DatabaseExists() == false)
+                        db.CreateDatabase();
+                }
+
+                using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
+                {
+                    if (db.DatabaseExists() == false)
+                        db.CreateDatabase();
+                }
+
+                using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
+                {
+                    if (db.DatabaseExists() == false)
+                        db.CreateDatabase();
+                }
+                WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
+            };
             bw.RunWorkerAsync();
-        }
-
-        private static void createDbsAsync(object sender, DoWorkEventArgs e)
-        {
-            // Create the database if it does not exist.
-            Stopwatch st = Stopwatch.StartNew();
-            using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
-            {
-                if (db.DatabaseExists() == false)
-                    db.CreateDatabase();
-            }
-
-            using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
-            {
-                if (db.DatabaseExists() == false)
-                    db.CreateDatabase();
-            }
-
-            using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
-            {
-                if (db.DatabaseExists() == false)
-                    db.CreateDatabase();
-            }
-            isDbCreated = true;
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
         }
 
         public static void clearAllDatabasesAsync()
         {
             BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.DoWork += new DoWorkEventHandler(clearAllDbsAsync);
-            bw.RunWorkerAsync();
-        }
-
-        private static void clearAllDbsAsync(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
+            bw.DoWork += (s,e) => 
             {
                 MiscDBUtil.clearDatabase();
-            }
-
+            };
+            bw.RunWorkerAsync();
         }
 
         private void updateConversations()
