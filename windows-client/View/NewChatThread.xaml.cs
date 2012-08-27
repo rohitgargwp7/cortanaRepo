@@ -314,7 +314,7 @@ namespace windows_client.View
                     Utils.GroupCache.Add(contactsForGroup[i].Msisdn, new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
                 }
             }
-            JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, groupMemberList, true);
+            JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, groupMemberList, isNewgroup);
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             if (isNewgroup)

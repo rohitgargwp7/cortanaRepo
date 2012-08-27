@@ -177,7 +177,11 @@ namespace windows_client.utils
             {
                 UsersTableUtils.deleteAllContacts();
                 UsersTableUtils.deleteBlocklist();
+                Stopwatch st = Stopwatch.StartNew();
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to add addressbook {0}",msec);
                 UsersTableUtils.addBlockList(blockList);
 
                 App.Ab_scanned = true;
