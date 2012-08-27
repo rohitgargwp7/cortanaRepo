@@ -5,11 +5,14 @@ using System.Data.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.IO.IsolatedStorage;
 
 namespace windows_client.DbUtils
 {
     public class MiscDBUtil
     {
+        private static object lockObj = new object();
+        public static readonly string THUMBNAILS = "THUMBNAILS";
         public static void clearDatabase()
         {
             #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS
@@ -44,7 +47,6 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
-                context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
                 context.users.DeleteAllOnSubmit<ContactInfo>(context.GetTable<ContactInfo>());
                 try
                 {
@@ -92,104 +94,39 @@ namespace windows_client.DbUtils
             }
             #endregion
         }
-        
-        public static void addOrUpdateProfileIcon(string msisdn, byte[] image)
+
+        public static void saveAvatarImage(string msisdn, byte[] imageBytes)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            string FileName = THUMBNAILS+"\\"+msisdn;
+            lock (lockObj)
             {
-                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
-                Thumbnails thumbnail = (res == null || res.Count == 0) ? null : res.First();                  
-
-                if (thumbnail == null)
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
-                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));
-                }
-                else
-                {
-                    thumbnail.Avatar = image;
-                }
-                try
-                {
-                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
-                }
-
-                catch (ChangeConflictException e)
-                {
-                    Debug.WriteLine(e.Message);
-                    // Automerge database values for members that client
-                    // has not modified.
-                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, store))
                     {
-                        occ.Resolve(RefreshMode.KeepChanges);
+                        stream.Write(imageBytes, 0, imageBytes.Length);
                     }
                 }
-                // Submit succeeds on second try.
-                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
         }
 
-        public static void addOrUpdateIcon(string msisdn, byte[] image)
+        public static byte [] getThumbNailForMSisdn(string msisdn)
         {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            byte[] data = null;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                Thumbnails thumbnail = DbCompiledQueries.GetIconForMsisdn(context, msisdn).FirstOrDefault<Thumbnails>();
-                if (thumbnail == null)
+                if (store.FileExists(THUMBNAILS +"\\"+ msisdn)) // Check if file exists
                 {
-                    ContactInfo contact = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).FirstOrDefault<ContactInfo>();
-                    if (contact == null)
-                        return;
-                    contact.HasCustomPhoto = true;
-                    context.thumbnails.InsertOnSubmit(new Thumbnails(msisdn, image));                                       
-                }
-                else
-                {
-                    thumbnail.Avatar = image;
-                }
-                try
-                {
-                    context.SubmitChanges(ConflictMode.ContinueOnConflict);
-                }
-
-                catch (ChangeConflictException e)
-                {
-                    Debug.WriteLine(e.Message);
-                    // Automerge database values for members that client
-                    // has not modified.
-                    foreach (ObjectChangeConflict occ in context.ChangeConflicts)
+                    using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn, FileMode.Open, FileAccess.Read))
                     {
-                        occ.Resolve(RefreshMode.KeepChanges);
+                        data = new byte[isfs.Length];
+                        // Read the entire file and then close it
+                        isfs.Read(data, 0, data.Length);
+                        isfs.Close();
                     }
                 }
-                // Submit succeeds on second try.
-                context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
+            return data;
         }
-
-        public static List<Thumbnails> getAllThumbNails()
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<Thumbnails> res = DbCompiledQueries.GetAllIcons(context).ToList<Thumbnails>();
-                return (res == null || res.Count == 0) ? null : res;                   
-            }
-        }
-
-        public static Thumbnails getThumbNailForMSisdn(string msisdn)
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<Thumbnails> res = DbCompiledQueries.GetIconForMsisdn(context, msisdn).ToList<Thumbnails>();
-                return (res == null || res.Count == 0) ? null : res.First();                   
-            }
-        }
-
-        public static void deleteAllThumbnails()
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                context.thumbnails.DeleteAllOnSubmit<Thumbnails>(context.GetTable<Thumbnails>());
-            }
-        }
-
     }
 }

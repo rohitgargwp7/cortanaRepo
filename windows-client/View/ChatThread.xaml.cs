@@ -231,15 +231,14 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
                 if (obj.HasCustomPhoto)
                 {
-                    Thumbnails pic = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
-                    if (pic == null || pic.Avatar == null)
+                    byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
+                    if (avatar == null)
                     {
                         userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
                     }
                     else
                     {
-                        byte[] _avatar = pic.Avatar;
-                        MemoryStream memStream = new MemoryStream(_avatar);
+                        MemoryStream memStream = new MemoryStream(avatar);
                         memStream.Seek(0, SeekOrigin.Begin);
                         BitmapImage empImage = new BitmapImage();
                         empImage.SetSource(memStream);

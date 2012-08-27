@@ -356,8 +356,7 @@ namespace windows_client.View
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Stopwatch st = Stopwatch.StartNew();
-            byte [] _avatar = null;
-            App.appSettings.TryGetValue(HikeConstants.MY_PROFILE_PIC,out _avatar);
+            byte[] _avatar = MiscDBUtil.getThumbNailForMSisdn(HikeConstants.MY_PROFILE_PIC);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to fetch profile image : {0}",msec);
@@ -366,7 +365,6 @@ namespace windows_client.View
             {
                 MemoryStream memStream = new MemoryStream(_avatar);
                 memStream.Seek(0, SeekOrigin.Begin);
-
                 BitmapImage empImage = new BitmapImage();
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;

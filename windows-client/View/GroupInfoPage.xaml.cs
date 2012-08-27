@@ -33,13 +33,13 @@ namespace windows_client.View
             photoChooserTask.PixelWidth = 95;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            Thumbnails pic = MiscDBUtil.getThumbNailForMSisdn(groupId);
-            if (pic == null || pic.Avatar == null)
+            string grpId = groupId.Replace(":", "_");
+            byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(groupId);
+            if (avatar == null)
                 groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; // TODO : change to default groupImage once done
             else
             {
-                byte[] _avatar = pic.Avatar;
-                MemoryStream memStream = new MemoryStream(_avatar);
+                MemoryStream memStream = new MemoryStream(avatar);
                 memStream.Seek(0, SeekOrigin.Begin);
                 BitmapImage empImage = new BitmapImage();
                 empImage.SetSource(memStream);

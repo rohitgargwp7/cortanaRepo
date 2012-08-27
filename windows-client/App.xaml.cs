@@ -429,6 +429,13 @@ namespace windows_client
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s,e) => 
             {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
+                    {
+                        store.CreateDirectory(MiscDBUtil.THUMBNAILS);
+                    }
+                }
                 // Create the database if it does not exist.
                 Stopwatch st = Stopwatch.StartNew();
                 using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))

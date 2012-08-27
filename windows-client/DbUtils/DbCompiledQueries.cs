@@ -290,35 +290,5 @@ namespace windows_client.DbUtils
 
         #endregion
 
-        #region MiscTable Queries
-
-        public static Func<HikeUsersDb, IQueryable<Thumbnails>> GetAllIcons
-        {
-            get
-            {
-                Func<HikeUsersDb, IQueryable<Thumbnails>> q =
-                  CompiledQuery.Compile<HikeUsersDb, IQueryable<Thumbnails>>
-                  ((HikeUsersDb hdc) =>
-                      from o in hdc.thumbnails
-                      select o);
-                return q;
-            }
-        }
-
-        public static Func<HikeUsersDb, string, IQueryable<Thumbnails>> GetIconForMsisdn
-        {
-            get
-            {
-                Func<HikeUsersDb, string, IQueryable<Thumbnails>> q =
-                   CompiledQuery.Compile<HikeUsersDb, string, IQueryable<Thumbnails>>
-                   ((HikeUsersDb hdc, string m) =>
-                       from o in hdc.thumbnails
-                       where o.Msisdn == m
-                       select o);
-                return q;
-            }
-        }
-
-        #endregion
     }
 }

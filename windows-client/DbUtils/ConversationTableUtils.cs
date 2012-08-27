@@ -68,9 +68,9 @@ namespace windows_client.DbUtils
             else
             {
                 ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                Thumbnails thumbnail = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+                byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
                 obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
-                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, thumbnail == null ? null : thumbnail.Avatar, convMessage.MessageStatus);
+                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus);
             }
 
             App.WriteToIsoStorageSettings("CONV::" + convMessage.Msisdn, obj);
