@@ -108,6 +108,7 @@ namespace windows_client
         {
             App.appSettings.Remove(App.MSISDN_SETTING);
             App.appSettings.Save();
+
             if (NavigationService.CanGoBack)
             {
                 NavigationService.GoBack();

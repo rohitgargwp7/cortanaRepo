@@ -78,6 +78,7 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="mscorlib.extensions" />
+    <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -114,7 +115,7 @@
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
-    <Compile Include="Model\MiscDatabase.cs" />
+    <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\DisconnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />

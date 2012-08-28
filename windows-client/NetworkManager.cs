@@ -8,7 +8,9 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
-using windows_client.View;
+using System.IO.IsolatedStorage;
+using System.Windows.Resources;
+using System.IO;
 
 namespace windows_client
 {
@@ -42,6 +44,9 @@ namespace windows_client
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
+
+        private static long totalTime = 0;
+        private static int numberOfImages = 0;
 
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -195,7 +200,18 @@ namespace windows_client
                 vals[1] = imageBytes;
 
                 this.pubSub.publish(HikePubSub.UPDATE_UI, vals);
-                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
+                Stopwatch st = Stopwatch.StartNew();
+                if (Utils.isGroupConversation(msisdn))
+                {
+                    // ':' is not supported in Isolated Storage so replacing it with '_'
+                    string grpId = msisdn.Replace(":","_");
+                    MiscDBUtil.saveAvatarImage(grpId, imageBytes);
+                }
+                else
+                    MiscDBUtil.saveAvatarImage(msisdn, imageBytes);
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to save image for msisdn {0} : {1}",msisdn,msec);
                 ConversationTableUtils.updateImage(msisdn, imageBytes);
             }
             else if (INVITE_INFO == type)

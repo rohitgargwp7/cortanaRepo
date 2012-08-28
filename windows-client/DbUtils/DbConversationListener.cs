@@ -134,10 +134,16 @@ namespace windows_client.DbUtils
                 string msisdn = (string)vals[0];
                 MemoryStream msSmallImage = (MemoryStream)vals[1];
                 MemoryStream msLargeImage = (MemoryStream)vals[2];
-                MiscDBUtil.addOrUpdateProfileIcon(msisdn, msSmallImage.ToArray());
-                //null in case of group profile pic
-                if(msLargeImage!=null)
-                    MiscDBUtil.addOrUpdateProfileIcon(msisdn + "::large", msLargeImage.ToArray());
+                if (Utils.isGroupConversation(msisdn))
+                {
+                    string grpId = msisdn.Replace(":","_");
+                    MiscDBUtil.saveAvatarImage(grpId, msSmallImage.ToArray());
+                }
+                else
+                {
+                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC + "_small", msSmallImage.ToArray());
+                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, msLargeImage.ToArray());
+                }
             }
             #endregion
             #region DELETE ACCOUNT

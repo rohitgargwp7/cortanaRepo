@@ -9,11 +9,11 @@ namespace windows_client.utils
 {
     public class UI_Utils
     {
-        public static readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-        public static readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-        public static readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
-        public static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
-        public static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
+        private readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+        private readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
+        private readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
+        private readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
 
         private BitmapImage onHikeImage = null;
         private BitmapImage notOnHikeImage = null;
@@ -52,6 +52,22 @@ namespace windows_client.utils
                 }
 
                 return instance;
+            }
+        }
+
+        public SolidColorBrush SmsBackground
+        {
+            get
+            {
+                return smsBackground;
+            }
+        }
+
+        public SolidColorBrush HikeMsgBackground
+        {
+            get
+            {
+                return hikeMsgBackground;
             }
         }
 
@@ -110,7 +126,7 @@ namespace windows_client.utils
             }
         }
 
-        public static Paragraph Linkify(string message)
+        public Paragraph Linkify(string message)
         {
             MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(message);
             var p = new Paragraph();

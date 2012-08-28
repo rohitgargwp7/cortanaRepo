@@ -177,9 +177,15 @@ namespace windows_client.utils
             {
                 UsersTableUtils.deleteAllContacts();
                 UsersTableUtils.deleteBlocklist();
+                Stopwatch st = Stopwatch.StartNew();
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to add addressbook {0}",msec);
                 UsersTableUtils.addBlockList(blockList);
-                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED, true);
+
+                App.Ab_scanned = true;
+                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED,true);
             }
             App.Ab_scanned = true;
             App.isABScanning = false;

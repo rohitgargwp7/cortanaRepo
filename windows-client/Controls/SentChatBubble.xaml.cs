@@ -33,11 +33,11 @@ namespace windows_client.Controls
             //IsSms is false for group chat
             if (cm.IsSms)
             {
-                bubbleColor = UI_Utils.smsBackground;
+                bubbleColor = UI_Utils.Instance.SmsBackground;
             }
             else
             {
-                bubbleColor = UI_Utils.hikeMsgBackground;
+                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
             }
             switch (cm.MessageStatus)
             { 

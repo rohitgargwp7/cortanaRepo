@@ -23,7 +23,6 @@ namespace windows_client
             InitializeComponent();
             this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
-
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;

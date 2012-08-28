@@ -40,7 +40,6 @@ namespace windows_client
         public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
         public static readonly string GROUPS_CACHE = "GroupsCache";
         public static readonly string IS_DB_CREATED = "is_db_created";
-        public static object lockObj = new object();
 
         #endregion
 
@@ -57,6 +56,8 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Dictionary<string, GroupParticipant> groupsCache = null;
+
+        private static object lockObj = new object();
 
         #endregion
 
@@ -244,7 +245,9 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             updateConversations();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+            if (Utils.GroupCache == null)
+                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -252,6 +255,8 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             updateConversations();
+            if (Utils.GroupCache == null)
+                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
@@ -424,6 +429,13 @@ namespace windows_client
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s,e) => 
             {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
+                    {
+                        store.CreateDirectory(MiscDBUtil.THUMBNAILS);
+                    }
+                }
                 // Create the database if it does not exist.
                 Stopwatch st = Stopwatch.StartNew();
                 using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
@@ -475,6 +487,8 @@ namespace windows_client
                         ConversationListObject obj = ConversationsList.ConvMap[msisdn];
                         IQueryable<ConversationListObject> q = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn);
                         ConversationListObject cObj = q.FirstOrDefault();
+                        if (cObj == null)
+                            return;
                         cObj.MessageStatus = obj.MessageStatus;
                         cObj.LastMessage = obj.LastMessage;
                         cObj.TimeStamp = obj.TimeStamp;
@@ -488,8 +502,7 @@ namespace windows_client
 
         /* This function should always be used to store values to isolated storage
          * Its a thread safe implemenatation to save values.
-        * */
-
+         * */
         public static void WriteToIsoStorageSettings(List<KeyValuePair<string,object>> kvlist)
         {
             if(kvlist == null)

@@ -81,6 +81,7 @@ namespace windows_client
             }
             /*If all well*/
             App.WriteToIsoStorageSettings(App.MSISDN_SETTING, unauthedMSISDN);
+
             Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation*/
             Deployment.Current.Dispatcher.BeginInvoke(() => 
