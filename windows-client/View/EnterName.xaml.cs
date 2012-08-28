@@ -61,12 +61,12 @@ namespace windows_client
                 enterNameBtn.Text = "Error !! Name not set.... Try Again";
                 return;
             }
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
             App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
         }
 
         public void processEnterName()
         {
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
             Uri nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
             enterNameBtn.Text = "Getting you in";
             Thread.Sleep(2 * 1000);

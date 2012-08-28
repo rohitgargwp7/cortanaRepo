@@ -15,6 +15,7 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Windows.Input;
+using System.Diagnostics;
 
 
 namespace windows_client.View
@@ -36,7 +37,7 @@ namespace windows_client.View
         private int smsUserCount = 0;
         private int existingGroupUsers = 1; // 1 because owner of the group is already included
         private int defaultGroupmembers = 0;
-       
+
         private Dictionary<string, List<MsisdnCordinates>> msisdnPositions = null;
         private Stack<int> indexOfAddedContacts = new Stack<int>();
         private bool textChangedFromDelete = false;
@@ -340,7 +341,7 @@ namespace windows_client.View
         private bool isNumber(string charsEntered)
         {
             long i = 0;
-            return long.TryParse(charsEntered,out i); 
+            return long.TryParse(charsEntered, out i);
         }
 
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -422,7 +423,7 @@ namespace windows_client.View
         {
             if (progress == null)
             {
-                progress = new MyProgressIndicator();
+                progress = new MyProgressIndicator("This may take a minute or two...");
             }
 
             disableAppBar();
@@ -431,57 +432,54 @@ namespace windows_client.View
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
         }
 
+        /* This callback is on background thread started by getContacts function */
         public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
         {
-            try
+
+            Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
+            Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
+            Dictionary<string, List<ContactInfo>> contacts_to_update = new Dictionary<string, List<ContactInfo>>();
+            foreach (string id in new_contacts_by_id.Keys)
             {
-                Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
-                Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
-                Dictionary<string, List<ContactInfo>> contacts_to_update = new Dictionary<string, List<ContactInfo>>();
-                foreach (string id in new_contacts_by_id.Keys)
+                List<ContactInfo> phList = new_contacts_by_id[id];
+                if (!hike_contacts_by_id.ContainsKey(id))
                 {
-                    List<ContactInfo> phList = new_contacts_by_id[id];
-                    if (!hike_contacts_by_id.ContainsKey(id))
-                    {
-                        contacts_to_update.Add(id, phList);
-                        continue;
-                    }
-
-                    List<ContactInfo> hkList = hike_contacts_by_id[id];
-                    if (!ContactUtils.areListsEqual(phList, hkList))
-                    {
-                        contacts_to_update.Add(id, phList);
-                    }
-                    hike_contacts_by_id.Remove(id);
-                }
-                new_contacts_by_id.Clear();
-                new_contacts_by_id = null;
-                /* If nothing is changed simply return without sending update request*/
-                if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
-                {
-                    Thread.Sleep(1000);
-                    progress.Hide();
-                    enableAppBar();
-                    canGoBack = true;
-                    App.isABScanning = false;
-                    return;
+                    contacts_to_update.Add(id, phList);
+                    continue;
                 }
 
-                JArray ids_json = new JArray();
-                foreach (string id in hike_contacts_by_id.Keys)
+                List<ContactInfo> hkList = hike_contacts_by_id[id];
+                if (!ContactUtils.areListsEqual(phList, hkList))
                 {
-                    ids_json.Add(id);
+                    contacts_to_update.Add(id, phList);
                 }
-                ContactUtils.contactsMap = contacts_to_update;
-                ContactUtils.hike_contactsMap = hike_contacts_by_id;
-
-                App.MqttManagerInstance.disconnectFromBroker(false);
-                NetworkManager.turnOffNetworkManager = true;
-                AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+                hike_contacts_by_id.Remove(id);
             }
-            catch (Exception)
+            new_contacts_by_id.Clear();
+            new_contacts_by_id = null;
+            /* If nothing is changed simply return without sending update request*/
+            if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
             {
+                Thread.Sleep(1000);
+                progress.Hide();
+                enableAppBar();
+                canGoBack = true;
+                App.isABScanning = false;
+                return;
             }
+
+            JArray ids_json = new JArray();
+            foreach (string id in hike_contacts_by_id.Keys)
+            {
+                ids_json.Add(id);
+            }
+            ContactUtils.contactsMap = contacts_to_update;
+            ContactUtils.hike_contactsMap = hike_contacts_by_id;
+
+            App.MqttManagerInstance.disconnectFromBroker(false);
+            NetworkManager.turnOffNetworkManager = true;
+            AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+
         }
 
         public class DelContacts

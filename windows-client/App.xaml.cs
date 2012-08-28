@@ -339,7 +339,6 @@ namespace windows_client
             switch (ps)
             {
                 case PageState.WELCOME_SCREEN:
-                    createDatabaseAsync();
                     nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
                     break;
                 case PageState.PHONE_SCREEN:

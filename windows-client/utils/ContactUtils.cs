@@ -170,9 +170,26 @@ namespace windows_client.utils
             }
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
+            int count =1;
+            while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 30)
+            {
+                Thread.Sleep(1 * 1000);
+                count++;
+            }
+            if (!App.appSettings.Contains(App.IS_DB_CREATED)) // if DB is not created for so long
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
 
-            while (!App.appSettings.Contains(App.IS_DB_CREATED))
-                Thread.Sleep(50);
+                    if (currentPage != null)
+                    {
+                        EnterName enterNamePage = (EnterName)currentPage;
+                        enterNamePage.enterNameBtn.Text = "Failed. Close App and try later !!";
+                    }
+                });
+            }
+
             if (addressbook != null)
             {
                 UsersTableUtils.deleteAllContacts();

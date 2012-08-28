@@ -217,17 +217,17 @@ namespace windows_client.View
         private static void LoadMessages()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            List<ConversationListObject> conversationList = new List<ConversationListObject>();
-            foreach (var key in App.appSettings.Keys)
-            {
-                string k = key.ToString();
-                if (k.StartsWith("CONV::"))
-                {
-                    ConversationListObject co =  (ConversationListObject)App.appSettings[k];
-                    conversationList.Add(co);
-                }
-            }
-            //List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
+            //List<ConversationListObject> conversationList = new List<ConversationListObject>();
+            //foreach (var key in App.appSettings.Keys)
+            //{
+            //    string k = key.ToString();
+            //    if (k.StartsWith("CONV::"))
+            //    {
+            //        ConversationListObject co =  (ConversationListObject)App.appSettings[k];
+            //        conversationList.Add(co);
+            //    }
+            //}
+            List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             Debug.WriteLine("Time to get {0} Conversations from DB : {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
@@ -457,7 +457,7 @@ namespace windows_client.View
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator();
+                progress = new MyProgressIndicator("Loading...");
             }
 
             disableAppBar();
@@ -472,6 +472,7 @@ namespace windows_client.View
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    MessageBoxResult result = MessageBox.Show("Could not deleting account now. Try again later.", "Delete Account Failed?", MessageBoxButton.OKCancel);
                     enableAppBar();
                     progress.Hide();
                 });
@@ -480,6 +481,7 @@ namespace windows_client.View
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
             appSettings.Clear();
+            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
 

@@ -73,13 +73,13 @@ namespace windows_client.DbUtils
                     contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus);
             }
 
-            App.WriteToIsoStorageSettings("CONV::" + convMessage.Msisdn, obj);
-            
-            /*using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            //App.WriteToIsoStorageSettings("CONV::" + convMessage.Msisdn, obj);
+
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {              
                     context.conversations.InsertOnSubmit(obj);
                     context.SubmitChanges();
-            }*/
+            }
 
             return obj;
         }

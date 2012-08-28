@@ -20,7 +20,7 @@ namespace windows_client
         public WelcomePage()
         {
             InitializeComponent();
-
+            App.createDatabaseAsync();                
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
