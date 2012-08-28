@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="windows_client.Controls.LinkifiedTextBox"
+﻿<UserControl x:Class="windows_client.Controls.LinkifiedTextBoxReceive"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,7 +10,7 @@
     
     <Grid x:Name="LayoutRoot">
         <StackPanel>
-            <RichTextBox x:Name="RichText" FontSize="24" TextWrapping="Wrap" Foreground="{Binding Foreground}" />
+            <RichTextBox x:Name="RichText" FontSize="24" TextWrapping="Wrap" Foreground="#535353" />
         </StackPanel>
     </Grid>
 </UserControl>

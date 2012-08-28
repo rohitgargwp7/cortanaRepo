@@ -96,6 +96,10 @@ namespace windows_client.utils
         }
         public static GroupParticipant getGroupParticipant(string name, string msisdn)
         {
+            if (groupCache == null)
+            {
+                groupCache = new Dictionary<string, GroupParticipant>();
+            }
             if (groupCache.ContainsKey(msisdn))
                 return groupCache[msisdn];
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);

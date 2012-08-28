@@ -395,11 +395,11 @@ namespace windows_client
             }
             else if (imgIndex < _emoticonImagesForList0.Length + _emoticonImagesForList1.Length)
             {
-                return _emoticonImagesForList0[imgIndex - _emoticonImagesForList0.Length];
+                return _emoticonImagesForList1[imgIndex - _emoticonImagesForList0.Length];
             }
             else 
             {
-                return _emoticonImagesForList0[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length];
+                return _emoticonImagesForList2[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length];
             }
         }
 

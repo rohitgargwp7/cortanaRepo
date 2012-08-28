@@ -8,7 +8,9 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
-using windows_client.View;
+using System.IO.IsolatedStorage;
+using System.Windows.Resources;
+using System.IO;
 
 namespace windows_client
 {
@@ -42,6 +44,9 @@ namespace windows_client
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
+
+        private static long totalTime = 0;
+        private static int numberOfImages = 0;
 
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -96,6 +101,8 @@ namespace windows_client
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage,false);
+                    if (obj == null)
+                        return;
                     object[] vals = new object[2];
                     vals[0] = convMessage;
                     vals[1] = obj;
@@ -117,8 +124,7 @@ namespace windows_client
             else if (SMS_CREDITS == type) /* SMS CREDITS */
             {
                 int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
-                App.appSettings[App.SMS_SETTING] = sms_credits;
-                App.appSettings.Save();
+                App.WriteToIsoStorageSettings(App.SMS_SETTING,sms_credits);
                 this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
             }
             else if (SERVER_REPORT == type) /* Represents Server has received the msg you sent */
@@ -174,7 +180,8 @@ namespace windows_client
             }
             else if ((USER_JOINED == type) || (USER_LEFT == type))
             {
-                string uMsisdn = (string)jsonObj[HikeConstants.DATA];
+                JObject o = (JObject)jsonObj[HikeConstants.DATA];
+                string uMsisdn = (string)o[HikeConstants.MSISDN];
                 bool joined = USER_JOINED == type;
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
@@ -193,7 +200,18 @@ namespace windows_client
                 vals[1] = imageBytes;
 
                 this.pubSub.publish(HikePubSub.UPDATE_UI, vals);
-                MiscDBUtil.addOrUpdateIcon(msisdn, imageBytes);
+                Stopwatch st = Stopwatch.StartNew();
+                if (Utils.isGroupConversation(msisdn))
+                {
+                    // ':' is not supported in Isolated Storage so replacing it with '_'
+                    string grpId = msisdn.Replace(":","_");
+                    MiscDBUtil.saveAvatarImage(grpId, imageBytes);
+                }
+                else
+                    MiscDBUtil.saveAvatarImage(msisdn, imageBytes);
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to save image for msisdn {0} : {1}",msisdn,msec);
                 ConversationTableUtils.updateImage(msisdn, imageBytes);
             }
             else if (INVITE_INFO == type)
@@ -246,10 +264,13 @@ namespace windows_client
                 string groupName = (string)jsonObj[HikeConstants.DATA];
                 string groupId = (string)jsonObj[HikeConstants.TO];
 
+                bool groupExist = ConversationTableUtils.updateGroupName(groupId, groupName);
+                if (!groupExist)
+                    return;
                 object[] vals = new object[2];
                 vals[0] = groupId;
                 vals[1] = groupName;
-                ConversationTableUtils.updateGroupName(groupId, groupName);
+                
                 bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                 if (goAhead)
                     this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
@@ -269,6 +290,8 @@ namespace windows_client
 
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg,false);
+                if (cObj == null)
+                    return;
                 GroupTableUtils.removeParticipantFromGroup(groupId, fromMsisdn);
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
                 if (gi == null)
@@ -318,12 +341,20 @@ namespace windows_client
 
         private void updateDB(long msgID, int status)
         {
+            Stopwatch st = Stopwatch.StartNew();
             MessagesTableUtils.updateMsgStatus(msgID, status);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
 
         private void updateDbBatch(long[] ids, int status)
         {
+            Stopwatch st = Stopwatch.StartNew();
             MessagesTableUtils.updateAllMsgStatus(ids, status);
+            st.Stop();
+            long msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
         }
     }
 }

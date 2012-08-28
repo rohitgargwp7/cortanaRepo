@@ -10,6 +10,7 @@ using SharpCompress.Writer.GZip;
 using SharpCompress.Compressor.Deflate;
 using SharpCompress.Compressor;
 using System.Text;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
@@ -460,6 +461,8 @@ namespace windows_client.utils
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
                 KeyValuePair<string, JToken> kv;
+                int count = 0;
+                int totalContacts = 0;
                 while (keyVals.MoveNext())
                 {
                     kv = keyVals.Current;
@@ -469,12 +472,19 @@ namespace windows_client.utils
                     {
                         JObject entry = (JObject)entries[i];
                         string msisdn = (string)entry["msisdn"];
+                        if (string.IsNullOrWhiteSpace(msisdn))
+                        {
+                            count++;
+                            continue;
+                        }
                         bool onhike = (bool)entry["onhike"];
                         ContactInfo info = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
                         server_contacts.Add(info);
+                        totalContacts++;
                     }
                 }
-
+                Debug.WriteLine("Total contacts with no msisdn : {0}", count);
+                Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
                 return server_contacts;
             }
             catch (ArgumentException)

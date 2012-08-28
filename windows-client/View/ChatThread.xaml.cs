@@ -231,15 +231,14 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
                 if (obj.HasCustomPhoto)
                 {
-                    Thumbnails pic = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
-                    if (pic == null || pic.Avatar == null)
+                    byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
+                    if (avatar == null)
                     {
                         userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
                     }
                     else
                     {
-                        byte[] _avatar = pic.Avatar;
-                        MemoryStream memStream = new MemoryStream(_avatar);
+                        MemoryStream memStream = new MemoryStream(avatar);
                         memStream.Seek(0, SeekOrigin.Begin);
                         BitmapImage empImage = new BitmapImage();
                         empImage.SetSource(memStream);
@@ -292,6 +291,10 @@ namespace windows_client.View
             {
                 GroupMembers gm = new GroupMembers(mContactNumber, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
                 groupMemberList.Add(gm);
+                if (Utils.GroupCache == null)
+                {
+                    Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                }
                 if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
                 {
                     Utils.GroupCache.Add(contactsForGroup[i].Msisdn, new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
@@ -719,6 +722,8 @@ namespace windows_client.View
 
         private void leaveGroup_Click(object sender, EventArgs e)
         {
+            if (!ConversationsList.ConvMap.ContainsKey(mContactNumber))
+                return;
             /*
              * 1. Delete from DB (pubsub)
              * 2. Remove from ConvList page
@@ -1340,8 +1345,7 @@ namespace windows_client.View
                             animatedOnce = false;
                         if (!animatedOnce)
                         {
-                            App.appSettings[HikeConstants.Extras.ANIMATED_ONCE] = true;
-                            App.appSettings.Save();
+                            App.WriteToIsoStorageSettings(HikeConstants.Extras.ANIMATED_ONCE, true);
                         }
                     }
 

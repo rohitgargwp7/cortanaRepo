@@ -78,10 +78,14 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
     <Reference Include="mscorlib.extensions" />
+    <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LinkifiedTextBoxReceive.xaml.cs">
+      <DependentUpon>LinkifiedTextBoxReceive.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MyChatBubble.cs" />
     <Compile Include="Controls\NotificationChatBubble.xaml.cs">
@@ -111,7 +115,7 @@
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
-    <Compile Include="Model\MiscDatabase.cs" />
+    <Compile Include="Model\MiscDatabases.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\DisconnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -130,9 +134,6 @@
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
-    <Compile Include="View\Chat.xaml.cs">
-      <DependentUpon>Chat.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ChatThread.xaml.cs">
       <DependentUpon>ChatThread.xaml</DependentUpon>
     </Compile>
@@ -177,6 +178,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\LinkifiedTextBoxReceive.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\NotificationChatBubble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -192,10 +197,6 @@
     <Page Include="Controls\SentChatBubble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Chat.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ChatThread.xaml">
       <Generator>MSBuild:Compile</Generator>

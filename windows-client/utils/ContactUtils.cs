@@ -10,11 +10,15 @@ using Microsoft.Phone.Tasks;
 using windows_client.View;
 using System.Threading;
 using Phone.Controls;
+using System.Diagnostics;
+using System.ComponentModel;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.utils
 {
     public class ContactUtils
     {
+        private static Stopwatch st;
         public static Dictionary<string, List<ContactInfo>> contactsMap = null;
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
@@ -22,10 +26,19 @@ namespace windows_client.utils
 
         public static void getContacts(contacts_Callback callback)
         {
-            App.isABScanning = true;
-            Contacts cons = new Contacts();
-            cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
-            cons.SearchAsync(string.Empty, FilterKind.None, "State string 1");
+            st = Stopwatch.StartNew();
+            Debug.WriteLine("Get Contacts thread : {0}", Thread.CurrentThread.ToString());
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += (s, e) =>
+            {
+                Debug.WriteLine("Contacts async thread : {0}", Thread.CurrentThread.ToString());
+                App.isABScanning = true;
+                Contacts cons = new Contacts();
+                cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
+                cons.SearchAsync(string.Empty, FilterKind.None, "State string 1");
+            };
+            bw.RunWorkerAsync();
         }
 
         /* This is called when addressbook scanning on windows gets completed.*/
@@ -33,6 +46,11 @@ namespace windows_client.utils
         {
             try
             {
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to scan contacts from phone : {0}", msec);
+                
+                Debug.WriteLine("Contacts callback thread : {0}", Thread.CurrentThread.ToString());
                 IEnumerable<Contact> contacts = e.Results;
                 Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
                 contactsMap = contactListMap;
@@ -105,7 +123,7 @@ namespace windows_client.utils
 
         public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
-
+            int count = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
             if (contacts == null)
                 return null;
@@ -116,6 +134,11 @@ namespace windows_client.utils
 
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber))
+                    {
+                        count++;
+                        continue;
+                    }
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName, ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
@@ -131,12 +154,14 @@ namespace windows_client.utils
                     }
                 }
             }
+            Debug.WriteLine("Total contacts with no phone number : {0}", count);
             return contactListMap;
         }
 
         /* This is the callback function which is called when server returns the addressbook*/
         public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
         {
+            Debug.WriteLine("Post Addressbook callback thread : {0}", Thread.CurrentThread.ToString());
             // test this is called
             JObject obj = jsonForAddressBookAndBlockList;
             if (obj == null)
@@ -146,18 +171,39 @@ namespace windows_client.utils
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
 
-            while (!App.isDbCreated)
+            while (!App.appSettings.Contains(App.IS_DB_CREATED))
                 Thread.Sleep(50);
             if (addressbook != null)
             {
                 UsersTableUtils.deleteAllContacts();
                 UsersTableUtils.deleteBlocklist();
+                Stopwatch st = Stopwatch.StartNew();
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to add addressbook {0}",msec);
                 UsersTableUtils.addBlockList(blockList);
+
                 App.Ab_scanned = true;
-                App.appSettings[App.IS_ADDRESS_BOOK_SCANNED] = true;
-                App.appSettings.Save();
+                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED,true);
             }
+            App.Ab_scanned = true;
+            App.isABScanning = false;
+            
+            while (!App.appSettings.Contains(App.ACCOUNT_NAME))
+            {
+                Thread.Sleep(1 * 1000);
+            }
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
+                
+                if (currentPage != null)
+                {
+                    EnterName enterNamePage = (EnterName)currentPage;
+                    enterNamePage.processEnterName();
+                }
+            });
         }
 
         public static void saveContact(string phone)
