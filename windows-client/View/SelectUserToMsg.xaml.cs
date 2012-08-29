@@ -438,27 +438,27 @@ namespace windows_client.View
 
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
-            Dictionary<string, List<ContactInfo>> contacts_to_update = new Dictionary<string, List<ContactInfo>>();
+            Dictionary<string, List<ContactInfo>> contacts_to_update_or_add = new Dictionary<string, List<ContactInfo>>();
             foreach (string id in new_contacts_by_id.Keys)
             {
                 List<ContactInfo> phList = new_contacts_by_id[id];
                 if (!hike_contacts_by_id.ContainsKey(id))
                 {
-                    contacts_to_update.Add(id, phList);
+                    contacts_to_update_or_add.Add(id, phList);
                     continue;
                 }
 
                 List<ContactInfo> hkList = hike_contacts_by_id[id];
                 if (!ContactUtils.areListsEqual(phList, hkList))
                 {
-                    contacts_to_update.Add(id, phList);
+                    contacts_to_update_or_add.Add(id, phList);
                 }
                 hike_contacts_by_id.Remove(id);
             }
             new_contacts_by_id.Clear();
             new_contacts_by_id = null;
             /* If nothing is changed simply return without sending update request*/
-            if (contacts_to_update.Count == 0 && hike_contacts_by_id.Count == 0)
+            if (contacts_to_update_or_add.Count == 0 && hike_contacts_by_id.Count == 0)
             {
                 Thread.Sleep(1000);
                 progress.Hide();
@@ -468,17 +468,24 @@ namespace windows_client.View
                 return;
             }
 
-            JArray ids_json = new JArray();
+            JArray ids_to_delete = new JArray();
             foreach (string id in hike_contacts_by_id.Keys)
             {
-                ids_json.Add(id);
+                ids_to_delete.Add(id);
             }
-            ContactUtils.contactsMap = contacts_to_update;
+            
+            ContactUtils.contactsMap = contacts_to_update_or_add;
             ContactUtils.hike_contactsMap = hike_contacts_by_id;
 
             App.MqttManagerInstance.disconnectFromBroker(false);
             NetworkManager.turnOffNetworkManager = true;
-            AccountUtils.updateAddressBook(contacts_to_update, ids_json, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+
+            /*
+             * contacts_to_update : These are the contacts to add
+             * ids_json : These are the contacts to delete
+             */
+             
+            AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
 
         }
 

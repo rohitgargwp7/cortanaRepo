@@ -88,14 +88,14 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, contactListMap, finalCallbackFunction });
         }
 
-        public static void updateAddressBook(Dictionary<string, List<ContactInfo>> contacts_to_update, JArray ids_json, postResponseFunction finalCallbackFunction)
+        public static void updateAddressBook(Dictionary<string, List<ContactInfo>> contacts_to_update_or_add, JArray ids_to_delete, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/addressbook")) as HttpWebRequest;
             addToken(req);
             req.Method = "PATCH";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPDATE_ADDRESSBOOK, contacts_to_update, ids_json, finalCallbackFunction });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPDATE_ADDRESSBOOK, contacts_to_update_or_add, ids_to_delete, finalCallbackFunction });
         }
 
         public static void invite(string phone_no, postResponseFunction finalCallbackFunction)

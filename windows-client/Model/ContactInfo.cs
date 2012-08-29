@@ -230,9 +230,9 @@ namespace windows_client.Model
                 return false;
             ContactInfo other = (ContactInfo)obj;
            
-            if (Name == null)
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                if (other.Name != null)
+                if (!string.IsNullOrWhiteSpace(other.Name))
                     return false;
             }
             else if (Name.CompareTo(other.Name)!=0)
@@ -251,7 +251,7 @@ namespace windows_client.Model
         {
 		    const int prime = 31;
 		    int result = 1;
-		    result = prime * result +((Name == null) ? 0 : Name.GetHashCode());
+		    result = prime * result +((string.IsNullOrWhiteSpace(Name) == null) ? 0 : Name.GetHashCode());
             result = prime * result +((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
 		    return result;
         }

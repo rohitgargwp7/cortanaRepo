@@ -124,6 +124,7 @@ namespace windows_client.utils
         public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
             int count = 0;
+            int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
             if (contacts == null)
                 return null;
@@ -134,17 +135,23 @@ namespace windows_client.utils
 
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
-                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber))
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
                     {
                         count++;
                         continue;
                     }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName, ph.PhoneNumber);
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
-                        contactListMap[cInfo.Id].Add(cInfo);
+                        if (!contactListMap[cInfo.Id].Contains(cInfo))
+                            contactListMap[cInfo.Id].Add(cInfo);
+                        else
+                        {
+                            duplicates++;
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                        }
                     }
                     else
                     {
@@ -154,6 +161,7 @@ namespace windows_client.utils
                     }
                 }
             }
+            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
             return contactListMap;
         }
