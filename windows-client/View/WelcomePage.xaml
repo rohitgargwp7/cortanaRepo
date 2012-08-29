@@ -63,11 +63,12 @@
                 <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-57" Width="Auto" BorderThickness="0" Background="#2e91d3" VerticalAlignment="Bottom" >
                 </Button>-->
                 <Button Height="70" Margin="0,0,0,20" Content="Terms and Privacy" Width="280" HorizontalAlignment="Center" BorderBrush="Black" FontSize="20" FontStyle="Normal" Foreground="Black" BorderThickness="2"></Button>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="White" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="True" IsTabStop="True" Visibility="Visible" Opacity="0"/>
+
             </StackPanel>
             
 
         </Grid>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
-    </Grid>
+        </Grid>
 
 </phone:PhoneApplicationPage>

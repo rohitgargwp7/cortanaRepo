@@ -40,11 +40,11 @@ namespace windows_client
         {
             if (isClicked)
                 return;
+            nextIconButton.IsEnabled = false;
             if(App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
                 App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             isClicked = true;
-            progressBar.Visibility = System.Windows.Visibility.Visible;
-            progressBar.IsEnabled = true;
+            progressBar.Opacity = 1;
             AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
         }
 
@@ -59,8 +59,7 @@ namespace windows_client
                 {
                     //GetStarted.Content = "Network Error. Try Again.";
                     //GetStarted.Foreground = new SolidColorBrush(Colors.Red);
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                    progressBar.IsEnabled = false;
+                    progressBar.Opacity = 0;
                 });
                 isClicked = false;
                 return;
@@ -83,8 +82,7 @@ namespace windows_client
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             { 
                 NavigationService.Navigate(nextPage);
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                progressBar.IsEnabled = false; 
+                progressBar.Opacity = 0;
             });
         }
 
