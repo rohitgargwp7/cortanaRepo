@@ -54,11 +54,14 @@ namespace windows_client
         {
             if (obj == null || "ok" != (string)obj["stat"])
             {
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                progressBar.IsEnabled = false;
-                if (!string.IsNullOrWhiteSpace(ac_name))
-                    nextIconButton.IsEnabled = true;
-                enterNameBtn.Text = "Error !! Name not set.... Try Again";
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                        progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                        progressBar.IsEnabled = false;
+                        if (!string.IsNullOrWhiteSpace(ac_name))
+                            nextIconButton.IsEnabled = true;
+                        enterNameBtn.Text = "Error !! Name not set.... Try Again";
+                });
                 return;
             }
             App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);

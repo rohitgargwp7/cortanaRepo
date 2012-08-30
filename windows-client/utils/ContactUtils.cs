@@ -174,6 +174,18 @@ namespace windows_client.utils
             JObject obj = jsonForAddressBookAndBlockList;
             if (obj == null)
             {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
+
+                    if (currentPage != null)
+                    {
+                        EnterName enterNamePage = (EnterName)currentPage;
+                        enterNamePage.enterNameBtn.Text = "Contact Scanning failed!! Try Later";
+                        enterNamePage.progressBar.IsEnabled = true;
+                        enterNamePage.progressBar.Visibility = Visibility.Collapsed;
+                    }
+                });
                 return;
             }
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
@@ -208,8 +220,6 @@ namespace windows_client.utils
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add addressbook {0}",msec);
                 UsersTableUtils.addBlockList(blockList);
-
-                App.Ab_scanned = true;
                 App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED,true);
             }
             App.Ab_scanned = true;

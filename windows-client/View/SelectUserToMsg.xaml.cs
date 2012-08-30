@@ -16,12 +16,14 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 
 namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        private string TAP_MSG = "Tap here to message this person";
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
         private bool isGroupChat = false;
@@ -46,6 +48,8 @@ namespace windows_client.View
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
         ApplicationBarIconButton refreshIconButton = null;
+
+        ContactInfo defaultContact = new ContactInfo();
 
         public class MsisdnCordinates
         {
@@ -78,7 +82,7 @@ namespace windows_client.View
 
         public class Group<T> : IEnumerable<T>
         {
-            public Group(string name, List<T> items)
+            public Group(string name, ObservableCollection<T> items)
             {
                 this.Title = name;
                 this.Items = items;
@@ -100,7 +104,7 @@ namespace windows_client.View
                 set;
             }
 
-            public List<T> Items
+            public ObservableCollection<T> Items
             {
                 get;
                 set;
@@ -298,8 +302,8 @@ namespace windows_client.View
             List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>();
             foreach (char c in Groups)
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new List<ContactInfo>());
-                glist.Add(g);
+                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new ObservableCollection<ContactInfo>());
+                glist.Add(g);                
             }
             return glist;
         }
@@ -320,6 +324,7 @@ namespace windows_client.View
         {
             if (groupedList == null || groupedList.Count == 0)
                 return null;
+            bool showDefaultContact = true;
             List<Group<ContactInfo>> glistFiltered = createGroups();
             for (int i = 0; i < groupedList.Count; i++)
             {
@@ -329,17 +334,33 @@ namespace windows_client.View
                     if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
                     {
                         glistFiltered[i].Items.Add(cn);
+                        showDefaultContact = false;
                     }
                 }
             }
-            if (isNumber(charsEntered))
+            if (isNumber(charsEntered)&&showDefaultContact)
             {
+                glistFiltered[26].Items.Insert(0,defaultContact);
+                glistFiltered[26].Items[0].Name = charsEntered;
+                if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
+                {
+                    glistFiltered[26].Items[0].Msisdn = TAP_MSG;
+                }
+                else
+                {
+                    glistFiltered[26].Items[0].Msisdn = "Enter Valid Number";
+                }
             }
+           
             return glistFiltered;
         }
 
         private bool isNumber(string charsEntered)
         {
+            if(charsEntered.StartsWith("+")) // as in +91981 etc etc
+            {
+                charsEntered = charsEntered.Substring(1);
+            }
             long i = 0;
             return long.TryParse(charsEntered, out i);
         }
@@ -349,10 +370,36 @@ namespace windows_client.View
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null)
                 return;
+            if (contact.Msisdn == "Enter Valid Number")
+                return;
+            if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+            {
+                contact.Msisdn = normalizeNumber(contact.Name);
+            }
             PhoneApplicationService.Current.State["objFromSelectUserPage"] = contact;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        /*
+         * Simplistic normalization function.
+         * TODO: Improve it more later
+         */
+        private string normalizeNumber(string msisdn)
+        {
+            if(msisdn.StartsWith("+"))
+            {
+                return msisdn;
+            }
+            else if(msisdn.StartsWith("0"))
+            {
+                return "+91" + msisdn.Substring(1);
+            }
+            else
+            {
+                return "+91" + msisdn;
+            }
         }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
@@ -637,7 +684,7 @@ namespace windows_client.View
             for (int j = 0; j < ml.Count; j++)
             {
                 groupedList[ml[j].GroupIdx].Items.Add(ml[j].Contact);
-                groupedList[ml[j].GroupIdx].Items.Sort(Utils.CompareByName<ContactInfo>);
+                //groupedList[ml[j].GroupIdx].Items.Sort(Utils.CompareByName<ContactInfo>);
             }
             contactsListBox.ItemsSource = null;
             contactsListBox.ItemsSource = groupedList;
