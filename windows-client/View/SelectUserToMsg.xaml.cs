@@ -680,6 +680,8 @@ namespace windows_client.View
         }
         private void addBackDeletedContacts(ContactInfo contact)
         {
+            if (!msisdnPositions.ContainsKey(contact.Msisdn))
+                return;
             List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
             for (int j = 0; j < ml.Count; j++)
             {
@@ -696,6 +698,12 @@ namespace windows_client.View
 
             if (contact == null)
                 return;
+            if (contact.Msisdn == "Enter Valid Number")
+                return;
+            if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+            {
+                contact.Msisdn = normalizeNumber(contact.Name);
+            }
             if (contactsForgroup == null)
                 contactsForgroup = new List<ContactInfo>();
             if (smsUserCount == maxSMSUsersAllowed || existingGroupUsers == maxUsersAllowed)
@@ -724,6 +732,8 @@ namespace windows_client.View
 
         private void deleteContactFromGroupList(ContactInfo contact)
         {
+            if (!msisdnPositions.ContainsKey(contact.Msisdn))
+                return;
             List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
             for (int j = 0; j < ml.Count; j++)
             {
