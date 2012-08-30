@@ -262,7 +262,7 @@ namespace windows_client.View
                     continue;
                 string ch = GetCaptionGroup(c);
                 // calculate the index into the list
-                int index = (ch == "#") ? 0 : ch[0] - 'a' + 1;
+                int index = (ch == "#") ? 0 : ch[0] - 'a'+1;
                 // and add the entry
                 glist[index].Items.Add(c);
                 if (isGroupChat)
@@ -461,10 +461,13 @@ namespace windows_client.View
             if (contacts_to_update_or_add.Count == 0 && hike_contacts_by_id.Count == 0)
             {
                 Thread.Sleep(1000);
-                progress.Hide();
-                enableAppBar();
-                canGoBack = true;
-                App.isABScanning = false;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        progress.Hide();
+                        enableAppBar();
+                        canGoBack = true;
+                        App.isABScanning = false;
+                    });
                 return;
             }
 
