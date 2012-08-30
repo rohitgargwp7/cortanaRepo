@@ -122,8 +122,6 @@ namespace windows_client.Model
             }
         }
 
-
-        [Column(DbType="image")]
         public byte[] Avatar
         {
             get
@@ -134,7 +132,6 @@ namespace windows_client.Model
             {
                 if (_avatar != value)
                 {
-                    NotifyPropertyChanging("Avatar");
                     _avatar = value;
                     NotifyPropertyChanged("Avatar");
                     NotifyPropertyChanged("AvatarImage");

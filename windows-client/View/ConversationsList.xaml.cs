@@ -237,7 +237,14 @@ namespace windows_client.View
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
+                stopwatch.Reset(); stopwatch.Start();
+                byte[] _avatar = MiscDBUtil.getThumbNailForMSisdn(conversationList[i].Msisdn);
+                stopwatch.Stop();
+                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
                 ConversationListObject conv = conversationList[i];
+                Debug.WriteLine("Time to get Thumbnail for Msisdn {0} is {1} ms", conversationList[i].Msisdn, elapsedMilliseconds);
+            
+                conv.Avatar = _avatar;
                 convMap.Add(conv.Msisdn, conv);
                 App.ViewModel.MessageListPageCollection.Add(conv);
             }
