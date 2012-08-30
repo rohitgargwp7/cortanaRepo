@@ -685,8 +685,16 @@ namespace windows_client.View
             List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
             for (int j = 0; j < ml.Count; j++)
             {
-                groupedList[ml[j].GroupIdx].Items.Add(ml[j].Contact);
-                //groupedList[ml[j].GroupIdx].Items.Sort(Utils.CompareByName<ContactInfo>);
+                for (int k = 0; k < groupedList[ml[j].GroupIdx].Items.Count; k++)
+                {
+                    while (k < groupedList[ml[j].GroupIdx].Items.Count && groupedList[ml[j].GroupIdx].Items[k].CompareTo(contact) < 0)
+                        k++;
+                    if (k != groupedList[ml[j].GroupIdx].Items.Count)
+                        groupedList[ml[j].GroupIdx].Items.Insert(k, contact);
+                    else
+                        groupedList[ml[j].GroupIdx].Items.Add(contact);
+                    break;
+                }
             }
             contactsListBox.ItemsSource = null;
             contactsListBox.ItemsSource = groupedList;
