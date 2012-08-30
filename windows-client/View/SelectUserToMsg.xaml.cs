@@ -262,7 +262,7 @@ namespace windows_client.View
                     continue;
                 string ch = GetCaptionGroup(c);
                 // calculate the index into the list
-                int index = (ch == "#") ? 0 : ch[0] - 'a'+1;
+                int index = (ch == "#") ? 26 : ch[0] - 'a';
                 // and add the entry
                 glist[index].Items.Add(c);
                 if (isGroupChat)
@@ -294,7 +294,7 @@ namespace windows_client.View
 
         private List<Group<ContactInfo>> createGroups()
         {
-            string Groups = "#abcdefghijklmnopqrstuvwxyz";
+            string Groups = "abcdefghijklmnopqrstuvwxyz#";
             List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>();
             foreach (char c in Groups)
             {
