@@ -82,7 +82,7 @@ namespace windows_client.View
 
         public class Group<T> : IEnumerable<T>
         {
-            public Group(string name, ObservableCollection<T> items)
+            public Group(string name, List<T> items)
             {
                 this.Title = name;
                 this.Items = items;
@@ -104,7 +104,7 @@ namespace windows_client.View
                 set;
             }
 
-            public ObservableCollection<T> Items
+            public List<T> Items
             {
                 get;
                 set;
@@ -159,12 +159,20 @@ namespace windows_client.View
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             }
-            progressBar.Visibility = System.Windows.Visibility.Visible;
-            progressBar.IsEnabled = true;
+            progressBar.Opacity = 1;
+            List<ContactInfo> allContactsList = null;
             BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.DoWork += new DoWorkEventHandler(bw_LoadAllContacts);
+            bw.DoWork += (s,e)=>
+            {
+                allContactsList = UsersTableUtils.getAllContactsByGroup();
+            };
             bw.RunWorkerAsync();
+            bw.RunWorkerCompleted += (s, e) =>
+            {
+                groupedList = getGroupedList(allContactsList);
+                contactsListBox.ItemsSource = groupedList;
+                progressBar.Opacity = 0;
+            };
             initPage();
         }
 
@@ -205,27 +213,6 @@ namespace windows_client.View
         }
 
         #region  MAKE JUMP LIST
-
-        private void bw_LoadAllContacts(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                List<ContactInfo> allContactsList = UsersTableUtils.getAllContactsByGroup();
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    groupedList = getGroupedList(allContactsList);
-                    contactsListBox.ItemsSource = groupedList;
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                    progressBar.IsEnabled = false;
-
-                });
-            }
-        }
 
         private List<Group<ContactInfo>> getGroupedList(List<ContactInfo> allContactsList)
         {
@@ -302,7 +289,7 @@ namespace windows_client.View
             List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>();
             foreach (char c in Groups)
             {
-                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new ObservableCollection<ContactInfo>());
+                Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new List<ContactInfo>());
                 glist.Add(g);                
             }
             return glist;
@@ -443,8 +430,17 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = groupedList;
                 return;
             }
-            List<Group<ContactInfo>> glistFiltered = getFilteredContactsFromNameOrPhone(charsEntered);
-            contactsListBox.ItemsSource = glistFiltered;
+            List<Group<ContactInfo>> glistFiltered = null;
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (s, ev) =>
+            {
+                glistFiltered = getFilteredContactsFromNameOrPhone(charsEntered);
+            };
+            bw.RunWorkerAsync();
+            bw.RunWorkerCompleted += (s, ev) =>
+            {
+                contactsListBox.ItemsSource = glistFiltered;
+            };            
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
