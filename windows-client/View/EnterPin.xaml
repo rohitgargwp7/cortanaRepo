@@ -70,7 +70,7 @@
 
                 
                 <StackPanel Orientation="Horizontal" Height="50" Margin="0,25,0,0" >
-                    <TextBlock Text="Entered a wrong number" FontSize="20" Foreground="#4f4f4f" Margin="90,10,-10,5"></TextBlock>
+                    <TextBlock Text="Entered a wrong number ?" FontSize="20" Foreground="#4f4f4f" Margin="90,10,-10,5"></TextBlock>
                     <Button x:Name="btnWrongMsisdn" Content="Tap Here" Foreground="#399cdf" FontSize="20" Background="Transparent" BorderThickness="0" Height="65" Margin="0,-7,0,-8" Click="btnWrongMsisdn_Click"></Button>
                 </StackPanel>
                 <TextBlock x:Name="enterPhoneBtn" FontSize="22" Foreground="Black" Opacity="0" Margin="130,80,0,0"></TextBlock>
