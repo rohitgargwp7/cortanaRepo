@@ -110,6 +110,7 @@
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
+    <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupMembers.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
