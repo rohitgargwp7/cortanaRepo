@@ -101,6 +101,10 @@ namespace windows_client
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage,false);
+                    if (convMessage.FileAttachment != null)
+                    {
+                        convMessage.FileAttachment.storeThumbnailInIsolatedStorage(convMessage.MessageId);
+                    }
                     if (obj == null)
                         return;
                     object[] vals = new object[2];
