@@ -61,14 +61,15 @@ namespace windows_client.View
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
 
-        private ObservableCollection<ConvMessage> chatThreadPageCollection = new ObservableCollection<ConvMessage>();
+        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
         private Dictionary<ConvMessage, SentChatBubble> _convMessageSentBubbleMap = new Dictionary<ConvMessage, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         List<GroupMembers> groupMemberList = null;
 
-        public delegate void contextMenuItem_Tap(object sender, System.Windows.Input.GestureEventArgs e);
+        private Dictionary<string, RoutedEventHandler> _contextMenuDictionary;
+//        public delegate void contextMenuItem_Tap(object sender, System.Windows.Input.GestureEventArgs e);
 
         #endregion
 
@@ -133,6 +134,39 @@ namespace windows_client.View
                 return _convMessageSentBubbleMap;
             }
         }
+
+        public ObservableCollection<MyChatBubble> ChatThreadPageCollection
+        {
+            get
+            {
+                return chatThreadPageCollection;
+            }
+            set
+            {
+                chatThreadPageCollection = value;
+                NotifyPropertyChanged("ChatThreadPageCollection");
+            }
+        }
+
+        public Dictionary<string, RoutedEventHandler> ContextMenuDictionary
+        {
+            get
+            {
+                if (_contextMenuDictionary == null)
+                {
+                    _contextMenuDictionary = new Dictionary<string, RoutedEventHandler>();
+                    _contextMenuDictionary.Add("copy", MenuItem_Click_Copy);
+                    _contextMenuDictionary.Add("forward", MenuItem_Click_Forward);
+                    _contextMenuDictionary.Add("delete", MenuItem_Click_Delete);
+                }
+                return _contextMenuDictionary;
+            }
+            set
+            {
+                _contextMenuDictionary = value;
+            }
+        }
+
         #endregion
 
         #region PAGE BASED FUNCTIONS
@@ -794,8 +828,7 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        chatBubble = new SentChatBubble(convMessage,
-                            new RoutedEventHandler(MenuItem_Click_Copy), new RoutedEventHandler(MenuItem_Click_Forward));
+                        chatBubble = new SentChatBubble(convMessage, ContextMenuDictionary);
                         if (convMessage.MessageId != -1)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else
@@ -803,8 +836,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage,
-                            new RoutedEventHandler(MenuItem_Click_Copy), new RoutedEventHandler(MenuItem_Click_Forward));
+                        chatBubble = new ReceivedChatBubble(convMessage, ContextMenuDictionary);
 
                     }
                     if (addToLast)
@@ -1001,6 +1033,43 @@ namespace windows_client.View
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             Clipboard.SetText(chatBubble.Text);
         }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
+
+            if (msg == null)
+            {
+                return;
+            }
+            bool delConv = false;
+
+            //update Conversation list class
+            this.ChatThreadPageCollection.Remove(msg);
+            
+            ConversationListObject obj = ConversationsList.ConvMap[mContactNumber];
+            /* Remove the message from conversation list */
+            if (this.ChatThreadPageCollection.Count > 0)
+            {
+                //This updates the Conversation list.
+                obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Text;
+                obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
+                obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
+            }
+            else
+            {
+                // no message is left, simply remove the object from Conversation list 
+                App.ViewModel.MessageListPageCollection.Remove(obj);
+                ConversationsList.ConvMap.Remove(mContactNumber);
+                delConv = true;
+            }
+            object[] o = new object[3];
+            o[0] = msg.MessageId;
+            o[1] = obj;
+            o[2] = delConv;
+            mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
+        }
+
 
         #endregion
 
