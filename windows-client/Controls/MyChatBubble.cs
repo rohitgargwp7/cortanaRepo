@@ -11,11 +11,17 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Navigation;
+using windows_client.Model;
+using windows_client.utils;
+using System.Collections.Generic;
 
 namespace windows_client.Controls
 {
     public class MyChatBubble : UserControl
     {
+        private long _timeStampLong;
+        private long _messageId;
+        private ConvMessage.State _messageState;
 
         public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
 
@@ -36,47 +42,66 @@ namespace windows_client.Controls
             }
         }
 
+        //TODO: Try to use a single property for timestamp.
+        public long TimeStampLong
+        {
+            get
+            {
+                return _timeStampLong;
+            }
+            set
+            {
+                _timeStampLong = value;
+            }
+        }
+
+        public long MessageId
+        {
+            get
+            {
+                return _messageId;
+            }
+            set
+            {
+                _messageId = value;
+            }
+        }
+
+        public ConvMessage.State MessageStatus
+        {
+            get
+            {
+                return _messageState;
+            }
+            set
+            {
+                _messageState = value;
+            }
+        }
+
         public MyChatBubble()
         {
         }
 
-        public MyChatBubble(RoutedEventHandler copyClick, RoutedEventHandler forwardClick)
+        public MyChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
         {
+            this.Text = cm.Message;
+            this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
+            this._messageId = cm.MessageId;
+            this._timeStampLong = cm.Timestamp;
+            this._messageState = cm.MessageStatus;
+
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = false;
 
-            MenuItem copy = new MenuItem();
-            copy.Header = "copy";
-            copy.Click += copyClick;
-            menu.Items.Add(copy);
+            foreach (KeyValuePair<string, RoutedEventHandler> entry in contextMenuDictionary)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Header = entry.Key;
+                menuItem.Click += entry.Value;
+                menu.Items.Add(menuItem);
+            }
             ContextMenuService.SetContextMenu(this, menu);
-
-            MenuItem forward = new MenuItem();
-            forward.Header = "forward";
-            forward.Click += forwardClick;
-            menu.Items.Add(forward);
-            ContextMenuService.SetContextMenu(this, menu);
-
         }
-
-        void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            bool result = (sender is MyChatBubble);
-            int i = 32;
-            i++;
-        }
-
-
-        void MenuItem_Tap_Copy(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            Clipboard.SetText(this.Text);
-        }
-
-        //private void MenuItem_Tap_Forward(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    PhoneApplicationService.Current.State["forwardedText"] = this.Text;
-        //    NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Absolute));
-        //}
-
     }
 }

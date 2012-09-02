@@ -14,22 +14,18 @@ using windows_client.Model;
 using System.Windows.Media.Imaging;
 using windows_client.View;
 using Microsoft.Phone.Controls;
+using System.Collections.Generic;
 
 namespace windows_client.Controls
 {
     public partial class SentChatBubble : MyChatBubble {
         private SolidColorBrush bubbleColor;
         private ConvMessage.State messageState;
-        public SentChatBubble(ConvMessage cm,RoutedEventHandler copyClick, RoutedEventHandler forwardClick)
-            : base(copyClick, forwardClick)
+        public SentChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+            : base(cm, contextMenuDictionary)
         {
             // Required to initialize variables
             InitializeComponent();
-
-            //            this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
-
-            this.Text = cm.Message;
-            this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
             //IsSms is false for group chat
             if (cm.IsSms)
             {
