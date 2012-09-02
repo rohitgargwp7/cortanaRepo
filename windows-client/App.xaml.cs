@@ -433,6 +433,7 @@ namespace windows_client
                     if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
                     {
                         store.CreateDirectory(MiscDBUtil.THUMBNAILS);
+                        store.CreateDirectory(HikeConstants.FILE_TRANSFER);
                     }
                 }
                 // Create the database if it does not exist.
