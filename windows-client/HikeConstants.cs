@@ -31,6 +31,13 @@ namespace windows_client
         public static readonly string PIN_ERROR = "PinError";
         public static readonly string ADDRESS_BOOK_ERROR = "AddressBookError";
         public static readonly string CHANGE_NUMBER = "ChangeNumber";
+
+        public static readonly string FILE_NAME = "fn";
+        public static readonly string FILE_KEY = "fk";
+        public static readonly string FILE_THUMBNAIL = "tn";
+        public static readonly string FILE_TRANSFER = "Files";
+
+
         /* how long to wait between sending publish and receiving an acknowledgement */
 
         public static readonly long MESSAGE_DELIVERY_TIMEOUT = 5 * 1000;
