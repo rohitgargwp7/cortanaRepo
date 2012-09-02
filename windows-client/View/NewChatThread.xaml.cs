@@ -821,6 +821,11 @@ namespace windows_client.View
 
         private void AddMessageToUI(ConvMessage convMessage, bool addToLast)
         {
+            if (!String.IsNullOrEmpty(convMessage.AttachmentName))
+            {
+                convMessage.FileAttachment = new Attachment(convMessage.MessageId);
+            }
+            //TODO : Create attachment object if it requires one
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
@@ -1045,7 +1050,8 @@ namespace windows_client.View
             bool delConv = false;
 
             //update Conversation list class
-            this.ChatThreadPageCollection.Remove(msg);
+//            this.ChatThreadPageCollection.Remove(msg);
+            this.MessageList.Children.Remove(msg);
             
             ConversationListObject obj = ConversationsList.ConvMap[mContactNumber];
             /* Remove the message from conversation list */
