@@ -68,6 +68,7 @@ namespace windows_client.DbUtils
                             currentPage.ConvMessageSentBubbleMap.TryGetValue(convMessage, out sentChatBubble);
                             currentPage.ConvMessageSentBubbleMap.Remove(convMessage);
                             currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                            sentChatBubble.MessageId = convMessage.MessageId;
                         }
                         //if (convMessage.IsSent)
                         //    currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
