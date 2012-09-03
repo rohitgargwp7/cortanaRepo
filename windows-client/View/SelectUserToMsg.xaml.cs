@@ -51,6 +51,8 @@ namespace windows_client.View
 
         ContactInfo defaultContact = new ContactInfo();
 
+        Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
+       
         public class MsisdnCordinates
         {
             private int _groupIdx;
@@ -162,7 +164,7 @@ namespace windows_client.View
             progressBar.Opacity = 1;
             List<ContactInfo> allContactsList = null;
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s,e)=>
+            bw.DoWork += (s, e) =>
             {
                 allContactsList = UsersTableUtils.getAllContactsByGroup();
             };
@@ -290,7 +292,7 @@ namespace windows_client.View
             foreach (char c in Groups)
             {
                 Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new List<ContactInfo>());
-                glist.Add(g);                
+                glist.Add(g);
             }
             return glist;
         }
@@ -325,9 +327,9 @@ namespace windows_client.View
                     }
                 }
             }
-            if (isNumber(charsEntered)&&showDefaultContact)
+            if (isNumber(charsEntered) && showDefaultContact)
             {
-                glistFiltered[26].Items.Insert(0,defaultContact);
+                glistFiltered[26].Items.Insert(0, defaultContact);
                 glistFiltered[26].Items[0].Name = charsEntered;
                 if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
                 {
@@ -338,13 +340,13 @@ namespace windows_client.View
                     glistFiltered[26].Items[0].Msisdn = "Enter Valid Number";
                 }
             }
-           
+
             return glistFiltered;
         }
 
         private bool isNumber(string charsEntered)
         {
-            if(charsEntered.StartsWith("+")) // as in +91981 etc etc
+            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
             {
                 charsEntered = charsEntered.Substring(1);
             }
@@ -375,11 +377,11 @@ namespace windows_client.View
          */
         private string normalizeNumber(string msisdn)
         {
-            if(msisdn.StartsWith("+"))
+            if (msisdn.StartsWith("+"))
             {
                 return msisdn;
             }
-            else if(msisdn.StartsWith("0"))
+            else if (msisdn.StartsWith("0"))
             {
                 return "+91" + msisdn.Substring(1);
             }
@@ -430,19 +432,89 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = groupedList;
                 return;
             }
-            List<Group<ContactInfo>> glistFiltered = null;
+
+            if (groupListDictionary.ContainsKey(charsEntered))
+            {
+                contactsListBox.ItemsSource = groupListDictionary[charsEntered];
+                Thread.Sleep(10);
+                return;
+            }
+            List<Group<ContactInfo>> glistFiltered = createGroups();
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, ev) =>
             {
-                glistFiltered = getFilteredContactsFromNameOrPhone(charsEntered);
+                glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 26, glistFiltered);
+                    //glistFiltered = getFilteredList(charsEntered);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, ev) =>
             {
+                groupListDictionary[charsEntered] = glistFiltered;
                 contactsListBox.ItemsSource = glistFiltered;
-            };            
+            };
         }
 
+        private List<Group<ContactInfo>> getFilteredList(string charsEntered)
+        {
+            List<Group<ContactInfo>> glistFiltered = createGroups();
+            int i = 0;
+            BackgroundWorker[] bw = new BackgroundWorker[3];
+            for (int ij = 0; ij < 3; ij++)
+            {
+                bw[ij] = new BackgroundWorker();
+            }
+            bw[0].DoWork += (ss, ee) =>
+            {
+                getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 6, glistFiltered);
+            };
+            bw[1].DoWork += (ss, ee) =>
+            {
+                getFilteredContactsFromNameOrPhoneAsync(charsEntered, 6, 15, glistFiltered);
+            };
+            bw[2].DoWork += (ss, ee) =>
+            {
+                getFilteredContactsFromNameOrPhoneAsync(charsEntered, 15, 26, glistFiltered);
+            };
+            bw[0].RunWorkerAsync(); bw[1].RunWorkerAsync(); bw[2].RunWorkerAsync();
+            bw[0].RunWorkerCompleted += (ss, ee) =>
+            { i++; };
+            bw[1].RunWorkerCompleted += (ss, ee) =>
+            { i++; };
+            bw[2].RunWorkerCompleted += (ss, ee) =>
+            { i++; };
+            while (i < 3)
+                Thread.Sleep(1);
+            return glistFiltered;
+        }
+        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end, List<Group<ContactInfo>> glistFiltered)
+        {
+            if (groupedList == null || groupedList.Count == 0)
+                return null;
+            List<Group<ContactInfo>> listToIterate = null;
+            int charsLength = charsEntered.Length - 1;
+            if (charsLength > 0)
+            {
+                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)))
+                    listToIterate = groupListDictionary[charsEntered.Substring(0, charsEntered.Length - 1)];
+                else
+                    listToIterate = groupedList;
+            }
+            else
+                listToIterate = groupedList;
+            for (int i = start; i < end; i++)
+            {
+                for (int j = 0; j < (listToIterate[i].Items == null ? 0 : listToIterate[i].Items.Count); j++)
+                {
+                    ContactInfo cn = listToIterate[i].Items[j];
+                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
+                    {
+                        glistFiltered[i].Items.Add(cn);
+                    }
+                }
+            }
+
+            return glistFiltered;
+        }
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             base.OnBackKeyPress(e);
@@ -519,7 +591,7 @@ namespace windows_client.View
             {
                 ids_to_delete.Add(id);
             }
-            
+
             ContactUtils.contactsMap = contacts_to_update_or_add;
             ContactUtils.hike_contactsMap = hike_contacts_by_id;
 
@@ -530,7 +602,7 @@ namespace windows_client.View
              * contacts_to_update : These are the contacts to add
              * ids_json : These are the contacts to delete
              */
-             
+
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
 
         }
