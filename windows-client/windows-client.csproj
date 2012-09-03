@@ -67,6 +67,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>lib\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="SharpCompress.WP7">
       <HintPath>lib\SharpCompress.WP7.dll</HintPath>
     </Reference>
@@ -126,7 +129,9 @@
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
-    <Compile Include="Model\ConversationListPage.cs" />
+    <Compile Include="Model\ConversationListPage.cs">
+      <Generator>C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\protobuf-net r580\Precompile\precompile.exe</Generator>
+    </Compile>
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
