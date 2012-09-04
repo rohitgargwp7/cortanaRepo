@@ -512,7 +512,19 @@ namespace windows_client.View
                     }
                 }
             }
-
+            if (isNumber(charsEntered))
+            {
+                glistFiltered[26].Items.Insert(0, defaultContact);
+                glistFiltered[26].Items[0].Name = charsEntered;
+                if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
+                {
+                    glistFiltered[26].Items[0].Msisdn = TAP_MSG;
+                }
+                else
+                {
+                    glistFiltered[26].Items[0].Msisdn = "Enter Valid Number";
+                }
+            }
             return glistFiltered;
         }
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
