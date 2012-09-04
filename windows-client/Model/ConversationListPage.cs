@@ -126,6 +126,25 @@ namespace windows_client.Model
             }
         }
 
+        [ProtoMember(6)]
+        public ConvMessage.State MessageStatus
+        {
+            get
+            {
+                return _messageStatus;
+            }
+            set
+            {
+                if (_messageStatus != value)
+                {
+                    NotifyPropertyChanging("MessageStatus");
+                    _messageStatus = value;
+                    NotifyPropertyChanged("MessageStatus");
+                    NotifyPropertyChanged("LastMessageColor");
+                }
+            }
+        }
+
         public byte[] Avatar
         {
             get
@@ -224,25 +243,6 @@ namespace windows_client.Model
                     case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
                     case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
                     default: return "";
-                }
-            }
-        }
-
-        [Column(IsDbGenerated = false, UpdateCheck = UpdateCheck.Always)]
-        public ConvMessage.State MessageStatus
-        {
-            get
-            {
-                return _messageStatus;
-            }
-            set
-            {
-                if (_messageStatus != value)
-                {
-                    NotifyPropertyChanging("MessageStatus");
-                    _messageStatus = value;
-                    NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("LastMessageColor");
                 }
             }
         }
