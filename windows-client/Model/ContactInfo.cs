@@ -289,7 +289,11 @@ namespace windows_client.Model
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch { }
                 });
             }
         }

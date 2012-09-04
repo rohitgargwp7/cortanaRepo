@@ -434,7 +434,17 @@ namespace windows_client.View
 
             if (groupListDictionary.ContainsKey(charsEntered))
             {
-                contactsListBox.ItemsSource = groupListDictionary[charsEntered];
+                List<Group<ContactInfo>> gl = groupListDictionary[charsEntered];
+                gl[26].Items[0].Name = charsEntered;
+                if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
+                {
+                    gl[26].Items[0].Msisdn = TAP_MSG;
+                }
+                else
+                {
+                    gl[26].Items[0].Msisdn = "Enter Valid Number";
+                }
+                contactsListBox.ItemsSource = gl;
                 Thread.Sleep(10);
                 return;
             }
