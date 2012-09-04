@@ -275,5 +275,9 @@ namespace windows_client.utils
                 return name;
         }
 
+        public static bool isDarkTheme()
+        {
+            return ((Visibility)Application.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
+        }
     }
 }
