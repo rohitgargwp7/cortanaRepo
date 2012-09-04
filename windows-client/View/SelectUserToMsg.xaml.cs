@@ -29,7 +29,6 @@ namespace windows_client.View
         private bool isGroupChat = false;
         public List<ContactInfo> contactsForgroup = null;
         public MyProgressIndicator progress = null;
-        public bool canGoBack = true;
         public List<Group<ContactInfo>> groupedList = null;
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
         private string charsEntered;
@@ -52,7 +51,7 @@ namespace windows_client.View
         ContactInfo defaultContact = new ContactInfo();
 
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
-       
+
         public class MsisdnCordinates
         {
             private int _groupIdx;
@@ -444,7 +443,7 @@ namespace windows_client.View
             bw.DoWork += (s, ev) =>
             {
                 glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 26, glistFiltered);
-                    //glistFiltered = getFilteredList(charsEntered);
+                //glistFiltered = getFilteredList(charsEntered);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, ev) =>
@@ -527,17 +526,7 @@ namespace windows_client.View
             }
             return glistFiltered;
         }
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnBackKeyPress(e);
-            if (canGoBack)
-            {
-                if (NavigationService.CanGoBack)
-                {
-                    NavigationService.GoBack();
-                }
-            }
-        }
+
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -555,7 +544,6 @@ namespace windows_client.View
 
             disableAppBar();
             progress.Show();
-            canGoBack = false;
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
         }
 
@@ -565,43 +553,53 @@ namespace windows_client.View
 
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
-            Dictionary<string, List<ContactInfo>> contacts_to_update_or_add = new Dictionary<string, List<ContactInfo>>();
-            foreach (string id in new_contacts_by_id.Keys)
-            {
-                List<ContactInfo> phList = new_contacts_by_id[id];
-                if (!hike_contacts_by_id.ContainsKey(id))
-                {
-                    contacts_to_update_or_add.Add(id, phList);
-                    continue;
-                }
 
-                List<ContactInfo> hkList = hike_contacts_by_id[id];
-                if (!ContactUtils.areListsEqual(phList, hkList))
-                {
-                    contacts_to_update_or_add.Add(id, phList);
-                }
-                hike_contacts_by_id.Remove(id);
+            /* If no contacts in Phone as well as App , simply return */
+            if (new_contacts_by_id == null && hike_contacts_by_id == null)
+            {
+                scanningComplete();
+                return;
             }
-            new_contacts_by_id.Clear();
-            new_contacts_by_id = null;
+
+            Dictionary<string, List<ContactInfo>> contacts_to_update_or_add = new Dictionary<string, List<ContactInfo>>();
+
+            if (new_contacts_by_id != null) // if there are contacts in phone perform this step
+            {
+                foreach (string id in new_contacts_by_id.Keys)
+                {
+                    List<ContactInfo> phList = new_contacts_by_id[id];
+                    if (hike_contacts_by_id == null || !hike_contacts_by_id.ContainsKey(id))
+                    {
+                        contacts_to_update_or_add.Add(id, phList);
+                        continue;
+                    }
+
+                    List<ContactInfo> hkList = hike_contacts_by_id[id];
+                    if (!ContactUtils.areListsEqual(phList, hkList))
+                    {
+                        contacts_to_update_or_add.Add(id, phList);
+                    }
+                    hike_contacts_by_id.Remove(id);
+                }
+                new_contacts_by_id.Clear();
+                new_contacts_by_id = null;
+            }
+
             /* If nothing is changed simply return without sending update request*/
-            if (contacts_to_update_or_add.Count == 0 && hike_contacts_by_id.Count == 0)
+            if (contacts_to_update_or_add.Count == 0 && (hike_contacts_by_id == null || hike_contacts_by_id.Count == 0))
             {
                 Thread.Sleep(1000);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        progress.Hide();
-                        enableAppBar();
-                        canGoBack = true;
-                        App.isABScanning = false;
-                    });
+                scanningComplete();
                 return;
             }
 
             JArray ids_to_delete = new JArray();
-            foreach (string id in hike_contacts_by_id.Keys)
+            if (hike_contacts_by_id != null)
             {
-                ids_to_delete.Add(id);
+                foreach (string id in hike_contacts_by_id.Keys)
+                {
+                    ids_to_delete.Add(id);
+                }
             }
 
             ContactUtils.contactsMap = contacts_to_update_or_add;
@@ -652,19 +650,15 @@ namespace windows_client.View
                 Thread.Sleep(1000);
                 App.MqttManagerInstance.connect();
                 NetworkManager.turnOffNetworkManager = false;
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    progress.Hide();
-                    enableAppBar();
-                    canGoBack = true;
-                });
+                scanningComplete();
                 return;
             }
 
-            List<ContactInfo> updatedContacts = AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
-            List<DelContacts> hikeIds = new List<DelContacts>();
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null:AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
+            List<DelContacts> hikeIds = null;
             if (ContactUtils.hike_contactsMap == null || ContactUtils.hike_contactsMap.Count != 0)
             {
+                hikeIds = new List<DelContacts>(ContactUtils.hike_contactsMap.Count);
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
                     DelContacts dCn = new DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
@@ -693,10 +687,18 @@ namespace windows_client.View
                 contactsListBox.ItemsSource = groupedList;
                 progress.Hide();
                 enableAppBar();
-                canGoBack = true;
             });
         }
 
+        private void scanningComplete()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                progress.Hide();
+                enableAppBar();
+                App.isABScanning = false;
+            });
+        }
         #endregion
 
         #region GROUP CHAT RELATED
