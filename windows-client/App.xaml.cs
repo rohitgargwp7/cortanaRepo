@@ -434,6 +434,11 @@ namespace windows_client
                     {
                         store.CreateDirectory(MiscDBUtil.THUMBNAILS);
                     }
+
+                    if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
+                    {
+                        store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
+                    }
                 }
                 // Create the database if it does not exist.
                 Stopwatch st = Stopwatch.StartNew();
@@ -474,29 +479,29 @@ namespace windows_client
 
         private void updateConversations()
         {
-            bool shouldUpdate = false;
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {
+            //bool shouldUpdate = false;
+            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            //{
 
-                for (int i = 0; i < App.ViewModel.ConvMsisdnsToUpdate.Count; i++)
-                {
-                    string msisdn = App.ViewModel.ConvMsisdnsToUpdate[i];
-                    if (ConversationsList.ConvMap.ContainsKey(msisdn))
-                    {
-                        ConversationListObject obj = ConversationsList.ConvMap[msisdn];
-                        IQueryable<ConversationListObject> q = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn);
-                        ConversationListObject cObj = q.FirstOrDefault();
-                        if (cObj == null)
-                            return;
-                        cObj.MessageStatus = obj.MessageStatus;
-                        cObj.LastMessage = obj.LastMessage;
-                        cObj.TimeStamp = obj.TimeStamp;
-                        shouldUpdate = true;
-                    }
-                }
-                if (shouldUpdate)
-                    MessagesTableUtils.SubmitWithConflictResolve(context);
-            }
+            //    for (int i = 0; i < App.ViewModel.ConvMsisdnsToUpdate.Count; i++)
+            //    {
+            //        string msisdn = App.ViewModel.ConvMsisdnsToUpdate[i];
+            //        if (ConversationsList.ConvMap.ContainsKey(msisdn))
+            //        {
+            //            ConversationListObject obj = ConversationsList.ConvMap[msisdn];
+            //            IQueryable<ConversationListObject> q = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn);
+            //            ConversationListObject cObj = q.FirstOrDefault();
+            //            if (cObj == null)
+            //                return;
+            //            cObj.MessageStatus = obj.MessageStatus;
+            //            cObj.LastMessage = obj.LastMessage;
+            //            cObj.TimeStamp = obj.TimeStamp;
+            //            shouldUpdate = true;
+            //        }
+            //    }
+            //    if (shouldUpdate)
+            //        MessagesTableUtils.SubmitWithConflictResolve(context);
+            //}
         }
 
         /* This function should always be used to store values to isolated storage

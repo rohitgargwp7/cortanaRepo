@@ -9,10 +9,13 @@ using System.Data.Linq;
 using System.IO;
 using Microsoft.Phone.Data.Linq.Mapping;
 using System.Windows.Media;
+using ProtoBuf;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.Model
 {
     [Table(Name = "conversations")]
+    [ProtoContract]
     public class ConversationListObject : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ConversationListObject>
     {
         #region member variables
@@ -30,7 +33,7 @@ namespace windows_client.Model
         private Binary version;
         #region Properties
 
-        [Column]
+        [ProtoMember(1)]
         public string ContactName
         {
             get
@@ -49,7 +52,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column]
+        [ProtoMember(2)]
         public string LastMessage
         {
             get
@@ -67,7 +70,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column]
+        [ProtoMember(3)]
         public long TimeStamp
         {
             get
@@ -87,6 +90,7 @@ namespace windows_client.Model
         }
 
         [Column(IsPrimaryKey = true)]
+        [ProtoMember(4)]
         public string Msisdn
         {
             get
@@ -104,7 +108,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column]
+        [ProtoMember(5)]
         public bool IsOnhike
         {
             get
@@ -242,7 +246,7 @@ namespace windows_client.Model
                 }
             }
         }
-        
+
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus)
         {
             this._msisdn = msisdn;
@@ -255,14 +259,14 @@ namespace windows_client.Model
         }
 
         public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus)
-            : this(msisdn, contactName, lastMessage, false, timestamp, null,msgStatus)
+            : this(msisdn, contactName, lastMessage, false, timestamp, null, msgStatus)
         {
 
         }
 
         public ConversationListObject()
         {
-            
+
         }
 
         public int CompareTo(ConversationListObject rhs)

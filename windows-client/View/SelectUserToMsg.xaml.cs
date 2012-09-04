@@ -651,12 +651,14 @@ namespace windows_client.View
 
             List<ContactInfo> updatedContacts = AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
             List<DelContacts> hikeIds = new List<DelContacts>();
-            foreach (string id in ContactUtils.hike_contactsMap.Keys)
+            if (ContactUtils.hike_contactsMap == null || ContactUtils.hike_contactsMap.Count != 0)
             {
-                DelContacts dCn = new DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
-                hikeIds.Add(dCn);
+                foreach (string id in ContactUtils.hike_contactsMap.Keys)
+                {
+                    DelContacts dCn = new DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
+                    hikeIds.Add(dCn);
+                }
             }
-
             if (hikeIds != null && hikeIds.Count > 0)
             {
                 /* Delete ids from hike user DB */
@@ -668,7 +670,7 @@ namespace windows_client.View
                 ConversationTableUtils.updateConversation(updatedContacts);
             }
 
-            List<ContactInfo> allContactsList = UsersTableUtils.getAllContacts();
+            List<ContactInfo> allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.isABScanning = false;
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;

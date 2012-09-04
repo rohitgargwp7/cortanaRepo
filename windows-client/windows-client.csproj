@@ -64,6 +64,9 @@
     </Reference>
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Phone.Reactive" />
+    <Reference Include="MyProtoBufSerializer">
+      <HintPath>lib\MyProtoBufSerializer.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -129,9 +132,7 @@
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
-    <Compile Include="Model\ConversationListPage.cs">
-      <Generator>C:\Users\gautam\Desktop\GAUTAM\BSB\Development\WIN_PHONE\protobuf-net r580\Precompile\precompile.exe</Generator>
-    </Compile>
+    <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
