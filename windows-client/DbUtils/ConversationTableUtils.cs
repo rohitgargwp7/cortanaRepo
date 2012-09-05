@@ -95,7 +95,7 @@ namespace windows_client.DbUtils
             }
 
             Stopwatch st = Stopwatch.StartNew();
-            saveConvObject(obj, obj.Msisdn);
+            saveConvObject(obj, obj.Msisdn.Replace(":","_"));
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
