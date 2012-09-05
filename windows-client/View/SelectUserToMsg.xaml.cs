@@ -23,6 +23,7 @@ namespace windows_client.View
 {
     public partial class SelectUserToMsg : PhoneApplicationPage
     {
+        private bool isClicked = false;
         private string TAP_MSG = "Tap here to message this person";
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
@@ -718,6 +719,9 @@ namespace windows_client.View
 
         private void startGroup_Click(object sender, EventArgs e)
         {
+            if (isClicked)
+                return;
+            isClicked = true;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = contactsForgroup;
             PhoneApplicationService.Current.State["fromSelectUserPage"] = true; // this is added to remove the back entry from the stack on chat thread page.
 
