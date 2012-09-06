@@ -6,25 +6,26 @@ using System.Collections.Generic;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using SharpCompress.Writer.GZip;
 using SharpCompress.Compressor.Deflate;
 using SharpCompress.Compressor;
 using System.Text;
 using System.Diagnostics;
+using System.Windows.Media.Imaging;
+using windows_client.Controls;
 
 namespace windows_client.utils
 {
     public class AccountUtils
     {
-        public static readonly string HOST = "im.hike.in";
+        public static readonly string HOST = "staging.im.hike.in";
 
         private static readonly int PORT = 8080;
 
-        private static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+        public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
 
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
-        private static string mToken = null;
+        public static string mToken = null;
 
         public static string Token
         {
@@ -58,10 +59,13 @@ namespace windows_client.utils
         }
 
         public delegate void postResponseFunction(JObject obj);
+        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage);
+
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON, POST_PUSHNOTIFICATION_DATA
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON, 
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -71,7 +75,7 @@ namespace windows_client.utils
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
-            //req.Headers["X-MSISDN"] = "919810116420";
+            req.Headers["X-MSISDN"] = "918826670657";
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -161,6 +165,20 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PUSHNOTIFICATION_DATA, uri, finalCallbackFunction });
         }
 
+        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "PUT";
+            req.ContentType = "";
+//            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.Headers["Connection"] = "Keep-Alive";
+            req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
+            req.Headers["X-Thumbnail-Required"] = "0";
+
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage });
+        }
+
         private static void setParams_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -235,6 +253,15 @@ namespace windows_client.utils
                     data.Add("dev_token", uri);
                     data.Add("dev_type", "windows");
                     break;
+
+                case RequestType.UPLOAD_FILE:
+                    byte[] dataBytes = (byte[])vars[2];
+                    postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
+                    ConvMessage convMessage = vars[4] as ConvMessage;
+                    postStream.Write(dataBytes, 0, dataBytes.Length);
+                    postStream.Close();
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
+                    return;
 
                 default:
                     break;
@@ -349,12 +376,12 @@ namespace windows_client.utils
         {
             object[] vars = (object[])result.AsyncState;
             RequestType type = (RequestType)vars[1];
-            postResponseFunction finalCallbackFunction = vars[2] as postResponseFunction;
+
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)vars[0];
             HttpWebResponse response = null;
             string data;
             JObject obj = null;
-
+            ConvMessage convMessage;
             try
             {
                 response = (HttpWebResponse)myHttpWebRequest.EndGetResponse(result);
@@ -390,7 +417,17 @@ namespace windows_client.utils
             }
             finally
             {
-                finalCallbackFunction(obj);
+                if (vars[2] is postResponseFunction)
+                {
+                    postResponseFunction finalCallbackFunction = vars[2] as postResponseFunction;
+                    finalCallbackFunction(obj);
+                }
+                else if (vars[2] is postUploadPhotoFunction)
+                {
+                    postUploadPhotoFunction finalCallbackFunctionForUpload = vars[2] as postUploadPhotoFunction;
+                    convMessage = vars[3] as ConvMessage;
+                    finalCallbackFunctionForUpload(obj, convMessage);
+                }
             }
         }
 
