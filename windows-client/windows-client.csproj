@@ -250,12 +250,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="emoticons.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="emoticons_outline.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <None Include="NLog.config">
       <SubType>Designer</SubType>
     </None>
