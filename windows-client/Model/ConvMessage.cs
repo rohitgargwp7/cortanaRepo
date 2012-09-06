@@ -413,15 +413,15 @@ namespace windows_client.Model
                     JToken contentType;
 
                     fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
-                    if (contentType.ToString().Contains("image"))
-                    {
+                    //if (contentType.ToString().Contains("image"))
+                    //{
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
                         this.HasAttachment = true;
                         this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()),
                             contentType.ToString());
-                    }
+                    //}
                 }
                 if (val != null) // represents group message
                 {
@@ -465,6 +465,10 @@ namespace windows_client.Model
                 string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
                 this.MappedMessageId = System.Int64.Parse(mappedMsgID);
                 participantInfoState = ParticipantInfoState.NO_INFO;
+                if (this.HasAttachment)
+                {
+                    this.Message = this.FileAttachment.FileName;
+                }
             }
             catch (Exception e)
             {
