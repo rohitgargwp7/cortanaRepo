@@ -571,6 +571,8 @@ namespace windows_client.View
             else
             {
                 Stopwatch st = Stopwatch.StartNew();
+                //attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
+                attachments = new Dictionary<long, Attachment>();
                 loadMessages();
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
@@ -842,7 +844,11 @@ namespace windows_client.View
             MyChatBubble chatBubble = (sender as MyChatBubble);
             if (chatBubble is ReceivedChatBubble)
             {
-                PhoneApplicationService.Current.State["objForFileTransferChatThread"] = chatBubble.MessageId;
+                object[] fileTapped = new object[3];
+                fileTapped[0] = chatBubble.MessageId;
+                fileTapped[1] = mContactNumber;
+                fileTapped[2] = "audio";
+                PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
             }
         }
@@ -859,13 +865,24 @@ namespace windows_client.View
             {
                 return tempMsgId--;
             }
-            
-        }
 
+        }
 
         private void AddMessageToUI(ConvMessage convMessage, bool addToLast)
         {
             //TODO : Create attachment object if it requires one
+            if (convMessage.HasAttachment)
+            {
+                if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
+                {
+                    convMessage.FileAttachment = attachments[convMessage.MessageId];
+                }
+                else if (convMessage.FileAttachment != null && attachments.ContainsKey(convMessage.MessageId))
+                {
+                    attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
+                }
+            }
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
@@ -878,7 +895,7 @@ namespace windows_client.View
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else
                             msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
-                            //_convMessageSentBubbleMap.Add(convMessage, (SentChatBubble)chatBubble);
+                        //_convMessageSentBubbleMap.Add(convMessage, (SentChatBubble)chatBubble);
                     }
                     else
                     {
@@ -1030,10 +1047,7 @@ namespace windows_client.View
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
             }
-
         }
-
-
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
@@ -1050,8 +1064,8 @@ namespace windows_client.View
                 SentChatBubble chatBubble = new SentChatBubble(isOnHike, image, convMessage.MessageId);
 
                 msgMap.Add(convMessage.MessageId, chatBubble);
-//                ConvMessageSentBubbleMap.Add(convMessage, chatBubble);
-                
+                //                ConvMessageSentBubbleMap.Add(convMessage, chatBubble);
+
                 //add to UI
                 if (isTypingNotificationActive)
                 {
@@ -1064,9 +1078,9 @@ namespace windows_client.View
                     ShowTypingNotification();
                     isReshowTypingNotification = false;
                 }
-                
+
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-                
+
                 MemoryStream msSmallImage = new MemoryStream();
                 writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
 
@@ -1076,6 +1090,7 @@ namespace windows_client.View
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
 
                 convMessage.FileAttachment = new Attachment(fileName, msSmallImage.ToArray());
+                convMessage.Message = fileName;
                 bool isNewGroup = false;
 
                 object[] vals = new object[5];
@@ -1101,13 +1116,13 @@ namespace windows_client.View
                 string fileName = data[HikeConstants.FILE_NAME].ToString();
                 string contentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
 
+                //DO NOT Update message text in db. We sent the below line, but we save only filename as message.
                 convMessage.Message = "I sent you a file. To view go to " + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 convMessage.FileAttachment.FileKey = fileKey;
                 convMessage.FileAttachment.ContentType = contentType;
-
+                attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
-
             }
         }
 
