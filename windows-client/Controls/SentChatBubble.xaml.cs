@@ -6,6 +6,7 @@ using windows_client.Model;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using System.IO;
+using windows_client.DbUtils;
 
 namespace windows_client.Controls
 {
@@ -41,10 +42,10 @@ namespace windows_client.Controls
                 default:
                     break;
             }
-            if (cm.HasAttachment)
+            if (cm.FileAttachment!=null && (cm.FileAttachment.ContentType.Contains("video") || (cm.FileAttachment.ContentType.Contains("image"))))
             {
                 byte[] imageBytes;
-                Attachment.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + 
+                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + 
                     cm.Msisdn + "/" + Convert.ToString(cm.MessageId), out imageBytes);
 
                 MemoryStream memStream = new MemoryStream(imageBytes);

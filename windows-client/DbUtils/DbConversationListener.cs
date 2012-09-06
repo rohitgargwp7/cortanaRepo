@@ -82,14 +82,16 @@ namespace windows_client.DbUtils
                 {
                     byte[] thumbnail = vals[2] as byte[];
                     byte[] largeImage = vals[3] as byte[];
-                    
+
+                    //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+
                     AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = vals[4] as AccountUtils.postUploadPhotoFunction;
 
-                    Attachment.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
                             Convert.ToString(convMessage.MessageId), thumbnail);
 
-                    Attachment.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                            Convert.ToString(convMessage.MessageId) + "_large", largeImage);
+                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                            Convert.ToString(convMessage.MessageId), largeImage);
                     AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage);
 
                 }
