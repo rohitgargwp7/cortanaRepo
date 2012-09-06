@@ -1,14 +1,6 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using windows_client.Model;
-using windows_client.utils;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.IO;
@@ -23,14 +15,22 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null)
+            if (cm.HasAttachment)
             {
-                MemoryStream memStream = new MemoryStream(cm.FileAttachment.Thumbnail);
+                byte[] imageBytes;
+                Attachment.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + 
+                    cm.Msisdn + "/" + Convert.ToString(cm.MessageId),
+                    out imageBytes);
+
+                MemoryStream memStream = new MemoryStream(imageBytes);
                 memStream.Seek(0, SeekOrigin.Begin);
                 BitmapImage fileThumbnail = new BitmapImage();
                 fileThumbnail.SetSource(memStream);
                 this.MessageImage.Source = fileThumbnail;
             }
         }
+
+
+
     }
 }
