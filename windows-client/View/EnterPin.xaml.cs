@@ -45,7 +45,7 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
             pinErrorTxt.Visibility = Visibility.Collapsed;
-            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             AccountUtils.registerAccount(pinEntered, unAuthMsisdn, new AccountUtils.postResponseFunction(pinPostResponse_Callback)); 
         }
@@ -60,7 +60,7 @@ namespace windows_client
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     pinErrorTxt.Visibility = Visibility.Visible;
-                    progressBar.Visibility = Visibility.Collapsed;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
                 if (!string.IsNullOrWhiteSpace(pinEntered))
@@ -77,7 +77,7 @@ namespace windows_client
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             { 
                 NavigationService.Navigate(nextPage);
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
             });
         }

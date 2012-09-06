@@ -139,10 +139,14 @@ namespace windows_client.View
                     if (activeGroupMembers[i].Msisdn == leaveMsisdn)
                         break;
                 }
-                activeGroupMembers.RemoveAt(i);
+
+                /* Added check if the element is not out of bounds*/
+                if (i < activeGroupMembers.Count)
+                    activeGroupMembers.RemoveAt(i);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    groupMembersOC.RemoveAt(i);
+                    if (i < activeGroupMembers.Count)
+                        groupMembersOC.RemoveAt(i);
                 });
             }
         }

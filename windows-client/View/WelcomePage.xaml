@@ -36,7 +36,7 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--<Grid.Background>
             <ImageBrush ImageSource="images\background.png"  />
         </Grid.Background>-->
@@ -56,18 +56,19 @@
             <StackPanel Orientation="Vertical" Grid.Row="0">
                 <Image Source="images\signup_logo.png" Margin="0,150,0,20" Height="104"></Image>
                 <!--<Image Source="images\splash_text.png" Height="30"></Image>-->
-                <TextBlock Text="Free Messaging for life" FontSize="25" Foreground="Black" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="Free Messaging for life" FontSize="25" HorizontalAlignment="Center"></TextBlock>
             </StackPanel>
             <StackPanel VerticalAlignment="Bottom" Orientation="Vertical" Grid.Row="1">
                 <!--<Image Source="images\terms_link.png" Height="43"></Image>
                 <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-57" Width="Auto" BorderThickness="0" Background="#2e91d3" VerticalAlignment="Bottom" >
                 </Button>-->
-                <Button Height="70" Margin="0,0,0,20" Content="Terms and Privacy" Width="280" HorizontalAlignment="Center" BorderBrush="Black" FontSize="20" FontStyle="Normal" Foreground="Black" BorderThickness="2"></Button>
+                <Button Height="70" Margin="0,0,0,20" Content="Terms and Privacy" Width="280" HorizontalAlignment="Center" FontSize="20" FontStyle="Normal" BorderThickness="2"></Button>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0"/>
+
             </StackPanel>
             
 
         </Grid>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="#FFF8F8F8" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
-    </Grid>
+        </Grid>
 
 </phone:PhoneApplicationPage>

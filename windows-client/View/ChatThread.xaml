@@ -249,7 +249,7 @@
                 <toolkit:PhoneTextBox Background="#eeeeec" BorderThickness="0" x:Name="sendMsgTxtbox" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top"/>
             </StackPanel>
         </StackPanel>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
+        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
 
         <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,20,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="40"></Image>

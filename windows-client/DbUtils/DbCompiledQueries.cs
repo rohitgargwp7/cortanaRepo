@@ -230,32 +230,32 @@ namespace windows_client.DbUtils
 
         #region ConversationTable Queries
 
-        public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations
-        {
-            get
-            {
-                Func<HikeChatsDb, IQueryable<ConversationListObject>> q =
-                    CompiledQuery.Compile<HikeChatsDb, IQueryable<ConversationListObject>>
-                    ((HikeChatsDb hdc) =>
-                        from o in hdc.conversations
-                        select o);
-                return q;
-            }
-        }
+        //public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations
+        //{
+        //    get
+        //    {
+        //        Func<HikeChatsDb, IQueryable<ConversationListObject>> q =
+        //            CompiledQuery.Compile<HikeChatsDb, IQueryable<ConversationListObject>>
+        //            ((HikeChatsDb hdc) =>
+        //                from o in hdc.conversations
+        //                select o);
+        //        return q;
+        //    }
+        //}
 
-        public static Func<HikeChatsDb, string, IQueryable<ConversationListObject>> GetConvForMsisdn
-        {
-            get
-            {
-                Func<HikeChatsDb, string, IQueryable<ConversationListObject>> q =
-                    CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConversationListObject>>
-                    ((HikeChatsDb hdc, string _msisdn) =>
-                        from o in hdc.conversations
-                        where o.Msisdn == _msisdn
-                        select o);
-                return q;
-            }
-        }
+        //public static Func<HikeChatsDb, string, IQueryable<ConversationListObject>> GetConvForMsisdn
+        //{
+        //    get
+        //    {
+        //        Func<HikeChatsDb, string, IQueryable<ConversationListObject>> q =
+        //            CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConversationListObject>>
+        //            ((HikeChatsDb hdc, string _msisdn) =>
+        //                from o in hdc.conversations
+        //                where o.Msisdn == _msisdn
+        //                select o);
+        //        return q;
+        //    }
+        //}
 
         #endregion
 

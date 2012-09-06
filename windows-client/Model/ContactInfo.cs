@@ -30,7 +30,7 @@ namespace windows_client.Model
         [Column(IsVersion = true)]
         private Binary version;
 
-        [Column(IsPrimaryKey=true,IsDbGenerated=true)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int DbId
         {
             get
@@ -45,7 +45,7 @@ namespace windows_client.Model
                 }
             }
         }
-        [Column(UpdateCheck=UpdateCheck.Never)]
+        [Column(UpdateCheck = UpdateCheck.Never)]
         public string Id
         {
             get
@@ -61,7 +61,7 @@ namespace windows_client.Model
                 }
             }
         }
-      
+
         [Column]
         public string Name
         {
@@ -110,7 +110,7 @@ namespace windows_client.Model
                 if (_onHike != value)
                 {
                     NotifyPropertyChanging("OnHike");
-                    _onHike = value;    
+                    _onHike = value;
                     NotifyPropertyChanged("OnHike");
                 }
             }
@@ -198,7 +198,7 @@ namespace windows_client.Model
         {
         }
 
-        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum):            
+        public ContactInfo(string id, string number, string name, bool onHike, string phoneNum) :
             this(id, number, name, onHike, phoneNum, false)
         {
         }
@@ -229,31 +229,31 @@ namespace windows_client.Model
             if (GetType() != obj.GetType())
                 return false;
             ContactInfo other = (ContactInfo)obj;
-           
-            if (Name == null)
+
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                if (other.Name != null)
+                if (!string.IsNullOrWhiteSpace(other.Name))
                     return false;
             }
-            else if (Name.CompareTo(other.Name)!=0)
+            else if (Name.CompareTo(other.Name) != 0)
                 return false;
             if (PhoneNo == null)
             {
                 if (other.PhoneNo != null)
                     return false;
             }
-            else if (PhoneNo.CompareTo(other.PhoneNo)!=0)
+            else if (PhoneNo.CompareTo(other.PhoneNo) != 0)
                 return false;
             return true;
         }
 
         public override int GetHashCode()
         {
-		    const int prime = 31;
-		    int result = 1;
-		    result = prime * result +((Name == null) ? 0 : Name.GetHashCode());
-            result = prime * result +((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
-		    return result;
+            const int prime = 31;
+            int result = 1;
+            result = prime * result + ((string.IsNullOrWhiteSpace(Name) == null) ? 0 : Name.GetHashCode());
+            result = prime * result + ((PhoneNo == null) ? 0 : PhoneNo.GetHashCode());
+            return result;
         }
 
         public int CompareTo(ContactInfo rhs)
@@ -287,7 +287,14 @@ namespace windows_client.Model
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch { }
+                });
             }
         }
 

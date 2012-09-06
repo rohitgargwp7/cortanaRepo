@@ -186,26 +186,27 @@ namespace windows_client.DbUtils
             bool shouldSubmit = false;
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
+                //using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
                     for (int i = 0; i < ids.Count; i++)
                     {
                         context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
                         if (ConversationsList.ConvMap.ContainsKey(ids[i].Msisdn))
                         {
-                            ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(chats, ids[i].Msisdn).FirstOrDefault();
-                            if (cObj.ContactName != null)
-                            {
-                                cObj.ContactName = null;
-                                shouldSubmit = true;
-                            }
+                            //ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(chats, ids[i].Msisdn).FirstOrDefault();
+                            //if (cObj.ContactName != null)
+                            //{
+                            //    cObj.ContactName = null;
+                            //    shouldSubmit = true;
+                            //}
                             ConversationListObject obj = ConversationsList.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
+                            ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
                         }
                     }
-                    if (shouldSubmit)
+                    //if (shouldSubmit)
                     {
-                        MessagesTableUtils.SubmitWithConflictResolve(chats);
+                      //  MessagesTableUtils.SubmitWithConflictResolve(chats);
                     }
                 }
                 SubmitWithConflictResolve(context);

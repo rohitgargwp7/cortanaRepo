@@ -212,7 +212,6 @@ namespace windows_client
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}",msisdn,msec);
-                ConversationTableUtils.updateImage(msisdn, imageBytes);
             }
             else if (INVITE_INFO == type)
             {

@@ -9,15 +9,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="False" Name="convListPagePivot">
+    shell:SystemTray.IsVisible="True" Name="convListPagePivot">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--Pivot Control-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -28,7 +28,7 @@
             <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
         </StackPanel>
 
-        <controls:Pivot Grid.Row="1" Foreground="Black" Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
+        <controls:Pivot Grid.Row="1"  Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <!--Pivot item one-->
             <controls:PivotItem Header="chats">
                 <Grid x:Name="ConversationList">
@@ -61,8 +61,8 @@
 
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="25, 0, 0, 0">
-                                                <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Black" />
-                                                <TextBlock Text="{Binding FormattedTimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Black"/>
+                                                <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2"/>
+                                                <TextBlock Text="{Binding FormattedTimeStamp}" Margin="10,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Gray"/>
                                             </StackPanel>
                                             <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->
                                             <StackPanel Orientation="Horizontal" Margin="15 0 0 2">
@@ -79,7 +79,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" />
+                    <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0" />
                 </Grid>
             </controls:PivotItem>
 
@@ -102,7 +102,7 @@
                         </Button>
 
                         <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
-                            <TextBlock x:Name="accountName"  Foreground="Black" FontSize="35" Text="UNKNOWN"/>
+                            <TextBlock x:Name="accountName" FontSize="35" Text="UNKNOWN"/>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Free SMS remaining: " Foreground="#8d8d8d"></TextBlock>
                                 <TextBlock x:Name="creditsTxtBlck" Text="" Foreground="#8d8d8d"></TextBlock>
@@ -112,7 +112,8 @@
 
                     <StackPanel Margin="0, 30, 0,10" Orientation="Vertical" Grid.Row="1">
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
-                            <Image Source="images\notifications.png" Height="35"></Image>
+                            <Image Source="images\notifications.png" Height="35">
+                            </Image>
                             <TextBlock Text="Notifications" Margin="15,4,0,0" FontSize="30"></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">

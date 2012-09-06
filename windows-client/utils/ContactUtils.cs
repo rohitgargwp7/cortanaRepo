@@ -124,6 +124,7 @@ namespace windows_client.utils
         public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
             int count = 0;
+            int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
             if (contacts == null)
                 return null;
@@ -134,17 +135,23 @@ namespace windows_client.utils
 
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
-                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber))
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
                     {
                         count++;
                         continue;
                     }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName, ph.PhoneNumber);
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
-                        contactListMap[cInfo.Id].Add(cInfo);
+                        if (!contactListMap[cInfo.Id].Contains(cInfo))
+                            contactListMap[cInfo.Id].Add(cInfo);
+                        else
+                        {
+                            duplicates++;
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                        }
                     }
                     else
                     {
@@ -154,6 +161,7 @@ namespace windows_client.utils
                     }
                 }
             }
+            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
             return contactListMap;
         }
@@ -166,13 +174,42 @@ namespace windows_client.utils
             JObject obj = jsonForAddressBookAndBlockList;
             if (obj == null)
             {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
+
+                    if (currentPage != null)
+                    {
+                        EnterName enterNamePage = (EnterName)currentPage;
+                        enterNamePage.enterNameBtn.Text = "Contact Scanning failed!! Try Later";
+                        enterNamePage.progressBar.IsEnabled = true;
+                        enterNamePage.progressBar.Visibility = Visibility.Collapsed;
+                    }
+                });
                 return;
             }
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
+            int count =1;
+            while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 30)
+            {
+                Thread.Sleep(1 * 1000);
+                count++;
+            }
+            if (!App.appSettings.Contains(App.IS_DB_CREATED)) // if DB is not created for so long
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
 
-            while (!App.appSettings.Contains(App.IS_DB_CREATED))
-                Thread.Sleep(50);
+                    if (currentPage != null)
+                    {
+                        EnterName enterNamePage = (EnterName)currentPage;
+                        enterNamePage.enterNameBtn.Text = "Failed. Close App and try later !!";
+                    }
+                });
+            }
+
             if (addressbook != null)
             {
                 UsersTableUtils.deleteAllContacts();
@@ -183,8 +220,6 @@ namespace windows_client.utils
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add addressbook {0}",msec);
                 UsersTableUtils.addBlockList(blockList);
-
-                App.Ab_scanned = true;
                 App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED,true);
             }
             App.Ab_scanned = true;

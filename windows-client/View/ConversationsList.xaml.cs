@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
 using System.Collections;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -102,7 +103,7 @@ namespace windows_client.View
             {
                 App.instantiateClasses();
                 convMap = new Dictionary<string, ConversationListObject>();
-                progressBar.Visibility = System.Windows.Visibility.Visible;
+                progressBar.Opacity = 1; ;
                 progressBar.IsEnabled = true;
                 mPubSub = App.HikePubSubInstance;
                 registerListeners();
@@ -149,7 +150,7 @@ namespace windows_client.View
             else if (e.Error != null) { }
             else
             {
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
 
                 myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
@@ -162,7 +163,6 @@ namespace windows_client.View
                 appBar.Mode = ApplicationBarMode.Default;
                 appBar.IsMenuEnabled = true;
                 appBar.Opacity = 1;
-
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
@@ -217,17 +217,17 @@ namespace windows_client.View
         private static void LoadMessages()
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-            List<ConversationListObject> conversationList = new List<ConversationListObject>();
-            foreach (var key in App.appSettings.Keys)
-            {
-                string k = key.ToString();
-                if (k.StartsWith("CONV::"))
-                {
-                    ConversationListObject co =  (ConversationListObject)App.appSettings[k];
-                    conversationList.Add(co);
-                }
-            }
-            //List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
+            //List<ConversationListObject> conversationList = new List<ConversationListObject>();
+            //foreach (var key in App.appSettings.Keys)
+            //{
+            //    string k = key.ToString();
+            //    if (k.StartsWith("CONV::"))
+            //    {
+            //        ConversationListObject co =  (ConversationListObject)App.appSettings[k];
+            //        conversationList.Add(co);
+            //    }
+            //}
+            List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
             Debug.WriteLine("Time to get {0} Conversations from DB : {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
@@ -237,7 +237,9 @@ namespace windows_client.View
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
+                byte[] _avatar = MiscDBUtil.getThumbNailForMSisdn(conversationList[i].Msisdn);
                 ConversationListObject conv = conversationList[i];
+                conv.Avatar = _avatar;
                 convMap.Add(conv.Msisdn, conv);
                 App.ViewModel.MessageListPageCollection.Add(conv);
             }
@@ -442,7 +444,7 @@ namespace windows_client.View
             if (result == MessageBoxResult.Cancel)
                 return;
             disableAppBar();
-            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             NetworkManager.turnOffNetworkManager = true;
             mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
@@ -457,7 +459,7 @@ namespace windows_client.View
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator();
+                progress = new MyProgressIndicator("Loading...");
             }
 
             disableAppBar();
@@ -472,6 +474,7 @@ namespace windows_client.View
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    MessageBoxResult result = MessageBox.Show("Could not deleting account now. Try again later.", "Delete Account Failed?", MessageBoxButton.OKCancel);
                     enableAppBar();
                     progress.Hide();
                 });
@@ -480,6 +483,7 @@ namespace windows_client.View
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
             appSettings.Clear();
+            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
 
@@ -646,7 +650,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.MessageListPageCollection.Clear();
                     emptyScreenImage.Opacity = 1;
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     enableAppBar();
                 });

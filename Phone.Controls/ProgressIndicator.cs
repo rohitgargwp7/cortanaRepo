@@ -22,9 +22,10 @@ namespace Phone.Controls
         private string labelText;
         
         
-        public MyProgressIndicator()
+        public MyProgressIndicator(string text)
         {
-            this.DefaultStyleKey = typeof(MyProgressIndicator);          
+            this.DefaultStyleKey = typeof(MyProgressIndicator);
+            defaultText = text;
         }
 
         public override void OnApplyTemplate()

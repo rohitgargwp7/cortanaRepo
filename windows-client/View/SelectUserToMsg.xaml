@@ -11,11 +11,11 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="False" DataContext="{Binding}" Name="selectUserPage">
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True" DataContext="{Binding}" Name="selectUserPage">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="646"/>
@@ -34,24 +34,24 @@
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
             <Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>
-            <TextBlock Text="new chat" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Foreground="Black" Height="80"/>
+            <TextBlock Text="new chat" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Height="80"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="White">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="Transparent">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search" Foreground="Black"
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
             <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsBouncy="True"
-                          IsFlatList="False" Background="White">
+                          IsFlatList="False">
                 <toolkit:LongListSelector.GroupItemsPanel>
                     <ItemsPanelTemplate>
                         <toolkit:WrapPanel Orientation="Horizontal"/>
@@ -88,7 +88,7 @@
                     <DataTemplate>
                         <StackPanel Orientation="Vertical" Margin="-18,0,0,0">
                             <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
-                                <TextBlock Text="{Binding Name}" Foreground="Black" FontSize="36" />
+                                <TextBlock Text="{Binding Name}" FontSize="36" />
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
                                     <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
@@ -101,7 +101,7 @@
         </Grid>
 
         <StackPanel Grid.Row="1">
-            <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" Height="403" />
+            <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="true" IsTabStop="True" Opacity="0" Height="403" />
         </StackPanel>
     </Grid>
 </phone:PhoneApplicationPage >

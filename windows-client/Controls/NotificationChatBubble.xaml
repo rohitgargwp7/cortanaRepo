@@ -23,9 +23,9 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="#999999" BorderThickness="2" Height="40"/>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Name="notStackPanel">
                 <Image x:Name="OnHikeImage" Height="20" Width="20" Margin="10,0,0,0"></Image>
-                <TextBlock x:Name="UserName" Width="Auto" TextWrapping="Wrap" Foreground="Black" FontSize="{StaticResource PhoneFontSizeNormal}" Text="Madhur" Margin="10,3,0,0"/>
+                <TextBlock x:Name="UserName" Width="Auto" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" Text="Madhur" Margin="10,3,0,0"/>
             </StackPanel>
 
         </Grid>

@@ -150,9 +150,13 @@ namespace windows_client.DbUtils
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
 
-                App.WriteToIsoStorageSettings("CONV::" + convMsg.Msisdn,obj);
+                //App.WriteToIsoStorageSettings("CONV::" + convMsg.Msisdn,obj);
                 //App.ViewModel.ConvMsisdnsToUpdate.Add(convMsg.Msisdn);
-                //ConversationTableUtils.updateConversation(obj);
+                Stopwatch st = Stopwatch.StartNew();
+                ConversationTableUtils.updateConversation(obj);
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
             Stopwatch st1 = Stopwatch.StartNew();
             addMessage(convMsg);

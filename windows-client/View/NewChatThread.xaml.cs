@@ -522,7 +522,8 @@ namespace windows_client.View
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
                 initBlockUnblockState();
-                mCredits = (int)App.appSettings[App.SMS_SETTING];
+
+                App.appSettings.TryGetValue(App.SMS_SETTING,out mCredits);
                 registerListeners();
             }
 
