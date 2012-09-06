@@ -157,6 +157,7 @@ namespace windows_client
             }
         }
 
+        #endregion
 
         #endregion
 
