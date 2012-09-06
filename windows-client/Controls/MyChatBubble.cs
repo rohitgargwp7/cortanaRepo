@@ -43,6 +43,7 @@ namespace windows_client.Controls
         }
 
         //TODO: Try to use a single property for timestamp.
+        //either dispose off the convmessage or else keep a reference to it in this class
         public long TimeStampLong
         {
             get
@@ -83,6 +84,11 @@ namespace windows_client.Controls
         {
         }
 
+        public MyChatBubble(long messageId)
+        {
+            this.MessageId = messageId;
+        }
+
         public MyChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
         {
             this.Text = cm.Message;
@@ -90,7 +96,7 @@ namespace windows_client.Controls
             this._messageId = cm.MessageId;
             this._timeStampLong = cm.Timestamp;
             this._messageState = cm.MessageStatus;
-
+            
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = false;
 
@@ -103,5 +109,12 @@ namespace windows_client.Controls
             }
             ContextMenuService.SetContextMenu(this, menu);
         }
+
+        public void setTapEvent(EventHandler<Microsoft.Phone.Controls.GestureEventArgs> tapEventHandler)
+        {
+            var gl = GestureService.GetGestureListener(this);
+            gl.Tap += tapEventHandler;
+        }
+
     }
 }
