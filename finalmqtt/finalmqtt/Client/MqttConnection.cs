@@ -42,7 +42,7 @@ namespace finalmqtt.Client
         }
 
         private Socket _socket;
-        const int MAX_BUFFER_SIZE = 1024 * 30;
+        const int MAX_BUFFER_SIZE = 1024 * 40;
         const int socketReadBufferSize = 1024 * 10;
         private byte[] bufferForSocketReads;
         private readonly String id;
