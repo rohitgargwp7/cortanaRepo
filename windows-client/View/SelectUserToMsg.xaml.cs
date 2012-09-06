@@ -779,6 +779,7 @@ namespace windows_client.View
                 }
             }
         }
+
         private void addBackDeletedContacts(ContactInfo contact)
         {
             if (!msisdnPositions.ContainsKey(contact.Msisdn))
