@@ -31,9 +31,9 @@ namespace windows_client.Model
         private string metadataJsonString;
         private ParticipantInfoState participantInfoState;
         private Attachment _fileAttachment = null;
-        
-//        private bool _hasFileAttachment = false;
-        private string _attachmentName;
+
+        //        private bool _hasFileAttachment = false;
+        private bool _hasAttachment = false;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -244,17 +244,17 @@ namespace windows_client.Model
         //}
 
         [Column]
-        public string AttachmentName
+        public bool HasAttachment
         {
             get
             {
-                return _attachmentName;
+                return _hasAttachment;
             }
             set
             {
-                if (_attachmentName != value)
+                if (_hasAttachment != value)
                 {
-                    _attachmentName = value;
+                    _hasAttachment = value;
                 }
             }
         }
@@ -410,16 +410,18 @@ namespace windows_client.Model
                     JToken fileName;
                     JToken fileKey;
                     JToken thumbnail;
+                    JToken contentType;
 
-                    fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
-                    fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
-                    fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
-                    this.AttachmentName = fileName.ToString();
-                    this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()));
-
-                    //                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-
-
+                    fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
+                    if (contentType.ToString().Contains("image"))
+                    {
+                        fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
+                        fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
+                        fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
+                        this.HasAttachment = true;
+                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()),
+                            contentType.ToString());
+                    }
                 }
                 if (val != null) // represents group message
                 {
@@ -464,9 +466,9 @@ namespace windows_client.Model
                 this.MappedMessageId = System.Int64.Parse(mappedMsgID);
                 participantInfoState = ParticipantInfoState.NO_INFO;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-            
+
             }
         }
 
@@ -478,13 +480,29 @@ namespace windows_client.Model
         {
             JObject obj = new JObject();
             JObject data = new JObject();
-
+            JObject metadata;
+            JArray filesData;
+            JObject singleFileInfo;
             if (isHikeMsg)
                 data[HikeConstants.HIKE_MESSAGE] = _message;
             else
                 data[HikeConstants.SMS_MESSAGE] = _message;
             data[HikeConstants.TIMESTAMP] = _timestamp;
             data[HikeConstants.MESSAGE_ID] = _messageId;
+
+            if (HasAttachment)
+            {
+                metadata = new JObject();
+                filesData = new JArray();
+                singleFileInfo = new JObject();
+                singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                filesData.Add(singleFileInfo.ToObject<JToken>());
+
+                metadata[HikeConstants.FILES_DATA] = filesData;
+                data[HikeConstants.METADATA] = metadata;
+            }
 
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
