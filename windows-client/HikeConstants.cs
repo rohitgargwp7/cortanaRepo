@@ -1,4 +1,5 @@
 ﻿using System;
+using windows_client.utils;
 
 namespace windows_client
 {
@@ -33,9 +34,17 @@ namespace windows_client
         public static readonly string CHANGE_NUMBER = "ChangeNumber";
 
         public static readonly string FILE_NAME = "fn";
+        public static readonly string FILE_RESPONSE_DATA = "data";
         public static readonly string FILE_KEY = "fk";
         public static readonly string FILE_THUMBNAIL = "tn";
-        public static readonly string FILE_TRANSFER = "Files";
+        public static readonly string FILE_CONTENT_TYPE = "ct";
+        public static readonly string FILES_DATA = "files";
+        public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
+        public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
+        public static readonly string FILES_TEMP_FILES = FILE_TRANSFER_LOCATION + "/Temp";
+
+        public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
+        public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.BASE + "/user/ft";
 
 
         /* how long to wait between sending publish and receiving an acknowledgement */
