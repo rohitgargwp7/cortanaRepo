@@ -65,7 +65,6 @@ namespace windows_client.DbUtils
                 bool isNewGroup = (bool)vals[1];
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
-                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if(App.ViewModel.MessageListPageCollection.Contains(convObj))
@@ -74,9 +73,26 @@ namespace windows_client.DbUtils
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                 });
+                if (vals.Length == 2)
+                {
+                    if (!isNewGroup)
+                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                }
+                else if (vals.Length == 5)
+                {
+                    byte[] thumbnail = vals[2] as byte[];
+                    byte[] largeImage = vals[3] as byte[];
+                    
+                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = vals[4] as AccountUtils.postUploadPhotoFunction;
 
-                if (!isNewGroup)
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                    Attachment.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                            Convert.ToString(convMessage.MessageId), thumbnail);
+
+                    Attachment.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                            Convert.ToString(convMessage.MessageId) + "_large", largeImage);
+                    AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage);
+
+                }
             }
             #endregion
             #region MESSAGE_RECEIVED_READ
@@ -103,7 +119,7 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                   //update conversation
+                    //update conversation
                     ConversationTableUtils.updateConversation(c);
                 }
                 // TODO :: persistence.removeMessage(msgId);
@@ -136,7 +152,7 @@ namespace windows_client.DbUtils
                 MemoryStream msLargeImage = (MemoryStream)vals[2];
                 if (Utils.isGroupConversation(msisdn))
                 {
-                    string grpId = msisdn.Replace(":","_");
+                    string grpId = msisdn.Replace(":", "_");
                     MiscDBUtil.saveAvatarImage(grpId, msSmallImage.ToArray());
                 }
                 else
@@ -218,7 +234,7 @@ namespace windows_client.DbUtils
                         App.MqttManagerInstance.mqttPublishToServer(jObj);
                     }
                 }
-                
+
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.WorkerSupportsCancellation = true;
                 bw.DoWork += new DoWorkEventHandler(deleteAllGroupsAsync);
