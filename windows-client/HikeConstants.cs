@@ -41,7 +41,8 @@ namespace windows_client
         public static readonly string FILES_DATA = "files";
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
-        public static readonly string FILES_TEMP_FILES = FILE_TRANSFER_LOCATION + "/Temp";
+        public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
+        public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.BASE + "/user/ft";
