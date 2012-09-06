@@ -49,12 +49,12 @@ namespace windows_client
         //    transferRequests = BackgroundTransferService.Requests;
         //}
 
-        public void downloadFile(string fileKey, long messageId)
+        public void downloadFile(string fileKey, long messageId, string msisdn)
         {
             Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey), UriKind.RelativeOrAbsolute);
 
-            string relativeFilePath = "/" + Convert.ToString(messageId) + "large";
-            string destinationPath = "shared/transfers" + relativeFilePath;
+            string relativeFilePath = "/" + msisdn + "/" + Convert.ToString(messageId);
+            string destinationPath = "shared/transfers" + "/" + Convert.ToString(messageId);
             Uri destinationUri = new Uri(destinationPath, UriKind.RelativeOrAbsolute);
 
             BackgroundTransferRequest transferRequest = new BackgroundTransferRequest(downloadUriSource);
@@ -158,12 +158,18 @@ namespace windows_client
                         {
                             using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
                             {
-                                string destinationPath = HikeConstants.FILE_TRANSFER_LOCATION + transfer.Tag;
+                                string destinationPath = HikeConstants.FILES_BYTE_LOCATION + transfer.Tag;
+                                string destinationDirectory = destinationPath.Substring(0, destinationPath.LastIndexOf("/"));
                                 if (isoStore.FileExists(destinationPath))
                                 {
                                     isoStore.DeleteFile(destinationPath);
                                 }
+                                if (!isoStore.DirectoryExists(destinationDirectory))
+                                {
+                                    isoStore.CreateDirectory(destinationDirectory);
+                                }
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
+                                isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
                             }
                         }
                         else
