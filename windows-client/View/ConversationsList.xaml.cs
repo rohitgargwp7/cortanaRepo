@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
 using System.Collections;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -102,7 +103,7 @@ namespace windows_client.View
             {
                 App.instantiateClasses();
                 convMap = new Dictionary<string, ConversationListObject>();
-                progressBar.Visibility = System.Windows.Visibility.Visible;
+                progressBar.Opacity = 1; ;
                 progressBar.IsEnabled = true;
                 mPubSub = App.HikePubSubInstance;
                 registerListeners();
@@ -149,7 +150,7 @@ namespace windows_client.View
             else if (e.Error != null) { }
             else
             {
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
 
                 myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
@@ -162,7 +163,6 @@ namespace windows_client.View
                 appBar.Mode = ApplicationBarMode.Default;
                 appBar.IsMenuEnabled = true;
                 appBar.Opacity = 1;
-
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
@@ -444,7 +444,7 @@ namespace windows_client.View
             if (result == MessageBoxResult.Cancel)
                 return;
             disableAppBar();
-            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             NetworkManager.turnOffNetworkManager = true;
             mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
@@ -650,7 +650,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.MessageListPageCollection.Clear();
                     emptyScreenImage.Opacity = 1;
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     enableAppBar();
                 });

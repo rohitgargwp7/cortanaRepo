@@ -23,7 +23,7 @@
     </phone:PhoneApplicationPage.Resources>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -49,7 +49,7 @@
                     <Border BorderThickness="2" BorderBrush="Black" Height="45">
                         <Image Name="userImage" Width="45" Height="45"></Image>
                     </Border>
-                    <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="44" Height="60" Margin="18,-4,0,0" Width="Auto" Foreground="Black"/>
+                    <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="44" Height="60" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>
@@ -62,7 +62,7 @@
         </ScrollViewer>
 
 
-        <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="White">
+        <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
             <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
 
                 <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="220">
@@ -221,10 +221,10 @@
             <!--<Image x:Name="typingNotification2" Source="images\typing.png" Visibility="Visible" Height="22" Width="45" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>-->
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
-                <toolkit:PhoneTextBox Background="#eeeeec" BorderThickness="0" x:Name="sendMsgTxtbox" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top"/>
+                <toolkit:PhoneTextBox Background="#eeeeec" BorderThickness="0" x:Name="sendMsgTxtbox" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP" />
             </StackPanel>
         </StackPanel>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" Background="#FFF2F6F8" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
+        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" Background="Blue" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
 
         <Rectangle x:Name="overlayRectangle" Grid.Row="0" Opacity="0.85" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
         <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">

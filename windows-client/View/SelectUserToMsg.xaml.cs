@@ -569,7 +569,7 @@ namespace windows_client.View
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
             /* If no contacts in Phone as well as App , simply return */
-            if (new_contacts_by_id == null && hike_contacts_by_id == null)
+            if ((new_contacts_by_id == null || new_contacts_by_id.Count == 0) && hike_contacts_by_id == null)
             {
                 scanningComplete();
                 return;
@@ -670,7 +670,7 @@ namespace windows_client.View
 
             List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null:AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
             List<DelContacts> hikeIds = null;
-            if (ContactUtils.hike_contactsMap == null || ContactUtils.hike_contactsMap.Count != 0)
+            if (ContactUtils.hike_contactsMap != null && ContactUtils.hike_contactsMap.Count != 0)
             {
                 hikeIds = new List<DelContacts>(ContactUtils.hike_contactsMap.Count);
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)

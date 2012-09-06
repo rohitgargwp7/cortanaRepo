@@ -45,6 +45,7 @@ namespace windows_client
                 App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             isClicked = true;
             progressBar.Opacity = 1;
+            progressBar.IsEnabled = true;
             AccountUtils.registerAccount(null, null, new AccountUtils.postResponseFunction(registerPostResponse_Callback));
         }
 
@@ -60,6 +61,7 @@ namespace windows_client
                     //GetStarted.Content = "Network Error. Try Again.";
                     //GetStarted.Foreground = new SolidColorBrush(Colors.Red);
                     progressBar.Opacity = 0;
+                    progressBar.IsEnabled = false;
                 });
                 isClicked = false;
                 return;
@@ -83,6 +85,7 @@ namespace windows_client
             { 
                 NavigationService.Navigate(nextPage);
                 progressBar.Opacity = 0;
+                progressBar.IsEnabled = false;
             });
         }
 

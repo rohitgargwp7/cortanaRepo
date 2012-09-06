@@ -16,6 +16,8 @@ namespace windows_client.Controls
         public NotificationChatBubble(string message, bool onHike) {
             // Required to initialize variables
             InitializeComponent();
+            if (Utils.isDarkTheme())
+                notStackPanel.Background = new SolidColorBrush(Color.FromArgb(51,51,51,1));
             if (!String.IsNullOrEmpty(message))
             {
                 this.UserName.Text = message;

@@ -43,7 +43,7 @@ namespace windows_client
         {
             nextIconButton.IsEnabled = false;
             ac_name = txtBxEnterName.Text.Trim();
-            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             enterNameBtn.Opacity = 1;
             enterNameBtn.Text = "Scanning contacts.";
@@ -56,11 +56,11 @@ namespace windows_client
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                        progressBar.Visibility = System.Windows.Visibility.Collapsed;
-                        progressBar.IsEnabled = false;
-                        if (!string.IsNullOrWhiteSpace(ac_name))
-                            nextIconButton.IsEnabled = true;
-                        enterNameBtn.Text = "Error !! Name not set.... Try Again";
+                    progressBar.Opacity = 0;
+                    progressBar.IsEnabled = false;
+                    if (!string.IsNullOrWhiteSpace(ac_name))
+                        nextIconButton.IsEnabled = true;
+                    enterNameBtn.Text = "Error !! Name not set.... Try Again";
                 });
                 return;
             }
@@ -75,14 +75,14 @@ namespace windows_client
             Thread.Sleep(2 * 1000);
             PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
             NavigationService.Navigate(nextPage);
-            progressBar.Visibility = System.Windows.Visibility.Collapsed;
+            progressBar.Opacity = 0;
             progressBar.IsEnabled = false;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            while(NavigationService.CanGoBack)
+            while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
         }
 

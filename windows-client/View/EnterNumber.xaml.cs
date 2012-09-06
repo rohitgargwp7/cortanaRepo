@@ -46,7 +46,7 @@ namespace windows_client
             enterPhoneBtn.Opacity = 1;
             enterPhoneBtn.Text = "Verifying your number";
             msisdnErrorTxt.Visibility = Visibility.Collapsed;
-            progressBar.Visibility = System.Windows.Visibility.Visible;
+            progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));         
         }
@@ -59,7 +59,7 @@ namespace windows_client
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     msisdnErrorTxt.Visibility = Visibility.Visible;
-                    progressBar.Visibility = Visibility.Collapsed;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
                 if (!string.IsNullOrWhiteSpace(phoneNumber))
@@ -74,7 +74,7 @@ namespace windows_client
                 {
                     msisdnErrorTxt.Text = "Unable to send PIN to user";
                     msisdnErrorTxt.Visibility = Visibility.Visible;
-                    progressBar.Visibility = Visibility.Collapsed;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
                 return;
@@ -87,7 +87,7 @@ namespace windows_client
             Deployment.Current.Dispatcher.BeginInvoke(() => 
             { 
                 NavigationService.Navigate(nextPage);
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
             });
         }
