@@ -103,7 +103,9 @@ namespace windows_client
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage,false);
                     if (convMessage.FileAttachment != null)
                     {
-                        convMessage.FileAttachment.storeThumbnailInIsolatedStorage(convMessage.MessageId);
+                        Attachment.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + 
+                            Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.Thumbnail);
+                        FileTransfer.Instance.downloadFile(convMessage.FileAttachment.FileKey, convMessage.MessageId);
                     }
                     if (obj == null)
                         return;
