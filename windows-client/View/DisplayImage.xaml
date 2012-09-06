@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -22,7 +23,15 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
-            <Image x:Name="FileImage"></Image>
+            <Image Name="FileImage" Grid.Row="0" RenderTransformOrigin="0.5,0.5" CacheMode="BitmapCache">
+                <Image.RenderTransform>
+                    <CompositeTransform x:Name="transform" />
+                </Image.RenderTransform>
+                <toolkit:GestureService.GestureListener>
+                    <toolkit:GestureListener PinchCompleted="GestureListener_PinchCompleted" PinchStarted="OnPinchStarted" PinchDelta="OnPinchDelta" />
+                </toolkit:GestureService.GestureListener>
+            </Image>
+            <MediaElement Grid.Row="0" x:Name="FileMedia"></MediaElement>
         </Grid>
     </Grid>
  
