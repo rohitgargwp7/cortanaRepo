@@ -56,7 +56,6 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Dictionary<string, GroupParticipant> groupsCache = null;
-
         private static object lockObj = new object();
 
         #endregion
@@ -158,7 +157,6 @@ namespace windows_client
             }
         }
 
-        #endregion
 
         #endregion
 
@@ -433,8 +431,12 @@ namespace windows_client
                     if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
                     {
                         store.CreateDirectory(MiscDBUtil.THUMBNAILS);
-                        store.CreateDirectory(HikeConstants.FILE_TRANSFER);
                     }
+                    if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
+                    {
+                        store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
+                    }
+
                 }
                 // Create the database if it does not exist.
                 Stopwatch st = Stopwatch.StartNew();
