@@ -51,6 +51,11 @@ namespace windows_client.View
             {
                 return convMap;
             }
+            set
+            {
+                if (value != convMap)
+                    convMap = value;
+            }
         }
 
         #endregion

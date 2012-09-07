@@ -101,14 +101,8 @@ namespace windows_client
 
                 if (this.State.TryGetValue("enterNameBtn.Opacity", out obj))
                 {
-                    enterNameBtn.Opacity = (double)obj;
+                    enterNameBtn.Opacity = (int)obj;
                     enterNameBtn.Text = (string)this.State["pinErrorTxt.Text"];
-                }
-
-                if (this.State.ContainsKey("progressBar.IsEnabled"))
-                {
-                    progressBar.IsEnabled = true;
-                    progressBar.Opacity = 1;
                 }
             }
         }
@@ -132,11 +126,6 @@ namespace windows_client
                 this.State.Remove("enterNameBtn.Text");
                 this.State.Remove("enterNameBtn.Opacity");
             }
-
-            if (progressBar.IsEnabled)
-                this.State["progressBar.IsEnabled"] = true;
-            else
-                this.State.Remove("progressBar.IsEnabled");
         }
 
         void EnterNamePage_Loaded(object sender, RoutedEventArgs e)

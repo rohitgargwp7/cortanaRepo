@@ -258,6 +258,8 @@ namespace windows_client
                 if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
                 {
                     ConversationsList.LoadMessages();
+                    if (ConversationsList.ConvMap == null)
+                        ConversationsList.ConvMap = new Dictionary<string, ConversationListObject>();
                 }
             }
         }
