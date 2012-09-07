@@ -141,14 +141,8 @@ namespace windows_client
 
                 if (this.State.TryGetValue("pinErrorTxt.Opacity", out obj))
                 {
-                    pinErrorTxt.Opacity = (double)obj;
+                    pinErrorTxt.Opacity = (int)obj;
                     pinErrorTxt.Text = (string)this.State["pinErrorTxt.Text"];
-                }
-
-                if (this.State.ContainsKey("progressBar.IsEnabled"))
-                {
-                    progressBar.IsEnabled = true;
-                    progressBar.Opacity = 1;
                 }
             }
         }
@@ -172,11 +166,6 @@ namespace windows_client
                 this.State.Remove("pinErrorTxt.Text");
                 this.State.Remove("pinErrorTxt.Opacity");
             }
-
-            if (progressBar.IsEnabled)
-                this.State["progressBar.IsEnabled"] = true;
-            else
-                this.State.Remove("progressBar.IsEnabled");
         }
 
     }

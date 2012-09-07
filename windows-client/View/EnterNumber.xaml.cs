@@ -114,12 +114,6 @@ namespace windows_client
                     msisdnErrorTxt.Opacity = (int)obj;
                     msisdnErrorTxt.Text = (string)this.State["msisdnErrorTxt.Text"];
                 }
-
-                if (this.State.ContainsKey("progressBar.IsEnabled"))
-                {
-                    progressBar.IsEnabled = true;
-                    progressBar.Opacity = 1;
-                }
             }
             
             if (String.IsNullOrWhiteSpace(txtEnterPhone.Text))
@@ -147,11 +141,6 @@ namespace windows_client
                 this.State.Remove("msisdnErrorTxt.Text");
                 this.State.Remove("msisdnErrorTxt.Opacity");
             }
-
-            if (progressBar.IsEnabled)
-                this.State["progressBar.IsEnabled"] = true;
-            else
-                this.State.Remove("progressBar.IsEnabled");
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
