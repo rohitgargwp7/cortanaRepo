@@ -111,7 +111,7 @@ namespace windows_client
 
                 if (this.State.TryGetValue("msisdnErrorTxt.Opacity", out obj))
                 {
-                    msisdnErrorTxt.Opacity = (double)obj;
+                    msisdnErrorTxt.Opacity = (int)obj;
                     msisdnErrorTxt.Text = (string)this.State["msisdnErrorTxt.Text"];
                 }
 

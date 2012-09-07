@@ -102,7 +102,7 @@ namespace windows_client
                 if (this.State.TryGetValue("enterNameBtn.Opacity", out obj))
                 {
                     enterNameBtn.Opacity = (int)obj;
-                    enterNameBtn.Text = (string)this.State["pinErrorTxt.Text"];
+                    enterNameBtn.Text = (string)this.State["enterNameBtn.Text"];
                 }
             }
         }
