@@ -85,6 +85,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="mscorlib.extensions" />
     <Reference Include="System.Xml.Serialization" />
+    <Reference Include="TombstoneHelper">
+      <HintPath>lib\TombstoneHelper.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">

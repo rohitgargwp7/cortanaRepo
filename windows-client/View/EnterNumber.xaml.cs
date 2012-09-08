@@ -11,6 +11,7 @@ namespace windows_client
 {
     public partial class EnterNumber : PhoneApplicationPage
     {
+        bool isTSorFirstLaunch = false;
         string phoneNumber;
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
@@ -34,7 +35,7 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterNumber.ApplicationBar = appBar;
-
+            isTSorFirstLaunch = true;
         }
 
         private void enterPhoneBtn_Click(object sender, EventArgs e)
@@ -45,7 +46,7 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             enterPhoneBtn.Opacity = 1;
             enterPhoneBtn.Text = "Verifying your number";
-            msisdnErrorTxt.Visibility = Visibility.Collapsed;
+            msisdnErrorTxt.Opacity = 0;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));         
@@ -58,7 +59,7 @@ namespace windows_client
                 //logger.Info("HTTP", "Unable to Validate Phone Number.");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    msisdnErrorTxt.Visibility = Visibility.Visible;
+                    msisdnErrorTxt.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
@@ -73,7 +74,7 @@ namespace windows_client
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     msisdnErrorTxt.Text = "Unable to send PIN to user";
-                    msisdnErrorTxt.Visibility = Visibility.Visible;
+                    msisdnErrorTxt.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
@@ -93,19 +94,53 @@ namespace windows_client
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            enterPhoneBtn.Opacity = 0;
-            if (String.IsNullOrWhiteSpace(txtEnterPhone.Text))
-            {
-                nextIconButton.IsEnabled = false;
-            }
-            else
-            {
-                nextIconButton.IsEnabled = true;
-            }
+        {            
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+
+            if (isTSorFirstLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
+            {               
+                object obj = null;
+                if (this.State.TryGetValue("txtEnterPhone", out obj))
+                {
+                    txtEnterPhone.Text = (string)obj;
+                    txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
+                    obj = null;
+                }
+
+                if (this.State.TryGetValue("msisdnErrorTxt.Opacity", out obj))
+                {
+                    msisdnErrorTxt.Opacity = (int)obj;
+                    msisdnErrorTxt.Text = (string)this.State["msisdnErrorTxt.Text"];
+                }
+            }
+            
+            if (String.IsNullOrWhiteSpace(txtEnterPhone.Text))
+                nextIconButton.IsEnabled = false;            
+            else
+                nextIconButton.IsEnabled = true;
+        }
+
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+
+            if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
+                this.State["txtEnterPhone"] = txtEnterPhone.Text;
+            else
+                this.State.Remove("txtEnterPhone");
+
+            if (msisdnErrorTxt.Opacity == 1)
+            {
+                this.State["msisdnErrorTxt.Text"] = msisdnErrorTxt.Text;
+                this.State["msisdnErrorTxt.Opacity"] = msisdnErrorTxt.Opacity;
+            }
+            else
+            {
+                this.State.Remove("msisdnErrorTxt.Text");
+                this.State.Remove("msisdnErrorTxt.Opacity");
+            }
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
@@ -114,6 +149,7 @@ namespace windows_client
             Uri nextPage = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
+
         void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtEnterPhone.Focus();

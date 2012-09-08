@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.IO;
 
 namespace windows_client
 {
@@ -46,11 +47,13 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
+        private static bool _isLaunch = false;
+        public static bool isConvCreated = false;
         public static string MSISDN;
-        private static bool ab_scanned = false;
+        public static bool ab_scanned = false;
         public static bool isABScanning = false;
         private static HikePubSub mPubSubInstance;
-        private static HikeViewModel _viewModel = new HikeViewModel();
+        private static HikeViewModel _viewModel;
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
@@ -62,6 +65,14 @@ namespace windows_client
         #endregion
 
         #region PROPERTIES
+
+        public static bool IsAppLaunched
+        {
+            get
+            {
+                return _isLaunch;
+            }
+        }
 
         public static HikeMqttManager MqttManagerInstance
         {
@@ -226,7 +237,9 @@ namespace windows_client
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            _isLaunch = true;
             Stopwatch st = Stopwatch.StartNew();
+            instantiateClasses();
             loadPage();
             st.Stop();
             long msec = st.ElapsedMilliseconds;
@@ -237,14 +250,25 @@ namespace windows_client
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            //loadPage();
+            if (!isConvCreated)
+            {
+                instantiateClasses();
+                PageState ps = PageState.WELCOME_SCREEN;
+                appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
+                if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
+                {
+                    ConversationsList.LoadMessages();
+                    if (ConversationsList.ConvMap == null)
+                        ConversationsList.ConvMap = new Dictionary<string, ConversationListObject>();
+                }
+            }
         }
 
         // Code to execute when the application is deactivated (sent to background)
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
-            updateConversations();
+            //SerializeConversations();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, GroupParticipant>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -352,14 +376,6 @@ namespace windows_client
                 case PageState.SETNAME_SCREEN:
                     createDatabaseAsync();
                     nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
-                    if (appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED))
-                    {
-                        ab_scanned = true;
-                    }
-                    else
-                    {
-                        ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
-                    }
                     break;
                 case PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -371,9 +387,8 @@ namespace windows_client
             ((App)Application.Current).RootFrame.Navigate(nUri);
         }
 
-        public static void instantiateClasses()
+        private static void instantiateClasses()
         {
-
             if (!App.appSettings.Contains(App.GROUPS_CACHE))
             {
                 Utils.GroupCache = new Dictionary<string, GroupParticipant>();
@@ -419,6 +434,9 @@ namespace windows_client
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
+
+            if (_viewModel == null)
+                _viewModel = new HikeViewModel();
         }
 
         public static void createDatabaseAsync()
@@ -426,7 +444,7 @@ namespace windows_client
             if (App.appSettings.Contains(App.IS_DB_CREATED)) // shows db are created
                 return;
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s,e) => 
+            bw.DoWork += (s, e) =>
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -470,7 +488,7 @@ namespace windows_client
         public static void clearAllDatabasesAsync()
         {
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s,e) => 
+            bw.DoWork += (s, e) =>
             {
                 MiscDBUtil.clearDatabase();
             };
@@ -507,9 +525,9 @@ namespace windows_client
         /* This function should always be used to store values to isolated storage
          * Its a thread safe implemenatation to save values.
          * */
-        public static void WriteToIsoStorageSettings(List<KeyValuePair<string,object>> kvlist)
+        public static void WriteToIsoStorageSettings(List<KeyValuePair<string, object>> kvlist)
         {
-            if(kvlist == null)
+            if (kvlist == null)
                 return;
             lock (lockObj)
             {
@@ -523,12 +541,22 @@ namespace windows_client
             }
         }
 
+        /* This function should always be used to store values to isolated storage
+         * Its a thread safe implemenatation to save values.
+         * */
         public static void WriteToIsoStorageSettings(string key, object value)
         {
             lock (lockObj)
             {
-                appSettings[key] = value;
-                appSettings.Save();
+                try
+                {
+                    appSettings[key] = value;
+                    appSettings.Save();
+                }
+                catch
+                {
+                    Debug.WriteLine("Problem while saving to isolated storage.");
+                }
             }
         }
     }

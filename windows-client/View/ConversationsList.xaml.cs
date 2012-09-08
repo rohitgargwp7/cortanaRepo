@@ -51,6 +51,11 @@ namespace windows_client.View
             {
                 return convMap;
             }
+            set
+            {
+                if (value != convMap)
+                    convMap = value;
+            }
         }
 
         #endregion
@@ -61,11 +66,12 @@ namespace windows_client.View
         {
             Stopwatch stPage = Stopwatch.StartNew();
             InitializeComponent();
-            initAppBar();           
+            initAppBar();
             initProfilePage();
             stPage.Stop();
             long tinmsec = stPage.ElapsedMilliseconds;
             Debug.WriteLine("Conversations List Page : Total Loading time : {0}", tinmsec);
+            App.isConvCreated = true;
         }
 
         //Push notifications
@@ -101,8 +107,8 @@ namespace windows_client.View
                 NavigationService.RemoveBackEntry();
             if (firstLoad)
             {
-                App.instantiateClasses();
-                convMap = new Dictionary<string, ConversationListObject>();
+                if (convMap == null)
+                    convMap = new Dictionary<string, ConversationListObject>();
                 progressBar.Opacity = 1; ;
                 progressBar.IsEnabled = true;
                 mPubSub = App.HikePubSubInstance;
@@ -110,8 +116,16 @@ namespace windows_client.View
                 #region LOAD MESSAGES
 
                 BackgroundWorker bw = new BackgroundWorker();
-                bw.WorkerSupportsCancellation = true;
-                bw.DoWork += new DoWorkEventHandler(bw_LoadAppInstances);
+                bw.DoWork += (ss, ee) =>
+                {
+                    if (App.IsAppLaunched)  // represents normal launch
+                        LoadMessages();
+                    else // tombstone launch
+                    {
+                        Debug.WriteLine("CONVERSATIONS LIST :: Recovered from tombstone.");
+                    }
+
+                };
                 bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
                 bw.RunWorkerAsync();
 
@@ -121,12 +135,13 @@ namespace windows_client.View
 
                 Stopwatch st = Stopwatch.StartNew();
                 SmileyParser.loadEmoticons();
-                firstLoad = false;
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
 
                 #endregion
+
+                firstLoad = false;
             }
             if (App.ViewModel.MessageListPageCollection.Count == 0)
                 emptyScreenImage.Opacity = 1;
@@ -138,95 +153,78 @@ namespace windows_client.View
 
         #region ConvList Page
 
-        private void bw_LoadAppInstances(object sender, DoWorkEventArgs e)
-        {
-            LoadMessages();
-        }
-
         /* This function will run on UI Thread */
         private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Cancelled) { }
-            else if (e.Error != null) { }
+
+            progressBar.Opacity = 0;
+            progressBar.IsEnabled = false;
+
+            myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+                emptyScreenImage.Opacity = 1;
+            else
+                emptyScreenImage.Opacity = 0;
+
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.IsMenuEnabled = true;
+            appBar.Opacity = 1;
+            NetworkManager.turnOffNetworkManager = false;
+            App.MqttManagerInstance.connect();
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_NEW_INSTALLATION);
+                Utils.requestAccountInfo();
+            }
+
+            // move to seperate thread later
+            #region PUSH NOTIFICATIONS STUFF
+            HttpNotificationChannel pushChannel;
+
+            // The name of our push channel.
+            string channelName = "HikeApp";
+
+            // Try to find the push channel.
+            pushChannel = HttpNotificationChannel.Find(channelName);
+
+            // If the channel was not found, then create a new connection to the push service.
+            if (pushChannel == null)
+            {
+                pushChannel = new HttpNotificationChannel(channelName);
+
+                // Register for all the events before attempting to open the channel.
+                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+                // Register for this notification only if you need to receive the notifications while your application is running.
+                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+                pushChannel.Open();
+                // Bind this new channel for toast events.
+                pushChannel.BindToShellToast();
+                pushChannel.BindToShellTile();
+            }
             else
             {
-                progressBar.Opacity = 0;
-                progressBar.IsEnabled = false;
+                // The channel was already open, so just register for all the events.
+                pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
 
-                myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
+                // Register for this notification only if you need to receive the notifications while your application is running.
+                pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
-                if (App.ViewModel.MessageListPageCollection.Count == 0)
-                    emptyScreenImage.Opacity = 1;
-                else
-                    emptyScreenImage.Opacity = 0;
-
-                appBar.Mode = ApplicationBarMode.Default;
-                appBar.IsMenuEnabled = true;
-                appBar.Opacity = 1;
-                NetworkManager.turnOffNetworkManager = false;
-                App.MqttManagerInstance.connect();
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
-                {
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_NEW_INSTALLATION);
-                    Utils.requestAccountInfo();
-                }
-
-                // move to seperate thread later
-                #region PUSH NOTIFICATIONS STUFF
-                HttpNotificationChannel pushChannel;
-
-                // The name of our push channel.
-                string channelName = "HikeApp";
-
-                // Try to find the push channel.
-                pushChannel = HttpNotificationChannel.Find(channelName);
-
-                // If the channel was not found, then create a new connection to the push service.
-                if (pushChannel == null)
-                {
-                    pushChannel = new HttpNotificationChannel(channelName);
-
-                    // Register for all the events before attempting to open the channel.
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    // Register for this notification only if you need to receive the notifications while your application is running.
-                    pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-                    pushChannel.Open();
-                    // Bind this new channel for toast events.
-                    pushChannel.BindToShellToast();
-                    pushChannel.BindToShellTile();
-                }
-                else
-                {
-                    // The channel was already open, so just register for all the events.
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-
-                    // Register for this notification only if you need to receive the notifications while your application is running.
-                    pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-
-                    if (pushChannel.ChannelUri == null)
-                        return;
-                    System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                    AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-                }
-                #endregion
+                if (pushChannel.ChannelUri == null)
+                    return;
+                System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
             }
+            #endregion
+
         }
 
-        private static void LoadMessages()
+        public static void LoadMessages()
         {
+
             Stopwatch stopwatch = Stopwatch.StartNew();
-            //List<ConversationListObject> conversationList = new List<ConversationListObject>();
-            //foreach (var key in App.appSettings.Keys)
-            //{
-            //    string k = key.ToString();
-            //    if (k.StartsWith("CONV::"))
-            //    {
-            //        ConversationListObject co =  (ConversationListObject)App.appSettings[k];
-            //        conversationList.Add(co);
-            //    }
-            //}
             List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
             stopwatch.Stop();
             long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
@@ -240,6 +238,8 @@ namespace windows_client.View
                 byte[] _avatar = MiscDBUtil.getThumbNailForMSisdn(conversationList[i].Msisdn);
                 ConversationListObject conv = conversationList[i];
                 conv.Avatar = _avatar;
+                if (convMap == null)
+                    convMap = new Dictionary<string, ConversationListObject>();
                 convMap.Add(conv.Msisdn, conv);
                 App.ViewModel.MessageListPageCollection.Add(conv);
             }
@@ -262,10 +262,6 @@ namespace windows_client.View
             appBar.Buttons.Add(composeIconButton);
 
             /* Add Menu Items*/
-            //ApplicationBarMenuItem inviteUsersMenu = new ApplicationBarMenuItem();
-            //inviteUsersMenu.Text = INVITE_USERS;
-            //inviteUsersMenu.Click += new EventHandler(inviteUsers_Click);
-            //appBar.MenuItems.Add(inviteUsersMenu);
             convListPagePivot.ApplicationBar = appBar;
 
             ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
@@ -282,7 +278,6 @@ namespace windows_client.View
             delAccountMenu = new ApplicationBarMenuItem();
             delAccountMenu.Text = "delete account";
             delAccountMenu.Click += new EventHandler(deleteAccount_Click);
-
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -361,7 +356,7 @@ namespace windows_client.View
             byte[] _avatar = MiscDBUtil.getThumbNailForMSisdn(HikeConstants.MY_PROFILE_PIC);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("Time to fetch profile image : {0}",msec);
+            Debug.WriteLine("Time to fetch profile image : {0}", msec);
 
             if (_avatar != null)
             {
@@ -459,7 +454,7 @@ namespace windows_client.View
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator("Loading...");
+                progress = new MyProgressIndicator("Deleting Account...");
             }
 
             disableAppBar();
@@ -467,6 +462,7 @@ namespace windows_client.View
             AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
         }
 
+        // will be called on UI Thread
         private void deleteAccountResponse_Callback(JObject obj)
         {
             if (obj == null || "fail" == (string)obj["stat"])
@@ -637,6 +633,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     emptyScreenImage.Opacity = 1;
+                    myListBox.ItemsSource = null;
                     App.ViewModel.MessageListPageCollection.Clear();
                     convMap.Clear();
                     progress.Hide();

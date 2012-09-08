@@ -166,6 +166,12 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            object obj = null;
+            if (this.State.TryGetValue("sendMsgTxtbox.Text", out obj))
+            {
+                sendMsgTxtbox.Text = (string)obj;
+                sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
+            }
             if (PhoneApplicationService.Current.State.ContainsKey("fromSelectUserPage"))
             {
                 PhoneApplicationService.Current.State.Remove("fromSelectUserPage");
@@ -180,12 +186,29 @@ namespace windows_client.View
                     NavigationService.RemoveBackEntry();
 
             }
+            if (!App.isConvCreated) // represents tombstone
+            {
+                Debug.WriteLine("CHAT THREAD :: Recovered from Tombstone.");
+                NetworkManager.turnOffNetworkManager = false;
+                App.MqttManagerInstance.connect();
+            }
+        }
 
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            if (!string.IsNullOrWhiteSpace(sendMsgTxtbox.Text))
+                this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
+            else
+                this.State.Remove("sendMsgTxtbox.Text");
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove("objFromConversationPage");
+            PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
             removeListeners();
         }
 
@@ -202,7 +225,6 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents NewChatThread is called from convlist page
             {
                 ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
-                PhoneApplicationService.Current.State.Remove("objFromConversationPage");
                 mContactNumber = convObj.Msisdn;
 
                 if (Utils.isGroupConversation(mContactNumber)) // represents group chat
@@ -241,7 +263,6 @@ namespace windows_client.View
                     sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State["forwardedText"];
                     PhoneApplicationService.Current.State.Remove("forwardedText");
                 }
-                PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
                 //if (obj.HasCustomPhoto)
                 //{
                 byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
@@ -949,8 +970,6 @@ namespace windows_client.View
             names[i] = names[i].Substring(0, names[i].IndexOf(' '));
             return names;
         }
-
-
 
         private void sendMsg(ConvMessage convMessage, bool isNewGroup)
         {
