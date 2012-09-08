@@ -173,6 +173,9 @@
     <Compile Include="View\NewChatThread.xaml.cs">
       <DependentUpon>NewChatThread.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PlayMedia.xaml.cs">
+      <DependentUpon>PlayMedia.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SelectUserToMsg.xaml.cs">
       <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
     </Compile>
@@ -247,6 +250,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\NewChatThread.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PlayMedia.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
