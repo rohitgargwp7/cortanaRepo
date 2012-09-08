@@ -48,7 +48,7 @@ namespace windows_client.View
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
-        private Dictionary<long, Attachment> attachments = new Dictionary<long, Attachment>();
+        private Dictionary<long, Attachment> attachments = null;
 
         private static long tempMsgId = -2;
 
@@ -75,6 +75,14 @@ namespace windows_client.View
         List<GroupMembers> groupMemberList = null;
 
         private Dictionary<string, RoutedEventHandler> _contextMenuDictionary;
+
+
+        private ContextMenu nonAttachmentMenu;
+        private ContextMenu attachmentUploading;
+        private ContextMenu attachmentUploaded;
+        private ContextMenu attachmentCanceled = null;
+
+
         #endregion
 
         #region UI VALUES
@@ -130,14 +138,6 @@ namespace windows_client.View
                 return msgMap;
             }
         }
-
-        //public Dictionary<ConvMessage, SentChatBubble> ConvMessageSentBubbleMap      /* This map will contain only outgoing messages */
-        //{
-        //    get
-        //    {
-        //        return _convMessageSentBubbleMap;
-        //    }
-        //}
 
         public ObservableCollection<MyChatBubble> ChatThreadPageCollection
         {
@@ -204,6 +204,42 @@ namespace windows_client.View
             photoChooserTask.PixelHeight = 400;
             photoChooserTask.PixelWidth = 400;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+        }
+
+
+        public void initializeContextMenus()
+        {
+            MenuItem copy = new MenuItem();
+            copy.Header = "copy";
+            copy.Click += MenuItem_Click_Copy;
+
+            MenuItem forward = new MenuItem();
+            forward.Header = "forward";
+            forward.Click += MenuItem_Click_Forward;
+
+            MenuItem delete = new MenuItem();
+            delete.Header = "delete";
+            delete.Click += MenuItem_Click_Delete;
+
+            MenuItem cancel = new MenuItem();
+            cancel.Header = "cancel";
+            cancel.Click += MenuItem_Click_Delete;
+
+            nonAttachmentMenu = new ContextMenu();
+            nonAttachmentMenu.IsZoomEnabled = false;
+            nonAttachmentMenu.Items.Add(copy);
+            nonAttachmentMenu.Items.Add(forward);
+            nonAttachmentMenu.Items.Add(delete);
+
+            attachmentUploading = new ContextMenu();
+            attachmentUploading.IsZoomEnabled = false;
+            nonAttachmentMenu.Items.Add(cancel);
+            nonAttachmentMenu.Items.Add(delete);
+
+            attachmentUploaded = new ContextMenu();
+            attachmentUploaded.IsZoomEnabled = false;
+            attachmentUploaded.Items.Add(forward);
+            attachmentUploaded.Items.Add(delete);
 
 
         }
@@ -571,8 +607,8 @@ namespace windows_client.View
             else
             {
                 Stopwatch st = Stopwatch.StartNew();
-                //attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
-                attachments = new Dictionary<long, Attachment>();
+                attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
+                //attachments = new Dictionary<long, Attachment>();
                 loadMessages();
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
@@ -844,7 +880,7 @@ namespace windows_client.View
             MyChatBubble chatBubble = (sender as MyChatBubble);
             if (chatBubble is ReceivedChatBubble)
             {
-                object[] fileTapped = new object[3];
+                object[] fileTapped = new object[2];
                 fileTapped[0] = chatBubble.MessageId;
                 fileTapped[1] = mContactNumber;
                 fileTapped[2] = "audio";
@@ -871,26 +907,46 @@ namespace windows_client.View
         private void AddMessageToUI(ConvMessage convMessage, bool addToLast)
         {
             //TODO : Create attachment object if it requires one
-            if (convMessage.HasAttachment)
-            {
-                if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
-                {
-                    convMessage.FileAttachment = attachments[convMessage.MessageId];
-                }
-                else if (convMessage.FileAttachment != null && attachments.ContainsKey(convMessage.MessageId))
-                {
-                    attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
-                }
-            }
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
+                    ContextMenu menu;
+                    if (convMessage.HasAttachment)
+                    {
+                        if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
+                        {
+                            convMessage.FileAttachment = attachments[convMessage.MessageId];
+                        }
+                        else if (convMessage.FileAttachment != null && attachments.ContainsKey(convMessage.MessageId))
+                        {
+                            attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
+                        }
+
+                        switch (convMessage.FileAttachment.FileState)
+                        {
+                            case Attachment.AttachmentState.CANCELED:
+                                menu = attachmentCanceled;
+                                break;
+                            case Attachment.AttachmentState.COMPLETED:
+                                menu = attachmentUploaded;
+                                break;
+                            default:
+                                menu = attachmentUploading;
+                                break;
+                        }
+
+                    }
+                    else
+                    {
+                        menu = nonAttachmentMenu;
+                    }
+
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        chatBubble = new SentChatBubble(convMessage, ContextMenuDictionary);
+                        chatBubble = new SentChatBubble(convMessage, menu);
                         if (convMessage.MessageId != -1)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else
@@ -899,7 +955,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, ContextMenuDictionary);
+                        chatBubble = new ReceivedChatBubble(convMessage, menu);
 
                     }
                     if (addToLast)
@@ -1245,6 +1301,13 @@ namespace windows_client.View
             o[2] = delConv;
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
         }
+
+        private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
+        {
+            MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
+            Clipboard.SetText(chatBubble.Text);
+        }
+
 
 
         #endregion
