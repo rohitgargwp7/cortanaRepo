@@ -420,7 +420,7 @@ namespace windows_client.Model
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
                         this.HasAttachment = true;
                         this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()),
-                            contentType.ToString());
+                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                     //}
                 }
                 if (val != null) // represents group message
