@@ -202,8 +202,8 @@ namespace windows_client.View
             }
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 400;
-            photoChooserTask.PixelWidth = 400;
+            //photoChooserTask.PixelHeight = 400;
+            //photoChooserTask.PixelWidth = 400;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
         }
 
@@ -889,9 +889,8 @@ namespace windows_client.View
                     object[] fileTapped = new object[2];
                     fileTapped[0] = chatBubble.MessageId;
                     fileTapped[1] = mContactNumber;
-                    fileTapped[2] = "audio";
                     PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
-                    NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+                    NavigationService.Navigate(new Uri("/View/PlayMedia.xaml", UriKind.Relative));
                 }
             }
             else if (chatBubble is SentChatBubble)
