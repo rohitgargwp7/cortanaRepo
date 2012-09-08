@@ -5,14 +5,15 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.IO;
 using windows_client.DbUtils;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.Controls
 {
     public partial class ReceivedChatBubble : MyChatBubble
     {
 
-        public ReceivedChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
-            : base(cm, contextMenuDictionary)
+        public ReceivedChatBubble(ConvMessage cm, ContextMenu menu)
+            : base(cm, menu)
         {
             // Required to initialize variables
             InitializeComponent();

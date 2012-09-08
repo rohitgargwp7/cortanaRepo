@@ -89,24 +89,13 @@ namespace windows_client.Controls
             this.MessageId = messageId;
         }
 
-        public MyChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+        public MyChatBubble(ConvMessage cm, ContextMenu menu)
         {
             this.Text = cm.Message;
             this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
             this._messageId = cm.MessageId;
             this._timeStampLong = cm.Timestamp;
             this._messageState = cm.MessageStatus;
-            
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = false;
-
-            foreach (KeyValuePair<string, RoutedEventHandler> entry in contextMenuDictionary)
-            {
-                MenuItem menuItem = new MenuItem();
-                menuItem.Header = entry.Key;
-                menuItem.Click += entry.Value;
-                menu.Items.Add(menuItem);
-            }
             ContextMenuService.SetContextMenu(this, menu);
         }
 
@@ -114,6 +103,11 @@ namespace windows_client.Controls
         {
             var gl = GestureService.GetGestureListener(this);
             gl.Tap += tapEventHandler;
+        }
+
+        public void setContextMenu(ContextMenu contextMenu)
+        {
+            ContextMenuService.SetContextMenu(this, contextMenu);
         }
 
     }

@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using System.IO;
 using windows_client.DbUtils;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.Controls
 {
@@ -14,8 +15,8 @@ namespace windows_client.Controls
     {
         private SolidColorBrush bubbleColor;
         private ConvMessage.State messageState;
-        public SentChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
-            : base(cm, contextMenuDictionary)
+        public SentChatBubble(ConvMessage cm, ContextMenu menu)
+            : base(cm, menu)
         {
             // Required to initialize variables
             InitializeComponent();
