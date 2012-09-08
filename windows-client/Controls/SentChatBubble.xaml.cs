@@ -15,11 +15,18 @@ namespace windows_client.Controls
     {
         private SolidColorBrush bubbleColor;
         private ConvMessage.State messageState;
+        private Attachment fileAttachment;
+
+        LinkifiedTextBox MessageText2;
+
+        public bool isCanceled = false;
+
         public SentChatBubble(ConvMessage cm, ContextMenu menu)
             : base(cm, menu)
         {
             // Required to initialize variables
             InitializeComponent();
+            initializeBasedOnState(cm.HasAttachment);
             //IsSms is false for group chat
             if (cm.IsSms)
             {
@@ -59,12 +66,12 @@ namespace windows_client.Controls
             this.BubbleBg.Fill = bubbleColor;
         }
 
-        public SentChatBubble(bool onHike, BitmapImage sentImage, long messageId)
-            : base(messageId)
+        public SentChatBubble(bool onHike, BitmapImage sentImage, long messageId, ContextMenu uploading)
+            : base(messageId, uploading)
         {
             // Required to initialize variables
             InitializeComponent();
-
+            initializeBasedOnState(true);
             if (onHike)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
@@ -100,6 +107,26 @@ namespace windows_client.Controls
                     }
                 });
             }
+        }
+
+        public void updateProgress(double progressValue)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                this.uploadProgress.Value = progressValue;
+                if (progressValue == this.uploadProgress.Maximum)
+                {
+                    this.uploadProgress.Visibility = Visibility.Collapsed;
+                }
+            });
+        }
+
+        private void initializeBasedOnState(bool hasAttachment)
+        {
+            if (hasAttachment)
+                this.MessageText.Visibility = Visibility.Collapsed;
+            else
+                this.attachment.Visibility = Visibility.Collapsed;
         }
     }
 }

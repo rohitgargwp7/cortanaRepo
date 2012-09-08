@@ -17,6 +17,7 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
+            initializeBasedOnState(cm.HasAttachment);
             if (cm.FileAttachment!=null && (cm.FileAttachment.ContentType.Contains("video") || (cm.FileAttachment.ContentType.Contains("image"))))
             {
                 byte[] imageBytes;
@@ -31,6 +32,27 @@ namespace windows_client.Controls
                 this.MessageImage.Source = fileThumbnail;
             }
         }
+
+        public void updateProgress(double progressValue)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                this.downloadProgress.Value = progressValue;
+                if (progressValue == this.downloadProgress.Maximum)
+                {
+                    this.downloadProgress.Visibility = Visibility.Collapsed;
+                }
+            });
+        }
+
+        private void initializeBasedOnState(bool hasAttachment)
+        {
+            if (hasAttachment)
+                this.MessageText.Visibility = Visibility.Collapsed;
+            else
+                this.attachment.Visibility = Visibility.Collapsed;
+        }
+
 
 
 

@@ -9,31 +9,43 @@
 	x:Class="windows_client.Controls.SentChatBubble"
 	d:DesignWidth="372" d:DesignHeight="86"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
-    
-	<Grid x:Name="LayoutRoot" Background="Transparent" Margin="50,12,0,10">
-		<Grid d:LayoutOverrides="Width">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="14" />
-			</Grid.RowDefinitions>
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
+
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="50,12,0,10">
+        <Grid d:LayoutOverrides="Width">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="14" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Rectangle Name="BubbleBg" Grid.Column="1" Grid.RowSpan="2" />
-                <local:LinkifiedTextBox Grid.Column="1" Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Margin="0,6,0,0" />
+                <local:LinkifiedTextBox Grid.Row="0" Grid.Column="1" Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Margin="0,6,0,0" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStamp, Mode=OneTime}" Foreground="White" Opacity=".6" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" />
                 <Image x:Name="SDRImage" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
-                <Image x:Name="MessageImage" Grid.Column="1" Margin="6"/>
 
+                <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Image Grid.Row="0" x:Name="MessageImage" />
+                    <ProgressBar Grid.Row="1" x:Name="uploadProgress" Margin="0,10,0,0" Grid.Column="1" Height="10" Width="300" Background="Aqua" Foreground="Pink" Minimum="0" Maximum="100"></ProgressBar>
+                </Grid>
+                
+                
+                <StackPanel Orientation="Vertical" Grid.Column="1" Margin="6">
+                </StackPanel>
+                
             </Grid>
             <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" />
-		</Grid>
-	</Grid>
+        </Grid>
+    </Grid>
 </local:MyChatBubble>
