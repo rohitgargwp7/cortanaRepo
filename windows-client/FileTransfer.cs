@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using windows_client.Model;
 using windows_client.utils;
+using windows_client.Controls;
 
 namespace windows_client
 {
@@ -22,6 +23,8 @@ namespace windows_client
         bool WaitingForExternalPowerDueToBatterySaverMode;
         bool WaitingForNonVoiceBlockingNetwork;
         bool WaitingForWiFi;
+
+        private static Dictionary<string, ReceivedChatBubble> requestIdChatBubbleMap = new Dictionary<string, ReceivedChatBubble>();
 
         private static volatile FileTransfer instance = null;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -49,12 +52,15 @@ namespace windows_client
         //    transferRequests = BackgroundTransferService.Requests;
         //}
 
-        public void downloadFile(string fileKey, long messageId, string msisdn)
+        public void downloadFile(MyChatBubble chatBubble, string msisdn)
         {
-            Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey), UriKind.RelativeOrAbsolute);
 
-            string relativeFilePath = "/" + msisdn + "/" + Convert.ToString(messageId);
-            string destinationPath = "shared/transfers" + "/" + Convert.ToString(messageId);
+
+            Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + chatBubble.FileAttachment.FileKey), 
+                UriKind.RelativeOrAbsolute);
+
+            string relativeFilePath = "/" + msisdn + "/" + Convert.ToString(chatBubble.MessageId);
+            string destinationPath = "shared/transfers" + "/" + Convert.ToString(chatBubble.MessageId);
             Uri destinationUri = new Uri(destinationPath, UriKind.RelativeOrAbsolute);
 
             BackgroundTransferRequest transferRequest = new BackgroundTransferRequest(downloadUriSource);
@@ -68,6 +74,7 @@ namespace windows_client
             try
             {
                 BackgroundTransferService.Add(transferRequest);
+                requestIdChatBubbleMap.Add(transferRequest.RequestId, chatBubble as ReceivedChatBubble);
             }
             catch (InvalidOperationException ex)
             {
@@ -214,11 +221,15 @@ namespace windows_client
 
         void transfer_TransferProgressChanged(object sender, BackgroundTransferEventArgs e)
         {
+            ReceivedChatBubble chatBubble;
+            requestIdChatBubbleMap.TryGetValue(e.Request.RequestId, out chatBubble);
+            chatBubble.updateProgress(e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive);
             // UpdateUI();
         }
 
         private void RemoveTransferRequest(string transferID)
         {
+            requestIdChatBubbleMap.Remove(transferID);
             // Use Find to retrieve the transfer request with the specified ID.
             BackgroundTransferRequest transferToRemove = BackgroundTransferService.Find(transferID);
 
