@@ -8,6 +8,7 @@ using System.Data.Linq;
 using System.ComponentModel;
 using windows_client.utils;
 using windows_client.View;
+using windows_client.Controls;
 
 namespace windows_client.DbUtils
 {
@@ -54,6 +55,34 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
         }
 
+
+        public void uploadFileCallback(JObject obj, ConvMessage convMessage)
+        {
+            string response = obj.ToString();
+            if (obj != null)
+            {
+                JObject data = obj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                string fileKey = data[HikeConstants.FILE_KEY].ToString();
+                string fileName = data[HikeConstants.FILE_NAME].ToString();
+                string contentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
+
+                //DO NOT Update message text in db. We sent the below line, but we save only filename as message.
+                convMessage.Message = "I sent you a file. To view go to " + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
+                
+                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                convMessage.FileAttachment.FileKey = fileKey;
+                convMessage.FileAttachment.ContentType = contentType;
+
+                MessagesTableUtils.updateMsgStatus(convMessage.MessageId,(int) ConvMessage.State.SENT_UNCONFIRMED);
+                //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+
+                //TODO add fileAttachment object in map
+//                attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+            }
+        }
+
+
         public void onEventReceived(string type, object obj)
         {
 
@@ -82,17 +111,18 @@ namespace windows_client.DbUtils
                 {
                     byte[] thumbnail = vals[2] as byte[];
                     byte[] largeImage = vals[3] as byte[];
+                    SentChatBubble chatbubble = vals[4] as SentChatBubble;
 
-                    //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-
-                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = vals[4] as AccountUtils.postUploadPhotoFunction;
+                  //  MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
+                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
 
                     MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
                             Convert.ToString(convMessage.MessageId), thumbnail);
 
                     MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                             Convert.ToString(convMessage.MessageId), largeImage);
-                    AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage);
+                    AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage, chatbubble);
 
                 }
             }

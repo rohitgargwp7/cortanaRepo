@@ -48,7 +48,8 @@ namespace windows_client.View
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
-        private Dictionary<long, Attachment> attachments = null;
+        private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
+        //messages stored in db, other messages would have their attachment object set
 
         private static long tempMsgId = -2;
 
@@ -607,8 +608,8 @@ namespace windows_client.View
             else
             {
                 Stopwatch st = Stopwatch.StartNew();
-                attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
-                //attachments = new Dictionary<long, Attachment>();
+                //attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
+                attachments = new Dictionary<long, Attachment>();
                 loadMessages();
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
@@ -872,6 +873,7 @@ namespace windows_client.View
                 showOverlay(true); //true means show block animation
             }
         }
+            
 
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
@@ -880,12 +882,27 @@ namespace windows_client.View
             MyChatBubble chatBubble = (sender as MyChatBubble);
             if (chatBubble is ReceivedChatBubble)
             {
+                if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                    FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
+                else
+                {
+                    object[] fileTapped = new object[2];
+                    fileTapped[0] = chatBubble.MessageId;
+                    fileTapped[1] = mContactNumber;
+                    fileTapped[2] = "audio";
+                    PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
+                    NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+                }
+            }
+            else if (chatBubble is SentChatBubble)
+            {
                 object[] fileTapped = new object[2];
                 fileTapped[0] = chatBubble.MessageId;
                 fileTapped[1] = mContactNumber;
                 fileTapped[2] = "audio";
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+            
             }
         }
 
@@ -936,7 +953,6 @@ namespace windows_client.View
                                 menu = attachmentUploading;
                                 break;
                         }
-
                     }
                     else
                     {
@@ -947,7 +963,7 @@ namespace windows_client.View
                     if (convMessage.IsSent)
                     {
                         chatBubble = new SentChatBubble(convMessage, menu);
-                        if (convMessage.MessageId != -1)
+                        if (convMessage.MessageId < -1)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else
                             msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
@@ -955,7 +971,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, menu);
+                        chatBubble = new ReceivedChatBubble(convMessage, attachmentUploaded);
 
                     }
                     if (addToLast)
@@ -1077,6 +1093,7 @@ namespace windows_client.View
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
+            convMessage.MessageId = TempMessageId;
             sendMsg(convMessage, false);
         }
 
@@ -1117,7 +1134,17 @@ namespace windows_client.View
                 convMessage.HasAttachment = true;
                 convMessage.MessageId = TempMessageId;
 
-                SentChatBubble chatBubble = new SentChatBubble(isOnHike, image, convMessage.MessageId);
+                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+
+                MemoryStream msSmallImage = new MemoryStream();
+                writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
+                string fileName = image.UriSource.ToString();
+                fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
+
+                convMessage.FileAttachment = new Attachment(fileName, msSmallImage.ToArray(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                convMessage.Message = fileName;
+
+                SentChatBubble chatBubble = new SentChatBubble(isOnHike, image, convMessage.MessageId, attachmentUploading);
 
                 msgMap.Add(convMessage.MessageId, chatBubble);
                 //                ConvMessageSentBubbleMap.Add(convMessage, chatBubble);
@@ -1135,18 +1162,9 @@ namespace windows_client.View
                     isReshowTypingNotification = false;
                 }
 
-                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-
-                MemoryStream msSmallImage = new MemoryStream();
-                writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
 
                 MemoryStream msLargeImage = new MemoryStream();
                 writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 100);
-                string fileName = image.UriSource.ToString();
-                fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
-
-                convMessage.FileAttachment = new Attachment(fileName, msSmallImage.ToArray());
-                convMessage.Message = fileName;
                 bool isNewGroup = false;
 
                 object[] vals = new object[5];
@@ -1154,7 +1172,7 @@ namespace windows_client.View
                 vals[1] = isNewGroup;
                 vals[2] = msSmallImage.ToArray();
                 vals[3] = msLargeImage.ToArray();
-                vals[4] = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                vals[4] = chatBubble;
                 mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
             }
             abc = !abc;
@@ -1162,25 +1180,6 @@ namespace windows_client.View
 
         public static bool abc = true;
 
-        public void uploadFileCallback(JObject obj, ConvMessage convMessage)
-        {
-            string response = obj.ToString();
-            if (obj != null)
-            {
-                JObject data = obj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
-                string fileKey = data[HikeConstants.FILE_KEY].ToString();
-                string fileName = data[HikeConstants.FILE_NAME].ToString();
-                string contentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
-
-                //DO NOT Update message text in db. We sent the below line, but we save only filename as message.
-                convMessage.Message = "I sent you a file. To view go to " + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
-                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
-                convMessage.FileAttachment.FileKey = fileKey;
-                convMessage.FileAttachment.ContentType = contentType;
-                attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
-            }
-        }
 
         private string[] splitUserJoinedMessage(ConvMessage convMessage)
         {
@@ -1209,12 +1208,12 @@ namespace windows_client.View
 
 
 
-        private void sendMsg(ConvMessage convMessage, bool isNewGroup)
-        {
-            sendMsg(convMessage, isNewGroup, true);
-        }
+        //private void sendMsg(ConvMessage convMessage, bool isNewGroup)
+        //{
+        //    sendMsg(convMessage, isNewGroup, true);
+        //}
 
-        private void sendMsg(ConvMessage convMessage, bool isNewGroup, bool addToUI)
+        private void sendMsg(ConvMessage convMessage, bool isNewGroup)
         {
             if (isNewGroup)
             {
@@ -1223,19 +1222,16 @@ namespace windows_client.View
                 metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
                 convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             }
-            if (addToUI)
+            if (isTypingNotificationActive)
             {
-                if (isTypingNotificationActive)
-                {
-                    HideTypingNotification();
-                    isReshowTypingNotification = true;
-                }
-                AddMessageToUI(convMessage, true);
-                if (isReshowTypingNotification)
-                {
-                    ShowTypingNotification();
-                    isReshowTypingNotification = false;
-                }
+                HideTypingNotification();
+                isReshowTypingNotification = true;
+            }
+            AddMessageToUI(convMessage, true);
+            if (isReshowTypingNotification)
+            {
+                ShowTypingNotification();
+                isReshowTypingNotification = false;
             }
 
             object[] vals = new object[2];
