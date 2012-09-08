@@ -12,6 +12,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using windows_client.Controls;
+using System.Threading;
 
 namespace windows_client.utils
 {
@@ -165,7 +166,8 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PUSHNOTIFICATION_DATA, uri, finalCallbackFunction });
         }
 
-        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage)
+        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage, 
+            SentChatBubble chatbubble)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
@@ -176,7 +178,8 @@ namespace windows_client.utils
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
 
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage });
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage, 
+                chatbubble });
         }
 
         private static void setParams_Callback(IAsyncResult result)
@@ -258,7 +261,23 @@ namespace windows_client.utils
                     byte[] dataBytes = (byte[])vars[2];
                     postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
                     ConvMessage convMessage = vars[4] as ConvMessage;
-                    postStream.Write(dataBytes, 0, dataBytes.Length);
+                    SentChatBubble chatBubble = vars[5] as SentChatBubble;
+                    int bufferSize = 1024;
+                    int startIndex = 0;
+                    int noOfBytesToWrite = 0;
+                    double progressValue = 0;
+                    while (startIndex < dataBytes.Length && !chatBubble.isCanceled)
+                    {
+                        Thread.Sleep(20);
+                        noOfBytesToWrite = dataBytes.Length - startIndex;
+                        noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
+                        postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
+                        progressValue = ((double)(startIndex + noOfBytesToWrite) / dataBytes.Length) * 100;
+                        chatBubble.updateProgress(progressValue);
+                        startIndex += noOfBytesToWrite;
+                    }
+
+//                    postStream.Write(dataBytes, 0, dataBytes.Length);
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
                     return;
