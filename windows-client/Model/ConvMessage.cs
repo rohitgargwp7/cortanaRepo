@@ -30,6 +30,10 @@ namespace windows_client.Model
         private string _groupParticipant;
         private string metadataJsonString;
         private ParticipantInfoState participantInfoState;
+        private Attachment _fileAttachment = null;
+
+        //        private bool _hasFileAttachment = false;
+        private bool _hasAttachment = false;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
         public enum State
@@ -224,6 +228,51 @@ namespace windows_client.Model
             }
         }
 
+        //public bool HasFileAttachment
+        //{
+        //    get
+        //    {
+        //        return _hasFileAttachment;
+        //    }
+        //    set
+        //    {
+        //        if (_hasFileAttachment != value)
+        //        {
+        //            _hasFileAttachment = value;
+        //        }
+        //    }
+        //}
+
+        [Column]
+        public bool HasAttachment
+        {
+            get
+            {
+                return _hasAttachment;
+            }
+            set
+            {
+                if (_hasAttachment != value)
+                {
+                    _hasAttachment = value;
+                }
+            }
+        }
+
+        public Attachment FileAttachment
+        {
+            get
+            {
+                return _fileAttachment;
+            }
+            set
+            {
+                if (_fileAttachment != value)
+                    _fileAttachment = value;
+            }
+        }
+
+
         public ChatBubbleType MsgType
         {
             get
@@ -344,50 +393,87 @@ namespace windows_client.Model
 
         public ConvMessage(JObject obj)
         {
-            JToken val = null;
-            obj.TryGetValue(HikeConstants.TO, out val);
-            if (val != null) // represents group message
+            try
             {
-                _msisdn = val.ToString();
-                _groupParticipant = (string)obj[HikeConstants.FROM];
+                JToken val = null;
+                obj.TryGetValue(HikeConstants.TO, out val);
+
+                JToken metadataToken = null;
+                obj[HikeConstants.DATA].ToObject<JObject>().TryGetValue(HikeConstants.METADATA, out metadataToken);
+
+                if (metadataToken != null)
+                {
+                    JObject metadataObject = JObject.FromObject(metadataToken);
+                    JArray files = metadataObject["files"].ToObject<JArray>();
+                    JObject fileObject = files[0].ToObject<JObject>();
+
+                    JToken fileName;
+                    JToken fileKey;
+                    JToken thumbnail;
+                    JToken contentType;
+
+                    fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
+                    //if (contentType.ToString().Contains("image"))
+                    //{
+                        fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
+                        fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
+                        fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
+                        this.HasAttachment = true;
+                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()),
+                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                    //}
+                }
+                if (val != null) // represents group message
+                {
+                    _msisdn = val.ToString();
+                    _groupParticipant = (string)obj[HikeConstants.FROM];
+                }
+                else
+                {
+                    _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
+                    _groupParticipant = null;
+                }
+
+                JObject data = (JObject)obj[HikeConstants.DATA];
+                JToken msg;
+
+                if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg))
+                {
+                    _message = msg.ToString();
+                    _isSms = true;
+                }
+                else
+                {
+                    _message = (string)data[HikeConstants.HIKE_MESSAGE];
+                    _isSms = false;
+                }
+                if (_groupParticipant != null) // reprsents group chat
+                {
+                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant).Name + " - " + _message;
+                }
+
+                Timestamp = (long)data[HikeConstants.TIMESTAMP];
+
+                /* prevent us from receiving a message from the future */
+
+                long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                this.Timestamp = (this.Timestamp > now) ? now : this.Timestamp;
+
+                /* if we're deserialized an object from json, it's always unread */
+                this.MessageStatus = State.RECEIVED_UNREAD;
+                this._messageId = -1;
+                string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
+                this.MappedMessageId = System.Int64.Parse(mappedMsgID);
+                participantInfoState = ParticipantInfoState.NO_INFO;
+                if (this.HasAttachment)
+                {
+                    this.Message = this.FileAttachment.FileName;
+                }
             }
-            else
+            catch (Exception e)
             {
-                _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
-                _groupParticipant = null;
+
             }
-
-            JObject data = (JObject)obj[HikeConstants.DATA];
-            JToken msg;
-
-            if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg))
-            {
-                _message = msg.ToString();
-                _isSms = true;
-            }
-            else
-            {
-                _message = (string)data[HikeConstants.HIKE_MESSAGE];
-                _isSms = false;
-            }
-            if (_groupParticipant != null) // reprsents group chat
-            {
-                _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant).Name + " - " + _message;
-            }
-
-            Timestamp = (long)data[HikeConstants.TIMESTAMP];
-
-            /* prevent us from receiving a message from the future */
-
-            long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
-            this.Timestamp = (this.Timestamp > now) ? now : this.Timestamp;
-
-            /* if we're deserialized an object from json, it's always unread */
-            this.MessageStatus = State.RECEIVED_UNREAD;
-            this._messageId = -1;
-            string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
-            this.MappedMessageId = System.Int64.Parse(mappedMsgID);
-            participantInfoState = ParticipantInfoState.NO_INFO;
         }
 
         public ConvMessage()
@@ -398,13 +484,29 @@ namespace windows_client.Model
         {
             JObject obj = new JObject();
             JObject data = new JObject();
-
+            JObject metadata;
+            JArray filesData;
+            JObject singleFileInfo;
             if (isHikeMsg)
                 data[HikeConstants.HIKE_MESSAGE] = _message;
             else
                 data[HikeConstants.SMS_MESSAGE] = _message;
             data[HikeConstants.TIMESTAMP] = _timestamp;
             data[HikeConstants.MESSAGE_ID] = _messageId;
+
+            if (HasAttachment)
+            {
+                metadata = new JObject();
+                filesData = new JArray();
+                singleFileInfo = new JObject();
+                singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                filesData.Add(singleFileInfo.ToObject<JToken>());
+
+                metadata[HikeConstants.FILES_DATA] = filesData;
+                data[HikeConstants.METADATA] = metadata;
+            }
 
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
@@ -652,7 +754,7 @@ namespace windows_client.Model
                 }
             }
             this._timestamp = TimeUtils.getCurrentTimeStamp();
-            this.MessageStatus = isSelfGenerated?State.RECEIVED_READ:State.RECEIVED_UNREAD;
+            this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
         }
     }
 }

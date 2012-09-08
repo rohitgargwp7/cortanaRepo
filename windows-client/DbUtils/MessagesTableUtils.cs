@@ -52,6 +52,8 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
+                long currentMessageId = convMessage.MessageId;
+
                 context.messages.InsertOnSubmit(convMessage);
                 context.SubmitChanges();
 
@@ -65,9 +67,10 @@ namespace windows_client.DbUtils
                         if (convMessage.IsSent)
                         {
                             SentChatBubble sentChatBubble;
-                            currentPage.ConvMessageSentBubbleMap.TryGetValue(convMessage, out sentChatBubble);
-                            currentPage.ConvMessageSentBubbleMap.Remove(convMessage);
+                            currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
+                            currentPage.OutgoingMsgsMap.Remove(currentMessageId);
                             currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                            sentChatBubble.MessageId = convMessage.MessageId;
                         }
                         //if (convMessage.IsSent)
                         //    currentPage.OutgoingMsgsMap.Add(msgId, convMessage);

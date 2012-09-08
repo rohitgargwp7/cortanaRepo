@@ -100,7 +100,17 @@ namespace windows_client
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage,false);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
+                    if (convMessage.FileAttachment != null)
+                    {
+                        if ((convMessage.FileAttachment.ContentType.Contains("video") || (convMessage.FileAttachment.ContentType.Contains("image"))))
+                        {
+                            MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
+                                Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.Thumbnail);
+                        }
+                        //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                        //FileTransfer.Instance.downloadFile(convMessage.FileAttachment.FileKey, convMessage.MessageId, convMessage.Msisdn);
+                    }
                     if (obj == null)
                         return;
                     object[] vals = new object[2];
@@ -124,7 +134,7 @@ namespace windows_client
             else if (SMS_CREDITS == type) /* SMS CREDITS */
             {
                 int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
-                App.WriteToIsoStorageSettings(App.SMS_SETTING,sms_credits);
+                App.WriteToIsoStorageSettings(App.SMS_SETTING, sms_credits);
                 this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
             }
             else if (SERVER_REPORT == type) /* Represents Server has received the msg you sent */
@@ -204,7 +214,7 @@ namespace windows_client
                 if (Utils.isGroupConversation(msisdn))
                 {
                     // ':' is not supported in Isolated Storage so replacing it with '_'
-                    string grpId = msisdn.Replace(":","_");
+                    string grpId = msisdn.Replace(":", "_");
                     MiscDBUtil.saveAvatarImage(grpId, imageBytes);
                 }
                 else
@@ -269,7 +279,7 @@ namespace windows_client
                 object[] vals = new object[2];
                 vals[0] = groupId;
                 vals[1] = groupName;
-                
+
                 bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                 if (goAhead)
                     this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
@@ -288,7 +298,7 @@ namespace windows_client
                 string fromMsisdn = (string)jsonObj[HikeConstants.FROM];
 
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
-                ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg,false);
+                ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                 if (cObj == null)
                     return;
                 GroupTableUtils.removeParticipantFromGroup(groupId, fromMsisdn);
@@ -301,7 +311,7 @@ namespace windows_client
                     cObj.ContactName = Utils.defaultGroupName(existingMembers);
                 }
 
-               
+
                 object[] vals = new object[2];
                 vals[0] = convMsg;
                 vals[1] = cObj;
@@ -316,7 +326,7 @@ namespace windows_client
                 if (goAhead)
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj, false);
-                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage,false);
+                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage, false);
                     if (cObj == null)
                         return;
                     object[] vals = new object[2];

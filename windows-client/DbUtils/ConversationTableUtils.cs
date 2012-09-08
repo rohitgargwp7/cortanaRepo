@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
             else
             {
                 ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                byte[] avatar = MiscDBUtil.getThumbNailForMSisdn(convMessage.Msisdn);
+                byte [] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
                 obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                     contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus);
             }

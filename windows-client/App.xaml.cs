@@ -59,7 +59,6 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Dictionary<string, GroupParticipant> groupsCache = null;
-
         private static object lockObj = new object();
 
         #endregion
@@ -456,6 +455,10 @@ namespace windows_client
                     if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
                     {
                         store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
+                    }
+                    if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
+                    {
+                        store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
                     }
                 }
                 // Create the database if it does not exist.

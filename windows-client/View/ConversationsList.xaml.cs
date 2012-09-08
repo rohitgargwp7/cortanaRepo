@@ -235,7 +235,11 @@ namespace windows_client.View
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
-                byte[] _avatar = MiscDBUtil.getThumbNailForMSisdn(conversationList[i].Msisdn);
+                stopwatch.Reset(); 
+                stopwatch.Start();
+                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(conversationList[i].Msisdn);
+                stopwatch.Stop();
+                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
                 ConversationListObject conv = conversationList[i];
                 conv.Avatar = _avatar;
                 if (convMap == null)
@@ -353,7 +357,7 @@ namespace windows_client.View
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Stopwatch st = Stopwatch.StartNew();
-            byte[] _avatar = MiscDBUtil.getThumbNailForMSisdn(HikeConstants.MY_PROFILE_PIC);
+            byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to fetch profile image : {0}", msec);

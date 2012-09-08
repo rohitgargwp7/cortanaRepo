@@ -8,6 +8,7 @@ using System.Data.Linq;
 using System.ComponentModel;
 using windows_client.utils;
 using windows_client.View;
+using windows_client.Controls;
 
 namespace windows_client.DbUtils
 {
@@ -54,6 +55,34 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
         }
 
+
+        public void uploadFileCallback(JObject obj, ConvMessage convMessage)
+        {
+            string response = obj.ToString();
+            if (obj != null)
+            {
+                JObject data = obj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
+                string fileKey = data[HikeConstants.FILE_KEY].ToString();
+                string fileName = data[HikeConstants.FILE_NAME].ToString();
+                string contentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
+
+                //DO NOT Update message text in db. We sent the below line, but we save only filename as message.
+                convMessage.Message = "I sent you a file. To view go to " + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
+                
+                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                convMessage.FileAttachment.FileKey = fileKey;
+                convMessage.FileAttachment.ContentType = contentType;
+
+                MessagesTableUtils.updateMsgStatus(convMessage.MessageId,(int) ConvMessage.State.SENT_UNCONFIRMED);
+                //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+
+                //TODO add fileAttachment object in map
+//                attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+            }
+        }
+
+
         public void onEventReceived(string type, object obj)
         {
 
@@ -65,7 +94,6 @@ namespace windows_client.DbUtils
                 bool isNewGroup = (bool)vals[1];
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
-                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if(App.ViewModel.MessageListPageCollection.Contains(convObj))
@@ -74,9 +102,29 @@ namespace windows_client.DbUtils
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                 });
+                if (vals.Length == 2)
+                {
+                    if (!isNewGroup)
+                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                }
+                else if (vals.Length == 5)
+                {
+                    byte[] thumbnail = vals[2] as byte[];
+                    byte[] largeImage = vals[3] as byte[];
+                    SentChatBubble chatbubble = vals[4] as SentChatBubble;
 
-                if (!isNewGroup)
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                  //  MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
+                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+
+                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
+                            Convert.ToString(convMessage.MessageId), thumbnail);
+
+                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                            Convert.ToString(convMessage.MessageId), largeImage);
+                    AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage, chatbubble);
+
+                }
             }
             #endregion
             #region MESSAGE_RECEIVED_READ
@@ -103,7 +151,7 @@ namespace windows_client.DbUtils
                 }
                 else
                 {
-                   //update conversation
+                    //update conversation
                     ConversationTableUtils.updateConversation(c);
                 }
                 // TODO :: persistence.removeMessage(msgId);
@@ -136,7 +184,7 @@ namespace windows_client.DbUtils
                 MemoryStream msLargeImage = (MemoryStream)vals[2];
                 if (Utils.isGroupConversation(msisdn))
                 {
-                    string grpId = msisdn.Replace(":","_");
+                    string grpId = msisdn.Replace(":", "_");
                     MiscDBUtil.saveAvatarImage(grpId, msSmallImage.ToArray());
                 }
                 else
@@ -218,7 +266,7 @@ namespace windows_client.DbUtils
                         App.MqttManagerInstance.mqttPublishToServer(jObj);
                     }
                 }
-                
+
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.WorkerSupportsCancellation = true;
                 bw.DoWork += new DoWorkEventHandler(deleteAllGroupsAsync);

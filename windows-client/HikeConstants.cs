@@ -1,4 +1,5 @@
 ﻿using System;
+using windows_client.utils;
 
 namespace windows_client
 {
@@ -31,6 +32,22 @@ namespace windows_client
         public static readonly string PIN_ERROR = "PinError";
         public static readonly string ADDRESS_BOOK_ERROR = "AddressBookError";
         public static readonly string CHANGE_NUMBER = "ChangeNumber";
+
+        public static readonly string FILE_NAME = "fn";
+        public static readonly string FILE_RESPONSE_DATA = "data";
+        public static readonly string FILE_KEY = "fk";
+        public static readonly string FILE_THUMBNAIL = "tn";
+        public static readonly string FILE_CONTENT_TYPE = "ct";
+        public static readonly string FILES_DATA = "files";
+        public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
+        public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
+        public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
+        public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
+
+        public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
+        public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.BASE + "/user/ft";
+
+
         /* how long to wait between sending publish and receiving an acknowledgement */
 
         public static readonly long MESSAGE_DELIVERY_TIMEOUT = 5 * 1000;

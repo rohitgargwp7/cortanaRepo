@@ -64,6 +64,7 @@
     </Reference>
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Phone.Reactive" />
+    <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="MyProtoBufSerializer">
       <HintPath>lib\MyProtoBufSerializer.dll</HintPath>
     </Reference>
@@ -117,8 +118,10 @@
     <Compile Include="DbUtils\MiscDBUtil.cs" />
     <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
+    <Compile Include="FileTransfer.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
+    <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupMembers.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
@@ -148,6 +151,9 @@
     </Compile>
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DisplayImage.xaml.cs">
+      <DependentUpon>DisplayImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EnterName.xaml.cs">
       <DependentUpon>EnterName.xaml</DependentUpon>
@@ -214,6 +220,10 @@
     <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DisplayImage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EnterName.xaml">
       <SubType>Designer</SubType>
