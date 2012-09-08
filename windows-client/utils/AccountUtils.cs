@@ -268,7 +268,7 @@ namespace windows_client.utils
                     double progressValue = 0;
                     while (startIndex < dataBytes.Length && !chatBubble.isCanceled)
                     {
-                        Thread.Sleep(20);
+                        Thread.Sleep(5);
                         noOfBytesToWrite = dataBytes.Length - startIndex;
                         noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
                         postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
