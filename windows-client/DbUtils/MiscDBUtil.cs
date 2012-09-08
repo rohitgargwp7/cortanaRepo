@@ -46,7 +46,7 @@ namespace windows_client.DbUtils
 
             }
             #endregion
-            #region DELETE USERS, BLOCKLIST, THUMBNAILS 
+            #region DELETE USERS, BLOCKLIST, THUMBNAILS
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
@@ -100,7 +100,7 @@ namespace windows_client.DbUtils
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes)
         {
-            string FileName = THUMBNAILS+"\\"+msisdn;
+            string FileName = THUMBNAILS + "\\" + msisdn;
             lock (lockObj)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
@@ -113,12 +113,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static byte [] getThumbNailForMSisdn(string msisdn)
+        public static byte[] getThumbNailForMsisdn(string msisdn)
         {
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (store.FileExists(THUMBNAILS +"\\"+ msisdn)) // Check if file exists
+                if (store.FileExists(THUMBNAILS + "\\" + msisdn)) // Check if file exists
                 {
                     using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn, FileMode.Open, FileAccess.Read))
                     {
@@ -136,60 +136,68 @@ namespace windows_client.DbUtils
 
         public static void saveAttachmentObject(Attachment obj, string msisdn, long messageId)
         {
-            lock (lockObj)
+            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+            string fileName = fileDirectory + "/" + Convert.ToString(messageId);
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
             {
-                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-                string fileName = fileDirectory + "/" + Convert.ToString(messageId);
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                if (!store.DirectoryExists(fileDirectory))
                 {
-                    if (!store.DirectoryExists(fileDirectory))
-                    {
-                        store.CreateDirectory(fileDirectory);
-                    }
+                    store.CreateDirectory(fileDirectory);
+                }
 
-                    using (FileStream stream = new IsolatedStorageFileStream(fileName, FileMode.Create, FileAccess.Write, store))
+                if (store.FileExists(fileName))
+                {
+                    store.DeleteFile(fileName);
+                }
+
+                using (FileStream stream = new IsolatedStorageFileStream(fileName, FileMode.Create, FileAccess.Write, store))
+                {
+                    byte[] raw = null;
+                    using (var ms = new MemoryStream())
                     {
-                        byte[] raw = null;
-                        using (var ms = new MemoryStream())
-                        {
-                            ser.Serialize(ms, obj);
-                            raw = ms.ToArray();
-                        }
-                        stream.Write(raw, 0, raw.Length);
+                        ser.Serialize(ms, obj);
+                        raw = ms.ToArray();
+                        Attachment attachment = (Attachment)ser.Deserialize(ms, null, typeof(Attachment));
+
                     }
+                    stream.Write(raw, 0, raw.Length);
                 }
             }
         }
 
         public static Dictionary<long, Attachment> getAllFileAttachment(string msisdn)
         {
-            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-            byte[] data = null;
-            Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (lockObj)
             {
-                if (store.DirectoryExists(fileDirectory))
-                {
 
-                    string[] msgIds = store.GetFileNames(fileDirectory + "/*");
-                    foreach (string msgId in msgIds)
+                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+                byte[] data = null;
+                Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (store.DirectoryExists(fileDirectory))
                     {
-                        using (IsolatedStorageFileStream isfs = store.OpenFile(fileDirectory + "/" + msgId, FileMode.Open, FileAccess.Read))
+
+                        string[] msgIds = store.GetFileNames(fileDirectory + "/*");
+                        foreach (string msgId in msgIds)
                         {
-                            data = new byte[isfs.Length];
-                            // Read the entire file and then close it
-                            isfs.Read(data, 0, data.Length);
-                            isfs.Close();
-                            using (var ms = new MemoryStream(data))
+                            using (IsolatedStorageFileStream isfs = store.OpenFile(fileDirectory + "/" + msgId, FileMode.Open, FileAccess.Read))
                             {
-                                Attachment attachment = (Attachment)ser.Deserialize(ms, null, typeof(ConversationListObject));
-                                msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
+                                data = new byte[isfs.Length];
+                                // Read the entire file and then close it
+                                isfs.Read(data, 0, data.Length);
+                                isfs.Close();
+                                using (var ms = new MemoryStream(data))
+                                {
+                                    Attachment attachment = (Attachment)ser.Deserialize(ms, null, typeof(Attachment));
+                                    msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
+                                }
                             }
                         }
                     }
                 }
+                return msgIdAttachmentMap;
             }
-            return msgIdAttachmentMap;
         }
 
         public static void readFileFromIsolatedStorage(string filePath, out byte[] imageBytes)
