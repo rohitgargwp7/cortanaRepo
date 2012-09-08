@@ -31,7 +31,7 @@
                     <toolkit:GestureListener PinchCompleted="GestureListener_PinchCompleted" PinchStarted="OnPinchStarted" PinchDelta="OnPinchDelta" />
                 </toolkit:GestureService.GestureListener>
             </Image>
-            <MediaElement Grid.Row="0" x:Name="FileMedia"></MediaElement>
+            <MediaElement  Grid.Row="0" x:Name="FileMedia"></MediaElement>
         </Grid>
     </Grid>
  
