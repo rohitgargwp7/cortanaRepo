@@ -1125,7 +1125,8 @@ namespace windows_client.View
         {
             if (abc)
             {
-
+                byte[] thumbnailBytes;
+                byte[] fileBytes;
                 BitmapImage image = (BitmapImage)sender;
 
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
@@ -1135,12 +1136,16 @@ namespace windows_client.View
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
 
-                MemoryStream msSmallImage = new MemoryStream();
-                writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
+                using (var msSmallImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
+                    thumbnailBytes = msSmallImage.ToArray();
+                }
+
                 string fileName = image.UriSource.ToString();
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
 
-                convMessage.FileAttachment = new Attachment(fileName, msSmallImage.ToArray(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                 convMessage.Message = fileName;
 
                 SentChatBubble chatBubble = new SentChatBubble(isOnHike, image, convMessage.MessageId, attachmentUploading);
@@ -1161,16 +1166,18 @@ namespace windows_client.View
                     isReshowTypingNotification = false;
                 }
 
-
-                MemoryStream msLargeImage = new MemoryStream();
-                writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 100);
+                using (var msLargeImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 100);
+                    fileBytes = msLargeImage.ToArray();
+                }
                 bool isNewGroup = false;
 
                 object[] vals = new object[5];
                 vals[0] = convMessage;
                 vals[1] = isNewGroup;
-                vals[2] = msSmallImage.ToArray();
-                vals[3] = msLargeImage.ToArray();
+                vals[2] = thumbnailBytes;
+                vals[3] = fileBytes;
                 vals[4] = chatBubble;
                 mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
             }
@@ -1747,11 +1754,13 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MemoryStream memStream = new MemoryStream(_avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage(); // here we can resuse existing image (how ??)
-                    empImage.SetSource(memStream);
-                    userImage.Source = empImage;
+                    using (var memStream = new MemoryStream(_avatar))
+                    {
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage(); // here we can resuse existing image (how ??)
+                        empImage.SetSource(memStream);
+                        userImage.Source = empImage;
+                    }
                 });
             }
 

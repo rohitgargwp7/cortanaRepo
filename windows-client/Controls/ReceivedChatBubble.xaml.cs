@@ -25,11 +25,13 @@ namespace windows_client.Controls
                     cm.Msisdn + "/" + Convert.ToString(cm.MessageId),
                     out imageBytes);
 
-                MemoryStream memStream = new MemoryStream(imageBytes);
-                memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage fileThumbnail = new BitmapImage();
-                fileThumbnail.SetSource(memStream);
-                this.MessageImage.Source = fileThumbnail;
+                using (var memStream = new MemoryStream(imageBytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage fileThumbnail = new BitmapImage();
+                    fileThumbnail.SetSource(memStream);
+                    this.MessageImage.Source = fileThumbnail;
+                }
             }
         }
 

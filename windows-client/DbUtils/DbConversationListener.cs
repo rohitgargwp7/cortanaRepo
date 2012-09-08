@@ -180,17 +180,18 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 string msisdn = (string)vals[0];
-                MemoryStream msSmallImage = (MemoryStream)vals[1];
-                MemoryStream msLargeImage = (MemoryStream)vals[2];
+
+                byte[] thumbnailBytes = (byte[])vals[1];
+                byte[] fileBytes = (byte[])vals[2];
                 if (Utils.isGroupConversation(msisdn))
                 {
                     string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId, msSmallImage.ToArray());
+                    MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes);
                 }
                 else
                 {
-                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC + "_small", msSmallImage.ToArray());
-                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, msLargeImage.ToArray());
+                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC + "_small", thumbnailBytes);
+                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, fileBytes);
                 }
             }
             #endregion
