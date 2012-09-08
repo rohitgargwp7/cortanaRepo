@@ -231,7 +231,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
                 if (obj.HasCustomPhoto)
                 {
-                    byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
+                    byte [] avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                     if (avatar == null)
                     {
                         userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
@@ -862,7 +862,6 @@ namespace windows_client.View
             }
             this.myListBox.UpdateLayout();
             this.myListBox.ScrollIntoView(chatThreadPageCollection[ChatThreadPageCollection.Count - 1]);
-
             object[] vals = new object[2];
             vals[0] = convMessage;
             vals[1] = isNewGroup;

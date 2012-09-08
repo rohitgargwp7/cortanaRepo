@@ -34,7 +34,7 @@ namespace windows_client.View
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             string grpId = groupId.Replace(":", "_");
-            byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(groupId);
+            byte [] avatar = MiscDBUtil.getThumbNailForMsisdn(groupId);
             if (avatar == null)
                 groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; // TODO : change to default groupImage once done
             else

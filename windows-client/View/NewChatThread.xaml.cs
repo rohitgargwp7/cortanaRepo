@@ -326,7 +326,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
                 //if (obj.HasCustomPhoto)
                 //{
-                byte[] avatar = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
+                byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                 if (avatar == null)
                 {
                     userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
