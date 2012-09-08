@@ -22,6 +22,7 @@ namespace windows_client.Controls
         private long _timeStampLong;
         private long _messageId;
         private ConvMessage.State _messageState;
+        public Attachment FileAttachment;
 
         public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
 
@@ -84,9 +85,10 @@ namespace windows_client.Controls
         {
         }
 
-        public MyChatBubble(long messageId)
+        public MyChatBubble(long messageId, ContextMenu menu)
         {
             this.MessageId = messageId;
+            ContextMenuService.SetContextMenu(this, menu);
         }
 
         public MyChatBubble(ConvMessage cm, ContextMenu menu)
@@ -96,6 +98,13 @@ namespace windows_client.Controls
             this._messageId = cm.MessageId;
             this._timeStampLong = cm.Timestamp;
             this._messageState = cm.MessageStatus;
+            if (cm.FileAttachment != null)
+                this.FileAttachment = cm.FileAttachment;
+            ContextMenuService.SetContextMenu(this, menu);
+        }
+
+        public void updateContextMenu(ContextMenu menu)
+        {
             ContextMenuService.SetContextMenu(this, menu);
         }
 
