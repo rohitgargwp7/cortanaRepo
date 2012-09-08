@@ -109,7 +109,6 @@ namespace windows_client
                                 Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.Thumbnail);
                         }
                         //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                        FileTransfer.Instance.downloadFile(convMessage.FileAttachment.FileKey, convMessage.MessageId, convMessage.Msisdn);
                     }
                     if (obj == null)
                         return;
