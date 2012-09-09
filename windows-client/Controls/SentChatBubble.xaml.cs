@@ -21,8 +21,8 @@ namespace windows_client.Controls
 
         public bool isCanceled = false;
 
-        public SentChatBubble(ConvMessage cm, ContextMenu menu)
-            : base(cm, menu)
+        public SentChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+            : base(cm, contextMenuDictionary)
         {
             // Required to initialize variables
             InitializeComponent();
@@ -56,18 +56,20 @@ namespace windows_client.Controls
                 MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + 
                     cm.Msisdn + "/" + Convert.ToString(cm.MessageId), out imageBytes);
 
-                MemoryStream memStream = new MemoryStream(imageBytes);
-                memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage fileThumbnail = new BitmapImage();
-                fileThumbnail.SetSource(memStream);
-                this.MessageImage.Source = fileThumbnail;
+                using (var memStream = new MemoryStream(imageBytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage fileThumbnail = new BitmapImage();
+                    fileThumbnail.SetSource(memStream);
+                    this.MessageImage.Source = fileThumbnail;
+                }
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
 
-        public SentChatBubble(bool onHike, BitmapImage sentImage, long messageId, ContextMenu uploading)
-            : base(messageId, uploading)
+        public SentChatBubble(bool onHike, BitmapImage sentImage, long messageId, Dictionary<string, RoutedEventHandler> uploadingMenu)
+            : base(messageId, uploadingMenu)
         {
             // Required to initialize variables
             InitializeComponent();
@@ -83,6 +85,31 @@ namespace windows_client.Controls
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
             this.MessageImage.Source = sentImage;
+        }
+
+        public SentChatBubble(MyChatBubble chatBubble, long messageId, bool onHike)
+            :base(chatBubble, messageId)
+        {
+            if (onHike)
+            {
+                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
+            }
+            else
+            {
+                bubbleColor = UI_Utils.Instance.SmsBackground;
+            }
+            this.BubblePoint.Fill = bubbleColor;
+            this.BubbleBg.Fill = bubbleColor;
+            if (chatBubble.FileAttachment != null && (chatBubble.FileAttachment.ContentType.Contains("video") ||
+                (chatBubble.FileAttachment.ContentType.Contains("image"))))
+            {
+                if (chatBubble is SentChatBubble)
+                    this.MessageImage = (chatBubble as SentChatBubble).MessageImage;
+                else if (chatBubble is ReceivedChatBubble)
+                    this.MessageImage = (chatBubble as ReceivedChatBubble).MessageImage;
+            }
+            
+
         }
 
 

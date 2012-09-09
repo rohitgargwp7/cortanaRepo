@@ -145,7 +145,7 @@ namespace windows_client.DbUtils
                 {
                     store.CreateDirectory(fileDirectory);
                 }
-     
+
                 using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
                 {
                     using (var writer = new BinaryWriter(file))
@@ -153,15 +153,6 @@ namespace windows_client.DbUtils
                         obj.Write(writer);
                     }
                 }
-
-                //using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
-                //{
-                //    using (var reader = new BinaryReader(file))
-                //    {
-                //        Attachment oa = new Attachment();
-                //        oa.Read(reader);
-                //    }
-                //}
             }
         }
 
@@ -249,8 +240,25 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static void copyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
+        {
+            string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
+            string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
 
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
+                {
+                    return;
+                }
+                if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
+                {
+                    myIsolatedStorage.CreateDirectory(destinationFileDirectory);
+                }
+                myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
+            }
 
+        }
         #endregion
     }
 }

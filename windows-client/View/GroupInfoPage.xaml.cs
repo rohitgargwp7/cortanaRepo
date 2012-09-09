@@ -215,17 +215,18 @@ namespace windows_client.View
             BitmapImage image = (BitmapImage)sender;
             byte[] buffer = null;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            //MemoryStream msLargeImage = new MemoryStream();
-            //writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-            MemoryStream msSmallImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msSmallImage, 45, 45, 0, 95);
-            buffer = msSmallImage.ToArray();
+
+            using (var msSmallImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msSmallImage, 45, 45, 0, 95);
+                buffer = msSmallImage.ToArray();
+            }            
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
 
             object[] vals = new object[3];
             vals[0] = groupId;
-            vals[1] = msSmallImage;
+            vals[1] = buffer;
             vals[2] = null;
             mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
         }

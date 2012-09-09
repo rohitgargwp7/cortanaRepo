@@ -76,13 +76,11 @@ namespace windows_client.View
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         List<GroupMembers> groupMemberList = null;
 
-        private Dictionary<string, RoutedEventHandler> _contextMenuDictionary;
+        private Dictionary<string, RoutedEventHandler> _nonAttachmentMenu;
+        private Dictionary<string, RoutedEventHandler> _attachmentUploading;
+        private Dictionary<string, RoutedEventHandler> _attachmentUploaded;
+        private Dictionary<string, RoutedEventHandler> _attachmentCanceledOrFailed = null;
 
-
-        private ContextMenu nonAttachmentMenu;
-        private ContextMenu attachmentUploading;
-        private ContextMenu attachmentUploaded;
-        private ContextMenu attachmentCanceled = null;
 
 
         #endregion
@@ -154,24 +152,81 @@ namespace windows_client.View
             }
         }
 
-        public Dictionary<string, RoutedEventHandler> ContextMenuDictionary
+        #region CONTEXT MENU DICTIONARY
+        public Dictionary<string, RoutedEventHandler> NonAttachmentMenu
         {
             get
             {
-                if (_contextMenuDictionary == null)
+                if (_nonAttachmentMenu == null)
                 {
-                    _contextMenuDictionary = new Dictionary<string, RoutedEventHandler>();
-                    _contextMenuDictionary.Add("copy", MenuItem_Click_Copy);
-                    _contextMenuDictionary.Add("forward", MenuItem_Click_Forward);
-                    _contextMenuDictionary.Add("delete", MenuItem_Click_Delete);
+                    _nonAttachmentMenu = new Dictionary<string, RoutedEventHandler>();
+                    _nonAttachmentMenu.Add("copy", MenuItem_Click_Copy);
+                    _nonAttachmentMenu.Add("forward", MenuItem_Click_Forward);
+                    _nonAttachmentMenu.Add("delete", MenuItem_Click_Delete);
                 }
-                return _contextMenuDictionary;
+                return _nonAttachmentMenu;
             }
             set
             {
-                _contextMenuDictionary = value;
+                _nonAttachmentMenu = value;
             }
         }
+
+
+        public Dictionary<string, RoutedEventHandler> AttachmentUploading
+        {
+            get
+            {
+                if (_attachmentUploading == null)
+                {
+                    _attachmentUploading = new Dictionary<string, RoutedEventHandler>();
+                    _attachmentUploading.Add("cancel", MenuItem_Click_Cancel);
+                    _attachmentUploading.Add("delete", MenuItem_Click_Delete);
+                }
+                return _attachmentUploading;
+            }
+            set
+            {
+                _attachmentUploading = value;
+            }
+        }
+
+        public Dictionary<string, RoutedEventHandler> AttachmentUploaded
+        {
+            get
+            {
+                if (_attachmentUploaded == null)
+                {
+                    _attachmentUploaded = new Dictionary<string, RoutedEventHandler>();
+                    _attachmentUploaded.Add("copy", MenuItem_Click_Copy);
+                    _attachmentUploaded.Add("delete", MenuItem_Click_Forward);
+                }
+                return _attachmentUploaded;
+            }
+            set
+            {
+                _attachmentUploaded = value;
+            }
+        }
+
+        public Dictionary<string, RoutedEventHandler> AttachmentCanceledOrFailed
+        {
+            get
+            {
+                if (_attachmentCanceledOrFailed == null)
+                {
+                    _attachmentCanceledOrFailed = new Dictionary<string, RoutedEventHandler>();
+                    _attachmentCanceledOrFailed.Add("delete", MenuItem_Click_Delete);
+                }
+                return _attachmentCanceledOrFailed;
+            }
+            set
+            {
+                _attachmentCanceledOrFailed = value;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -230,48 +285,12 @@ namespace windows_client.View
             }
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 400;
-            photoChooserTask.PixelWidth = 400;
+            //photoChooserTask.PixelHeight = 400;
+            //photoChooserTask.PixelWidth = 400;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
         }
 
 
-        public void initializeContextMenus()
-        {
-            MenuItem copy = new MenuItem();
-            copy.Header = "copy";
-            copy.Click += MenuItem_Click_Copy;
-
-            MenuItem forward = new MenuItem();
-            forward.Header = "forward";
-            forward.Click += MenuItem_Click_Forward;
-
-            MenuItem delete = new MenuItem();
-            delete.Header = "delete";
-            delete.Click += MenuItem_Click_Delete;
-
-            MenuItem cancel = new MenuItem();
-            cancel.Header = "cancel";
-            cancel.Click += MenuItem_Click_Delete;
-
-            nonAttachmentMenu = new ContextMenu();
-            nonAttachmentMenu.IsZoomEnabled = false;
-            nonAttachmentMenu.Items.Add(copy);
-            nonAttachmentMenu.Items.Add(forward);
-            nonAttachmentMenu.Items.Add(delete);
-
-            attachmentUploading = new ContextMenu();
-            attachmentUploading.IsZoomEnabled = false;
-            nonAttachmentMenu.Items.Add(cancel);
-            nonAttachmentMenu.Items.Add(delete);
-
-            attachmentUploaded = new ContextMenu();
-            attachmentUploaded.IsZoomEnabled = false;
-            attachmentUploaded.Items.Add(forward);
-            attachmentUploaded.Items.Add(delete);
-
-
-        }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -424,13 +443,37 @@ namespace windows_client.View
                 /* Check if it is a forwarded msg */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
                 {
-                    sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
+                    {
+                        sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    }
+                    else if(PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+                    {
+                        object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                        MyChatBubble chatBubble = (MyChatBubble)attachmentData[0];
+                        string sourceMsisdn = (string)attachmentData[1];
+
+                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" +  chatBubble.MessageId;
+
+                        ConvMessage convMessage = new ConvMessage(chatBubble.FileAttachment.FileName, mContactNumber, 
+                            TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                        convMessage.IsSms = !isOnHike;
+                        convMessage.HasAttachment = true;
+                        convMessage.MessageId = TempMessageId;
+                        convMessage.FileAttachment = chatBubble.FileAttachment;
+                        
+                        SentChatBubble newChatBubble = new SentChatBubble(chatBubble, convMessage.MessageId, isOnHike);
+                        addNewAttachmentMessageToUI(newChatBubble);
+                        msgMap.Add(convMessage.MessageId, newChatBubble);
+
+                        object[] vals = new object[2];
+                        vals[0] = convMessage;
+                        vals[1] = sourceFilePath;
+                        mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+                    }
                     PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     NavigationService.RemoveBackEntry(); // remove last chat thread page
                 }
-                //if (obj.HasCustomPhoto)
-                //{
-
                 byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
 
                 if (avatar == null)
@@ -708,7 +751,6 @@ namespace windows_client.View
                 App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
                 registerListeners();
             }
-
         }
 
         private void loadMessages()
@@ -963,44 +1005,46 @@ namespace windows_client.View
                 showOverlay(true); //true means show block animation
             }
         }
-            
 
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            bool isChatBubble = sender is MyChatBubble;
-
             MyChatBubble chatBubble = (sender as MyChatBubble);
-            if (chatBubble is ReceivedChatBubble)
+            if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
             {
-                if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                if (chatBubble is ReceivedChatBubble)
                     FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
-                else
+                else if (chatBubble is SentChatBubble)
                 {
-                    object[] fileTapped = new object[2];
-                    fileTapped[0] = chatBubble.MessageId;
-                    fileTapped[1] = mContactNumber;
-                    fileTapped[2] = "audio";
-                    PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
-                    NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+
                 }
             }
-            else if (chatBubble is SentChatBubble)
+            else
+            {
+                displayAttachment(chatBubble);
+            }
+        }
+
+        public void displayAttachment(MyChatBubble chatBubble)
+        {
+            if (chatBubble.FileAttachment.ContentType.Contains("image"))
             {
                 object[] fileTapped = new object[2];
                 fileTapped[0] = chatBubble.MessageId;
                 fileTapped[1] = mContactNumber;
-                fileTapped[2] = "audio";
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
-            
+            }
+            else if (chatBubble.FileAttachment.ContentType.Contains("audio") | chatBubble.FileAttachment.ContentType.Contains("video"))
+            {
+                MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
+                string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
+                mediaPlayerLauncher.Media = new Uri(fileLocation, UriKind.Relative);
+                mediaPlayerLauncher.Location = MediaLocationType.Data;
+                mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
+                mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
+                mediaPlayerLauncher.Show();
             }
         }
-
-
-        /*
-         * If addToLast is true then insert the message in the end, else in the begining 
-         */
-
 
         public static long TempMessageId
         {
@@ -1008,9 +1052,26 @@ namespace windows_client.View
             {
                 return tempMsgId--;
             }
-
         }
 
+        private void addNewAttachmentMessageToUI(SentChatBubble chatBubble)
+        {
+            if (isTypingNotificationActive)
+            {
+                HideTypingNotification();
+                isReshowTypingNotification = true;
+            }
+            this.MessageList.Children.Add(chatBubble);
+            if (isReshowTypingNotification)
+            {
+                ShowTypingNotification();
+                isReshowTypingNotification = false;
+            }
+        }
+
+        /*
+         * If addToLast is true then insert the message in the end, else in the begining 
+         */
         private void AddMessageToUI(ConvMessage convMessage, bool addToLast)
         {
             //TODO : Create attachment object if it requires one
@@ -1019,7 +1080,7 @@ namespace windows_client.View
             {
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
-                    ContextMenu menu;
+                    Dictionary<string, RoutedEventHandler> contextMenuDictionary;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1034,25 +1095,25 @@ namespace windows_client.View
                         switch (convMessage.FileAttachment.FileState)
                         {
                             case Attachment.AttachmentState.CANCELED:
-                                menu = attachmentCanceled;
+                                contextMenuDictionary = AttachmentCanceledOrFailed;
                                 break;
                             case Attachment.AttachmentState.COMPLETED:
-                                menu = attachmentUploaded;
+                                contextMenuDictionary = AttachmentUploaded;
                                 break;
                             default:
-                                menu = attachmentUploading;
+                                contextMenuDictionary = AttachmentUploading;
                                 break;
                         }
                     }
                     else
                     {
-                        menu = nonAttachmentMenu;
+                        contextMenuDictionary = NonAttachmentMenu;
                     }
 
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        chatBubble = new SentChatBubble(convMessage, menu);
+                        chatBubble = new SentChatBubble(convMessage, contextMenuDictionary);
                         if (convMessage.MessageId < -1)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else
@@ -1061,7 +1122,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, attachmentUploaded);
+                        chatBubble = new ReceivedChatBubble(convMessage, _attachmentUploaded);
 
                     }
                     if (addToLast)
@@ -1216,7 +1277,8 @@ namespace windows_client.View
         {
             if (abc)
             {
-
+                byte[] thumbnailBytes;
+                byte[] fileBytes;
                 BitmapImage image = (BitmapImage)sender;
 
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
@@ -1226,43 +1288,34 @@ namespace windows_client.View
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
 
-                MemoryStream msSmallImage = new MemoryStream();
-                writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
+                using (var msSmallImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
+                    thumbnailBytes = msSmallImage.ToArray();
+                }
+
                 string fileName = image.UriSource.ToString();
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
 
-                convMessage.FileAttachment = new Attachment(fileName, msSmallImage.ToArray(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                 convMessage.Message = fileName;
 
-                SentChatBubble chatBubble = new SentChatBubble(isOnHike, image, convMessage.MessageId, attachmentUploading);
-
+                SentChatBubble chatBubble = new SentChatBubble(isOnHike, image, convMessage.MessageId, AttachmentUploading);
                 msgMap.Add(convMessage.MessageId, chatBubble);
-                //                ConvMessageSentBubbleMap.Add(convMessage, chatBubble);
 
-                //add to UI
-                if (isTypingNotificationActive)
+
+                addNewAttachmentMessageToUI(chatBubble);
+
+                using (var msLargeImage = new MemoryStream())
                 {
-                    HideTypingNotification();
-                    isReshowTypingNotification = true;
+                    writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 100);
+                    fileBytes = msLargeImage.ToArray();
                 }
-                this.MessageList.Children.Add(chatBubble);
-                if (isReshowTypingNotification)
-                {
-                    ShowTypingNotification();
-                    isReshowTypingNotification = false;
-                }
-
-
-                MemoryStream msLargeImage = new MemoryStream();
-                writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 100);
-                bool isNewGroup = false;
-
-                object[] vals = new object[5];
+                object[] vals = new object[4];
                 vals[0] = convMessage;
-                vals[1] = isNewGroup;
-                vals[2] = msSmallImage.ToArray();
-                vals[3] = msLargeImage.ToArray();
-                vals[4] = chatBubble;
+                vals[1] = thumbnailBytes;
+                vals[2] = fileBytes;
+                vals[3] = chatBubble;
                 mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
             }
             abc = !abc;
@@ -1337,8 +1390,19 @@ namespace windows_client.View
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = chatBubble.Text;
-            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            if (chatBubble.FileAttachment == null)
+            {
+                PhoneApplicationService.Current.State["forwardedText"] = chatBubble.Text;
+                NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            }
+            else
+            {
+                object[] attachmentForwardMessage = new object[2];
+                attachmentForwardMessage[0] = chatBubble;
+                attachmentForwardMessage[1] = mContactNumber;
+                PhoneApplicationService.Current.State["forwardedText"] = attachmentForwardMessage;
+                NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            }
         }
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
@@ -1831,11 +1895,13 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MemoryStream memStream = new MemoryStream(_avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage(); // here we can resuse existing image (how ??)
-                    empImage.SetSource(memStream);
-                    userImage.Source = empImage;
+                    using (var memStream = new MemoryStream(_avatar))
+                    {
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage(); // here we can resuse existing image (how ??)
+                        empImage.SetSource(memStream);
+                        userImage.Source = empImage;
+                    }
                 });
             }
 

@@ -1,0 +1,60 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="windows_client.View.PlayMedia"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Landscape"
+    mc:Ignorable="d" d:DesignHeight="480" d:DesignWidth="728"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
+            <MediaElement BufferingProgressChanged="FileMedia_BufferingProgressChanged" 
+                          MediaEnded="FileMedia_MediaEnded" Grid.Row="0" Grid.RowSpan="1" 
+                          x:Name="FileMedia" MediaOpened="FileMedia_MediaOpened"></MediaElement>
+            
+            <!--<Grid x:Name="Controls" Grid.Row="1" VerticalAlignment="Bottom">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+            </Grid>-->
+
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Margin="0,20,0,0" Grid.Row="1" VerticalAlignment="Bottom">
+                    <Slider Name="timelineSlider" Width="500" Margin="5" ValueChanged="SeekToMediaPosition"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="Play" Content="Play" Tap="Play_Tap"></Button>
+                        <Button x:Name="Pause" Content="Pause" Tap="Pause_Tap"></Button>
+                        <Button x:Name="Stop" Content="Stop" Tap="Stop_Tap"></Button>
+                    </StackPanel>
+                </StackPanel>
+                <Slider VerticalAlignment="Bottom" Orientation="Vertical" x:Name="volumeSlider" ValueChanged="ChangeMediaVolume" 
+       Minimum="0" Maximum="1" Value="0.5" Height="120" Width="50" Margin="40,0,10,20"/>
+
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>

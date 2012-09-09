@@ -108,8 +108,6 @@ namespace windows_client
                             MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.Thumbnail);
                         }
-                        //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                        //FileTransfer.Instance.downloadFile(convMessage.FileAttachment.FileKey, convMessage.MessageId, convMessage.Msisdn);
                     }
                     if (obj == null)
                         return;

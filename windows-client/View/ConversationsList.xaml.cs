@@ -377,19 +377,27 @@ namespace windows_client.View
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
-            byte[] buffer = null;
+            byte[] thumbnailBytes = null;
+            byte[] largeImageBytes = null;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            MemoryStream msLargeImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-            MemoryStream msSmallImage = new MemoryStream();
-            writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
-            buffer = msSmallImage.ToArray();
+
+            using (var msLargeImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                largeImageBytes = msLargeImage.ToArray();
+            }
+
+            using (var msSmallImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
+                thumbnailBytes = msSmallImage.ToArray();
+            }
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+            AccountUtils.updateProfileIcon(thumbnailBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
             object[] vals = new object[3];
             vals[0] = App.MSISDN;
-            vals[1] = msSmallImage;
-            vals[2] = msLargeImage;
+            vals[1] = thumbnailBytes;
+            vals[2] = largeImageBytes;
             mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
         }
 
