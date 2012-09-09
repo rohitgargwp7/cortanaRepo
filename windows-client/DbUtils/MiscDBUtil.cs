@@ -154,14 +154,14 @@ namespace windows_client.DbUtils
                     }
                 }
 
-                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
-                {
-                    using (var reader = new BinaryReader(file))
-                    {
-                        Attachment oa = new Attachment();
-                        oa.Read(reader);
-                    }
-                }
+                //using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                //{
+                //    using (var reader = new BinaryReader(file))
+                //    {
+                //        Attachment oa = new Attachment();
+                //        oa.Read(reader);
+                //    }
+                //}
             }
         }
 
