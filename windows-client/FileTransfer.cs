@@ -14,6 +14,7 @@ using System.IO.IsolatedStorage;
 using windows_client.Model;
 using windows_client.utils;
 using windows_client.Controls;
+using windows_client.View;
 
 namespace windows_client
 {
@@ -181,6 +182,12 @@ namespace windows_client
                                 }
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
+                                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                                if (currentPage != null)
+                                {
+                                    currentPage.displayAttachment(chatBubble);
+                                }
+
                             }
                         }
                         else
