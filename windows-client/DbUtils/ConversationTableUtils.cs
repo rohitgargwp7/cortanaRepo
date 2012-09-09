@@ -139,6 +139,7 @@ namespace windows_client.DbUtils
 
         public static void deleteConversation(string msisdn)
         {
+            msisdn = msisdn.Replace(":","_");
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 try

@@ -47,12 +47,16 @@ namespace windows_client.View
             }
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_ID_FROM_CHATTHREAD);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME_FROM_CHATTHREAD);
+        }
         private void initPageBasedOnState()
         {
             groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
             string groupName = PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] as string;
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_ID_FROM_CHATTHREAD);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME_FROM_CHATTHREAD);
 
             GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
@@ -250,7 +254,6 @@ namespace windows_client.View
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = activeGroupMembers;
-            PhoneApplicationService.Current.State["isAddNewParticipants"] = true;
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 

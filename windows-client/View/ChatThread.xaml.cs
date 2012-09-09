@@ -186,10 +186,10 @@ namespace windows_client.View
 
             #region OBJECT FROM CONVLIST PAGE
 
-            if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents chatthread is called from convlist page
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE)) // represents chatthread is called from convlist page
             {
-                ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
-                PhoneApplicationService.Current.State.Remove("objFromConversationPage");
+                ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
                 mContactNumber = convObj.Msisdn;
 
                 if (Utils.isGroupConversation(mContactNumber)) // represents group chat
@@ -215,20 +215,20 @@ namespace windows_client.View
             #endregion
 
             #region OBJECT FROM SELECT USER PAGE
-            else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
             {
-                ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State["objFromSelectUserPage"];
+                ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 mContactNumber = obj.Msisdn;
                 mContactName = obj.Name;
                 isOnHike = obj.OnHike;
 
                 /* Check if it is a forwarded msg */
-                if (PhoneApplicationService.Current.State.ContainsKey("forwardedText"))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
                 {
-                    sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State["forwardedText"];
-                    PhoneApplicationService.Current.State.Remove("forwardedText");
+                    sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                 }
-                PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
+                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
                 if (obj.HasCustomPhoto)
                 {
                     byte [] avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
@@ -899,7 +899,7 @@ namespace windows_client.View
                 return;
             }
             ConvMessage msg = selectedListBoxItem.DataContext as ConvMessage;
-            PhoneApplicationService.Current.State["forwardedText"] = msg.Message;
+            PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = msg.Message;
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 
