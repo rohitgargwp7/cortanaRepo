@@ -12,8 +12,8 @@ namespace windows_client.Controls
     public partial class ReceivedChatBubble : MyChatBubble
     {
 
-        public ReceivedChatBubble(ConvMessage cm, ContextMenu menu)
-            : base(cm, menu)
+        public ReceivedChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+            : base(cm, contextMenuDictionary)
         {
             // Required to initialize variables
             InitializeComponent();
