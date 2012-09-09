@@ -79,6 +79,11 @@ namespace windows_client
         public static string USER_LEFT = " has left the group chat";
         public static string GROUP_CHAT_END = "This group chat has end.";
 
+        /* NAVIGATION CONSTANTS*/
+        public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
+        public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
+        public static string FORWARD_MSG = "forwardedText";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";

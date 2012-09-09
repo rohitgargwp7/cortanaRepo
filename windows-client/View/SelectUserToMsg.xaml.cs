@@ -159,7 +159,6 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
             {
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
-                PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             }
             progressBar.Opacity = 1;
             List<ContactInfo> allContactsList = null;
@@ -176,6 +175,13 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
             };
             initPage();
+        }
+
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
         }
 
         private void initPage()
@@ -365,8 +371,7 @@ namespace windows_client.View
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
             }
-            PhoneApplicationService.Current.State["objFromSelectUserPage"] = contact;
-            PhoneApplicationService.Current.State["fromSelectUserPage"] = true;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
@@ -723,14 +728,12 @@ namespace windows_client.View
                 return;
             isClicked = true;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = contactsForgroup;
-            PhoneApplicationService.Current.State["fromSelectUserPage"] = true; // this is added to remove the back entry from the stack on chat thread page.
-
-            if (PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS))
+            
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
                 PhoneApplicationService.Current.State[HikeConstants.IS_EXISTING_GROUP] = true;
                 if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
+                    NavigationService.RemoveBackEntry(); // will remove groupinfo page
                 NavigationService.GoBack();
             }
             else

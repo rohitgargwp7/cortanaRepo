@@ -39,6 +39,7 @@ namespace windows_client.View
         private string mContactName = null;
         private string lastText = "";
 
+        private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
         private bool isGroupChat = false;
         private bool mUserIsBlocked;
@@ -140,6 +141,33 @@ namespace windows_client.View
         public NewChatThread()
         {
             InitializeComponent();
+        }
+
+        private void ManagePageStateObjects()
+        {
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
+            {
+                this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
+            {
+                this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT))
+            {
+                this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+            }
+        }
+
+        private void ManagePage()
+        {
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
             progressBar.Visibility = Visibility.Visible;
@@ -166,31 +194,67 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            object obj = null;
-            if (this.State.TryGetValue("sendMsgTxtbox.Text", out obj))
-            {
-                sendMsgTxtbox.Text = (string)obj;
-                sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
-            }
-            if (PhoneApplicationService.Current.State.ContainsKey("fromSelectUserPage"))
-            {
-                PhoneApplicationService.Current.State.Remove("fromSelectUserPage");
 
+            #region TOMBSTONE HANDLING
+
+            if (!App.isConvCreated)// && !PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
+            {
+                if (isFirstLaunch) // if first timel launching after tombstone
+                {
+                    /* Tombstone case and page is opened from select user page*/
+                    Debug.WriteLine("CHAT THREAD :: Recovered from Tombstone.");
+                    NetworkManager.turnOffNetworkManager = false;
+                    App.MqttManagerInstance.connect();
+                    object obj = null;
+                    if (this.State.TryGetValue("sendMsgTxtbox.Text", out obj))
+                    {
+                        sendMsgTxtbox.Text = (string)obj;
+                        sendMsgTxtbox.Select(sendMsgTxtbox.Text.Length, 0);
+                    }
+
+                    /* This is called only when you add more participants to group */
+                    if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                    {
+                        ManagePage();
+                        this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                        processGroupJoin(false);
+                    }
+                    else
+                    {
+                        ManagePageStateObjects();
+                        ManagePage();
+                    }
+                }
                 /* This is called only when you add more participants to group */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
                     PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                     processGroupJoin(false);
                 }
-                else if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
-
+                isFirstLaunch = false;
             }
-            if (!App.isConvCreated) // represents tombstone
+            #endregion
+
+            else if (App.isConvCreated) // non tombstone case
             {
-                Debug.WriteLine("CHAT THREAD :: Recovered from Tombstone.");
-                NetworkManager.turnOffNetworkManager = false;
-                App.MqttManagerInstance.connect();
+                if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
+                {
+                    ManagePageStateObjects();
+                    ManagePage();
+                    isFirstLaunch = false;
+                }
+                /* This is called only when you add more participants to group */
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                {
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                    processGroupJoin(false);
+                }
             }
         }
 
@@ -206,9 +270,6 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove("objFromConversationPage");
-            PhoneApplicationService.Current.State.Remove("objFromSelectUserPage");
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
             removeListeners();
         }
 
@@ -219,12 +280,11 @@ namespace windows_client.View
         private void initPageBasedOnState()
         {
             bool isAddUser = false;
-
             #region OBJECT FROM CONVLIST PAGE
 
-            if (PhoneApplicationService.Current.State.ContainsKey("objFromConversationPage")) // represents NewChatThread is called from convlist page
+            if (this.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE)) // represents NewChatThread is called from convlist page
             {
-                ConversationListObject convObj = (ConversationListObject)PhoneApplicationService.Current.State["objFromConversationPage"];
+                ConversationListObject convObj = (ConversationListObject)this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
                 mContactNumber = convObj.Msisdn;
 
                 if (Utils.isGroupConversation(mContactNumber)) // represents group chat
@@ -248,24 +308,47 @@ namespace windows_client.View
             }
 
             #endregion
+            #region OBJECT FROM SELECT GROUP PAGE
 
-            #region OBJECT FROM SELECT USER PAGE
-            else if (PhoneApplicationService.Current.State.ContainsKey("objFromSelectUserPage"))
+            else if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
-                ContactInfo obj = (ContactInfo)PhoneApplicationService.Current.State["objFromSelectUserPage"];
+                // here always create a new group
+                string uid = AccountUtils.Token;
+                mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
+                groupOwner = App.MSISDN;
+                processGroupJoin(true);
+                isOnHike = true;
+                isGroupChat = true;
+                userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; //TODO show new group default image
+
+                /* This is done so that after Tombstone when this page is launched, no group is created again and again */
+                ConversationListObject convObj = new ConversationListObject();
+                convObj.Msisdn = mContactNumber;
+                convObj.ContactName = mContactName;
+                convObj.IsOnhike = true;
+                this.State.Add(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE, convObj);
+            }
+
+            #endregion
+            #region OBJECT FROM SELECT USER PAGE
+
+            else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
+            {
+                ContactInfo obj = (ContactInfo)this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 mContactNumber = obj.Msisdn;
                 mContactName = obj.Name;
                 isOnHike = obj.OnHike;
 
                 /* Check if it is a forwarded msg */
-                if (PhoneApplicationService.Current.State.ContainsKey("forwardedText"))
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
                 {
-                    sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State["forwardedText"];
-                    PhoneApplicationService.Current.State.Remove("forwardedText");
+                    sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                    NavigationService.RemoveBackEntry(); // remove last chat thread page
                 }
                 //if (obj.HasCustomPhoto)
                 //{
-                byte [] avatar = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
+                byte[] avatar = MiscDBUtil.getThumbNailForMSisdn(mContactNumber);
                 if (avatar == null)
                 {
                     userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
@@ -283,23 +366,6 @@ namespace windows_client.View
                 //    userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
             }
             #endregion
-
-            #region OBJECT FROM SELECT GROUP PAGE
-
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT))
-            {
-                // here always create a new group
-                string uid = AccountUtils.Token;
-                mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
-                groupOwner = App.MSISDN;
-                processGroupJoin(true);
-                isOnHike = true;
-                isGroupChat = true;
-                userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; //TODO show new group default image
-            }
-
-            #endregion
-
 
             userName.Text = mContactName;
             initAppBar(isGroupChat, isAddUser);
@@ -319,7 +385,8 @@ namespace windows_client.View
 
         private void processGroupJoin(bool isNewgroup)
         {
-            List<ContactInfo> contactsForGroup = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
+            List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
+            this.State.Remove(HikeConstants.GROUP_CHAT);
             groupMemberList = new List<GroupMembers>(contactsForGroup.Count);
             for (int i = 0; i < contactsForGroup.Count; i++)
             {
@@ -352,7 +419,6 @@ namespace windows_client.View
             ConvMessage cm = new ConvMessage(obj, true);
             sendMsg(cm, true);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // inform others about group
-            PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
         }
 
         private void addToGroup_Async(object sender, DoWorkEventArgs e)
@@ -544,7 +610,7 @@ namespace windows_client.View
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
                 initBlockUnblockState();
 
-                App.appSettings.TryGetValue(App.SMS_SETTING,out mCredits);
+                App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
                 registerListeners();
             }
 
@@ -1012,7 +1078,7 @@ namespace windows_client.View
         private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            PhoneApplicationService.Current.State["forwardedText"] = chatBubble.Text;
+            PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = chatBubble.Text;
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
         }
 

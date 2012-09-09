@@ -131,16 +131,18 @@ namespace windows_client.View
 
                 #endregion
 
-                #region InitializeEmoticons
+                if (App.IsAppLaunched)
+                {
+                    #region InitializeEmoticons
 
-                Stopwatch st = Stopwatch.StartNew();
-                SmileyParser.loadEmoticons();
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
+                    Stopwatch st = Stopwatch.StartNew();
+                    SmileyParser.loadEmoticons();
+                    st.Stop();
+                    long msec = st.ElapsedMilliseconds;
+                    Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
 
-                #endregion
-
+                    #endregion
+                }
                 firstLoad = false;
             }
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -299,7 +301,7 @@ namespace windows_client.View
             ConversationListObject obj = myListBox.SelectedItem as ConversationListObject;
             if (obj == null)
                 return;
-            PhoneApplicationService.Current.State["objFromConversationPage"] = obj;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
