@@ -85,13 +85,20 @@ namespace windows_client.Controls
         {
         }
 
-        public MyChatBubble(long messageId, ContextMenu menu)
+        public MyChatBubble(MyChatBubble chatBubble, long messageId)
         {
             this.MessageId = messageId;
-            ContextMenuService.SetContextMenu(this, menu);
+            this.FileAttachment = chatBubble.FileAttachment;
+
         }
 
-        public MyChatBubble(ConvMessage cm, ContextMenu menu)
+        public MyChatBubble(long messageId, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+        {
+            this.MessageId = messageId;
+            setContextMenu(contextMenuDictionary);
+        }
+
+        public MyChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
         {
             this.Text = cm.Message;
             this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
@@ -100,13 +107,13 @@ namespace windows_client.Controls
             this._messageState = cm.MessageStatus;
             if (cm.FileAttachment != null)
                 this.FileAttachment = cm.FileAttachment;
-            ContextMenuService.SetContextMenu(this, menu);
+            setContextMenu(contextMenuDictionary);
         }
 
-        public void updateContextMenu(ContextMenu menu)
-        {
-            ContextMenuService.SetContextMenu(this, menu);
-        }
+        //public void updateContextMenu(ContextMenu menu)
+        //{
+        //    ContextMenuService.SetContextMenu(this, menu);
+        //}
 
         public void setTapEvent(EventHandler<Microsoft.Phone.Controls.GestureEventArgs> tapEventHandler)
         {
@@ -114,10 +121,23 @@ namespace windows_client.Controls
             gl.Tap += tapEventHandler;
         }
 
-        public void setContextMenu(ContextMenu contextMenu)
-        {
-            ContextMenuService.SetContextMenu(this, contextMenu);
-        }
+        //public void setContextMenu(ContextMenu contextMenu)
+        //{
+        //    ContextMenuService.SetContextMenu(this, contextMenu);
+        //}
 
+        private void setContextMenu(Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+        {
+            ContextMenu menu = new ContextMenu();
+            menu.IsZoomEnabled = false;
+            foreach (KeyValuePair<string, RoutedEventHandler> entry in contextMenuDictionary)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Header = entry.Key;
+                menuItem.Click += entry.Value;
+                menu.Items.Add(menuItem);
+            }
+            ContextMenuService.SetContextMenu(this, menu);
+        }
     }
 }
