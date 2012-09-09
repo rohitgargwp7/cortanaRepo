@@ -91,7 +91,12 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                bool isNewGroup = (bool)vals[1];
+
+                bool isNewGroup = false;
+                if (vals[1] is bool)
+                {
+                    isNewGroup = (bool)vals[1];
+                }
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -104,16 +109,27 @@ namespace windows_client.DbUtils
                 });
                 if (vals.Length == 2)
                 {
-                    if (!isNewGroup)
+                    if (vals[1] is bool)
+                    {
+                        if (!isNewGroup)
+                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                    }
+                    else if (vals[1] is string)
+                    {
+                        string sourceFilePath = vals[1] as string;
+                        string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
+                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                        MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                    }
                 }
-                else if (vals.Length == 5)
+                else if (vals.Length == 4)
                 {
-                    byte[] thumbnail = vals[2] as byte[];
-                    byte[] largeImage = vals[3] as byte[];
-                    SentChatBubble chatbubble = vals[4] as SentChatBubble;
+                    byte[] thumbnail = vals[1] as byte[];
+                    byte[] largeImage = vals[2] as byte[];
+                    SentChatBubble chatbubble = vals[3] as SentChatBubble;
 
-                  //  MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                    //  MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
                     AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
 
