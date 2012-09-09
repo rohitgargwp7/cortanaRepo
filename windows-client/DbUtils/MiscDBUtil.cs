@@ -158,7 +158,6 @@ namespace windows_client.DbUtils
                         ser.Serialize(ms, obj);
                         raw = ms.ToArray();
                         Attachment attachment = (Attachment)ser.Deserialize(ms, null, typeof(Attachment));
-
                     }
                     stream.Write(raw, 0, raw.Length);
                 }
@@ -249,8 +248,25 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static void copyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
+        {
+            string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
+            string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
 
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!myIsolatedStorage.DirectoryExists(sourceFileDirectory))
+                {
+                    return;
+                }
+                if (!myIsolatedStorage.DirectoryExists(destinationFileDirectory))
+                {
+                    myIsolatedStorage.CreateDirectory(destinationFileDirectory);
+                }
+                myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
+            }
 
+        }
         #endregion
     }
 }
