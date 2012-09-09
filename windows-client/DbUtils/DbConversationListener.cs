@@ -74,7 +74,7 @@ namespace windows_client.DbUtils
                 convMessage.FileAttachment.ContentType = contentType;
 
                 MessagesTableUtils.updateMsgStatus(convMessage.MessageId,(int) ConvMessage.State.SENT_UNCONFIRMED);
-                //MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
 
                 //TODO add fileAttachment object in map
 //                attachments.Add(convMessage.MessageId, convMessage.FileAttachment);

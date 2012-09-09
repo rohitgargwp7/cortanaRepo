@@ -138,30 +138,29 @@ namespace windows_client.DbUtils
         public static void saveAttachmentObject(Attachment obj, string msisdn, long messageId)
         {
             string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-            string fileName = fileDirectory + "/" + Convert.ToString(messageId);
+            string fileName = fileDirectory + "/" + messageId;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
             {
                 if (!store.DirectoryExists(fileDirectory))
                 {
                     store.CreateDirectory(fileDirectory);
                 }
-
-                if (store.FileExists(fileName))
+     
+                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
                 {
-                    store.DeleteFile(fileName);
+                    using (var writer = new BinaryWriter(file))
+                    {
+                        obj.Write(writer);
+                    }
                 }
 
-                using (FileStream stream = new IsolatedStorageFileStream(fileName, FileMode.Create, FileAccess.Write, store))
+                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                 {
-                    byte[] raw = null;
-                    using (var ms = new MemoryStream())
+                    using (var reader = new BinaryReader(file))
                     {
-                        ser.Serialize(ms, obj);
-                        raw = ms.ToArray();
-                        Attachment attachment = (Attachment)ser.Deserialize(ms, null, typeof(Attachment));
-
+                        Attachment oa = new Attachment();
+                        oa.Read(reader);
                     }
-                    stream.Write(raw, 0, raw.Length);
                 }
             }
         }

@@ -1,11 +1,12 @@
 ﻿using System.IO.IsolatedStorage;
-using ProtoBuf;
+using System.Runtime.Serialization;
+using windows_client.Misc;
+using System.IO;
 
 namespace windows_client.Model
 {
-    [ProtoContract]
-
-    public class Attachment
+    [DataContract]
+    public class Attachment : IBinarySerializable
     {
         private string _fileKey;
         private string _fileName;
@@ -22,7 +23,7 @@ namespace windows_client.Model
             CANCELED
         }
 
-        [ProtoMember(1)]
+        [DataMember]
         public string FileKey
         {
             get
@@ -38,7 +39,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(2)]
+        [DataMember]
         public string FileName
         {
             get
@@ -54,7 +55,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(3)]
+        [DataMember]
         public string ContentType
         {
             get
@@ -70,7 +71,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(4)]
+        [DataMember]
         public byte[] Thumbnail
         {
             get
@@ -86,7 +87,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(5)]
+        [DataMember]
         public AttachmentState FileState
         {
             get
@@ -113,19 +114,16 @@ namespace windows_client.Model
             this.FileState = attachmentState;
         }
 
-        //public Attachment(string fileName, string fileKey, string contentType)
-        //{
-        //    this.FileName = fileName;
-        //    this.FileKey = fileKey;
-        //    this.ContentType = contentType;
-        //}
-
-
         public Attachment(string fileName, byte[] thumbnailBytes, AttachmentState attachmentState)
         {
             this.FileName = fileName;
             this.Thumbnail = thumbnailBytes;
             this.FileState = attachmentState;
+        }
+
+        public Attachment()
+        {
+            // TODO: Complete member initialization
         }
 
         public static string[] getAttachmentFiles(string msisdn)
@@ -140,6 +138,30 @@ namespace windows_client.Model
                 }
             }
             return fileNames;
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteString(FileKey);
+            writer.WriteString(FileName);
+            writer.WriteString(ContentType);
+            writer.Write(_thumbnail != null ?_thumbnail.Length:0);
+            if(_thumbnail != null)
+                writer.Write(Thumbnail);
+            writer.Write((int)FileState);
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            _fileKey = reader.ReadString();
+            _fileName = reader.ReadString();
+            _contentType = reader.ReadString();
+            int count = reader.ReadInt32();
+            if (count != 0)
+                _thumbnail = reader.ReadBytes(count);
+            else
+                _thumbnail = null;
+            _fileState = (AttachmentState)reader.ReadInt32();
         }
     }
 }

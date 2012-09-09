@@ -78,6 +78,7 @@
       <HintPath>lib\SharpCompress.WP7.dll</HintPath>
     </Reference>
     <Reference Include="system.data.linq" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Servicemodel.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -118,6 +119,8 @@
     <Compile Include="FileTransfer.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
+    <Compile Include="Misc\BinarySerializerHelper.cs" />
+    <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupMembers.cs" />
