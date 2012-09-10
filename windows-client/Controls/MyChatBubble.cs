@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using windows_client.Model;
 using windows_client.utils;
 using System.Collections.Generic;
+using windows_client.View;
+using windows_client.DbUtils;
 
 namespace windows_client.Controls
 {
@@ -92,13 +94,7 @@ namespace windows_client.Controls
 
         }
 
-        public MyChatBubble(long messageId, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
-        {
-            this.MessageId = messageId;
-            setContextMenu(contextMenuDictionary);
-        }
-
-        public MyChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+        public MyChatBubble(ConvMessage cm)
         {
             this.Text = cm.Message;
             this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
@@ -106,8 +102,10 @@ namespace windows_client.Controls
             this._timeStampLong = cm.Timestamp;
             this._messageState = cm.MessageStatus;
             if (cm.FileAttachment != null)
+            {
                 this.FileAttachment = cm.FileAttachment;
-            setContextMenu(contextMenuDictionary);
+                setAttachmentState(cm.FileAttachment.FileState);
+            }
         }
 
         //public void updateContextMenu(ContextMenu menu)
@@ -138,6 +136,34 @@ namespace windows_client.Controls
                 menu.Items.Add(menuItem);
             }
             ContextMenuService.SetContextMenu(this, menu);
+        }
+
+
+        public void setAttachmentState(Attachment.AttachmentState attachmentState)
+        {
+            this.FileAttachment.FileState = attachmentState;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                if (currentPage != null)
+                {
+                    switch (attachmentState)
+                    {
+                        case Attachment.AttachmentState.CANCELED:
+                        case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
+                            setContextMenu(currentPage.AttachmentCanceledOrFailed);
+                            break;
+                        case Attachment.AttachmentState.COMPLETED:
+                            setContextMenu(currentPage.AttachmentUploaded);
+                            MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
+                            break;
+                        case Attachment.AttachmentState.STARTED:
+                            setContextMenu(currentPage.AttachmentUploading);
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
+                            break;
+                    }
+                }
+            });
         }
     }
 }
