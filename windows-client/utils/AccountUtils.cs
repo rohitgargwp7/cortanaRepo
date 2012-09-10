@@ -60,7 +60,7 @@ namespace windows_client.utils
         }
 
         public delegate void postResponseFunction(JObject obj);
-        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage);
+        public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
 
         private enum RequestType
@@ -276,11 +276,9 @@ namespace windows_client.utils
                             chatBubble.updateProgress(progressValue);
                         startIndex += noOfBytesToWrite;
                     }
-
 //                    postStream.Write(dataBytes, 0, dataBytes.Length);
                     postStream.Close();
-                    chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
-                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
                     return;
 
                 default:
@@ -446,7 +444,8 @@ namespace windows_client.utils
                 {
                     postUploadPhotoFunction finalCallbackFunctionForUpload = vars[2] as postUploadPhotoFunction;
                     convMessage = vars[3] as ConvMessage;
-                    finalCallbackFunctionForUpload(obj, convMessage);
+                    SentChatBubble chatBubble = vars[4] as SentChatBubble;
+                    finalCallbackFunctionForUpload(obj, convMessage, chatBubble);
                 }
             }
         }
