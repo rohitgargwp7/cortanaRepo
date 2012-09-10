@@ -145,7 +145,10 @@ namespace windows_client.DbUtils
                 {
                     store.CreateDirectory(fileDirectory);
                 }
-
+                if (store.FileExists(fileName))
+                {
+                    store.DeleteFile(fileName);
+                }
                 using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
                 {
                     using (var writer = new BinaryWriter(file))
@@ -158,31 +161,27 @@ namespace windows_client.DbUtils
 
         public static Dictionary<long, Attachment> getAllFileAttachment(string msisdn)
         {
-            lock (lockObj)
+            string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+            Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-
-                string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
-                byte[] data = null;
-                Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                if (store.DirectoryExists(fileDirectory))
                 {
-                    if (store.DirectoryExists(fileDirectory))
+                    string[] msgIds = store.GetFileNames(fileDirectory + "/*");
+                    foreach (string msgId in msgIds)
                     {
-
-                        string[] msgIds = store.GetFileNames(fileDirectory + "/*");
-                        foreach (string msgId in msgIds)
+                        using (var file = store.OpenFile(fileDirectory + "/" + msgId, FileMode.Open, FileAccess.Read))
                         {
-                            using (IsolatedStorageFileStream isfs = store.OpenFile(fileDirectory + "/" + msgId, FileMode.Open, FileAccess.Read))
+                            using (var reader = new BinaryReader(file))
                             {
-                                data = new byte[isfs.Length];
-                                // Read the entire file and then close it
-                                isfs.Read(data, 0, data.Length);
-                                isfs.Close();
-                                using (var ms = new MemoryStream(data))
+                                Attachment attachment = new Attachment();
+                                attachment.Read(reader);
+                                long messageId = Int64.Parse(msgId);
+                                if (attachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED && MessagesTableUtils.isUploadingOrDownloadingMessage(messageId))
                                 {
-                                    Attachment attachment = (Attachment)ser.Deserialize(ms, null, typeof(Attachment));
-                                    msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
+                                    attachment.FileState = Attachment.AttachmentState.STARTED;
                                 }
+                                msgIdAttachmentMap.Add(Int64.Parse(msgId), attachment);
                             }
                         }
                     }
@@ -257,7 +256,6 @@ namespace windows_client.DbUtils
                 }
                 myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
             }
-
         }
         #endregion
     }
