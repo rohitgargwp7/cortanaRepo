@@ -257,6 +257,40 @@ namespace windows_client.DbUtils
                 myIsolatedStorage.CopyFile(sourceFilePath, destinationFilePath);
             }
         }
+
+        public static void deleteAttachmentData(string msisdn, long messageId)
+        {
+            string attachmentObjectPath = HikeConstants.FILES_ATTACHMENT + "/" + msisdn + "/" + Convert.ToString(messageId);
+            string attachmentFileBytes = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messageId);
+            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (myIsolatedStorage.FileExists(attachmentObjectPath))
+                {
+                    myIsolatedStorage.DeleteFile(attachmentObjectPath);
+                }
+                if (myIsolatedStorage.FileExists(attachmentFileBytes))
+                {
+                    myIsolatedStorage.DeleteFile(attachmentFileBytes);
+                }
+            }
+        }
+
+        //public static void deleteAttachmentData(string msisdn)
+        //{
+        //    string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+        //    foreach (string fileName in files)
+        //    {
+        //        try
+        //        {
+        //            store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
+        //        }
+        //        catch
+        //        {
+        //            Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName);
+        //        }
+        //    }
+        //}
+
         #endregion
     }
 }
