@@ -15,6 +15,7 @@ using windows_client.Model;
 using windows_client.utils;
 using windows_client.Controls;
 using windows_client.View;
+using windows_client.DbUtils;
 
 namespace windows_client
 {
@@ -137,10 +138,10 @@ namespace windows_client
                         // Remove the transfer request in order to make room in the 
                         // queue for more transfers. Transfers are not automatically
                         // removed by the system.
-                        RemoveTransferRequest(transfer.RequestId);
                         ReceivedChatBubble chatBubble;
                         requestIdChatBubbleMap.TryGetValue(transfer.RequestId, out chatBubble);
                         chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        RemoveTransferRequest(transfer.RequestId);
                         //RemoveTransferRequest(transfer.RequestId);
                         // In this example, the downloaded file is moved into the root
                         // Isolated Storage directory
@@ -164,7 +165,7 @@ namespace windows_client
                                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                                 if (currentPage != null)
                                 {
-                                    currentPage.displayAttachment(chatBubble);
+                                    currentPage.displayAttachment(chatBubble, true);
                                 }
 
                             }
