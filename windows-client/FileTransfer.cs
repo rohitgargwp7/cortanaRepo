@@ -46,17 +46,8 @@ namespace windows_client
             }
         }
 
-        //IEnumerable<BackgroundTransferRequest> transferRequests;
-
-        //public FileTransfer()
-        //{
-        //    transferRequests = BackgroundTransferService.Requests;
-        //}
-
         public void downloadFile(MyChatBubble chatBubble, string msisdn)
         {
-
-
             Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + chatBubble.FileAttachment.FileKey), 
                 UriKind.RelativeOrAbsolute);
 
@@ -79,11 +70,11 @@ namespace windows_client
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show("Unable to add background transfer request. " + ex.Message);
+//                MessageBox.Show("Unable to add background transfer request. " + ex.Message);
             }
             catch (Exception e)
             {
-                MessageBox.Show("Unable to add background transfer request.");
+//                MessageBox.Show("Unable to add background transfer request.");
             }
         }
 
@@ -141,29 +132,16 @@ namespace windows_client
             switch (transfer.TransferStatus)
             {
                 case TransferStatus.Completed:
-
-                    //using (IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication())
-                    //{
-                    //    string responsePath = "shared/transfers/response";
-                    //    if (isoStore.FileExists(responsePath))
-                    //    {
-                    //        byte[] responseFromServer;
-                    //        Attachment.readFileFromIsolatedStorage(responsePath, out responseFromServer);
-                    //        string responseString = System.Text.Encoding.UTF8.GetString(responseFromServer, 0, responseFromServer.Length);
-                    //    }
-                    //}
-                    // If the status code of a completed transfer is 200 or 206, the
-                    // transfer was successful
                     if (transfer.StatusCode == 200 || transfer.StatusCode == 206)
                     {
                         // Remove the transfer request in order to make room in the 
                         // queue for more transfers. Transfers are not automatically
                         // removed by the system.
-
+                        RemoveTransferRequest(transfer.RequestId);
                         ReceivedChatBubble chatBubble;
                         requestIdChatBubbleMap.TryGetValue(transfer.RequestId, out chatBubble);
-                        chatBubble.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
-                        RemoveTransferRequest(transfer.RequestId);
+                        chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        //RemoveTransferRequest(transfer.RequestId);
                         // In this example, the downloaded file is moved into the root
                         // Isolated Storage directory
                         if (transfer.UploadLocation == null)
@@ -182,6 +160,7 @@ namespace windows_client
                                 }
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
+
                                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                                 if (currentPage != null)
                                 {
@@ -196,9 +175,9 @@ namespace windows_client
                     }
                     else
                     {
+                        RemoveTransferRequest(transfer.RequestId);
                         // This is where you can handle whatever error is indicated by the
                         // StatusCode and then remove the transfer from the queue. 
-                        RemoveTransferRequest(transfer.RequestId);
                         if (transfer.TransferError != null)
                         {
                             // Handle TransferError if one exists.
@@ -227,7 +206,6 @@ namespace windows_client
         void transfer_TransferStatusChanged(object sender, BackgroundTransferEventArgs e)
         {
             ProcessTransfer(e.Request);
-            //   UpdateUI();
         }
 
         void transfer_TransferProgressChanged(object sender, BackgroundTransferEventArgs e)
@@ -235,7 +213,6 @@ namespace windows_client
             ReceivedChatBubble chatBubble;
             requestIdChatBubbleMap.TryGetValue(e.Request.RequestId, out chatBubble);
             chatBubble.updateProgress(e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive);
-            // UpdateUI();
         }
 
         private void RemoveTransferRequest(string transferID)
@@ -243,8 +220,6 @@ namespace windows_client
             requestIdChatBubbleMap.Remove(transferID);
             // Use Find to retrieve the transfer request with the specified ID.
             BackgroundTransferRequest transferToRemove = BackgroundTransferService.Find(transferID);
-
-            // Try to remove the transfer from the background transfer service.
             try
             {
                 BackgroundTransferService.Remove(transferToRemove);
