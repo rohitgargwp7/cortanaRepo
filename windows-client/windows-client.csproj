@@ -447,7 +447,9 @@
     <Content Include="View\images\empty_screen_tip.png" />
     <Content Include="View\images\enter_name.png" />
     <Resource Include="View\images\help.png" />
+    <Content Include="View\images\error_icon.png" />
     <Content Include="View\images\hike_logo_small.png" />
+    <Resource Include="View\images\icon_attachment.png" />
     <Content Include="View\images\icon_emoticon.png" />
     <Content Include="View\images\icon_group_chat.png" />
     <Content Include="View\images\icon_next.png" />
@@ -473,6 +475,7 @@
     <Content Include="View\images\ic_sms_user.png" />
     <Resource Include="View\images\Splash.png" />
     <Content Include="View\images\terms_link.png" />
+    <Resource Include="View\images\trying_icon.png" />
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="View\images\ic_phone_big.png" />
