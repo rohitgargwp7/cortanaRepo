@@ -266,19 +266,20 @@ namespace windows_client.utils
                     int startIndex = 0;
                     int noOfBytesToWrite = 0;
                     double progressValue = 0;
-                    while (startIndex < dataBytes.Length && !chatBubble.isCanceled)
+                    while (startIndex < dataBytes.Length && chatBubble.FileAttachment.FileState!=Attachment.AttachmentState.CANCELED)
                     {
                         Thread.Sleep(5);
                         noOfBytesToWrite = dataBytes.Length - startIndex;
                         noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
                         postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
                         progressValue = ((double)(startIndex + noOfBytesToWrite) / dataBytes.Length) * 100;
-                        chatBubble.updateProgress(progressValue);
+                            chatBubble.updateProgress(progressValue);
                         startIndex += noOfBytesToWrite;
                     }
 
 //                    postStream.Write(dataBytes, 0, dataBytes.Length);
                     postStream.Close();
+                    chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage });
                     return;
 
