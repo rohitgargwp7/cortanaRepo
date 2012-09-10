@@ -1027,7 +1027,7 @@ namespace windows_client.View
                     object[] values = new object[2];
                     values[0] = convMessage;
                     values[1] = chatBubble;
-                    mPubSub.publish(HikePubSub.ATTACHMENT_RESEND_OR_FORWARD, values);
+                    mPubSub.publish(HikePubSub.ATTACHMENT_RESEND, values);
                 }
             }
             else
