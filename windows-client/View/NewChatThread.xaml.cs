@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Controls;
@@ -198,8 +196,8 @@ namespace windows_client.View
                 if (_attachmentUploaded == null)
                 {
                     _attachmentUploaded = new Dictionary<string, RoutedEventHandler>();
-                    _attachmentUploaded.Add("copy", MenuItem_Click_Copy);
-                    _attachmentUploaded.Add("delete", MenuItem_Click_Forward);
+                    _attachmentUploaded.Add("forward", MenuItem_Click_Forward);
+                    _attachmentUploaded.Add("delete", MenuItem_Click_Delete);
                 }
                 return _attachmentUploaded;
             }
@@ -740,8 +738,8 @@ namespace windows_client.View
             else
             {
                 Stopwatch st = Stopwatch.StartNew();
-                //attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
-                attachments = new Dictionary<long, Attachment>();
+                attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
+                //attachments = new Dictionary<long, Attachment>();
                 loadMessages();
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
@@ -1009,23 +1007,41 @@ namespace windows_client.View
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble chatBubble = (sender as MyChatBubble);
-            if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+            if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
             {
                 if (chatBubble is ReceivedChatBubble)
+                {
                     FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
+                    MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
+
+                }
                 else if (chatBubble is SentChatBubble)
                 {
-
+                    //resend message
+                    ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                    convMessage.IsSms = !isOnHike;
+                    convMessage.HasAttachment = true;
+                    convMessage.MessageId = chatBubble.MessageId;
+                    convMessage.FileAttachment = chatBubble.FileAttachment;
+                    convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + convMessage.FileAttachment.FileKey;
+                    object[] values = new object[2];
+                    values[0] = convMessage;
+                    values[1] = chatBubble;
+                    mPubSub.publish(HikePubSub.ATTACHMENT_RESEND_OR_FORWARD, values);
                 }
             }
             else
             {
-                displayAttachment(chatBubble);
+                displayAttachment(chatBubble, false);
             }
         }
 
-        public void displayAttachment(MyChatBubble chatBubble)
+        public void displayAttachment(MyChatBubble chatBubble, bool shouldUpdateAttachment)
         {
+            if (shouldUpdateAttachment)
+            {
+                MiscDBUtil.saveAttachmentObject(chatBubble.FileAttachment, mContactNumber, chatBubble.MessageId);
+            }
             if (chatBubble.FileAttachment.ContentType.Contains("image"))
             {
                 object[] fileTapped = new object[2];
@@ -1062,6 +1078,8 @@ namespace windows_client.View
                 isReshowTypingNotification = true;
             }
             this.MessageList.Children.Add(chatBubble);
+            chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
+
             if (isReshowTypingNotification)
             {
                 ShowTypingNotification();
@@ -1086,10 +1104,7 @@ namespace windows_client.View
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
                         {
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
-                        }
-                        else if (convMessage.FileAttachment != null && attachments.ContainsKey(convMessage.MessageId))
-                        {
-                            attachments.Add(convMessage.MessageId, convMessage.FileAttachment);
+                            attachments.Remove(convMessage.MessageId);
                         }
 
                         switch (convMessage.FileAttachment.FileState)
@@ -1113,7 +1128,7 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        chatBubble = new SentChatBubble(convMessage, contextMenuDictionary);
+                        chatBubble = new SentChatBubble(convMessage);
                         if (convMessage.MessageId < -1)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else
@@ -1122,7 +1137,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, _attachmentUploaded);
+                        chatBubble = new ReceivedChatBubble(convMessage);
 
                     }
                     if (addToLast)
@@ -1290,19 +1305,18 @@ namespace windows_client.View
 
                 using (var msSmallImage = new MemoryStream())
                 {
-                    writeableBitmap.SaveJpeg(msSmallImage, 90, 90, 0, 90);
+                    writeableBitmap.SaveJpeg(msSmallImage, 150, 150, 0, 90);
                     thumbnailBytes = msSmallImage.ToArray();
                 }
 
                 string fileName = image.UriSource.ToString();
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
 
-                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
                 convMessage.Message = fileName;
 
-                SentChatBubble chatBubble = new SentChatBubble(isOnHike, image, convMessage.MessageId, AttachmentUploading);
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, image);
                 msgMap.Add(convMessage.MessageId, chatBubble);
-
 
                 addNewAttachmentMessageToUI(chatBubble);
 
@@ -1311,11 +1325,10 @@ namespace windows_client.View
                     writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 100);
                     fileBytes = msLargeImage.ToArray();
                 }
-                object[] vals = new object[4];
+                object[] vals = new object[3];
                 vals[0] = convMessage;
-                vals[1] = thumbnailBytes;
-                vals[2] = fileBytes;
-                vals[3] = chatBubble;
+                vals[1] = fileBytes;
+                vals[2] = chatBubble;
                 mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
             }
             abc = !abc;
@@ -1392,7 +1405,7 @@ namespace windows_client.View
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             if (chatBubble.FileAttachment == null)
             {
-                PhoneApplicationService.Current.State["forwardedText"] = chatBubble.Text;
+                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = chatBubble.Text;
                 NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
             }
             else
@@ -1400,7 +1413,7 @@ namespace windows_client.View
                 object[] attachmentForwardMessage = new object[2];
                 attachmentForwardMessage[0] = chatBubble;
                 attachmentForwardMessage[1] = mContactNumber;
-                PhoneApplicationService.Current.State["forwardedText"] = attachmentForwardMessage;
+                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
                 NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
             }
         }
@@ -1427,9 +1440,14 @@ namespace windows_client.View
             if (this.ChatThreadPageCollection.Count > 0)
             {
                 //This updates the Conversation list.
-                obj.LastMessage = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].Text;
-                obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
-                obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
+                if (msg.FileAttachment != null)
+                    obj.LastMessage = msg.FileAttachment.FileName;
+                else
+                    obj.LastMessage = msg.Text;
+                //obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
+                //obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
+                obj.MessageStatus = msg.MessageStatus;
+                obj.TimeStamp = msg.TimeStampLong;
             }
             else
             {
@@ -1448,7 +1466,7 @@ namespace windows_client.View
         private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            Clipboard.SetText(chatBubble.Text);
+            chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);    
         }
 
 
