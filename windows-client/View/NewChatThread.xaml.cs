@@ -315,10 +315,6 @@ namespace windows_client.View
                     if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                     {
                         ManagePage();
-                        this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
-                        PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
-                        processGroupJoin(false);
                     }
                     else
                     {
@@ -327,7 +323,7 @@ namespace windows_client.View
                     }
                 }
                 /* This is called only when you add more participants to group */
-                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
                     PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
                     this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
@@ -838,6 +834,16 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
                 updateLastMsgColor(mContactNumber);
                 isPublish = false;
+            }
+            if (!App.isConvCreated) // tombstone , chat thread not created , add GC members.
+            {
+                if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
+                {
+                    this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.IS_EXISTING_GROUP);
+                    processGroupJoin(false);
+                }
             }
         }
 
