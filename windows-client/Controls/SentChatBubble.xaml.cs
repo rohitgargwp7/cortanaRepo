@@ -97,9 +97,9 @@ namespace windows_client.Controls
                 (chatBubble.FileAttachment.ContentType.Contains("image"))))
             {
                 if (chatBubble is SentChatBubble)
-                    this.MessageImage = (chatBubble as SentChatBubble).MessageImage;
+                    this.MessageImage.Source = (chatBubble as SentChatBubble).MessageImage.Source;
                 else if (chatBubble is ReceivedChatBubble)
-                    this.MessageImage = (chatBubble as ReceivedChatBubble).MessageImage;
+                    this.MessageImage.Source = (chatBubble as ReceivedChatBubble).MessageImage.Source;
             }
             
 
@@ -117,6 +117,10 @@ namespace windows_client.Controls
                     {
                         case ConvMessage.State.SENT_CONFIRMED:
                             this.SDRImage.Source = UI_Utils.Instance.MessageSentBitmapImage;
+                            if (this.FileAttachment != null && this.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
+                            {
+                                this.setAttachmentState(Attachment.AttachmentState.COMPLETED);
+                            }
                             break;
                         case ConvMessage.State.SENT_DELIVERED:
                             this.SDRImage.Source = UI_Utils.Instance.MessageDeliveredBitmapImage;
