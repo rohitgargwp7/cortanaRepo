@@ -642,8 +642,8 @@ namespace windows_client.View
 
             //add file transfer button
             fileTransferIconButton = new ApplicationBarIconButton();
-            fileTransferIconButton.IconUri = new Uri("/View/images/icon_emoticon.png", UriKind.Relative);
-            fileTransferIconButton.Text = "file";
+            fileTransferIconButton.IconUri = new Uri("/View/images/icon_attachment.png", UriKind.Relative);
+            fileTransferIconButton.Text = "attach";
             fileTransferIconButton.Click += new EventHandler(fileTransferButton_Click);
             fileTransferIconButton.IsEnabled = true;
             appBar.Buttons.Add(fileTransferIconButton);
