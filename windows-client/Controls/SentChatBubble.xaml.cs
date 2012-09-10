@@ -124,6 +124,9 @@ namespace windows_client.Controls
                         case ConvMessage.State.SENT_DELIVERED_READ:
                             this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
                             break;
+                        case ConvMessage.State.SENT_FAILED:
+                            this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                            break;
                     }
                 });
             }
