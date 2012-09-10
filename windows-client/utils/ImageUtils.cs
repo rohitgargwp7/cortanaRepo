@@ -22,6 +22,7 @@ namespace windows_client.utils
         private BitmapImage delivered = null;
         private BitmapImage read = null;
         private BitmapImage typingNotificationBitmap = null;
+        private BitmapImage httpFailed = null;
 
         private static volatile UI_Utils instance = null;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -36,6 +37,7 @@ namespace windows_client.utils
             read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
             onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
             typingNotificationBitmap = new BitmapImage(new Uri("/View/images/typing.png", UriKind.Relative));
+            httpFailed = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
         }
 
         public static UI_Utils Instance
@@ -123,6 +125,14 @@ namespace windows_client.utils
             get
             {
                 return typingNotificationBitmap;
+            }
+        }
+
+        public BitmapImage HttpFailed
+        {
+            get
+            {
+                return httpFailed;
             }
         }
 
