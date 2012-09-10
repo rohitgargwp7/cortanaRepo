@@ -23,23 +23,15 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
-
-            <Image x:Name="ImgZoom"
-               Stretch="UniformToFill"
-               RenderTransformOrigin="0,0">
-                <toolkit:GestureService.GestureListener>
-                    <toolkit:GestureListener
-                        PinchStarted="OnPinchStarted"
-                        PinchDelta="OnPinchDelta"
-                        DragDelta="OnDragDelta"
-                        DoubleTap="OnDoubleTap"/>
-                </toolkit:GestureService.GestureListener>
+            <Image Name="FileImage" Grid.Row="0" RenderTransformOrigin="0.5,0.5" CacheMode="BitmapCache">
                 <Image.RenderTransform>
-                    <CompositeTransform
-                        ScaleX="1" ScaleY="1"
-                        TranslateX="0" TranslateY="0"/>
+                    <CompositeTransform x:Name="transform" />
                 </Image.RenderTransform>
+                <toolkit:GestureService.GestureListener>
+                    <toolkit:GestureListener DragDelta="GestureListener_DragDelta" PinchCompleted="GestureListener_PinchCompleted" PinchStarted="OnPinchStarted" PinchDelta="OnPinchDelta" />
+                </toolkit:GestureService.GestureListener>
             </Image>
+            <!--<MediaElement  Grid.Row="0" x:Name="FileMedia"></MediaElement>-->
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
