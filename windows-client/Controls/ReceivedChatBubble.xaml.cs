@@ -17,8 +17,8 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(cm.HasAttachment);
-            if (cm.FileAttachment!=null && cm.FileAttachment.Thumbnail!=null && cm.FileAttachment.Thumbnail.Length!=0)
+//            initializeBasedOnState(cm.HasAttachment);
+            if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
                 using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
                 {
@@ -27,7 +27,13 @@ namespace windows_client.Controls
                     fileThumbnail.SetSource(memStream);
                     this.MessageImage.Source = fileThumbnail;
                 }
+                this.MessageText.Visibility = Visibility.Collapsed;
             }
+            else
+            {
+                this.MessageImage.Visibility = Visibility.Collapsed;
+            }
+
         }
 
         public void updateProgress(double progressValue)
@@ -42,16 +48,12 @@ namespace windows_client.Controls
             });
         }
 
-        private void initializeBasedOnState(bool hasAttachment)
-        {
-            if (hasAttachment)
-                this.MessageText.Visibility = Visibility.Collapsed;
-            else
-                this.attachment.Visibility = Visibility.Collapsed;
-        }
-
-
-
-
+        //private void initializeBasedOnState(bool hasAttachment)
+        //{
+        //    if (hasAttachment)
+        //        this.MessageText.Visibility = Visibility.Collapsed;
+        //    else
+        //        this.attachment.Visibility = Visibility.Collapsed;
+        //}
     }
 }
