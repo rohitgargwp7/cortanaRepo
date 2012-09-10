@@ -103,11 +103,12 @@ namespace windows_client
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
                     if (convMessage.FileAttachment != null)
                     {
-                        if ((convMessage.FileAttachment.ContentType.Contains("video") || (convMessage.FileAttachment.ContentType.Contains("image"))))
-                        {
-                            MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
-                                Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.Thumbnail);
-                        }
+                        //if ((convMessage.FileAttachment.ContentType.Contains("video") || (convMessage.FileAttachment.ContentType.Contains("image"))))
+                        //{
+                        //    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
+                        //        Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.Thumbnail);
+                        //}
+                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
                     if (obj == null)
                         return;
