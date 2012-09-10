@@ -15,6 +15,37 @@ namespace windows_client.DbUtils
 {
     public class MessagesTableUtils
     {
+        private static object lockObj = new object();
+
+        //keep a set of currently uploading or downloading messages.
+        private static Dictionary<long, int> uploadingOrDownloadingMessages = new Dictionary<long, int>();
+
+        public static void addUploadingOrDownloadingMessage(long messageId)
+        {
+            lock (lockObj)
+            {
+                if (!uploadingOrDownloadingMessages.ContainsKey(messageId))
+                    uploadingOrDownloadingMessages.Add(messageId, -1);
+            }
+        }
+
+        public static void removeUploadingOrDownloadingMessage(long messageId)
+        {
+            lock (lockObj)
+            {
+                if (uploadingOrDownloadingMessages.ContainsKey(messageId))
+                    uploadingOrDownloadingMessages.Remove(messageId);
+            }
+        }
+
+        public static bool isUploadingOrDownloadingMessage(long messageId)
+        {
+            lock (lockObj)
+            {
+                return uploadingOrDownloadingMessages.ContainsKey(messageId);
+            }
+        }
+
         //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/
