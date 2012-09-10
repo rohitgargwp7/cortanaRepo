@@ -15,14 +15,9 @@ namespace windows_client.Controls
     {
         private SolidColorBrush bubbleColor;
         private ConvMessage.State messageState;
-        private Attachment fileAttachment;
 
-        LinkifiedTextBox MessageText2;
-
-        public bool isCanceled = false;
-
-        public SentChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
-            : base(cm, contextMenuDictionary)
+        public SentChatBubble(ConvMessage cm)
+            : base(cm)
         {
             // Required to initialize variables
             InitializeComponent();
@@ -50,13 +45,9 @@ namespace windows_client.Controls
                 default:
                     break;
             }
-            if (cm.FileAttachment!=null && (cm.FileAttachment.ContentType.Contains("video") || (cm.FileAttachment.ContentType.Contains("image"))))
+            if (cm.FileAttachment!=null && cm.FileAttachment.Thumbnail!=null)
             {
-                byte[] imageBytes;
-                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + 
-                    cm.Msisdn + "/" + Convert.ToString(cm.MessageId), out imageBytes);
-
-                using (var memStream = new MemoryStream(imageBytes))
+                using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
                 {
                     memStream.Seek(0, SeekOrigin.Begin);
                     BitmapImage fileThumbnail = new BitmapImage();
@@ -64,17 +55,18 @@ namespace windows_client.Controls
                     this.MessageImage.Source = fileThumbnail;
                 }
             }
+            
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
 
-        public SentChatBubble(bool onHike, BitmapImage sentImage, long messageId, Dictionary<string, RoutedEventHandler> uploadingMenu)
-            : base(messageId, uploadingMenu)
+        public SentChatBubble(ConvMessage cm, BitmapImage image)
+            : base(cm)
         {
             // Required to initialize variables
             InitializeComponent();
             initializeBasedOnState(true);
-            if (onHike)
+            if (!cm.IsSms)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
             }
@@ -84,12 +76,13 @@ namespace windows_client.Controls
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
-            this.MessageImage.Source = sentImage;
+            this.MessageImage.Source = image;
         }
 
         public SentChatBubble(MyChatBubble chatBubble, long messageId, bool onHike)
             :base(chatBubble, messageId)
         {
+            InitializeComponent();
             if (onHike)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
@@ -143,7 +136,7 @@ namespace windows_client.Controls
                 this.uploadProgress.Value = progressValue;
                 if (progressValue == this.uploadProgress.Maximum)
                 {
-                    this.uploadProgress.Visibility = Visibility.Collapsed;
+                    this.uploadProgress.Opacity = 0;
                 }
             });
         }

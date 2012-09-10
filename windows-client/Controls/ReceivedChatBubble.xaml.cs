@@ -12,20 +12,15 @@ namespace windows_client.Controls
     public partial class ReceivedChatBubble : MyChatBubble
     {
 
-        public ReceivedChatBubble(ConvMessage cm, Dictionary<string, RoutedEventHandler> contextMenuDictionary)
-            : base(cm, contextMenuDictionary)
+        public ReceivedChatBubble(ConvMessage cm)
+            : base(cm)
         {
             // Required to initialize variables
             InitializeComponent();
             initializeBasedOnState(cm.HasAttachment);
-            if (cm.FileAttachment!=null && (cm.FileAttachment.ContentType.Contains("video") || (cm.FileAttachment.ContentType.Contains("image"))))
+            if (cm.FileAttachment!=null && cm.FileAttachment.Thumbnail!=null && cm.FileAttachment.Thumbnail.Length!=0)
             {
-                byte[] imageBytes;
-                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + 
-                    cm.Msisdn + "/" + Convert.ToString(cm.MessageId),
-                    out imageBytes);
-
-                using (var memStream = new MemoryStream(imageBytes))
+                using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
                 {
                     memStream.Seek(0, SeekOrigin.Begin);
                     BitmapImage fileThumbnail = new BitmapImage();
@@ -42,7 +37,7 @@ namespace windows_client.Controls
                 this.downloadProgress.Value = progressValue;
                 if (progressValue == this.downloadProgress.Maximum)
                 {
-                    this.downloadProgress.Visibility = Visibility.Collapsed;
+                    this.downloadProgress.Opacity = 0;
                 }
             });
         }
