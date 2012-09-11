@@ -91,7 +91,6 @@ namespace windows_client.Controls
         {
             this.MessageId = messageId;
             this.FileAttachment = chatBubble.FileAttachment;
-
         }
 
         public MyChatBubble(ConvMessage cm)
@@ -128,15 +127,16 @@ namespace windows_client.Controls
         //    ContextMenuService.SetContextMenu(this, contextMenu);
         //}
 
-        private void setContextMenu(Dictionary<string, RoutedEventHandler> contextMenuDictionary)
+        private void setContextMenu(Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary)
         {
             ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = false;
-            foreach (KeyValuePair<string, RoutedEventHandler> entry in contextMenuDictionary)
+            menu.IsZoomEnabled = true;
+            foreach (KeyValuePair<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> entry in contextMenuDictionary)
             {
                 MenuItem menuItem = new MenuItem();
                 menuItem.Header = entry.Key;
-                menuItem.Click += entry.Value;
+                var gl = GestureService.GetGestureListener(menuItem);
+                gl.Tap += entry.Value;
                 menu.Items.Add(menuItem);
             }
             ContextMenuService.SetContextMenu(this, menu);

@@ -74,10 +74,10 @@ namespace windows_client.View
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         List<GroupMembers> groupMemberList = null;
 
-        private Dictionary<string, RoutedEventHandler> _nonAttachmentMenu;
-        private Dictionary<string, RoutedEventHandler> _attachmentUploading;
-        private Dictionary<string, RoutedEventHandler> _attachmentUploaded;
-        private Dictionary<string, RoutedEventHandler> _attachmentCanceledOrFailed = null;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _nonAttachmentMenu;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploading;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploaded;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentCanceledOrFailed = null;
 
 
 
@@ -151,13 +151,13 @@ namespace windows_client.View
         }
 
         #region CONTEXT MENU DICTIONARY
-        public Dictionary<string, RoutedEventHandler> NonAttachmentMenu
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> NonAttachmentMenu
         {
             get
             {
                 if (_nonAttachmentMenu == null)
                 {
-                    _nonAttachmentMenu = new Dictionary<string, RoutedEventHandler>();
+                    _nonAttachmentMenu = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
                     _nonAttachmentMenu.Add("copy", MenuItem_Click_Copy);
                     _nonAttachmentMenu.Add("forward", MenuItem_Click_Forward);
                     _nonAttachmentMenu.Add("delete", MenuItem_Click_Delete);
@@ -171,13 +171,13 @@ namespace windows_client.View
         }
 
 
-        public Dictionary<string, RoutedEventHandler> AttachmentUploading
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploading
         {
             get
             {
                 if (_attachmentUploading == null)
                 {
-                    _attachmentUploading = new Dictionary<string, RoutedEventHandler>();
+                    _attachmentUploading = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
                     _attachmentUploading.Add("cancel", MenuItem_Click_Cancel);
                     _attachmentUploading.Add("delete", MenuItem_Click_Delete);
                 }
@@ -189,13 +189,13 @@ namespace windows_client.View
             }
         }
 
-        public Dictionary<string, RoutedEventHandler> AttachmentUploaded
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploaded
         {
             get
             {
                 if (_attachmentUploaded == null)
                 {
-                    _attachmentUploaded = new Dictionary<string, RoutedEventHandler>();
+                    _attachmentUploaded = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
                     _attachmentUploaded.Add("forward", MenuItem_Click_Forward);
                     _attachmentUploaded.Add("delete", MenuItem_Click_Delete);
                 }
@@ -207,13 +207,13 @@ namespace windows_client.View
             }
         }
 
-        public Dictionary<string, RoutedEventHandler> AttachmentCanceledOrFailed
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentCanceledOrFailed
         {
             get
             {
                 if (_attachmentCanceledOrFailed == null)
                 {
-                    _attachmentCanceledOrFailed = new Dictionary<string, RoutedEventHandler>();
+                    _attachmentCanceledOrFailed = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
                     _attachmentCanceledOrFailed.Add("delete", MenuItem_Click_Delete);
                 }
                 return _attachmentCanceledOrFailed;
@@ -441,21 +441,21 @@ namespace windows_client.View
                     {
                         sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
                     }
-                    else if(PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+                    else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
                     {
                         object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
                         MyChatBubble chatBubble = (MyChatBubble)attachmentData[0];
                         string sourceMsisdn = (string)attachmentData[1];
 
-                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" +  chatBubble.MessageId;
+                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + chatBubble.MessageId;
 
-                        ConvMessage convMessage = new ConvMessage(chatBubble.FileAttachment.FileName, mContactNumber, 
+                        ConvMessage convMessage = new ConvMessage(chatBubble.FileAttachment.FileName, mContactNumber,
                             TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
                         convMessage.IsSms = !isOnHike;
                         convMessage.HasAttachment = true;
                         convMessage.MessageId = TempMessageId;
                         convMessage.FileAttachment = chatBubble.FileAttachment;
-                        
+
                         SentChatBubble newChatBubble = new SentChatBubble(chatBubble, convMessage.MessageId, isOnHike);
                         addNewAttachmentMessageToUI(newChatBubble);
                         msgMap.Add(convMessage.MessageId, newChatBubble);
@@ -1011,6 +1011,7 @@ namespace windows_client.View
         }
 
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        //        private void FileAttachmentMessage_Click(object sender, EventArgs e)
         {
             MyChatBubble chatBubble = (sender as MyChatBubble);
             if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
@@ -1104,7 +1105,7 @@ namespace windows_client.View
             {
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
-                    Dictionary<string, RoutedEventHandler> contextMenuDictionary;
+                    Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1278,6 +1279,7 @@ namespace windows_client.View
 
             if (e.TaskResult == TaskResult.OK)
             {
+                isReleaseMode = true;
                 Uri uri = new Uri(e.OriginalFileName);
                 BitmapImage image = new BitmapImage(uri);
                 image.CreateOptions = BitmapCreateOptions.None;
@@ -1286,17 +1288,23 @@ namespace windows_client.View
             }
             else
             {
+                isReleaseMode = false; 
                 Uri uri = new Uri("/View/images/ic_phone_big.png", UriKind.Relative);
                 BitmapImage image = new BitmapImage(uri);
                 image.CreateOptions = BitmapCreateOptions.None;
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
+                
             }
         }
 
+        private static bool abc = true;
+        private static bool isReleaseMode = true;
+
+
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
-            if (abc)
+            if (isReleaseMode || abc)
             {
                 byte[] thumbnailBytes;
                 byte[] fileBytes;
@@ -1340,7 +1348,6 @@ namespace windows_client.View
             abc = !abc;
         }
 
-        public static bool abc = true;
 
 
         private string[] splitUserJoinedMessage(ConvMessage convMessage)
@@ -1406,7 +1413,8 @@ namespace windows_client.View
         #region CONTEXT MENU
         //TODO - 1) replace click events with tap
         // 2) Add delete event
-        private void MenuItem_Click_Forward(object sender, RoutedEventArgs e)
+
+        private void MenuItem_Click_Forward(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             if (chatBubble.FileAttachment == null)
@@ -1424,13 +1432,13 @@ namespace windows_client.View
             }
         }
 
-        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_Copy(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             Clipboard.SetText(chatBubble.Text);
         }
 
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
 
@@ -1482,10 +1490,10 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
         }
 
-        private void MenuItem_Click_Cancel(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_Cancel(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);    
+            chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
         }
 
 
