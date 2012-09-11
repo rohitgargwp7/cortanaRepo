@@ -106,6 +106,10 @@ namespace windows_client.Controls
                 this.FileAttachment = cm.FileAttachment;
                 setAttachmentState(cm.FileAttachment.FileState);
             }
+            else if (!cm.HasAttachment)
+            {
+                setNonAttachmentContextMenu();  
+            }
         }
 
         //public void updateContextMenu(ContextMenu menu)
@@ -136,6 +140,16 @@ namespace windows_client.Controls
                 menu.Items.Add(menuItem);
             }
             ContextMenuService.SetContextMenu(this, menu);
+        }
+
+
+        private void setNonAttachmentContextMenu()
+        { 
+            var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+            if (currentPage != null)
+            {
+                setContextMenu(currentPage.NonAttachmentMenu);
+            }
         }
 
 
