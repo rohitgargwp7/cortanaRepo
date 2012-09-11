@@ -37,7 +37,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.DELETE_CONVERSATION,this);
             mPubSub.addListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
-            mPubSub.addListener(HikePubSub.ATTACHMENT_RESEND_OR_FORWARD, this);
+            mPubSub.addListener(HikePubSub.ATTACHMENT_RESEND, this);
         }
 
         private void removeListeners()
@@ -54,7 +54,7 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
             mPubSub.removeListener(HikePubSub.DELETE_CONVERSATION,this);
             mPubSub.removeListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
-            mPubSub.removeListener(HikePubSub.ATTACHMENT_RESEND_OR_FORWARD, this);
+            mPubSub.removeListener(HikePubSub.ATTACHMENT_RESEND, this);
         }
 
 
@@ -156,7 +156,7 @@ namespace windows_client.DbUtils
             }
             #endregion
             #region ATTACHMENT_RESEND_OR_FORWARD
-            else if (HikePubSub.ATTACHMENT_RESEND_OR_FORWARD == type)
+            else if (HikePubSub.ATTACHMENT_RESEND == type)
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];

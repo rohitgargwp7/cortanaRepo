@@ -59,5 +59,34 @@ namespace windows_client.View
             //transform.ScaleX = initialScale;
             //transform.ScaleY = initialScale;
         }
+
+        private void GestureListener_DragDelta(object sender, DragDeltaGestureEventArgs e)
+        {
+            // if is not touch enabled or the scale is different than 1 then don’t allow moving
+            if (transform.ScaleX <= 1.1)
+                return;
+            double centerX = transform.CenterX;
+            double centerY = transform.CenterY;
+            double translateX = transform.TranslateX;
+            double translateY = transform.TranslateY;
+            double scale = transform.ScaleX;
+            double width = FileImage.ActualWidth;
+            double height = FileImage.ActualHeight;
+
+            // verify limits to not allow the image to get out of area
+
+            if (centerX - scale * centerX + translateX + e.HorizontalChange < 0 &&
+            centerX + scale * (width - centerX) + translateX + e.HorizontalChange > width)
+            {
+                transform.TranslateX += e.HorizontalChange;
+            }
+
+            if (centerY - scale * centerY + translateY + e.VerticalChange < 0 &&
+            centerY + scale * (height - centerY) + translateY + e.VerticalChange > height)
+            {
+                transform.TranslateY += e.VerticalChange;
+            }
+            return;
+        }
     }
 }

@@ -421,6 +421,7 @@ namespace windows_client.Model
                         this.HasAttachment = true;
                         this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()),
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                    
                     //}
                 }
                 if (val != null) // represents group message
@@ -502,6 +503,8 @@ namespace windows_client.Model
                 singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                 singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                 singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                if(FileAttachment.Thumbnail!=null)
+                    singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                 filesData.Add(singleFileInfo.ToObject<JToken>());
 
                 metadata[HikeConstants.FILES_DATA] = filesData;

@@ -66,16 +66,17 @@ namespace windows_client
             transferRequest.DownloadLocation = destinationUri;
             try
             {
+                transferRequest.TransferPreferences = TransferPreferences.AllowCellularAndBattery;
                 BackgroundTransferService.Add(transferRequest);
                 requestIdChatBubbleMap.Add(transferRequest.RequestId, chatBubble as ReceivedChatBubble);
             }
             catch (InvalidOperationException ex)
             {
-//                MessageBox.Show("Unable to add background transfer request. " + ex.Message);
+                MessageBox.Show("Unable to add background transfer request. " + ex.Message);
             }
             catch (Exception e)
             {
-//                MessageBox.Show("Unable to add background transfer request.");
+                MessageBox.Show("Unable to add background transfer request.");
             }
         }
 

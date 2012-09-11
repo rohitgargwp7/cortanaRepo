@@ -121,7 +121,7 @@ namespace windows_client
 
         public static string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
 
-        public static readonly string ATTACHMENT_RESEND_OR_FORWARD = "resendOrForward";
+        public static readonly string ATTACHMENT_RESEND = "resendOrForward";
 
         private readonly Thread mThread;
 
