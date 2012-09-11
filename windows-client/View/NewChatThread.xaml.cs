@@ -1437,17 +1437,30 @@ namespace windows_client.View
 
             ConversationListObject obj = ConversationsList.ConvMap[mContactNumber];
             /* Remove the message from conversation list */
-            if (this.ChatThreadPageCollection.Count > 0)
+            //if (this.ChatThreadPageCollection.Count > 0)
+
+
+            MyChatBubble lastMessageBubble = null;
+            if (isTypingNotificationActive && this.MessageList.Children.Count > 1)
+            {
+                lastMessageBubble = this.MessageList.Children[this.MessageList.Children.Count - 2] as MyChatBubble;
+            }
+            else if (!isTypingNotificationActive && this.MessageList.Children.Count > 0)
+            {
+                lastMessageBubble = this.MessageList.Children[this.MessageList.Children.Count - 1] as MyChatBubble;
+            }
+
+            if (lastMessageBubble != null)
             {
                 //This updates the Conversation list.
-                if (msg.FileAttachment != null)
-                    obj.LastMessage = msg.FileAttachment.FileName;
+                if (lastMessageBubble.FileAttachment != null)
+                    obj.LastMessage = lastMessageBubble.FileAttachment.FileName;
                 else
-                    obj.LastMessage = msg.Text;
+                    obj.LastMessage = lastMessageBubble.Text;
                 //obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
                 //obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
-                obj.MessageStatus = msg.MessageStatus;
-                obj.TimeStamp = msg.TimeStampLong;
+                obj.MessageStatus = lastMessageBubble.MessageStatus;
+                obj.TimeStamp = lastMessageBubble.TimeStampLong;
             }
             else
             {
