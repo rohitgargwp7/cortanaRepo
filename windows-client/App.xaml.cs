@@ -270,7 +270,7 @@ namespace windows_client
         {
             //SerializeConversations();
             if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
@@ -280,14 +280,14 @@ namespace windows_client
         {
             updateConversations();
             if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            updateConversations();
+            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
                 return;
@@ -301,7 +301,7 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            updateConversations();
+            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger
@@ -391,12 +391,12 @@ namespace windows_client
         {
             if (!App.appSettings.Contains(App.GROUPS_CACHE))
             {
-                Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
                 WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             }
 
             else
-                Utils.GroupCache = (Dictionary<string, GroupParticipant>)App.appSettings[App.GROUPS_CACHE];
+                Utils.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
 
             Stopwatch st = Stopwatch.StartNew();
             if (App.HikePubSubInstance == null)
