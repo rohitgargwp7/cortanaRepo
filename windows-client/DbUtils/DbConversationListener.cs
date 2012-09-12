@@ -294,11 +294,13 @@ namespace windows_client.DbUtils
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
                 ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
+                MiscDBUtil.deleteMsisdnData(convMsisdn);
             }
             else if (HikePubSub.DELETE_ALL_CONVERSATIONS == type)
             {
                 MessagesTableUtils.deleteAllMessages();
                 ConversationTableUtils.deleteAllConversations();
+                MiscDBUtil.deleteAllAttachmentData();
                 foreach (string convMsisdn in ConversationsList.ConvMap.Keys)
                 {
                     if (Utils.isGroupConversation(convMsisdn))
