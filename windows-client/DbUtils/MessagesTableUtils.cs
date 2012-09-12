@@ -87,26 +87,27 @@ namespace windows_client.DbUtils
 
                 context.messages.InsertOnSubmit(convMessage);
                 context.SubmitChanges();
-
-                long msgId = convMessage.MessageId;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
-                    var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
-                    if (currentPage != null)
+                    long msgId = convMessage.MessageId;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (convMessage.IsSent)
+                        var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                        if (currentPage != null)
                         {
-                            SentChatBubble sentChatBubble;
-                            currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
-                            currentPage.OutgoingMsgsMap.Remove(currentMessageId);
-                            currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
-                            sentChatBubble.MessageId = convMessage.MessageId;
+                            if (convMessage.IsSent)
+                            {
+                                SentChatBubble sentChatBubble;
+                                currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
+                                currentPage.OutgoingMsgsMap.Remove(currentMessageId);
+                                currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                                sentChatBubble.MessageId = convMessage.MessageId;
+                            }
                         }
                         if (ConversationsList.ConvMap[convMessage.Msisdn].IsFirstMsg)
                             currentPage.IsFirstMsg = false;
-                    }
-                });
+                    });
+                }
             }
         }
 
