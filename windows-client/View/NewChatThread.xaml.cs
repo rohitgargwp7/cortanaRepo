@@ -47,6 +47,8 @@ namespace windows_client.View
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
+        private bool isContextMenuTapped = false;
+
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
         //messages stored in db, other messages would have their attachment object set
 
@@ -1013,34 +1015,39 @@ namespace windows_client.View
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         //        private void FileAttachmentMessage_Click(object sender, EventArgs e)
         {
-            MyChatBubble chatBubble = (sender as MyChatBubble);
-            if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
+            //            MessageBox.Show("Inside attachment tap");
+            if (!isContextMenuTapped)
             {
-                if (chatBubble is ReceivedChatBubble)
+                MyChatBubble chatBubble = (sender as MyChatBubble);
+                if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
                 {
-                    FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
-                    MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
+                    if (chatBubble is ReceivedChatBubble)
+                    {
+                        FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
+                        MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
 
+                    }
+                    else if (chatBubble is SentChatBubble)
+                    {
+                        //resend message
+                        ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                        convMessage.IsSms = !isOnHike;
+                        convMessage.HasAttachment = true;
+                        convMessage.MessageId = chatBubble.MessageId;
+                        convMessage.FileAttachment = chatBubble.FileAttachment;
+                        convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + convMessage.FileAttachment.FileKey;
+                        object[] values = new object[2];
+                        values[0] = convMessage;
+                        values[1] = chatBubble;
+                        mPubSub.publish(HikePubSub.ATTACHMENT_RESEND, values);
+                    }
                 }
-                else if (chatBubble is SentChatBubble)
+                else
                 {
-                    //resend message
-                    ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
-                    convMessage.IsSms = !isOnHike;
-                    convMessage.HasAttachment = true;
-                    convMessage.MessageId = chatBubble.MessageId;
-                    convMessage.FileAttachment = chatBubble.FileAttachment;
-                    convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + convMessage.FileAttachment.FileKey;
-                    object[] values = new object[2];
-                    values[0] = convMessage;
-                    values[1] = chatBubble;
-                    mPubSub.publish(HikePubSub.ATTACHMENT_RESEND, values);
+                    displayAttachment(chatBubble, false);
                 }
             }
-            else
-            {
-                displayAttachment(chatBubble, false);
-            }
+            isContextMenuTapped = false;
         }
 
         public void displayAttachment(MyChatBubble chatBubble, bool shouldUpdateAttachment)
@@ -1086,12 +1093,12 @@ namespace windows_client.View
             }
             this.MessageList.Children.Add(chatBubble);
             chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
-
             if (isReshowTypingNotification)
             {
                 ShowTypingNotification();
                 isReshowTypingNotification = false;
             }
+            ScrollToBottom();
         }
 
         /*
@@ -1100,101 +1107,70 @@ namespace windows_client.View
         private void AddMessageToUI(ConvMessage convMessage, bool addToLast)
         {
             //TODO : Create attachment object if it requires one
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
             {
-                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary;
+                if (convMessage.HasAttachment)
                 {
-                    Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary;
-                    if (convMessage.HasAttachment)
+                    if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
                     {
-                        if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
-                        {
-                            convMessage.FileAttachment = attachments[convMessage.MessageId];
-                            attachments.Remove(convMessage.MessageId);
-                        }
-
-                        switch (convMessage.FileAttachment.FileState)
-                        {
-                            case Attachment.AttachmentState.CANCELED:
-                                contextMenuDictionary = AttachmentCanceledOrFailed;
-                                break;
-                            case Attachment.AttachmentState.COMPLETED:
-                                contextMenuDictionary = AttachmentUploaded;
-                                break;
-                            default:
-                                contextMenuDictionary = AttachmentUploading;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        contextMenuDictionary = NonAttachmentMenu;
+                        convMessage.FileAttachment = attachments[convMessage.MessageId];
+                        attachments.Remove(convMessage.MessageId);
                     }
 
-                    MyChatBubble chatBubble;
-                    if (convMessage.IsSent)
+                    switch (convMessage.FileAttachment.FileState)
                     {
-                        chatBubble = new SentChatBubble(convMessage);
-                        if (convMessage.MessageId < -1)
-                            msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                        else
-                            msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
-                        //_convMessageSentBubbleMap.Add(convMessage, (SentChatBubble)chatBubble);
-                    }
-                    else
-                    {
-                        chatBubble = new ReceivedChatBubble(convMessage);
-
-                    }
-                    if (addToLast)
-                    {
-                        this.MessageList.Children.Add(chatBubble);
-                        ScrollToBottom();
-                    }
-                    else
-                    {
-                        this.MessageList.Children.Insert(0, chatBubble);
-                    }
-                    if (convMessage.FileAttachment != null)
-                    {
-                        chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
-                    }
-                }
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
-                {
-                    string[] names = splitUserJoinedMessage(convMessage);
-                    for (int i = 0; i < names.Length; i++)
-                    {
-                        MyChatBubble chatBubble = new NotificationChatBubble(names[i] + HikeConstants.USER_JOINED, true);
-                        if (addToLast)
-                        {
-                            this.MessageList.Children.Add(chatBubble);
-                            ScrollToBottom();
-                        }
-                        else
-                        {
-                            this.MessageList.Children.Insert(0, chatBubble);
-                        }
-                    }
-                }
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT)
-                {
-                    string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
-                    MyChatBubble chatBubble = new NotificationChatBubble(name + HikeConstants.USER_LEFT, true);
-                    if (addToLast)
-                    {
-                        this.MessageList.Children.Add(chatBubble);
-                        ScrollToBottom();
-                    }
-                    else
-                    {
-                        this.MessageList.Children.Insert(0, chatBubble);
+                        case Attachment.AttachmentState.CANCELED:
+                            contextMenuDictionary = AttachmentCanceledOrFailed;
+                            break;
+                        case Attachment.AttachmentState.COMPLETED:
+                            contextMenuDictionary = AttachmentUploaded;
+                            break;
+                        default:
+                            contextMenuDictionary = AttachmentUploading;
+                            break;
                     }
                 }
                 else
                 {
-                    MyChatBubble chatBubble = new NotificationChatBubble(HikeConstants.GROUP_CHAT_END, true);
+                    contextMenuDictionary = NonAttachmentMenu;
+                }
+
+                MyChatBubble chatBubble;
+                if (convMessage.IsSent)
+                {
+                    chatBubble = new SentChatBubble(convMessage);
+                    if (convMessage.MessageId < -1)
+                        msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
+                    else
+                        msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
+                    //_convMessageSentBubbleMap.Add(convMessage, (SentChatBubble)chatBubble);
+                }
+                else
+                {
+                    chatBubble = new ReceivedChatBubble(convMessage);
+
+                }
+                if (addToLast)
+                {
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                else
+                {
+                    this.MessageList.Children.Insert(0, chatBubble);
+                }
+                if (convMessage.FileAttachment != null)
+                {
+                    chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
+                }
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
+            {
+                string[] names = splitUserJoinedMessage(convMessage);
+                for (int i = 0; i < names.Length; i++)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(names[i] + HikeConstants.USER_JOINED, true);
                     if (addToLast)
                     {
                         this.MessageList.Children.Add(chatBubble);
@@ -1205,8 +1181,35 @@ namespace windows_client.View
                         this.MessageList.Children.Insert(0, chatBubble);
                     }
                 }
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT)
+            {
+                string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
+                MyChatBubble chatBubble = new NotificationChatBubble(name + HikeConstants.USER_LEFT, true);
+                if (addToLast)
+                {
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                else
+                {
+                    this.MessageList.Children.Insert(0, chatBubble);
+                }
+            }
+            else
+            {
+                MyChatBubble chatBubble = new NotificationChatBubble(HikeConstants.GROUP_CHAT_END, true);
+                if (addToLast)
+                {
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                else
+                {
+                    this.MessageList.Children.Insert(0, chatBubble);
+                }
+            }
 
-            });
 
         }
 
@@ -1288,16 +1291,17 @@ namespace windows_client.View
             }
             else
             {
-                isReleaseMode = false; 
+                isReleaseMode = false;
                 Uri uri = new Uri("/View/images/ic_phone_big.png", UriKind.Relative);
                 BitmapImage image = new BitmapImage(uri);
                 image.CreateOptions = BitmapCreateOptions.None;
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
-                
+
             }
         }
 
+        //TODO remove these bools in release build. these are used because imageOpenHandler is called twice i debug
         private static bool abc = true;
         private static bool isReleaseMode = true;
 
@@ -1416,6 +1420,8 @@ namespace windows_client.View
 
         private void MenuItem_Click_Forward(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
+            //MessageBox.Show("Inside forward");
+            isContextMenuTapped = true;
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             if (chatBubble.FileAttachment == null)
             {
@@ -1440,6 +1446,8 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
+            //MessageBox.Show("Inside delete");
+
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
 
             if (msg == null)
@@ -1495,8 +1503,6 @@ namespace windows_client.View
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
         }
-
-
 
         #endregion
 
@@ -1762,7 +1768,10 @@ namespace windows_client.View
                     updateLastMsgColor(convMessage.Msisdn);
                     // Update UI
                     HideTypingNotification();
-                    AddMessageToUI(convMessage, true);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        AddMessageToUI(convMessage, true);
+                    });
                 }
                 else // this is to show toast notification
                 {
