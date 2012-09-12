@@ -65,14 +65,8 @@
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Phone.Reactive" />
     <Reference Include="Microsoft.Xna.Framework" />
-    <Reference Include="MyProtoBufSerializer">
-      <HintPath>lib\MyProtoBufSerializer.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="protobuf-net">
-      <HintPath>lib\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="SharpCompress.WP7">
       <HintPath>lib\SharpCompress.WP7.dll</HintPath>

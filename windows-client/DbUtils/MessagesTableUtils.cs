@@ -103,10 +103,8 @@ namespace windows_client.DbUtils
                             currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
                             sentChatBubble.MessageId = convMessage.MessageId;
                         }
-                        //if (convMessage.IsSent)
-                        //    currentPage.OutgoingMsgsMap.Add(msgId, convMessage);
-                        //else
-                        //    currentPage.IncomingMessages.Add(convMessage);
+                        if (ConversationsList.ConvMap[convMessage.Msisdn].IsFirstMsg)
+                            currentPage.IsFirstMsg = false;
                     }
                 });
             }
@@ -183,9 +181,6 @@ namespace windows_client.DbUtils
                 obj.LastMessage = convMsg.Message;
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
-
-                //App.WriteToIsoStorageSettings("CONV::" + convMsg.Msisdn,obj);
-                //App.ViewModel.ConvMsisdnsToUpdate.Add(convMsg.Msisdn);
                 Stopwatch st = Stopwatch.StartNew();
                 ConversationTableUtils.updateConversation(obj);
                 st.Stop();
@@ -197,6 +192,14 @@ namespace windows_client.DbUtils
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;
             Debug.WriteLine("Time to add chat msg : {0}", msec1);
+
+            if (obj.IsFirstMsg)
+            {
+                // TODO : Added invited/joined msg.
+                //addMessage(convMsg);
+                obj.IsFirstMsg = false;
+            }
+
             return obj;
         }
 

@@ -15,7 +15,6 @@ namespace windows_client.DbUtils
     public class ConversationTableUtils
     {
         public static string CONVERSATIONS_DIRECTORY = "CONVERSATIONS";
-        private static MySerializer ser = new MySerializer();
         private static object lockObj = new object();
         /* This function gets all the conversations shown on the message list page*/
         public static List<ConversationListObject> getAllConversations()
@@ -28,15 +27,12 @@ namespace windows_client.DbUtils
                 convList = new List<ConversationListObject>(files.Length);
                 foreach (string fileName in files)
                 {
-                    using (IsolatedStorageFileStream isfs = store.OpenFile(CONVERSATIONS_DIRECTORY+"\\" + fileName, FileMode.Open, FileAccess.Read))
+                    using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY+"\\"+fileName, FileMode.Open, FileAccess.Read))
                     {
-                        data = new byte[isfs.Length];
-                        // Read the entire file and then close it
-                        isfs.Read(data, 0, data.Length);
-                        isfs.Close();
-                        using (var ms = new MemoryStream(data))
+                        using (var reader = new BinaryReader(file))
                         {
-                            ConversationListObject co = (ConversationListObject)ser.Deserialize(ms, null, typeof(ConversationListObject));
+                            ConversationListObject co = new ConversationListObject();
+                            co.Read(reader);
                             convList.Add(co);
                         }
                     }
@@ -94,22 +90,31 @@ namespace windows_client.DbUtils
                     contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus);
             }
 
+            /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
+            {
+                string[] msisdns = NewChatThread.splitUserJoinedMessage(convMessage);
+                GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1]);
+                string text = HikeConstants.USER_JOINED;
+                if (!gp.IsOnHike)
+                    text = HikeConstants.USER_INVITED;
+                obj.LastMessage = gp.Name + text;
+            }
+
+            if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn)) // this is to store firstMsg logic
+            {
+                obj.IsFirstMsg = true;
+                PhoneApplicationService.Current.State.Remove("GC_" + convMessage.Msisdn);
+            }
+            else
+                obj.IsFirstMsg = false;
+
             Stopwatch st = Stopwatch.StartNew();
             saveConvObject(obj, obj.Msisdn.Replace(":","_"));
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
 
-            //App.WriteToIsoStorageSettings("CONV::" + convMessage.Msisdn, obj);
-            //st.Reset(); st.Start();
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    context.conversations.InsertOnSubmit(obj);
-            //    context.SubmitChanges();
-            //}
-            //st.Stop();
-            //msec = st.ElapsedMilliseconds;
-            //Debug.WriteLine("Time to write conversation to DB {0}", msec);
             return obj;
         }
 
@@ -289,15 +294,12 @@ namespace windows_client.DbUtils
                 string FileName = CONVERSATIONS_DIRECTORY + "\\" + msisdn;
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
-                    using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, store))
+                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
                     {
-                        byte[] raw = null;
-                        using (var ms = new MemoryStream())
+                        using (var writer = new BinaryWriter(file))
                         {
-                            ser.Serialize(ms, obj);
-                            raw = ms.ToArray();
+                            obj.Write(writer);
                         }
-                        stream.Write(raw, 0, raw.Length);
                     }
                 }
             }
@@ -310,15 +312,12 @@ namespace windows_client.DbUtils
                 for (int i = 0; i < cObjList.Count; i++)
                 {
                     string FileName = CONVERSATIONS_DIRECTORY+"\\" + cObjList[i].Msisdn;
-                    using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, store))
+                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
                     {
-                        byte[] raw = null;
-                        using (var ms = new MemoryStream())
+                        using (var writer = new BinaryWriter(file))
                         {
-                            ser.Serialize(ms, cObjList[i]);
-                            raw = ms.ToArray();
+                            cObjList[i].Write(writer);
                         }
-                        stream.Write(raw, 0, raw.Length);
                     }
                 }
             }

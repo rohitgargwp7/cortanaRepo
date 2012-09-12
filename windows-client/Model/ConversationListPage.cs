@@ -9,14 +9,14 @@ using System.Data.Linq;
 using System.IO;
 using Microsoft.Phone.Data.Linq.Mapping;
 using System.Windows.Media;
-using ProtoBuf;
 using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization;
+using windows_client.Misc;
 
 namespace windows_client.Model
 {
-    [Table(Name = "conversations")]
-    [ProtoContract]
-    public class ConversationListObject : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ConversationListObject>
+    [DataContract]
+    public class ConversationListObject : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ConversationListObject>, IBinarySerializable
     {
         #region member variables
 
@@ -27,13 +27,12 @@ namespace windows_client.Model
         private bool _isOnhike;
         private ConvMessage.State _messageStatus;
         private byte[] _avatar;
+        private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         #endregion
 
-        [Column(IsVersion = true)]
-        private Binary version;
         #region Properties
 
-        [ProtoMember(1)]
+        [DataMember]
         public string ContactName
         {
             get
@@ -52,7 +51,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(2)]
+        [DataMember]
         public string LastMessage
         {
             get
@@ -70,7 +69,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(3)]
+        [DataMember]
         public long TimeStamp
         {
             get
@@ -89,8 +88,7 @@ namespace windows_client.Model
             }
         }
 
-        [Column(IsPrimaryKey = true)]
-        [ProtoMember(4)]
+        [DataMember]
         public string Msisdn
         {
             get
@@ -108,7 +106,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(5)]
+        [DataMember]
         public bool IsOnhike
         {
             get
@@ -126,7 +124,7 @@ namespace windows_client.Model
             }
         }
 
-        [ProtoMember(6)]
+        [DataMember]
         public ConvMessage.State MessageStatus
         {
             get
@@ -142,6 +140,20 @@ namespace windows_client.Model
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("LastMessageColor");
                 }
+            }
+        }
+
+        [DataMember]
+        public bool IsFirstMsg
+        {
+            get
+            {
+                return _isFirstMsg;
+            }
+            set
+            {
+                if (value != _isFirstMsg)
+                    _isFirstMsg = value;
             }
         }
 
@@ -166,7 +178,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (_contactName != null)
+                if (!string.IsNullOrWhiteSpace(_contactName))
                     return _contactName;
                 else
                     return _msisdn;
@@ -296,6 +308,28 @@ namespace windows_client.Model
 
         #endregion
 
+        public void Write(BinaryWriter writer)
+        {
+            writer.WriteString(_msisdn);
+            writer.WriteString(_contactName);
+            writer.WriteString(_lastMessage);
+            writer.Write(_timeStamp);
+            writer.Write(_isOnhike);
+            writer.Write((int)_messageStatus);
+            writer.Write(_isFirstMsg);
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            _msisdn = reader.ReadString();
+            _contactName = reader.ReadString();
+            _lastMessage = reader.ReadString();
+            _timeStamp = reader.ReadInt64();
+            _isOnhike = reader.ReadBoolean();
+            _messageStatus = (ConvMessage.State)reader.ReadInt32();
+            _isFirstMsg = reader.ReadBoolean();
+        }
+        
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -14,7 +14,6 @@ namespace windows_client.DbUtils
     {
         private static object lockObj = new object();
         public static readonly string THUMBNAILS = "THUMBNAILS";
-        private static MySerializer ser = new MySerializer();
 
         public static void clearDatabase()
         {
