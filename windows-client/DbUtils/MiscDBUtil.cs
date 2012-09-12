@@ -258,38 +258,56 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void deleteAttachmentData(string msisdn, long messageId)
+        public static void deleteMessageData(string msisdn, long messageId)
         {
             string attachmentObjectPath = HikeConstants.FILES_ATTACHMENT + "/" + msisdn + "/" + Convert.ToString(messageId);
             string attachmentFileBytes = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messageId);
-            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (myIsolatedStorage.FileExists(attachmentObjectPath))
+                store.DeleteFile(attachmentObjectPath);
+                store.DeleteFile(attachmentFileBytes);
+            }
+        }
+
+        public static void deleteMsisdnData(string msisdn)
+        {
+            string[] attachmentPaths = new string[2];
+            attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
+            attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                foreach(string attachmentPath in attachmentPaths)
                 {
-                    myIsolatedStorage.DeleteFile(attachmentObjectPath);
-                }
-                if (myIsolatedStorage.FileExists(attachmentFileBytes))
-                {
-                    myIsolatedStorage.DeleteFile(attachmentFileBytes);
+                    string[] fileNames = store.GetFileNames(attachmentPath + "/*");
+                    foreach (string fileName in fileNames)
+                    {
+                        store.DeleteFile(attachmentPath + "/" + fileName);
+                    }
                 }
             }
         }
 
-        //public static void deleteAttachmentData(string msisdn)
-        //{
-        //    string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
-        //    foreach (string fileName in files)
-        //    {
-        //        try
-        //        {
-        //            store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
-        //        }
-        //        catch
-        //        {
-        //            Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName);
-        //        }
-        //    }
-        //}
+        public static void deleteAllAttachmentData()
+        {
+            string[] attachmentPaths = new string[2];
+            attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT;
+            attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                foreach(string attachmentPath in attachmentPaths)
+                {
+                    string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
+                    foreach (string directoryName in directoryNames)
+                    {
+                        string[] fileNames = store.GetFileNames(attachmentPath + "/" + directoryName + "/*");
+                        foreach (string fileName in fileNames)
+                        {
+                            store.DeleteFile(attachmentPath + "/" + directoryName + "/" + fileName);
+                        }
+                    }
+                }
+            }
+        }
 
         #endregion
     }
