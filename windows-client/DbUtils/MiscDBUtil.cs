@@ -137,6 +137,7 @@ namespace windows_client.DbUtils
 
         public static void saveAttachmentObject(Attachment obj, string msisdn, long messageId)
         {
+            msisdn = msisdn.Replace(":", "_");
             string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             string fileName = fileDirectory + "/" + messageId;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
@@ -161,6 +162,7 @@ namespace windows_client.DbUtils
 
         public static Dictionary<long, Attachment> getAllFileAttachment(string msisdn)
         {
+            msisdn = msisdn.Replace(":", "_");
             string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -213,6 +215,7 @@ namespace windows_client.DbUtils
 
         public static void storeFileInIsolatedStorage(string filePath, byte[] imagebytes)
         {
+            filePath = filePath.Replace(":", "_");
             string fileDirectory = filePath.Substring(0, filePath.LastIndexOf("/"));
             if (imagebytes != null)
             {
@@ -241,6 +244,8 @@ namespace windows_client.DbUtils
 
         public static void copyFileInIsolatedStorage(string sourceFilePath, string destinationFilePath)
         {
+            sourceFilePath = sourceFilePath.Replace(":", "_");
+            destinationFilePath = destinationFilePath.Replace(":", "_");
             string sourceFileDirectory = sourceFilePath.Substring(0, sourceFilePath.LastIndexOf("/"));
             string destinationFileDirectory = destinationFilePath.Substring(0, destinationFilePath.LastIndexOf("/"));
 
@@ -260,6 +265,7 @@ namespace windows_client.DbUtils
 
         public static void deleteMessageData(string msisdn, long messageId)
         {
+            msisdn = msisdn.Replace(":", "_");
             string attachmentObjectPath = HikeConstants.FILES_ATTACHMENT + "/" + msisdn + "/" + Convert.ToString(messageId);
             string attachmentFileBytes = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messageId);
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -271,6 +277,7 @@ namespace windows_client.DbUtils
 
         public static void deleteMsisdnData(string msisdn)
         {
+            msisdn = msisdn.Replace(":", "_");
             string[] attachmentPaths = new string[2];
             attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
@@ -299,10 +306,11 @@ namespace windows_client.DbUtils
                     string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
                     foreach (string directoryName in directoryNames)
                     {
-                        string[] fileNames = store.GetFileNames(attachmentPath + "/" + directoryName + "/*");
+                        string escapedDirectoryName = directoryName.Replace(":", "_");
+                        string[] fileNames = store.GetFileNames(attachmentPath + "/" + escapedDirectoryName + "/*");
                         foreach (string fileName in fileNames)
                         {
-                            store.DeleteFile(attachmentPath + "/" + directoryName + "/" + fileName);
+                            store.DeleteFile(attachmentPath + "/" + escapedDirectoryName + "/" + fileName);
                         }
                     }
                 }
