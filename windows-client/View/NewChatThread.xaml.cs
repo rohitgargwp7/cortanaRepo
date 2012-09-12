@@ -779,7 +779,10 @@ namespace windows_client.View
                     dbIds.Add(messagesList[i].MessageId);
                     messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
                 }
-                AddMessageToUI(messagesList[i], true);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    AddMessageToUI(messagesList[i], true);
+                });
             }
 
             int count = 0;
@@ -812,8 +815,10 @@ namespace windows_client.View
                         isPublish = false;
                     }
                 }
-                AddMessageToUI(messagesList[i], false);
-
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    AddMessageToUI(messagesList[i], false);
+                });
                 if (count % 5 == 0)
                     Thread.Sleep(5);
             }
