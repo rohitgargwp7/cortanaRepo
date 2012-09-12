@@ -93,6 +93,7 @@ namespace windows_client
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
 
+        public static string USER_INVITED = " is invited to group chat";
         public static string USER_JOINED = " has joined the group chat";
         public static string USER_LEFT = " has left the group chat";
         public static string GROUP_CHAT_END = "This group chat has end.";
@@ -136,6 +137,8 @@ namespace windows_client
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static string ACCOUNT_INFO = "ai";
+            public static string USER_JOINED ="uj";
+            public static string USER_OPT_IN = "uo";
         }
     }
 }

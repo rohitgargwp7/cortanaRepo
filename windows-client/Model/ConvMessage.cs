@@ -32,7 +32,7 @@ namespace windows_client.Model
         private ParticipantInfoState participantInfoState;
         private Attachment _fileAttachment = null;
 
-        //        private bool _hasFileAttachment = false;
+        // private bool _hasFileAttachment = false;
         private bool _hasAttachment = false;
 
         /* Adding entries to the beginning of this list is not backwards compatible */
@@ -60,7 +60,10 @@ namespace windows_client.Model
             NO_INFO, // This is a normal message
             PARTICIPANT_LEFT, // The participant has left
             PARTICIPANT_JOINED, // The participant has joined
-            GROUP_END // Group chat has ended
+            GROUP_END, // Group chat has ended
+            USER_OPT_IN,
+            DND_USER,
+            USER_JOIN // ?????
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -79,6 +82,14 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
             {
                 return ParticipantInfoState.GROUP_END;
+            }
+            else if (HikeConstants.MqttMessageTypes.USER_JOINED == type)
+            {
+                return ParticipantInfoState.USER_JOIN;
+            }
+            else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
+            {
+                return ParticipantInfoState.USER_OPT_IN;
             }
             return ParticipantInfoState.NO_INFO;
         }
@@ -741,9 +752,9 @@ namespace windows_client.Model
                     if (msisdn == App.MSISDN)
                         continue;
                     string name = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn).Name;
-                    newParticipants.Append(name + ", ");
+                    newParticipants.Append(msisdn + ", ");
                 }
-                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " joined the group chat";
+                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " added to group chat";
             }
             else
             {

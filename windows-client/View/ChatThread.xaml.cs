@@ -293,11 +293,13 @@ namespace windows_client.View
                 groupMemberList.Add(gm);
                 if (Utils.GroupCache == null)
                 {
-                    Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                    Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
                 }
                 if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
                 {
-                    Utils.GroupCache.Add(contactsForGroup[i].Msisdn, new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
+                    List<GroupParticipant> l = new List<GroupParticipant>(5);
+                    l.Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
+                    Utils.GroupCache.Add(contactsForGroup[i].Msisdn, l);
                 }
             }
             JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, groupMemberList, true);

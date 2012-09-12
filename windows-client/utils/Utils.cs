@@ -79,10 +79,10 @@ namespace windows_client.utils
             #endregion
         }
 
-        private static Dictionary<string, GroupParticipant> groupCache = null;
+        private static Dictionary<string, List<GroupParticipant>> groupCache = null;
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
-        public static Dictionary<string, GroupParticipant> GroupCache
+        public static Dictionary<string, List<GroupParticipant>> GroupCache
         {
             get
             {
@@ -98,14 +98,23 @@ namespace windows_client.utils
         {
             if (groupCache == null)
             {
-                groupCache = new Dictionary<string, GroupParticipant>();
+                groupCache = new Dictionary<string, List<GroupParticipant>>();
             }
             if (groupCache.ContainsKey(msisdn))
-                return groupCache[msisdn];
+            {
+                List<GroupParticipant> l = groupCache[msisdn];
+                for (int i = 0; i < l.Count; i++)
+                {
+                    if (l[i].Msisdn == msisdn)
+                        return l[i];
+                }
+                return null;
+            }
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
             GroupParticipant gp = new GroupParticipant(cInfo != null ? getFirstName(cInfo.Name) : name, msisdn, cInfo != null ? cInfo.OnHike : true);
-            groupCache.Add(msisdn, gp);
-            // App.appSettings[App.GROUPS_CACHE] = groupCache; Doing this while app is closing
+            List<GroupParticipant> ll = new List<GroupParticipant>();
+            ll.Add(gp);
+            groupCache.Add(msisdn, ll);
             return gp;
         }
 
@@ -261,7 +270,6 @@ namespace windows_client.utils
             c[i].GrpParticipantState = convMessage.GrpParticipantState;
             return c;
         }
-
 
         public static string getFirstName(string name)
         {

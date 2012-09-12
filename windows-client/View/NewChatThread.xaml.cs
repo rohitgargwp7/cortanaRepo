@@ -37,6 +37,7 @@ namespace windows_client.View
         private string mContactName = null;
         private string lastText = "";
 
+        private bool isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
         private bool isGroupChat = false;
@@ -96,6 +97,19 @@ namespace windows_client.View
         #endregion
 
         #region PROPERTY
+
+        public bool IsFirstMsg
+        {
+            get
+            {
+                return isFirstMsg;
+            }
+            set
+            {
+                if (value != isFirstMsg)
+                    isFirstMsg = value;
+            }
+        }
 
         private BitmapImage[] imagePathsForList0
         {
@@ -400,6 +414,7 @@ namespace windows_client.View
 
                 isOnHike = convObj.IsOnhike;
                 userImage.Source = convObj.AvatarImage;
+                isFirstMsg = convObj.IsFirstMsg;
             }
 
             #endregion
@@ -511,16 +526,27 @@ namespace windows_client.View
             groupMemberList = new List<GroupMembers>(contactsForGroup.Count);
             for (int i = 0; i < contactsForGroup.Count; i++)
             {
+                if (!contactsForGroup[i].OnHike)
+                {
+                    isFirstMsg = true;
+                    PhoneApplicationService.Current.State["GC_"+mContactNumber] = true;
+                }
                 GroupMembers gm = new GroupMembers(mContactNumber, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
                 groupMemberList.Add(gm);
                 if (Utils.GroupCache == null)
                 {
-                    Utils.GroupCache = new Dictionary<string, GroupParticipant>();
+                    Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
                     App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
                 if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
                 {
-                    Utils.GroupCache.Add(contactsForGroup[i].Msisdn, new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
+                    List<GroupParticipant> l = new List<GroupParticipant>(5);
+                    l.Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
+                    Utils.GroupCache.Add(contactsForGroup[i].Msisdn, l);
+                }
+                else
+                {
+                    Utils.GroupCache[contactsForGroup[i].Msisdn].Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
                 }
             }
             JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, groupMemberList, isNewgroup);
@@ -1163,10 +1189,14 @@ namespace windows_client.View
                 }
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
-                    string[] names = splitUserJoinedMessage(convMessage);
-                    for (int i = 0; i < names.Length; i++)
+                    string[] msisdns = splitUserJoinedMessage(convMessage);
+                    for (int i = 0; i < msisdns.Length; i++)
                     {
-                        MyChatBubble chatBubble = new NotificationChatBubble(names[i] + HikeConstants.USER_JOINED, true);
+                        GroupParticipant gp = Utils.getGroupParticipant("",msisdns[i]);
+                        string text = HikeConstants.USER_JOINED;
+                        if (!gp.IsOnHike)
+                            text = HikeConstants.USER_INVITED;
+                        MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + text, true);
                         if (addToLast)
                         {
                             this.MessageList.Children.Add(chatBubble);
@@ -1268,6 +1298,23 @@ namespace windows_client.View
             convMessage.IsSms = !isOnHike;
             convMessage.MessageId = TempMessageId;
             sendMsg(convMessage, false);
+            if (isFirstMsg)
+            {
+                //TODO : create new convMsg for invited and joined msg, you need group members info here
+                //TODO : Show the invited and or waiting msg
+                if (ConversationsList.ConvMap.ContainsKey(convMessage.Msisdn))
+                {
+                    ConversationListObject co = ConversationsList.ConvMap[convMessage.Msisdn]; // change the value in ConvObj also.
+                    co.IsFirstMsg = false;
+                    //TODO : Update other fields
+                    object[] vals = new object[2];
+                    vals[0] = convMessage;
+                    vals[1] = true;
+                    mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+                }
+                PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
+                isFirstMsg = false;
+            }
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -1348,9 +1395,7 @@ namespace windows_client.View
             abc = !abc;
         }
 
-
-
-        private string[] splitUserJoinedMessage(ConvMessage convMessage)
+        public static string[] splitUserJoinedMessage(ConvMessage convMessage)
         {
             string[] names = null;
             string[] tokens = null;

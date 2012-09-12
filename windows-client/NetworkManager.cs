@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using System.Windows.Resources;
 using System.IO;
+using windows_client.View;
 
 namespace windows_client
 {
@@ -103,11 +104,6 @@ namespace windows_client
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
                     if (convMessage.FileAttachment != null)
                     {
-                        //if ((convMessage.FileAttachment.ContentType.Contains("video") || (convMessage.FileAttachment.ContentType.Contains("image"))))
-                        //{
-                        //    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
-                        //        Convert.ToString(convMessage.MessageId), convMessage.FileAttachment.Thumbnail);
-                        //}
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
                     if (obj == null)
@@ -253,6 +249,31 @@ namespace windows_client
                 {
                     return;
                 }
+                string grpId = jsonObj[HikeConstants.TO].ToString();
+                if (ConversationsList.ConvMap.ContainsKey(grpId)) // this shows you created grp and server sends you on dnd status
+                {
+                    List<GroupParticipant> l = Utils.GroupCache[grpId];
+                    if (l == null)
+                        return;
+                    for (int i = 0; i < arr.Count; i++)
+                    {
+                        JObject o = (JObject)arr[i];
+                        bool onhike = (bool)o["onhike"];
+                        bool dnd = (bool)o["dnd"];
+                        string ms = (string)o["msisdn"];
+                        for (int k = 0; k < l.Count; k++)
+                        {
+                            if (l[k].Msisdn == ms)
+                            {
+                                l[k].IsDND = dnd;
+                                l[k].IsOnHike = onhike;
+                            }
+                        }
+                    }
+
+                    return;
+                }
+
                 ConvMessage convMessage = new ConvMessage(jsonObj, false);
                 convMessage.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
