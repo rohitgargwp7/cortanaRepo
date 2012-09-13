@@ -308,14 +308,17 @@ namespace windows_client.DbUtils
             {
                 foreach(string attachmentPath in attachmentPaths)
                 {
-                    string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
-                    foreach (string directoryName in directoryNames)
+                    if (store.DirectoryExists(attachmentPath + "/*"))
                     {
-                        string escapedDirectoryName = directoryName.Replace(":", "_");
-                        string[] fileNames = store.GetFileNames(attachmentPath + "/" + escapedDirectoryName + "/*");
-                        foreach (string fileName in fileNames)
+                        string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
+                        foreach (string directoryName in directoryNames)
                         {
-                            store.DeleteFile(attachmentPath + "/" + escapedDirectoryName + "/" + fileName);
+                            string escapedDirectoryName = directoryName.Replace(":", "_");
+                            string[] fileNames = store.GetFileNames(attachmentPath + "/" + escapedDirectoryName + "/*");
+                            foreach (string fileName in fileNames)
+                            {
+                                store.DeleteFile(attachmentPath + "/" + escapedDirectoryName + "/" + fileName);
+                            }
                         }
                     }
                 }
