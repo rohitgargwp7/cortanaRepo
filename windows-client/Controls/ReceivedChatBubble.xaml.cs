@@ -1,11 +1,7 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using windows_client.Model;
-using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.IO;
-using windows_client.DbUtils;
-using Microsoft.Phone.Controls;
 using windows_client.utils;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -66,18 +62,10 @@ namespace windows_client.Controls
 
         private void initializeBasedOnState(bool hasAttachment, string contentType)
         {
-            RowDefinition w1 = new RowDefinition();
-            w1.Height = GridLength.Auto;
-            RowDefinition w2 = new RowDefinition();
-            w2.Height = GridLength.Auto;
-            wrapperGrid.RowDefinitions.Add(w1);
-            wrapperGrid.RowDefinitions.Add(w2);
-
-
-            Rectangle bubbleOutline = new Rectangle();
-            bubbleOutline.Fill = UI_Utils.Instance.TextBoxBackground;
-            Grid.SetRowSpan(bubbleOutline, 2);
-            wrapperGrid.Children.Add(bubbleOutline);
+            Rectangle BubbleBg = new Rectangle();
+            BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
+            Grid.SetRowSpan(BubbleBg, 2);
+            wrapperGrid.Children.Add(BubbleBg);
 
             if (hasAttachment)
             {
@@ -131,6 +119,7 @@ namespace windows_client.Controls
                 MessageText = new LinkifiedTextBoxReceive();
                 MessageText.Width = 340;
                 MessageText.Foreground = progressColor;
+                MessageText.Margin = messageTextMargin;
                 Binding messageTextBinding = new Binding("Text");
                 MessageText.SetBinding(LinkifiedTextBoxReceive.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, 0);
