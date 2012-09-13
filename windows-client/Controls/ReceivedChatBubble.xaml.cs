@@ -113,6 +113,7 @@ namespace windows_client.Controls
 
                 downloadProgress = new ProgressBar();
                 downloadProgress.Height = 10;
+                downloadProgress.Background = UI_Utils.Instance.TextBoxBackground;
                 downloadProgress.Foreground = progressColor;
                 downloadProgress.Minimum = 0;
                 downloadProgress.MaxHeight = 100;

@@ -95,10 +95,12 @@ namespace windows_client.Controls
             if (onHike)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
+                uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
             }
             else
             {
                 bubbleColor = UI_Utils.Instance.SmsBackground;
+                uploadProgress.Background = UI_Utils.Instance.SmsBackground;
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
@@ -180,7 +182,6 @@ namespace windows_client.Controls
         private void initializeBasedOnState(bool hasAttachment, string contentType)
         {
             BubbleBg = new Rectangle();
-            BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
             Grid.SetRowSpan(BubbleBg, 2);
             Grid.SetColumn(BubbleBg, 1);
             wrapperGrid.Children.Add(BubbleBg);
