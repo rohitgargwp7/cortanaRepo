@@ -291,6 +291,7 @@
     </Content>
     <Resource Include="View\images\Application_TileImage_173x173.png" />
     <Resource Include="View\images\appbar.favs.addto.rest.png" />
+    <Content Include="View\images\audio_file_icon.png" />
     <Content Include="View\images\background.png" />
     <Resource Include="View\images\hike_header.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />
@@ -465,6 +466,7 @@
     <Content Include="View\images\logo_main.png" />
     <Content Include="View\images\phone_number.png" />
     <Resource Include="View\images\privacy.png" />
+    <Content Include="View\images\play_icon.png" />
     <Content Include="View\images\send_button.png" />
     <Content Include="View\images\signup_logo.png" />
     <Content Include="View\images\sms_pin.png" />
