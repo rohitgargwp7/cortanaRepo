@@ -68,7 +68,7 @@ namespace windows_client.DbUtils
                 string contentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
 
                 //DO NOT Update message text in db. We sent the below line, but we save only filename as message.
-                convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + fileKey;
+                convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 convMessage.FileAttachment.FileKey = fileKey;
