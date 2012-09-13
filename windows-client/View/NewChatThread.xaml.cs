@@ -1068,7 +1068,7 @@ namespace windows_client.View
                         convMessage.HasAttachment = true;
                         convMessage.MessageId = chatBubble.MessageId;
                         convMessage.FileAttachment = chatBubble.FileAttachment;
-                        convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + convMessage.FileAttachment.FileKey;
+                        convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + convMessage.FileAttachment.FileKey;
                         object[] values = new object[2];
                         values[0] = convMessage;
                         values[1] = chatBubble;
@@ -1374,9 +1374,21 @@ namespace windows_client.View
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
 
+                int thumbnailHeight, thumbnailWidth;
+                if (image.PixelHeight > image.PixelWidth)
+                {
+                    thumbnailHeight = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT;
+                    thumbnailWidth = (image.PixelWidth * thumbnailHeight) / image.PixelHeight;
+                }
+                else
+                {
+                    thumbnailWidth = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH;
+                    thumbnailHeight = (image.PixelHeight * thumbnailWidth) / image.PixelWidth;
+                }
+
                 using (var msSmallImage = new MemoryStream())
                 {
-                    writeableBitmap.SaveJpeg(msSmallImage, 150, 150, 0, 90);
+                    writeableBitmap.SaveJpeg(msSmallImage, thumbnailWidth, thumbnailHeight, 0, 50);
                     thumbnailBytes = msSmallImage.ToArray();
                 }
 
@@ -1386,14 +1398,14 @@ namespace windows_client.View
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
                 convMessage.Message = fileName;
 
-                SentChatBubble chatBubble = new SentChatBubble(convMessage, image);
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnailBytes);
                 msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
 
                 using (var msLargeImage = new MemoryStream())
                 {
-                    writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 100);
+                    writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 65);
                     fileBytes = msLargeImage.ToArray();
                 }
                 object[] vals = new object[3];
