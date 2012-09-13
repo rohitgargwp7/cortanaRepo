@@ -17,6 +17,7 @@ namespace windows_client.utils
 
         private BitmapImage onHikeImage = null;
         private BitmapImage notOnHikeImage = null;
+        private BitmapImage playIcon;
         private BitmapImage defaultAvatarBitmapImage = null;
         private BitmapImage sent = null;
         private BitmapImage delivered = null;
@@ -40,6 +41,7 @@ namespace windows_client.utils
             typingNotificationBitmap = new BitmapImage(new Uri("/View/images/typing.png", UriKind.Relative));
             httpFailed = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
             audioAttachment = new BitmapImage(new Uri("/View/images/audio_file_icon.png", UriKind.Relative));
+            playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
         }
 
         public static UI_Utils Instance
@@ -64,6 +66,14 @@ namespace windows_client.utils
             get
             {
                 return smsBackground;
+            }
+        }
+
+        public SolidColorBrush TextBoxBackground
+        {
+            get
+            {
+                return textBoxBackground;
             }
         }
 
@@ -143,6 +153,14 @@ namespace windows_client.utils
             get
             {
                 return audioAttachment;
+            }
+        }
+
+        public BitmapImage PlayIcon
+        {
+            get
+            {
+                return playIcon;
             }
         }
 
