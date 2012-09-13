@@ -21,7 +21,8 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(cm.HasAttachment);
+            string contentType = cm.FileAttachment == null?"": cm.FileAttachment.ContentType;
+            initializeBasedOnState(cm.HasAttachment, contentType);
             //IsSms is false for group chat
             if (cm.IsSms)
             {
@@ -60,12 +61,12 @@ namespace windows_client.Controls
             this.BubbleBg.Fill = bubbleColor;
         }
 
-        public SentChatBubble(ConvMessage cm, BitmapImage image)
+        public SentChatBubble(ConvMessage cm, byte[] thumbnailsBytes)
             : base(cm)
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(true);
+            initializeBasedOnState(true, "image");
             if (!cm.IsSms)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
@@ -76,7 +77,13 @@ namespace windows_client.Controls
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
-            this.MessageImage.Source = image;
+            using (var memStream = new MemoryStream(thumbnailsBytes))
+            {
+                memStream.Seek(0, SeekOrigin.Begin);
+                BitmapImage fileThumbnail = new BitmapImage();
+                fileThumbnail.SetSource(memStream);
+                this.MessageImage.Source = fileThumbnail;
+            }
         }
 
         public SentChatBubble(MyChatBubble chatBubble, long messageId, bool onHike)
@@ -101,8 +108,6 @@ namespace windows_client.Controls
                 else if (chatBubble is ReceivedChatBubble)
                     this.MessageImage.Source = (chatBubble as ReceivedChatBubble).MessageImage.Source;
             }
-            
-
         }
 
 
@@ -148,10 +153,18 @@ namespace windows_client.Controls
             });
         }
 
-        private void initializeBasedOnState(bool hasAttachment)
+        private void initializeBasedOnState(bool hasAttachment, string contentType)
         {
             if (hasAttachment)
+            {
                 this.MessageText.Visibility = Visibility.Collapsed;
+                if (contentType.Contains("video") || contentType.Contains("audio"))
+                {
+                    if (contentType.Contains("audio"))
+                        this.MessageImage.Source = UI_Utils.Instance.AudioAttachment;
+                    PlayIcon.Visibility = Visibility.Visible;
+                }
+            }
             else
                 this.attachment.Visibility = Visibility.Collapsed;
         }

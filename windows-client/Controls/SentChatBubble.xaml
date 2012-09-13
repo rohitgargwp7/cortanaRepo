@@ -10,7 +10,7 @@
 	d:DesignWidth="372" d:DesignHeight="86"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
-    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="50,12,0,10">
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="50,12,0,10" HorizontalAlignment="Right">
         <Grid d:LayoutOverrides="Width">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -23,24 +23,24 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Rectangle Name="BubbleBg" Grid.Column="1" Grid.RowSpan="2" />
-                <local:LinkifiedTextBox Grid.Row="0" Grid.Column="1" Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Margin="0,6,0,0" />
+                <local:LinkifiedTextBox Width="340" Grid.Row="0" Grid.Column="1" Text="{Binding Text, Mode=OneTime}" x:Name="MessageText" Margin="0,6,0,0" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TimeStamp, Mode=OneTime}" Foreground="White" Opacity=".6" HorizontalAlignment="Right" Margin="12,0,12,6" FontSize="18" />
                 <Image x:Name="SDRImage" Margin="0,0,10,0" Height="20" Grid.Column="0" Grid.RowSpan="2"></Image>
 
-                <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1">
+                <Grid x:Name="attachment" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Image Grid.Row="0" Width="140" Height="140" Margin="15,15,10,0" HorizontalAlignment="Left" x:Name="MessageImage" />
-                    <ProgressBar Grid.Row="1" x:Name="uploadProgress" Margin="0,5,0,0" Grid.Column="1" Height="8" Width="320" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
+                    <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Right" x:Name="MessageImage" />
+                    <Image x:Name="PlayIcon" Visibility="Collapsed" Source="/View/images/play_icon.png" Grid.Row="0" MaxWidth="43" MaxHeight="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <ProgressBar Grid.Row="1" x:Name="uploadProgress" Margin="0,5,0,0" Grid.Column="1" Height="8" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
                 </Grid>
-                
-                
                 <StackPanel Orientation="Vertical" Grid.Column="1" Margin="6">
                 </StackPanel>
                 
