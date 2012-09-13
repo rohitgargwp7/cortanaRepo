@@ -48,7 +48,7 @@ namespace windows_client.Controls
 
         protected override void uploadOrDownloadCanceled()
         {
-            this.downloadProgress.Opacity = 0;
+            this.downloadProgress.Value = 0;
         }
 
         private Grid attachment;

@@ -157,7 +157,7 @@ namespace windows_client.Controls
 
         protected override void uploadOrDownloadCanceled()
         {
-            this.uploadProgress.Opacity = 0;
+            this.uploadProgress.Value = 0;
         }
 
 
