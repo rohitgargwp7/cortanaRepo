@@ -1026,10 +1026,13 @@ namespace windows_client.View
             if (!isContextMenuTapped)
             {
                 MyChatBubble chatBubble = (sender as MyChatBubble);
+                if (chatBubble.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                    return;
                 if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
                 {
                     if (chatBubble is ReceivedChatBubble)
                     {
+                        chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
                         FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
                         MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
 
@@ -1465,21 +1468,16 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            //MessageBox.Show("Inside delete");
-
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
-
             if (msg == null)
             {
                 return;
             }
+            if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                msg.FileAttachment.FileState = Attachment.AttachmentState.CANCELED;
             bool delConv = false;
             this.MessageList.Children.Remove(msg);
-
             ConversationListObject obj = ConversationsList.ConvMap[mContactNumber];
-            /* Remove the message from conversation list */
-            //if (this.ChatThreadPageCollection.Count > 0)
-
 
             MyChatBubble lastMessageBubble = null;
             if (isTypingNotificationActive && this.MessageList.Children.Count > 1)
@@ -1520,7 +1518,8 @@ namespace windows_client.View
         private void MenuItem_Click_Cancel(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
+            if(chatBubble.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+                chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
         }
 
         #endregion
