@@ -241,7 +241,7 @@ namespace windows_client.View
             //TODO start this loop from end, after sorting is done on onHike status
             for (int i = 0; i < activeGroupMembers.Count; i++)
             {
-                if (!Utils.getGroupParticipant(activeGroupMembers[i].Name, activeGroupMembers[i].Msisdn).IsOnHike)
+                if (!Utils.getGroupParticipant(activeGroupMembers[i].Name, activeGroupMembers[i].Msisdn,activeGroupMembers[i].GroupId).IsOnHike)
                 {
                     long time = utils.TimeUtils.getCurrentTimeStamp();
                     ConvMessage convMessage = new ConvMessage(App.invite_message, activeGroupMembers[i].Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);

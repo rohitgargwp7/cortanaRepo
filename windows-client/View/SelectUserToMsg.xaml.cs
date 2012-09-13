@@ -241,7 +241,7 @@ namespace windows_client.View
                 existingGroupUsers = 0;
                 for (int i = 0; i < activeExistingGroupMembers.Count; i++)
                 {
-                    if (!Utils.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn).IsOnHike)
+                    if (!Utils.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
                     {
                         smsUserCount++;
                     }

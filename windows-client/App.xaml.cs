@@ -24,6 +24,7 @@ namespace windows_client
 
         #region Hike Specific Constants
 
+        public static NewChatThread newChatThreadPage = null;
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
         public static readonly string MSISDN_SETTING = "msisdn";

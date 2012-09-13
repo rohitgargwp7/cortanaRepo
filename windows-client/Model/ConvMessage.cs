@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Text;
 using windows_client.DbUtils;
 using System.Collections.Generic;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.Model
 {
@@ -239,21 +240,6 @@ namespace windows_client.Model
             }
         }
 
-        //public bool HasFileAttachment
-        //{
-        //    get
-        //    {
-        //        return _hasFileAttachment;
-        //    }
-        //    set
-        //    {
-        //        if (_hasFileAttachment != value)
-        //        {
-        //            _hasFileAttachment = value;
-        //        }
-        //    }
-        //}
-
         [Column]
         public bool HasAttachment
         {
@@ -461,7 +447,7 @@ namespace windows_client.Model
                 }
                 if (_groupParticipant != null) // reprsents group chat
                 {
-                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant).Name + " - " + _message;
+                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant,_msisdn).Name + " - " + _message;
                 }
 
                 Timestamp = (long)data[HikeConstants.TIMESTAMP];
@@ -741,7 +727,7 @@ namespace windows_client.Model
             this.participantInfoState = fromJSON(obj);
 
             this.metadataJsonString = obj.ToString(Newtonsoft.Json.Formatting.None);
-            if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
+            if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED || this.participantInfoState == ParticipantInfoState.USER_JOIN)
             {
                 JArray arr = (JArray)obj[HikeConstants.DATA];
                 StringBuilder newParticipants = new StringBuilder();
@@ -751,9 +737,16 @@ namespace windows_client.Model
                     string msisdn = (string)nameMsisdn[HikeConstants.MSISDN];
                     if (msisdn == App.MSISDN)
                         continue;
-                    string name = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn).Name;
+                    bool onhike = (bool)nameMsisdn["onhike"];
+                    bool dnd = (bool)nameMsisdn["dnd"];
+                    GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn,_msisdn);
+                    gp.IsOnHike = onhike;
+                    gp.IsDND = dnd;
                     newParticipants.Append(msisdn + ", ");
+                    if(!onhike)
+                        PhoneApplicationService.Current.State["GC_"+toVal] = true;
                 }
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
                 this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " added to group chat";
             }
             else
@@ -764,11 +757,41 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    this._message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant).Name + " " + "left conversation";
+                    this._message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant,_msisdn).Name + " " + "left conversation";
                 }
             }
             this._timestamp = TimeUtils.getCurrentTimeStamp();
             this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
         }
+
+        public static JObject ProcessGCLogic(string grpId)
+        {
+            List<GroupParticipant> l = Utils.GroupCache[grpId];
+            JObject obj = new JObject();
+            try
+            {
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.USER_JOINED;
+                obj[HikeConstants.TO] = grpId;
+                JArray array = new JArray();
+                for (int i = 0; i < l.Count; i++)
+                {
+                    if (!l[i].IsOnHike)
+                    {
+                        JObject nameMsisdn = new JObject();
+                        nameMsisdn[HikeConstants.NAME] = l[i].Name;
+                        nameMsisdn[HikeConstants.MSISDN] = l[i].Msisdn;
+                        nameMsisdn["dnd"] = l[i].IsOnHike;
+                        nameMsisdn["onhike"] = l[i].IsDND;
+                        array.Add(nameMsisdn);
+                    }
+                }
+                obj[HikeConstants.DATA] = array;
+            }
+            catch
+            {
+            }
+            return obj;
+        }
+
     }
 }

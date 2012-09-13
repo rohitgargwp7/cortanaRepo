@@ -17,6 +17,7 @@ namespace windows_client.Model
         private string _msisdn;
         private bool _isOnHike;
         private bool _isDND;
+        private bool _hasOptIn;
 
         public GroupParticipant()
         { }
@@ -27,6 +28,7 @@ namespace windows_client.Model
             _msisdn = msisdn;
             _isOnHike = isOnHike;
             _isDND = false;
+            _hasOptIn = false;
         }
 
         public GroupParticipant(string name, string msisdn, bool isOnHike,bool isDND)
@@ -86,6 +88,19 @@ namespace windows_client.Model
             {
                 if (value != _isDND)
                     _isDND = value;
+            }
+        }
+
+        public bool HasOptIn
+        {
+            get
+            {
+                return _hasOptIn;
+            }
+            set
+            {
+                if (value != _hasOptIn)
+                    _hasOptIn = value;
             }
         }
     }

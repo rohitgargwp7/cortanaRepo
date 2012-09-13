@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Controls;
 using System.Diagnostics;
 using System.Threading;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.DbUtils
 {
@@ -121,7 +122,6 @@ namespace windows_client.DbUtils
                 string groupName = Utils.defaultGroupName(gmList); // here name shud be what stored in contacts
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
-
                 GroupTableUtils.addGroupMembers(gmList);
                 GroupInfo gi = new GroupInfo(gmList[0].GroupId, null, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
@@ -140,8 +140,23 @@ namespace windows_client.DbUtils
                     existingMembers.AddRange(actualMembersToAdd);
                     obj.ContactName = Utils.defaultGroupName(existingMembers);
                 }
+                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
+                {
+                    string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], obj.Msisdn);
+                    string text = HikeConstants.USER_JOINED;
+                    if (!gp.IsOnHike)
+                        text = HikeConstants.USER_INVITED;
+                    obj.LastMessage = gp.Name + text;
+                    if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMsg.Msisdn))
+                    {
+                        obj.IsFirstMsg = true;
+                        PhoneApplicationService.Current.State.Remove("GC_" + convMsg.Msisdn);
+                    }
 
-                obj.LastMessage = convMsg.Message;
+                }
+                else
+                    obj.LastMessage = convMsg.Message;
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
                 ConversationTableUtils.updateConversation(obj);
@@ -168,18 +183,32 @@ namespace windows_client.DbUtils
         public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup)
         {
             ConversationListObject obj = null;
+            ConvMessage cm = null;
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
-                if (Utils.isGroupConversation(convMsg.Msisdn)&& !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
+                if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
-                
+
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else
             {
                 obj = ConversationsList.ConvMap[convMsg.Msisdn];
-                obj.LastMessage = convMsg.Message;
+
+                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN)
+                {
+                    string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1],obj.Msisdn);
+                    string text = HikeConstants.USER_JOINED;
+                    if (!gp.IsOnHike)
+                        text = HikeConstants.USER_INVITED;
+                    obj.LastMessage = gp.Name + text;
+                }
+
+                else
+                    obj.LastMessage = convMsg.Message;
+
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
                 Stopwatch st = Stopwatch.StartNew();
@@ -194,15 +223,14 @@ namespace windows_client.DbUtils
             long msec1 = st1.ElapsedMilliseconds;
             Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-            if (obj.IsFirstMsg)
+            if (cm != null)
             {
-                // TODO : Added invited/joined msg.
-                //addMessage(convMsg);
-                obj.IsFirstMsg = false;
+                addMessage(cm); //  this is first msg case.
             }
 
             return obj;
         }
+
 
         private static void updateConvThreadPool(object p)
         {
@@ -213,7 +241,7 @@ namespace windows_client.DbUtils
 
         public static void updateMsgStatus(long msgID, int val)
         {
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring+";Max Buffer Size = 1024"))
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
                 ConvMessage message = DbCompiledQueries.GetMessagesForMsgId(context, msgID).FirstOrDefault<ConvMessage>();
                 if (message != null)

@@ -58,14 +58,25 @@ namespace windows_client.DbUtils
             */
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
                 true, convMessage.Timestamp, null, convMessage.MessageStatus);
-
+           
+            /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
+            {
+                string[] msisdns = NewChatThread.splitUserJoinedMessage(convMessage);
+                GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1],obj.Msisdn);
+                string text = HikeConstants.USER_JOINED;
+                if (!gp.IsOnHike)
+                    text = HikeConstants.USER_INVITED;
+                obj.LastMessage = gp.Name + text;
+                if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn))
+                {
+                    obj.IsFirstMsg = true;
+                    PhoneApplicationService.Current.State.Remove("GC_" + convMessage.Msisdn);
+                }
+                
+            }
             string msisdn = obj.Msisdn.Replace(":", "_");
             saveConvObject(obj, msisdn);
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    context.conversations.InsertOnSubmit(obj);
-            //    context.SubmitChanges();
-            //}
             return obj;
         }
 
@@ -94,7 +105,7 @@ namespace windows_client.DbUtils
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
                 string[] msisdns = NewChatThread.splitUserJoinedMessage(convMessage);
-                GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1]);
+                GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], convMessage.Msisdn);
                 string text = HikeConstants.USER_JOINED;
                 if (!gp.IsOnHike)
                     text = HikeConstants.USER_INVITED;

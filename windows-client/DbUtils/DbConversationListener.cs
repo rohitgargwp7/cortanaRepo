@@ -112,6 +112,8 @@ namespace windows_client.DbUtils
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                 });
+
+                /* This is not a gud way , as its not extendible, MG kindly change it later.*/
                 if (vals.Length == 2)
                 {
                     if (vals[1] is bool)
@@ -135,23 +137,40 @@ namespace windows_client.DbUtils
                 }
                 else if (vals.Length == 3)
                 {
-                    byte[] largeImage = vals[1] as byte[];
-                    SentChatBubble chatbubble = vals[2] as SentChatBubble;
+                    if (vals[1] is bool) // this is case for first msg logic
+                    {
+                        ConvMessage cm = (ConvMessage)vals[2];
+                        ConversationListObject cObj = MessagesTableUtils.addChatMessage(cm, false);
 
-                    MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId);
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+                            {
+                                App.ViewModel.MessageListPageCollection.Remove(convObj);
+                            }
+                            App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                        });
+                    }
+                    else
+                    {
+                        byte[] largeImage = vals[1] as byte[];
+                        SentChatBubble chatbubble = vals[2] as SentChatBubble;
 
-                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-                    MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                    convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
+                        MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId);
 
-                    AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
 
-                    //MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
-                    //        Convert.ToString(convMessage.MessageId), chatbubble.FileAttachment.Thumbnail);
+                        AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
 
-                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                            Convert.ToString(convMessage.MessageId), largeImage);
-                    AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage, chatbubble);
+                        //MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
+                        //        Convert.ToString(convMessage.MessageId), chatbubble.FileAttachment.Thumbnail);
+
+                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                                Convert.ToString(convMessage.MessageId), largeImage);
+                        AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage, chatbubble);
+                    }
                 }
             }
             #endregion
@@ -168,7 +187,6 @@ namespace windows_client.DbUtils
                 AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatBubble);
             }
             #endregion
-
             #region MESSAGE_RECEIVED_READ
             else if (HikePubSub.MESSAGE_RECEIVED_READ == type)  // represents event when a msg is read by this user
             {
@@ -240,7 +258,6 @@ namespace windows_client.DbUtils
             #region DELETE ACCOUNT
             else if (HikePubSub.DELETE_ACCOUNT == type)
             {
-                removeListeners();
                 MiscDBUtil.clearDatabase();
                 mPubSub.publish(HikePubSub.ACCOUNT_DELETED, null);
             }
@@ -282,6 +299,8 @@ namespace windows_client.DbUtils
                 JObject unblockObj = blockUnblockSerialize("ub", groupOwner);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
+            #endregion
+            #region DELETE CONVERSATION
             else if (HikePubSub.DELETE_CONVERSATION == type)
             {
                 string convMsisdn = (string)obj;
@@ -291,11 +310,15 @@ namespace windows_client.DbUtils
                     bw.WorkerSupportsCancellation = true;
                     bw.DoWork += new DoWorkEventHandler(deleteGroupsAsync);
                     bw.RunWorkerAsync(convMsisdn);
+                    Utils.GroupCache.Remove(convMsisdn);
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
                 ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
             }
+            #endregion
+            #region DELETE ALL CONVERSATIONS
             else if (HikePubSub.DELETE_ALL_CONVERSATIONS == type)
             {
                 MessagesTableUtils.deleteAllMessages();
@@ -305,6 +328,8 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(convMsisdn))
                     {
+                        Utils.GroupCache.Clear();
+                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                         JObject jObj = new JObject();
                         jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
                         jObj[HikeConstants.TO] = convMsisdn;

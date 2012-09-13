@@ -20,8 +20,8 @@ namespace windows_client.DbUtils
             #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                //context.conversations.DeleteAllOnSubmit<ConversationListObject>(context.GetTable<ConversationListObject>());
                 ConversationTableUtils.deleteAllConversations();
+                App.appSettings.Remove(App.GROUPS_CACHE);
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
                 context.groupMembers.DeleteAllOnSubmit<GroupMembers>(context.GetTable<GroupMembers>());

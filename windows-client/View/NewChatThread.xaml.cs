@@ -88,13 +88,9 @@ namespace windows_client.View
 
         #region UI VALUES
 
-        private static readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-        private static readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-        private static readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
-        private static readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
-        private static readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 177, 224, 251));
-        private static Thickness imgMargin = new Thickness(0, 5, 0, 15);
-        private static Image typingNotificationImage;
+        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
+        private Thickness imgMargin = new Thickness(0, 5, 0, 15);
+        private Image typingNotificationImage;
 
         #endregion
 
@@ -309,7 +305,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
+            App.newChatThreadPage = this;
             #region TOMBSTONE HANDLING
 
             if (!App.isConvCreated)// && !PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
@@ -382,6 +378,7 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
+            App.newChatThreadPage = null;
         }
 
         #endregion
@@ -531,7 +528,7 @@ namespace windows_client.View
                 if (!contactsForGroup[i].OnHike)
                 {
                     isFirstMsg = true;
-                    PhoneApplicationService.Current.State["GC_"+mContactNumber] = true;
+                    PhoneApplicationService.Current.State["GC_"+mContactNumber] = true; // this is to track , first msg after GC.
                 }
                 GroupMembers gm = new GroupMembers(mContactNumber, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
                 groupMemberList.Add(gm);
@@ -540,16 +537,17 @@ namespace windows_client.View
                     Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
                     App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
-                if (!Utils.GroupCache.ContainsKey(contactsForGroup[i].Msisdn))
+                if (!Utils.GroupCache.ContainsKey(mContactNumber))
                 {
                     List<GroupParticipant> l = new List<GroupParticipant>(5);
                     l.Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
-                    Utils.GroupCache.Add(contactsForGroup[i].Msisdn, l);
+                    Utils.GroupCache.Add(mContactNumber, l);
                 }
                 else
                 {
-                    Utils.GroupCache[contactsForGroup[i].Msisdn].Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
+                    Utils.GroupCache[mContactNumber].Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
                 }
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             }
             JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, groupMemberList, isNewgroup);
             BackgroundWorker bw = new BackgroundWorker();
@@ -566,7 +564,7 @@ namespace windows_client.View
             mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(groupMemberList) : mContactName;
 
             ConvMessage cm = new ConvMessage(obj, true);
-            sendMsg(cm, true);
+            sendMsg(cm, true,false);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // inform others about group
         }
 
@@ -906,11 +904,13 @@ namespace windows_client.View
                 {
                     //sendMsgBtn.IsEnabled = false;
                     showOverlay(true);
+                    fileTransferIconButton.IsEnabled = false;
                 }
                 else
                 {
                     //sendMsgBtn.IsEnabled = true;
                     showOverlay(false);
+                    fileTransferIconButton.IsEnabled = true;
                 }
             });
         }
@@ -985,6 +985,8 @@ namespace windows_client.View
             ConversationListObject cObj = ConversationsList.ConvMap[mContactNumber];
             App.ViewModel.MessageListPageCollection.Remove(cObj);
             ConversationsList.ConvMap.Remove(mContactNumber);
+            Utils.GroupCache.Remove(mContactNumber);
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
             NavigationService.GoBack();
         }
 
@@ -1015,6 +1017,7 @@ namespace windows_client.View
 
                     isTypingNotificationEnabled = true;
                 }
+                fileTransferIconButton.IsEnabled = true;
                 mUserIsBlocked = false;
                 menuItem1.Text = BLOCK_USER;
                 showOverlay(false);
@@ -1038,7 +1041,7 @@ namespace windows_client.View
                     isTypingNotificationEnabled = false;
                     emoticonPanel.Visibility = Visibility.Collapsed;
                 }
-
+                fileTransferIconButton.IsEnabled = false;
                 mUserIsBlocked = true;
                 menuItem1.Text = UNBLOCK_USER;
                 showOverlay(true); //true means show block animation
@@ -1046,9 +1049,7 @@ namespace windows_client.View
         }
 
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
-        //        private void FileAttachmentMessage_Click(object sender, EventArgs e)
         {
-            //            MessageBox.Show("Inside attachment tap");
             if (!isContextMenuTapped)
             {
                 MyChatBubble chatBubble = (sender as MyChatBubble);
@@ -1202,11 +1203,66 @@ namespace windows_client.View
                 string[] msisdns = splitUserJoinedMessage(convMessage);
                 for (int i = 0; i < msisdns.Length; i++)
                 {
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i]);
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i],convMessage.Msisdn);
                     string text = HikeConstants.USER_JOINED;
                     if (!gp.IsOnHike)
                         text = HikeConstants.USER_INVITED;
                     MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + text, true);
+                    if (addToLast)
+                    {
+                        this.MessageList.Children.Add(chatBubble);
+                        ScrollToBottom();
+                    }
+                    else
+                    {
+                        this.MessageList.Children.Insert(0, chatBubble);
+                    }
+                }
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN)
+            {
+                string[] msisdns = splitUserJoinedMessage(convMessage);
+                for (int i = 0; i < msisdns.Length; i++)
+                {
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i], convMessage.Msisdn);
+                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + HikeConstants.USER_JOINED, true);
+                    if (addToLast)
+                    {
+                        this.MessageList.Children.Add(chatBubble);
+                        ScrollToBottom();
+                    }
+                    else
+                    {
+                        this.MessageList.Children.Insert(0, chatBubble);
+                    }
+                }
+            }
+
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
+            {
+                string[] msisdns = splitUserJoinedMessage(convMessage);
+                for (int i = 0; i < msisdns.Length; i++)
+                {
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i], convMessage.Msisdn);
+                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + HikeConstants.USER_JOINED, true);
+                    if (addToLast)
+                    {
+                        this.MessageList.Children.Add(chatBubble);
+                        ScrollToBottom();
+                    }
+                    else
+                    {
+                        this.MessageList.Children.Insert(0, chatBubble);
+                    }
+                }
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
+            {
+                string[] msisdns = splitUserJoinedMessage(convMessage);
+                for (int i = 0; i < msisdns.Length; i++)
+                {
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i], convMessage.Msisdn);
+                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + HikeConstants.WAITING_TO_JOIN, true);
                     if (addToLast)
                     {
                         this.MessageList.Children.Add(chatBubble);
@@ -1306,24 +1362,11 @@ namespace windows_client.View
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
             convMessage.MessageId = TempMessageId;
-            sendMsg(convMessage, false);
-            if (isFirstMsg)
-            {
-                //TODO : create new convMsg for invited and joined msg, you need group members info here
-                //TODO : Show the invited and or waiting msg
-                if (ConversationsList.ConvMap.ContainsKey(convMessage.Msisdn))
-                {
-                    ConversationListObject co = ConversationsList.ConvMap[convMessage.Msisdn]; // change the value in ConvObj also.
-                    co.IsFirstMsg = false;
-                    //TODO : Update other fields
-                    object[] vals = new object[2];
-                    vals[0] = convMessage;
-                    vals[1] = true;
-                    mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
-                }
-                PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
-                isFirstMsg = false;
-            }
+
+            if(isFirstMsg)
+                sendMsg(convMessage, false,true);
+            else
+                sendMsg(convMessage, false, false);
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -1442,7 +1485,7 @@ namespace windows_client.View
             return names;
         }
 
-        private void sendMsg(ConvMessage convMessage, bool isNewGroup)
+        private void sendMsg(ConvMessage convMessage, bool isNewGroup,bool isFirstMsgAfterGC)
         {
             if (isNewGroup)
             {
@@ -1463,7 +1506,19 @@ namespace windows_client.View
                 isReshowTypingNotification = false;
             }
 
-            object[] vals = new object[2];
+            object[] vals = null;
+            if (isFirstMsgAfterGC)
+            {
+                vals = new object[3];
+                JObject jo = ConvMessage.ProcessGCLogic(mContactNumber);
+                ConvMessage cm = new ConvMessage(jo, true);
+                AddMessageToUI(cm, true);
+                vals[2] = cm;
+            }
+            else
+            {
+                vals = new object[2];
+            }
             vals[0] = convMessage;
             vals[1] = isNewGroup;
 
@@ -1834,6 +1889,13 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         AddMessageToUI(convMessage, true);
+                        if (vals.Length == 3)
+                        {
+                            ConvMessage cm = (ConvMessage)vals[2];
+                            if(cm != null)
+                                AddMessageToUI(cm, true);
+                            isFirstMsg = false;
+                        }
                     });
                 }
                 else // this is to show toast notification

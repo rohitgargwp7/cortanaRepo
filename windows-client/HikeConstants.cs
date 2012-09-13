@@ -97,6 +97,7 @@ namespace windows_client
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
 
+        public static string WAITING_TO_JOIN = " waiting for user to join";
         public static string USER_INVITED = " is invited to group chat";
         public static string USER_JOINED = " has joined the group chat";
         public static string USER_LEFT = " has left the group chat";

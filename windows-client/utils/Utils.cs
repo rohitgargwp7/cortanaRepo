@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
 
 namespace windows_client.utils
 {
@@ -94,27 +95,32 @@ namespace windows_client.utils
                     groupCache = value;
             }
         }
-        public static GroupParticipant getGroupParticipant(string name, string msisdn)
+        public static GroupParticipant getGroupParticipant(string defaultName, string msisdn,string grpId)
         {
             if (groupCache == null)
             {
                 groupCache = new Dictionary<string, List<GroupParticipant>>();
             }
-            if (groupCache.ContainsKey(msisdn))
+            if (groupCache.ContainsKey(grpId))
             {
-                List<GroupParticipant> l = groupCache[msisdn];
+                List<GroupParticipant> l = groupCache[grpId];
                 for (int i = 0; i < l.Count; i++)
                 {
                     if (l[i].Msisdn == msisdn)
                         return l[i];
                 }
-                return null;
             }
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp = new GroupParticipant(cInfo != null ? getFirstName(cInfo.Name) : name, msisdn, cInfo != null ? cInfo.OnHike : true);
+            GroupParticipant gp = new GroupParticipant(cInfo != null ? getFirstName(cInfo.Name) : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
+            if (groupCache.ContainsKey(grpId))
+            {
+                groupCache[grpId].Add(gp);
+                return gp;
+            }
+            
             List<GroupParticipant> ll = new List<GroupParticipant>();
             ll.Add(gp);
-            groupCache.Add(msisdn, ll);
+            groupCache.Add(grpId, ll);
             return gp;
         }
 
@@ -169,13 +175,14 @@ namespace windows_client.utils
         {
             if (jsonObject == null)
                 return null;
+            string grpId = jsonObject[HikeConstants.TO].ToString();
             JArray array = (JArray)jsonObject[HikeConstants.DATA];
             List<GroupMembers> gmList = new List<GroupMembers>(array.Count);
             for (int i = 0; i < array.Count; i++)
             {
                 JObject nameMsisdn = (JObject)array[i];
                 string contactNum = (string)nameMsisdn[HikeConstants.MSISDN];
-                string contactName = getGroupParticipant((string)nameMsisdn[HikeConstants.NAME],contactNum).Name;
+                string contactName = getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], contactNum, grpId).Name;
                 GroupMembers gm = new GroupMembers((string)jsonObject[HikeConstants.TO], contactNum, contactName);
                 gmList.Add(gm);
             }
@@ -287,5 +294,47 @@ namespace windows_client.utils
         {
             return ((Visibility)Application.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
         }
+
+        public void SerializeGroupCache()
+        {
+            string fileName = "GroupCacheFile";
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            {
+                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
+                {
+                    using (var writer = new BinaryWriter(file))
+                    {
+                        int count = groupCache !=null? groupCache.Count:0;
+                        writer.Write(count);
+                        if(count !=0)
+                        {
+                            foreach (string key in groupCache.Keys)
+                            {
+                                writer.Write(key);
+                                List<GroupParticipant> l = groupCache[key];
+                                int lcount = l != null ? l.Count : 0;
+                                writer.Write(lcount);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        public void DeSerializeGroupCache()
+        {
+            string fileName = "GroupCacheFile";
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            {
+                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
+                {
+                    using (var reader = new BinaryReader(file))
+                    {
+                        int count = reader.ReadInt32();
+                    }
+                }
+            }
+        }
+
     }
 }

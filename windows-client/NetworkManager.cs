@@ -12,6 +12,7 @@ using System.IO.IsolatedStorage;
 using System.Windows.Resources;
 using System.IO;
 using windows_client.View;
+using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
@@ -101,16 +102,32 @@ namespace windows_client
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);                  
                     if (convMessage.FileAttachment != null)
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
                     if (obj == null)
                         return;
-                    object[] vals = new object[2];
+                    object[] vals = null;
+                    
+                    if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc screen
+                    {
+                        vals = new object[3];
+                        JObject oj = ConvMessage.ProcessGCLogic(obj.Msisdn);
+                        ConvMessage cm = new ConvMessage(oj, true);
+                        MessagesTableUtils.addChatMessage(cm, false);
+                        obj.IsFirstMsg = false;
+                        PhoneApplicationService.Current.State.Remove("GC_"+obj.Msisdn);
+                        ConversationTableUtils.updateConversation(obj);
+                        vals[2] = cm;
+                    }
+                    else
+                        vals = new object[2];
+
                     vals[0] = convMessage;
                     vals[1] = obj;
+
                     pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
                 catch (Exception e)
@@ -216,7 +233,7 @@ namespace windows_client
                     MiscDBUtil.saveAvatarImage(msisdn, imageBytes);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to save image for msisdn {0} : {1}",msisdn,msec);
+                Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
             else if (INVITE_INFO == type)
             {
@@ -250,30 +267,10 @@ namespace windows_client
                     return;
                 }
                 string grpId = jsonObj[HikeConstants.TO].ToString();
-                if (ConversationsList.ConvMap.ContainsKey(grpId)) // this shows you created grp and server sends you on dnd status
-                {
-                    List<GroupParticipant> l = Utils.GroupCache[grpId];
-                    if (l == null)
-                        return;
-                    for (int i = 0; i < arr.Count; i++)
-                    {
-                        JObject o = (JObject)arr[i];
-                        bool onhike = (bool)o["onhike"];
-                        bool dnd = (bool)o["dnd"];
-                        string ms = (string)o["msisdn"];
-                        for (int k = 0; k < l.Count; k++)
-                        {
-                            if (l[k].Msisdn == ms)
-                            {
-                                l[k].IsDND = dnd;
-                                l[k].IsOnHike = onhike;
-                            }
-                        }
-                    }
 
+                if (!AddGroupmembers(arr,grpId))
                     return;
-                }
-
+                
                 ConvMessage convMessage = new ConvMessage(jsonObj, false);
                 convMessage.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
@@ -362,10 +359,69 @@ namespace windows_client
             {
                 //TODO
             }
+            else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
+            {
+                string ms = (string)((JObject)jsonObj[HikeConstants.DATA])[HikeConstants.MSISDN];
+
+                // For one-to-one chat
+                //saveStatusMsg(jsonObj, msisdn);
+
+                //List<String> groupConversations = convDb.listOfGroupConversationsWithMsisdn(msisdn);
+
+                // For group chats
+                //for(String groupId:groupConversations)
+                {
+                    //saveStatusMsg(jsonObj, groupId);
+                }
+            }
             else
             {
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
+        }
+
+        /// <summary>
+        /// This function will return 
+        ///  -- > true , if new users are added to GC
+        ///  -- > false , if GCJ is come to notify DND status
+        /// 
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="grpId"></param>
+        /// <returns></returns>
+        private bool AddGroupmembers(JArray arr, string grpId)
+        {
+            if (ConversationsList.ConvMap.ContainsKey(grpId)) 
+            {
+                List<GroupParticipant> l = null;
+                Utils.GroupCache.TryGetValue(grpId, out l);
+                if (l == null)
+                    return true;
+                bool output = true;
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    JObject o = (JObject)arr[i];
+                    bool onhike = (bool)o["onhike"];
+                    bool dnd = (bool)o["dnd"];
+                    string ms = (string)o["msisdn"];
+                    for (int k = 0; k < l.Count; k++)
+                    {
+                        if (l[k].Msisdn == ms)
+                        {
+                            l[k].IsDND = dnd;
+                            l[k].IsOnHike = onhike;
+                            output = false;
+                            break;
+                        }
+                    }
+                }
+                if (!output)
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                return output;
+            }
+            else
+                return true;
+
         }
 
         private void updateDB(long msgID, int status)
