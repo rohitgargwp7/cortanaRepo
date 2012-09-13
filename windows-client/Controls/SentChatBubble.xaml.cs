@@ -89,6 +89,9 @@ namespace windows_client.Controls
             :base(chatBubble, messageId)
         {
             InitializeComponent();
+            string contentType = chatBubble.FileAttachment == null ? "" : chatBubble.FileAttachment.ContentType;
+            initializeBasedOnState(chatBubble.FileAttachment != null, contentType);
+
             if (onHike)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
