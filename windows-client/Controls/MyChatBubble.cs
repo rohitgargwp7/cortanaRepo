@@ -152,6 +152,9 @@ namespace windows_client.Controls
             }
         }
 
+        protected virtual void uploadOrDownloadCanceled()
+        { }
+
 
         public void setAttachmentState(Attachment.AttachmentState attachmentState)
         {
@@ -164,6 +167,9 @@ namespace windows_client.Controls
                     switch (attachmentState)
                     {
                         case Attachment.AttachmentState.CANCELED:
+                            uploadOrDownloadCanceled();
+                            setContextMenu(currentPage.AttachmentCanceledOrFailed);
+                            break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
                             setContextMenu(currentPage.AttachmentCanceledOrFailed);
                             break;

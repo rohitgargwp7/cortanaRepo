@@ -155,6 +155,12 @@ namespace windows_client.Controls
             });
         }
 
+        protected override void uploadOrDownloadCanceled()
+        {
+            this.uploadProgress.Opacity = 0;
+        }
+
+
         private Grid attachment;
         public Image MessageImage;
         private Image PlayIcon;
