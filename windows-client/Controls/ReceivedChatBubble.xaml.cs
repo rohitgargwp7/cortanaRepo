@@ -24,7 +24,6 @@ namespace windows_client.Controls
             InitializeComponent();
             string contentType = cm.FileAttachment == null?"": cm.FileAttachment.ContentType;
 
-            initializeUrself(cm.HasAttachment, contentType);
             initializeBasedOnState(cm.HasAttachment, contentType);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
@@ -51,19 +50,6 @@ namespace windows_client.Controls
             });
         }
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType)
-        {
-            if (hasAttachment)
-            {
-                if (contentType.Contains("video") || contentType.Contains("audio"))
-                {
-                    if (contentType.Contains("audio"))
-                        this.MessageImage.Source = UI_Utils.Instance.AudioAttachment;
-                    PlayIcon.Visibility = Visibility.Visible;
-                }
-            }
-        }
-
         private Grid attachment;
         public Image MessageImage;
         private Image PlayIcon;
@@ -78,7 +64,7 @@ namespace windows_client.Controls
 
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
 
-        private void initializeUrself(bool hasAttachment, string contentType)
+        private void initializeBasedOnState(bool hasAttachment, string contentType)
         {
             RowDefinition w1 = new RowDefinition();
             w1.Height = GridLength.Auto;
