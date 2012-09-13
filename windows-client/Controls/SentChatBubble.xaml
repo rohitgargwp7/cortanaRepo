@@ -16,7 +16,18 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="14" />
             </Grid.RowDefinitions>
-            <Grid>
+            <Grid x:Name="wrapperGrid" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+            <!--<Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -38,13 +49,9 @@
                     </Grid.RowDefinitions>
                     <Image Grid.Row="0" MaxWidth="180" MaxHeight="180" Margin="12,12,12,0" HorizontalAlignment="Right" x:Name="MessageImage" />
                     <Image x:Name="PlayIcon" Visibility="Collapsed" Source="/View/images/play_icon.png" Grid.Row="0" MaxWidth="43" MaxHeight="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
                     <ProgressBar Grid.Row="1" x:Name="uploadProgress" Margin="0,5,0,0" Grid.Column="1" Height="8" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
                 </Grid>
-                <StackPanel Orientation="Vertical" Grid.Column="1" Margin="6">
-                </StackPanel>
-                
-            </Grid>
+            </Grid>-->
             <Path Grid.Column="1" Name="BubblePoint" Data="M0,0 L1,1 L1,0" HorizontalAlignment="Right" Margin="0,0,12,0" Grid.Row="1" Stretch="Fill" UseLayoutRounding="False" Width="16" />
         </Grid>
     </Grid>
