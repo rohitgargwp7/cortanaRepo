@@ -1178,9 +1178,9 @@ namespace windows_client.View
                 if (convMessage.IsSent)
                 {
                     chatBubble = new SentChatBubble(convMessage);
-                    if (convMessage.MessageId < -1)
+                    if (convMessage.MessageId < -1 || convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                         msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                    else
+                    else if(convMessage.MessageId == -1)
                         msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
                     //_convMessageSentBubbleMap.Add(convMessage, (SentChatBubble)chatBubble);
                 }
@@ -1618,8 +1618,11 @@ namespace windows_client.View
         private void MenuItem_Click_Cancel(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            if(chatBubble.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+            if (chatBubble.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
+            {
                 chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
+                MiscDBUtil.saveAttachmentObject(chatBubble.FileAttachment, mContactNumber, chatBubble.MessageId);
+            }
         }
 
         #endregion

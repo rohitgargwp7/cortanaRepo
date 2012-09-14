@@ -42,6 +42,13 @@ namespace windows_client.Controls
                 case ConvMessage.State.SENT_DELIVERED_READ:
                     this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
                     break;
+                case ConvMessage.State.SENT_UNCONFIRMED:
+                case ConvMessage.State.UNKNOWN:
+                    if (cm.HasAttachment)
+                    {
+                        this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                    }
+                    break;
                 default:
                     break;
             }
