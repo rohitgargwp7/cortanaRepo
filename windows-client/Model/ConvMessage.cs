@@ -737,11 +737,21 @@ namespace windows_client.Model
                     string msisdn = (string)nameMsisdn[HikeConstants.MSISDN];
                     if (msisdn == App.MSISDN)
                         continue;
-                    bool onhike = (bool)nameMsisdn["onhike"];
-                    bool dnd = (bool)nameMsisdn["dnd"];
+                    bool onhike = true;
+                    bool dnd = true;
+                    try
+                    { onhike = (bool)nameMsisdn["onhike"]; }
+                    catch { }
+                    try
+                    { dnd = (bool)nameMsisdn["dnd"]; }
+                    catch { }
+                    
                     GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn,_msisdn);
-                    gp.IsOnHike = onhike;
-                    gp.IsDND = dnd;
+                    if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
+                    {
+                        gp.IsOnHike = onhike;
+                        gp.IsDND = dnd;
+                    }
                     newParticipants.Append(msisdn + ", ");
                     if(!onhike)
                         PhoneApplicationService.Current.State["GC_"+toVal] = true;

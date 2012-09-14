@@ -37,7 +37,7 @@ namespace windows_client.View
         private string mContactName = null;
         private string lastText = "";
 
-        private bool isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
+        private bool isGcFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
         private bool isGroupChat = false;
@@ -100,12 +100,12 @@ namespace windows_client.View
         {
             get
             {
-                return isFirstMsg;
+                return isGcFirstMsg;
             }
             set
             {
-                if (value != isFirstMsg)
-                    isFirstMsg = value;
+                if (value != isGcFirstMsg)
+                    isGcFirstMsg = value;
             }
         }
 
@@ -413,7 +413,7 @@ namespace windows_client.View
 
                 isOnHike = convObj.IsOnhike;
                 userImage.Source = convObj.AvatarImage;
-                isFirstMsg = convObj.IsFirstMsg;
+                isGcFirstMsg = convObj.IsFirstMsg;
             }
 
             #endregion
@@ -527,10 +527,11 @@ namespace windows_client.View
             {
                 if (!contactsForGroup[i].OnHike)
                 {
-                    isFirstMsg = true;
+                    isGcFirstMsg = true;
                     PhoneApplicationService.Current.State["GC_"+mContactNumber] = true; // this is to track , first msg after GC.
                 }
                 GroupMembers gm = new GroupMembers(mContactNumber, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
+                gm.IsOnHike = contactsForGroup[i].OnHike;
                 groupMemberList.Add(gm);
                 if (Utils.GroupCache == null)
                 {
@@ -1363,7 +1364,7 @@ namespace windows_client.View
             convMessage.IsSms = !isOnHike;
             convMessage.MessageId = TempMessageId;
 
-            if(isFirstMsg)
+            if(isGcFirstMsg)
                 sendMsg(convMessage, false,true);
             else
                 sendMsg(convMessage, false, false);
@@ -1894,7 +1895,7 @@ namespace windows_client.View
                             ConvMessage cm = (ConvMessage)vals[2];
                             if(cm != null)
                                 AddMessageToUI(cm, true);
-                            isFirstMsg = false;
+                            isGcFirstMsg = false;
                         }
                     });
                 }

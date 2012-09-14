@@ -110,6 +110,12 @@ namespace windows_client.Model
             }
         }
 
+        public bool IsOnHike
+        {
+            get;
+            set;
+        }
+
         public SolidColorBrush SquareColor
         {
             get 
