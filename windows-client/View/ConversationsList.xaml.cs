@@ -761,5 +761,11 @@ namespace windows_client.View
             composeIconButton.IsEnabled = true;
             appBar.IsMenuEnabled = true;
         }
+
+        private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
+
+        }
     }
 }
