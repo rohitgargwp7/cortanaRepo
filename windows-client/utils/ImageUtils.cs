@@ -170,8 +170,9 @@ namespace windows_client.utils
             var p = new Paragraph();
             int startIndex = 0;
             int endIndex = -1;
+            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
 
-            for (int i = 0; i < matchCollection.Count; i++)
+            for (int i = 0; i < maxCount; i++)
             {
                 String emoticon = matchCollection[i].ToString();
 

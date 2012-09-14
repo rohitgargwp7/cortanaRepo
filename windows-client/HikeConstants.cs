@@ -52,6 +52,7 @@ namespace windows_client
 
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_HEIGHT = 800;
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_WIDTH = 800;
+        public static readonly int MAX_EMOTICON_SUPPORTED = 10;
 
         /* how long to wait between sending publish and receiving an acknowledgement */
 
