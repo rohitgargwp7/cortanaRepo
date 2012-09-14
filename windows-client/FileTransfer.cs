@@ -177,13 +177,18 @@ namespace windows_client
                     }
                     else
                     {
-                        RemoveTransferRequest(transfer.RequestId);
-                        // This is where you can handle whatever error is indicated by the
-                        // StatusCode and then remove the transfer from the queue. 
-                        if (transfer.TransferError != null)
+                        try
                         {
-                            // Handle TransferError if one exists.
+                            RemoveTransferRequest(transfer.RequestId);
+                            // This is where you can handle whatever error is indicated by the
+                            // StatusCode and then remove the transfer from the queue. 
+                            if (transfer.TransferError != null)
+                            {
+                                // Handle TransferError if one exists.
+                            }
                         }
+                        catch (InvalidOperationException)
+                        { }
                     }
                     break;
 
@@ -214,7 +219,21 @@ namespace windows_client
         {
             ReceivedChatBubble chatBubble;
             requestIdChatBubbleMap.TryGetValue(e.Request.RequestId, out chatBubble);
-            chatBubble.updateProgress(e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive);
+            if (chatBubble != null)
+            {
+                if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED)
+                    chatBubble.updateProgress(e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive);
+                else
+                {
+                    try
+                    {
+                        BackgroundTransferRequest transferRequest = BackgroundTransferService.Find(e.Request.RequestId);
+                        BackgroundTransferService.Remove(transferRequest);
+                    }
+                    catch (InvalidOperationException)
+                    { }
+                }
+            }
         }
 
         private void RemoveTransferRequest(string transferID)
