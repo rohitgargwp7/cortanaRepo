@@ -170,11 +170,11 @@
     <Compile Include="View\NewChatThread.xaml.cs">
       <DependentUpon>NewChatThread.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PlayMedia.xaml.cs">
-      <DependentUpon>PlayMedia.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\SelectUserToMsg.xaml.cs">
       <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
@@ -250,13 +250,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PlayMedia.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\SelectUserToMsg.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
