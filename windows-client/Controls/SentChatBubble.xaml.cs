@@ -42,6 +42,13 @@ namespace windows_client.Controls
                 case ConvMessage.State.SENT_DELIVERED_READ:
                     this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
                     break;
+                case ConvMessage.State.SENT_UNCONFIRMED:
+                case ConvMessage.State.UNKNOWN:
+                    if (cm.HasAttachment)
+                    {
+                        this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -89,13 +96,18 @@ namespace windows_client.Controls
             :base(chatBubble, messageId)
         {
             InitializeComponent();
+            string contentType = chatBubble.FileAttachment == null ? "" : chatBubble.FileAttachment.ContentType;
+            initializeBasedOnState(chatBubble.FileAttachment != null, contentType);
+
             if (onHike)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
+                uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
             }
             else
             {
                 bubbleColor = UI_Utils.Instance.SmsBackground;
+                uploadProgress.Background = UI_Utils.Instance.SmsBackground;
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
@@ -152,6 +164,12 @@ namespace windows_client.Controls
             });
         }
 
+        protected override void uploadOrDownloadCanceled()
+        {
+            this.uploadProgress.Value = 0;
+        }
+
+
         private Grid attachment;
         public Image MessageImage;
         private Image PlayIcon;
@@ -171,7 +189,6 @@ namespace windows_client.Controls
         private void initializeBasedOnState(bool hasAttachment, string contentType)
         {
             BubbleBg = new Rectangle();
-            BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
             Grid.SetRowSpan(BubbleBg, 2);
             Grid.SetColumn(BubbleBg, 1);
             wrapperGrid.Children.Add(BubbleBg);

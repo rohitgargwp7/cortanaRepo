@@ -46,6 +46,11 @@ namespace windows_client.Controls
             });
         }
 
+        protected override void uploadOrDownloadCanceled()
+        {
+            this.downloadProgress.Value = 0;
+        }
+
         private Grid attachment;
         public Image MessageImage;
         private Image PlayIcon;
@@ -108,6 +113,7 @@ namespace windows_client.Controls
 
                 downloadProgress = new ProgressBar();
                 downloadProgress.Height = 10;
+                downloadProgress.Background = UI_Utils.Instance.TextBoxBackground;
                 downloadProgress.Foreground = progressColor;
                 downloadProgress.Minimum = 0;
                 downloadProgress.MaxHeight = 100;
