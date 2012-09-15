@@ -263,15 +263,15 @@ namespace windows_client
             {
                 JArray arr = (JArray)jsonObj[HikeConstants.DATA];
                 if (arr == null || !arr.HasValues)
-                {
                     return;
-                }
+               
                 string grpId = jsonObj[HikeConstants.TO].ToString();
 
-                if (!AddGroupmembers(arr,grpId))
+                if (!AddGroupmembers(arr,grpId)) // is gcj to add new members or to give DND info
                     return;
                 
                 ConvMessage convMessage = new ConvMessage(jsonObj, false);
+                // till here Group Cache is already made.
                 convMessage.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
@@ -318,14 +318,12 @@ namespace windows_client
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                 if (cObj == null)
                     return;
-                GroupTableUtils.removeParticipantFromGroup(groupId, fromMsisdn);
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
                 if (gi == null)
                     return;
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
                 {
-                    List<GroupMembers> existingMembers = GroupTableUtils.getActiveGroupMembers(groupId);
-                    cObj.ContactName = Utils.defaultGroupName(existingMembers);
+                    cObj.ContactName = Utils.defaultGroupName(groupId);
                 }
 
 
@@ -362,16 +360,30 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 string ms = (string)((JObject)jsonObj[HikeConstants.DATA])[HikeConstants.MSISDN];
+                
+                // UPDATE group cache
+                foreach (string key in Utils.GroupCache.Keys)
+                {
+                    List<GroupParticipant> l = Utils.GroupCache[key];
+                    for (int i = 0; i < l.Count; i++)
+                    {
+                        if (l[i].Msisdn == ms)
+                        {
+                            l[i].HasOptIn = true;
+                            break;
+                        }
+                    }
+                }
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
 
                 // For one-to-one chat
-                //saveStatusMsg(jsonObj, msisdn);
-
-                //List<String> groupConversations = convDb.listOfGroupConversationsWithMsisdn(msisdn);
-
-                // For group chats
-                //for(String groupId:groupConversations)
+                foreach(string key in ConversationsList.ConvMap.Keys)
                 {
-                    //saveStatusMsg(jsonObj, groupId);
+                    if (key == ms)
+                    {
+                        //TODO : Opt in msg for 1-1 chat
+                        break;
+                    }
                 }
             }
             else

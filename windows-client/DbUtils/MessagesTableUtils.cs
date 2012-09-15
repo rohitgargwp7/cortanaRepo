@@ -93,7 +93,9 @@ namespace windows_client.DbUtils
                     long msgId = convMessage.MessageId;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+
+                        NewChatThread currentPage = App.newChatThreadPage;
+
                         if (currentPage != null)
                         {
                             if (convMessage.IsSent)
@@ -105,45 +107,49 @@ namespace windows_client.DbUtils
                                 sentChatBubble.MessageId = convMessage.MessageId;
                             }
                         }
-                        if (ConversationsList.ConvMap[convMessage.Msisdn].IsFirstMsg)
-                            currentPage.IsFirstMsg = false;
+                    });
+                }
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (App.newChatThreadPage != null)
+                            App.newChatThreadPage.IsFirstMsg = false;
                     });
                 }
             }
         }
 
-        // this is called in case of gcj
+        // this is called in case of gcj from Network manager
         public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj)
         {
             ConversationListObject obj = null;
-            List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
+            //List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
-                string groupName = Utils.defaultGroupName(gmList); // here name shud be what stored in contacts
+                string groupName = Utils.defaultGroupName(convMsg.Msisdn); // here name shud be what stored in contacts
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
-                GroupTableUtils.addGroupMembers(gmList);
-                GroupInfo gi = new GroupInfo(gmList[0].GroupId, null, convMsg.GroupParticipant, true);
+                GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
             else // add a member to a group
             {
-                List<GroupMembers> existingMembers = GroupTableUtils.getActiveGroupMembers(convMsg.Msisdn);
-                List<GroupMembers> actualMembersToAdd = getNewMembers(gmList, existingMembers);
-                if (actualMembersToAdd == null)
+                List<GroupParticipant> existingMembers = null;
+                Utils.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
+                if (existingMembers == null)
                     return null;
-                GroupTableUtils.addGroupMembers(actualMembersToAdd);
+
                 obj = ConversationsList.ConvMap[convMsg.Msisdn];
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
-                if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                {
-                    existingMembers.AddRange(actualMembersToAdd);
-                    obj.ContactName = Utils.defaultGroupName(existingMembers);
-                }
+
+                if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set                
+                    obj.ContactName = Utils.defaultGroupName(obj.Msisdn);
+
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
-                    string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], obj.Msisdn);
+                    GroupParticipant gp = Utils.GroupCache[obj.Msisdn][Utils.GroupCache[obj.Msisdn].Count - 1]; // get last element of group in sorted order.
+
                     string text = HikeConstants.USER_JOINED;
                     if (!gp.IsOnHike)
                         text = HikeConstants.USER_INVITED;
@@ -153,10 +159,10 @@ namespace windows_client.DbUtils
                         obj.IsFirstMsg = true;
                         PhoneApplicationService.Current.State.Remove("GC_" + convMsg.Msisdn);
                     }
-
                 }
                 else
                     obj.LastMessage = convMsg.Message;
+
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
                 ConversationTableUtils.updateConversation(obj);
@@ -165,25 +171,10 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-        private static List<GroupMembers> getNewMembers(List<GroupMembers> gmList, List<GroupMembers> existingMembers)
-        {
-            List<GroupMembers> newGrpUserList = null;
-            for (int j = 0; j < gmList.Count; j++)
-            {
-                if (!existingMembers.Contains(gmList[j]))
-                {
-                    if (newGrpUserList == null)
-                        newGrpUserList = new List<GroupMembers>();
-                    newGrpUserList.Add(gmList[j]);
-                }
-            }
-            return newGrpUserList;
-        }
-
         public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup)
         {
             ConversationListObject obj = null;
-            ConvMessage cm = null;
+
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
@@ -195,11 +186,17 @@ namespace windows_client.DbUtils
             else
             {
                 obj = ConversationsList.ConvMap[convMsg.Msisdn];
-
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN)
                 {
+                    if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN) // shows invite msg
+                    {
+                        if (!obj.IsFirstMsg)
+                            return obj;
+                        obj.IsFirstMsg = false;
+                    }
+
                     string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1],obj.Msisdn);
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], obj.Msisdn);
                     string text = HikeConstants.USER_JOINED;
                     if (!gp.IsOnHike)
                         text = HikeConstants.USER_INVITED;
@@ -222,11 +219,6 @@ namespace windows_client.DbUtils
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;
             Debug.WriteLine("Time to add chat msg : {0}", msec1);
-
-            if (cm != null)
-            {
-                addMessage(cm); //  this is first msg case.
-            }
 
             return obj;
         }

@@ -729,6 +729,7 @@ namespace windows_client.Model
             this.metadataJsonString = obj.ToString(Newtonsoft.Json.Formatting.None);
             if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED || this.participantInfoState == ParticipantInfoState.USER_JOIN)
             {
+                List<GroupParticipant> newUsers = new List<Model.GroupParticipant>();
                 JArray arr = (JArray)obj[HikeConstants.DATA];
                 StringBuilder newParticipants = new StringBuilder();
                 for (int i = 0; i < arr.Count; i++)
@@ -752,12 +753,16 @@ namespace windows_client.Model
                         gp.IsOnHike = onhike;
                         gp.IsDND = dnd;
                     }
-                    newParticipants.Append(msisdn + ", ");
                     if(!onhike)
                         PhoneApplicationService.Current.State["GC_"+toVal] = true;
+                    newUsers.Add(gp);
                 }
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+                Utils.GroupCache[toVal].Sort();
+                newUsers.Sort();
+                for (int k = 0; k < newUsers.Count; k++)
+                    newParticipants.Append(newUsers[k].Msisdn + ", ");
                 this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " added to group chat";
+                newUsers = null;
             }
             else
             {
@@ -765,11 +770,14 @@ namespace windows_client.Model
                 {
                     this._message = "This group chat has end";
                 }
-                else
+                else // Group member left
                 {
-                    this._message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant,_msisdn).Name + " " + "left conversation";
+                    GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant,_msisdn);
+                    this._message = gp.Name + " " + "left conversation";
+                    gp.HasLeft = true;
                 }
             }
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             this._timestamp = TimeUtils.getCurrentTimeStamp();
             this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
         }
@@ -785,7 +793,7 @@ namespace windows_client.Model
                 JArray array = new JArray();
                 for (int i = 0; i < l.Count; i++)
                 {
-                    if (!l[i].IsOnHike)
+                    if (!l[i].IsOnHike && !l[i].IsUsed)
                     {
                         JObject nameMsisdn = new JObject();
                         nameMsisdn[HikeConstants.NAME] = l[i].Name;
@@ -793,6 +801,7 @@ namespace windows_client.Model
                         nameMsisdn["dnd"] = l[i].IsOnHike;
                         nameMsisdn["onhike"] = l[i].IsDND;
                         array.Add(nameMsisdn);
+                        l[i].IsUsed = true;
                     }
                 }
                 obj[HikeConstants.DATA] = array;
@@ -800,6 +809,7 @@ namespace windows_client.Model
             catch
             {
             }
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
             return obj;
         }
 

@@ -16,8 +16,7 @@ namespace windows_client.View
 {
     public partial class GroupInfoPage : PhoneApplicationPage, HikePubSub.Listener
     {
-        private List<GroupMembers> activeGroupMembers;
-        private ObservableCollection<GroupMembers> groupMembersOC = new ObservableCollection<GroupMembers>();
+        private ObservableCollection<GroupParticipant> groupMembersOC = new ObservableCollection<GroupParticipant>();
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
@@ -34,7 +33,7 @@ namespace windows_client.View
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             string grpId = groupId.Replace(":", "_");
-            byte [] avatar = MiscDBUtil.getThumbNailForMsisdn(groupId);
+            byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(groupId);
             if (avatar == null)
                 groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; // TODO : change to default groupImage once done
             else
@@ -63,13 +62,16 @@ namespace windows_client.View
                 return;
             this.groupName.Text = groupName;
 
-            activeGroupMembers = GroupTableUtils.getActiveGroupMembers(groupId);
-            activeGroupMembers.Sort(Utils.CompareByName<GroupMembers>);
-            for (int i = 0; i < activeGroupMembers.Count; i++)
-                groupMembersOC.Add(activeGroupMembers[i]);
+            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
+            {
+                GroupParticipant gp = Utils.GroupCache[groupId][i];
+                if (!gp.HasLeft)
+                    groupMembersOC.Add(gp);
+            }
             this.groupChatParticipants.ItemsSource = groupMembersOC;
             registerListeners();
         }
+
 
         #region PUBSUB
         private void registerListeners()
@@ -110,25 +112,16 @@ namespace windows_client.View
                 string eventGroupId = (string)json[HikeConstants.TO];
                 if (eventGroupId != groupId)
                     return;
-                JToken participantsToken;
-                json.TryGetValue(HikeConstants.DATA, out participantsToken);
-                if (participantsToken != null)
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    JArray j = participantsToken.ToObject<JArray>();
-                    IEnumerable<JToken> participantsList = j.Children<JToken>();
-
-                    using (var participantInfoEnumerator = participantsList.GetEnumerator())
+                    groupMembersOC.Clear();
+                    for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
                     {
-                        while (participantInfoEnumerator.MoveNext())
-                        {
-                            // Do something with sequenceEnum.Current.
-                            string name = (string)participantInfoEnumerator.Current.ToObject<JObject>()[HikeConstants.NAME];
-                            string msisdn = (string)participantInfoEnumerator.Current.ToObject<JObject>()[HikeConstants.MSISDN];
-                            GroupMembers groupMembers = new GroupMembers(groupId, msisdn, name);
-                            AddUserJoinedToCollection(groupMembers);
-                        }
+                        GroupParticipant gp = Utils.GroupCache[groupId][i];
+                        if (!gp.HasLeft)
+                            groupMembersOC.Add(gp);
                     }
-                }
+                });
             }
             else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
             {
@@ -137,39 +130,21 @@ namespace windows_client.View
                 if (eventGroupId != groupId)
                     return;
                 string leaveMsisdn = (string)json[HikeConstants.DATA];
-                int i = 0;
-                for (; i < activeGroupMembers.Count; i++)
-                {
-                    if (activeGroupMembers[i].Msisdn == leaveMsisdn)
-                        break;
-                }
 
-                /* Added check if the element is not out of bounds*/
-                if (i < activeGroupMembers.Count)
-                    activeGroupMembers.RemoveAt(i);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                for (int i = 0; i < groupMembersOC.Count; i++)
                 {
-                    if (i < activeGroupMembers.Count)
-                        groupMembersOC.RemoveAt(i);
-                });
+                    if (groupMembersOC[i].Msisdn == leaveMsisdn)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            groupMembersOC.RemoveAt(i);
+                        });
+                    }
+                    break;
+                }
             }
         }
         #endregion
-
-        private void AddUserJoinedToCollection(GroupMembers gMembers)
-        {
-            int i = 0;
-            for (; i < activeGroupMembers.Count; i++)
-            {
-                if (Utils.CompareByName<GroupMembers>(activeGroupMembers[i], gMembers) > 0)
-                    break;
-            }
-            activeGroupMembers.Insert(i, gMembers);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                groupMembersOC.Insert(i, gMembers);
-            });
-        }
 
         #region SET GROUP PIC
 
@@ -220,7 +195,7 @@ namespace windows_client.View
             {
                 writeableBitmap.SaveJpeg(msSmallImage, 45, 45, 0, 95);
                 buffer = msSmallImage.ToArray();
-            }            
+            }
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
 
@@ -239,12 +214,13 @@ namespace windows_client.View
         private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             //TODO start this loop from end, after sorting is done on onHike status
-            for (int i = 0; i < activeGroupMembers.Count; i++)
+            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
             {
-                if (!Utils.getGroupParticipant(activeGroupMembers[i].Name, activeGroupMembers[i].Msisdn,activeGroupMembers[i].GroupId).IsOnHike)
+                GroupParticipant gp = Utils.GroupCache[groupId][i];
+                if (!gp.IsOnHike)
                 {
                     long time = utils.TimeUtils.getCurrentTimeStamp();
-                    ConvMessage convMessage = new ConvMessage(App.invite_message, activeGroupMembers[i].Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                    ConvMessage convMessage = new ConvMessage(App.invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
                     convMessage.IsInvite = true;
                     App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                 }
@@ -254,8 +230,19 @@ namespace windows_client.View
 
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = activeGroupMembers;
+            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = getActiveGroupParticiants();
             NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+        }
+
+        private List<GroupParticipant> getActiveGroupParticiants()
+        {
+            List<GroupParticipant> activeGroupMembers = new List<GroupParticipant>(Utils.GroupCache[groupId].Count);
+            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
+            {
+                if (!Utils.GroupCache[groupId][i].HasLeft)
+                    activeGroupMembers.Add(Utils.GroupCache[groupId][i]);
+            }
+            return activeGroupMembers;
         }
 
     }

@@ -141,6 +141,9 @@ namespace windows_client.DbUtils
                     {
                         ConvMessage cm = (ConvMessage)vals[2];
                         ConversationListObject cObj = MessagesTableUtils.addChatMessage(cm, false);
+                        if (!isNewGroup)
+                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                        
 
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
@@ -275,7 +278,9 @@ namespace windows_client.DbUtils
                 ConversationTableUtils.deleteConversation(groupId);
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
-                GroupTableUtils.deleteGroupMembersWithId(groupId);
+                Utils.GroupCache.Remove(groupId);
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+                //TODO : Delete file also later
             }
             #endregion
             #region BLOCK GROUP OWNER
@@ -370,7 +375,8 @@ namespace windows_client.DbUtils
             }
             else
             {
-                GroupTableUtils.deleteGroupMembersWithId(msisdn);
+                Utils.GroupCache.Remove(msisdn);
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 GroupTableUtils.deleteGroupWithId(msisdn);
             }
         }
@@ -384,7 +390,8 @@ namespace windows_client.DbUtils
             }
             else
             {
-                GroupTableUtils.deleteAllGroupMembers();
+                Utils.GroupCache.Clear();
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 GroupTableUtils.deleteAllGroups();
             }
         }
