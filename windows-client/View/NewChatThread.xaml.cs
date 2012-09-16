@@ -273,7 +273,7 @@ namespace windows_client.View
         {
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-            progressBar.Visibility = Visibility.Visible;
+            progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
@@ -740,7 +740,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     Scroller.Opacity = 1;
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
                 return;
@@ -774,7 +774,7 @@ namespace windows_client.View
             {
                 Scroller.Opacity = 1;
                 ScrollToBottom();
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
             });
 

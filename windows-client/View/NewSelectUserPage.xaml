@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage 
-    x:Class="windows_client.View.SelectUserToMsg"
+    x:Class="windows_client.View.NewSelectUserPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -41,7 +41,7 @@
                                                 Opacity="1" Height="11" Width="194" />
                 </StackPanel>
             </StackPanel>
-            <TextBlock Text="new chat" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Height="80"/>
+            <TextBlock Name="title" Text="new chat" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Height="80"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -54,6 +54,7 @@
             </Grid.RowDefinitions>
             <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+            
             <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"

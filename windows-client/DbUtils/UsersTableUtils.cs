@@ -179,7 +179,7 @@ namespace windows_client.DbUtils
             return false;
         }
 
-        public static void deleteMultipleRows(List<SelectUserToMsg.DelContacts> ids)
+        public static void deleteMultipleRows(List<ContactInfo.DelContacts> ids)
         {
             if(ids == null || ids.Count == 0)
                 return;
