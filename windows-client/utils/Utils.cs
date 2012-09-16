@@ -160,7 +160,7 @@ namespace windows_client.utils
                     + Utils.getFirstName(groupParticipants[1].Name);
                 default:
                     return Utils.getFirstName(groupParticipants[0].Name) + " and "
-                    + (groupParticipants.Count - 1) + " others";
+                    + (groupParticipants.Count) + " others";
             }
         }
 
