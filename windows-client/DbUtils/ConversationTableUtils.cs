@@ -115,6 +115,7 @@ namespace windows_client.DbUtils
             {
                 obj.IsFirstMsg = true;
                 PhoneApplicationService.Current.State.Remove("GC_" + convMessage.Msisdn);
+                Debug.WriteLine("Phone Application Service : GC_{0} removed.", convMessage.Msisdn);
             }
             else
                 obj.IsFirstMsg = false;

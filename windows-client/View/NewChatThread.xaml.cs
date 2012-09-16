@@ -541,6 +541,7 @@ namespace windows_client.View
                 {
                     isGcFirstMsg = true;
                     PhoneApplicationService.Current.State["GC_" + mContactNumber] = true; // this is to track , first msg after GC.
+                    Debug.WriteLine("Phone Application Service : GC_{0} added.", mContactNumber);
                 }
                 GroupParticipant gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
                 usersToAdd.Add(gp);
@@ -560,10 +561,10 @@ namespace windows_client.View
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
             if (isNewgroup)
             {
+                BackgroundWorker bw = new BackgroundWorker();
+                
                 bw.DoWork += (ss, ee) =>
                 {
                     GroupInfo gi = new GroupInfo(mContactNumber, null, groupOwner, true);
@@ -592,8 +593,8 @@ namespace windows_client.View
                     for (int i = 0; i < usersToAdd.Count; i++)
                     {
                         JObject nameMsisdn = new JObject();
-                        nameMsisdn[HikeConstants.NAME] = Utils.GroupCache[mContactNumber][i].Name;
-                        nameMsisdn[HikeConstants.MSISDN] = Utils.GroupCache[mContactNumber][i].Msisdn;
+                        nameMsisdn[HikeConstants.NAME] = usersToAdd[i].Name;
+                        nameMsisdn[HikeConstants.MSISDN] = usersToAdd[i].Msisdn;
                         array.Add(nameMsisdn);
                     }
                     if (isNewGroup) // if new group add owners info also
@@ -1799,6 +1800,9 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
+                if (ConversationsList.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
+                    isGcFirstMsg = true;
+
                 /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
                 {

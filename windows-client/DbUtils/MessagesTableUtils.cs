@@ -186,23 +186,37 @@ namespace windows_client.DbUtils
             else
             {
                 obj = ConversationsList.ConvMap[convMsg.Msisdn];
-                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN)
+                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
-                    if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN) // shows invite msg
-                    {
-                        if (!obj.IsFirstMsg)
-                            return obj;
-                        obj.IsFirstMsg = false;
-                    }
-
                     string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
                     GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], obj.Msisdn);
                     string text = HikeConstants.USER_JOINED;
                     if (!gp.IsOnHike)
                         text = HikeConstants.USER_INVITED;
                     obj.LastMessage = gp.Name + text;
-                }
 
+                    if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMsg.Msisdn)) // this is to store firstMsg logic
+                    {
+                        obj.IsFirstMsg = true;
+                        PhoneApplicationService.Current.State.Remove("GC_" + convMsg.Msisdn);
+                        Debug.WriteLine("Phone Application Service : GC_{0} removed.", convMsg.Msisdn);
+                    }
+                    else
+                        obj.IsFirstMsg = false;
+                }
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN) // shows invite msg
+                {
+                    if (!obj.IsFirstMsg)
+                        return obj;
+                    obj.IsFirstMsg = false;
+
+                    string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], obj.Msisdn);
+                    string text = HikeConstants.USER_JOINED;
+                    if (!gp.IsOnHike && gp.IsDND && !gp.HasOptIn)
+                        text = HikeConstants.WAITING_TO_JOIN;
+                    obj.LastMessage = gp.Name + text;
+                }
                 else
                     obj.LastMessage = convMsg.Message;
 
