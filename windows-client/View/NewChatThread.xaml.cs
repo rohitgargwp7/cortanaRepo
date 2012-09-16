@@ -1837,7 +1837,7 @@ namespace windows_client.View
                             toast.Title = cObj.ContactName;
                         else
                             toast.Title = cObj.Msisdn;
-                        toast.Message = convMessage.Message;
+                        toast.Message = cObj.LastMessage;
                         toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
                         toast.Show();
                     });

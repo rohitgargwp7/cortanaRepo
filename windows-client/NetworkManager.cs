@@ -118,7 +118,6 @@ namespace windows_client
                         ConvMessage cm = new ConvMessage(oj, true);
                         MessagesTableUtils.addChatMessage(cm, false);
                         obj.IsFirstMsg = false;
-                        PhoneApplicationService.Current.State.Remove("GC_"+obj.Msisdn);
                         ConversationTableUtils.updateConversation(obj);
                         vals[2] = cm;
                     }
