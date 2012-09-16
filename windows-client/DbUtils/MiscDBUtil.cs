@@ -24,7 +24,6 @@ namespace windows_client.DbUtils
                 App.appSettings.Remove(App.GROUPS_CACHE);
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
-                context.groupMembers.DeleteAllOnSubmit<GroupMembers>(context.GetTable<GroupMembers>());
                 try
                 {
                     context.SubmitChanges(ConflictMode.ContinueOnConflict);

@@ -226,7 +226,7 @@ namespace windows_client.View
         {
             if (allContactsList == null || allContactsList.Count == 0)
                 return null;
-            List<GroupMembers> activeExistingGroupMembers = null;
+            List<GroupParticipant> activeExistingGroupMembers = null;
             if (isGroupChat)
                 msisdnPositions = new Dictionary<string, List<MsisdnCordinates>>();
             List<Group<ContactInfo>> glist = createGroups();
@@ -234,7 +234,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
                 isExistingGroup = true;
-                activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupMembers>;
+                activeExistingGroupMembers = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
 
                 //TODO start this loop from end, after sorting is done on onHike status
                 smsUserCount = 0;
@@ -281,7 +281,7 @@ namespace windows_client.View
             return glist;
         }
 
-        private bool msisdnAlreadyExists(string msisdn, List<GroupMembers> activeExistingGroupMembers)
+        private bool msisdnAlreadyExists(string msisdn, List<GroupParticipant> activeExistingGroupMembers)
         {
             for (int i = 0; i < activeExistingGroupMembers.Count; i++)
             {

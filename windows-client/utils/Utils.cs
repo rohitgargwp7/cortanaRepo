@@ -97,6 +97,9 @@ namespace windows_client.utils
         }
         public static GroupParticipant getGroupParticipant(string defaultName, string msisdn,string grpId)
         {
+            if (grpId == null)
+                return null;
+
             if (groupCache == null)
             {
                 groupCache = new Dictionary<string, List<GroupParticipant>>();
@@ -111,7 +114,7 @@ namespace windows_client.utils
                 }
             }
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp = new GroupParticipant(cInfo != null ? getFirstName(cInfo.Name) : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
+            GroupParticipant gp = new GroupParticipant(grpId,cInfo != null ? getFirstName(cInfo.Name) : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             if (groupCache.ContainsKey(grpId))
             {
                 groupCache[grpId].Add(gp);
@@ -140,26 +143,16 @@ namespace windows_client.utils
             return !msisdn.StartsWith("+");
         }
 
-        public static string defaultGroupName(List<GroupMembers> participantList)
+        public static string defaultGroupName(string grpId)
         {
-            if (participantList == null || participantList.Count == 0)
-            {
-                return "Group";
-            }
-            List<GroupMembers> groupParticipants = new List<GroupMembers>();
-            for (int i = 0; i < participantList.Count; i++)
-            {
-                if (!participantList[i].HasLeft)
-                {
-                    groupParticipants.Add(participantList[i]);
-                }
-            }
-            groupParticipants.Sort(Utils.CompareByName<GroupMembers>); 
-
+            
+            List<GroupParticipant> groupParticipants = null;
+            Utils.GroupCache.TryGetValue(grpId,out groupParticipants);
+            if (groupParticipants == null || groupParticipants.Count == 0) // this should not happen as at this point cache should be populated
+                return "GROUP";
+           
             switch (groupParticipants.Count)
             {
-                case 0:
-                    return "";
                 case 1:
                     return Utils.getFirstName(groupParticipants[0].Name);
                 case 2:
@@ -169,24 +162,6 @@ namespace windows_client.utils
                     return Utils.getFirstName(groupParticipants[0].Name) + " and "
                     + (groupParticipants.Count - 1) + " others";
             }
-        }
-
-        public static List<GroupMembers> getGroupMemberList(JObject jsonObject)
-        {
-            if (jsonObject == null)
-                return null;
-            string grpId = jsonObject[HikeConstants.TO].ToString();
-            JArray array = (JArray)jsonObject[HikeConstants.DATA];
-            List<GroupMembers> gmList = new List<GroupMembers>(array.Count);
-            for (int i = 0; i < array.Count; i++)
-            {
-                JObject nameMsisdn = (JObject)array[i];
-                string contactNum = (string)nameMsisdn[HikeConstants.MSISDN];
-                string contactName = getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], contactNum, grpId).Name;
-                GroupMembers gm = new GroupMembers((string)jsonObject[HikeConstants.TO], contactNum, contactName);
-                gmList.Add(gm);
-            }
-            return gmList;
         }
 
         public static int CompareByName<T>(T a, T b)

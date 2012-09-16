@@ -75,7 +75,6 @@ namespace windows_client.View
         //private Dictionary<ConvMessage, SentChatBubble> _convMessageSentBubbleMap = new Dictionary<ConvMessage, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
-        List<GroupMembers> groupMemberList = null;
 
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _nonAttachmentMenu;
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploading;
@@ -278,7 +277,20 @@ namespace windows_client.View
             progressBar.IsEnabled = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
-            bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+            bw.DoWork += (s, e) =>
+            {
+                Stopwatch st = Stopwatch.StartNew();
+                attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
+                //attachments = new Dictionary<long, Attachment>();
+                loadMessages();
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
+                initBlockUnblockState();
+
+                App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
+                registerListeners();
+            };
             bw.RunWorkerAsync();
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
@@ -399,7 +411,7 @@ namespace windows_client.View
                 {
                     isGroupChat = true;
                     GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                    if (!gi.GroupAlive)
+                    if (gi!= null && !gi.GroupAlive)
                         isGroupAlive = false;
                 }
 
@@ -522,100 +534,67 @@ namespace windows_client.View
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
             this.State.Remove(HikeConstants.GROUP_CHAT);
-            groupMemberList = new List<GroupMembers>(contactsForGroup.Count);
+            List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5);
             for (int i = 0; i < contactsForGroup.Count; i++)
             {
                 if (!contactsForGroup[i].OnHike)
                 {
                     isGcFirstMsg = true;
-                    PhoneApplicationService.Current.State["GC_"+mContactNumber] = true; // this is to track , first msg after GC.
+                    PhoneApplicationService.Current.State["GC_" + mContactNumber] = true; // this is to track , first msg after GC.
+                    Debug.WriteLine("Phone Application Service : GC_{0} added.", mContactNumber);
                 }
-                GroupMembers gm = new GroupMembers(mContactNumber, contactsForGroup[i].Msisdn, contactsForGroup[i].Name);
-                gm.IsOnHike = contactsForGroup[i].OnHike;
-                groupMemberList.Add(gm);
+                GroupParticipant gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
+                usersToAdd.Add(gp);
                 if (Utils.GroupCache == null)
-                {
                     Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                }
+
                 if (!Utils.GroupCache.ContainsKey(mContactNumber))
                 {
                     List<GroupParticipant> l = new List<GroupParticipant>(5);
-                    l.Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
+                    l.Add(gp);
                     Utils.GroupCache.Add(mContactNumber, l);
                 }
                 else
-                {
-                    Utils.GroupCache[mContactNumber].Add(new GroupParticipant(Utils.getFirstName(contactsForGroup[i].Name), contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike));
-                }
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                    Utils.GroupCache[mContactNumber].Add(gp);
             }
-            JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, groupMemberList, isNewgroup);
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
+            Utils.GroupCache[mContactNumber].Sort();
+            usersToAdd.Sort();
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
             if (isNewgroup)
-                bw.DoWork += new DoWorkEventHandler(createGroup_Async);
-            else
             {
-                bw.DoWork += new DoWorkEventHandler(addToGroup_Async);
-                groupMemberList.AddRange(groupMemberList);
+                BackgroundWorker bw = new BackgroundWorker();
+                
+                bw.DoWork += (ss, ee) =>
+                {
+                    GroupInfo gi = new GroupInfo(mContactNumber, null, groupOwner, true);
+                    GroupTableUtils.addGroupInfo(gi);
+                };
+                bw.RunWorkerAsync();
             }
-            bw.RunWorkerAsync(groupMemberList);
 
-            mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(groupMemberList) : mContactName;
+            mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(mContactNumber) : mContactName;
 
             ConvMessage cm = new ConvMessage(obj, true);
-            sendMsg(cm, true,false);
+            sendMsg(cm, true, false);
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // inform others about group
         }
 
-        private void addToGroup_Async(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            List<GroupMembers> memberList = (List<GroupMembers>)e.Argument;
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                GroupTableUtils.addGroupMembers(memberList);
-            }
-
-        }
-
-        private void createGroup_Async(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            List<GroupMembers> memberList = (List<GroupMembers>)e.Argument;
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                GroupTableUtils.addGroupMembers(memberList);
-                GroupInfo gi = new GroupInfo(mContactNumber, null, groupOwner, true);
-                GroupTableUtils.addGroupInfo(gi);
-            }
-
-        }
-
-        private JObject createGroupJsonPacket(string type, List<GroupMembers> grpList, bool isNewGroup)
+        private JObject createGroupJsonPacket(string type, List<GroupParticipant> usersToAdd, bool isNewGroup)
         {
             JObject obj = new JObject();
             try
             {
                 obj[HikeConstants.TYPE] = type;
-                obj[HikeConstants.TO] = grpList[0].GroupId;
+                obj[HikeConstants.TO] = mContactNumber;
                 if (type == (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN))
                 {
                     JArray array = new JArray();
-                    for (int i = 0; i < grpList.Count; i++)
+                    for (int i = 0; i < usersToAdd.Count; i++)
                     {
                         JObject nameMsisdn = new JObject();
-                        nameMsisdn[HikeConstants.NAME] = grpList[i].Name;
-                        nameMsisdn[HikeConstants.MSISDN] = grpList[i].Msisdn;
+                        nameMsisdn[HikeConstants.NAME] = usersToAdd[i].Name;
+                        nameMsisdn[HikeConstants.MSISDN] = usersToAdd[i].Msisdn;
                         array.Add(nameMsisdn);
                     }
                     if (isNewGroup) // if new group add owners info also
@@ -750,30 +729,6 @@ namespace windows_client.View
 
         #region BACKGROUND WORKER
 
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                Stopwatch st = Stopwatch.StartNew();
-                attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
-                //attachments = new Dictionary<long, Attachment>();
-                loadMessages();
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
-                initBlockUnblockState();
-
-                App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
-                registerListeners();
-            }
-        }
-
         private void loadMessages()
         {
             int i;
@@ -793,8 +748,12 @@ namespace windows_client.View
 
             JArray ids = new JArray();
             List<long> dbIds = new List<long>();
-            for (i = (messagesList.Count - limit >= 0 ? (messagesList.Count - limit) : 0); i < messagesList.Count; i++)
+            int count = 0;
+            for (i = 0; i < messagesList.Count; i++)
             {
+                count++;
+                if (count % 5 == 0)
+                    Thread.Sleep(5);
                 messagesList[i].IsSms = !isOnHike;
                 if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
                 {
@@ -810,45 +769,7 @@ namespace windows_client.View
                     AddMessageToUI(cm, true);
                 });
             }
-
-            int count = 0;
-            for (i = messagesList.Count - limit - 1; i >= 0; i--)
-            {
-                count++;
-                messagesList[i].IsSms = !isOnHike;
-                if (messagesList[i].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
-                {
-                    isPublish = true;
-                    if (messagesList[i].GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                        ids.Insert(0, Convert.ToString(messagesList[i].MappedMessageId));
-                    dbIds.Insert(0, messagesList[i].MessageId);
-                    messagesList[i].MessageStatus = ConvMessage.State.RECEIVED_READ;
-                }
-                else
-                {
-                    /* just publish the message */
-
-                    if (isPublish)
-                    {
-                        JObject obj = new JObject();
-                        obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
-                        obj.Add(HikeConstants.TO, mContactNumber);
-                        obj.Add(HikeConstants.DATA, ids);
-
-                        mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
-                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // handle return to sender
-                        updateLastMsgColor(mContactNumber);
-                        isPublish = false;
-                    }
-                }
-                ConvMessage cm = messagesList[i];
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    AddMessageToUI(cm, true);
-                });
-                if (count % 5 == 0)
-                    Thread.Sleep(5);
-            }
+            
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 Scroller.Opacity = 1;
@@ -987,7 +908,7 @@ namespace windows_client.View
             App.ViewModel.MessageListPageCollection.Remove(cObj);
             ConversationsList.ConvMap.Remove(mContactNumber);
             Utils.GroupCache.Remove(mContactNumber);
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             NavigationService.GoBack();
         }
 
@@ -1182,7 +1103,6 @@ namespace windows_client.View
                         msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                     else if(convMessage.MessageId == -1)
                         msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
-                    //_convMessageSentBubbleMap.Add(convMessage, (SentChatBubble)chatBubble);
                 }
                 else
                 {
@@ -1207,7 +1127,7 @@ namespace windows_client.View
                 string[] msisdns = splitUserJoinedMessage(convMessage);
                 for (int i = 0; i < msisdns.Length; i++)
                 {
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i],convMessage.Msisdn);
+                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i], convMessage.Msisdn);
                     string text = HikeConstants.USER_JOINED;
                     if (!gp.IsOnHike)
                         text = HikeConstants.USER_INVITED;
@@ -1229,7 +1149,10 @@ namespace windows_client.View
                 for (int i = 0; i < msisdns.Length; i++)
                 {
                     GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i], convMessage.Msisdn);
-                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + HikeConstants.USER_JOINED, true);
+                    string text = HikeConstants.USER_JOINED;
+                    if (!gp.IsOnHike && gp.IsDND && !gp.HasOptIn)
+                        text = HikeConstants.WAITING_TO_JOIN;
+                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + text, true);
                     if (addToLast)
                     {
                         this.MessageList.Children.Add(chatBubble);
@@ -1367,8 +1290,8 @@ namespace windows_client.View
             convMessage.IsSms = !isOnHike;
             convMessage.MessageId = TempMessageId;
 
-            if(isGcFirstMsg)
-                sendMsg(convMessage, false,true);
+            if (isGcFirstMsg)
+                sendMsg(convMessage, false, true);
             else
                 sendMsg(convMessage, false, false);
         }
@@ -1489,7 +1412,7 @@ namespace windows_client.View
             return names;
         }
 
-        private void sendMsg(ConvMessage convMessage, bool isNewGroup,bool isFirstMsgAfterGC)
+        private void sendMsg(ConvMessage convMessage, bool isNewGroup, bool isFirstMsgAfterGC)
         {
             if (isNewGroup)
             {
@@ -1877,6 +1800,9 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
+                if (ConversationsList.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
+                    isGcFirstMsg = true;
+
                 /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
                 {
@@ -1895,7 +1821,7 @@ namespace windows_client.View
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
-                            if(cm != null)
+                            if (cm != null)
                                 AddMessageToUI(cm, true);
                             isGcFirstMsg = false;
                         }
@@ -2132,6 +2058,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
+            fileTransferIconButton.IsEnabled = false;
         }
 
         #endregion

@@ -117,7 +117,6 @@
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\GroupInfo.cs" />
-    <Compile Include="Model\GroupMembers.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
@@ -140,9 +139,6 @@
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
-    <Compile Include="View\ChatThread.xaml.cs">
-      <DependentUpon>ChatThread.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
@@ -207,10 +203,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\SentChatBubble.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\ChatThread.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

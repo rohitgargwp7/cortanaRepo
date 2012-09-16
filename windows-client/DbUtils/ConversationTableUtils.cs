@@ -62,8 +62,7 @@ namespace windows_client.DbUtils
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
-                string[] msisdns = NewChatThread.splitUserJoinedMessage(convMessage);
-                GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1],obj.Msisdn);
+                GroupParticipant gp = Utils.GroupCache[obj.Msisdn][Utils.GroupCache[obj.Msisdn].Count -1]; // get last element of group in sorted order.
                 string text = HikeConstants.USER_JOINED;
                 if (!gp.IsOnHike)
                     text = HikeConstants.USER_INVITED;
@@ -116,6 +115,7 @@ namespace windows_client.DbUtils
             {
                 obj.IsFirstMsg = true;
                 PhoneApplicationService.Current.State.Remove("GC_" + convMessage.Msisdn);
+                Debug.WriteLine("Phone Application Service : GC_{0} removed.", convMessage.Msisdn);
             }
             else
                 obj.IsFirstMsg = false;
