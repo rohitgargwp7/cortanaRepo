@@ -191,7 +191,7 @@ namespace windows_client.View
                 {
                     _attachmentUploading = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
                     _attachmentUploading.Add("cancel", MenuItem_Click_Cancel);
-                    _attachmentUploading.Add("delete", MenuItem_Click_Delete);
+                    //_attachmentUploading.Add("delete", MenuItem_Click_Delete);
                 }
                 return _attachmentUploading;
             }
@@ -1063,11 +1063,11 @@ namespace windows_client.View
                         chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
                         FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
                         MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
-
                     }
                     else if (chatBubble is SentChatBubble)
                     {
                         //resend message
+                        chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
                         ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
                         convMessage.IsSms = !isOnHike;
                         convMessage.HasAttachment = true;
