@@ -22,14 +22,14 @@ namespace windows_client.Controls
             {
                 this.UserName.Text = message;
             }
-            this.OnHikeImage.Source = UI_Utils.Instance.OnHikeImage;
+            this.OnHikeImage.Source = UI_Utils.OnHikeImage;
             if (onHike)
             {
-                //this.HikeBubble.Source = UI_Utils.Instance.MessageReadBitmapImage;
+                //this.HikeBubble.Source = UI_Utils.MessageReadBitmapImage;
             }
             else
             {
-                //this.HikeBubble.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                //this.HikeBubble.Source = UI_Utils.DefaultAvatarBitmapImage;
 
             }
         }
