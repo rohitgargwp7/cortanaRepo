@@ -13,6 +13,58 @@ using windows_client.utils;
 namespace windows_client.Controls
 {
     public partial class NotificationChatBubble : MyChatBubble {
+
+        private string parameter;
+
+        public enum MessageType
+        {
+            HIKE_PARTICIPANT_JOINED, // hike participant has left
+            SMS_PARTICIPANT_JOINED, // sms participant has joined
+            PARTICIPANT_LEFT, // The participant has joined
+            GROUP_END, // Group chat has ended
+            WAITING,
+            REWARD,
+        }
+
+
+        public NotificationChatBubble(MessageType messageType, string parameter)
+        {
+            InitializeComponent();
+            this.parameter = parameter;
+            setNotificationMessage(messageType);
+        }
+
+        public void setNotificationMessage(MessageType messageType)
+        {
+            switch (messageType)
+            {
+                case MessageType.HIKE_PARTICIPANT_JOINED:
+                    UserName.Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
+                    NotificationImage.Source = UI_Utils.OnHikeImage;
+                    break;
+                case MessageType.SMS_PARTICIPANT_JOINED:
+                    UserName.Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
+                    NotificationImage.Source = UI_Utils.NotOnHikeImage;
+                    break;
+                case MessageType.PARTICIPANT_LEFT:
+                    UserName.Text = String.Format(HikeConstants.PARTICIPANT_LEFT, parameter);
+                    NotificationImage.Source = UI_Utils.ParticipantLeft;
+                    break;
+                case MessageType.GROUP_END:
+                    UserName.Text = String.Format(HikeConstants.GROUP_CHAT_ENDED, parameter);
+                    break;
+                case MessageType.WAITING:
+                    UserName.Text = String.Format(HikeConstants.WAITING_TO_JOIN, parameter);
+                    NotificationImage.Source = UI_Utils.Waiting;
+                    break;
+                case MessageType.REWARD:
+                    UserName.Text = String.Format(HikeConstants.REWARDS, parameter);
+                    NotificationImage.Source = UI_Utils.Reward;
+                    break;
+            }
+        }
+
+
         public NotificationChatBubble(string message, bool onHike) {
             // Required to initialize variables
             InitializeComponent();
@@ -22,7 +74,7 @@ namespace windows_client.Controls
             {
                 this.UserName.Text = message;
             }
-            this.OnHikeImage.Source = UI_Utils.OnHikeImage;
+            this.NotificationImage.Source = UI_Utils.OnHikeImage;
             if (onHike)
             {
                 //this.HikeBubble.Source = UI_Utils.MessageReadBitmapImage;

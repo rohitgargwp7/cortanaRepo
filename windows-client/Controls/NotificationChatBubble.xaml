@@ -24,7 +24,7 @@
             </Grid.ColumnDefinitions>
             <Border BorderBrush="#999999" BorderThickness="2" Height="40"/>
             <StackPanel Orientation="Horizontal" Name="notStackPanel">
-                <Image x:Name="OnHikeImage" Height="20" Width="20" Margin="10,0,0,0"></Image>
+                <Image x:Name="NotificationImage" Height="20" Width="20" Margin="10,0,0,0"></Image>
                 <TextBlock x:Name="UserName" Width="Auto" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" Text="Madhur" Margin="10,3,0,0"/>
             </StackPanel>
 
