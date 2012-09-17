@@ -13,6 +13,7 @@ using Phone.Controls;
 using System.Diagnostics;
 using System.ComponentModel;
 using Microsoft.Phone.Controls;
+using System.Net.NetworkInformation;
 
 namespace windows_client.utils
 {
@@ -41,7 +42,7 @@ namespace windows_client.utils
             bw.RunWorkerAsync();
         }
 
-        /* This is called when addressbook scanning on windows gets completed.*/
+        /* This is called when addressbook scanning on phone gets completed.*/
         public static void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
         {
             try
@@ -49,11 +50,34 @@ namespace windows_client.utils
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to scan contacts from phone : {0}", msec);
-                
                 Debug.WriteLine("Contacts callback thread : {0}", Thread.CurrentThread.ToString());
                 IEnumerable<Contact> contacts = e.Results;
                 Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
                 contactsMap = contactListMap;
+                if (!NetworkInterface.GetIsNetworkAvailable())
+                {
+                    App.WriteToIsoStorageSettings(App.CONTACT_SCANNING_FAILED, true);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
+
+                        if (currentPage != null)
+                        {
+                            EnterName enterNamePage = (EnterName)currentPage;
+                            if (enterNamePage.isClicked)
+                            {
+                                enterNamePage.msgTxtBlk.Opacity = 0;
+                                enterNamePage.nameErrorTxt.Text = "Network Error. Try Again!!";
+                                enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
+                                enterNamePage.progressBar.IsEnabled = false;
+                                enterNamePage.progressBar.Opacity = 0;
+                                enterNamePage.nextIconButton.IsEnabled = true;
+                            }
+                        }
+                    });
+
+                    return;
+                }
                 string token = (string)App.appSettings["token"];
                 AccountUtils.postAddressBook(contactListMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
             }
@@ -174,6 +198,7 @@ namespace windows_client.utils
             JObject obj = jsonForAddressBookAndBlockList;
             if (obj == null)
             {
+                App.WriteToIsoStorageSettings(App.CONTACT_SCANNING_FAILED, true);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
@@ -181,16 +206,23 @@ namespace windows_client.utils
                     if (currentPage != null)
                     {
                         EnterName enterNamePage = (EnterName)currentPage;
-                        enterNamePage.enterNameBtn.Text = "Contact Scanning failed!! Try Later";
-                        enterNamePage.progressBar.IsEnabled = true;
-                        enterNamePage.progressBar.Visibility = Visibility.Collapsed;
+                        if (enterNamePage.isClicked)
+                        {
+                            enterNamePage.msgTxtBlk.Opacity = 0;
+                            enterNamePage.nameErrorTxt.Text = "Contact Scanning failed!! Try Later!!";
+                            enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
+                            enterNamePage.progressBar.IsEnabled = false;
+                            enterNamePage.progressBar.Opacity = 0;
+                            enterNamePage.nextIconButton.IsEnabled = true;
+                        }
                     }
                 });
                 return;
             }
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
-            int count =1;
+            int count = 1;
+            // waiting for DB to be created
             while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 30)
             {
                 Thread.Sleep(1 * 1000);
@@ -205,7 +237,7 @@ namespace windows_client.utils
                     if (currentPage != null)
                     {
                         EnterName enterNamePage = (EnterName)currentPage;
-                        enterNamePage.enterNameBtn.Text = "Failed. Close App and try later !!";
+                        enterNamePage.msgTxtBlk.Text = "Failed. Close App and try later !!";
                     }
                 });
             }
@@ -218,21 +250,26 @@ namespace windows_client.utils
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add addressbook {0}",msec);
+                Debug.WriteLine("Time to add addressbook {0}", msec);
                 UsersTableUtils.addBlockList(blockList);
-                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED,true);
+                App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED, true);
+                App.appSettings.Remove(App.CONTACT_SCANNING_FAILED);
             }
             App.Ab_scanned = true;
             App.isABScanning = false;
-            
-            while (!App.appSettings.Contains(App.ACCOUNT_NAME))
+
+            while (!App.appSettings.Contains(App.ACCOUNT_NAME) && !App.appSettings.Contains(App.SET_NAME_FAILED))
             {
                 Thread.Sleep(1 * 1000);
             }
+
+            if (App.appSettings.Contains(App.SET_NAME_FAILED)) // case when set name api is failed
+                return;
+
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 var currentPage = ((PhoneApplicationFrame)Application.Current.RootVisual).Content;
-                
+
                 if (currentPage != null)
                 {
                     EnterName enterNamePage = (EnterName)currentPage;

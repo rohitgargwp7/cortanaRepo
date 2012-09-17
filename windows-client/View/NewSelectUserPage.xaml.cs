@@ -17,6 +17,7 @@ using System.Text;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Net.NetworkInformation;
 
 
 namespace windows_client.View
@@ -326,6 +327,7 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Name = null;
                 contact = GetContactIfExists(contact);
             }            
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
@@ -500,6 +502,7 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Name = null;
                 contact = GetContactIfExists(contact);
             }  
 
@@ -551,13 +554,17 @@ namespace windows_client.View
 
         private void refreshContacts_Click(object sender, EventArgs e)
         {
-            if (progress == null)
+            if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                progress = new MyProgressIndicator("This may take a minute or two...");
+                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                return;
             }
+            if (progress == null)
+                progress = new MyProgressIndicator("This may take a minute or two...");
 
             disableAppBar();
             progress.Show();
+            
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
         }
 

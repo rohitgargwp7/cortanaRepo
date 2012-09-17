@@ -54,9 +54,9 @@ namespace windows_client
             }
 
             nextIconButton.IsEnabled = false;
-            msgTxtBlk.Visibility = Visibility.Visible;
+            msgTxtBlk.Opacity = 1;
             msgTxtBlk.Text = "Verifying your number";
-            msisdnErrorTxt.Opacity = 0;
+            msisdnErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));         
@@ -69,7 +69,8 @@ namespace windows_client
                 //logger.Info("HTTP", "Unable to Validate Phone Number.");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    msisdnErrorTxt.Opacity = 1;
+                    msgTxtBlk.Opacity = 0;
+                    msisdnErrorTxt.Visibility = Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
@@ -83,8 +84,9 @@ namespace windows_client
                 //logger.Info("SignupTask", "Unable to send PIN to user");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    msisdnErrorTxt.Text = "Unable to send PIN to user";
-                    msisdnErrorTxt.Opacity = 1;
+                    msgTxtBlk.Opacity = 0;
+                    msisdnErrorTxt.Text = "Unable to send PIN. Kindly check Phone Number.";
+                    msisdnErrorTxt.Visibility = Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
@@ -119,9 +121,9 @@ namespace windows_client
                     obj = null;
                 }
 
-                if (this.State.TryGetValue("msisdnErrorTxt.Opacity", out obj))
+                if (this.State.TryGetValue("msisdnErrorTxt.Visibility", out obj))
                 {
-                    msisdnErrorTxt.Opacity = (int)obj;
+                    msisdnErrorTxt.Visibility = (Visibility)obj;
                     msisdnErrorTxt.Text = (string)this.State["msisdnErrorTxt.Text"];
                 }
             }
@@ -141,15 +143,15 @@ namespace windows_client
             else
                 this.State.Remove("txtEnterPhone");
 
-            if (msisdnErrorTxt.Opacity == 1)
+            if (msisdnErrorTxt.Visibility == Visibility.Visible)
             {
                 this.State["msisdnErrorTxt.Text"] = msisdnErrorTxt.Text;
-                this.State["msisdnErrorTxt.Opacity"] = msisdnErrorTxt.Opacity;
+                this.State["msisdnErrorTxt.Visibility"] = msisdnErrorTxt.Visibility;
             }
             else
             {
                 this.State.Remove("msisdnErrorTxt.Text");
-                this.State.Remove("msisdnErrorTxt.Opacity");
+                this.State.Remove("msisdnErrorTxt.Visibility");
             }
         }
 

@@ -62,14 +62,14 @@
                         <toolkit:PhoneTextBox x:Name="txtEnterPhone" GotFocus="txtEnterPhone_GotFocus" BorderThickness="0" InputScope="Number" Margin="0,-10,0,0" Width="279" Height="70" TextChanged="txtEnterPhone_TextChanged" />
                     </StackPanel>
                 </Border>
-                <TextBlock Height="24" TextAlignment="Center" 
-                           Margin="0,10,0,0" Name="msisdnErrorTxt" 
+                <TextBlock Height="25" TextAlignment="Center" 
+                           Margin="0,0,0,0" Name="msisdnErrorTxt" 
                            Text="Network Error. Try Again!!" 
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" 
                            Visibility="Collapsed" FontSize="18" Foreground="Red" />
 
-                <TextBlock x:Name="msgTxtBlk" FontSize="18" Visibility="Collapsed" 
+                <TextBlock x:Name="msgTxtBlk" FontSize="18" Opacity="0" 
                            Margin="0,10,0,0" HorizontalAlignment="Center"
                            Foreground="{StaticResource PhoneForegroundBrush}"
                            Text="Test"
