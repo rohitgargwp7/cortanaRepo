@@ -35,11 +35,10 @@ namespace windows_client.View
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
         private string charsEntered;
 
-        private readonly int maxSMSUsersAllowed = 5;
-        private readonly int maxUsersAllowed = 10;
-        private int defaultGroupmembers = 0;
+        private readonly int MAX_SMS_USRES_ALLOWED = 5;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 10;
+        private int defaultGroupmembers = 0; 
 
-        private bool textChangedFromDelete = false;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
 
         List<ContactInfo> allContactsList = null; // contacts list
@@ -68,15 +67,15 @@ namespace windows_client.View
                     existingGroupUsers = value;
                     Deployment.Current.Dispatcher.BeginInvoke(()=>
                     {
-                        if (existingGroupUsers < 3)
-                        {
-                            if (doneIconButton.IsEnabled)
-                                doneIconButton.IsEnabled = false;
-                        }
-                        else
+                        if (existingGroupUsers >= 3 || (defaultGroupmembers >=3 && (existingGroupUsers-defaultGroupmembers > 0)))
                         {
                             if (!doneIconButton.IsEnabled)
                                 doneIconButton.IsEnabled = true;
+                        }
+                        else
+                        {
+                            if (doneIconButton.IsEnabled)
+                                doneIconButton.IsEnabled = false;
                         }
                     });
                 }
@@ -244,7 +243,7 @@ namespace windows_client.View
                     {
                         smsUserCount++;
                     }
-                    ExistingGroupUsers++;
+                    existingGroupUsers++;
                 }
                 defaultGroupmembers = ExistingGroupUsers;
             }
@@ -301,51 +300,6 @@ namespace windows_client.View
 
         #endregion
 
-        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhone(string charsEntered)
-        {
-            if (groupedList == null || groupedList.Count == 0)
-                return null;
-            bool showDefaultContact = true;
-            List<Group<ContactInfo>> glistFiltered = createGroups();
-            for (int i = 0; i < groupedList.Count; i++)
-            {
-                for (int j = 0; j < (groupedList[i].Items == null ? 0 : groupedList[i].Items.Count); j++)
-                {
-                    ContactInfo cn = groupedList[i].Items[j];
-                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
-                    {
-                        glistFiltered[i].Items.Add(cn);
-                        showDefaultContact = false;
-                    }
-                }
-            }
-            if (isNumber(charsEntered) && showDefaultContact)
-            {
-                glistFiltered[26].Items.Insert(0, defaultContact);
-                glistFiltered[26].Items[0].Name = charsEntered;
-                if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
-                {
-                    glistFiltered[26].Items[0].Msisdn = TAP_MSG;
-                }
-                else
-                {
-                    glistFiltered[26].Items[0].Msisdn = "Enter Valid Number";
-                }
-            }
-
-            return glistFiltered;
-        }
-
-        private bool isNumber(string charsEntered)
-        {
-            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
-            {
-                charsEntered = charsEntered.Substring(1);
-            }
-            long i = 0;
-            return long.TryParse(charsEntered, out i);
-        }
-
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
@@ -356,45 +310,17 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
-            }
-            contact = GetContactIfExists(contact);
+                contact = GetContactIfExists(contact);
+            }            
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
-
-        private ContactInfo GetContactIfExists(ContactInfo contact)
-        {
-            for (int i = 0; i < 26; i++)
-            {
-                for(int k=0;k<glistFiltered[i].Items.Count;k++)
-                {
-                    if (glistFiltered[i].Items[k].Msisdn == contact.Msisdn)
-                        return glistFiltered[i].Items[k];
-                }
-            }
-            return contact;
         }
 
         /*
          * Simplistic normalization function.
          * TODO: Improve it more later
          */
-        private string normalizeNumber(string msisdn)
-        {
-            if (msisdn.StartsWith("+"))
-            {
-                return msisdn;
-            }
-            else if (msisdn.StartsWith("0"))
-            {
-                return "+91" + msisdn.Substring(1);
-            }
-            else
-            {
-                return "+91" + msisdn;
-            }
-        }
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -414,6 +340,8 @@ namespace windows_client.View
             if (String.IsNullOrWhiteSpace(charsEntered))
             {
                 contactsListBox.ItemsSource = groupedList;
+                enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 return;
             }
 
@@ -455,6 +383,13 @@ namespace windows_client.View
         {
             if (groupedList == null || groupedList.Count == 0)
                 return null;
+            bool areCharsNumber = false;
+            if (isNumber(charsEntered))
+            {
+                areCharsNumber = true;
+                if (charsEntered.StartsWith("+"))
+                    charsEntered = charsEntered.Substring(1);
+            }
             List<Group<ContactInfo>> listToIterate = null;
             int charsLength = charsEntered.Length - 1;
             if (charsLength > 0)
@@ -477,11 +412,8 @@ namespace windows_client.View
                     }
                 }
             }
-            if (isNumber(charsEntered))
+            if (areCharsNumber)
             {
-                if (glistFiltered[26].Items == null)
-                    glistFiltered[26].Items = new List<ContactInfo>(1);
-
                 glistFiltered[26].Items.Insert(0, defaultContact);
                 glistFiltered[26].Items[0].Name = charsEntered;
                 if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
@@ -494,11 +426,6 @@ namespace windows_client.View
                 }
             }
             return glistFiltered;
-        }
-
-        private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
-        {
-            enterNameTxt.BorderBrush = textBoxBorder;
         }
 
         #region GROUP CHAT RELATED
@@ -555,16 +482,19 @@ namespace windows_client.View
 
             if (contact == null || contact.Msisdn == "Enter Valid Number")
                 return;
-        
-            if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number  
-                contact.Msisdn = normalizeNumber(contact.Name);
 
-            if (!contact.OnHike && smsUserCount == maxSMSUsersAllowed)
+            if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+            {
+                contact.Msisdn = normalizeNumber(contact.Name);
+                contact = GetContactIfExists(contact);
+            }  
+
+            if (!contact.OnHike && smsUserCount == MAX_SMS_USRES_ALLOWED)
             {
                 MessageBoxResult result = MessageBox.Show("5 SMS users already selected", "Cannot add user !!", MessageBoxButton.OK);
                 return;
             }
-            if (existingGroupUsers == maxUsersAllowed)
+            if (existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP)
             {
                 MessageBoxResult result = MessageBox.Show("10 users already selected", "Cannot add user !!", MessageBoxButton.OK);
                 return;
@@ -746,6 +676,83 @@ namespace windows_client.View
 
         #endregion
 
+        private string normalizeNumber(string msisdn)
+        {
+            switch (msisdn.Length)
+            {
+                case 10: return ("+91" + msisdn);
+                case 11: return ("+91" + msisdn.Substring(1));
+                case 12: return ("+" + msisdn);
+                case 13: return msisdn;
+                default: return msisdn;
+            }
+        }
+
+        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhone(string charsEntered)
+        {
+            if (groupedList == null || groupedList.Count == 0)
+                return null;
+            bool areCharsNumber = false;
+            if (isNumber(charsEntered))
+            {
+                areCharsNumber = true;
+                if (charsEntered.StartsWith("+"))
+                    charsEntered = charsEntered.Substring(1);
+            }
+            bool showDefaultContact = true;
+            List<Group<ContactInfo>> glistFiltered = createGroups();
+            for (int i = 0; i < groupedList.Count; i++)
+            {
+                for (int j = 0; j < (groupedList[i].Items == null ? 0 : groupedList[i].Items.Count); j++)
+                {
+                    ContactInfo cn = groupedList[i].Items[j];
+                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
+                    {
+                        glistFiltered[i].Items.Add(cn);
+                        showDefaultContact = false;
+                    }
+                }
+            }
+            if (areCharsNumber && showDefaultContact)
+            {
+                glistFiltered[26].Items.Insert(0, defaultContact);
+                glistFiltered[26].Items[0].Name = charsEntered;
+                if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
+                {
+                    glistFiltered[26].Items[0].Msisdn = TAP_MSG;
+                }
+                else
+                {
+                    glistFiltered[26].Items[0].Msisdn = "Enter Valid Number";
+                }
+            }
+
+            return glistFiltered;
+        }
+
+        private bool isNumber(string charsEntered)
+        {
+            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
+            {
+                charsEntered = charsEntered.Substring(1);
+            }
+            long i = 0;
+            return long.TryParse(charsEntered, out i);
+        }
+
+        private ContactInfo GetContactIfExists(ContactInfo contact)
+        {
+            for (int i = 0; i < 26; i++)
+            {
+                for (int k = 0; k < glistFiltered[i].Items.Count; k++)
+                {
+                    if (glistFiltered[i].Items[k].Msisdn == contact.Msisdn)
+                        return glistFiltered[i].Items[k];
+                }
+            }
+            return contact;
+        }
+
         private void disableAppBar()
         {
             refreshIconButton.IsEnabled = false;
@@ -758,6 +765,11 @@ namespace windows_client.View
             refreshIconButton.IsEnabled = true;
             if (isGroupChat && existingGroupUsers >= 3)
                 doneIconButton.IsEnabled = true;
+        }
+
+        private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            enterNameTxt.BorderBrush = textBoxBorder;
         }
 
         private void enterNameTxt_Tap(object sender, System.Windows.Input.GestureEventArgs e)
