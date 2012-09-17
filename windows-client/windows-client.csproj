@@ -280,6 +280,13 @@
     <Content Include="View\images\audio_file_icon.png" />
     <Content Include="View\images\background.png" />
     <Resource Include="View\images\hike_header.png" />
+    <Content Include="View\images\chat_joined_blue.png" />
+    <Content Include="View\images\chat_joined_green.png" />
+    <Content Include="View\images\chat_left.png" />
+    <Content Include="View\images\chat_reward.png" />
+    <Content Include="View\images\chat_waiting.png" />
+    <Content Include="View\images\default_group.png" />
+    <Content Include="View\images\default_user.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />
     <Content Include="View\images\emoticons\emo_im_02_happy.png" />
     <Content Include="View\images\emoticons\emo_im_03_laugh.png" />
@@ -443,7 +450,6 @@
     <Content Include="View\images\icon_refresh.png" />
     <Content Include="View\images\icon_send.png" />
     <Content Include="View\images\icon_tick.png" />
-    <Content Include="View\images\ic_avatar0.png" />
     <Content Include="View\images\ic_delivered.png" />
     <Content Include="View\images\ic_read.png" />
     <Content Include="View\images\ic_sent.png" />
@@ -459,8 +465,6 @@
     <Resource Include="View\images\splash_logo.png" />
     <Content Include="View\images\splash_text.png" />
     <Content Include="View\images\ic_block_active.png" />
-    <Content Include="View\images\ic_hike_user.png" />
-    <Content Include="View\images\ic_sms_user.png" />
     <Resource Include="View\images\Splash.png" />
     <Content Include="View\images\terms_link.png" />
     <Content Include="View\images\trying_icon.png" />
