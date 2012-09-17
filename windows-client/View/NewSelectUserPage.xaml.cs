@@ -67,15 +67,31 @@ namespace windows_client.View
                     existingGroupUsers = value;
                     Deployment.Current.Dispatcher.BeginInvoke(()=>
                     {
-                        if (existingGroupUsers >= 3 || (defaultGroupmembers >=3 && (existingGroupUsers-defaultGroupmembers > 0)))
+                        if (!isExistingGroup) // case if group is new
                         {
-                            if (!doneIconButton.IsEnabled)
-                                doneIconButton.IsEnabled = true;
+                            if (existingGroupUsers >= 3)
+                            {
+                                if (!doneIconButton.IsEnabled)
+                                    doneIconButton.IsEnabled = true;
+                            }
+                            else
+                            {
+                                if (doneIconButton.IsEnabled)
+                                    doneIconButton.IsEnabled = false;
+                            }
                         }
                         else
                         {
-                            if (doneIconButton.IsEnabled)
-                                doneIconButton.IsEnabled = false;
+                            if (existingGroupUsers-defaultGroupmembers > 0)
+                            {
+                                if (!doneIconButton.IsEnabled)
+                                    doneIconButton.IsEnabled = true;
+                            }
+                            else
+                            {
+                                if (doneIconButton.IsEnabled)
+                                    doneIconButton.IsEnabled = false;
+                            }
                         }
                     });
                 }
@@ -340,8 +356,6 @@ namespace windows_client.View
             if (String.IsNullOrWhiteSpace(charsEntered))
             {
                 contactsListBox.ItemsSource = groupedList;
-                enterNameTxt.Text = stringBuilderForContactNames.ToString();
-                enterNameTxt.Select(enterNameTxt.Text.Length, 0);
                 return;
             }
 
