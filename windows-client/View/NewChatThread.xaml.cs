@@ -457,7 +457,14 @@ namespace windows_client.View
             {
                 ContactInfo obj = (ContactInfo)this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 mContactNumber = obj.Msisdn;
-                mContactName = obj.Name;
+                if (obj.Name != null)
+                    mContactName = obj.Name;
+                else
+                {
+                    mContactName = obj.Msisdn;
+                    isAddUser = true;
+                }
+
                 isOnHike = obj.OnHike;
 
                 /* Check if it is a forwarded msg */

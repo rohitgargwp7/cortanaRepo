@@ -327,6 +327,7 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Name = null;
                 contact = GetContactIfExists(contact);
             }            
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
@@ -501,6 +502,7 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Name = null;
                 contact = GetContactIfExists(contact);
             }  
 

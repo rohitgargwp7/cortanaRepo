@@ -186,6 +186,7 @@ namespace windows_client.Model
 
         public ContactInfo()
         {
+            _name = null;
         }
 
         public ContactInfo(string number, string name, string phoneNum)
