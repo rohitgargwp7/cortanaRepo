@@ -23,6 +23,10 @@ namespace windows_client.utils
         private static BitmapImage delivered;
         private static BitmapImage read;
         private static BitmapImage defaultAvatarBitmapImage;
+        private static BitmapImage defaultGroupImage;
+        private static BitmapImage waiting;
+        private static BitmapImage reward;
+        private static BitmapImage participantLeft;
         #endregion
 
         #region public static properties
@@ -61,7 +65,7 @@ namespace windows_client.utils
             get
             {
                 if (onHikeImage == null)
-                    onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
+                    onHikeImage = new BitmapImage(new Uri("/View/images/chat_joined_blue.png", UriKind.Relative));
                 return onHikeImage;
             }
         }
@@ -71,7 +75,7 @@ namespace windows_client.utils
             get
             {
                 if (notOnHikeImage == null)
-                    notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));
+                    notOnHikeImage = new BitmapImage(new Uri("/View/images/chat_joined_green.png", UriKind.Relative));
                 return notOnHikeImage;
             }
         }
@@ -151,10 +155,51 @@ namespace windows_client.utils
             get
             {
                 if (defaultAvatarBitmapImage == null)
-                    defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
+                    defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/default_user.png", UriKind.Relative));
                 return defaultAvatarBitmapImage;
             }
         }
+
+        public static BitmapImage DefaultGroupImage
+        {
+            get
+            {
+                if (defaultGroupImage == null)
+                    defaultGroupImage = new BitmapImage(new Uri("/View/images/default_group.png", UriKind.Relative));
+                return defaultGroupImage;
+            }
+        }
+
+        public static BitmapImage Waiting
+        {
+            get
+            {
+                if (waiting == null)
+                    waiting = new BitmapImage(new Uri("/View/images/chat_waiting.png", UriKind.Relative));
+                return waiting;
+            }
+        }
+
+        public static BitmapImage Reward
+        {
+            get
+            {
+                if (reward == null)
+                    reward = new BitmapImage(new Uri("/View/images/chat_reward.png", UriKind.Relative));
+                return reward;
+            }
+        }
+
+        public static BitmapImage ParticipantLeft
+        {
+            get
+            {
+                if (participantLeft == null)
+                    participantLeft = new BitmapImage(new Uri("/View/images/chat_left.png", UriKind.Relative));
+                return participantLeft;
+            }
+        }
+
         #endregion
 
         public static Paragraph Linkify(string message)
