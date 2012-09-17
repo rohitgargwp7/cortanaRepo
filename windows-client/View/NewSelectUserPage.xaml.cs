@@ -21,64 +21,65 @@ using System.Collections.ObjectModel;
 
 namespace windows_client.View
 {
-    public partial class SelectUserToMsg : PhoneApplicationPage
+    public partial class NewSelectUserPage : PhoneApplicationPage
     {
         private bool isClicked = false;
         private string TAP_MSG = "Tap here to message this person";
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
         private bool isGroupChat = false;
-        public List<ContactInfo> contactsForgroup = null;
+        public List<ContactInfo> contactsForgroup = null; // this is used to store all those contacts which are selected for group
         public MyProgressIndicator progress = null;
-        public List<Group<ContactInfo>> groupedList = null;
+        List<Group<ContactInfo>> glistFiltered = null;
+        public List<Group<ContactInfo>> groupedList = null; // list that will contain the complete jump list
         private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
         private string charsEntered;
-        private bool typedTextDeleted = true;
+
         private readonly int maxSMSUsersAllowed = 5;
         private readonly int maxUsersAllowed = 10;
-        private int smsUserCount = 0;
-        private int existingGroupUsers = 1; // 1 because owner of the group is already included
         private int defaultGroupmembers = 0;
 
-        private Dictionary<string, List<MsisdnCordinates>> msisdnPositions = null;
-        private Stack<int> indexOfAddedContacts = new Stack<int>();
         private bool textChangedFromDelete = false;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
+
+        List<ContactInfo> allContactsList = null; // contacts list
 
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
         ApplicationBarIconButton refreshIconButton = null;
 
-        ContactInfo defaultContact = new ContactInfo();
+        ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
 
-        public class MsisdnCordinates
-        {
-            private int _groupIdx;
-            private int _listIdx;
-            ContactInfo _cInfo;
+        private int smsUserCount = 0;
+        private int existingGroupUsers = 1; // 1 because owner of the group is already included
 
-            public MsisdnCordinates(int grId, int liId, ContactInfo c)
+        public int ExistingGroupUsers
+        {
+            get
             {
-                _groupIdx = grId;
-                _listIdx = liId;
-                _cInfo = c;
+                return existingGroupUsers;
             }
-            public int GroupIdx
+            set
             {
-                get { return _groupIdx; }
-                set { _groupIdx = value; }
-            }
-            public int ListIdx
-            {
-                get { return _listIdx; }
-                set { _listIdx = value; }
-            }
-            public ContactInfo Contact
-            {
-                get { return _cInfo; }
-                set { _cInfo = value; }
+                if(value != existingGroupUsers)
+                {
+                    existingGroupUsers = value;
+                    Deployment.Current.Dispatcher.BeginInvoke(()=>
+                    {
+                        if (existingGroupUsers < 3)
+                        {
+                            if (doneIconButton.IsEnabled)
+                                doneIconButton.IsEnabled = false;
+                        }
+                        else
+                        {
+                            if (!doneIconButton.IsEnabled)
+                                doneIconButton.IsEnabled = true;
+                        }
+                    });
+                }
             }
         }
 
@@ -148,7 +149,7 @@ namespace windows_client.View
             #endregion
         }
 
-        public SelectUserToMsg()
+        public NewSelectUserPage()
         {
             InitializeComponent();
             /* Case whe this page is called from GroupInfo page*/
@@ -157,11 +158,11 @@ namespace windows_client.View
 
             /* Case when this page is called from create group button.*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
-            {
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
-            }
+
+            if (isGroupChat)
+                title.Text = "new group chat"; 
             progressBar.Opacity = 1;
-            List<ContactInfo> allContactsList = null;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
@@ -213,6 +214,7 @@ namespace windows_client.View
                 appBar.Buttons.Add(doneIconButton);
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
                 enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
+                enterNameTxt.Tap +=new EventHandler<System.Windows.Input.GestureEventArgs>(enterNameTxt_Tap);
             }
             else
             {
@@ -227,8 +229,6 @@ namespace windows_client.View
             if (allContactsList == null || allContactsList.Count == 0)
                 return null;
             List<GroupParticipant> activeExistingGroupMembers = null;
-            if (isGroupChat)
-                msisdnPositions = new Dictionary<string, List<MsisdnCordinates>>();
             List<Group<ContactInfo>> glist = createGroups();
 
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
@@ -238,16 +238,15 @@ namespace windows_client.View
 
                 //TODO start this loop from end, after sorting is done on onHike status
                 smsUserCount = 0;
-                existingGroupUsers = 0;
                 for (int i = 0; i < activeExistingGroupMembers.Count; i++)
                 {
                     if (!Utils.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
                     {
                         smsUserCount++;
                     }
-                    existingGroupUsers++;
+                    ExistingGroupUsers++;
                 }
-                defaultGroupmembers = existingGroupUsers;
+                defaultGroupmembers = ExistingGroupUsers;
             }
             for (int i = 0; i < allContactsList.Count; i++)
             {
@@ -264,19 +263,6 @@ namespace windows_client.View
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
                 // and add the entry
                 glist[index].Items.Add(c);
-                if (isGroupChat)
-                {
-                    if (msisdnPositions.ContainsKey(c.Msisdn))
-                    {
-                        msisdnPositions[c.Msisdn].Add(new MsisdnCordinates(index, glist[index].Items.IndexOf(c), c));
-                    }
-                    else
-                    {
-                        List<MsisdnCordinates> list = new List<MsisdnCordinates>();
-                        list.Add(new MsisdnCordinates(index, glist[index].Items.IndexOf(c), c));
-                        msisdnPositions.Add(c.Msisdn, list);
-                    }
-                }
             }
             return glist;
         }
@@ -294,7 +280,7 @@ namespace windows_client.View
         private List<Group<ContactInfo>> createGroups()
         {
             string Groups = "abcdefghijklmnopqrstuvwxyz#";
-            List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>();
+            List<Group<ContactInfo>> glist = new List<Group<ContactInfo>>(27);
             foreach (char c in Groups)
             {
                 Group<ContactInfo> g = new Group<ContactInfo>(c.ToString(), new List<ContactInfo>());
@@ -371,9 +357,23 @@ namespace windows_client.View
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
             }
+            contact = GetContactIfExists(contact);
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        private ContactInfo GetContactIfExists(ContactInfo contact)
+        {
+            for (int i = 0; i < 26; i++)
+            {
+                for(int k=0;k<glistFiltered[i].Items.Count;k++)
+                {
+                    if (glistFiltered[i].Items[k].Msisdn == contact.Msisdn)
+                        return glistFiltered[i].Items[k];
+                }
+            }
+            return contact;
         }
 
         /*
@@ -405,34 +405,13 @@ namespace windows_client.View
             }
             xyz = !xyz;
 
-            if (!textChangedFromDelete)
-            {
-                if (indexOfAddedContacts.Count > 0)
-                {
-                    if (enterNameTxt.Text.Length > (indexOfAddedContacts.Peek() + 1))
-                    {
-                        charsEntered += enterNameTxt.Text.Substring(enterNameTxt.Text.Length - 1);
-                    }
-                }
-                else
-                {
-                    charsEntered = enterNameTxt.Text;
-                }
-            }
-            textChangedFromDelete = false;
             if (isGroupChat)
-            {
-                if (String.IsNullOrEmpty(enterNameTxt.Text))
-                {
-                    contactsListBox.ItemsSource = groupedList;
-                    return;
-                }
-                enterNameTxt.Select(enterNameTxt.Text.Length, 0);
-            }
+                charsEntered = enterNameTxt.Text.Substring(stringBuilderForContactNames.Length);
             else
                 charsEntered = enterNameTxt.Text.ToLower();
+            Debug.WriteLine("Chars Entered : {0}", charsEntered);
 
-            if (String.IsNullOrEmpty(charsEntered))
+            if (String.IsNullOrWhiteSpace(charsEntered))
             {
                 contactsListBox.ItemsSource = groupedList;
                 return;
@@ -454,56 +433,24 @@ namespace windows_client.View
                     }
                 }
                 contactsListBox.ItemsSource = gl;
-                Thread.Sleep(10);
+                Thread.Sleep(5);
                 return;
             }
-            List<Group<ContactInfo>> glistFiltered = createGroups();
+            glistFiltered = createGroups();
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, ev) =>
             {
                 glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 26, glistFiltered);
-                //glistFiltered = getFilteredList(charsEntered);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, ev) =>
             {
                 groupListDictionary[charsEntered] = glistFiltered;
                 contactsListBox.ItemsSource = glistFiltered;
+                Thread.Sleep(2);
             };
         }
 
-        private List<Group<ContactInfo>> getFilteredList(string charsEntered)
-        {
-            List<Group<ContactInfo>> glistFiltered = createGroups();
-            int i = 0;
-            BackgroundWorker[] bw = new BackgroundWorker[3];
-            for (int ij = 0; ij < 3; ij++)
-            {
-                bw[ij] = new BackgroundWorker();
-            }
-            bw[0].DoWork += (ss, ee) =>
-            {
-                getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 6, glistFiltered);
-            };
-            bw[1].DoWork += (ss, ee) =>
-            {
-                getFilteredContactsFromNameOrPhoneAsync(charsEntered, 6, 15, glistFiltered);
-            };
-            bw[2].DoWork += (ss, ee) =>
-            {
-                getFilteredContactsFromNameOrPhoneAsync(charsEntered, 15, 26, glistFiltered);
-            };
-            bw[0].RunWorkerAsync(); bw[1].RunWorkerAsync(); bw[2].RunWorkerAsync();
-            bw[0].RunWorkerCompleted += (ss, ee) =>
-            { i++; };
-            bw[1].RunWorkerCompleted += (ss, ee) =>
-            { i++; };
-            bw[2].RunWorkerCompleted += (ss, ee) =>
-            { i++; };
-            while (i < 3)
-                Thread.Sleep(1);
-            return glistFiltered;
-        }
         private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end, List<Group<ContactInfo>> glistFiltered)
         {
             if (groupedList == null || groupedList.Count == 0)
@@ -532,6 +479,9 @@ namespace windows_client.View
             }
             if (isNumber(charsEntered))
             {
+                if (glistFiltered[26].Items == null)
+                    glistFiltered[26].Items = new List<ContactInfo>(1);
+
                 glistFiltered[26].Items.Insert(0, defaultContact);
                 glistFiltered[26].Items[0].Name = charsEntered;
                 if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
@@ -546,11 +496,112 @@ namespace windows_client.View
             return glistFiltered;
         }
 
-
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             enterNameTxt.BorderBrush = textBoxBorder;
         }
+
+        #region GROUP CHAT RELATED
+
+        private void startGroup_Click(object sender, EventArgs e)
+        {
+            if (isClicked)
+                return;
+            isClicked = true;
+            PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = contactsForgroup;
+
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            {
+                PhoneApplicationService.Current.State[HikeConstants.IS_EXISTING_GROUP] = true;
+                if (NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry(); // will remove groupinfo page
+                NavigationService.GoBack();
+            }
+            else
+            {
+                string uri = "/View/NewChatThread.xaml";
+                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
+        }
+
+        /*
+         * This function will be called only in case of Group Chat
+         */ 
+        private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Back)
+            {
+                int cursorPosition = enterNameTxt.SelectionStart;
+                if (cursorPosition == 0 || cursorPosition >= stringBuilderForContactNames.Length)
+                    return;
+
+                ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
+                contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
+                Debug.WriteLine("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length);
+                stringBuilderForContactNames.Remove(stringBuilderForContactNames.Length - (cn.Name.Length + 2), (cn.Name.Length + 2));
+                Debug.WriteLine("Contacts selected : {0}, char count = {1}", stringBuilderForContactNames.ToString(), stringBuilderForContactNames.Length);
+                enterNameTxt.Text = stringBuilderForContactNames.ToString();
+                enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+                // update user count
+                if (!cn.OnHike)
+                    smsUserCount--;
+                ExistingGroupUsers--;
+            }
+        }
+
+        private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+
+            if (contact == null || contact.Msisdn == "Enter Valid Number")
+                return;
+        
+            if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number  
+                contact.Msisdn = normalizeNumber(contact.Name);
+
+            if (!contact.OnHike && smsUserCount == maxSMSUsersAllowed)
+            {
+                MessageBoxResult result = MessageBox.Show("5 SMS users already selected", "Cannot add user !!", MessageBoxButton.OK);
+                return;
+            }
+            if (existingGroupUsers == maxUsersAllowed)
+            {
+                MessageBoxResult result = MessageBox.Show("10 users already selected", "Cannot add user !!", MessageBoxButton.OK);
+                return;
+            }
+
+            if (contactsForgroup != null && isNumberAlreadySelected(contact.Msisdn, contactsForgroup))
+            {
+                MessageBoxResult result = MessageBox.Show(contact.Msisdn+" is already added to group.", "User already added !!", MessageBoxButton.OK);
+                return;
+            }
+
+            if (contactsForgroup == null)
+                contactsForgroup = new List<ContactInfo>();
+
+            contactsForgroup.Add(contact);
+            stringBuilderForContactNames.Append(contact.Name).Append("; ");
+            enterNameTxt.Text = stringBuilderForContactNames.ToString();
+            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+
+            if (!contact.OnHike)
+                smsUserCount++;
+            ExistingGroupUsers++;
+
+            charsEntered = "";
+        }
+
+        private bool isNumberAlreadySelected(string msisdn, List<ContactInfo> l)
+        {
+            for (int i = 0; i < l.Count; i++)
+            {
+                if (l[i].Msisdn == msisdn)
+                    return true;
+            }
+            return false;
+        }
+
+        #endregion
 
         #region REFRESH CONTACTS
 
@@ -647,7 +698,7 @@ namespace windows_client.View
                 return;
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null:AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
             List<ContactInfo.DelContacts> hikeIds = null;
             if (ContactUtils.hike_contactsMap != null && ContactUtils.hike_contactsMap.Count != 0)
             {
@@ -692,143 +743,6 @@ namespace windows_client.View
                 App.isABScanning = false;
             });
         }
-        #endregion
-
-        #region GROUP CHAT RELATED
-
-        private void startGroup_Click(object sender, EventArgs e)
-        {
-            if (isClicked)
-                return;
-            isClicked = true;
-            PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT] = contactsForgroup;
-            
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
-            {
-                PhoneApplicationService.Current.State[HikeConstants.IS_EXISTING_GROUP] = true;
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry(); // will remove groupinfo page
-                NavigationService.GoBack();
-            }
-            else
-            {
-                string uri = "/View/NewChatThread.xaml";
-                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-            }
-        }
-
-        private void enterNameTxt_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Back)
-            {
-                typedTextDeleted = true;
-
-                if (indexOfAddedContacts.Count > 0 && indexOfAddedContacts.Peek() == enterNameTxt.Text.Length)
-                {
-                    typedTextDeleted = false;
-                    indexOfAddedContacts.Pop();
-                    ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
-                    contactsForgroup.RemoveAt(contactsForgroup.Count - 1);
-                    addBackDeletedContacts(cn);
-
-                    stringBuilderForContactNames.Clear();
-                    for (int i = 0; i < contactsForgroup.Count; i++)
-                    {
-                        stringBuilderForContactNames.Append(contactsForgroup[i].Name).Append("; ");
-                    }
-                    enterNameTxt.Text = stringBuilderForContactNames.ToString();
-                    enterNameTxt.Select(enterNameTxt.Text.Length, 0);
-
-                    // update user count
-                    if (!cn.OnHike)
-                        smsUserCount--;
-                    existingGroupUsers--;
-                    if (existingGroupUsers < 3)
-                        doneIconButton.IsEnabled = false;
-                }
-                if (typedTextDeleted)
-                {
-                    if (!String.IsNullOrEmpty(charsEntered))
-                    {
-                        charsEntered = charsEntered.Substring(0, charsEntered.Length - 1);
-                        textChangedFromDelete = true;
-                    }
-                }
-            }
-        }
-
-        private void addBackDeletedContacts(ContactInfo contact)
-        {
-            if (!msisdnPositions.ContainsKey(contact.Msisdn))
-                return;
-            List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
-            for (int j = 0; j < ml.Count; j++)
-            {
-                for (int k = 0; k < groupedList[ml[j].GroupIdx].Items.Count; k++)
-                {
-                    while (k < groupedList[ml[j].GroupIdx].Items.Count && groupedList[ml[j].GroupIdx].Items[k].CompareTo(contact) < 0)
-                        k++;
-                    if (k != groupedList[ml[j].GroupIdx].Items.Count)
-                        groupedList[ml[j].GroupIdx].Items.Insert(k, contact);
-                    else
-                        groupedList[ml[j].GroupIdx].Items.Add(contact);
-                    break;
-                }
-            }
-            contactsListBox.ItemsSource = null;
-            contactsListBox.ItemsSource = groupedList;
-        }
-
-        private void contactSelectedForGroup_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
-
-            if (contact == null)
-                return;
-            if (contact.Msisdn == "Enter Valid Number")
-                return;
-            if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
-            {
-                contact.Msisdn = normalizeNumber(contact.Name);
-            }
-            if (contactsForgroup == null)
-                contactsForgroup = new List<ContactInfo>();
-            if (smsUserCount == maxSMSUsersAllowed || existingGroupUsers == maxUsersAllowed)
-                return;
-
-            contactsForgroup.Add(contact);
-
-            if (!contact.OnHike)
-                smsUserCount++;
-            existingGroupUsers++;
-            stringBuilderForContactNames.Clear();
-            for (int i = 0; i < contactsForgroup.Count; i++)
-            {
-                stringBuilderForContactNames.Append(contactsForgroup[i].Name).Append("; ");
-            }
-            enterNameTxt.Text = stringBuilderForContactNames.ToString();
-            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
-
-            enterNameTxt.Select(enterNameTxt.Text.Length, 0);
-            indexOfAddedContacts.Push(enterNameTxt.Text.Length - 1);
-            charsEntered = "";
-            deleteContactFromGroupList(contact);
-            if (existingGroupUsers >= 3)
-                doneIconButton.IsEnabled = true;
-        }
-
-        private void deleteContactFromGroupList(ContactInfo contact)
-        {
-            if (!msisdnPositions.ContainsKey(contact.Msisdn))
-                return;
-            List<MsisdnCordinates> ml = msisdnPositions[contact.Msisdn];
-            for (int j = 0; j < ml.Count; j++)
-            {
-                groupedList[ml[j].GroupIdx].Items.Remove(ml[j].Contact);
-            }
-            contactsListBox.ItemsSource = null;
-            contactsListBox.ItemsSource = groupedList;
-        }
 
         #endregion
 
@@ -844,6 +758,43 @@ namespace windows_client.View
             refreshIconButton.IsEnabled = true;
             if (isGroupChat && existingGroupUsers >= 3)
                 doneIconButton.IsEnabled = true;
+        }
+
+        private void enterNameTxt_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (!isGroupChat) // logic is valid only for Group Chat
+                return;
+
+            int nameLength = 0;
+            int cursorPosition = enterNameTxt.SelectionStart;
+
+            if (stringBuilderForContactNames.Length <= cursorPosition) // if textbox is tapped @ last position simply return
+                return;
+                      
+            for (int k = 0; k < contactsForgroup.Count; k++)
+            {
+                nameLength += contactsForgroup[k].Name.Length + 2; // length of name + "; " i.e 2
+                if (cursorPosition < nameLength)
+                {
+                    MessageBoxResult result = MessageBox.Show(contactsForgroup[k].Name + "["+contactsForgroup[k].Msisdn+"]" + " will be removed from group.", "Remove Contact ?", MessageBoxButton.OKCancel);
+                    if (result == MessageBoxResult.Cancel)
+                    {
+                        enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+                        return;
+                    }
+                    ExistingGroupUsers--;
+                    if (!contactsForgroup[k].OnHike)
+                        smsUserCount--;
+                    contactsForgroup.RemoveAt(k);
+                    stringBuilderForContactNames.Clear();
+                    for (int i = 0; i < contactsForgroup.Count; i++)                  
+                        stringBuilderForContactNames.Append(contactsForgroup[i].Name).Append("; ");
+                    enterNameTxt.Text = stringBuilderForContactNames.ToString() + charsEntered;
+                    enterNameTxt.Select(enterNameTxt.Text.Length, 0);
+                    return;
+                }
+
+            }
         }
 
     }

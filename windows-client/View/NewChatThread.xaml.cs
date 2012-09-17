@@ -273,7 +273,7 @@ namespace windows_client.View
         {
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
-            progressBar.Visibility = Visibility.Visible;
+            progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
@@ -740,7 +740,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     Scroller.Opacity = 1;
-                    progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
                 return;
@@ -774,7 +774,7 @@ namespace windows_client.View
             {
                 Scroller.Opacity = 1;
                 ScrollToBottom();
-                progressBar.Visibility = System.Windows.Visibility.Collapsed;
+                progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
             });
 
@@ -1471,7 +1471,8 @@ namespace windows_client.View
             if (chatBubble.FileAttachment == null)
             {
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = chatBubble.Text;
-                NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+                //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
             else
             {
@@ -1479,7 +1480,8 @@ namespace windows_client.View
                 attachmentForwardMessage[0] = chatBubble;
                 attachmentForwardMessage[1] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
-                NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+                //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
         }
 
@@ -1837,7 +1839,7 @@ namespace windows_client.View
                             toast.Title = cObj.ContactName;
                         else
                             toast.Title = cObj.Msisdn;
-                        toast.Message = convMessage.Message;
+                        toast.Message = cObj.LastMessage;
                         toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
                         toast.Show();
                     });

@@ -110,7 +110,11 @@ namespace windows_client.utils
                 for (int i = 0; i < l.Count; i++)
                 {
                     if (l[i].Msisdn == msisdn)
+                    {
+                        if (l[i].HasLeft)
+                            l[i].HasLeft = false;
                         return l[i];
+                    }
                 }
             }
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
@@ -160,7 +164,7 @@ namespace windows_client.utils
                     + Utils.getFirstName(groupParticipants[1].Name);
                 default:
                     return Utils.getFirstName(groupParticipants[0].Name) + " and "
-                    + (groupParticipants.Count - 1) + " others";
+                    + (groupParticipants.Count) + " others";
             }
         }
 

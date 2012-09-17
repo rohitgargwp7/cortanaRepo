@@ -511,13 +511,15 @@ namespace windows_client.View
         private void createGroup_Click(object sender, EventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
-            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)

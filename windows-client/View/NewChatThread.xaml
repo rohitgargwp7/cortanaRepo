@@ -224,7 +224,13 @@
                 <toolkit:PhoneTextBox Background="#eeeeec" InputScope="PersonalFullName" BorderThickness="0" x:Name="sendMsgTxtbox" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP" />
             </StackPanel>
         </StackPanel>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" Background="Blue" IsIndeterminate="True" Foreground="Black" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
+        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
+                                        Background="Transparent" IsIndeterminate="True" 
+                                        VerticalAlignment="Center" 
+                                        VerticalContentAlignment="Center" FontSize="24" 
+                                        HorizontalAlignment="Stretch" Height="10"
+                                        HorizontalContentAlignment="Center" 
+                                        IsEnabled="False" IsTabStop="True" Opacity="0"/>
 
         <Rectangle x:Name="overlayRectangle" Grid.Row="0" Opacity="0.85" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
         <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">

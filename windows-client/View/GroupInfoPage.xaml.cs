@@ -231,7 +231,8 @@ namespace windows_client.View
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = getActiveGroupParticiants();
-            NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
         private List<GroupParticipant> getActiveGroupParticiants()

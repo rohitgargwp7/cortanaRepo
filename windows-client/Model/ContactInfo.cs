@@ -313,5 +313,31 @@ namespace windows_client.Model
             }
         }
         #endregion
+
+        public class DelContacts
+        {
+            private string _id;
+            private string _msisdn;
+
+            public string Id
+            {
+                get
+                {
+                    return _id;
+                }
+            }
+            public string Msisdn
+            {
+                get
+                {
+                    return _msisdn;
+                }
+            }
+            public DelContacts(string id, string msisdn)
+            {
+                _id = id;
+                _msisdn = msisdn;
+            }
+        }
     }
 }
