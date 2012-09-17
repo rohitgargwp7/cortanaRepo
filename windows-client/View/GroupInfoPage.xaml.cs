@@ -174,7 +174,7 @@ namespace windows_client.View
             }
             else
             {
-                Uri uri = new Uri("/View/images/ic_avatar0.png", UriKind.Relative);
+                Uri uri = new Uri("/View/images/default_group.png", UriKind.Relative);
                 BitmapImage image = new BitmapImage(uri);
                 image.CreateOptions = BitmapCreateOptions.None;
                 image.UriSource = uri;
