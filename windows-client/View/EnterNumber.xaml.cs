@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System.IO.IsolatedStorage;
 using System.Windows.Media;
 using Microsoft.Phone.Shell;
+using System.Net.NetworkInformation;
 
 namespace windows_client
 {
@@ -43,9 +44,18 @@ namespace windows_client
             phoneNumber = txtEnterPhone.Text.Trim();
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
+            if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
+            {
+                progressBar.Opacity = 0;
+                progressBar.IsEnabled = false;
+                msisdnErrorTxt.Text = "Network Error. Try Again!!";
+                msisdnErrorTxt.Visibility = Visibility.Visible;
+                return;
+            }
+
             nextIconButton.IsEnabled = false;
-            enterPhoneBtn.Opacity = 1;
-            enterPhoneBtn.Text = "Verifying your number";
+            msgTxtBlk.Visibility = Visibility.Visible;
+            msgTxtBlk.Text = "Verifying your number";
             msisdnErrorTxt.Opacity = 0;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
