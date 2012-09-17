@@ -786,6 +786,7 @@ namespace windows_client.Model
         {
             List<GroupParticipant> l = Utils.GroupCache[grpId];
             JObject obj = new JObject();
+            bool isValid = false;
             try
             {
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.USER_JOINED;
@@ -802,6 +803,7 @@ namespace windows_client.Model
                         nameMsisdn["onhike"] = l[i].IsDND;
                         array.Add(nameMsisdn);
                         l[i].IsUsed = true;
+                        isValid = true;
                     }
                 }
                 obj[HikeConstants.DATA] = array;
@@ -810,7 +812,9 @@ namespace windows_client.Model
             {
             }
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
-            return obj;
+            if(isValid)
+                return obj;
+            return null;
         }
 
     }
