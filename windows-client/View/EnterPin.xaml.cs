@@ -6,6 +6,7 @@ using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
 using Microsoft.Phone.Shell;
+using System.Net.NetworkInformation;
 
 namespace windows_client
 {
@@ -43,6 +44,14 @@ namespace windows_client
             pinEntered = txtBxEnterPin.Text.Trim();
             if (string.IsNullOrEmpty(pinEntered))
                 return;
+            if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
+            {
+                progressBar.Opacity = 0;
+                progressBar.IsEnabled = false;
+                pinErrorTxt.Text = "Network Error. Try Again!!";
+                pinErrorTxt.Opacity = 1;
+                return;
+            }
             nextIconButton.IsEnabled = false;
             string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
             pinErrorTxt.Opacity = 0;
@@ -159,7 +168,7 @@ namespace windows_client
             if (pinErrorTxt.Opacity == 1)
             {
                 this.State["pinErrorTxt.Text"] = pinErrorTxt.Text;
-                this.State["pinErrorTxt.Opacity"] = pinErrorTxt.Opacity;
+                this.State["pinErrorTxt.Opacity"] = (int)pinErrorTxt.Opacity;
             }
             else
             {
