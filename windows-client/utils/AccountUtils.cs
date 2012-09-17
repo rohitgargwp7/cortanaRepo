@@ -27,7 +27,19 @@ namespace windows_client.utils
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
         public static string mToken = null;
+        private static string uid = null;
 
+        public static string UID
+        {
+            get { return uid; }
+            set
+            {
+                if (value != mToken)
+                {
+                    uid = value;
+                }
+            }
+        }
         public static string Token
         {
             get { return mToken; }
@@ -65,7 +77,7 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON, 
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
             POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE
         }
         private static void addToken(HttpWebRequest req)
@@ -166,14 +178,14 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_PUSHNOTIFICATION_DATA, uri, finalCallbackFunction });
         }
 
-        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage, 
+        public static void uploadFile(byte[] dataBytes, postUploadPhotoFunction finalCallbackFunction, ConvMessage convMessage,
             SentChatBubble chatbubble)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
             req.Method = "PUT";
             req.ContentType = "";
-//            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            //            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
@@ -266,17 +278,17 @@ namespace windows_client.utils
                     int startIndex = 0;
                     int noOfBytesToWrite = 0;
                     double progressValue = 0;
-                    while (startIndex < dataBytes.Length && chatBubble.FileAttachment.FileState!=Attachment.AttachmentState.CANCELED)
+                    while (startIndex < dataBytes.Length && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED)
                     {
                         Thread.Sleep(5);
                         noOfBytesToWrite = dataBytes.Length - startIndex;
                         noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
                         postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
                         progressValue = ((double)(startIndex + noOfBytesToWrite) / dataBytes.Length) * 100;
-                            chatBubble.updateProgress(progressValue);
+                        chatBubble.updateProgress(progressValue);
                         startIndex += noOfBytesToWrite;
                     }
-//                    postStream.Write(dataBytes, 0, dataBytes.Length);
+                    //                    postStream.Write(dataBytes, 0, dataBytes.Length);
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
                     return;

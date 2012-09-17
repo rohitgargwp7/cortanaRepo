@@ -6,6 +6,7 @@ using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
 using System.Windows.Media;
 using Microsoft.Phone.Shell;
+using System.Net.NetworkInformation;
 
 
 namespace windows_client
@@ -33,13 +34,21 @@ namespace windows_client
             nextIconButton.Click += new EventHandler(getStarted_click);
             appBar.Buttons.Add(nextIconButton);
             welcomePage.ApplicationBar = appBar;
-
         }
 
         private void getStarted_click(object sender, EventArgs e)
         {
             if (isClicked)
                 return;
+            NetworkErrorTxtBlk.Opacity = 0;
+            if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
+            {
+                progressBar.Opacity = 0;
+                progressBar.IsEnabled = false;
+                NetworkErrorTxtBlk.Opacity = 1;
+                return;
+            }
+
             nextIconButton.IsEnabled = false;
             if(App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
                 App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
