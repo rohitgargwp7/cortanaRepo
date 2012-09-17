@@ -711,7 +711,8 @@ namespace windows_client.View
             int startIndex = 0;
             int endIndex = -1;
 
-            for (int i = 0; i < matchCollection.Count; i++)
+            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
+            for (int i = 0; i < maxCount; i++)
             {
                 String emoticon = matchCollection[i].ToString();
 
