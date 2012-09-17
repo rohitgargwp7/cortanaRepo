@@ -14,7 +14,7 @@ namespace windows_client.Controls
 {
     public partial class NotificationChatBubble : MyChatBubble {
 
-        private string parameter;
+        private string parameter;//either user name or number of rewards awarded
 
         public enum MessageType
         {
@@ -39,26 +39,26 @@ namespace windows_client.Controls
             switch (messageType)
             {
                 case MessageType.HIKE_PARTICIPANT_JOINED:
-                    UserName.Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
+                    Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
                     NotificationImage.Source = UI_Utils.OnHikeImage;
                     break;
                 case MessageType.SMS_PARTICIPANT_JOINED:
-                    UserName.Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
+                    Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
                     NotificationImage.Source = UI_Utils.NotOnHikeImage;
                     break;
                 case MessageType.PARTICIPANT_LEFT:
-                    UserName.Text = String.Format(HikeConstants.PARTICIPANT_LEFT, parameter);
+                    Text = String.Format(HikeConstants.PARTICIPANT_LEFT, parameter);
                     NotificationImage.Source = UI_Utils.ParticipantLeft;
                     break;
                 case MessageType.GROUP_END:
-                    UserName.Text = String.Format(HikeConstants.GROUP_CHAT_ENDED, parameter);
+                    Text = String.Format(HikeConstants.GROUP_CHAT_ENDED, parameter);
                     break;
                 case MessageType.WAITING:
-                    UserName.Text = String.Format(HikeConstants.WAITING_TO_JOIN, parameter);
+                    Text = String.Format(HikeConstants.WAITING_TO_JOIN, parameter);
                     NotificationImage.Source = UI_Utils.Waiting;
                     break;
                 case MessageType.REWARD:
-                    UserName.Text = String.Format(HikeConstants.REWARDS, parameter);
+                    Text = String.Format(HikeConstants.REWARDS, parameter);
                     NotificationImage.Source = UI_Utils.Reward;
                     break;
             }
@@ -72,7 +72,7 @@ namespace windows_client.Controls
                 notStackPanel.Background = new SolidColorBrush(Color.FromArgb(51,51,51,1));
             if (!String.IsNullOrEmpty(message))
             {
-                this.UserName.Text = message;
+                this.Text = message;
             }
             this.NotificationImage.Source = UI_Utils.OnHikeImage;
             if (onHike)
