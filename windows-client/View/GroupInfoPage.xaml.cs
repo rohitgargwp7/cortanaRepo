@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -161,6 +162,11 @@ namespace windows_client.View
         }
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                return;
+            }
             if (e.TaskResult == TaskResult.OK)
             {
                 Uri uri = new Uri(e.OriginalFileName);

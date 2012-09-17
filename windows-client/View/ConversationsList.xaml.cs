@@ -20,6 +20,7 @@ using System.Windows.Documents;
 using Microsoft.Phone.Notification;
 using System.Collections;
 using System.Windows.Media;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -401,6 +402,7 @@ namespace windows_client.View
                 writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
                 thumbnailBytes = msSmallImage.ToArray();
             }
+            
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(thumbnailBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
             object[] vals = new object[3];
@@ -416,6 +418,11 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                return;
+            }
             if (e.TaskResult == TaskResult.OK)
             {
                 Uri uri = new Uri(e.OriginalFileName);
