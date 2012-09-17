@@ -74,9 +74,9 @@ namespace windows_client.DbUtils
                 convMessage.FileAttachment.FileKey = fileKey;
                 convMessage.FileAttachment.ContentType = contentType;
 
-                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
                 chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
             }
             else
             {

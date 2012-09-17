@@ -164,9 +164,9 @@ namespace windows_client.Model
             {
                 if (Utils.getGroupParticipant(Name, Msisdn, _grpId).IsOnHike)
                 {
-                    return UI_Utils.Instance.HikeMsgBackground;
+                    return UI_Utils.HikeMsgBackground;
                 }
-                return UI_Utils.Instance.SmsBackground;
+                return UI_Utils.SmsBackground;
             }
         }
 

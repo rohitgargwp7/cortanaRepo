@@ -35,7 +35,7 @@ namespace windows_client.View
             string grpId = groupId.Replace(":", "_");
             byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(groupId);
             if (avatar == null)
-                groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; // TODO : change to default groupImage once done
+                groupImage.Source = UI_Utils.DefaultAvatarBitmapImage; // TODO : change to default groupImage once done
             else
             {
                 MemoryStream memStream = new MemoryStream(avatar);
@@ -93,7 +93,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                        groupImage.Source = UI_Utils.DefaultAvatarBitmapImage;
                         return;
                     });
                 }
@@ -174,7 +174,7 @@ namespace windows_client.View
             }
             else
             {
-                Uri uri = new Uri("/View/images/ic_avatar0.png", UriKind.Relative);
+                Uri uri = new Uri("/View/images/default_group.png", UriKind.Relative);
                 BitmapImage image = new BitmapImage(uri);
                 image.CreateOptions = BitmapCreateOptions.None;
                 image.UriSource = uri;

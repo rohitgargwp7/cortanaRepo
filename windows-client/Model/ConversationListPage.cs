@@ -201,7 +201,7 @@ namespace windows_client.Model
                 {
                     if (_avatar == null)
                     {
-                        return UI_Utils.Instance.DefaultAvatarBitmapImage;
+                        return UI_Utils.DefaultAvatarBitmapImage;
                     }
                     else
                     {

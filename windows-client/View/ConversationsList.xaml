@@ -67,6 +67,7 @@
                                             <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->
                                             <StackPanel Orientation="Horizontal" Margin="15 0 0 2">
                                                 <RichTextBox Tag="{Binding LastMessage}" FontSize="22" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+                                                <!--<local:LinkifiedTextBoxReceive Text="{Binding LastMessage}" FontSize="22" Foreground="{Binding LastMessageColor}" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>-->
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
@@ -96,7 +97,7 @@
                         <Button Height="Auto" Tap="onProfilePicButtonTap">
                             <StackPanel Orientation="Horizontal" Margin="-15">
                                 <Border BorderBrush="Black" BorderThickness="3">
-                                    <Image x:Name="avatarImage" Height="80"  Source="images\ic_avatar0.png" />
+                                    <Image x:Name="avatarImage" Height="80"  Source="images\default_user.png" />
                                 </Border>
                             </StackPanel>
                         </Button>
@@ -111,7 +112,7 @@
                     </StackPanel>
 
                     <StackPanel Margin="0, 30, 0,10" Orientation="Vertical" Grid.Row="1">
-                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
+                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,15,0,5">
                             <Image Source="images\notifications.png" Height="35">
                             </Image>
                             <TextBlock Text="Notifications" Margin="15,4,0,0" FontSize="30"></TextBlock>

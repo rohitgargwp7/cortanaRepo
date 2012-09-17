@@ -68,7 +68,7 @@ namespace windows_client.Controls
         private void initializeBasedOnState(bool hasAttachment, string contentType)
         {
             Rectangle BubbleBg = new Rectangle();
-            BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
+            BubbleBg.Fill = UI_Utils.TextBoxBackground;
             Grid.SetRowSpan(BubbleBg, 2);
             wrapperGrid.Children.Add(BubbleBg);
 
@@ -91,7 +91,7 @@ namespace windows_client.Controls
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Left;
                 MessageImage.Margin = imgMargin;
                 if (contentType.Contains("audio"))
-                    this.MessageImage.Source = UI_Utils.Instance.AudioAttachment;
+                    this.MessageImage.Source = UI_Utils.AudioAttachment;
 
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
@@ -102,7 +102,7 @@ namespace windows_client.Controls
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;
                     PlayIcon.MaxHeight = 42;
-                    PlayIcon.Source = UI_Utils.Instance.PlayIcon;
+                    PlayIcon.Source = UI_Utils.PlayIcon;
                     PlayIcon.HorizontalAlignment = HorizontalAlignment.Center;
                     PlayIcon.VerticalAlignment = VerticalAlignment.Center;
 
@@ -113,7 +113,7 @@ namespace windows_client.Controls
 
                 downloadProgress = new ProgressBar();
                 downloadProgress.Height = 10;
-                downloadProgress.Background = UI_Utils.Instance.TextBoxBackground;
+                downloadProgress.Background = UI_Utils.TextBoxBackground;
                 downloadProgress.Foreground = progressColor;
                 downloadProgress.Minimum = 0;
                 downloadProgress.MaxHeight = 100;

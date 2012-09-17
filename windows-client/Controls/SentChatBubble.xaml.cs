@@ -25,28 +25,28 @@ namespace windows_client.Controls
             //IsSms is false for group chat
             if (cm.IsSms)
             {
-                bubbleColor = UI_Utils.Instance.SmsBackground;
+                bubbleColor = UI_Utils.SmsBackground;
             }
             else
             {
-                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
+                bubbleColor = UI_Utils.HikeMsgBackground;
             }
             switch (cm.MessageStatus)
             {
                 case ConvMessage.State.SENT_CONFIRMED:
-                    this.SDRImage.Source = UI_Utils.Instance.MessageSentBitmapImage;
+                    this.SDRImage.Source = UI_Utils.Sent;
                     break;
                 case ConvMessage.State.SENT_DELIVERED:
-                    this.SDRImage.Source = UI_Utils.Instance.MessageDeliveredBitmapImage;
+                    this.SDRImage.Source = UI_Utils.Delivered;
                     break;
                 case ConvMessage.State.SENT_DELIVERED_READ:
-                    this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
+                    this.SDRImage.Source = UI_Utils.Read;
                     break;
                 case ConvMessage.State.SENT_UNCONFIRMED:
                 case ConvMessage.State.UNKNOWN:
                     if (cm.HasAttachment)
                     {
-                        this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                        this.SDRImage.Source = UI_Utils.HttpFailed;
                     }
                     break;
                 default:
@@ -75,11 +75,11 @@ namespace windows_client.Controls
             initializeBasedOnState(true, "image");
             if (!cm.IsSms)
             {
-                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
+                bubbleColor = UI_Utils.HikeMsgBackground;
             }
             else
             {
-                bubbleColor = UI_Utils.Instance.SmsBackground;
+                bubbleColor = UI_Utils.SmsBackground;
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
@@ -101,13 +101,13 @@ namespace windows_client.Controls
 
             if (onHike)
             {
-                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
-                uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
+                bubbleColor = UI_Utils.HikeMsgBackground;
+                uploadProgress.Background = UI_Utils.HikeMsgBackground;
             }
             else
             {
-                bubbleColor = UI_Utils.Instance.SmsBackground;
-                uploadProgress.Background = UI_Utils.Instance.SmsBackground;
+                bubbleColor = UI_Utils.SmsBackground;
+                uploadProgress.Background = UI_Utils.SmsBackground;
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
@@ -132,20 +132,20 @@ namespace windows_client.Controls
                     switch (messageState)
                     {
                         case ConvMessage.State.SENT_CONFIRMED:
-                            this.SDRImage.Source = UI_Utils.Instance.MessageSentBitmapImage;
+                            this.SDRImage.Source = UI_Utils.Sent;
                             if (this.FileAttachment != null && this.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
                             {
                                 this.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                             }
                             break;
                         case ConvMessage.State.SENT_DELIVERED:
-                            this.SDRImage.Source = UI_Utils.Instance.MessageDeliveredBitmapImage;
+                            this.SDRImage.Source = UI_Utils.Delivered;
                             break;
                         case ConvMessage.State.SENT_DELIVERED_READ:
-                            this.SDRImage.Source = UI_Utils.Instance.MessageReadBitmapImage;
+                            this.SDRImage.Source = UI_Utils.Read;
                             break;
                         case ConvMessage.State.SENT_FAILED:
-                            this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                            this.SDRImage.Source = UI_Utils.HttpFailed;
                             break;
                     }
                 });
@@ -212,7 +212,7 @@ namespace windows_client.Controls
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Right;
                 MessageImage.Margin = imgMargin;
                 if (contentType.Contains("audio"))
-                    this.MessageImage.Source = UI_Utils.Instance.AudioAttachment;
+                    this.MessageImage.Source = UI_Utils.AudioAttachment;
 
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
@@ -223,7 +223,7 @@ namespace windows_client.Controls
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;
                     PlayIcon.MaxHeight = 42;
-                    PlayIcon.Source = UI_Utils.Instance.PlayIcon;
+                    PlayIcon.Source = UI_Utils.PlayIcon;
                     PlayIcon.HorizontalAlignment = HorizontalAlignment.Center;
                     PlayIcon.VerticalAlignment = VerticalAlignment.Center;
 

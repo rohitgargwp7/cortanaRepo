@@ -190,7 +190,7 @@ namespace windows_client.View
                 {
                     _attachmentUploading = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
                     _attachmentUploading.Add("cancel", MenuItem_Click_Cancel);
-                    _attachmentUploading.Add("delete", MenuItem_Click_Delete);
+                    //_attachmentUploading.Add("delete", MenuItem_Click_Delete);
                 }
                 return _attachmentUploading;
             }
@@ -298,7 +298,7 @@ namespace windows_client.View
             if (typingNotificationImage == null)
             {
                 typingNotificationImage = new Image();
-                typingNotificationImage.Source = UI_Utils.Instance.TypingNotificationBitmap;
+                typingNotificationImage.Source = UI_Utils.TypingNotificationBitmap;
                 typingNotificationImage.Height = 28;
                 typingNotificationImage.Width = 55;
                 typingNotificationImage.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
@@ -440,7 +440,7 @@ namespace windows_client.View
                 processGroupJoin(true);
                 isOnHike = true;
                 isGroupChat = true;
-                userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; //TODO show new group default image
+                userImage.Source = UI_Utils.DefaultAvatarBitmapImage; //TODO show new group default image
 
                 /* This is done so that after Tombstone when this page is launched, no group is created again and again */
                 ConversationListObject convObj = new ConversationListObject();
@@ -498,7 +498,7 @@ namespace windows_client.View
 
                 if (avatar == null)
                 {
-                    userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                    userImage.Source = UI_Utils.DefaultAvatarBitmapImage;
                 }
                 else
                 {
@@ -984,11 +984,11 @@ namespace windows_client.View
                         chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
                         FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
                         MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
-
                     }
                     else if (chatBubble is SentChatBubble)
                     {
                         //resend message
+                        chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
                         ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
                         convMessage.IsSms = !isOnHike;
                         convMessage.HasAttachment = true;

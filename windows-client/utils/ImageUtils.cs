@@ -9,169 +9,208 @@ namespace windows_client.utils
 {
     public class UI_Utils
     {
-        private readonly SolidColorBrush whiteBackground = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-        private readonly SolidColorBrush blackBackground = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
-        private readonly SolidColorBrush smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
-        private readonly SolidColorBrush hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
+        #region private variables
+        private static SolidColorBrush textBoxBackground;
+        private static SolidColorBrush smsBackground;
+        private static SolidColorBrush hikeMsgBackground;
+        private static BitmapImage onHikeImage;
+        private static BitmapImage notOnHikeImage;
+        private static BitmapImage playIcon;
+        private static BitmapImage audioAttachment;
+        private static BitmapImage httpFailed;
+        private static BitmapImage typingNotificationBitmap;
+        private static BitmapImage sent;
+        private static BitmapImage delivered;
+        private static BitmapImage read;
+        private static BitmapImage defaultAvatarBitmapImage;
+        private static BitmapImage defaultGroupImage;
+        private static BitmapImage waiting;
+        private static BitmapImage reward;
+        private static BitmapImage participantLeft;
+        #endregion
 
-        private BitmapImage onHikeImage = null;
-        private BitmapImage notOnHikeImage = null;
-        private BitmapImage playIcon;
-        private BitmapImage defaultAvatarBitmapImage = null;
-        private BitmapImage sent = null;
-        private BitmapImage delivered = null;
-        private BitmapImage read = null;
-        private BitmapImage typingNotificationBitmap = null;
-        private BitmapImage httpFailed = null;
-        private BitmapImage audioAttachment = null;
-
-        private static volatile UI_Utils instance = null;
-        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
-
-        private UI_Utils()
-        {
-            onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
-            notOnHikeImage = new BitmapImage(new Uri("/View/images/ic_sms_user.png", UriKind.Relative));
-            defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/ic_avatar0.png", UriKind.Relative));
-            sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
-            delivered = new BitmapImage(new Uri("/View/images/ic_delivered.png", UriKind.Relative));
-            read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
-            onHikeImage = new BitmapImage(new Uri("/View/images/ic_hike_user.png", UriKind.Relative));
-            typingNotificationBitmap = new BitmapImage(new Uri("/View/images/typing.png", UriKind.Relative));
-            httpFailed = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
-            audioAttachment = new BitmapImage(new Uri("/View/images/audio_file_icon.png", UriKind.Relative));
-            playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
-        }
-
-        public static UI_Utils Instance
+        #region public static properties
+        public static SolidColorBrush TextBoxBackground
         {
             get
             {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                            instance = new UI_Utils();
-                    }
-                }
-
-                return instance;
-            }
-        }
-
-        public SolidColorBrush SmsBackground
-        {
-            get
-            {
-                return smsBackground;
-            }
-        }
-
-        public SolidColorBrush TextBoxBackground
-        {
-            get
-            {
+                if (textBoxBackground == null)
+                    textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
                 return textBoxBackground;
             }
         }
 
-        public SolidColorBrush HikeMsgBackground
+        public static SolidColorBrush SmsBackground
         {
             get
             {
+                if (smsBackground == null)
+                    smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
+                return smsBackground;
+            }
+        }
+
+        public static SolidColorBrush HikeMsgBackground
+        {
+            get
+            {
+                if (hikeMsgBackground == null)
+                    hikeMsgBackground = new SolidColorBrush(Color.FromArgb(255, 47, 152, 218));
                 return hikeMsgBackground;
             }
         }
 
-        public BitmapImage NotOnHikeImage
+        public static BitmapImage OnHikeImage
         {
             get
             {
-                return notOnHikeImage;
-            }
-        }
-
-        public BitmapImage OnHikeImage
-        {
-            get
-            {
+                if (onHikeImage == null)
+                    onHikeImage = new BitmapImage(new Uri("/View/images/chat_joined_blue.png", UriKind.Relative));
                 return onHikeImage;
             }
         }
 
-        public BitmapImage DefaultAvatarBitmapImage
+        public static BitmapImage NotOnHikeImage
         {
             get
             {
-                return defaultAvatarBitmapImage;
-            }
-        }
-        public BitmapImage MessageReadBitmapImage
-        {
-            get
-            {
-                return read;
+                if (notOnHikeImage == null)
+                    notOnHikeImage = new BitmapImage(new Uri("/View/images/chat_joined_green.png", UriKind.Relative));
+                return notOnHikeImage;
             }
         }
 
-        public BitmapImage MessageDeliveredBitmapImage
+        public static BitmapImage PlayIcon
         {
             get
             {
-                return delivered;
-            }
-        }
-
-        public BitmapImage MessageSentBitmapImage
-        {
-            get
-            {
-                return sent;
-            }
-        }
-
-        public BitmapImage TypingNotificationBitmap
-        {
-            get
-            {
-                return typingNotificationBitmap;
-            }
-        }
-
-        public BitmapImage HttpFailed
-        {
-            get
-            {
-                return httpFailed;
-            }
-        }
-
-        public BitmapImage AudioAttachment
-        {
-            get
-            {
-                return audioAttachment;
-            }
-        }
-
-        public BitmapImage PlayIcon
-        {
-            get
-            {
+                if (playIcon == null)
+                    playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
                 return playIcon;
             }
         }
 
-        public Paragraph Linkify(string message)
+        public static BitmapImage AudioAttachment
+        {
+            get
+            {
+                if (audioAttachment == null)
+                    audioAttachment = new BitmapImage(new Uri("/View/images/audio_file_icon.png", UriKind.Relative));
+                return audioAttachment;
+            }
+        }
+
+        public static BitmapImage HttpFailed
+        {
+            get
+            {
+                if (httpFailed == null)
+                    httpFailed = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
+                return httpFailed;
+            }
+        }
+
+        public static BitmapImage TypingNotificationBitmap
+        {
+            get
+            {
+                if (typingNotificationBitmap == null)
+                    typingNotificationBitmap = new BitmapImage(new Uri("/View/images/typing.png", UriKind.Relative));
+                return typingNotificationBitmap;
+            }
+        }
+
+        public static BitmapImage Sent
+        {
+            get
+            {
+                if (sent == null)
+                    sent = new BitmapImage(new Uri("/View/images/ic_sent.png", UriKind.Relative));
+                return sent;
+            }
+        }
+
+        public static BitmapImage Delivered
+        {
+            get
+            {
+                if (delivered == null)
+                    delivered = new BitmapImage(new Uri("/View/images/ic_delivered.png", UriKind.Relative));
+                return delivered;
+            }
+        }
+
+        public static BitmapImage Read
+        {
+            get
+            {
+                if (read == null)
+                    read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
+                return read;
+            }
+        }
+
+        public static BitmapImage DefaultAvatarBitmapImage
+        {
+            get
+            {
+                if (defaultAvatarBitmapImage == null)
+                    defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/default_user.png", UriKind.Relative));
+                return defaultAvatarBitmapImage;
+            }
+        }
+
+        public static BitmapImage DefaultGroupImage
+        {
+            get
+            {
+                if (defaultGroupImage == null)
+                    defaultGroupImage = new BitmapImage(new Uri("/View/images/default_group.png", UriKind.Relative));
+                return defaultGroupImage;
+            }
+        }
+
+        public static BitmapImage Waiting
+        {
+            get
+            {
+                if (waiting == null)
+                    waiting = new BitmapImage(new Uri("/View/images/chat_waiting.png", UriKind.Relative));
+                return waiting;
+            }
+        }
+
+        public static BitmapImage Reward
+        {
+            get
+            {
+                if (reward == null)
+                    reward = new BitmapImage(new Uri("/View/images/chat_reward.png", UriKind.Relative));
+                return reward;
+            }
+        }
+
+        public static BitmapImage ParticipantLeft
+        {
+            get
+            {
+                if (participantLeft == null)
+                    participantLeft = new BitmapImage(new Uri("/View/images/chat_left.png", UriKind.Relative));
+                return participantLeft;
+            }
+        }
+
+        #endregion
+
+        public static Paragraph Linkify(string message)
         {
             MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(message);
             var p = new Paragraph();
             int startIndex = 0;
             int endIndex = -1;
+            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
 
-            for (int i = 0; i < matchCollection.Count; i++)
+            for (int i = 0; i < maxCount; i++)
             {
                 String emoticon = matchCollection[i].ToString();
 
