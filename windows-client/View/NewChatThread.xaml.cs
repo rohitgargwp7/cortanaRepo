@@ -1435,17 +1435,22 @@ namespace windows_client.View
 
             object[] vals = null;
             if (isFirstMsgAfterGC)
-            {
-                vals = new object[3];
+            {               
                 JObject jo = ConvMessage.ProcessGCLogic(mContactNumber);
-                ConvMessage cm = new ConvMessage(jo, true);
-                AddMessageToUI(cm, true);
-                vals[2] = cm;
+                if (jo == null)
+                    vals = new object[2];
+                else
+                {
+                    vals = new object[3];
+                    ConvMessage cm = new ConvMessage(jo, true);
+                    AddMessageToUI(cm, true);
+                    vals[2] = cm;
+                    isGcFirstMsg = false;
+                }
             }
             else
-            {
                 vals = new object[2];
-            }
+
             vals[0] = convMessage;
             vals[1] = isNewGroup;
 
@@ -1804,6 +1809,8 @@ namespace windows_client.View
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 if (ConversationsList.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
                     isGcFirstMsg = true;
+                else
+                    isGcFirstMsg = false;
 
                 /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
