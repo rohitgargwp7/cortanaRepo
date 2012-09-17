@@ -230,6 +230,7 @@ namespace windows_client
             {
                 AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
                 App.MSISDN = (string)appSettings[App.MSISDN_SETTING];
+                AccountUtils.UID = (string)appSettings[App.UID_SETTING];
             }
         }
 

@@ -14,73 +14,9 @@ namespace windows_client.utils
 {
     public class Utils
     {
-        public class Group<T> : IEnumerable<T>
-        {
-            public Group(string name, List<T> items)
-            {
-                this.Title = name;
-                this.Items = items;
-            }
-
-            public override bool Equals(object obj)
-            {
-                Group<T> that = obj as Group<T>;
-
-                return (that != null) && (this.Title.Equals(that.Title));
-            }
-            public override int GetHashCode()
-            {
-                return this.Title.GetHashCode();
-            }
-            public string Title
-            {
-                get;
-                set;
-            }
-
-            public List<T> Items
-            {
-                get;
-                set;
-            }
-            public bool HasItems
-            {
-                get
-                {
-                    return (Items == null || Items.Count == 0) ? false : true;
-                }
-            }
-
-            /// <summary>
-            /// This is used to colour the tiles - greying out those that have no entries
-            /// </summary>
-            public Brush GroupBackgroundBrush
-            {
-                get
-                {
-                    return (SolidColorBrush)Application.Current.Resources[(HasItems) ? "PhoneAccentBrush" : "PhoneChromeBrush"];
-                }
-            }
-            #region IEnumerable<T> Members
-
-            public IEnumerator<T> GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
-
-            #region IEnumerable Members
-
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
-        }
 
         private static Dictionary<string, List<GroupParticipant>> groupCache = null;
+
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static Dictionary<string, List<GroupParticipant>> GroupCache
@@ -95,6 +31,7 @@ namespace windows_client.utils
                     groupCache = value;
             }
         }
+
         public static GroupParticipant getGroupParticipant(string defaultName, string msisdn,string grpId)
         {
             if (grpId == null)
