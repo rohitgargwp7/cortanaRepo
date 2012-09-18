@@ -26,11 +26,11 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
             appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+//            appBar.IsMenuEnabled = false;
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = "done";
+            nextIconButton.Text = "accept";
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;
             appBar.Buttons.Add(nextIconButton);
@@ -39,6 +39,8 @@ namespace windows_client.View
 
         private void doneBtn_Click(object sender, EventArgs e)
         {
+            NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
+
         }
 
     }

@@ -27,7 +27,7 @@ namespace windows_client
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
             appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            //appBar.IsMenuEnabled = false;
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
