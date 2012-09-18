@@ -160,6 +160,9 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\FreeSMS.xaml.cs">
+      <DependentUpon>FreeSMS.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\GroupInfoPage.xaml.cs">
       <DependentUpon>GroupInfoPage.xaml</DependentUpon>
     </Compile>
@@ -237,6 +240,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Error.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FreeSMS.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
