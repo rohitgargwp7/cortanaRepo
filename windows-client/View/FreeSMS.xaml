@@ -52,7 +52,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <Rectangle Grid.Column="0" Fill="#333333" Margin="5"></Rectangle>
                     <TextBlock Text="2" Grid.Column="0" HorizontalAlignment="Center" FontSize="45"></TextBlock>
                     <Rectangle Grid.Column="1" Fill="#333333" Margin="5"></Rectangle>
@@ -63,10 +63,28 @@
                 </Grid>
             </Grid>
             <TextBlock Grid.Row="2" Text="Your free SMS refills on the 1st of every month" HorizontalAlignment="Center"/>
-
         </Grid>
 
+        <Grid x:Name="InviteFriendsGrid" Grid.Row="1" Margin="1,0,-1,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="2" Margin="0,0,0,40" HorizontalAlignment="Center" Text="*Free SMS can only be sent within India"/>
+
+            <StackPanel Grid.Row="0" VerticalAlignment="Center" Orientation="Vertical" HorizontalAlignment="Center">
+                <TextBlock Text="Invite Friends, Earn Rewards." FontWeight="Light" FontSize="25" HorizontalAlignment="Center"/>
+                <TextBlock Text="For every friend who joins you get:" FontWeight="Light" FontSize="20" HorizontalAlignment="Center"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
+                <Image Source="images\freesms.png" Height="30" Width="30"></Image>
+                <TextBlock MaxWidth="150" Margin="13,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap" Text="50 Free SMS every month"></TextBlock>
+                <Button Content="Invite Now" BorderThickness="2" Height="80"></Button>
+            
+            </StackPanel>
+            
+        </Grid>
     </Grid>
-
-
 </phone:PhoneApplicationPage>
