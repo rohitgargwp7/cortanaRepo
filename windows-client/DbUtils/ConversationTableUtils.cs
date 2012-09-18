@@ -182,18 +182,6 @@ namespace windows_client.DbUtils
                 obj.IsOnhike = joined;
                 saveConvObject(obj, msisdn);
             }
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    List<ConversationListObject> res = DbCompiledQueries.GetConvForMsisdn(context, msisdn).ToList<ConversationListObject>();
-            //    if (res == null || res.Count<ConversationListObject>() == 0)
-            //        return;
-            //    for (int i = 0; i < res.Count; i++)
-            //    {
-            //        ConversationListObject conv = res[i];
-            //        conv.IsOnhike = (bool)joined;
-            //    }
-            //    MessagesTableUtils.SubmitWithConflictResolve(context);
-            //}
         }
 
         public static void updateConversation(ConversationListObject obj)

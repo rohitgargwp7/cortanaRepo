@@ -286,7 +286,6 @@ namespace windows_client.View
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
-                initBlockUnblockState();
 
                 App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
                 registerListeners();
@@ -307,12 +306,8 @@ namespace windows_client.View
             }
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            //photoChooserTask.PixelHeight = 400;
-            //photoChooserTask.PixelWidth = 400;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
         }
-
-
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -522,6 +517,7 @@ namespace windows_client.View
             #endregion
 
             userName.Text = mContactName;
+            mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
             initAppBar(isGroupChat, isAddUser);
             if (!isOnHike)
             {
@@ -535,6 +531,7 @@ namespace windows_client.View
             }
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
+            initBlockUnblockState();
         }
 
         private void processGroupJoin(bool isNewgroup)
@@ -826,7 +823,6 @@ namespace windows_client.View
 
         private void initBlockUnblockState()
         {
-            mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (mUserIsBlocked)
