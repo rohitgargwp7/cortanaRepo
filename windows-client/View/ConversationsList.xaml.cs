@@ -359,6 +359,13 @@ namespace windows_client.View
 
         private void initProfilePage()
         {
+            if (Utils.isDarkTheme())
+            {
+                freeSmsImage.Source = new BitmapImage(new Uri("images/free_sms_dark.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
+                privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
+                helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative)); 
+            }
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
