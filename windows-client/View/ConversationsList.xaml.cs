@@ -782,5 +782,10 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
+
+        private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
+        }
     }
 }

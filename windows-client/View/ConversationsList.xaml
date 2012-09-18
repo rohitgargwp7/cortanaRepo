@@ -112,6 +112,11 @@
                     </StackPanel>
 
                     <StackPanel Margin="0, 30, 0,10" Orientation="Vertical" Grid.Row="1">
+                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="FreeSMS_Tap" Margin="15,15,0,5">
+                            <Image Source="images\free_sms.png" Height="35">
+                            </Image>
+                            <TextBlock Text="Free SMS" Margin="15,4,0,0" FontSize="30"></TextBlock>
+                        </StackPanel>
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,15,0,5">
                             <Image Source="images\notifications.png" Height="35">
                             </Image>
