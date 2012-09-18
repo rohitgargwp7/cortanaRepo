@@ -436,6 +436,7 @@ namespace windows_client
 
             st.Reset();
             st.Start();
+            App.UI_UtilsInstance = UI_Utils.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
