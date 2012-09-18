@@ -26,7 +26,7 @@ namespace windows_client.Controls
         {
             if (e.OldValue != e.NewValue)
             {
-                Paragraph richtext = UI_Utils.Linkify((string)e.NewValue);
+                Paragraph richtext = UI_Utils.Instance.Linkify((string)e.NewValue);
                 RichText.Blocks.Add(richtext);
             }
         }

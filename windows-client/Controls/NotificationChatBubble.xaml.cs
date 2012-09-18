@@ -40,26 +40,26 @@ namespace windows_client.Controls
             {
                 case MessageType.HIKE_PARTICIPANT_JOINED:
                     Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
-                    NotificationImage.Source = UI_Utils.OnHikeImage;
+                    NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
                     break;
                 case MessageType.SMS_PARTICIPANT_JOINED:
                     Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
-                    NotificationImage.Source = UI_Utils.NotOnHikeImage;
+                    NotificationImage.Source = UI_Utils.Instance.NotOnHikeImage;
                     break;
                 case MessageType.PARTICIPANT_LEFT:
                     Text = String.Format(HikeConstants.PARTICIPANT_LEFT, parameter);
-                    NotificationImage.Source = UI_Utils.ParticipantLeft;
+                    NotificationImage.Source = UI_Utils.Instance.ParticipantLeft;
                     break;
                 case MessageType.GROUP_END:
                     Text = String.Format(HikeConstants.GROUP_CHAT_ENDED, parameter);
                     break;
                 case MessageType.WAITING:
                     Text = String.Format(HikeConstants.WAITING_TO_JOIN, parameter);
-                    NotificationImage.Source = UI_Utils.Waiting;
+                    NotificationImage.Source = UI_Utils.Instance.Waiting;
                     break;
                 case MessageType.REWARD:
                     Text = String.Format(HikeConstants.REWARDS, parameter);
-                    NotificationImage.Source = UI_Utils.Reward;
+                    NotificationImage.Source = UI_Utils.Instance.Reward;
                     break;
             }
         }
@@ -74,14 +74,14 @@ namespace windows_client.Controls
             {
                 this.Text = message;
             }
-            this.NotificationImage.Source = UI_Utils.OnHikeImage;
+            this.NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
             if (onHike)
             {
-                //this.HikeBubble.Source = UI_Utils.MessageReadBitmapImage;
+                //this.HikeBubble.Source = UI_Utils.Instance.MessageReadBitmapImage;
             }
             else
             {
-                //this.HikeBubble.Source = UI_Utils.DefaultAvatarBitmapImage;
+                //this.HikeBubble.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
 
             }
         }

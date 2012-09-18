@@ -10,27 +10,47 @@ namespace windows_client.utils
     public class UI_Utils
     {
         #region private variables
-        private static SolidColorBrush textBoxBackground;
-        private static SolidColorBrush smsBackground;
-        private static SolidColorBrush hikeMsgBackground;
-        private static BitmapImage onHikeImage;
-        private static BitmapImage notOnHikeImage;
-        private static BitmapImage playIcon;
-        private static BitmapImage audioAttachment;
-        private static BitmapImage httpFailed;
-        private static BitmapImage typingNotificationBitmap;
-        private static BitmapImage sent;
-        private static BitmapImage delivered;
-        private static BitmapImage read;
-        private static BitmapImage defaultAvatarBitmapImage;
-        private static BitmapImage defaultGroupImage;
-        private static BitmapImage waiting;
-        private static BitmapImage reward;
-        private static BitmapImage participantLeft;
+        private SolidColorBrush textBoxBackground;
+        private SolidColorBrush smsBackground;
+        private SolidColorBrush hikeMsgBackground;
+        private BitmapImage onHikeImage;
+        private BitmapImage notOnHikeImage;
+        private BitmapImage playIcon;
+        private BitmapImage audioAttachment;
+        private BitmapImage httpFailed;
+        private BitmapImage typingNotificationBitmap;
+        private BitmapImage sent;
+        private BitmapImage delivered;
+        private BitmapImage read;
+        private BitmapImage defaultAvatarBitmapImage;
+        private BitmapImage defaultGroupImage;
+        private BitmapImage waiting;
+        private BitmapImage reward;
+        private BitmapImage participantLeft;
+
+        private static volatile UI_Utils instance = null;
+
+        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+
+        public static UI_Utils Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new UI_Utils();
+                    }
+                }
+                return instance;
+            }
+        }
         #endregion
 
-        #region public static properties
-        public static SolidColorBrush TextBoxBackground
+        #region public  properties
+        public SolidColorBrush TextBoxBackground
         {
             get
             {
@@ -40,7 +60,7 @@ namespace windows_client.utils
             }
         }
 
-        public static SolidColorBrush SmsBackground
+        public SolidColorBrush SmsBackground
         {
             get
             {
@@ -50,7 +70,7 @@ namespace windows_client.utils
             }
         }
 
-        public static SolidColorBrush HikeMsgBackground
+        public SolidColorBrush HikeMsgBackground
         {
             get
             {
@@ -60,7 +80,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage OnHikeImage
+        public BitmapImage OnHikeImage
         {
             get
             {
@@ -70,7 +90,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage NotOnHikeImage
+        public BitmapImage NotOnHikeImage
         {
             get
             {
@@ -80,7 +100,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage PlayIcon
+        public BitmapImage PlayIcon
         {
             get
             {
@@ -90,7 +110,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage AudioAttachment
+        public BitmapImage AudioAttachment
         {
             get
             {
@@ -100,7 +120,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage HttpFailed
+        public BitmapImage HttpFailed
         {
             get
             {
@@ -110,7 +130,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage TypingNotificationBitmap
+        public BitmapImage TypingNotificationBitmap
         {
             get
             {
@@ -120,7 +140,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage Sent
+        public BitmapImage Sent
         {
             get
             {
@@ -130,7 +150,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage Delivered
+        public BitmapImage Delivered
         {
             get
             {
@@ -140,7 +160,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage Read
+        public BitmapImage Read
         {
             get
             {
@@ -150,7 +170,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage DefaultAvatarBitmapImage
+        public BitmapImage DefaultAvatarBitmapImage
         {
             get
             {
@@ -160,7 +180,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage DefaultGroupImage
+        public BitmapImage DefaultGroupImage
         {
             get
             {
@@ -170,7 +190,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage Waiting
+        public BitmapImage Waiting
         {
             get
             {
@@ -180,7 +200,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage Reward
+        public BitmapImage Reward
         {
             get
             {
@@ -190,7 +210,7 @@ namespace windows_client.utils
             }
         }
 
-        public static BitmapImage ParticipantLeft
+        public BitmapImage ParticipantLeft
         {
             get
             {
@@ -202,7 +222,7 @@ namespace windows_client.utils
 
         #endregion
 
-        public static Paragraph Linkify(string message)
+        public Paragraph Linkify(string message)
         {
             MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(message);
             var p = new Paragraph();

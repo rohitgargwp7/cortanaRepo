@@ -64,6 +64,7 @@ namespace windows_client
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
         private static Dictionary<string, GroupParticipant> groupsCache = null;
+        private static UI_Utils ui_utils;
         private static object lockObj = new object();
 
         #endregion
@@ -154,6 +155,21 @@ namespace windows_client
                 if (value != networkManager)
                 {
                     networkManager = value;
+                }
+            }
+        }
+
+        public static UI_Utils UI_UtilsInstance
+        {
+            get
+            {
+                return ui_utils;
+            }
+            set
+            {
+                if (value != ui_utils)
+                {
+                    ui_utils = value;
                 }
             }
         }
@@ -422,6 +438,7 @@ namespace windows_client
 
             st.Reset();
             st.Start();
+            App.UI_UtilsInstance = UI_Utils.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
