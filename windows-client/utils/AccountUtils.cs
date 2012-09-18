@@ -77,8 +77,8 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME,DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE,SET_PROFILE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -142,6 +142,16 @@ namespace windows_client.utils
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, finalCallbackFunction });
+        }
+
+        public static void setProfile(JObject obj, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_PROFILE, obj, finalCallbackFunction });
         }
 
         public static void deleteAccount(postResponseFunction finalCallbackFunction)
@@ -235,6 +245,12 @@ namespace windows_client.utils
                     data.Add("name", nameToSet);
                     break;
 
+                    case RequestType.SET_PROFILE:
+                    JObject jo = vars[2] as JObject;
+                    data = jo;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+
                 case RequestType.POST_ADDRESSBOOK:
                     Dictionary<string, List<ContactInfo>> contactListMap = vars[2] as Dictionary<string, List<ContactInfo>>;
                     finalCallbackFunction = vars[3] as postResponseFunction;
@@ -288,7 +304,7 @@ namespace windows_client.utils
                         chatBubble.updateProgress(progressValue);
                         startIndex += noOfBytesToWrite;
                     }
-                    //                    postStream.Write(dataBytes, 0, dataBytes.Length);
+
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
                     return;

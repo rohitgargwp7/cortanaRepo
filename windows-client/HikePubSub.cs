@@ -123,6 +123,8 @@ namespace windows_client
 
         public static readonly string ATTACHMENT_RESEND = "resendOrForward";
 
+        public static readonly string UPDATE_ACCOUNT_NAME = "updateAccountName";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;

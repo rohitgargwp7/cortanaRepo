@@ -102,7 +102,7 @@
                             </StackPanel>
                         </Button>
 
-                        <StackPanel Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
+                        <StackPanel Name="accountStackPanel" Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
                             <TextBlock x:Name="accountName" FontSize="35" Text="UNKNOWN"/>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Free SMS remaining: " Foreground="#8d8d8d"></TextBlock>
