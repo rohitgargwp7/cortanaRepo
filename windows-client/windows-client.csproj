@@ -463,6 +463,7 @@
     <Content Include="View\images\enter_name.png" />
     <Resource Include="View\images\help.png" />
     <Content Include="View\images\error_icon.png" />
+    <Content Include="View\images\freesms.png" />
     <Content Include="View\images\hike_logo_small.png" />
     <Content Include="View\images\icon_attachment.png" />
     <Content Include="View\images\icon_emoticon.png" />
