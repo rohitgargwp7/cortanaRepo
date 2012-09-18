@@ -72,6 +72,7 @@ namespace windows_client.utils
                                 enterNamePage.progressBar.IsEnabled = false;
                                 enterNamePage.progressBar.Opacity = 0;
                                 enterNamePage.nextIconButton.IsEnabled = true;
+                                enterNamePage.txtBxEnterName.IsReadOnly = false;
                             }
                         }
                     });
@@ -214,6 +215,7 @@ namespace windows_client.utils
                             enterNamePage.progressBar.IsEnabled = false;
                             enterNamePage.progressBar.Opacity = 0;
                             enterNamePage.nextIconButton.IsEnabled = true;
+                            enterNamePage.txtBxEnterName.IsReadOnly = false;
                         }
                     }
                 });
@@ -237,7 +239,7 @@ namespace windows_client.utils
                     if (currentPage != null)
                     {
                         EnterName enterNamePage = (EnterName)currentPage;
-                        enterNamePage.msgTxtBlk.Text = "Failed. Close App and try later !!";
+                        enterNamePage.msgTxtBlk.Text = "Failed. Close App and try again !!";
                     }
                 });
             }

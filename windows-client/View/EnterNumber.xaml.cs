@@ -52,14 +52,14 @@ namespace windows_client
                 msisdnErrorTxt.Visibility = Visibility.Visible;
                 return;
             }
-
+            txtEnterPhone.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             msgTxtBlk.Opacity = 1;
             msgTxtBlk.Text = "Verifying your number";
             msisdnErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
-            AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));         
+            AccountUtils.validateNumber(phoneNumber, new AccountUtils.postResponseFunction(msisdnPostResponse_Callback));
         }
 
         private void msisdnPostResponse_Callback(JObject obj)
@@ -73,9 +73,11 @@ namespace windows_client
                     msisdnErrorTxt.Visibility = Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
+                    txtEnterPhone.IsReadOnly = false;
+
+                    if (!string.IsNullOrWhiteSpace(phoneNumber))
+                        nextIconButton.IsEnabled = true;
                 });
-                if (!string.IsNullOrWhiteSpace(phoneNumber))
-                    nextIconButton.IsEnabled = true;
                 return;
             }
             string unauthedMSISDN = (string)obj["msisdn"];
@@ -89,6 +91,7 @@ namespace windows_client
                     msisdnErrorTxt.Visibility = Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
+                    txtEnterPhone.IsReadOnly = false;
                 });
                 return;
             }
@@ -97,8 +100,9 @@ namespace windows_client
 
             Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => 
-            { 
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                txtEnterPhone.IsReadOnly = false;
                 NavigationService.Navigate(nextPage);
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
@@ -106,13 +110,13 @@ namespace windows_client
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {            
+        {
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
             if (isTSorFirstLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
-            {               
+            {
                 object obj = null;
                 if (this.State.TryGetValue("txtEnterPhone", out obj))
                 {
@@ -127,9 +131,9 @@ namespace windows_client
                     msisdnErrorTxt.Text = (string)this.State["msisdnErrorTxt.Text"];
                 }
             }
-            
+
             if (String.IsNullOrWhiteSpace(txtEnterPhone.Text))
-                nextIconButton.IsEnabled = false;            
+                nextIconButton.IsEnabled = false;
             else
                 nextIconButton.IsEnabled = true;
         }
