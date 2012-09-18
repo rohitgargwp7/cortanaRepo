@@ -297,7 +297,7 @@ namespace windows_client.View
             if (typingNotificationImage == null)
             {
                 typingNotificationImage = new Image();
-                typingNotificationImage.Source = UI_Utils.TypingNotificationBitmap;
+                typingNotificationImage.Source = UI_Utils.Instance.TypingNotificationBitmap;
                 typingNotificationImage.Height = 28;
                 typingNotificationImage.Width = 55;
                 typingNotificationImage.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
@@ -435,7 +435,7 @@ namespace windows_client.View
                 processGroupJoin(true);
                 isOnHike = true;
                 isGroupChat = true;
-                userImage.Source = UI_Utils.DefaultAvatarBitmapImage; //TODO show new group default image
+                userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; //TODO show new group default image
 
                 /* This is done so that after Tombstone when this page is launched, no group is created again and again */
                 ConversationListObject convObj = new ConversationListObject();
@@ -500,7 +500,7 @@ namespace windows_client.View
 
                 if (avatar == null)
                 {
-                    userImage.Source = UI_Utils.DefaultAvatarBitmapImage;
+                    userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
                 }
                 else
                 {
@@ -512,7 +512,7 @@ namespace windows_client.View
                 }
                 //}
                 //else
-                //    userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                //    userImage.Source = UI_Utils.Instance.Instance.DefaultAvatarBitmapImage;
             }
             #endregion
 

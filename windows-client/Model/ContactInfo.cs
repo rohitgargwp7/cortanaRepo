@@ -272,9 +272,9 @@ namespace windows_client.Model
             get
             {
                 if (_onHike)
-                    return UI_Utils.OnHikeImage;
+                    return UI_Utils.Instance.OnHikeImage;
                 else
-                    return UI_Utils.NotOnHikeImage;
+                    return UI_Utils.Instance.NotOnHikeImage;
             }
         }
         #endregion
