@@ -54,6 +54,9 @@ namespace windows_client
         public static readonly string REWARDS = "You have just earned %d Free SMS";
         public static readonly string GROUP_CHAT_END = "This chat has ended";
 
+        public static readonly string pushNotificationChannelName = "HikeApp";
+
+
 
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_HEIGHT = 800;
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_WIDTH = 800;

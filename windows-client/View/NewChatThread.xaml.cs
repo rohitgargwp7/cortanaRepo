@@ -774,14 +774,6 @@ namespace windows_client.View
                 });
             }
             
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                Scroller.Opacity = 1;
-                ScrollToBottom();
-                progressBar.Opacity = 0;
-                progressBar.IsEnabled = false;
-            });
-
             if (isPublish)
             {
                 JObject obj = new JObject();
@@ -804,13 +796,29 @@ namespace windows_client.View
                     processGroupJoin(false);
                 }
             }
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                Scroller.Opacity = 1;
+                progressBar.Opacity = 0;
+                progressBar.IsEnabled = false;
+                //ScrollToBottom();
+                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+            });
+        }
+
+        private void ScrollToBottomFromUI()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                ScrollToBottom();
+            });
         }
 
         private void ScrollToBottom()
         {
             MessageList.UpdateLayout();
             Scroller.UpdateLayout();
-            Scroller.ScrollToVerticalOffset(Scroller.ExtentHeight);
+            Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
         }
 
         private void updateLastMsgColor(string msisdn)

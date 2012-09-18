@@ -42,6 +42,7 @@ namespace windows_client
         public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
         public static readonly string GROUPS_CACHE = "GroupsCache";
         public static readonly string IS_DB_CREATED = "is_db_created";
+        public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
         public static string CONTACT_SCANNING_FAILED = "contactScanningFailed";
         public static string SET_NAME_FAILED = "setNameFailed";
 

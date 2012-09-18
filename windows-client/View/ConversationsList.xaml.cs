@@ -18,8 +18,6 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
-using System.Collections;
-using System.Windows.Media;
 using System.Net.NetworkInformation;
 
 namespace windows_client.View
@@ -183,51 +181,54 @@ namespace windows_client.View
 
             // move to seperate thread later
             #region PUSH NOTIFICATIONS STUFF
-            HttpNotificationChannel pushChannel;
 
-            // The name of our push channel.
-            string channelName = "HikeApp";
-
-            // Try to find the push channel.
-            pushChannel = HttpNotificationChannel.Find(channelName);
-
-            try
+            bool isPushEnabled = true;
+            appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+            if (isPushEnabled)
             {
-                // If the channel was not found, then create a new connection to the push service.
-                if (pushChannel == null)
+                HttpNotificationChannel pushChannel;
+                // Try to find the push channel.
+                pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+
+                try
                 {
-                    pushChannel = new HttpNotificationChannel(channelName);
+                    // If the channel was not found, then create a new connection to the push service.
+                    if (pushChannel == null)
+                    {
+                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName);
 
-                    // Register for all the events before attempting to open the channel.
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    // Register for this notification only if you need to receive the notifications while your application is running.
-                    //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-                    pushChannel.Open();
-                    // Bind this new channel for toast events.
-                    pushChannel.BindToShellToast();
-                    pushChannel.BindToShellTile();
+                        // Register for all the events before attempting to open the channel.
+                        pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                        pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+                        // Register for this notification only if you need to receive the notifications while your application is running.
+                        //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+                        pushChannel.Open();
+                        // Bind this new channel for toast events.
+                        pushChannel.BindToShellToast();
+                        pushChannel.BindToShellTile();
+
+                    }
+                    else
+                    {
+                        // The channel was already open, so just register for all the events.
+                        pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                        pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+                        // Register for this notification only if you need to receive the notifications while your application is running.
+                        //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+
+                        if (pushChannel.ChannelUri == null)
+                            return;
+                        System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                        AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                    }
                 }
-                else
+                catch (InvalidOperationException ioe)
                 {
-                    // The channel was already open, so just register for all the events.
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    // Register for this notification only if you need to receive the notifications while your application is running.
-                    //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
-                    if (pushChannel.ChannelUri == null)
-                        return;
-                    System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                    AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
                 }
-            }
-            catch (InvalidOperationException ioe)
-            {
-
-            }
-            catch (Exception)
-            { 
+                catch (Exception)
+                {
+                }
             }
             #endregion
 
@@ -718,7 +719,8 @@ namespace windows_client.View
             int startIndex = 0;
             int endIndex = -1;
 
-            for (int i = 0; i < matchCollection.Count; i++)
+            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
+            for (int i = 0; i < maxCount; i++)
             {
                 String emoticon = matchCollection[i].ToString();
 
@@ -774,7 +776,11 @@ namespace windows_client.View
         private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
+        }
 
+        private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
     }
 }
