@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
+using Microsoft.Phone.Tasks;
 
 
 namespace windows_client
@@ -103,6 +104,18 @@ namespace windows_client
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+        }
+
+        private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //Uri privacyUri = new Uri(Uri.EscapeUriString("http://www.windowsphonegeek.com"),
+            //           UriKind.RelativeOrAbsolute);
+
+            //WebBrowserTask webBrowserTask = new WebBrowserTask();
+            //webBrowserTask.Uri = privacyUri;
+            //webBrowserTask.Show();
+            NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
+
         }
     }
 }
