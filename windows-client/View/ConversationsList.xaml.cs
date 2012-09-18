@@ -776,7 +776,11 @@ namespace windows_client.View
         private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
+        }
 
+        private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
     }
 }
