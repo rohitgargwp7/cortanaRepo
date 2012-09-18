@@ -957,6 +957,7 @@ namespace windows_client.View
             }
             else     // BLOCK REQUEST
             {
+                this.Focus();
                 if (isGroupChat)
                 {
                     object[] vals = new object[2];
@@ -1461,7 +1462,7 @@ namespace windows_client.View
             }
             else
                 vals = new object[2];
-
+            
             vals[0] = convMessage;
             vals[1] = isNewGroup;
 
@@ -1697,10 +1698,6 @@ namespace windows_client.View
         {
             if (show)
             {
-                //LayoutRoot.Background = blackBackground;
-                //HikeTitle.Opacity = 0.25;
-                //MessageList.Opacity = 0.25;
-                //bottomPanel.Opacity = 0.25;
                 overlayRectangle.Visibility = System.Windows.Visibility.Visible;
                 overlayRectangle.Opacity = 0.85;
                 HikeTitle.IsHitTestVisible = false;
@@ -1709,24 +1706,16 @@ namespace windows_client.View
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
                 sendIconButton.IsEnabled = false;
-                //                sendMsgTxtbox.IsHitTestVisible = false;
             }
             else
             {
-                //LayoutRoot.Background = whiteBackground;
-                //HikeTitle.Opacity = 1;
-                //MessageList.Opacity = 1;
-                //bottomPanel.Opacity = 1;
                 overlayRectangle.Visibility = System.Windows.Visibility.Collapsed;
-
-
                 HikeTitle.IsHitTestVisible = true;
                 MessageList.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
                 emoticonsIconButton.IsEnabled = true;
                 sendIconButton.IsEnabled = true;
-                //                sendMsgTxtbox.IsHitTestVisible = true;
             }
 
         }

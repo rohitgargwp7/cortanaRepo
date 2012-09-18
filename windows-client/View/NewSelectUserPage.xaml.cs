@@ -24,6 +24,7 @@ namespace windows_client.View
 {
     public partial class NewSelectUserPage : PhoneApplicationPage
     {
+        bool canGoBack = true;
         private bool isClicked = false;
         private string TAP_MSG = "Tap here to message this person";
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
@@ -192,6 +193,13 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
             };
             initPage();
+        }
+
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            if (!canGoBack)
+                return;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -502,7 +510,6 @@ namespace windows_client.View
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = normalizeNumber(contact.Name);
-                contact.Name = null;
                 contact = GetContactIfExists(contact);
             }  
 
@@ -564,14 +571,13 @@ namespace windows_client.View
 
             disableAppBar();
             progress.Show();
-            
+            canGoBack = false;
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
         }
 
         /* This callback is on background thread started by getContacts function */
         public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
         {
-
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -579,6 +585,7 @@ namespace windows_client.View
             if ((new_contacts_by_id == null || new_contacts_by_id.Count == 0) && hike_contacts_by_id == null)
             {
                 scanningComplete();
+                canGoBack = true;
                 return;
             }
 
@@ -611,6 +618,7 @@ namespace windows_client.View
             {
                 Thread.Sleep(1000);
                 scanningComplete();
+                canGoBack = true;
                 return;
             }
 
@@ -646,6 +654,7 @@ namespace windows_client.View
                 App.MqttManagerInstance.connect();
                 NetworkManager.turnOffNetworkManager = false;
                 scanningComplete();
+                canGoBack = true;
                 return;
             }
 
@@ -683,6 +692,7 @@ namespace windows_client.View
                 progress.Hide();
                 enableAppBar();
             });
+            canGoBack = true;
         }
 
         private void scanningComplete()
