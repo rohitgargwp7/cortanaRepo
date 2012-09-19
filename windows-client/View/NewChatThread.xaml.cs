@@ -312,7 +312,6 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            App.newChatThreadPage = this;
             #region TOMBSTONE HANDLING
 
             if (!App.isConvCreated)// && !PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
@@ -370,6 +369,7 @@ namespace windows_client.View
                     processGroupJoin(false);
                 }
             }
+            App.newChatThreadPage = this;
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -386,6 +386,16 @@ namespace windows_client.View
             base.OnRemovedFromJournal(e);
             removeListeners();
             App.newChatThreadPage = null;
+        }
+
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            if (emoticonPanel.Visibility == Visibility.Visible)
+            {
+                emoticonPanel.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+            }
+            base.OnBackKeyPress(e);
         }
 
         #endregion
@@ -1143,7 +1153,7 @@ namespace windows_client.View
                     string text = HikeConstants.USER_JOINED;
                     if (!gp.IsOnHike)
                         text = HikeConstants.USER_INVITED;
-                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + text, true);
+                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + text, gp.IsOnHike);
                     if (addToLast)
                     {
                         this.MessageList.Children.Add(chatBubble);
@@ -1164,7 +1174,7 @@ namespace windows_client.View
                     string text = HikeConstants.USER_JOINED;
                     if (!gp.IsOnHike && gp.IsDND && !gp.HasOptIn)
                         text = HikeConstants.WAITING_TO_JOIN;
-                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + text, true);
+                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + text, gp.IsOnHike);
                     if (addToLast)
                     {
                         this.MessageList.Children.Add(chatBubble);
@@ -1179,29 +1189,23 @@ namespace windows_client.View
 
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
-                string[] msisdns = splitUserJoinedMessage(convMessage);
-                for (int i = 0; i < msisdns.Length; i++)
+                MyChatBubble chatBubble = new NotificationChatBubble(convMessage.Message, true);
+                if (addToLast)
                 {
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i], convMessage.Msisdn);
-                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + HikeConstants.USER_JOINED, true);
-                    if (addToLast)
-                    {
-                        this.MessageList.Children.Add(chatBubble);
-                        ScrollToBottom();
-                    }
-                    else
-                    {
-                        this.MessageList.Children.Insert(0, chatBubble);
-                    }
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                else
+                {
+                    this.MessageList.Children.Insert(0, chatBubble);
                 }
             }
+
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
             {
-                string[] msisdns = splitUserJoinedMessage(convMessage);
-                for (int i = 0; i < msisdns.Length; i++)
+                if (!Utils.isGroupConversation(mContactNumber))
                 {
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[i], convMessage.Msisdn);
-                    MyChatBubble chatBubble = new NotificationChatBubble(gp.Name + HikeConstants.WAITING_TO_JOIN, true);
+                    MyChatBubble chatBubble = new NotificationChatBubble(convMessage.Message, false);
                     if (addToLast)
                     {
                         this.MessageList.Children.Add(chatBubble);
@@ -1832,7 +1836,8 @@ namespace windows_client.View
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
                                 AddMessageToUI(cm, true);
-                            isGcFirstMsg = false;
+                            if(cm.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN) // do this only if USER JOIN MSG 
+                                isGcFirstMsg = false;
                         }
                     });
                 }

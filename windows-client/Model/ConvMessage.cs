@@ -64,7 +64,8 @@ namespace windows_client.Model
             GROUP_END, // Group chat has ended
             USER_OPT_IN,
             DND_USER,
-            USER_JOIN // ?????
+            USER_JOIN,
+            CREDITS_GAINED
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -91,6 +92,14 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 return ParticipantInfoState.USER_OPT_IN;
+            }
+            else  // shows type == null
+            {
+                JArray dndNumbers = (JArray)obj["dndnumbers"];
+                if (dndNumbers != null)
+                {
+                    return ParticipantInfoState.DND_USER;
+                }
             }
             return ParticipantInfoState.NO_INFO;
         }
@@ -392,6 +401,8 @@ namespace windows_client.Model
         {
             try
             {
+                bool isFileTransfer;
+                JObject metadataObject = null;
                 JToken val = null;
                 obj.TryGetValue(HikeConstants.TO, out val);
 
@@ -400,27 +411,34 @@ namespace windows_client.Model
 
                 if (metadataToken != null)
                 {
-                    JObject metadataObject = JObject.FromObject(metadataToken);
-                    JArray files = metadataObject["files"].ToObject<JArray>();
-                    JObject fileObject = files[0].ToObject<JObject>();
+                    metadataObject = JObject.FromObject(metadataToken);
+                    JToken filesToken = null;
+                    isFileTransfer = metadataObject.TryGetValue("files", out filesToken);
+                    if (isFileTransfer)
+                    {
+                        JArray files = metadataObject["files"].ToObject<JArray>();
+                        JObject fileObject = files[0].ToObject<JObject>();
 
-                    JToken fileName;
-                    JToken fileKey;
-                    JToken thumbnail;
-                    JToken contentType;
+                        JToken fileName;
+                        JToken fileKey;
+                        JToken thumbnail;
+                        JToken contentType;
 
-                    fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
-                    //if (contentType.ToString().Contains("image"))
-                    //{
+                        fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
                         fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
                         this.HasAttachment = true;
                         this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()),
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-                    
-                    //}
+                    }
+                    else
+                    {
+                        metadataJsonString = metadataObject.ToString(Newtonsoft.Json.Formatting.None);
+                    }
+
                 }
+                participantInfoState = fromJSON(metadataObject);
                 if (val != null) // represents group message
                 {
                     _msisdn = val.ToString();
@@ -447,7 +465,7 @@ namespace windows_client.Model
                 }
                 if (_groupParticipant != null) // reprsents group chat
                 {
-                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant,_msisdn).Name + " - " + _message;
+                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).Name + " - " + _message;
                 }
 
                 Timestamp = (long)data[HikeConstants.TIMESTAMP];
@@ -462,7 +480,6 @@ namespace windows_client.Model
                 this._messageId = -1;
                 string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
                 this.MappedMessageId = System.Int64.Parse(mappedMsgID);
-                participantInfoState = ParticipantInfoState.NO_INFO;
                 if (this.HasAttachment)
                 {
                     this.Message = this.FileAttachment.FileName;
@@ -500,7 +517,7 @@ namespace windows_client.Model
                 singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                 singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                 singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                if(FileAttachment.Thumbnail!=null)
+                if (FileAttachment.Thumbnail != null)
                     singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                 filesData.Add(singleFileInfo.ToObject<JToken>());
 
@@ -746,15 +763,15 @@ namespace windows_client.Model
                     try
                     { dnd = (bool)nameMsisdn["dnd"]; }
                     catch { }
-                    
-                    GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn,_msisdn);
+
+                    GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {
                         gp.IsOnHike = onhike;
                         gp.IsDND = dnd;
                     }
-                    if(!onhike)
-                        PhoneApplicationService.Current.State["GC_"+toVal] = true;
+                    if (!onhike)
+                        PhoneApplicationService.Current.State["GC_" + toVal] = true;
                     newUsers.Add(gp);
                 }
                 Utils.GroupCache[toVal].Sort();
@@ -772,7 +789,7 @@ namespace windows_client.Model
                 }
                 else // Group member left
                 {
-                    GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant,_msisdn);
+                    GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
                     this._message = gp.Name + " " + "left conversation";
                     gp.HasLeft = true;
                 }
@@ -811,8 +828,8 @@ namespace windows_client.Model
             catch
             {
             }
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
-            if(isValid)
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            if (isValid)
                 return obj;
             return null;
         }

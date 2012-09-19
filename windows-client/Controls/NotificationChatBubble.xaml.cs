@@ -58,7 +58,7 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.Waiting;
                     break;
                 case MessageType.REWARD:
-                    Text = String.Format(HikeConstants.REWARDS, parameter);
+                    Text = String.Format(HikeConstants.CREDITS_EARNED, parameter);
                     NotificationImage.Source = UI_Utils.Instance.Reward;
                     break;
             }

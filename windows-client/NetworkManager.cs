@@ -102,7 +102,7 @@ namespace windows_client
                 {
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);                  
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
                     if (convMessage.FileAttachment != null)
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
@@ -110,7 +110,7 @@ namespace windows_client
                     if (obj == null)
                         return;
                     object[] vals = null;
-                    
+
                     if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc screen
                     {
                         vals = new object[3];
@@ -204,6 +204,8 @@ namespace windows_client
                 JObject o = (JObject)jsonObj[HikeConstants.DATA];
                 string uMsisdn = (string)o[HikeConstants.MSISDN];
                 bool joined = USER_JOINED == type;
+                if(joined)
+                    ProcessUoUjMsgs(jsonObj);
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
@@ -263,12 +265,12 @@ namespace windows_client
                 JArray arr = (JArray)jsonObj[HikeConstants.DATA];
                 if (arr == null || !arr.HasValues)
                     return;
-               
+
                 string grpId = jsonObj[HikeConstants.TO].ToString();
 
-                if (!AddGroupmembers(arr,grpId)) // is gcj to add new members or to give DND info
+                if (!AddGroupmembers(arr, grpId)) // is gcj to add new members or to give DND info
                     return;
-                
+
                 ConvMessage convMessage = new ConvMessage(jsonObj, false);
                 // till here Group Cache is already made.
                 convMessage.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
@@ -358,32 +360,8 @@ namespace windows_client
             }
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
-                string ms = (string)((JObject)jsonObj[HikeConstants.DATA])[HikeConstants.MSISDN];
-                
-                // UPDATE group cache
-                foreach (string key in Utils.GroupCache.Keys)
-                {
-                    List<GroupParticipant> l = Utils.GroupCache[key];
-                    for (int i = 0; i < l.Count; i++)
-                    {
-                        if (l[i].Msisdn == ms)
-                        {
-                            l[i].HasOptIn = true;
-                            break;
-                        }
-                    }
-                }
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
-
-                // For one-to-one chat
-                foreach(string key in ConversationsList.ConvMap.Keys)
-                {
-                    if (key == ms)
-                    {
-                        //TODO : Opt in msg for 1-1 chat
-                        break;
-                    }
-                }
+                // {"t":"uo", "d":{"msisdn":"", "credits":""}}
+                ProcessUoUjMsgs(jsonObj);
             }
             else
             {
@@ -391,6 +369,82 @@ namespace windows_client
             }
         }
 
+        private void ProcessUoUjMsgs(JObject jsonObj)
+        {
+            string ms = (string)((JObject)jsonObj[HikeConstants.DATA])[HikeConstants.MSISDN];
+            string credits = (string)((JObject)jsonObj[HikeConstants.DATA])["credits"];
+
+            object[] vals = null;
+            ConvMessage cm = new ConvMessage();
+            long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+            cm.Timestamp = (cm.Timestamp > now) ? now : cm.Timestamp;
+            cm.Msisdn = ms;
+            cm.MessageStatus = ConvMessage.State.UNKNOWN;
+            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
+            ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+
+            if (credits == null)
+                vals = new object[2];
+            else                    // this shows that we have to show credits msg as this user got credits.
+            {
+                string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                long now1 = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                ConvMessage cmCredits = new ConvMessage();
+                cmCredits.Message = text;
+                cmCredits.Timestamp = (cmCredits.Timestamp > now1) ? now1 : cmCredits.Timestamp;
+                cmCredits.Msisdn = ms;
+                cmCredits.MessageStatus = ConvMessage.State.UNKNOWN;
+                cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
+                obj = MessagesTableUtils.addChatMessage(cmCredits, false);
+
+                vals = new object[3];
+                vals[2] = cmCredits;
+            }
+
+            vals[0] = cm;
+            vals[1] = obj;
+            pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+
+            // UPDATE group cache
+            foreach (string key in Utils.GroupCache.Keys)
+            {
+                List<GroupParticipant> l = Utils.GroupCache[key];
+                for (int i = 0; i < l.Count; i++)
+                {
+                    if (l[i].Msisdn == ms)
+                    {
+                        ConvMessage convMsg = new ConvMessage();
+                        long now2 = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                        convMsg.Timestamp = (cm.Timestamp > now) ? now : cm.Timestamp;
+                        convMsg.Msisdn = key;
+                        convMsg.MessageStatus = ConvMessage.State.UNKNOWN;
+                        convMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
+                        ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
+
+                        if (credits != null)                    // this shows that we have to show credits msg as this user got credits.
+                        {
+                            string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                            long now1 = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                            ConvMessage cmCredits = new ConvMessage();
+                            cmCredits.Message = text;
+                            cmCredits.Timestamp = (cmCredits.Timestamp > now1) ? now1 : cmCredits.Timestamp;
+                            cmCredits.Msisdn = key;
+                            cmCredits.MessageStatus = ConvMessage.State.UNKNOWN;
+                            cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
+                            obj = MessagesTableUtils.addChatMessage(cmCredits, false);
+                            vals[2] = cmCredits;
+                        }
+
+                        vals[0] = convMsg;
+                        vals[1] = co;
+                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                        l[i].HasOptIn = true;
+                        break;
+                    }
+                }
+            }
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+        }
         /// <summary>
         /// This function will return 
         ///  -- > true , if new users are added to GC
@@ -402,7 +456,7 @@ namespace windows_client
         /// <returns></returns>
         private bool AddGroupmembers(JArray arr, string grpId)
         {
-            if (ConversationsList.ConvMap.ContainsKey(grpId)) 
+            if (ConversationsList.ConvMap.ContainsKey(grpId))
             {
                 List<GroupParticipant> l = null;
                 Utils.GroupCache.TryGetValue(grpId, out l);
