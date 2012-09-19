@@ -54,19 +54,16 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Vertical">
-                                    <StackPanel Orientation="Horizontal" Margin="22,5,5,5">
-                                        <Border BorderThickness="2" BorderBrush="Black" Height="68">
-                                            <Image x:Name="avatar_image" Height="65" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding AvatarImage}"/>
-                                        </Border>
+                                    <StackPanel Orientation="Horizontal" Margin="22,0,5,6">
+                                        <Image x:Name="avatar_image" Height="69" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding AvatarImage}"/>
 
                                         <StackPanel Orientation="Vertical">
                                             <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0">
-                                                <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="38" Height="50" Grid.Column="0" Grid.ColumnSpan="2"/>
+                                                <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="39" FontFamily="Segoe WP SemiLight" FontStyle="Normal" FontWeight="ExtraLight" Height="53" Grid.Column="0" Grid.ColumnSpan="2"/>
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="15,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Gray"/>
                                             </StackPanel>
-                                            <!--<Image Height="30" Source="{Binding SdrImage}" ></Image>-->
-                                            <StackPanel Orientation="Horizontal" Margin="10 0 0 2">
-                                                <RichTextBox Tag="{Binding LastMessage}" TextWrapping="Wrap" MaxWidth="325" FontSize="22" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+                                            <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                                                <RichTextBox Tag="{Binding LastMessage}" TextWrapping="Wrap" MaxWidth="325" FontSize="21" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
                                                 <!--<local:LinkifiedTextBoxReceive Text="{Binding LastMessage}" FontSize="22" Foreground="{Binding LastMessageColor}" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>-->
                                             </StackPanel>
                                         </StackPanel>
@@ -105,30 +102,30 @@
                         <StackPanel Name="accountStackPanel" Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
                             <TextBlock x:Name="accountName" FontSize="35" Text="UNKNOWN"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Free SMS remaining: " Foreground="#8d8d8d"></TextBlock>
+                                <TextBlock Text="Free SMS remaining: " FontFamily="Segoe WP SemiLight" Foreground="#8d8d8d"></TextBlock>
                                 <TextBlock x:Name="creditsTxtBlck" Text="" Foreground="#8d8d8d"></TextBlock>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Margin="0, 30, 0,10" Orientation="Vertical" Grid.Row="1">
+                    <StackPanel Margin="0, 25, 0,10" Orientation="Vertical" Grid.Row="1">
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="FreeSMS_Tap" Margin="15,15,0,5">
-                            <Image Name ="freeSmsImage" Source="images\free_sms.png" Height="35">
+                            <Image Name ="freeSmsImage" VerticalAlignment="Center" Source="images\free_sms.png" Height="35">
                             </Image>
-                            <TextBlock Text="Free SMS" Margin="15,4,0,0" FontSize="30"></TextBlock>
+                            <TextBlock Text="Free SMS" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,15,0,5">
-                            <Image Name="settingsImage"  Source="images\settings.png" Height="35">
+                            <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="35">
                             </Image>
-                            <TextBlock Text="Settings" Margin="15,4,0,0" FontSize="30"></TextBlock>
+                            <TextBlock Text="Settings" FontSize="39" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
-                            <Image Name="privacyImage" Source="images\privacy.png" Height="35"></Image>
-                            <TextBlock Text="Privacy" Margin="25,4,0,0" FontSize="30"></TextBlock>
+                            <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Height="35"></Image>
+                            <TextBlock Text="Privacy" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
-                            <Image Name="helpImage" Source="images\help.png" Height="35"></Image>
-                            <TextBlock Text="Help" Margin="15,4,0,0" FontSize="30"></TextBlock>
+                            <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
+                            <TextBlock Text="Help" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                     </StackPanel>
                     <StackPanel Grid.Row="2">

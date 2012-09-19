@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>
+            <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
             <TextBlock Text="edit profile" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Height="80"/>
         </StackPanel>
 
