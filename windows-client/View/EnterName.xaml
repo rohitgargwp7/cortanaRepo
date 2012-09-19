@@ -63,7 +63,7 @@
                 <Border BorderThickness="2" Width="310" Height="56" Margin="5,10,0,0" BorderBrush="Black">
                     <StackPanel Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" Background="White">
                         <Image Source="images\enter_name.png" Margin="15,10,0,10" Height="20" />
-                        <toolkit:PhoneTextBox x:Name="txtBxEnterName"  GotFocus="txtBxEnterName_GotFocus" BorderThickness="0" Margin="0,-10,0,0" Width="250" Height="70" TextChanged="txtBxEnterName_TextChanged" />
+                        <toolkit:PhoneTextBox x:Name="txtBxEnterName"  GotFocus="txtBxEnterName_GotFocus" InputScope="PersonalFullName" BorderThickness="0" Margin="0,-10,0,0" Width="250" Height="70" TextChanged="txtBxEnterName_TextChanged" />
                     </StackPanel>
                 </Border>
                 <TextBlock Height="25" TextAlignment="Center" 
