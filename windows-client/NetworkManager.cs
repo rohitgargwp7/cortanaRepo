@@ -357,7 +357,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.ACCOUNT_INFO == type)
             {
                 JObject data = (JObject)jsonObj[HikeConstants.DATA];
-
+                
                 //JArray keys = data.names();
 
                 //for (int i = 0; i < keys.length(); i++)
@@ -367,12 +367,7 @@ namespace windows_client
                 //    editor.putString(key, value);
                 //}
 
-                JToken it = data[HikeConstants.INVITE_TOKEN];
-                if (it != null)
-                {
-                    this.pubSub.publish(HikePubSub.INVITE_TOKEN_ADDED, null);
-                }
-                it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
+                JToken it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
                 if (it != null)
                 {
                     this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);

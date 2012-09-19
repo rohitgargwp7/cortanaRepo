@@ -119,7 +119,7 @@ namespace windows_client.DbUtils
                     if (vals[1] is bool)
                     {
                         if (!isNewGroup)
-                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms?false:true));
                     }
                     else if (vals[1] is string)
                     {

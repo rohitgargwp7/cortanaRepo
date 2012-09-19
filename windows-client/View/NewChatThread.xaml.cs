@@ -1254,10 +1254,13 @@ namespace windows_client.View
             if (isOnHike)
                 return;
 
-            long time = utils.TimeUtils.getCurrentTimeStamp();
-            ConvMessage convMessage = new ConvMessage(App.invite_message, mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
+            long time = TimeUtils.getCurrentTimeStamp();
+            string inviteToken = "";
+            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN,out inviteToken);
+            ConvMessage convMessage = new ConvMessage(string.Format(App.invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = true;
             convMessage.IsInvite = true;
-            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+            sendMsg(convMessage, false, false);
         }
 
         #endregion
