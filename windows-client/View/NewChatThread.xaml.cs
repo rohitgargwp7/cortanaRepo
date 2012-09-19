@@ -1823,7 +1823,11 @@ namespace windows_client.View
                 if (convMessage.Msisdn == mContactNumber)
                 {
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
-                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
+
+                    // notify only if msg is not a notification msg
+                    if(convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                        mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
+
                     if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
                     {
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender

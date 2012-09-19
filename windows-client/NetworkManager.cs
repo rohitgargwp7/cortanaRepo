@@ -356,7 +356,27 @@ namespace windows_client
 
             else if (HikeConstants.MqttMessageTypes.ACCOUNT_INFO == type)
             {
-                //TODO
+                JObject data = (JObject)jsonObj[HikeConstants.DATA];
+
+                //JArray keys = data.names();
+
+                //for (int i = 0; i < keys.length(); i++)
+                //{
+                //    String key = keys.getString(i);
+                //    String value = data.optString(key);
+                //    editor.putString(key, value);
+                //}
+
+                JToken it = data[HikeConstants.INVITE_TOKEN];
+                if (it != null)
+                {
+                    this.pubSub.publish(HikePubSub.INVITE_TOKEN_ADDED, null);
+                }
+                it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
+                if (it != null)
+                {
+                    this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
+                }
             }
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
@@ -371,15 +391,24 @@ namespace windows_client
 
         private void ProcessUoUjMsgs(JObject jsonObj)
         {
+            string credits;
             string ms = (string)((JObject)jsonObj[HikeConstants.DATA])[HikeConstants.MSISDN];
-            string credits = (string)((JObject)jsonObj[HikeConstants.DATA])["credits"];
+            try
+            {
+                credits = (string)((JObject)jsonObj[HikeConstants.DATA])["credits"];
+            }
+            catch(Exception e)
+            {
+                credits = null;
+            }
 
             object[] vals = null;
             ConvMessage cm = new ConvMessage();
-            long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
-            cm.Timestamp = (cm.Timestamp > now) ? now : cm.Timestamp;
+            cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+            cm.Timestamp = TimeUtils.getCurrentTimeStamp();
             cm.Msisdn = ms;
-            cm.MessageStatus = ConvMessage.State.UNKNOWN;
+            cm.MessageId = -1;
+            cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
             cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
             ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
 
@@ -388,12 +417,14 @@ namespace windows_client
             else                    // this shows that we have to show credits msg as this user got credits.
             {
                 string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
-                long now1 = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                JObject o = new JObject();
+                o.Add("t", "credits_gained");
                 ConvMessage cmCredits = new ConvMessage();
+                cmCredits.MetaDataString = o.ToString(Newtonsoft.Json.Formatting.None);
                 cmCredits.Message = text;
-                cmCredits.Timestamp = (cmCredits.Timestamp > now1) ? now1 : cmCredits.Timestamp;
+                cmCredits.Timestamp = TimeUtils.getCurrentTimeStamp();
                 cmCredits.Msisdn = ms;
-                cmCredits.MessageStatus = ConvMessage.State.UNKNOWN;
+                cmCredits.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                 cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
                 obj = MessagesTableUtils.addChatMessage(cmCredits, false);
 
@@ -413,31 +444,39 @@ namespace windows_client
                 {
                     if (l[i].Msisdn == ms)
                     {
+                        object[] values = null;
                         ConvMessage convMsg = new ConvMessage();
-                        long now2 = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
-                        convMsg.Timestamp = (cm.Timestamp > now) ? now : cm.Timestamp;
+                        convMsg.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                        convMsg.Timestamp = TimeUtils.getCurrentTimeStamp();
+                        convMsg.MessageId = -1;
                         convMsg.Msisdn = key;
-                        convMsg.MessageStatus = ConvMessage.State.UNKNOWN;
+                        convMsg.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                         convMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
 
                         if (credits != null)                    // this shows that we have to show credits msg as this user got credits.
                         {
                             string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
-                            long now1 = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                            JObject o = new JObject();
+                            o.Add("t", "credits_gained");
                             ConvMessage cmCredits = new ConvMessage();
+                            cmCredits.MetaDataString = o.ToString(Newtonsoft.Json.Formatting.None);
+                            cmCredits.MessageId = -1;
                             cmCredits.Message = text;
-                            cmCredits.Timestamp = (cmCredits.Timestamp > now1) ? now1 : cmCredits.Timestamp;
+                            cmCredits.Timestamp = TimeUtils.getCurrentTimeStamp();
                             cmCredits.Msisdn = key;
-                            cmCredits.MessageStatus = ConvMessage.State.UNKNOWN;
+                            cmCredits.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                             cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
-                            obj = MessagesTableUtils.addChatMessage(cmCredits, false);
-                            vals[2] = cmCredits;
+                            co = MessagesTableUtils.addChatMessage(cmCredits, false);
+                            values = new object[3];
+                            values[2] = cmCredits;
                         }
+                        else
+                            values = new object[2];
 
-                        vals[0] = convMsg;
-                        vals[1] = co;
-                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                        values[0] = convMsg;
+                        values[1] = co;
+                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
                         l[i].HasOptIn = true;
                         break;
                     }

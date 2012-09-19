@@ -93,6 +93,10 @@ namespace windows_client.Model
             {
                 return ParticipantInfoState.USER_OPT_IN;
             }
+            else if ("credits_gained" == type)
+            {
+                return ParticipantInfoState.CREDITS_GAINED;
+            }
             else  // shows type == null
             {
                 JArray dndNumbers = (JArray)obj["dndnumbers"];

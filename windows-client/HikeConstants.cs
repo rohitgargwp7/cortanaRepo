@@ -119,6 +119,7 @@ namespace windows_client
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string FORWARD_MSG = "forwardedText";
         public static string DND = "dnd";
+        public static object INVITE_TOKEN="invite_token";
 
         public static class Extras
         {
