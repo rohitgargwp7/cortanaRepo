@@ -1582,7 +1582,10 @@ namespace windows_client.View
 
         private void emoticonButton_Click(object sender, EventArgs e)
         {
-            emoticonPanel.Visibility = Visibility.Visible;
+            if (emoticonPanel.Visibility == Visibility.Collapsed)
+                emoticonPanel.Visibility = Visibility.Visible;
+            else
+                emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
