@@ -52,6 +52,7 @@ namespace windows_client
                 pinErrorTxt.Opacity = 1;
                 return;
             }
+            txtBxEnterPin.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
             pinErrorTxt.Opacity = 0;
@@ -72,9 +73,10 @@ namespace windows_client
                     pinErrorTxt.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
+                    txtBxEnterPin.IsReadOnly = false;
+                    if (!string.IsNullOrWhiteSpace(pinEntered))
+                        nextIconButton.IsEnabled = true;
                 });
-                if (!string.IsNullOrWhiteSpace(pinEntered))
-                    nextIconButton.IsEnabled = true;
                 return;
             }
 
@@ -86,6 +88,7 @@ namespace windows_client
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                txtBxEnterPin.IsReadOnly = false;
                 NavigationService.Navigate(nextPage);
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;

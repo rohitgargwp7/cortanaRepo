@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -17,8 +18,8 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="646"/>
-            <RowDefinition/>
+            <RowDefinition Height="585"/>
+            <RowDefinition Height="0*" />
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
@@ -27,33 +28,53 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="15,0,15,180" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="15,0,15,71" Background="Transparent">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Vertical" Grid.Row="0">
-                <TextBlock Text="Full Name" Margin="13,0,0,0"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Full Name" Margin="13,0,0,0"/>
+                    <TextBlock Name="nameErrorTxt" Opacity="0" 
+                               Text="Enter Correct Name" 
+                               VerticalAlignment="Center"
+                               Margin="204,0,0,0" Foreground="Red" 
+                               FontSize="15" />
+                </StackPanel>
                 <TextBox x:Name="name"/>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="1">
                 <TextBlock Text="Phone" Margin="13,0,0,0"/>
-                <TextBox x:Name="phone" InputScope="Number"/>
+                <TextBox x:Name="phone" InputScope="Number" IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="2">
-                <TextBlock Text="Email" Margin="13,0,0,0"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Email" Margin="13,0,0,0"/>
+                    <TextBlock Name="emailErrorTxt" Opacity="0" 
+                               VerticalAlignment="Center" 
+                               Text="Enter Correct Email" 
+                               Margin="245,0,0,0" Foreground="Red" FontSize="15" />
+                </StackPanel>
                 <TextBox x:Name="email"/>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="3">
                 <TextBlock Text="Gender" Margin="13,0,0,0"/>
-                <TextBox x:Name="gender"/>
+                <toolkit:ListPicker x:Name="genderListPicker"/>
             </StackPanel>
         </Grid>
+        <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,500,0,0" Grid.Row="1"
+                                                Background="Transparent" IsIndeterminate="True" 
+                                                VerticalAlignment="Center" 
+                                                VerticalContentAlignment="Center" 
+                                                FontSize="24" HorizontalAlignment="Stretch" 
+                                                HorizontalContentAlignment="Center" 
+                                                IsEnabled="False" IsTabStop="True" 
+                                                Opacity="0"/>
     </Grid>
 
-    
 </phone:PhoneApplicationPage>

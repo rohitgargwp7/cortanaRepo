@@ -248,7 +248,7 @@ namespace windows_client.View
             }
             for (int i = 0; i < conversationList.Count; i++)
             {
-                stopwatch.Reset(); 
+                stopwatch.Reset();
                 stopwatch.Start();
                 byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(conversationList[i].Msisdn);
                 stopwatch.Stop();
@@ -336,6 +336,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
+            mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
         }
 
         private void removeListeners()
@@ -349,6 +350,7 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
+            mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
         }
 
         #endregion
@@ -357,6 +359,13 @@ namespace windows_client.View
 
         private void initProfilePage()
         {
+            if (Utils.isDarkTheme())
+            {
+                freeSmsImage.Source = new BitmapImage(new Uri("images/free_sms_dark.png", UriKind.Relative));
+                settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
+                privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
+                helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative)); 
+            }
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
@@ -403,7 +412,7 @@ namespace windows_client.View
                 writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
                 thumbnailBytes = msSmallImage.ToArray();
             }
-            
+
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(thumbnailBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
             object[] vals = new object[3];
@@ -685,6 +694,14 @@ namespace windows_client.View
                     enableAppBar();
                 });
                 NetworkManager.turnOffNetworkManager = false;
+            }
+
+            else if (HikePubSub.UPDATE_ACCOUNT_NAME == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    accountName.Text = (string)obj;
+                });
             }
 
             #region GROUP NAME CHANGED

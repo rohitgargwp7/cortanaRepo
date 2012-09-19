@@ -69,6 +69,7 @@ namespace windows_client
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             }
 
+            txtBxEnterName.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             ac_name = txtBxEnterName.Text.Trim();
             progressBar.Opacity = 1;
@@ -84,7 +85,7 @@ namespace windows_client
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-
+                    txtBxEnterName.IsReadOnly = false; ;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     if (!string.IsNullOrWhiteSpace(ac_name))
@@ -110,6 +111,7 @@ namespace windows_client
 
         public void processEnterName()
         {
+            txtBxEnterName.IsReadOnly = false;
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
             Uri nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
             nameErrorTxt.Visibility = Visibility.Collapsed;

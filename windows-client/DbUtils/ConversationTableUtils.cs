@@ -234,6 +234,7 @@ namespace windows_client.DbUtils
                 {
                     ConversationListObject obj = ConversationsList.ConvMap[cn[i].Msisdn]; //update UI
                     obj.ContactName = cn[i].Name;
+                    obj.IsOnhike = cn[i].OnHike;
                     saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
                 }
             }
