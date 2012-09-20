@@ -124,13 +124,13 @@ namespace windows_client.DbUtils
                     }
                     else if (vals[1] is string)
                     {
+                        //forward attachment message
+
                         string sourceFilePath = vals[1] as string;
                         string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
 
                         //while writing in iso, we write it as failed and then revert to started
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
                         
                         MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
@@ -157,6 +157,7 @@ namespace windows_client.DbUtils
                     }
                     else
                     {
+                        //send attachment message (new attachment - upload case)
                         byte[] largeImage = vals[1] as byte[];
                         SentChatBubble chatbubble = vals[2] as SentChatBubble;
 
