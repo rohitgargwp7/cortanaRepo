@@ -524,7 +524,7 @@ namespace windows_client.View
                 return;
             }
 
-            if (contactsForgroup != null && isNumberAlreadySelected(contact.Msisdn, contactsForgroup))
+            if (isNumberAlreadySelected(contact.Msisdn, contactsForgroup))
             {
                 MessageBoxResult result = MessageBox.Show(contact.Msisdn+" is already added to group.", "User already added !!", MessageBoxButton.OK);
                 return;
@@ -533,8 +533,10 @@ namespace windows_client.View
             if (contactsForgroup == null)
                 contactsForgroup = new List<ContactInfo>();
 
-            contactsForgroup.Add(contact);
-            stringBuilderForContactNames.Append(contact.Name).Append("; ");
+            // new object is created for every numbered contacts i.e contact not in your list and you have added him by entering number
+            ContactInfo contactToAdd = new ContactInfo(contact);
+            contactsForgroup.Add(contactToAdd);
+            stringBuilderForContactNames.Append(contactToAdd.Name).Append("; ");
             enterNameTxt.Text = stringBuilderForContactNames.ToString();
             enterNameTxt.Select(enterNameTxt.Text.Length, 0);
 
@@ -547,10 +549,20 @@ namespace windows_client.View
 
         private bool isNumberAlreadySelected(string msisdn, List<ContactInfo> l)
         {
-            for (int i = 0; i < l.Count; i++)
+            for (int i = 0; i < (l!=null?l.Count:0); i++)
             {
                 if (l[i].Msisdn == msisdn)
                     return true;
+            }
+            // if add to existing group then check number already added or not
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            {
+                List<GroupParticipant> list = PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] as List<GroupParticipant>;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].Msisdn == msisdn)
+                        return true;
+                }
             }
             return false;
         }
