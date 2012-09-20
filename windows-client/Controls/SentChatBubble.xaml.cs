@@ -43,6 +43,8 @@ namespace windows_client.Controls
                     this.SDRImage.Source = UI_Utils.Instance.Read;
                     break;
                 case ConvMessage.State.SENT_UNCONFIRMED:
+                    this.SDRImage.Visibility = Visibility.Collapsed;
+                    break;
                 case ConvMessage.State.UNKNOWN:
                     if (cm.HasAttachment)
                     {
@@ -92,34 +94,34 @@ namespace windows_client.Controls
             }
         }
 
-        public SentChatBubble(MyChatBubble chatBubble, long messageId, bool onHike)
-            :base(chatBubble, messageId)
-        {
-            InitializeComponent();
-            string contentType = chatBubble.FileAttachment == null ? "" : chatBubble.FileAttachment.ContentType;
-            initializeBasedOnState(chatBubble.FileAttachment != null, contentType);
+        //public SentChatBubble(MyChatBubble chatBubble, long messageId, bool onHike)
+        //    :base(chatBubble, messageId)
+        //{
+        //    InitializeComponent();
+        //    string contentType = chatBubble.FileAttachment == null ? "" : chatBubble.FileAttachment.ContentType;
+        //    initializeBasedOnState(chatBubble.FileAttachment != null, contentType);
 
-            if (onHike)
-            {
-                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
-                uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
-            }
-            else
-            {
-                bubbleColor = UI_Utils.Instance.SmsBackground;
-                uploadProgress.Background = UI_Utils.Instance.SmsBackground;
-            }
-            this.BubblePoint.Fill = bubbleColor;
-            this.BubbleBg.Fill = bubbleColor;
-            if (chatBubble.FileAttachment != null && (chatBubble.FileAttachment.ContentType.Contains("video") ||
-                (chatBubble.FileAttachment.ContentType.Contains("image"))))
-            {
-                if (chatBubble is SentChatBubble)
-                    this.MessageImage.Source = (chatBubble as SentChatBubble).MessageImage.Source;
-                else if (chatBubble is ReceivedChatBubble)
-                    this.MessageImage.Source = (chatBubble as ReceivedChatBubble).MessageImage.Source;
-            }
-        }
+        //    if (onHike)
+        //    {
+        //        bubbleColor = UI_Utils.Instance.HikeMsgBackground;
+        //        uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
+        //    }
+        //    else
+        //    {
+        //        bubbleColor = UI_Utils.Instance.SmsBackground;
+        //        uploadProgress.Background = UI_Utils.Instance.SmsBackground;
+        //    }
+        //    this.BubblePoint.Fill = bubbleColor;
+        //    this.BubbleBg.Fill = bubbleColor;
+        //    if (chatBubble.FileAttachment != null && (chatBubble.FileAttachment.ContentType.Contains("video") ||
+        //        (chatBubble.FileAttachment.ContentType.Contains("image"))))
+        //    {
+        //        if (chatBubble is SentChatBubble)
+        //            this.MessageImage.Source = (chatBubble as SentChatBubble).MessageImage.Source;
+        //        else if (chatBubble is ReceivedChatBubble)
+        //            this.MessageImage.Source = (chatBubble as ReceivedChatBubble).MessageImage.Source;
+        //    }
+        //}
 
 
         public void SetSentMessageStatus(ConvMessage.State msgState)
@@ -129,6 +131,8 @@ namespace windows_client.Controls
                 messageState = msgState;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if (this.SDRImage.Visibility == Visibility.Collapsed)
+                        this.SDRImage.Visibility = Visibility.Visible;
                     switch (messageState)
                     {
                         case ConvMessage.State.SENT_CONFIRMED:
@@ -260,6 +264,7 @@ namespace windows_client.Controls
             Grid.SetRowSpan(SDRImage, 2);
             Grid.SetColumn(SDRImage, 0);
             wrapperGrid.Children.Add(SDRImage);
+            
 
             TimeStampBlock = new TextBlock();
             TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
