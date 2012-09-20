@@ -6,12 +6,13 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    Name="groupInfoPage" shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -21,8 +22,19 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <!--<Image Source="images\hike_logo_small.png" Margin="25,20,0,0" HorizontalAlignment="Left" Height="34" Width="127"></Image>-->
+        <StackPanel x:Name="HikeTitle" Grid.Row="0" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
+                <toolkit:PerformanceProgressBar x:Name="progressBar"
+                                                VerticalAlignment="Bottom" 
+                                                Margin="0,0,0,5" 
+                                                Background="Transparent" 
+                                                IsIndeterminate="True" 
+                                                VerticalContentAlignment="Center"
+                                                FontSize="24" 
+                                                HorizontalAlignment="Left" 
+                                                HorizontalContentAlignment="Center" 
+                                                IsEnabled="false" IsTabStop="True" 
+                                                Opacity="0" Height="10" Width="484" />
+
             <TextBlock Text="group info" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Height="80"/>
         </StackPanel>
 
@@ -43,16 +55,19 @@
                         </Border>
                     </StackPanel>
                 </Button>
-                <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
-                    <TextBlock FontSize="25" Opacity="0.6" Text="Group Name" Margin="0,2,0,0"/>
-                    <StackPanel Background="#e5e5e5" Orientation="Vertical" Margin="0,12,0,5" Height="Auto">
+                <StackPanel Orientation="Vertical" Margin="0, 0,0,0">
+                    <TextBlock FontSize="24" Opacity="0.6" Text="Group Name" Margin="20,2,0,0"/>
+                    <TextBox Name="groupNameTxtBox" Text="GROUP NAME" Height="68" 
+                             VerticalAlignment="Center" Width="330" 
+                             FontSize="24" TextWrapping="Wrap"></TextBox>
+                    <!--<StackPanel Background="#e5e5e5" Orientation="Vertical" Margin="0,12,0,5" Height="Auto">
                         <TextBlock Margin="10,0,0,5"  TextWrapping="Wrap" x:Name="groupName" Text="Sample" Foreground="Black" FontSize="30" Width="290"></TextBlock>
-                    </StackPanel>
+                    </StackPanel>-->
                 </StackPanel>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="35,30,0,0">
-                <Image Source="images\add_users.png" Tap="AddParticipants_Tap" Width="35" Height="35"></Image>
+                <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="35" Height="35"></Image>
                 <TextBlock Text="Participants" FontSize="35" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
             <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="35,5,0,0">
