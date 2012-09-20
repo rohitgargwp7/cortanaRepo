@@ -475,7 +475,7 @@
     <Content Include="View\images\icon_send.png" />
     <Content Include="View\images\icon_tick.png" />
     <Content Include="View\images\ic_delivered.png" />
-    <Content Include="View\images\ic_phone_big.jpg" />
+    <Content Include="View\images\ic_phone_big.png" />
     <Content Include="View\images\ic_read.png" />
     <Content Include="View\images\ic_sent.png" />
     <Resource Include="View\images\Made_with_love.png" />
