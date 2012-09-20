@@ -220,6 +220,16 @@ namespace windows_client.Model
             this.IsInvited = false;
         }
 
+        public ContactInfo(ContactInfo contact)
+        {
+            this._hasCustomPhoto = contact._hasCustomPhoto;
+            this._msisdn = contact._msisdn;
+            this._name = contact._name;
+            this._onHike = contact._onHike;
+            this._phoneNo = contact._phoneNo;
+            this._isInvited = contact._isInvited;
+        }
+
 
         public override bool Equals(Object obj)
         {
@@ -304,6 +314,7 @@ namespace windows_client.Model
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
+        private ContactInfo contact;
 
         // Used to notify that a property is about to change
         private void NotifyPropertyChanging(string propertyName)

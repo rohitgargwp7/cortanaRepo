@@ -129,7 +129,7 @@ namespace windows_client.DbUtils
             {
                 string groupName = Utils.defaultGroupName(convMsg.Msisdn); // here name shud be what stored in contacts
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
-                ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
+                ConversationsList.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
