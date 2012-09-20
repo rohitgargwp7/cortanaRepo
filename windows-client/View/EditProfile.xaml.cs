@@ -47,7 +47,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
             nextIconButton.Text = "done";
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;

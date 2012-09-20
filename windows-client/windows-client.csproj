@@ -473,7 +473,7 @@
     <Content Include="View\images\icon_group_chat.png" />
     <Content Include="View\images\icon_next.png" />
     <Content Include="View\images\icon_refresh.png" />
-    <Resource Include="View\images\icon_save.png" />
+    <Content Include="View\images\icon_save.png" />
     <Content Include="View\images\icon_send.png" />
     <Content Include="View\images\icon_tick.png" />
     <Content Include="View\images\ic_delivered.png" />
