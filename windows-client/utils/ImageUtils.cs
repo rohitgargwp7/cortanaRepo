@@ -65,7 +65,7 @@ namespace windows_client.utils
             get
             {
                 if (smsBackground == null)
-                    smsBackground = new SolidColorBrush(Color.FromArgb(255, 219, 242, 207));
+                    smsBackground = new SolidColorBrush(Color.FromArgb(255, 163, 210, 80));
                 return smsBackground;
             }
         }
