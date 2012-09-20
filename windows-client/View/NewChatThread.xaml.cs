@@ -385,7 +385,8 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
-            App.newChatThreadPage = null;
+            if (App.newChatThreadPage == this)
+                App.newChatThreadPage = null;
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -416,7 +417,7 @@ namespace windows_client.View
                 {
                     isGroupChat = true;
                     GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                    if (gi!= null && !gi.GroupAlive)
+                    if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
                 }
 
@@ -478,33 +479,34 @@ namespace windows_client.View
                     if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
                     {
                         sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                        NavigationService.RemoveBackEntry(); // remove last chat thread page
                     }
-                    else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
-                    {
-                        object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
-                        MyChatBubble chatBubble = (MyChatBubble)attachmentData[0];
-                        string sourceMsisdn = (string)attachmentData[1];
+                    //else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+                    //{
+                    //    object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                    //    MyChatBubble chatBubble = (MyChatBubble)attachmentData[0];
+                    //    string sourceMsisdn = (string)attachmentData[1];
 
-                        string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + chatBubble.MessageId;
+                    //    string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + chatBubble.MessageId;
 
-                        ConvMessage convMessage = new ConvMessage(chatBubble.FileAttachment.FileName, mContactNumber,
-                            TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
-                        convMessage.IsSms = !isOnHike;
-                        convMessage.HasAttachment = true;
-                        convMessage.MessageId = TempMessageId;
-                        convMessage.FileAttachment = chatBubble.FileAttachment;
+                    //    ConvMessage convMessage = new ConvMessage(chatBubble.FileAttachment.FileName, mContactNumber,
+                    //        TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                    //    convMessage.IsSms = !isOnHike;
+                    //    convMessage.HasAttachment = true;
+                    //    convMessage.MessageId = TempMessageId;
+                    //    convMessage.FileAttachment = chatBubble.FileAttachment;
+                    //    convMessage.IsSms = !isOnHike;
 
-                        SentChatBubble newChatBubble = new SentChatBubble(chatBubble, convMessage.MessageId, isOnHike);
-                        addNewAttachmentMessageToUI(newChatBubble);
-                        msgMap.Add(convMessage.MessageId, newChatBubble);
+                    //    SentChatBubble newChatBubble = new SentChatBubble(convMessage);
+                    //    addNewAttachmentMessageToUI(newChatBubble);
+                    //    msgMap.Add(convMessage.MessageId, newChatBubble);
 
-                        object[] vals = new object[2];
-                        vals[0] = convMessage;
-                        vals[1] = sourceFilePath;
-                        mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
-                    }
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                    NavigationService.RemoveBackEntry(); // remove last chat thread page
+                    //    object[] vals = new object[2];
+                    //    vals[0] = convMessage;
+                    //    vals[1] = sourceFilePath;
+                    //    mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+                    //}
                 }
                 byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
 
@@ -578,7 +580,7 @@ namespace windows_client.View
             if (isNewgroup)
             {
                 BackgroundWorker bw = new BackgroundWorker();
-                
+
                 bw.DoWork += (ss, ee) =>
                 {
                     GroupInfo gi = new GroupInfo(mContactNumber, null, groupOwner, true);
@@ -756,6 +758,7 @@ namespace windows_client.View
                     Scroller.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
+                    forwardAttachmentMessage();
                 });
                 return;
             }
@@ -783,7 +786,7 @@ namespace windows_client.View
                     AddMessageToUI(cm, true);
                 });
             }
-            
+
             if (isPublish)
             {
                 JObject obj = new JObject();
@@ -808,12 +811,47 @@ namespace windows_client.View
             }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                forwardAttachmentMessage();
                 Scroller.Opacity = 1;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                //ScrollToBottom();
+                ScrollToBottom();
                 scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
             });
+        }
+
+        private void forwardAttachmentMessage()
+        {
+            if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE) &&
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG) &&
+                PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
+            {
+                object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
+                MyChatBubble chatBubble = (MyChatBubble)attachmentData[0];
+                string sourceMsisdn = (string)attachmentData[1];
+
+                string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + chatBubble.MessageId;
+
+                ConvMessage convMessage = new ConvMessage(chatBubble.FileAttachment.FileName, mContactNumber,
+                    TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
+                convMessage.MessageId = TempMessageId;
+                convMessage.FileAttachment = chatBubble.FileAttachment;
+                convMessage.IsSms = !isOnHike;
+                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+
+                SentChatBubble newChatBubble = new SentChatBubble(convMessage);
+                addNewAttachmentMessageToUI(newChatBubble);
+                msgMap.Add(convMessage.MessageId, newChatBubble);
+
+                object[] vals = new object[2];
+                vals[0] = convMessage;
+                vals[1] = sourceFilePath;
+                mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+                NavigationService.RemoveBackEntry(); // remove last chat thread page
+            }
         }
 
         private void ScrollToBottomFromUI()
@@ -1123,7 +1161,7 @@ namespace windows_client.View
                     chatBubble = new SentChatBubble(convMessage);
                     if (convMessage.MessageId < -1 || convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                         msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                    else if(convMessage.MessageId == -1)
+                    else if (convMessage.MessageId == -1)
                         msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
                 }
                 else
@@ -1333,13 +1371,14 @@ namespace windows_client.View
             }
             else
             {
+#if DEBUG
                 isReleaseMode = false;
-                Uri uri = new Uri("/View/images/ic_phone_big.png", UriKind.Relative);
+                Uri uri = new Uri("/View/images/ic_phone_big.jpg", UriKind.Relative);
                 BitmapImage image = new BitmapImage(uri);
                 image.CreateOptions = BitmapCreateOptions.None;
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
-
+#endif
             }
         }
 
@@ -1454,7 +1493,7 @@ namespace windows_client.View
 
             object[] vals = null;
             if (isFirstMsgAfterGC)
-            {               
+            {
                 JObject jo = ConvMessage.ProcessGCLogic(mContactNumber);
                 if (jo == null)
                     vals = new object[2];
@@ -1469,7 +1508,7 @@ namespace windows_client.View
             }
             else
                 vals = new object[2];
-            
+
             vals[0] = convMessage;
             vals[1] = isNewGroup;
 

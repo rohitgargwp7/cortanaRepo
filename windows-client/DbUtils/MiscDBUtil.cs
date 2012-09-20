@@ -306,7 +306,7 @@ namespace windows_client.DbUtils
             {
                 foreach(string attachmentPath in attachmentPaths)
                 {
-                    if (store.DirectoryExists(attachmentPath + "/*"))
+                    if (store.DirectoryExists(attachmentPath))
                     {
                         string[] directoryNames = store.GetDirectoryNames(attachmentPath + "/*");
                         foreach (string directoryName in directoryNames)

@@ -477,6 +477,7 @@
     <Content Include="View\images\icon_send.png" />
     <Content Include="View\images\icon_tick.png" />
     <Content Include="View\images\ic_delivered.png" />
+    <Content Include="View\images\ic_phone_big.jpg" />
     <Content Include="View\images\ic_read.png" />
     <Content Include="View\images\ic_sent.png" />
     <Resource Include="View\images\Made_with_love.png" />
@@ -500,7 +501,6 @@
     <Content Include="View\images\trying_icon.png" />
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
-    <Content Include="View\images\ic_phone_big.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>

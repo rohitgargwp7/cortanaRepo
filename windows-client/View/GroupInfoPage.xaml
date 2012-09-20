@@ -23,12 +23,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Grid.Row="0" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>
-                <StackPanel Orientation="Horizontal" Name="progressBarStackPanel" Opacity="0">
-                    <TextBlock Name="progressTxtBlk" Text="Loading" VerticalAlignment="Bottom" 
-                               Opacity="1" Foreground="{StaticResource PhoneForegroundBrush}"/>
-                    <toolkit:PerformanceProgressBar x:Name="progressBar"
+                <toolkit:PerformanceProgressBar x:Name="progressBar"
                                                 VerticalAlignment="Bottom" 
                                                 Margin="0,0,0,5" 
                                                 Background="Transparent" 
@@ -38,9 +33,8 @@
                                                 HorizontalAlignment="Left" 
                                                 HorizontalContentAlignment="Center" 
                                                 IsEnabled="false" IsTabStop="True" 
-                                                Opacity="1" Height="11" Width="194" />
-                </StackPanel>
-            </StackPanel>
+                                                Opacity="0" Height="10" Width="484" />
+
             <TextBlock Text="group info" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Height="80"/>
         </StackPanel>
 

@@ -40,16 +40,16 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480">
             <StackPanel Orientation="Vertical" Margin="23,0,55,0">
-                <Image  Margin="1,25,0,15" HorizontalAlignment="Left" Height="40" Width="127">
+                <!--<Image  Margin="1,25,0,15" HorizontalAlignment="Left" Height="40" Width="127">
                     <Image.Source>
                         <BitmapImage UriSource="images\hike_header.png" CreateOptions="BackgroundCreation"></BitmapImage>
                     </Image.Source>
-                </Image>
+                </Image>-->
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <Border BorderThickness="2" BorderBrush="Black" Height="45">
                         <Image Name="userImage" Width="45" Height="45"></Image>
                     </Border>
-                    <TextBlock x:Name="userName" Text="Madhur Garg" FontSize="44" Height="60" Margin="18,-4,0,0" Width="Auto" />
+                    <TextBlock x:Name="userName" Text="Madhur Garg" FontFamily="Segoe WP SemiLight" FontSize="44" Height="60" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>
@@ -221,7 +221,8 @@
             <!--<Image x:Name="typingNotification2" Source="images\typing.png" Visibility="Visible" Height="22" Width="45" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>-->
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
-                <toolkit:PhoneTextBox Background="#eeeeec" InputScope="PersonalFullName" BorderThickness="0" x:Name="sendMsgTxtbox" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP" />
+                <toolkit:PhoneTextBox Background="#eeeeec" InputScope="PersonalFullName" BorderThickness="0" x:Name="sendMsgTxtbox" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                                      MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" />
             </StackPanel>
         </StackPanel>
         <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 

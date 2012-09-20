@@ -87,11 +87,12 @@ namespace windows_client.Controls
         {
         }
 
-        public MyChatBubble(MyChatBubble chatBubble, long messageId)
-        {
-            this.MessageId = messageId;
-            this.FileAttachment = chatBubble.FileAttachment;
-        }
+        //public MyChatBubble(MyChatBubble chatBubble, long messageId)
+        //{
+        //    this.MessageId = messageId;
+        //    this.FileAttachment = chatBubble.FileAttachment;
+        //    this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
+        //}
 
         public MyChatBubble(ConvMessage cm)
         {

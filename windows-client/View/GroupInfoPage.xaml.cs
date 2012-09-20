@@ -308,7 +308,7 @@ namespace windows_client.View
                         result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                         return;
                     }
-                    progressBarStackPanel.Opacity = 1;
+                    progressBar.Opacity = 1;
                     progressBar.IsEnabled = true;
                     groupNameTxtBox.IsReadOnly = true;
                     AccountUtils.setGroupName(groupName, groupId, new AccountUtils.postResponseFunction(setName_Callback));
@@ -330,8 +330,7 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    progressBar.IsEnabled = false;
-                    progressBarStackPanel.Opacity = 0;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
             }
@@ -339,8 +338,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    progressBar.IsEnabled = false;
-                    progressBarStackPanel.Opacity = 0;
+                    progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
                     MessageBox.Show("Cannot change GroupName. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
