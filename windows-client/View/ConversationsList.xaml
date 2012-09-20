@@ -24,10 +24,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,0,0, 0">
-            <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,0,0, 0">
+                <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
+            </StackPanel>
+            <toolkit:PerformanceProgressBar Name="progressBarTop" Width="340" Height="12" 
+                                            VerticalAlignment="Bottom" Margin="15,0,0,0" 
+                                            Opacity="0" IsEnabled="false" IsIndeterminate="True"/>
         </StackPanel>
-
         <controls:Pivot Grid.Row="1"  Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <!--Pivot item one-->
             <controls:PivotItem Header="chats">
