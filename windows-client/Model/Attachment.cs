@@ -12,7 +12,7 @@ namespace windows_client.Model
         private string _fileName;
         private string _contentType;
         private byte[] _thumbnail;
-        private AttachmentState _fileState;
+        private volatile AttachmentState _fileState;
 
 
         public enum AttachmentState
