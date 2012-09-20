@@ -49,7 +49,7 @@ namespace windows_client.View
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
         private bool isContextMenuTapped = false;
-
+        private JObject groupCreateJson = null;
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
         //messages stored in db, other messages would have their attachment object set
 
@@ -286,7 +286,17 @@ namespace windows_client.View
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
-
+                if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
+                {
+                    this.State.Remove(HikeConstants.GROUP_CHAT);
+                    ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        sendMsg(groupCreateCM, true, false);
+                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
+                    });
+      
+                }
                 App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
                 registerListeners();
             };
@@ -316,7 +326,7 @@ namespace windows_client.View
 
             if (!App.isConvCreated)// && !PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
             {
-                if (isFirstLaunch) // if first timel launching after tombstone
+                if (isFirstLaunch) // if first time launching after tombstone
                 {
                     /* Tombstone case and page is opened from select user page*/
                     Debug.WriteLine("CHAT THREAD :: Recovered from Tombstone.");
@@ -549,7 +559,7 @@ namespace windows_client.View
         private void processGroupJoin(bool isNewgroup)
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
-            this.State.Remove(HikeConstants.GROUP_CHAT);
+            //this.State.Remove(HikeConstants.GROUP_CHAT);
             List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5);
             for (int i = 0; i < contactsForGroup.Count; i++)
             {
@@ -576,7 +586,8 @@ namespace windows_client.View
             Utils.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            JObject obj = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
+            groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
+            mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(mContactNumber) : mContactName;
             if (isNewgroup)
             {
                 BackgroundWorker bw = new BackgroundWorker();
@@ -588,12 +599,12 @@ namespace windows_client.View
                 };
                 bw.RunWorkerAsync();
             }
-
-            mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(mContactNumber) : mContactName;
-
-            ConvMessage cm = new ConvMessage(obj, true);
-            sendMsg(cm, true, false);
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj); // inform others about group
+            else
+            {
+                ConvMessage cm = new ConvMessage(groupCreateJson, true);
+                sendMsg(cm, true, false);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
+            }
         }
 
         private JObject createGroupJsonPacket(string type, List<GroupParticipant> usersToAdd, bool isNewGroup)
@@ -1295,7 +1306,7 @@ namespace windows_client.View
 
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN,out inviteToken);
+            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             ConvMessage convMessage = new ConvMessage(string.Format(App.invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
@@ -1868,7 +1879,7 @@ namespace windows_client.View
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
 
                     // notify only if msg is not a notification msg
-                    if(convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                    if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                         mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
 
                     if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
@@ -1886,7 +1897,7 @@ namespace windows_client.View
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
                                 AddMessageToUI(cm, true);
-                            if(cm.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN) // do this only if USER JOIN MSG 
+                            if (cm.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN) // do this only if USER JOIN MSG 
                                 isGcFirstMsg = false;
                         }
                     });
