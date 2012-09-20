@@ -18,7 +18,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        public static readonly string HOST = "staging.im.hike.in";
+        public static readonly string HOST = "im.hike.in";
 
         private static readonly int PORT = 8080;
 
@@ -137,6 +137,16 @@ namespace windows_client.utils
         public static void setName(string name, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/name")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, finalCallbackFunction });
+        }
+
+        public static void setGroupName(string name,string grpId ,postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + string.Format("/group/{0}/name",grpId))) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";

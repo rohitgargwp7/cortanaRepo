@@ -96,6 +96,7 @@ namespace windows_client
             string type = (string)jsonObj[HikeConstants.TYPE];
             string msisdn = (string)jsonObj[HikeConstants.FROM];
 
+            #region MESSAGE
             if (MESSAGE == type)  // this represents msg from another client through tornado(python) server.
             {
                 try
@@ -134,20 +135,28 @@ namespace windows_client
                     //logger.Info("NETWORK MANAGER", "Invalid JSON", e);
                 }
             }
+            #endregion
+            #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
                 this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, msisdn);
             }
+            #endregion
+            #region END_TYPING
             else if (END_TYPING == type) /* End Typing event received */
             {
                 this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, msisdn);
             }
+            #endregion
+            #region SMS_CREDITS
             else if (SMS_CREDITS == type) /* SMS CREDITS */
             {
                 int sms_credits = Int32.Parse((string)jsonObj[HikeConstants.DATA]);
                 App.WriteToIsoStorageSettings(App.SMS_SETTING, sms_credits);
                 this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
             }
+            #endregion
+            #region SERVER_REPORT
             else if (SERVER_REPORT == type) /* Represents Server has received the msg you sent */
             {
                 string id = (string)jsonObj[HikeConstants.DATA];
@@ -164,6 +173,8 @@ namespace windows_client
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
                 updateDB(msgID, (int)ConvMessage.State.SENT_CONFIRMED);
             }
+            #endregion
+            #region DELIVERY_REPORT
             else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
             {
                 string id = (string)jsonObj[HikeConstants.DATA];
@@ -181,6 +192,8 @@ namespace windows_client
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, msgID);
                 updateDB(msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
+            #endregion
+            #region MESSAGE_READ
             else if (MESSAGE_READ == type) // Message read by recipient
             {
                 JArray msgIds = (JArray)jsonObj["d"];
@@ -199,17 +212,21 @@ namespace windows_client
                 updateDbBatch(ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, ids);
             }
+            #endregion
+            #region USER_JOINED USER_LEFT
             else if ((USER_JOINED == type) || (USER_LEFT == type))
             {
                 JObject o = (JObject)jsonObj[HikeConstants.DATA];
                 string uMsisdn = (string)o[HikeConstants.MSISDN];
                 bool joined = USER_JOINED == type;
-                if(joined)
+                if (joined)
                     ProcessUoUjMsgs(jsonObj);
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
+            #endregion
+            #region ICON
             else if (ICON == type)
             {
                 JToken temp;
@@ -236,6 +253,8 @@ namespace windows_client
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
+            #endregion
+            #region INVITE_INFO
             else if (INVITE_INFO == type)
             {
                 JObject data;
@@ -257,9 +276,10 @@ namespace windows_client
                 App.appSettings.Save();
                 this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
             }
-
+            #endregion
             #region GROUP CHAT RELATED
 
+            #region GROUP_CHAT_JOIN
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
                 JArray arr = (JArray)jsonObj[HikeConstants.DATA];
@@ -286,6 +306,8 @@ namespace windows_client
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
             }
+            #endregion
+            #region GROUP_CHAT_NAME
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
             {
                 string groupName = (string)jsonObj[HikeConstants.DATA];
@@ -303,6 +325,8 @@ namespace windows_client
                     this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
 
             }
+            #endregion
+            #region GROUP_CHAT_LEAVE
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
             {
                 /*
@@ -334,7 +358,8 @@ namespace windows_client
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, jsonObj);
             }
-
+            #endregion
+            #region GROUP_CHAT_END
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type) //Group chat end
             {
                 string groupId = (string)jsonObj[HikeConstants.TO];
@@ -354,10 +379,12 @@ namespace windows_client
             }
             #endregion
 
+            #endregion
+            #region ACCOUNT_INFO
             else if (HikeConstants.MqttMessageTypes.ACCOUNT_INFO == type)
             {
                 JObject data = (JObject)jsonObj[HikeConstants.DATA];
-                
+
                 //JArray keys = data.names();
 
                 //for (int i = 0; i < keys.length(); i++)
@@ -373,11 +400,14 @@ namespace windows_client
                     this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                 }
             }
+            #endregion
+            #region USER_OPT_IN
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 // {"t":"uo", "d":{"msisdn":"", "credits":""}}
                 ProcessUoUjMsgs(jsonObj);
             }
+            #endregion
             else
             {
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
@@ -392,7 +422,7 @@ namespace windows_client
             {
                 credits = (string)((JObject)jsonObj[HikeConstants.DATA])["credits"];
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 credits = null;
             }

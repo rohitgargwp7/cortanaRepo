@@ -21,11 +21,30 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private string groupId;
         private HikePubSub mPubSub;
+        private ApplicationBar appBar;
+        private ApplicationBarIconButton nextIconButton;
+        bool isgroupNameSelfChanged = false;
+        string groupName;
 
         public GroupInfoPage()
         {
             InitializeComponent();
             mPubSub = App.HikePubSubInstance;
+
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.Opacity = 1;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = false;
+
+            nextIconButton = new ApplicationBarIconButton();
+            nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            nextIconButton.Text = "done";
+            nextIconButton.Click += new EventHandler(doneBtn_Click);
+            nextIconButton.IsEnabled = true;
+            appBar.Buttons.Add(nextIconButton);
+            groupInfoPage.ApplicationBar = appBar;
+
             initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
@@ -45,7 +64,12 @@ namespace windows_client.View
                 empImage.SetSource(memStream);
                 groupImage.Source = empImage;
             }
+            if (Utils.isDarkTheme())
+            {
+                addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
+            }
         }
+
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
@@ -53,6 +77,7 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_ID_FROM_CHATTHREAD);
             PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME_FROM_CHATTHREAD);
         }
+
         private void initPageBasedOnState()
         {
             groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
@@ -61,7 +86,7 @@ namespace windows_client.View
             GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
                 return;
-            this.groupName.Text = groupName;
+            this.groupNameTxtBox.Text = groupName;
 
             for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
             {
@@ -73,13 +98,13 @@ namespace windows_client.View
             registerListeners();
         }
 
-
         #region PUBSUB
         private void registerListeners()
         {
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
+            mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
         public void onEventReceived(string type, object obj)
         {
@@ -142,6 +167,21 @@ namespace windows_client.View
                         });
                     }
                     break;
+                }
+            }
+            else if (HikePubSub.GROUP_NAME_CHANGED == type)
+            {
+                object[] vals = (object[])obj;
+                string grpId = (string)vals[0];
+                string groupName = (string)vals[1];
+                if (grpId == groupId)
+                {
+                    if (isgroupNameSelfChanged)
+                        return;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.groupNameTxtBox.Text = groupName;
+                    });
                 }
             }
         }
@@ -217,6 +257,7 @@ namespace windows_client.View
         }
         #endregion
 
+
         private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             //TODO start this loop from end, after sorting is done on onHike status
@@ -252,5 +293,59 @@ namespace windows_client.View
             return activeGroupMembers;
         }
 
+        private void doneBtn_Click(object sender, EventArgs e)
+        {
+            this.Focus();
+            groupName = this.groupNameTxtBox.Text.Trim();
+            // if group name is changed
+            if (groupName != (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD])
+            {
+                MessageBoxResult result = MessageBox.Show(string.Format("Group name will be changed to '{0}'", this.groupNameTxtBox.Text), "Change Group Name", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+                    if (!NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                        return;
+                    }
+                    progressBarStackPanel.Opacity = 1;
+                    progressBar.IsEnabled = true;
+                    groupNameTxtBox.IsReadOnly = true;
+                    AccountUtils.setGroupName(groupName, groupId, new AccountUtils.postResponseFunction(setName_Callback));
+                }
+                else
+                    this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+            }
+        }
+        private void setName_Callback(JObject obj)
+        {
+            if (obj != null && "ok" == (string)obj["stat"])
+            {
+                ConversationTableUtils.updateGroupName(groupId, groupName);
+                GroupTableUtils.updateGroupName(groupId, groupName);
+                object[] vals = new object[2];
+                vals[0] = groupId;
+                vals[1] = groupName;
+                isgroupNameSelfChanged = true;
+                mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    progressBar.IsEnabled = false;
+                    progressBarStackPanel.Opacity = 0;
+                    progressBar.IsEnabled = false;
+                });
+            }
+            else
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    progressBar.IsEnabled = false;
+                    progressBarStackPanel.Opacity = 0;
+                    progressBar.IsEnabled = false;
+                    this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
+                    MessageBox.Show("Cannot change GroupName. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                });
+            }
+        }
     }
 }
