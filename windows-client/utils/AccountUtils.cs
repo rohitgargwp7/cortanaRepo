@@ -195,6 +195,7 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "PUT";
             req.ContentType = "";
+            
             //            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
@@ -294,14 +295,19 @@ namespace windows_client.utils
                     int startIndex = 0;
                     int noOfBytesToWrite = 0;
                     double progressValue = 0;
-                    while (startIndex < dataBytes.Length && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED)
+                    while (startIndex < dataBytes.Length)
                     {
                         Thread.Sleep(5);
                         noOfBytesToWrite = dataBytes.Length - startIndex;
                         noOfBytesToWrite = noOfBytesToWrite < bufferSize ? noOfBytesToWrite : bufferSize;
                         postStream.Write(dataBytes, startIndex, noOfBytesToWrite);
                         progressValue = ((double)(startIndex + noOfBytesToWrite) / dataBytes.Length) * 100;
-                        chatBubble.updateProgress(progressValue);
+                        bool updated = chatBubble.updateProgress(progressValue);
+                        if (!updated)
+                        {
+                            chatBubble.setAttachmentState(Attachment.AttachmentState.CANCELED);
+                            break;
+                        }
                         startIndex += noOfBytesToWrite;
                     }
 
