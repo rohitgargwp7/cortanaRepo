@@ -842,6 +842,7 @@ namespace windows_client.View
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                 SentChatBubble newChatBubble = new SentChatBubble(convMessage);
+                newChatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                 addNewAttachmentMessageToUI(newChatBubble);
                 msgMap.Add(convMessage.MessageId, newChatBubble);
 
@@ -1373,7 +1374,7 @@ namespace windows_client.View
             {
 #if DEBUG
                 isReleaseMode = false;
-                Uri uri = new Uri("/View/images/ic_phone_big.jpg", UriKind.Relative);
+                Uri uri = new Uri("/View/images/ic_phone_big.png", UriKind.Relative);
                 BitmapImage image = new BitmapImage(uri);
                 image.CreateOptions = BitmapCreateOptions.None;
                 image.UriSource = uri;

@@ -42,9 +42,6 @@ namespace windows_client.Controls
                 case ConvMessage.State.SENT_DELIVERED_READ:
                     this.SDRImage.Source = UI_Utils.Instance.Read;
                     break;
-                case ConvMessage.State.SENT_UNCONFIRMED:
-                    this.SDRImage.Visibility = Visibility.Collapsed;
-                    break;
                 case ConvMessage.State.UNKNOWN:
                     if (cm.HasAttachment)
                     {
@@ -131,8 +128,6 @@ namespace windows_client.Controls
                 messageState = msgState;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (this.SDRImage.Visibility == Visibility.Collapsed)
-                        this.SDRImage.Visibility = Visibility.Visible;
                     switch (messageState)
                     {
                         case ConvMessage.State.SENT_CONFIRMED:
@@ -156,8 +151,10 @@ namespace windows_client.Controls
             }
         }
 
-        public void updateProgress(double progressValue)
+        public bool updateProgress(double progressValue)
         {
+            if (this.FileAttachment.FileState == Attachment.AttachmentState.CANCELED)
+                return false;
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 this.uploadProgress.Value = progressValue;
@@ -166,11 +163,21 @@ namespace windows_client.Controls
                     this.uploadProgress.Opacity = 0;
                 }
             });
+            return true;
         }
 
         protected override void uploadOrDownloadCanceled()
         {
             this.uploadProgress.Value = 0;
+            this.uploadProgress.Opacity = 0;
+            this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+        }
+
+        protected override void uploadOrDownloadStarted()
+        {
+            this.uploadProgress.Value = 0;
+            this.uploadProgress.Opacity = 1;
+            this.SDRImage.Source = null;
         }
 
 
