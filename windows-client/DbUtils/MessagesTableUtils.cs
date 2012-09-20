@@ -217,6 +217,20 @@ namespace windows_client.DbUtils
                         text = HikeConstants.WAITING_TO_JOIN;
                     obj.LastMessage = gp.Name + text;
                 }
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
+                {
+                    obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                    convMsg.Message = obj.LastMessage;
+                }
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
+                {
+                    obj.LastMessage = convMsg.Message;
+                }
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
+                {
+                    obj.LastMessage = string.Format(HikeConstants.DND_USER, obj.NameToShow);
+                    convMsg.Message = obj.LastMessage;
+                }
                 else
                     obj.LastMessage = convMsg.Message;
 

@@ -51,7 +51,6 @@ namespace windows_client
         public static readonly string PARTICIPANT_JOINED = "%s joined the chat";
         public static readonly string PARTICIPANT_LEFT = "%s left the chat";
         public static readonly string PARTICIPANT_AWAITED = "Waiting for %s to join";
-        public static readonly string REWARDS = "You have just earned %d Free SMS";
         public static readonly string GROUP_CHAT_END = "This chat has ended";
 
         public static readonly string pushNotificationChannelName = "HikeApp";
@@ -108,6 +107,9 @@ namespace windows_client
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
 
+        public static string DND_USER = "{0} is on DND. Waiting for {0} to reply.";
+        public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
+        public static string USER_OPTED_IN_MSG = " just opted in to hike!";
         public static string WAITING_TO_JOIN = " waiting for user to join";
         public static string USER_INVITED = " is invited to group chat";
         public static string USER_JOINED = " has joined the group chat";
@@ -118,6 +120,8 @@ namespace windows_client
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string FORWARD_MSG = "forwardedText";
+        public static string DND = "dnd";
+        public static string INVITE_TOKEN="invite_token";
 
         public static class Extras
         {

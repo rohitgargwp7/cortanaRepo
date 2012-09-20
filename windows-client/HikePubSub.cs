@@ -125,11 +125,14 @@ namespace windows_client
 
         public static readonly string UPDATE_ACCOUNT_NAME = "updateAccountName";
 
+        public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;
 
         private Dictionary<string, List<Listener>> listeners;
+
 
         public HikePubSub()
         {

@@ -197,9 +197,9 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
-            base.OnBackKeyPress(e);
             if (!canGoBack)
-                return;
+                e.Cancel = true;
+            base.OnBackKeyPress(e);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

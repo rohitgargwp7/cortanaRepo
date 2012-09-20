@@ -110,7 +110,20 @@ namespace windows_client.DbUtils
                     text = HikeConstants.USER_INVITED;
                 obj.LastMessage = gp.Name + text;
             }
-
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
+            {
+                obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                convMessage.Message = obj.LastMessage;
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
+            {
+                obj.LastMessage = convMessage.Message;
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
+            {
+                obj.LastMessage = string.Format(HikeConstants.DND_USER,obj.NameToShow);
+                convMessage.Message = obj.LastMessage;
+            }
             if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn)) // this is to store firstMsg logic
             {
                 obj.IsFirstMsg = true;
