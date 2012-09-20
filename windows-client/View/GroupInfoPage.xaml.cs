@@ -22,7 +22,7 @@ namespace windows_client.View
         private string groupId;
         private HikePubSub mPubSub;
         private ApplicationBar appBar;
-        private ApplicationBarIconButton nextIconButton;
+        private ApplicationBarIconButton saveIconButton;
         bool isgroupNameSelfChanged = false;
         string groupName;
 
@@ -37,12 +37,12 @@ namespace windows_client.View
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 
-            nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            nextIconButton.Text = "done";
-            nextIconButton.Click += new EventHandler(doneBtn_Click);
-            nextIconButton.IsEnabled = true;
-            appBar.Buttons.Add(nextIconButton);
+            saveIconButton = new ApplicationBarIconButton();
+            saveIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
+            saveIconButton.Text = "done";
+            saveIconButton.Click += new EventHandler(doneBtn_Click);
+            saveIconButton.IsEnabled = true;
+            appBar.Buttons.Add(saveIconButton);
             groupInfoPage.ApplicationBar = appBar;
 
             initPageBasedOnState();
@@ -311,6 +311,7 @@ namespace windows_client.View
                     progressBar.Opacity = 1;
                     progressBar.IsEnabled = true;
                     groupNameTxtBox.IsReadOnly = true;
+                    saveIconButton.IsEnabled = false;
                     AccountUtils.setGroupName(groupName, groupId, new AccountUtils.postResponseFunction(setName_Callback));
                 }
                 else
@@ -330,6 +331,8 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    groupNameTxtBox.IsReadOnly = false;
+                    saveIconButton.IsEnabled = true;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
@@ -338,6 +341,8 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    groupNameTxtBox.IsReadOnly = false;
+                    saveIconButton.IsEnabled = true;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
