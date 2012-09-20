@@ -60,7 +60,8 @@ namespace windows_client.DbUtils
 
         public void uploadFileCallback(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble)
         {
-            if (obj != null)
+            if (obj != null && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED 
+                && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
             {
                 JObject data = obj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
                 string fileKey = data[HikeConstants.FILE_KEY].ToString();
@@ -166,10 +167,6 @@ namespace windows_client.DbUtils
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
 
                         AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
-
-                        //MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_THUMBNAILS + "/" + convMessage.Msisdn + "/" +
-                        //        Convert.ToString(convMessage.MessageId), chatbubble.FileAttachment.Thumbnail);
-
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 Convert.ToString(convMessage.MessageId), largeImage);
                         AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage, chatbubble);
