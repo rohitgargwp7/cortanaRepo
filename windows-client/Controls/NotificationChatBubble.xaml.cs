@@ -6,8 +6,6 @@ namespace windows_client.Controls
 {
     public partial class NotificationChatBubble : MyChatBubble {
 
-        private string parameter;//either user name or number of rewards awarded
-
         public enum MessageType
         {
             HIKE_PARTICIPANT_JOINED, // hike participant has left
@@ -19,41 +17,35 @@ namespace windows_client.Controls
         }
 
 
-        public NotificationChatBubble(MessageType messageType, string parameter)
+        public NotificationChatBubble(MessageType messageType, string message)
         {
             InitializeComponent();
-            this.parameter = parameter;
-            setNotificationMessage(messageType);
+            setNotificationMessage(messageType, message);
         }
 
-        public void setNotificationMessage(MessageType messageType)
+        public void setNotificationMessage(MessageType messageType, string message)
         {
             switch (messageType)
             {
                 case MessageType.HIKE_PARTICIPANT_JOINED:
-                    Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
                     NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
                     break;
                 case MessageType.SMS_PARTICIPANT_JOINED:
-                    Text = String.Format(HikeConstants.PARTICIPANT_JOINED, parameter);
                     NotificationImage.Source = UI_Utils.Instance.NotOnHikeImage;
                     break;
                 case MessageType.PARTICIPANT_LEFT:
-                    Text = String.Format(HikeConstants.PARTICIPANT_LEFT, parameter);
                     NotificationImage.Source = UI_Utils.Instance.ParticipantLeft;
                     break;
                 case MessageType.GROUP_END:
-                    Text = String.Format(HikeConstants.GROUP_CHAT_ENDED, parameter);
                     break;
                 case MessageType.WAITING:
-                    Text = String.Format(HikeConstants.WAITING_TO_JOIN, parameter);
                     NotificationImage.Source = UI_Utils.Instance.Waiting;
                     break;
                 case MessageType.REWARD:
-                    Text = String.Format(HikeConstants.CREDITS_EARNED, parameter);
                     NotificationImage.Source = UI_Utils.Instance.Reward;
                     break;
             }
+            Text = message;
         }
 
 
