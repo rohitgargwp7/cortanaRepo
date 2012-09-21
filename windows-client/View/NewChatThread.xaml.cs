@@ -1436,6 +1436,7 @@ namespace windows_client.View
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
 
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment.ContentType = "image";
                 convMessage.Message = fileName;
 
                 SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnailBytes);
