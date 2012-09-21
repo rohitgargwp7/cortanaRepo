@@ -75,14 +75,10 @@ namespace windows_client.View
         //private Dictionary<ConvMessage, SentChatBubble> _convMessageSentBubbleMap = new Dictionary<ConvMessage, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
-
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _nonAttachmentMenu;
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploading;
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploaded;
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentCanceledOrFailed = null;
-
-
-
         #endregion
 
         #region UI VALUES
@@ -843,7 +839,15 @@ namespace windows_client.View
 
                 string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + chatBubble.MessageId;
 
-                ConvMessage convMessage = new ConvMessage(chatBubble.FileAttachment.FileName, mContactNumber,
+                string messageText = "";
+                if (chatBubble.FileAttachment.ContentType.Contains("image"))
+                    messageText = "image";
+                else if (chatBubble.FileAttachment.ContentType.Contains("audio"))
+                    messageText = "audio";
+                else if (chatBubble.FileAttachment.ContentType.Contains("video"))
+                    messageText = "video";
+
+                ConvMessage convMessage = new ConvMessage(messageText, mContactNumber,
                     TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
@@ -1437,7 +1441,7 @@ namespace windows_client.View
 
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "image";
-                convMessage.Message = fileName;
+                convMessage.Message = "image";
 
                 SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnailBytes);
                 msgMap.Add(convMessage.MessageId, chatBubble);
@@ -1594,7 +1598,14 @@ namespace windows_client.View
             {
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
-                    obj.LastMessage = lastMessageBubble.FileAttachment.FileName;
+                {
+                    if(lastMessageBubble.FileAttachment.ContentType.Contains("image"))
+                        obj.LastMessage = "image";
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains("audio"))
+                        obj.LastMessage = "audio";
+                    if (lastMessageBubble.FileAttachment.ContentType.Contains("video"))
+                        obj.LastMessage = "video";
+                }
                 else
                     obj.LastMessage = lastMessageBubble.Text;
                 //obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;

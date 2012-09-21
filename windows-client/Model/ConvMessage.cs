@@ -464,8 +464,23 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    _message = (string)data[HikeConstants.HIKE_MESSAGE];
                     _isSms = false;
+                    if (this.HasAttachment)
+                    {
+                        string messageText = "";
+                        if (this.FileAttachment.ContentType.Contains("image"))
+                            messageText = "image";
+                        else if (this.FileAttachment.ContentType.Contains("audio"))
+                            messageText = "audio";
+                        else if (this.FileAttachment.ContentType.Contains("video"))
+                            messageText = "video";
+                        this._message = messageText;
+                    }
+                    else
+                    {
+                        _message = (string)data[HikeConstants.HIKE_MESSAGE];
+                    }
+
                 }
                 if (_groupParticipant != null) // reprsents group chat
                 {
@@ -484,10 +499,6 @@ namespace windows_client.Model
                 this._messageId = -1;
                 string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
                 this.MappedMessageId = System.Int64.Parse(mappedMsgID);
-                if (this.HasAttachment)
-                {
-                    this.Message = this.FileAttachment.FileName;
-                }
             }
             catch (Exception e)
             {
