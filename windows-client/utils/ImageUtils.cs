@@ -27,6 +27,7 @@ namespace windows_client.utils
         private BitmapImage waiting;
         private BitmapImage reward;
         private BitmapImage participantLeft;
+        private SolidColorBrush receiveMessageForeground;
 
         private static volatile UI_Utils instance = null;
 
@@ -220,55 +221,16 @@ namespace windows_client.utils
             }
         }
 
-        #endregion
-
-        public Paragraph Linkify(string message)
+        public SolidColorBrush ReceiveMessageForeground
         {
-            MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(message);
-            var p = new Paragraph();
-            int startIndex = 0;
-            int endIndex = -1;
-            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
-
-            for (int i = 0; i < maxCount; i++)
+            get
             {
-                String emoticon = matchCollection[i].ToString();
-
-                //Regex never returns an empty string. Still have added an extra check
-                if (String.IsNullOrEmpty(emoticon))
-                    continue;
-
-                int index = matchCollection[i].Index;
-                endIndex = index - 1;
-
-                if (index > 0)
-                {
-                    Run r = new Run();
-                    r.Text = message.Substring(startIndex, endIndex - startIndex + 1);
-                    p.Inlines.Add(r);
-                }
-
-                startIndex = index + emoticon.Length;
-
-                //TODO check if imgPath is null or not
-                Image img = new Image();
-                img.Source = SmileyParser.lookUpFromCache(emoticon);
-                img.Height = 40;
-                img.Width = 40;
-
-                InlineUIContainer ui = new InlineUIContainer();
-                ui.Child = img;
-                p.Inlines.Add(ui);
+                if (receiveMessageForeground == null)
+                    receiveMessageForeground = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
+                return receiveMessageForeground;
             }
-            if (startIndex < message.Length)
-            {
-                Run r2 = new Run();
-                r2.Text = message.Substring(startIndex, message.Length - startIndex);
-                p.Inlines.Add(r2);
-            }
-            return p;
-
         }
 
+        #endregion
     }
 }
