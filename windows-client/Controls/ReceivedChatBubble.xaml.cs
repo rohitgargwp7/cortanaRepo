@@ -55,7 +55,7 @@ namespace windows_client.Controls
         public Image MessageImage;
         private Image PlayIcon;
         private ProgressBar downloadProgress;
-        private LinkifiedTextBoxReceive MessageText;
+        private LinkifiedTextBox MessageText;
         private TextBlock TimeStampBlock;
         
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
@@ -122,12 +122,11 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBoxReceive();
+                MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 24);
                 MessageText.Width = 340;
-                MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
                 Binding messageTextBinding = new Binding("Text");
-                MessageText.SetBinding(LinkifiedTextBoxReceive.TextProperty, messageTextBinding);
+                MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, 0);
                 wrapperGrid.Children.Add(MessageText);
 
