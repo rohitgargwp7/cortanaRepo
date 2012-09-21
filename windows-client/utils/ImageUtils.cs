@@ -16,6 +16,7 @@ namespace windows_client.utils
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage playIcon;
+        private BitmapImage downloadIcon;
         private BitmapImage audioAttachment;
         private BitmapImage httpFailed;
         private BitmapImage typingNotificationBitmap;
@@ -108,6 +109,16 @@ namespace windows_client.utils
                 if (playIcon == null)
                     playIcon = new BitmapImage(new Uri("/View/images/play_icon.png", UriKind.Relative));
                 return playIcon;
+            }
+        }
+
+        public BitmapImage DownloadIcon
+        {
+            get
+            {
+                if (downloadIcon == null)
+                    downloadIcon = new BitmapImage(new Uri("/View/images/download_icon.png", UriKind.Relative));
+                return downloadIcon;
             }
         }
 

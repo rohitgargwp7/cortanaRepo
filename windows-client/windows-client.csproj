@@ -302,6 +302,7 @@
     <Content Include="View\images\chat_waiting.png" />
     <Content Include="View\images\default_group.png" />
     <Content Include="View\images\default_user.png" />
+    <Content Include="View\images\download_icon.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />
     <Content Include="View\images\emoticons\emo_im_02_happy.png" />
     <Content Include="View\images\emoticons\emo_im_03_laugh.png" />
