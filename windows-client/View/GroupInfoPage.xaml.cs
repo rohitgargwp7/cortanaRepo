@@ -22,9 +22,12 @@ namespace windows_client.View
         private string groupId;
         private HikePubSub mPubSub;
         private ApplicationBar appBar;
-        private ApplicationBarIconButton nextIconButton;
+        private ApplicationBarIconButton saveIconButton;
         bool isgroupNameSelfChanged = false;
+        bool isProfilePicTapped = false;
         string groupName;
+        byte[] buffer = null;
+        BitmapImage grpImage = null;
 
         public GroupInfoPage()
         {
@@ -37,12 +40,12 @@ namespace windows_client.View
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = false;
 
-            nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            nextIconButton.Text = "done";
-            nextIconButton.Click += new EventHandler(doneBtn_Click);
-            nextIconButton.IsEnabled = true;
-            appBar.Buttons.Add(nextIconButton);
+            saveIconButton = new ApplicationBarIconButton();
+            saveIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
+            saveIconButton.Text = "done";
+            saveIconButton.Click += new EventHandler(doneBtn_Click);
+            saveIconButton.IsEnabled = true;
+            appBar.Buttons.Add(saveIconButton);
             groupInfoPage.ApplicationBar = appBar;
 
             initPageBasedOnState();
@@ -53,9 +56,9 @@ namespace windows_client.View
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             string grpId = groupId.Replace(":", "_");
-            byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(groupId);
+            byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(grpId);
             if (avatar == null)
-                groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; // TODO : change to default groupImage once done
+                groupImage.Source = UI_Utils.Instance.DefaultGroupImage;
             else
             {
                 MemoryStream memStream = new MemoryStream(avatar);
@@ -193,48 +196,49 @@ namespace windows_client.View
         {
             try
             {
-                photoChooserTask.Show();
+                if (!isProfilePicTapped)
+                {
+                    photoChooserTask.Show();
+                    isProfilePicTapped = true;
+                }
             }
             catch (System.InvalidOperationException ex)
             {
                 MessageBox.Show("An error occurred.");
             }
         }
+
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                isProfilePicTapped = false;
                 return;
             }
+            progressBar.IsEnabled = true;
+            progressBar.Opacity = 1;
             if (e.TaskResult == TaskResult.OK)
             {
                 Uri uri = new Uri(e.OriginalFileName);
-                BitmapImage image = new BitmapImage(uri);
-                image.CreateOptions = BitmapCreateOptions.None;
-                image.UriSource = uri;
-                image.ImageOpened += imageOpenedHandler;
-                groupImage.Source = image;
-                groupImage.Height = 90;
-                groupImage.Width = 90;
+                grpImage = new BitmapImage(uri);
+                grpImage.CreateOptions = BitmapCreateOptions.None;
+                grpImage.UriSource = uri;
+                grpImage.ImageOpened += imageOpenedHandler;
             }
             else
             {
-                Uri uri = new Uri("/View/images/default_group.png", UriKind.Relative);
-                BitmapImage image = new BitmapImage(uri);
-                image.CreateOptions = BitmapCreateOptions.None;
-                image.UriSource = uri;
-                image.ImageOpened += imageOpenedHandler;
-                groupImage.Source = image;
-                groupImage.Height = 90;
-                groupImage.Width = 90;
+                Uri uri = new Uri("/View/images/enter_name.png", UriKind.Relative);
+                grpImage = new BitmapImage(uri);
+                grpImage.CreateOptions = BitmapCreateOptions.None;
+                grpImage.UriSource = uri;
+                grpImage.ImageOpened += imageOpenedHandler;
             }
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
-            byte[] buffer = null;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
 
             using (var msSmallImage = new MemoryStream())
@@ -244,19 +248,33 @@ namespace windows_client.View
             }
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
-
-            object[] vals = new object[3];
-            vals[0] = groupId;
-            vals[1] = buffer;
-            vals[2] = null;
-            mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
         }
 
         public void updateProfile_Callback(JObject obj)
         {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (obj != null && "ok" == (string)obj["stat"])
+                {
+                    groupImage.Source = grpImage;
+                    groupImage.Height = 90;
+                    groupImage.Width = 90;
+                    object[] vals = new object[3];
+                    vals[0] = groupId;
+                    vals[1] = buffer;
+                    vals[2] = null;
+                    mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+                }
+                else
+                {
+                    MessageBox.Show("Cannot change Group Image. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                }
+                progressBar.IsEnabled = false;
+                progressBar.Opacity = 0;
+                isProfilePicTapped = false;
+            });
         }
         #endregion
-
 
         private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -311,12 +329,14 @@ namespace windows_client.View
                     progressBar.Opacity = 1;
                     progressBar.IsEnabled = true;
                     groupNameTxtBox.IsReadOnly = true;
+                    saveIconButton.IsEnabled = false;
                     AccountUtils.setGroupName(groupName, groupId, new AccountUtils.postResponseFunction(setName_Callback));
                 }
                 else
                     this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
             }
         }
+
         private void setName_Callback(JObject obj)
         {
             if (obj != null && "ok" == (string)obj["stat"])
@@ -330,6 +350,8 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    groupNameTxtBox.IsReadOnly = false;
+                    saveIconButton.IsEnabled = true;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                 });
@@ -338,6 +360,8 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    groupNameTxtBox.IsReadOnly = false;
+                    saveIconButton.IsEnabled = true;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];

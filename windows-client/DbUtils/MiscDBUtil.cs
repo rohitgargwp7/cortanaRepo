@@ -99,6 +99,8 @@ namespace windows_client.DbUtils
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes)
         {
+            if (imageBytes == null)
+                return;
             string FileName = THUMBNAILS + "\\" + msisdn;
             lock (lockObj)
             {

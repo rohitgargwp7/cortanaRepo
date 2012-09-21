@@ -33,6 +33,9 @@ namespace windows_client.View
 
         #region Instances
 
+        bool isProfilePicTapped = false;
+        byte[] thumbnailBytes = null;
+        byte[] largeImageBytes = null;
         private bool firstLoad = true;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private HikePubSub mPubSub;
@@ -43,7 +46,7 @@ namespace windows_client.View
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarMenuItem delAccountMenu;
         ApplicationBarIconButton composeIconButton;
-
+        BitmapImage profileImage = null;
         public static Dictionary<string, ConversationListObject> ConvMap
         {
             get
@@ -250,7 +253,8 @@ namespace windows_client.View
             {
                 stopwatch.Reset();
                 stopwatch.Start();
-                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(conversationList[i].Msisdn);
+                string id = conversationList[i].Msisdn.Replace(":","_");
+                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
                 stopwatch.Stop();
                 elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
                 ConversationListObject conv = conversationList[i];
@@ -364,7 +368,7 @@ namespace windows_client.View
                 freeSmsImage.Source = new BitmapImage(new Uri("images/free_sms_dark.png", UriKind.Relative));
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
                 privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
-                helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative)); 
+                helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
             }
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
@@ -394,11 +398,61 @@ namespace windows_client.View
             }
         }
 
+
+        private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            try
+            {
+                if (!isProfilePicTapped)
+                {
+                    photoChooserTask.Show();
+                    isProfilePicTapped = true;
+                }
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                MessageBox.Show("An error occurred.");
+            }
+        }
+
+        void photoChooserTask_Completed(object sender, PhotoResult e)
+        {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                isProfilePicTapped = false;
+                return;
+            }
+            progressBarTop.IsEnabled = true;
+            progressBarTop.Opacity = 1;
+            if (e.TaskResult == TaskResult.OK)
+            {
+                Uri uri = new Uri(e.OriginalFileName);
+                profileImage = new BitmapImage(uri);
+                profileImage.CreateOptions = BitmapCreateOptions.None;
+                profileImage.UriSource = uri;
+                profileImage.ImageOpened += imageOpenedHandler;
+            }
+            //else if (e.TaskResult == TaskResult.Cancel)
+            //{
+            //    isProfilePicTapped = false;
+            //    progressBarTop.IsEnabled = false;
+            //    progressBarTop.Opacity = 0;
+            //}
+            else
+            {
+                Uri uri = new Uri("/View/images/enter_name.png", UriKind.Relative);
+                profileImage = new BitmapImage(uri);
+                profileImage.CreateOptions = BitmapCreateOptions.None;
+                profileImage.UriSource = uri;
+                profileImage.ImageOpened += imageOpenedHandler;
+            }
+        }
+
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
-            byte[] thumbnailBytes = null;
-            byte[] largeImageBytes = null;
+
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
 
             using (var msLargeImage = new MemoryStream())
@@ -415,58 +469,31 @@ namespace windows_client.View
 
             //send image to server here and insert in db after getting response
             AccountUtils.updateProfileIcon(thumbnailBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
-            object[] vals = new object[3];
-            vals[0] = App.MSISDN;
-            vals[1] = thumbnailBytes;
-            vals[2] = largeImageBytes;
-            mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
         }
 
         public void updateProfile_Callback(JObject obj)
         {
-        }
-
-        void photoChooserTask_Completed(object sender, PhotoResult e)
-        {
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
-                return;
-            }
-            if (e.TaskResult == TaskResult.OK)
-            {
-                Uri uri = new Uri(e.OriginalFileName);
-                BitmapImage image = new BitmapImage(uri);
-                image.CreateOptions = BitmapCreateOptions.None;
-                image.UriSource = uri;
-                image.ImageOpened += imageOpenedHandler;
-                avatarImage.Source = image;
-                avatarImage.Height = 90;
-                avatarImage.Width = 90;
-            }
-            //else
-            //{
-            //    Uri uri = new Uri("/View/images/tux.png", UriKind.Relative);
-            //    BitmapImage image = new BitmapImage(uri);
-            //    image.CreateOptions = BitmapCreateOptions.None;
-            //    image.UriSource = uri;
-            //    image.ImageOpened += imageOpenedHandler;
-            //    avatarImage.Source = image;
-            //    avatarImage.Height = 90;
-            //    avatarImage.Width = 90;
-            //}
-        }
-
-        private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            try
-            {
-                photoChooserTask.Show();
-            }
-            catch (System.InvalidOperationException ex)
-            {
-                MessageBox.Show("An error occurred.");
-            }
+                if (obj != null && "ok" == (string)obj["stat"])
+                {
+                    avatarImage.Source = profileImage;
+                    avatarImage.Height = 90;
+                    avatarImage.Width = 90;
+                    object[] vals = new object[3];
+                    vals[0] = App.MSISDN;
+                    vals[1] = thumbnailBytes;
+                    vals[2] = largeImageBytes;
+                    mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+                }
+                else
+                {
+                    MessageBox.Show("Cannot change Profile Image. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                }
+                progressBarTop.IsEnabled = false;
+                progressBarTop.Opacity = 0;
+                isProfilePicTapped = false;
+            });
         }
 
         #endregion
