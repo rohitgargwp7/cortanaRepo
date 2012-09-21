@@ -67,8 +67,8 @@
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="15,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Gray"/>
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
-                                                <!--<RichTextBox Tag="{Binding LastMessage}" TextWrapping="Wrap" MaxWidth="325" FontSize="21" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>-->
-                                                <local:LinkifiedTextBox Text="{Binding LastMessage}" FontSize="21" ForegroundColor="{Binding LastMessageColor}" MaxHeight="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+                                                <RichTextBox Tag="{Binding LastMessage}" TextWrapping="Wrap" MaxWidth="325" FontSize="21" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+                                                <!--<local:LinkifiedTextBox Text="{Binding LastMessage}" FontSize="21" ForegroundColor="{Binding LastMessageColor}" MaxHeight="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>-->
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
