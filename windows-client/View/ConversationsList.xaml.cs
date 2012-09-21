@@ -658,9 +658,8 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (!App.ViewModel.MessageListPageCollection.Contains(mObj))
+                        if (!App.ViewModel.MessageListPageCollection.Remove(mObj))
                             scheduler.Schedule(RefreshNewConversationObject, TimeSpan.FromMilliseconds(5));
-                        App.ViewModel.MessageListPageCollection.Remove(mObj);
                     });
                 }
                 convMap[mObj.Msisdn] = mObj;
