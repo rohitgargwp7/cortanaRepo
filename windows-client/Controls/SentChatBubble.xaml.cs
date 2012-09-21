@@ -254,7 +254,7 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBox();
+                MessageText = new LinkifiedTextBox(24);
                 MessageText.Width = 340;
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
