@@ -11,13 +11,14 @@ using windows_client.Controls;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.Phone.Shell;
+using System.Text;
 
 namespace windows_client.DbUtils
 {
     public class MessagesTableUtils
     {
         private static object lockObj = new object();
-
+        
         //keep a set of currently uploading or downloading messages.
         private static Dictionary<long, int> uploadingOrDownloadingMessages = new Dictionary<long, int>();
 
@@ -109,12 +110,14 @@ namespace windows_client.DbUtils
                         }
                     });
                 }
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN)
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (App.newChatThreadPage != null)
+                        {
                             App.newChatThreadPage.IsFirstMsg = false;
+                        }
                     });
                 }
             }
@@ -127,7 +130,7 @@ namespace windows_client.DbUtils
             //List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
-                string groupName = Utils.defaultGroupName(convMsg.Msisdn); // here name shud be what stored in contacts
+                string groupName = Utils.defaultGroupName(convMsg.Msisdn);
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 ConversationsList.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
@@ -148,12 +151,16 @@ namespace windows_client.DbUtils
 
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
-                    GroupParticipant gp = Utils.GroupCache[obj.Msisdn][Utils.GroupCache[obj.Msisdn].Count - 1]; // get last element of group in sorted order.
+                    string[] vals = Utils.splitUserJoinedMessage(convMsg.Message);
+                    if (vals == null || vals.Length == 0)
+                        return null;
+                    string[] vars = vals[vals.Length - 1].Split(':');
+                    GroupParticipant gp = Utils.getGroupParticipant(null,vars[0],obj.Msisdn); // get last element of group in sorted order.
 
-                    string text = HikeConstants.USER_JOINED;
-                    if (!gp.IsOnHike)
+                    string text = HikeConstants.USER_JOINED_GROUP_CHAT;
+                    if (vars[1] == "0")
                         text = HikeConstants.USER_INVITED;
-                    obj.LastMessage = gp.Name + text;
+                    obj.LastMessage = gp.FirstName + text;
                     if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMsg.Msisdn))
                     {
                         obj.IsFirstMsg = true;
@@ -186,14 +193,18 @@ namespace windows_client.DbUtils
             else
             {
                 obj = ConversationsList.ConvMap[convMsg.Msisdn];
+                #region PARTICIPANT_JOINED
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
-                    string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], obj.Msisdn);
-                    string text = HikeConstants.USER_JOINED;
-                    if (!gp.IsOnHike)
+                    string[] vals = Utils.splitUserJoinedMessage(convMsg.Message);
+                    if (vals == null || vals.Length == 0)
+                        return null;
+                    string[] vars = vals[vals.Length - 1].Split(':');
+                    GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], obj.Msisdn);
+                    string text = HikeConstants.USER_JOINED_GROUP_CHAT;
+                    if (vars[1] == "0")
                         text = HikeConstants.USER_INVITED;
-                    obj.LastMessage = gp.Name + text;
+                    obj.LastMessage = gp.FirstName + text;
 
                     if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMsg.Msisdn)) // this is to store firstMsg logic
                     {
@@ -204,35 +215,89 @@ namespace windows_client.DbUtils
                     else
                         obj.IsFirstMsg = false;
                 }
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOIN) // shows invite msg
+                #endregion
+                #region GROUP_JOINED_OR_WAITING
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING) // shows invite msg
                 {
                     if (!obj.IsFirstMsg)
                         return obj;
                     obj.IsFirstMsg = false;
 
-                    string[] msisdns = NewChatThread.splitUserJoinedMessage(convMsg);
-                    GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], obj.Msisdn);
-                    string text = HikeConstants.USER_JOINED;
-                    if (!gp.IsOnHike && gp.IsDND && !gp.HasOptIn)
-                        text = HikeConstants.WAITING_TO_JOIN;
-                    obj.LastMessage = gp.Name + text;
+                    string[] vals = Utils.splitUserJoinedMessage(convMsg.Message);
+                    List<string> waitingParticipants = null;
+                    for (int i = 0; i < vals.Length; i++)
+                    {
+                        string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
+
+                        // every participant is either on DND or not on DND
+                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        if (vars[1] == "0") // DND USER and not OPTED IN
+                        {
+                            if (waitingParticipants == null)
+                                waitingParticipants = new List<string>();
+                            waitingParticipants.Add(gp.FirstName);
+                        }
+                    }
+                    if (waitingParticipants != null && waitingParticipants.Count > 0) // show waiting msg
+                    {
+                        StringBuilder msgText = new StringBuilder();
+                        if (waitingParticipants.Count == 1)
+                            msgText.Append(waitingParticipants[0]);
+                        else if (waitingParticipants.Count == 2)
+                            msgText.Append(waitingParticipants[0] + " and " + waitingParticipants[1]);
+                        else
+                        {
+                            for (int i = 0; i < waitingParticipants.Count; i++)
+                            {
+                                msgText.Append(waitingParticipants[0]);
+                                if (i == waitingParticipants.Count - 2)
+                                    msgText.Append(" and ");
+                                else if (i < waitingParticipants.Count - 2)
+                                    msgText.Append(",");
+                            }
+                        }
+                        obj.LastMessage = string.Format(HikeConstants.WAITING_TO_JOIN,msgText.ToString());
+                    }
+                    else
+                    {
+                        string[] vars = vals[vals.Length - 1].Split(':');
+                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        string text = HikeConstants.USER_JOINED_GROUP_CHAT;
+                        obj.LastMessage = gp.FirstName + text;
+                    }
                 }
+                #endregion
+                #region USER_OPT_IN
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
                 {
                     obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
                     convMsg.Message = obj.LastMessage;
                 }
+                #endregion
+                #region CREDITS_GAINED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
                 {
                     obj.LastMessage = convMsg.Message;
                 }
+                #endregion
+                #region DND_USER
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
                 {
                     obj.LastMessage = string.Format(HikeConstants.DND_USER, obj.NameToShow);
                     convMsg.Message = obj.LastMessage;
                 }
+                #endregion
+                #region USER_JOINED
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+                {
+                    obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE,obj.NameToShow);
+                    convMsg.Message = obj.LastMessage;
+                }
+                #endregion
+                #region NO_INFO Or OTHER MSGS
                 else
                     obj.LastMessage = convMsg.Message;
+                #endregion
 
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;

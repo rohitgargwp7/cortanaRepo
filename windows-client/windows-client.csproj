@@ -302,8 +302,9 @@
     <Content Include="View\images\audio_file_icon.png" />
     <Content Include="View\images\background.png" />
     <Resource Include="View\images\hike_header.png" />
+    <Content Include="View\images\chat_accepted.png" />
     <Content Include="View\images\chat_joined_blue.png" />
-    <Content Include="View\images\chat_joined_green.png" />
+    <Content Include="View\images\chat_invited_green.png" />
     <Content Include="View\images\chat_left.png" />
     <Content Include="View\images\chat_reward.png" />
     <Content Include="View\images\chat_waiting.png" />

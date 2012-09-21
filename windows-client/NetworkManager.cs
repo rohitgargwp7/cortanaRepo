@@ -112,7 +112,7 @@ namespace windows_client
                         return;
                     object[] vals = null;
 
-                    if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc screen
+                    if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc msg
                     {
                         vals = new object[3];
                         JObject oj = ConvMessage.ProcessGCLogic(obj.Msisdn);
@@ -220,7 +220,12 @@ namespace windows_client
                 string uMsisdn = (string)o[HikeConstants.MSISDN];
                 bool joined = USER_JOINED == type;
                 if (joined)
-                    ProcessUoUjMsgs(jsonObj);
+                {
+                    // if user is in contact list then only show the joined msg
+                    bool isUserInContactList = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn) != null ? true : false;
+                    if (isUserInContactList)
+                        ProcessUoUjMsgs(jsonObj,false);
+                }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
@@ -329,7 +334,7 @@ namespace windows_client
             #region GROUP_CHAT_LEAVE
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
             {
-                /*
+                     /*
                      * 1. Update Conversation list name if groupName is not set.
                      * 2. Update DB.
                      * 3. Notify GroupInfo page (if opened)
@@ -337,8 +342,10 @@ namespace windows_client
                      */
 
                 string groupId = (string)jsonObj[HikeConstants.TO];
-                string fromMsisdn = (string)jsonObj[HikeConstants.FROM];
-
+                string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
+                GroupParticipant gp = Utils.getGroupParticipant(null, fromMsisdn, groupId);
+                if (gp.HasLeft)
+                    return;
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                 if (cObj == null)
@@ -384,15 +391,14 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.ACCOUNT_INFO == type)
             {
                 JObject data = (JObject)jsonObj[HikeConstants.DATA];
-
-                //JArray keys = data.names();
-
-                //for (int i = 0; i < keys.length(); i++)
-                //{
-                //    String key = keys.getString(i);
-                //    String value = data.optString(key);
-                //    editor.putString(key, value);
-                //}
+                KeyValuePair<string, JToken> kv;
+                IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
+                while (keyVals.MoveNext())
+                {
+                    kv = keyVals.Current;
+                    string val = kv.Value.ToObject<string>();
+                    App.WriteToIsoStorageSettings(kv.Key,val);
+                }
 
                 JToken it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
                 if (it != null)
@@ -405,7 +411,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 // {"t":"uo", "d":{"msisdn":"", "credits":""}}
-                ProcessUoUjMsgs(jsonObj);
+                ProcessUoUjMsgs(jsonObj,true);
             }
             #endregion
             else
@@ -414,7 +420,7 @@ namespace windows_client
             }
         }
 
-        private void ProcessUoUjMsgs(JObject jsonObj)
+        private void ProcessUoUjMsgs(JObject jsonObj,bool isOptInMsg)
         {
             string credits;
             string ms = (string)((JObject)jsonObj[HikeConstants.DATA])[HikeConstants.MSISDN];
@@ -434,7 +440,10 @@ namespace windows_client
             cm.Msisdn = ms;
             cm.MessageId = -1;
             cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-            cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
+            if(isOptInMsg)
+                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
+            else
+                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_JOINED;
             ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
 
             if (credits == null)

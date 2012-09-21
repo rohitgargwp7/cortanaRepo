@@ -9,7 +9,8 @@ namespace windows_client.Controls
         public enum MessageType
         {
             HIKE_PARTICIPANT_JOINED, // hike participant has left
-            SMS_PARTICIPANT_JOINED, // sms participant has joined
+            SMS_PARTICIPANT_OPTED_IN, // sms participant has joined
+            SMS_PARTICIPANT_INVITED, // sms participant has invited
             PARTICIPANT_LEFT, // The participant has joined
             GROUP_END, // Group chat has ended
             WAITING,
@@ -30,13 +31,17 @@ namespace windows_client.Controls
                 case MessageType.HIKE_PARTICIPANT_JOINED:
                     NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
                     break;
-                case MessageType.SMS_PARTICIPANT_JOINED:
+                case MessageType.SMS_PARTICIPANT_INVITED:
                     NotificationImage.Source = UI_Utils.Instance.NotOnHikeImage;
+                    break;
+                case MessageType.SMS_PARTICIPANT_OPTED_IN:
+                    NotificationImage.Source = UI_Utils.Instance.ChatAcceptedImage;
                     break;
                 case MessageType.PARTICIPANT_LEFT:
                     NotificationImage.Source = UI_Utils.Instance.ParticipantLeft;
                     break;
                 case MessageType.GROUP_END:
+                    NotificationImage.Source = UI_Utils.Instance.ParticipantLeft;
                     break;
                 case MessageType.WAITING:
                     NotificationImage.Source = UI_Utils.Instance.Waiting;
