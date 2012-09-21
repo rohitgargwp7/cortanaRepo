@@ -173,6 +173,13 @@ namespace windows_client.Model
                     _isUsed = value;
             }
         }
+
+        public int IsOwner
+        {
+            get;
+            set;
+        }
+
         public SolidColorBrush SquareColor
         {
             get

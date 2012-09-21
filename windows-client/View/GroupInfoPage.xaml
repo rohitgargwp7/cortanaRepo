@@ -76,6 +76,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Rectangle Height="25" Width="25" Fill="{Binding SquareColor}"></Rectangle>
                             <TextBlock Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
+                            <TextBlock Text=" (owner)" VerticalAlignment="Center" Foreground="Gray" FontSize="20" Opacity="{Binding IsOwner}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
