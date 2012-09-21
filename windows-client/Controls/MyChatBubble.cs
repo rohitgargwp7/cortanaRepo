@@ -159,6 +159,9 @@ namespace windows_client.Controls
         protected virtual void uploadOrDownloadStarted()
         { }
 
+        protected virtual void uploadOrDownloadCompleted()
+        { }
+
 
         public void setAttachmentState(Attachment.AttachmentState attachmentState)
         {
@@ -179,6 +182,7 @@ namespace windows_client.Controls
                             break;
                         case Attachment.AttachmentState.COMPLETED:
                             setContextMenu(currentPage.AttachmentUploaded);
+                            uploadOrDownloadCompleted();
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.STARTED:
