@@ -86,9 +86,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LinkifiedTextBoxReceive.xaml.cs">
-      <DependentUpon>LinkifiedTextBoxReceive.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MyChatBubble.cs" />
     <Compile Include="Controls\NotificationChatBubble.xaml.cs">
       <DependentUpon>NotificationChatBubble.xaml</DependentUpon>
@@ -195,10 +192,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="Controls\LinkifiedTextBoxReceive.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\NotificationChatBubble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -310,6 +303,7 @@
     <Content Include="View\images\chat_waiting.png" />
     <Content Include="View\images\default_group.png" />
     <Content Include="View\images\default_user.png" />
+    <Content Include="View\images\download_icon.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />
     <Content Include="View\images\emoticons\emo_im_02_happy.png" />
     <Content Include="View\images\emoticons\emo_im_03_laugh.png" />

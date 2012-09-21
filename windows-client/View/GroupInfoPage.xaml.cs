@@ -28,6 +28,22 @@ namespace windows_client.View
         string groupName;
         byte[] buffer = null;
         BitmapImage grpImage = null;
+        private bool _enableInviteBtn = false;
+        public bool EnableInviteBtn
+        {
+            get
+            {
+                return _enableInviteBtn;
+            }
+            set
+            {
+                if (_enableInviteBtn != value)
+                {
+                    _enableInviteBtn = value;
+                    this.inviteBtn.IsEnabled = value;
+                }
+            }
+        }
 
         public GroupInfoPage()
         {
@@ -96,7 +112,10 @@ namespace windows_client.View
                 GroupParticipant gp = Utils.GroupCache[groupId][i];
                 if (!gp.HasLeft)
                     groupMembersOC.Add(gp);
+                if (!gp.IsOnHike && !EnableInviteBtn)
+                    EnableInviteBtn = true;
             }
+            this.inviteBtn.IsEnabled = EnableInviteBtn;
             this.groupChatParticipants.ItemsSource = groupMembersOC;
             registerListeners();
         }
@@ -149,6 +168,8 @@ namespace windows_client.View
                         GroupParticipant gp = Utils.GroupCache[groupId][i];
                         if (!gp.HasLeft)
                             groupMembersOC.Add(gp);
+                        if (!gp.IsOnHike && !EnableInviteBtn)
+                            EnableInviteBtn = true;
                     }
                 });
             }
@@ -169,6 +190,9 @@ namespace windows_client.View
                             groupMembersOC.RemoveAt(i);
                         });
                     }
+                    if (groupMembersOC[i].Msisdn != leaveMsisdn && !groupMembersOC[i].IsOnHike && !EnableInviteBtn)
+                        EnableInviteBtn = true;
+
                     break;
                 }
             }

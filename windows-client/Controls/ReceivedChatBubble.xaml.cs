@@ -19,8 +19,9 @@ namespace windows_client.Controls
             // Required to initialize variables
             InitializeComponent();
             string contentType = cm.FileAttachment == null?"": cm.FileAttachment.ContentType;
-
-            initializeBasedOnState(cm.HasAttachment, contentType);
+            bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
+                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+            initializeBasedOnState(cm.HasAttachment, contentType, showDownload);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
@@ -51,11 +52,18 @@ namespace windows_client.Controls
             this.downloadProgress.Value = 0;
         }
 
+        protected override void uploadOrDownloadCompleted()
+        {
+            if(this.PlayIcon!=null)
+                this.PlayIcon.Visibility = Visibility.Collapsed;
+        }
+
+
         private Grid attachment;
         public Image MessageImage;
         private Image PlayIcon;
         private ProgressBar downloadProgress;
-        private LinkifiedTextBoxReceive MessageText;
+        private LinkifiedTextBox MessageText;
         private TextBlock TimeStampBlock;
         
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
@@ -65,7 +73,7 @@ namespace windows_client.Controls
 
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType)
+        private void initializeBasedOnState(bool hasAttachment, string contentType, bool showDownload)
         {
             Rectangle BubbleBg = new Rectangle();
             BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
@@ -96,13 +104,16 @@ namespace windows_client.Controls
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if (contentType.Contains("video") || contentType.Contains("audio"))
+                if (contentType.Contains("video") || contentType.Contains("audio") || showDownload)
                 {
 
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;
                     PlayIcon.MaxHeight = 42;
-                    PlayIcon.Source = UI_Utils.Instance.PlayIcon;
+                    if (contentType.Contains("image"))
+                        PlayIcon.Source = UI_Utils.Instance.DownloadIcon;
+                    else
+                        PlayIcon.Source = UI_Utils.Instance.PlayIcon;
                     PlayIcon.HorizontalAlignment = HorizontalAlignment.Center;
                     PlayIcon.VerticalAlignment = VerticalAlignment.Center;
 
@@ -110,6 +121,7 @@ namespace windows_client.Controls
                     Grid.SetRow(PlayIcon, 0);
                     attachment.Children.Add(PlayIcon);
                 }
+                
 
                 downloadProgress = new ProgressBar();
                 downloadProgress.Height = 10;
@@ -122,12 +134,11 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBoxReceive();
+                MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 24);
                 MessageText.Width = 340;
-                MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
                 Binding messageTextBinding = new Binding("Text");
-                MessageText.SetBinding(LinkifiedTextBoxReceive.TextProperty, messageTextBinding);
+                MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, 0);
                 wrapperGrid.Children.Add(MessageText);
 

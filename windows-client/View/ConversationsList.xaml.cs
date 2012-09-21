@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
 using System.Net.NetworkInformation;
+using Microsoft.Phone.Reactive;
 
 namespace windows_client.View
 {
@@ -47,6 +48,8 @@ namespace windows_client.View
         ApplicationBarMenuItem delAccountMenu;
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
+        private IScheduler scheduler = Scheduler.NewThread;
+
         public static Dictionary<string, ConversationListObject> ConvMap
         {
             get
@@ -253,7 +256,7 @@ namespace windows_client.View
             {
                 stopwatch.Reset();
                 stopwatch.Start();
-                string id = conversationList[i].Msisdn.Replace(":","_");
+                string id = conversationList[i].Msisdn.Replace(":", "_");
                 byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
                 stopwatch.Stop();
                 elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
@@ -634,6 +637,17 @@ namespace windows_client.View
 
         #region PUBSUB
 
+        private void RefreshNewConversationObject()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
+                App.ViewModel.MessageListPageCollection.RemoveAt(0);
+                App.ViewModel.MessageListPageCollection.Insert(0, c);
+            
+            });
+        }
+
         public void onEventReceived(string type, object obj)
         {
             if (HikePubSub.MESSAGE_RECEIVED == type)
@@ -644,7 +658,8 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        App.ViewModel.MessageListPageCollection.Remove(mObj);
+                        if (!App.ViewModel.MessageListPageCollection.Remove(mObj))
+                            scheduler.Schedule(RefreshNewConversationObject, TimeSpan.FromMilliseconds(5));
                     });
                 }
                 convMap[mObj.Msisdn] = mObj;
@@ -654,6 +669,7 @@ namespace windows_client.View
                         emptyScreenImage.Opacity = 0;
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
+
 
             }
             else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))

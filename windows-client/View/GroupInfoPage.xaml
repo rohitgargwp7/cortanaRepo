@@ -81,7 +81,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Row="3">
-                <Button Content="Invite SMS participants to hike" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" Width="380"></Button>
+                <Button x:Name="inviteBtn" Content="Invite SMS participants to hike" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" Width="380"></Button>
             </StackPanel>
 
         </Grid>
