@@ -224,7 +224,7 @@ namespace windows_client
                     // if user is in contact list then only show the joined msg
                     bool isUserInContactList = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn) != null ? true : false;
                     if (isUserInContactList)
-                        ProcessUoUjMsgs(jsonObj,false);
+                        ProcessUoUjMsgs(jsonObj, false);
                 }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
@@ -334,12 +334,12 @@ namespace windows_client
             #region GROUP_CHAT_LEAVE
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type) //Group chat leave
             {
-                     /*
-                     * 1. Update Conversation list name if groupName is not set.
-                     * 2. Update DB.
-                     * 3. Notify GroupInfo page (if opened)
-                     * 4. Notify Chat Thread page if opened.
-                     */
+                /*
+                * 1. Update Conversation list name if groupName is not set.
+                * 2. Update DB.
+                * 3. Notify GroupInfo page (if opened)
+                * 4. Notify Chat Thread page if opened.
+                */
 
                 string groupId = (string)jsonObj[HikeConstants.TO];
                 string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
@@ -397,7 +397,7 @@ namespace windows_client
                 {
                     kv = keyVals.Current;
                     string val = kv.Value.ToObject<string>();
-                    App.WriteToIsoStorageSettings(kv.Key,val);
+                    App.WriteToIsoStorageSettings(kv.Key, val);
                 }
 
                 JToken it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
@@ -410,28 +410,45 @@ namespace windows_client
             #region USER_OPT_IN
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
-                // {"t":"uo", "d":{"msisdn":"", "credits":""}}
-                ProcessUoUjMsgs(jsonObj,true);
+                // {"t":"uo", "d":{"msisdn":"", "credits":10}}
+                ProcessUoUjMsgs(jsonObj, true);
             }
             #endregion
+            #region OTHER
             else
             {
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
+            #endregion
         }
 
-        private void ProcessUoUjMsgs(JObject jsonObj,bool isOptInMsg)
+        private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg)
         {
-            string credits;
-            string ms = (string)((JObject)jsonObj[HikeConstants.DATA])[HikeConstants.MSISDN];
+            int credits = 0;
+           
+            string ms = null;
             try
             {
-                credits = (string)((JObject)jsonObj[HikeConstants.DATA])["credits"];
+                JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                ms = (string)data[HikeConstants.MSISDN];
+                try
+                {
+                    credits = (int)data["credits"];
+                }
+                catch
+                {
+                    credits = 0;
+                }
             }
             catch (Exception e)
             {
-                credits = null;
+                ms = null;
             }
+            if(ms == null)
+                return;
+            /* Process UO for 1-1 chat*/
+            if (!ConversationsList.ConvMap.ContainsKey(ms))
+                return;
 
             object[] vals = null;
             ConvMessage cm = new ConvMessage();
@@ -446,7 +463,7 @@ namespace windows_client
                 cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_JOINED;
             ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
 
-            if (credits == null)
+            if (credits <= 0)
                 vals = new object[2];
             else                    // this shows that we have to show credits msg as this user got credits.
             {
@@ -476,7 +493,7 @@ namespace windows_client
                 List<GroupParticipant> l = Utils.GroupCache[key];
                 for (int i = 0; i < l.Count; i++)
                 {
-                    if (l[i].Msisdn == ms)
+                    if (l[i].Msisdn == ms) // if this msisdn exists in group
                     {
                         object[] values = null;
                         ConvMessage convMsg = new ConvMessage();
@@ -484,11 +501,12 @@ namespace windows_client
                         convMsg.Timestamp = TimeUtils.getCurrentTimeStamp();
                         convMsg.MessageId = -1;
                         convMsg.Msisdn = key;
+                        convMsg.Message = ms;
                         convMsg.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                         convMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
 
-                        if (credits != null)                    // this shows that we have to show credits msg as this user got credits.
+                        if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
                         {
                             string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
                             JObject o = new JObject();

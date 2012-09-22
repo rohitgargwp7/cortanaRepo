@@ -1318,7 +1318,12 @@ namespace windows_client.View
             #region USER_OPT_IN
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
-                MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN, convMessage.Message);
+                NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
+                if (Utils.isGroupConversation(mContactNumber))
+                {
+                    type = NotificationChatBubble.MessageType.USER_JOINED_HIKE;
+                }
+                MyChatBubble chatBubble = new NotificationChatBubble(type, convMessage.Message);
                 if (addToLast)
                 {
                     this.MessageList.Children.Add(chatBubble);

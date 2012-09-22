@@ -270,7 +270,15 @@ namespace windows_client.DbUtils
                 #region USER_OPT_IN
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
                 {
-                    obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                    if (Utils.isGroupConversation(obj.Msisdn))
+                    {
+                        GroupParticipant gp = Utils.getGroupParticipant(null,convMsg.Message,obj.Msisdn);
+                        obj.LastMessage = gp.FirstName + HikeConstants.USER_JOINED_GROUP_CHAT;
+                    }
+                    else
+                    {
+                        obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                    }
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion
@@ -290,7 +298,15 @@ namespace windows_client.DbUtils
                 #region USER_JOINED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
                 {
-                    obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE,obj.NameToShow);
+                    if (Utils.isGroupConversation(obj.Msisdn))
+                    {
+                        GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, gp.FirstName);
+                    }
+                    else // 1-1 chat
+                    {
+                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);                        
+                    }
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion
