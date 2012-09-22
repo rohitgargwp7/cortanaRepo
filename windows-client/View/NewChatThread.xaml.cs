@@ -1300,6 +1300,21 @@ namespace windows_client.View
                 }
             }
             #endregion
+            #region USER_JOINED
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+            {
+                MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
+                if (addToLast)
+                {
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                else
+                {
+                    this.MessageList.Children.Insert(0, chatBubble);
+                }
+            }
+            #endregion
             #region USER_OPT_IN
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {

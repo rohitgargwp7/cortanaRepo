@@ -153,8 +153,9 @@ namespace windows_client
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static string ACCOUNT_INFO = "ai";
-            public static string USER_JOINED ="uj";
+            public static string GROUP_USER_JOINED_OR_WAITING ="gujow";
             public static string USER_OPT_IN = "uo";
+            public static string USER_JOIN = "uj";
         }
     }
 }

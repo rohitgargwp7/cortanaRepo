@@ -171,11 +171,6 @@ namespace windows_client.DbUtils
                     }
                 }
             }
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    context.conversations.DeleteAllOnSubmit<ConversationListObject>(context.GetTable<ConversationListObject>());
-            //    MessagesTableUtils.SubmitWithConflictResolve(context);
-            //}
         }
 
         public static void deleteConversation(string msisdn)

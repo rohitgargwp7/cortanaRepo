@@ -679,6 +679,7 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
                 object[] vals = (object[])obj;
@@ -701,6 +702,8 @@ namespace windows_client.View
 
 
             }
+            #endregion
+            #region USER_LEFT USER_JOINED
             else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
             {
                 string msisdn = (string)obj;
@@ -713,6 +716,8 @@ namespace windows_client.View
                 {
                 }
             }
+            #endregion
+            #region UPDATE_UI
             else if (HikePubSub.UPDATE_UI == type)
             {
                 object[] vals = (object[])obj;
@@ -734,6 +739,8 @@ namespace windows_client.View
                 {
                 }
             }
+            #endregion
+            #region SMS_CREDIT_CHANGED
             else if (HikePubSub.SMS_CREDIT_CHANGED == type)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -741,6 +748,8 @@ namespace windows_client.View
                     creditsTxtBlck.Text = Convert.ToString((int)obj);
                 });
             }
+            #endregion
+            #region ACCOUNT_DELETED
             else if (HikePubSub.ACCOUNT_DELETED == type)
             {
                 removeListeners();
@@ -756,6 +765,8 @@ namespace windows_client.View
                 });
                 return;
             }
+            #endregion
+            #region DELETED_ALL_CONVERSATIONS
             else if (HikePubSub.DELETED_ALL_CONVERSATIONS == type)
             {
                 convMap.Clear();
@@ -769,7 +780,8 @@ namespace windows_client.View
                 });
                 NetworkManager.turnOffNetworkManager = false;
             }
-
+            #endregion
+            #region UPDATE_ACCOUNT_NAME
             else if (HikePubSub.UPDATE_ACCOUNT_NAME == type)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -777,7 +789,7 @@ namespace windows_client.View
                     accountName.Text = (string)obj;
                 });
             }
-
+            #endregion
             #region GROUP NAME CHANGED
 
             else if (HikePubSub.GROUP_NAME_CHANGED == type)
@@ -858,6 +870,7 @@ namespace windows_client.View
             composeIconButton.IsEnabled = false;
             appBar.IsMenuEnabled = false;
         }
+
         private void enableAppBar()
         {
             composeIconButton.IsEnabled = true;

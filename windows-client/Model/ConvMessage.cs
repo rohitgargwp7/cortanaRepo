@@ -86,13 +86,17 @@ namespace windows_client.Model
             {
                 return ParticipantInfoState.GROUP_END;
             }
-            else if (HikeConstants.MqttMessageTypes.USER_JOINED == type)
+            else if (HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING == type)
             {
                 return ParticipantInfoState.GROUP_JOINED_OR_WAITING;
             }
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 return ParticipantInfoState.USER_OPT_IN;
+            }
+            else if (HikeConstants.MqttMessageTypes.USER_JOIN == type)
+            {
+                return ParticipantInfoState.USER_JOINED;
             }
             else if ("credits_gained" == type)
             {
@@ -846,7 +850,7 @@ namespace windows_client.Model
             bool isValid = false;
             try
             {
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.USER_JOINED;
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING;
                 obj[HikeConstants.TO] = grpId;
                 JArray array = new JArray();
                 for (int i = 0; i < l.Count; i++)
