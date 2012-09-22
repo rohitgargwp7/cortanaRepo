@@ -46,6 +46,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarMenuItem delAccountMenu;
+        ApplicationBarMenuItem unlinkAccountMenu;
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
         private IScheduler scheduler = Scheduler.NewThread;
@@ -302,6 +303,10 @@ namespace windows_client.View
             delAccountMenu = new ApplicationBarMenuItem();
             delAccountMenu.Text = "delete account";
             delAccountMenu.Click += new EventHandler(deleteAccount_Click);
+
+            unlinkAccountMenu = new ApplicationBarMenuItem();
+            unlinkAccountMenu.Text = "unlink account";
+            unlinkAccountMenu.Click += new EventHandler(unlinkAccount_Click);
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -543,6 +548,7 @@ namespace windows_client.View
                     MessageBoxResult result = MessageBox.Show("Could not deleting account now. Try again later.", "Delete Account Failed?", MessageBoxButton.OKCancel);
                     enableAppBar();
                     progress.Hide();
+                    progress = null;
                 });
                 return;
             }
@@ -554,6 +560,25 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void unlinkAccount_Click(object sender, EventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure about unlinking account.", "Unlink Account ?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+            if (progress == null)
+            {
+                progress = new MyProgressIndicator("Unlinking Account...");
+            }
+
+            disableAppBar();
+            progress.Show();
+            NetworkManager.turnOffNetworkManager = true;
+            App.MqttManagerInstance.disconnectFromBroker(false);
+            appSettings.Clear();
+            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+            mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
+        }
 
         private void createGroup_Click(object sender, EventArgs e)
         {
@@ -623,6 +648,8 @@ namespace windows_client.View
                     appBar.MenuItems.Insert(1, delConvsMenu);
                 if (appBar.MenuItems.Contains(delAccountMenu))
                     appBar.MenuItems.Remove(delAccountMenu);
+                if (appBar.MenuItems.Contains(unlinkAccountMenu))
+                    appBar.MenuItems.Remove(unlinkAccountMenu);
             }
             else if (selectedIndex == 1)
             {
@@ -630,6 +657,8 @@ namespace windows_client.View
                     appBar.MenuItems.Remove(delConvsMenu);
                 if (!appBar.MenuItems.Contains(delAccountMenu))
                     appBar.MenuItems.Insert(0, delAccountMenu);
+                if (!appBar.MenuItems.Contains(unlinkAccountMenu))
+                    appBar.MenuItems.Insert(0, unlinkAccountMenu);
             }
         }
 
@@ -722,8 +751,10 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Clear();
                     convMap.Clear();
                     progress.Hide();
+                    progress = null;
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 });
+                return;
             }
             else if (HikePubSub.DELETED_ALL_CONVERSATIONS == type)
             {
