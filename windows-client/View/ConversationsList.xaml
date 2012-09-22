@@ -66,8 +66,10 @@
                                                 <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="39" FontFamily="Segoe WP SemiLight" FontStyle="Normal" FontWeight="ExtraLight" Height="53" Grid.Column="0" Grid.ColumnSpan="2"/>
                                                 <TextBlock Text="{Binding FormattedTimeStamp}" Margin="15,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Gray"/>
                                             </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
-                                                <RichTextBox Tag="{Binding LastMessage}" TextWrapping="Wrap" MaxWidth="325" FontSize="21" Foreground="{Binding LastMessageColor}" Loaded="RichTextBox_Loaded" Height="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+                                            <StackPanel Orientation="Horizontal" Margin="10, 0, 0, 0" MaxHeight="35" VerticalAlignment="Top">
+                                                <Image Height="13" Margin="10,0,0,0" Source="{Binding SDRStatusImage}" VerticalAlignment="Center"></Image>
+                                                <RichTextBox Tag="{Binding LastMessage}" TextWrapping="Wrap" MaxWidth="325" FontSize="21" Foreground="{Binding LastMessageColor}" 
+                                                             Loaded="RichTextBox_Loaded" Margin="0,0,0,5" Height="35" VerticalAlignment="Center" />
                                                 <!--<local:LinkifiedTextBox Text="{Binding LastMessage}" FontSize="21" ForegroundColor="{Binding LastMessageColor}" MaxHeight="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>-->
                                             </StackPanel>
                                         </StackPanel>

@@ -157,6 +157,24 @@ namespace windows_client.Model
             }
         }
 
+        public BitmapImage SDRStatusImage
+        {
+            get
+            {
+                switch (_messageStatus)
+                { 
+                    case ConvMessage.State.SENT_CONFIRMED:
+                        return UI_Utils.Instance.Sent;
+                    case ConvMessage.State.SENT_DELIVERED:
+                        return UI_Utils.Instance.Delivered;
+                    case ConvMessage.State.SENT_DELIVERED_READ:
+                        return UI_Utils.Instance.Read;
+                    default:
+                        return null;
+                }
+            }
+        }
+
         public byte[] Avatar
         {
             get
