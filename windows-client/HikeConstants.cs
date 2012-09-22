@@ -48,14 +48,7 @@ namespace windows_client
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.BASE + "/user/ft";
 
-        public static readonly string PARTICIPANT_JOINED = "%s joined the chat";
-        public static readonly string PARTICIPANT_LEFT = "%s left the chat";
-        public static readonly string PARTICIPANT_AWAITED = "Waiting for %s to join";
-        public static readonly string GROUP_CHAT_END = "This chat has ended";
-
         public static readonly string pushNotificationChannelName = "HikeApp";
-
-
 
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_HEIGHT = 180;
         public static readonly int ATTACHMENT_THUMBNAIL_MAX_WIDTH = 180;
@@ -85,6 +78,8 @@ namespace windows_client
         public static readonly int HIKE_SYSTEM_NOTIFICATION = 0;
         public static readonly string ADAPTER_NAME = "hikeadapter";
 
+        public static char[] DELIMITERS = new char[] { ':' };
+
         /* constants for defining what to do after checking for updates*/
         public static readonly int UPDATE_AVAILABLE = 2;
         public static readonly int CRITICAL_UPDATE = 1;
@@ -110,11 +105,12 @@ namespace windows_client
         public static string DND_USER = "{0} is on DND. Waiting for {0} to reply.";
         public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
         public static string USER_OPTED_IN_MSG = " just opted in to hike!";
-        public static string WAITING_TO_JOIN = " waiting for user to join";
-        public static string USER_INVITED = " is invited to group chat";
-        public static string USER_JOINED = " has joined the group chat";
-        public static string USER_LEFT = " has left the group chat";
-        public static string GROUP_CHAT_ENDED = "This group chat has end.";
+        public static string WAITING_TO_JOIN = "Waiting for {0} to join in";
+        public static string USER_INVITED = " has been invited";
+        public static string USER_JOINED_GROUP_CHAT = " joined the group chat!";
+        public static string USER_LEFT = " left the group chat";
+        public static readonly string GROUP_CHAT_END = "This group chat has ended.";
+        public static string USER_JOINED_HIKE = "{0} just joined hike!";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
@@ -157,8 +153,9 @@ namespace windows_client
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static string ACCOUNT_INFO = "ai";
-            public static string USER_JOINED ="uj";
+            public static string GROUP_USER_JOINED_OR_WAITING ="gujow";
             public static string USER_OPT_IN = "uo";
+            public static string USER_JOIN = "uj";
         }
     }
 }

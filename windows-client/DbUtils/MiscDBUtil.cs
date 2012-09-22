@@ -18,9 +18,10 @@ namespace windows_client.DbUtils
         public static void clearDatabase()
         {
             #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS
+
+            ConversationTableUtils.deleteAllConversations();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {
-                ConversationTableUtils.deleteAllConversations();
+            {                
                 App.appSettings.Remove(App.GROUPS_CACHE);
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());

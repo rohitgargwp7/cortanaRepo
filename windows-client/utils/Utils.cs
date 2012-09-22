@@ -48,14 +48,12 @@ namespace windows_client.utils
                 {
                     if (l[i].Msisdn == msisdn)
                     {
-                        if (l[i].HasLeft)
-                            l[i].HasLeft = false;
                         return l[i];
                     }
                 }
             }
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp = new GroupParticipant(grpId,cInfo != null ? getFirstName(cInfo.Name) : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
+            GroupParticipant gp = new GroupParticipant(grpId,cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn: defaultName,msisdn,cInfo != null ? cInfo.OnHike : true);
             if (groupCache.ContainsKey(grpId))
             {
                 groupCache[grpId].Add(gp);
@@ -96,12 +94,12 @@ namespace windows_client.utils
             switch (groupParticipants.Count)
             {
                 case 1:
-                    return Utils.getFirstName(groupParticipants[0].Name);
+                    return groupParticipants[0].FirstName;
                 case 2:
-                    return Utils.getFirstName(groupParticipants[0].Name) + " and "
-                    + Utils.getFirstName(groupParticipants[1].Name);
+                    return groupParticipants[0].FirstName + " and "
+                    + groupParticipants[1].FirstName;
                 default:
-                    return Utils.getFirstName(groupParticipants[0].Name) + " and "
+                    return groupParticipants[0].FirstName + " and "
                     + (groupParticipants.Count) + " others";
             }
         }
@@ -251,6 +249,14 @@ namespace windows_client.utils
                     }
                 }
             }
+        }
+
+        public static string[] splitUserJoinedMessage(string msg)
+        {
+            if (string.IsNullOrWhiteSpace(msg))
+                return null;
+            char[] delimiters = new char[] { ',' };
+            return msg.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
         }
 
     }

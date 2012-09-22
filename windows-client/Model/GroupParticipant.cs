@@ -81,6 +81,21 @@ namespace windows_client.Model
             }
         }
 
+        public string FirstName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_name))
+                    return null;
+                _name = _name.Trim();
+                int idx = _name.IndexOf(" ");
+                if (idx != -1)
+                    return _name.Substring(0, idx);
+                else
+                    return _name;
+            }
+        }
+
         public string Msisdn
         {
             get
@@ -158,6 +173,13 @@ namespace windows_client.Model
                     _isUsed = value;
             }
         }
+
+        public int IsOwner
+        {
+            get;
+            set;
+        }
+
         public SolidColorBrush SquareColor
         {
             get

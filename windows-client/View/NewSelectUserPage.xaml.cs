@@ -363,6 +363,7 @@ namespace windows_client.View
                 charsEntered = enterNameTxt.Text.ToLower();
             Debug.WriteLine("Chars Entered : {0}", charsEntered);
 
+            charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))
             {
                 contactsListBox.ItemsSource = groupedList;
@@ -372,6 +373,12 @@ namespace windows_client.View
             if (groupListDictionary.ContainsKey(charsEntered))
             {
                 List<Group<ContactInfo>> gl = groupListDictionary[charsEntered];
+                if (gl == null)
+                {
+                    groupListDictionary.Remove(charsEntered);
+                    contactsListBox.ItemsSource = null;
+                    return;
+                }
                 if (gl[26].Items.Count > 0 && gl[26].Items[0].Msisdn != null)
                 {
                     gl[26].Items[0].Name = charsEntered;
@@ -406,7 +413,7 @@ namespace windows_client.View
         private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end, List<Group<ContactInfo>> glistFiltered)
         {
             if (groupedList == null || groupedList.Count == 0)
-                return null;
+                return glistFiltered;
             bool areCharsNumber = false;
             if (isNumber(charsEntered))
             {

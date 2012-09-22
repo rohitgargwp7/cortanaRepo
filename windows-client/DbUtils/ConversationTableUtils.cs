@@ -62,11 +62,15 @@ namespace windows_client.DbUtils
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
-                GroupParticipant gp = Utils.GroupCache[obj.Msisdn][Utils.GroupCache[obj.Msisdn].Count -1]; // get last element of group in sorted order.
-                string text = HikeConstants.USER_JOINED;
-                if (!gp.IsOnHike)
+                string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
+                if (vals == null || vals.Length == 0)
+                    return null;
+                string[] vars = vals[vals.Length - 1].Split(':');
+                GroupParticipant gp = Utils.getGroupParticipant(null,vars[0],obj.Msisdn); // get last element of group in sorted order.
+                string text = HikeConstants.USER_JOINED_GROUP_CHAT;
+                if (vars[1] == "0")
                     text = HikeConstants.USER_INVITED;
-                obj.LastMessage = gp.Name + text;
+                obj.LastMessage = gp.FirstName + text;
                 if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn))
                 {
                     obj.IsFirstMsg = true;
@@ -103,12 +107,15 @@ namespace windows_client.DbUtils
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
-                string[] msisdns = NewChatThread.splitUserJoinedMessage(convMessage);
-                GroupParticipant gp = Utils.getGroupParticipant("", msisdns[msisdns.Length - 1], convMessage.Msisdn);
-                string text = HikeConstants.USER_JOINED;
-                if (!gp.IsOnHike)
+                string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
+                if (vals == null)
+                    return null;
+                string[] vars = vals[vals.Length - 1].Split(':');
+                GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMessage.Msisdn);
+                string text = HikeConstants.USER_JOINED_GROUP_CHAT;
+                if (vars[1] == "0")
                     text = HikeConstants.USER_INVITED;
-                obj.LastMessage = gp.Name + text;
+                obj.LastMessage = gp.FirstName + text;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
@@ -122,6 +129,11 @@ namespace windows_client.DbUtils
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
             {
                 obj.LastMessage = string.Format(HikeConstants.DND_USER,obj.NameToShow);
+                convMessage.Message = obj.LastMessage;
+            }
+            else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
+            {
+                obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE,obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
             if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn)) // this is to store firstMsg logic
@@ -159,11 +171,6 @@ namespace windows_client.DbUtils
                     }
                 }
             }
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    context.conversations.DeleteAllOnSubmit<ConversationListObject>(context.GetTable<ConversationListObject>());
-            //    MessagesTableUtils.SubmitWithConflictResolve(context);
-            //}
         }
 
         public static void deleteConversation(string msisdn)

@@ -15,6 +15,7 @@ namespace windows_client.utils
         private SolidColorBrush hikeMsgBackground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
+        private BitmapImage chatAcceptedImage;
         private BitmapImage playIcon;
         private BitmapImage downloadIcon;
         private BitmapImage audioAttachment;
@@ -97,8 +98,18 @@ namespace windows_client.utils
             get
             {
                 if (notOnHikeImage == null)
-                    notOnHikeImage = new BitmapImage(new Uri("/View/images/chat_joined_green.png", UriKind.Relative));
+                    notOnHikeImage = new BitmapImage(new Uri("/View/images/chat_invited_green.png", UriKind.Relative));
                 return notOnHikeImage;
+            }
+        }
+
+        public BitmapImage ChatAcceptedImage
+        {
+            get
+            {
+                if (chatAcceptedImage == null)
+                    chatAcceptedImage = new BitmapImage(new Uri("/View/images/chat_invited_green.png", UriKind.Relative));
+                return chatAcceptedImage;
             }
         }
 

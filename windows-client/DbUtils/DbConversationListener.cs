@@ -57,7 +57,6 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.ATTACHMENT_RESEND, this);
         }
 
-
         public void uploadFileCallback(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble)
         {
             if (obj != null && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED 
@@ -85,7 +84,6 @@ namespace windows_client.DbUtils
                 chatBubble.setAttachmentState(Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
             }
         }
-
 
         public void onEventReceived(string type, object obj)
         {

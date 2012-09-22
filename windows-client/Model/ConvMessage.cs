@@ -63,8 +63,9 @@ namespace windows_client.Model
             PARTICIPANT_JOINED, // The participant has joined
             GROUP_END, // Group chat has ended
             USER_OPT_IN,
+            USER_JOINED,
             DND_USER,
-            USER_JOIN,
+            GROUP_JOINED_OR_WAITING,
             CREDITS_GAINED
         }
 
@@ -85,13 +86,17 @@ namespace windows_client.Model
             {
                 return ParticipantInfoState.GROUP_END;
             }
-            else if (HikeConstants.MqttMessageTypes.USER_JOINED == type)
+            else if (HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING == type)
             {
-                return ParticipantInfoState.USER_JOIN;
+                return ParticipantInfoState.GROUP_JOINED_OR_WAITING;
             }
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 return ParticipantInfoState.USER_OPT_IN;
+            }
+            else if (HikeConstants.MqttMessageTypes.USER_JOIN == type)
+            {
+                return ParticipantInfoState.USER_JOINED;
             }
             else if ("credits_gained" == type)
             {
@@ -484,7 +489,7 @@ namespace windows_client.Model
                 }
                 if (_groupParticipant != null) // reprsents group chat
                 {
-                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).Name + " - " + _message;
+                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
                 }
 
                 Timestamp = (long)data[HikeConstants.TIMESTAMP];
@@ -759,9 +764,9 @@ namespace windows_client.Model
             this.participantInfoState = fromJSON(obj);
 
             this.metadataJsonString = obj.ToString(Newtonsoft.Json.Formatting.None);
-            if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED || this.participantInfoState == ParticipantInfoState.USER_JOIN)
+            if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED || this.participantInfoState == ParticipantInfoState.GROUP_JOINED_OR_WAITING)
             {
-                List<GroupParticipant> newUsers = new List<Model.GroupParticipant>();
+                List<GroupParticipant> newUsers = new List<GroupParticipant>();
                 JArray arr = (JArray)obj[HikeConstants.DATA];
                 StringBuilder newParticipants = new StringBuilder();
                 for (int i = 0; i < arr.Count; i++)
@@ -773,10 +778,14 @@ namespace windows_client.Model
                     bool onhike = true;
                     bool dnd = true;
                     try
-                    { onhike = (bool)nameMsisdn["onhike"]; }
+                    { 
+                        onhike = (bool)nameMsisdn["onhike"]; 
+                    }
                     catch { }
                     try
-                    { dnd = (bool)nameMsisdn["dnd"]; }
+                    { 
+                        dnd = (bool)nameMsisdn["dnd"]; 
+                    }
                     catch { }
 
                     GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
@@ -785,27 +794,47 @@ namespace windows_client.Model
                         gp.IsOnHike = onhike;
                         gp.IsDND = dnd;
                     }
-                    if (!onhike)
+                    if (!onhike && this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED) // dont add GC_ falue if its a first logic msg.
                         PhoneApplicationService.Current.State["GC_" + toVal] = true;
                     newUsers.Add(gp);
                 }
                 Utils.GroupCache[toVal].Sort();
                 newUsers.Sort();
                 for (int k = 0; k < newUsers.Count; k++)
-                    newParticipants.Append(newUsers[k].Msisdn + ", ");
-                this._message = newParticipants.ToString().Substring(0, newParticipants.Length - 2) + " added to group chat";
+                {
+                    int var;
+                    if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
+                    {
+                        if (newUsers[k].IsOnHike)
+                            var = 1; // show joined
+                        else
+                            var = 0; // show invited
+                    }
+                    else
+                    {
+                        if (!newUsers[k].IsDND)
+                            var = 1; // show joined
+                        else
+                            var = 0; // show waiting
+                    }
+                    newParticipants.Append(newUsers[k].Msisdn + ":" + var);
+                    if (newUsers.Count > 1 && k < newUsers.Count - 1)
+                        newParticipants.Append(",");
+                }
+                this._message = newParticipants.ToString();
                 newUsers = null;
             }
             else
             {
                 if (this.participantInfoState == ParticipantInfoState.GROUP_END)
                 {
-                    this._message = "This group chat has end";
+                    this._message = HikeConstants.GROUP_CHAT_END;
                 }
                 else // Group member left
                 {
+                    this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
                     GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
-                    this._message = gp.Name + " " + "left conversation";
+                    this._message = gp.FirstName + HikeConstants.USER_LEFT;
                     gp.HasLeft = true;
                 }
             }
@@ -821,7 +850,7 @@ namespace windows_client.Model
             bool isValid = false;
             try
             {
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.USER_JOINED;
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING;
                 obj[HikeConstants.TO] = grpId;
                 JArray array = new JArray();
                 for (int i = 0; i < l.Count; i++)
@@ -831,8 +860,8 @@ namespace windows_client.Model
                         JObject nameMsisdn = new JObject();
                         nameMsisdn[HikeConstants.NAME] = l[i].Name;
                         nameMsisdn[HikeConstants.MSISDN] = l[i].Msisdn;
-                        nameMsisdn["dnd"] = l[i].IsOnHike;
-                        nameMsisdn["onhike"] = l[i].IsDND;
+                        nameMsisdn["onhike"] = l[i].IsOnHike;
+                        nameMsisdn["dnd"] = l[i].IsDND;
                         array.Add(nameMsisdn);
                         l[i].IsUsed = true;
                         isValid = true;

@@ -106,18 +106,50 @@ namespace windows_client.View
             if (gi == null)
                 return;
             this.groupNameTxtBox.Text = groupName;
-
-            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
+            List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
+            List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(Utils.GroupCache[groupId], hikeUsersList);
+            GroupParticipant self = new GroupParticipant(groupId,(string)App.appSettings[App.ACCOUNT_NAME], App.MSISDN, true);
+            hikeUsersList.Add(self);
+            hikeUsersList.Sort();
+            for (int i = 0; i < (hikeUsersList!=null?hikeUsersList.Count:0); i++)
             {
-                GroupParticipant gp = Utils.GroupCache[groupId][i];
-                if (!gp.HasLeft)
-                    groupMembersOC.Add(gp);
-                if (!gp.IsOnHike && !EnableInviteBtn)
-                    EnableInviteBtn = true;
+                GroupParticipant gp = hikeUsersList[i];
+                if (gi.GroupOwner == gp.Msisdn)
+                    gp.IsOwner = 1;
+                groupMembersOC.Add(gp);
             }
+
+            for (int i = 0; i < (smsUsersList != null ? smsUsersList.Count : 0); i++)
+            {
+                GroupParticipant gp = smsUsersList[i];
+                groupMembersOC.Add(gp);
+            }
+            if(smsUsersList !=null && smsUsersList.Count > 0)
+                EnableInviteBtn = true;
             this.inviteBtn.IsEnabled = EnableInviteBtn;
             this.groupChatParticipants.ItemsSource = groupMembersOC;
             registerListeners();
+        }
+
+        private List<GroupParticipant> GetHikeAndSmsUsers(List<GroupParticipant> list, List<GroupParticipant> hikeUsers)
+        {
+            if (list == null || list.Count == 0)
+                return null;
+            List<GroupParticipant> smsUsers = null;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (!list[i].HasLeft && list[i].IsOnHike)
+                {
+                    hikeUsers.Add(list[i]);
+                }
+                else if (!list[i].HasLeft && !list[i].IsOnHike)
+                {
+                    if (smsUsers == null)
+                        smsUsers = new List<GroupParticipant>();
+                    smsUsers.Add(list[i]);
+                }
+            }
+            return smsUsers;
         }
 
         #region PUBSUB
