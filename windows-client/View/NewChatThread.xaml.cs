@@ -1836,7 +1836,17 @@ namespace windows_client.View
 
         private void showSMSCounter()
         {
+            smsCounterTxtBlk.Text = Convert.ToString(mCredits) + " SMS Left";
+            smscounter.Visibility = Visibility.Visible;
+            scheduler.Schedule(hideSMSCounter, TimeSpan.FromSeconds(2));
+        }
 
+        private void hideSMSCounter()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                smscounter.Visibility = Visibility.Collapsed;
+            });
         }
 
         private void updateChatMetadata()
@@ -2127,7 +2137,7 @@ namespace windows_client.View
                     if ((mCredits % 5 == 0 || !animatedOnce) && !isOnHike)
                     {
                         animatedOnce = true;
-                        //showSMSCounter();
+                        showSMSCounter();
                     }
                 });
 

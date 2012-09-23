@@ -63,6 +63,9 @@
 
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
+            <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
+                <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0" Text="75 sms left"></TextBlock>
+            </StackPanel>
             <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
 
                 <controls:Pivot x:Name="emoticonPivot" Grid.Row="1" SelectionChanged="emoticonPivot_SelectionChanged" Foreground="Black" Height="220">
@@ -217,8 +220,6 @@
                 </Grid>
             </StackPanel>
 
-            <!--<Image x:Name="typingNotification" Source="images\typing.png" Visibility="Visible" Opacity="0" Height="20" Width="30" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>-->
-            <!--<Image x:Name="typingNotification2" Source="images\typing.png" Visibility="Visible" Height="22" Width="45" HorizontalAlignment="Left" Margin="20,5,0,5"></Image>-->
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <toolkit:PhoneTextBox x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="PersonalFullName" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
