@@ -351,20 +351,12 @@ namespace windows_client
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                 if (cObj == null)
                     return;
-                GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
-                if (gi == null)
-                    return;
-                if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                {
-                    cObj.ContactName = Utils.defaultGroupName(groupId);
-                }
-
-
+                
                 object[] vals = new object[2];
                 vals[0] = convMsg;
                 vals[1] = cObj;
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, jsonObj);
+                this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
             }
             #endregion
             #region GROUP_CHAT_END
@@ -554,6 +546,7 @@ namespace windows_client
                 Utils.GroupCache.TryGetValue(grpId, out l);
                 if (l == null)
                     return true;
+                bool saveCache = false;
                 bool output = true;
                 for (int i = 0; i < arr.Count; i++)
                 {
@@ -565,9 +558,14 @@ namespace windows_client
                     {
                         if (l[k].Msisdn == ms)
                         {
+                            if (l[k].HasLeft)
+                            {
+                                l[k].HasLeft = false;
+                                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                                return true;
+                            }
                             l[k].IsDND = dnd;
                             l[k].IsOnHike = onhike;
-                            l[k].HasLeft = false;
                             output = false;
                             break;
                         }
@@ -585,7 +583,8 @@ namespace windows_client
         private void updateDB(long msgID, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            MessagesTableUtils.updateMsgStatus(msgID, status);
+            string msisdn = MessagesTableUtils.updateMsgStatus(msgID, status); // update covmsg
+            ConversationTableUtils.updateLastMsgStatus(msisdn,status); // update conversationObj
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
@@ -594,7 +593,8 @@ namespace windows_client
         private void updateDbBatch(long[] ids, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            MessagesTableUtils.updateAllMsgStatus(ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(ids, status);
+            ConversationTableUtils.updateLastMsgStatus(msisdn,status);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);

@@ -18,7 +18,7 @@ namespace windows_client.DbUtils
     public class MessagesTableUtils
     {
         private static object lockObj = new object();
-        
+
         //keep a set of currently uploading or downloading messages.
         private static Dictionary<long, int> uploadingOrDownloadingMessages = new Dictionary<long, int>();
 
@@ -155,7 +155,7 @@ namespace windows_client.DbUtils
                     if (vals == null || vals.Length == 0)
                         return null;
                     string[] vars = vals[vals.Length - 1].Split(':');
-                    GroupParticipant gp = Utils.getGroupParticipant(null,vars[0],obj.Msisdn); // get last element of group in sorted order.
+                    GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], obj.Msisdn); // get last element of group in sorted order.
 
                     string text = HikeConstants.USER_JOINED_GROUP_CHAT;
                     if (vars[1] == "0")
@@ -166,6 +166,11 @@ namespace windows_client.DbUtils
                         obj.IsFirstMsg = true;
                         PhoneApplicationService.Current.State.Remove("GC_" + convMsg.Msisdn);
                     }
+
+                    if (gi == null)
+                        return null;
+                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
+                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
                 }
                 else
                     obj.LastMessage = convMsg.Message;
@@ -214,6 +219,23 @@ namespace windows_client.DbUtils
                     }
                     else
                         obj.IsFirstMsg = false;
+
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
+                    if (gi == null)
+                        return null;
+                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
+                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
+                }
+                #endregion
+                #region PARTICIPANT_LEFT
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT)
+                {
+                    obj.LastMessage = convMsg.Message;
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
+                    if (gi == null)
+                        return null;
+                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
+                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region GROUP_JOINED_OR_WAITING
@@ -256,7 +278,7 @@ namespace windows_client.DbUtils
                                     msgText.Append(",");
                             }
                         }
-                        obj.LastMessage = string.Format(HikeConstants.WAITING_TO_JOIN,msgText.ToString());
+                        obj.LastMessage = string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString());
                     }
                     else
                     {
@@ -272,7 +294,7 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = Utils.getGroupParticipant(null,convMsg.Message,obj.Msisdn);
+                        GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = gp.FirstName + HikeConstants.USER_JOINED_GROUP_CHAT;
                     }
                     else
@@ -305,7 +327,7 @@ namespace windows_client.DbUtils
                     }
                     else // 1-1 chat
                     {
-                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);                        
+                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
                 }
@@ -340,7 +362,7 @@ namespace windows_client.DbUtils
             App.ViewModel.ConvMsisdnsToUpdate.Remove(obj.Msisdn);
         }
 
-        public static void updateMsgStatus(long msgID, int val)
+        public static string updateMsgStatus(long msgID, int val)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
@@ -351,14 +373,15 @@ namespace windows_client.DbUtils
                     {
                         message.MessageStatus = (ConvMessage.State)val;
                         SubmitWithConflictResolve(context);
+                        return message.Msisdn;
                     }
                 }
                 else
                 {
-                    // show some logs and errors
+                    return null;
                 }
             }
-
+            return null;
         }
 
         /// <summary>

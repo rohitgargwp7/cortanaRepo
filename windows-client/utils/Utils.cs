@@ -92,18 +92,33 @@ namespace windows_client.utils
             Utils.GroupCache.TryGetValue(grpId,out groupParticipants);
             if (groupParticipants == null || groupParticipants.Count == 0) // this should not happen as at this point cache should be populated
                 return "GROUP";
-           
-            switch (groupParticipants.Count)
+            List<GroupParticipant> activeMembers = GetActiveGroupParticiants(grpId);
+            if (activeMembers == null || groupParticipants.Count == 0)
+                return "GROUP";
+            switch (activeMembers.Count)
             {
                 case 1:
-                    return groupParticipants[0].FirstName;
+                    return activeMembers[0].FirstName;
                 case 2:
-                    return groupParticipants[0].FirstName + " and "
-                    + groupParticipants[1].FirstName;
+                    return activeMembers[0].FirstName + " and "
+                    + activeMembers[1].FirstName;
                 default:
-                    return groupParticipants[0].FirstName + " and "
-                    + (groupParticipants.Count) + " others";
+                    return activeMembers[0].FirstName + " and "
+                    + (activeMembers.Count-1) + " others";
             }
+        }
+
+        public static List<GroupParticipant> GetActiveGroupParticiants(string groupId)
+        {
+            if (!Utils.GroupCache.ContainsKey(groupId) || Utils.GroupCache[groupId] == null)
+                return null;
+            List<GroupParticipant> activeGroupMembers = new List<GroupParticipant>(Utils.GroupCache[groupId].Count);
+            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
+            {
+                if (!Utils.GroupCache[groupId][i].HasLeft)
+                    activeGroupMembers.Add(Utils.GroupCache[groupId][i]);
+            }
+            return activeGroupMembers;
         }
 
         public static int CompareByName<T>(T a, T b)
@@ -195,18 +210,6 @@ namespace windows_client.utils
             return c;
         }
 
-        public static string getFirstName(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                return null;
-            name = name.Trim();
-            int idx = name.IndexOf(" ");
-            if (idx != -1)
-                return name.Substring(0, idx);
-            else
-                return name;
-        }
-
         public static bool isDarkTheme()
         {
             return ((Visibility)Application.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
@@ -238,6 +241,7 @@ namespace windows_client.utils
             }
 
         }
+
         public void DeSerializeGroupCache()
         {
             string fileName = "GroupCacheFile";

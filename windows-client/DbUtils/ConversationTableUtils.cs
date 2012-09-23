@@ -295,14 +295,6 @@ namespace windows_client.DbUtils
                 obj.MessageStatus = (ConvMessage.State)status;
                 saveConvObject(obj, msisdn.Replace(":", "_"));
             }
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, msisdn).FirstOrDefault<ConversationListObject>();
-            //    if (cObj == null)
-            //        return;
-            //    cObj.MessageStatus = (ConvMessage.State)status;
-            //    MessagesTableUtils.SubmitWithConflictResolve(context);
-            //}
         }
 
         /// <summary>

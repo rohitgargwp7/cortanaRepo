@@ -608,7 +608,8 @@ namespace windows_client.View
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
-            mContactName = string.IsNullOrEmpty(mContactName) ? Utils.defaultGroupName(mContactNumber) : mContactName;
+            mContactName = Utils.defaultGroupName(mContactNumber);
+            userName.Text = mContactName;
             if (isNewgroup)
             {
                 BackgroundWorker bw = new BackgroundWorker();
@@ -780,7 +781,6 @@ namespace windows_client.View
         private void loadMessages()
         {
             int i;
-            int limit = 6;
             bool isPublish = false;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null) // represents there are no chat messages for this msisdn
@@ -955,6 +955,8 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
+            mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
+            mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
         }
 
         private void removeListeners()
@@ -971,6 +973,8 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.removeListener(HikePubSub.GROUP_END, this);
+            mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
+            mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
         }
         #endregion
 
@@ -2245,6 +2249,40 @@ namespace windows_client.View
                         groupChatEnd();
                     });
                 }
+            }
+
+            #endregion
+
+            #region PARTICIPANT_LEFT_GROUP
+
+            else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
+            {
+                ConvMessage cm = (ConvMessage)obj;
+                if (mContactNumber != cm.Msisdn)
+                    return;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    mContactName = ConversationsList.ConvMap[mContactNumber].NameToShow;
+                    userName.Text = mContactName;
+                });
+            }
+
+            #endregion
+
+            #region PARTICIPANT_LEFT_GROUP
+
+            else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
+            {
+                JObject json = (JObject)obj;
+                string eventGroupId = (string)json[HikeConstants.TO];
+                if (eventGroupId != mContactNumber)
+                    return;
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    mContactName = ConversationsList.ConvMap[mContactNumber].NameToShow;
+                    userName.Text = mContactName;
+                });
             }
 
             #endregion
