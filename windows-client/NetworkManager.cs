@@ -546,6 +546,7 @@ namespace windows_client
                 Utils.GroupCache.TryGetValue(grpId, out l);
                 if (l == null)
                     return true;
+                bool saveCache = false;
                 bool output = true;
                 for (int i = 0; i < arr.Count; i++)
                 {
@@ -557,9 +558,14 @@ namespace windows_client
                     {
                         if (l[k].Msisdn == ms)
                         {
+                            if (l[k].HasLeft)
+                            {
+                                l[k].HasLeft = false;
+                                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                                return true;
+                            }
                             l[k].IsDND = dnd;
                             l[k].IsOnHike = onhike;
-                            l[k].HasLeft = false;
                             output = false;
                             break;
                         }
