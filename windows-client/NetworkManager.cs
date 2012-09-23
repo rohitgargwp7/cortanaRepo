@@ -346,6 +346,7 @@ namespace windows_client
                 GroupParticipant gp = Utils.getGroupParticipant(null, fromMsisdn, groupId);
                 if (gp.HasLeft)
                     return;
+                
                 ConvMessage convMsg = new ConvMessage(jsonObj, false);
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                 if (cObj == null)
@@ -566,6 +567,7 @@ namespace windows_client
                         {
                             l[k].IsDND = dnd;
                             l[k].IsOnHike = onhike;
+                            l[k].HasLeft = false;
                             output = false;
                             break;
                         }
