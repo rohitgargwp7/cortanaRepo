@@ -781,7 +781,6 @@ namespace windows_client.View
         private void loadMessages()
         {
             int i;
-            int limit = 6;
             bool isPublish = false;
             List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null) // represents there are no chat messages for this msisdn
