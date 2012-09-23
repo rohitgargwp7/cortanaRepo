@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -30,7 +31,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+            nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             nextIconButton.Text = "Done";
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = false;
@@ -40,6 +41,7 @@ namespace windows_client.View
 
         private void doneBtn_Click(object sender, EventArgs e)
         {
+            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
         private void walkThroughPvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -47,11 +49,29 @@ namespace windows_client.View
             switch (walkThroughPvt.SelectedIndex)
             {
                 case 0:
-                case 1:
+                    box0.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
+                    box1.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
+                    box2.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
                     nextIconButton.IsEnabled = false;
+                    if (swipeLeft.Visibility == Visibility.Collapsed)
+                        swipeLeft.Visibility = Visibility.Visible;
+                    break;
+                    
+                case 1:
+                    box0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
+                    box1.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
+                    box2.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
+                    nextIconButton.IsEnabled = false;
+                    if (swipeLeft.Visibility == Visibility.Collapsed)
+                        swipeLeft.Visibility = Visibility.Visible;
                     break;
                 case 2:
+                    box0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
+                    box1.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
+                    box2.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
                     nextIconButton.IsEnabled = true;
+                    if (swipeLeft.Visibility == Visibility.Visible)
+                        swipeLeft.Visibility = Visibility.Collapsed;
                     break;
             }
         }

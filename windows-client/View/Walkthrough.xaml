@@ -19,9 +19,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="header" HorizontalAlignment="Center" Margin="0,50,0,0">
+        <Grid x:Name="header" HorizontalAlignment="Center" Margin="0,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -31,26 +32,34 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <TextBlock Grid.Row="0" HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="3" Text="Meet hike"/>
-            <Rectangle x:Name="box0" Height="40" Width="40" Fill="Gray" Grid.Row="1" Margin="5,0,5,0" Grid.Column="0"/>
-            <Rectangle x:Name="box1" Height="40" Width="40" Fill="Gray" Grid.Row="1" Margin="5,0,5,0" Grid.Column="1"/>
-            <Rectangle x:Name="box2" Height="40" Width="40" Fill="Gray" Grid.Row="1" Margin="5,0,5,0" Grid.Column="2"/>
+
+            <TextBlock Grid.Row="0" Margin="0,10,0,0" HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="3" Text="Meet hike"/>
+            <Rectangle x:Name="box0" Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="5,5,5,0" Grid.Column="0"/>
+            <Rectangle x:Name="box1" Height="15" Width="15" Fill="#e8e9e9" Grid.Row="1" Margin="5,5,5,0" Grid.Column="1"/>
+            <Rectangle x:Name="box2" Height="15" Width="15" Fill="#e8e9e9" Grid.Row="1" Margin="5,5,5,0" Grid.Column="2"/>
         </Grid>
 
         <controls:Pivot x:Name="walkThroughPvt" Grid.Row="1" SelectionChanged="walkThroughPvt_SelectionChanged">
+            <controls:PivotItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Image Source="/View/images/phone_hiketohike.jpg" Margin="0,0,0,0" Grid.Row="0"/>
 
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="/View/images/hiketohike.jpg" Margin="0,10,0,0" Height="27" Grid.Row="0"></Image>
+                        <TextBlock Text="Messaging friends on hike is free, always, worldwide" TextWrapping="Wrap" Grid.Row="1" 
+                                   HorizontalAlignment="Center" FontSize="22" TextAlignment="Center" Width="300" Margin="0,20,0,0"></TextBlock>
+                    </Grid>
+                </Grid>
 
-        <controls:PivotItem>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Image Source="/View/images/phone_hiketohike.jpg" Grid.Row="0"/>
-            </Grid>
-            
-        </controls:PivotItem>
+            </controls:PivotItem>
 
             <controls:PivotItem>
                 <Grid>
@@ -59,6 +68,16 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Image Source="/View/images/phone_hiketosms.jpg" Grid.Row="0"/>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="/View/images/hiketosms.jpg" Margin="0,10,0,0" Height="27" Grid.Row="0"></Image>
+                        <TextBlock Text="You can also message friends and family who aren't on hike Free hike to sms" TextWrapping="Wrap" Grid.Row="1" 
+                                   HorizontalAlignment="Center" FontSize="22" TextAlignment="Center" Width="400" Margin="0,20,0,0"></TextBlock>
+                    </Grid>
+
                 </Grid>
 
             </controls:PivotItem>
@@ -70,11 +89,26 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Image Source="/View/images/phone_hikerewards.jpg" Grid.Row="0"/>
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Invite Friends Earn Rewards." TextWrapping="Wrap" Grid.Row="0" 
+                                   HorizontalAlignment="Center" FontSize="22" TextAlignment="Center" Margin="0,20,0,0"></TextBlock>
+                        <TextBlock Text="For every friend who joins you get -" TextWrapping="Wrap" Grid.Row="1" 
+                                   HorizontalAlignment="Center" FontSize="19" Foreground="#828282" TextAlignment="Center" Margin="0,20,0,0"></TextBlock>
+                        <Image Source="/View/images/3rewards.jpg" Margin="0,10,0,0" Height="76" Grid.Row="2"></Image>
+                    </Grid>
+
                 </Grid>
 
             </controls:PivotItem>
 
         </controls:Pivot>
+
+        <TextBlock x:Name="swipeLeft" Text="swipe left to continue" Grid.Row="2" HorizontalAlignment="Center" Foreground="LightGray" Margin="0,10,0,25"></TextBlock>
 
     </Grid>
 </phone:PhoneApplicationPage>
