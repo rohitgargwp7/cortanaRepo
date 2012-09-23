@@ -292,6 +292,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="hi.png" />
+    <Content Include="View\images\3rewards.jpg" />
     <Content Include="View\images\add_users.png" />
     <Resource Include="View\images\add_users_dark.png" />
     <Content Include="View\images\appbar.add.rest.png">
@@ -469,6 +470,8 @@
     <Content Include="View\images\freesms.png" />
     <Content Include="View\images\free_sms.png" />
     <Resource Include="View\images\help_dark.png" />
+    <Content Include="View\images\hiketohike.jpg" />
+    <Content Include="View\images\hiketosms.jpg" />
     <Content Include="View\images\hike_logo_small.png" />
     <Content Include="View\images\icon_attachment.png" />
     <Content Include="View\images\icon_emoticon.png" />
@@ -485,6 +488,9 @@
     <Resource Include="View\images\Made_with_love.png" />
     <Resource Include="View\images\notifications.png" />
     <Content Include="View\images\logo_main.png" />
+    <Content Include="View\images\phone_hikerewards.jpg" />
+    <Content Include="View\images\phone_hiketohike.jpg" />
+    <Content Include="View\images\phone_hiketosms.jpg" />
     <Content Include="View\images\phone_number.png" />
     <Resource Include="View\images\privacy.png" />
     <Content Include="View\images\play_icon.png" />
