@@ -100,7 +100,7 @@ namespace windows_client.View
         private void initPageBasedOnState()
         {
             groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
-            string groupName = PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] as string;
+            groupName = PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] as string;
 
             GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
@@ -362,6 +362,13 @@ namespace windows_client.View
         private void doneBtn_Click(object sender, EventArgs e)
         {
             this.Focus();
+            
+            if (string.IsNullOrWhiteSpace(this.groupNameTxtBox.Text))
+            {
+                MessageBoxResult result = MessageBox.Show("Group name cannot be empty!", "Error !!", MessageBoxButton.OK);
+                groupNameTxtBox.Focus();
+                return;
+            }
             groupName = this.groupNameTxtBox.Text.Trim();
             // if group name is changed
             if (groupName != (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD])
