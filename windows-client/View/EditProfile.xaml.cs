@@ -24,13 +24,11 @@ namespace windows_client.View
         ApplicationBarIconButton nextIconButton;
         List<string> genderList = new List<string>(3);
 
-        bool isSetNameDone = true;
-        bool isSetProfileDone = true;
-        bool isMsgBoxVisible = false;
         string userName = null;
-        string userEmail = null;
+        string userEmail = string.Empty;
         string userGender = null;
         private int genderIndex = 0;
+        private bool shouldSendProfile = false;
 
         public EditProfile()
         {
@@ -58,12 +56,13 @@ namespace windows_client.View
         private void prepopulate()
         {
             App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName);
-            name.Text = userName == null ? "" : userName;
+            name.Text = string.IsNullOrWhiteSpace(userName) ? string.Empty : userName;
 
             phone.Text = App.MSISDN;
 
-            App.appSettings.TryGetValue(App.EMAIL, out userEmail);
-            email.Text = userEmail == null ? "" : userEmail;
+            if (App.appSettings.Contains(App.EMAIL))
+                userEmail = (string)App.appSettings[App.EMAIL];
+            email.Text = userEmail;
 
             App.appSettings.TryGetValue(App.GENDER, out userGender);
 
@@ -87,8 +86,8 @@ namespace windows_client.View
             this.Focus(); // this will hide keyboard
             progressBar.IsEnabled = true;
             progressBar.Opacity = 1;
-            bool shouldSendProfile = false;
 
+            // if name is empty simply dont do anything
             if (string.IsNullOrWhiteSpace(name.Text))
             {
                 nameErrorTxt.Opacity = 1;
@@ -98,7 +97,7 @@ namespace windows_client.View
             }
 
             JObject obj = new JObject();
-            if (userEmail != email.Text)
+            if (userEmail != email.Text) // if email is changed
             {
                 if (true) // check if email is valid
                 {
@@ -113,21 +112,22 @@ namespace windows_client.View
                     return;
                 }
             }
+            // if gender is changed
             if (genderIndex != genderListPicker.SelectedIndex)
             {
-                genderIndex = genderListPicker.SelectedIndex;
+                //genderIndex = genderListPicker.SelectedIndex;
                 obj[App.GENDER] = genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "";
                 shouldSendProfile = true;
             }
 
             if (userName != name.Text) // shows name value is changed
             {
+                MakeFieldsReadOnly(true);
                 AccountUtils.setName(name.Text, new AccountUtils.postResponseFunction(setName_Callback));
             }
-            if (shouldSendProfile) // send if anything has changed
+            else if (shouldSendProfile) // send if anything has changed
             {
                 MakeFieldsReadOnly(true);
-                isSetProfileDone = false;
                 AccountUtils.setProfile(obj, new AccountUtils.postResponseFunction(setProfile_Callback));
             }
             else // if nothing is changed do nothing
@@ -157,11 +157,44 @@ namespace windows_client.View
             }
         }
 
+        private void setName_Callback(JObject obj)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (obj != null && "ok" == (string)obj["stat"])
+                {
+                    if (userName != name.Text)
+                    {
+                        userName = name.Text;
+                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_ACCOUNT_NAME, userName);
+                        App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, userName);
+                    }
+                    if (shouldSendProfile)
+                    {
+                        AccountUtils.setProfile(obj, new AccountUtils.postResponseFunction(setProfile_Callback));
+                    }
+                    else
+                    {
+                        MakeFieldsReadOnly(false);
+                        progressBar.IsEnabled = false;
+                        progressBar.Opacity = 0;
+                        MessageBox.Show("Profile Has been updated successfully.", "Profile Updated.", MessageBoxButton.OK);
+                    }
+                }
+                else
+                {
+                    MakeFieldsReadOnly(false);
+                    progressBar.IsEnabled = false;
+                    progressBar.Opacity = 0;
+                    MessageBox.Show("Unable to change profile. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                }
+            });
+        }
+
         private void setProfile_Callback(JObject obj)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                isSetProfileDone = true;
                 if (obj != null && "ok" == (string)obj["stat"])
                 {
 
@@ -177,73 +210,19 @@ namespace windows_client.View
                         App.WriteToIsoStorageSettings(App.GENDER, genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "");
                     }
                     MakeFieldsReadOnly(false);
-
+                    progressBar.IsEnabled = false;
+                    progressBar.Opacity = 0;
+                    MessageBox.Show("Profile Has been updated successfully.", "Profile Updated.", MessageBoxButton.OK);
                 }
                 else // failure from server
                 {
-
-                    if (!isMsgBoxVisible)
-                    {
-                        MessageBox.Show("Unable to change profile. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
-                        isMsgBoxVisible = true;
-                    }
                     MakeFieldsReadOnly(false);
-
+                    progressBar.IsEnabled = false;
+                    progressBar.Opacity = 0;
+                    MessageBox.Show("Unable to change email/gender. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                    
                 }
             });
-            while (isSetNameDone != true && isSetProfileDone != true)
-                Thread.Sleep(2);
-
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                progressBar.IsEnabled = false;
-                progressBar.Opacity = 0;
-                ShowSuccessMsgBox();
-            });
-        }
-
-        private void setName_Callback(JObject obj)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                isSetNameDone = true;
-                if (obj != null && "ok" == (string)obj["stat"])
-                {
-                    if (userName != name.Text)
-                    {
-                        userName = name.Text;
-                        App.HikePubSubInstance.publish(HikePubSub.UPDATE_ACCOUNT_NAME, userName);
-                        App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, name.Text);
-                    }
-                    MakeFieldsReadOnly(false);
-                }
-                else
-                {
-                    if (!isMsgBoxVisible)
-                    {
-                        MessageBox.Show("Unable to change profile. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
-                        isMsgBoxVisible = true;
-                    }
-                    MakeFieldsReadOnly(false);
-                }
-            });
-            while (isSetNameDone != true && isSetProfileDone != true)
-                Thread.Sleep(2);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                progressBar.IsEnabled = false;
-                progressBar.Opacity = 0;
-                ShowSuccessMsgBox();
-            });
-        }
-
-        bool isFirstCall = true;
-        private void ShowSuccessMsgBox()
-        {
-            //if (!isFirstCall)
-              //  return;
-            isFirstCall = !isFirstCall;
-            MessageBox.Show("Profile Has been updated successfully.", "Profile Updated.", MessageBoxButton.OK);
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

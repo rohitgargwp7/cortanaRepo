@@ -447,7 +447,7 @@ namespace windows_client.View
             else if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
                 // here always create a new group
-                string uid = AccountUtils.UID;
+                string uid = (string)App.appSettings[App.UID_SETTING];
                 mContactNumber = uid + ":" + TimeUtils.getCurrentTimeStamp();
                 groupOwner = App.MSISDN;
                 processGroupJoin(true);
