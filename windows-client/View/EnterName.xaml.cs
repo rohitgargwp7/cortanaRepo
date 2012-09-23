@@ -113,7 +113,7 @@ namespace windows_client
         {
             txtBxEnterName.IsReadOnly = false;
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-            Uri nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+            Uri nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = "Getting you in";
             Thread.Sleep(2 * 1000);
