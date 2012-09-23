@@ -6,22 +6,22 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True" Name="walkThrough">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="header" HorizontalAlignment="Center">
+        <Grid x:Name="header" HorizontalAlignment="Center" Margin="0,50,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -32,10 +32,49 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <TextBlock Grid.Row="0" Text="Meet hike"/>
-            <Rectangle Height="40" Width="40" Fill="Gray" Grid.Row="1" Grid.Column="0"/>
-            <Rectangle Height="40" Width="40" Fill="Gray" Grid.Row="1" Grid.Column="1"/>
-            <Rectangle Height="40" Width="40" Fill="Gray" Grid.Row="1" Grid.Column="2"/>
+            <TextBlock Grid.Row="0" HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="3" Text="Meet hike"/>
+            <Rectangle x:Name="box0" Height="40" Width="40" Fill="Gray" Grid.Row="1" Margin="5,0,5,0" Grid.Column="0"/>
+            <Rectangle x:Name="box1" Height="40" Width="40" Fill="Gray" Grid.Row="1" Margin="5,0,5,0" Grid.Column="1"/>
+            <Rectangle x:Name="box2" Height="40" Width="40" Fill="Gray" Grid.Row="1" Margin="5,0,5,0" Grid.Column="2"/>
         </Grid>
+
+        <controls:Pivot x:Name="walkThroughPvt" Grid.Row="1" SelectionChanged="walkThroughPvt_SelectionChanged">
+
+
+        <controls:PivotItem>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Image Source="/View/images/phone_hiketohike.jpg" Grid.Row="0"/>
+            </Grid>
+            
+        </controls:PivotItem>
+
+            <controls:PivotItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Image Source="/View/images/phone_hiketosms.jpg" Grid.Row="0"/>
+                </Grid>
+
+            </controls:PivotItem>
+
+            <controls:PivotItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Image Source="/View/images/phone_hikerewards.jpg" Grid.Row="0"/>
+                </Grid>
+
+            </controls:PivotItem>
+
+        </controls:Pivot>
+
     </Grid>
 </phone:PhoneApplicationPage>
