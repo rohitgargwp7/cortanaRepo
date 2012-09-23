@@ -362,7 +362,7 @@ namespace windows_client.DbUtils
             App.ViewModel.ConvMsisdnsToUpdate.Remove(obj.Msisdn);
         }
 
-        public static void updateMsgStatus(long msgID, int val)
+        public static string updateMsgStatus(long msgID, int val)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
@@ -373,14 +373,15 @@ namespace windows_client.DbUtils
                     {
                         message.MessageStatus = (ConvMessage.State)val;
                         SubmitWithConflictResolve(context);
+                        return message.Msisdn;
                     }
                 }
                 else
                 {
-                    // show some logs and errors
+                    return null;
                 }
             }
-
+            return null;
         }
 
         /// <summary>

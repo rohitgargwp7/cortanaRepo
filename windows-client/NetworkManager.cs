@@ -583,7 +583,8 @@ namespace windows_client
         private void updateDB(long msgID, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            MessagesTableUtils.updateMsgStatus(msgID, status);
+            string msisdn = MessagesTableUtils.updateMsgStatus(msgID, status); // update covmsg
+            ConversationTableUtils.updateLastMsgStatus(msisdn,status); // update conversationObj
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
@@ -592,7 +593,8 @@ namespace windows_client
         private void updateDbBatch(long[] ids, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            MessagesTableUtils.updateAllMsgStatus(ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(ids, status);
+            ConversationTableUtils.updateLastMsgStatus(msisdn,status);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
