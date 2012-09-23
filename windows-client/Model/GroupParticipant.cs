@@ -192,7 +192,6 @@ namespace windows_client.Model
             }
         }
 
-
         public int CompareTo(GroupParticipant rhs)
         {
             return (this.Name.ToLower().CompareTo(((GroupParticipant)rhs).Name.ToLower()));

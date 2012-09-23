@@ -755,12 +755,12 @@ namespace windows_client.Model
 
         public ConvMessage(JObject obj, bool isSelfGenerated)
         {
-            // GCL or GCJ
+
             // If the message is a group message we get a TO field consisting of the Group ID
             string toVal = obj[HikeConstants.TO].ToString();
             this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
             this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.FROM] : null;
-
+            bool saveCache = false;
             this.participantInfoState = fromJSON(obj);
 
             this.metadataJsonString = obj.ToString(Newtonsoft.Json.Formatting.None);
@@ -791,6 +791,7 @@ namespace windows_client.Model
                     GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {
+                        saveCache = true;
                         gp.IsOnHike = onhike;
                         gp.IsDND = dnd;
                     }
@@ -798,6 +799,7 @@ namespace windows_client.Model
                         PhoneApplicationService.Current.State["GC_" + toVal] = true;
                     newUsers.Add(gp);
                 }
+                saveCache = true;
                 Utils.GroupCache[toVal].Sort();
                 newUsers.Sort();
                 for (int k = 0; k < newUsers.Count; k++)
@@ -836,9 +838,11 @@ namespace windows_client.Model
                     GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
                     this._message = gp.FirstName + HikeConstants.USER_LEFT;
                     gp.HasLeft = true;
+                    saveCache = true;
                 }
             }
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            if(saveCache)
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             this._timestamp = TimeUtils.getCurrentTimeStamp();
             this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
         }
@@ -848,6 +852,7 @@ namespace windows_client.Model
             List<GroupParticipant> l = Utils.GroupCache[grpId];
             JObject obj = new JObject();
             bool isValid = false;
+            bool saveCache = false;
             try
             {
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING;
@@ -865,6 +870,7 @@ namespace windows_client.Model
                         array.Add(nameMsisdn);
                         l[i].IsUsed = true;
                         isValid = true;
+                        saveCache = true;
                     }
                 }
                 obj[HikeConstants.DATA] = array;
@@ -872,7 +878,8 @@ namespace windows_client.Model
             catch
             {
             }
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            if (saveCache)
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             if (isValid)
                 return obj;
             return null;

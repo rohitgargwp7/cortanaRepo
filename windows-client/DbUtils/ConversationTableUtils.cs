@@ -286,6 +286,8 @@ namespace windows_client.DbUtils
 
         public static void updateLastMsgStatus(string msisdn, int status)
         {
+            if (msisdn == null)
+                return;
             ConversationListObject obj = null;
             if (ConversationsList.ConvMap.ContainsKey(msisdn))
             {

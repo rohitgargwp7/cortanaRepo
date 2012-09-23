@@ -565,19 +565,44 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State["GC_" + mContactNumber] = true; // this is to track , first msg after GC.
                     Debug.WriteLine("Phone Application Service : GC_{0} added.", mContactNumber);
                 }
-                GroupParticipant gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
-                usersToAdd.Add(gp);
+                GroupParticipant gp = null;
+
                 if (Utils.GroupCache == null)
                     Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
 
-                if (!Utils.GroupCache.ContainsKey(mContactNumber))
+                if (!Utils.GroupCache.ContainsKey(mContactNumber)) // group does not exists
                 {
                     List<GroupParticipant> l = new List<GroupParticipant>(5);
+                    gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
                     l.Add(gp);
-                    Utils.GroupCache[mContactNumber]= l;
+                    Utils.GroupCache[mContactNumber] = l;
                 }
-                else
-                    Utils.GroupCache[mContactNumber].Add(gp);
+                else // group exists
+                {
+                    bool addNewparticipant = true;
+                    List<GroupParticipant> gl = Utils.GroupCache[mContactNumber];
+                    if (gl == null)
+                        gl = new List<GroupParticipant>();
+
+                    for (int j = 0; j < gl.Count; j++)
+                    {
+                        if (gl[j].Msisdn == contactsForGroup[i].Msisdn) // participant exists and has left earlier
+                        {
+                            gl[j].HasLeft = false;
+                            gl[j].Name = contactsForGroup[i].Name;
+                            gl[j].IsOnHike = contactsForGroup[i].OnHike;
+                            addNewparticipant = false;
+                            gp = gl[j];
+                            break;
+                        }
+                    }
+                    if (addNewparticipant)
+                    {
+                        gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
+                        Utils.GroupCache[mContactNumber].Add(gp);
+                    }
+                }
+                usersToAdd.Add(gp);
             }
             Utils.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
@@ -1208,8 +1233,8 @@ namespace windows_client.View
                     return;
                 for (int i = 0; i < vals.Length; i++)
                 {
-                    string[] vars = vals[i].Split(HikeConstants.DELIMITERS,StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
- 
+                    string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
+
                     GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMessage.Msisdn);
                     string text = HikeConstants.USER_JOINED_GROUP_CHAT;
                     NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED;
@@ -1675,7 +1700,7 @@ namespace windows_client.View
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
                 {
-                    if(lastMessageBubble.FileAttachment.ContentType.Contains("image"))
+                    if (lastMessageBubble.FileAttachment.ContentType.Contains("image"))
                         obj.LastMessage = "image";
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains("audio"))
                         obj.LastMessage = "audio";

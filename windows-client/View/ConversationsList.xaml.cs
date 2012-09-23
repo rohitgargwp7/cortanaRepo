@@ -545,7 +545,7 @@ namespace windows_client.View
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show("Could not deleting account now. Try again later.", "Delete Account Failed?", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show("Cannot not delete account. Try again later.", "Delete Account Failed?", MessageBoxButton.OKCancel);
                     enableAppBar();
                     progress.Hide();
                     progress = null;
