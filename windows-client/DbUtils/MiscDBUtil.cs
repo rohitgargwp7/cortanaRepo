@@ -195,6 +195,8 @@ namespace windows_client.DbUtils
 
         public static void readFileFromIsolatedStorage(string filePath, out byte[] imageBytes)
         {
+            filePath = filePath.Replace(":", "_");
+
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (myIsolatedStorage.FileExists(filePath))
