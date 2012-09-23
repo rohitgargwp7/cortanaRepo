@@ -138,10 +138,10 @@ namespace windows_client
                     obj = null;
                 }
 
-                if (this.State.TryGetValue("enterNameBtn.Opacity", out obj))
+                if (this.State.TryGetValue("nameErrorTxt.Visibility", out obj))
                 {
-                    msgTxtBlk.Opacity = (int)obj;
-                    msgTxtBlk.Text = (string)this.State["enterNameBtn.Text"];
+                    nameErrorTxt.Visibility = (Visibility)obj;
+                    nameErrorTxt.Text = (string)this.State["nameErrorTxt.Text"];
                 }
             }
         }
@@ -157,13 +157,13 @@ namespace windows_client
 
             if (msgTxtBlk.Opacity == 1)
             {
-                this.State["enterNameBtn.Text"] = msgTxtBlk.Text;
-                this.State["enterNameBtn.Opacity"] = 1;
+                this.State["nameErrorTxt.Text"] = nameErrorTxt.Text;
+                this.State["nameErrorTxt.Visibility"] = nameErrorTxt.Visibility;
             }
             else
             {
-                this.State.Remove("enterNameBtn.Text");
-                this.State.Remove("enterNameBtn.Opacity");
+                this.State.Remove("nameErrorTxt.Text");
+                this.State.Remove("nameErrorTxt.Visibility");
             }
         }
 
