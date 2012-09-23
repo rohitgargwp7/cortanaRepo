@@ -197,6 +197,21 @@ namespace windows_client.Model
             return (this.Name.ToLower().CompareTo(((GroupParticipant)rhs).Name.ToLower()));
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            GroupParticipant o = obj as GroupParticipant;
+
+            if ((System.Object)o == null)
+            {
+                return false;
+            }
+            return (_msisdn == o.Msisdn);
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -351,20 +351,12 @@ namespace windows_client
                 ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                 if (cObj == null)
                     return;
-                GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
-                if (gi == null)
-                    return;
-                if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                {
-                    cObj.ContactName = Utils.defaultGroupName(groupId);
-                }
-
-
+                
                 object[] vals = new object[2];
                 vals[0] = convMsg;
                 vals[1] = cObj;
                 this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-                this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, jsonObj);
+                this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
             }
             #endregion
             #region GROUP_CHAT_END

@@ -108,10 +108,10 @@ namespace windows_client.View
             this.groupNameTxtBox.Text = groupName;
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
             List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(Utils.GroupCache[groupId], hikeUsersList);
-            GroupParticipant self = new GroupParticipant(groupId,(string)App.appSettings[App.ACCOUNT_NAME], App.MSISDN, true);
+            GroupParticipant self = new GroupParticipant(groupId, (string)App.appSettings[App.ACCOUNT_NAME], App.MSISDN, true);
             hikeUsersList.Add(self);
             hikeUsersList.Sort();
-            for (int i = 0; i < (hikeUsersList!=null?hikeUsersList.Count:0); i++)
+            for (int i = 0; i < (hikeUsersList != null ? hikeUsersList.Count : 0); i++)
             {
                 GroupParticipant gp = hikeUsersList[i];
                 if (gi.GroupOwner == gp.Msisdn)
@@ -124,7 +124,7 @@ namespace windows_client.View
                 GroupParticipant gp = smsUsersList[i];
                 groupMembersOC.Add(gp);
             }
-            if(smsUsersList !=null && smsUsersList.Count > 0)
+            if (smsUsersList != null && smsUsersList.Count > 0)
                 EnableInviteBtn = true;
             this.inviteBtn.IsEnabled = EnableInviteBtn;
             this.groupChatParticipants.ItemsSource = groupMembersOC;
@@ -203,30 +203,32 @@ namespace windows_client.View
                         if (!gp.IsOnHike && !EnableInviteBtn)
                             EnableInviteBtn = true;
                     }
+                    groupName = ConversationsList.ConvMap[groupId].NameToShow;
+                    groupNameTxtBox.Text = groupName;
+                    PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
             else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
             {
-                JObject json = (JObject)obj;
-                string eventGroupId = (string)json[HikeConstants.TO];
+                ConvMessage cm = (ConvMessage)obj;
+                string eventGroupId = cm.Msisdn;
                 if (eventGroupId != groupId)
                     return;
-                string leaveMsisdn = (string)json[HikeConstants.DATA];
-
-                for (int i = 0; i < groupMembersOC.Count; i++)
+                string leaveMsisdn = cm.GroupParticipant;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (groupMembersOC[i].Msisdn == leaveMsisdn)
+                    for (int i = 0; i < groupMembersOC.Count; i++)
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        if (groupMembersOC[i].Msisdn == leaveMsisdn)
                         {
                             groupMembersOC.RemoveAt(i);
-                        });
+                            groupName = ConversationsList.ConvMap[groupId].NameToShow;
+                            groupNameTxtBox.Text = groupName; 
+                            PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
+                            return;
+                        }
                     }
-                    if (groupMembersOC[i].Msisdn != leaveMsisdn && !groupMembersOC[i].IsOnHike && !EnableInviteBtn)
-                        EnableInviteBtn = true;
-
-                    break;
-                }
+                });
             }
             else if (HikePubSub.GROUP_NAME_CHANGED == type)
             {
@@ -240,6 +242,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         this.groupNameTxtBox.Text = groupName;
+                        PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                     });
                 }
             }
@@ -351,20 +354,9 @@ namespace windows_client.View
 
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = getActiveGroupParticiants();
+            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = Utils.GetActiveGroupParticiants(groupId);
             //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
-        }
-
-        private List<GroupParticipant> getActiveGroupParticiants()
-        {
-            List<GroupParticipant> activeGroupMembers = new List<GroupParticipant>(Utils.GroupCache[groupId].Count);
-            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
-            {
-                if (!Utils.GroupCache[groupId][i].HasLeft)
-                    activeGroupMembers.Add(Utils.GroupCache[groupId][i]);
-            }
-            return activeGroupMembers;
         }
 
         private void doneBtn_Click(object sender, EventArgs e)
