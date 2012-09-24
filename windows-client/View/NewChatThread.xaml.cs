@@ -815,7 +815,7 @@ namespace windows_client.View
                 ConvMessage cm = messagesList[i];
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToUI(cm);
+                    AddMessageToUI(cm, true);
                 });
             }
 
@@ -880,7 +880,7 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                SentChatBubble newChatBubble = new SentChatBubble(convMessage);
+                SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
                 newChatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                 addNewAttachmentMessageToUI(newChatBubble);
                 msgMap.Add(convMessage.MessageId, newChatBubble);
@@ -1164,9 +1164,10 @@ namespace windows_client.View
         }
 
         /*
-         * If addToLast is true then insert the message in the end, else in the begining 
+         * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
+         * it is scheduled
          */
-        private void AddMessageToUI(ConvMessage convMessage)
+        private void AddMessageToUI(ConvMessage convMessage, bool readFromDB)
         {
             #region NO_INFO
             //TODO : Create attachment object if it requires one
@@ -1202,7 +1203,7 @@ namespace windows_client.View
                 MyChatBubble chatBubble;
                 if (convMessage.IsSent)
                 {
-                    chatBubble = new SentChatBubble(convMessage);
+                    chatBubble = new SentChatBubble(convMessage, readFromDB);
                     if (convMessage.MessageId < -1 || convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                         msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                     else if (convMessage.MessageId == -1)
@@ -1534,7 +1535,7 @@ namespace windows_client.View
                 HideTypingNotification();
                 isReshowTypingNotification = true;
             }
-            AddMessageToUI(convMessage);
+            AddMessageToUI(convMessage, false);
             if (isReshowTypingNotification)
             {
                 ShowTypingNotification();
@@ -1551,7 +1552,7 @@ namespace windows_client.View
                 {
                     vals = new object[3];
                     ConvMessage cm = new ConvMessage(jo, true); // This is the msg which should be shown after first msg of creation of group
-                    AddMessageToUI(cm);
+                    AddMessageToUI(cm, false);
                     vals[2] = cm;
                     isGcFirstMsg = false;
                 }
@@ -1947,12 +1948,12 @@ namespace windows_client.View
                     HideTypingNotification();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        AddMessageToUI(convMessage);
+                        AddMessageToUI(convMessage, false);
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
-                                AddMessageToUI(cm);
+                                AddMessageToUI(cm, false);
                             if (cm.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING) // do this only if USER JOIN MSG 
                                 isGcFirstMsg = false;
                         }
