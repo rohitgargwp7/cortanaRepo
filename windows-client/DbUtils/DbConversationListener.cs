@@ -35,7 +35,7 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.addListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
-            mPubSub.addListener(HikePubSub.DELETE_CONVERSATION,this);
+            mPubSub.addListener(HikePubSub.DELETE_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.ATTACHMENT_RESEND, this);
         }
@@ -52,14 +52,14 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.removeListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
-            mPubSub.removeListener(HikePubSub.DELETE_CONVERSATION,this);
+            mPubSub.removeListener(HikePubSub.DELETE_CONVERSATION, this);
             mPubSub.removeListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
             mPubSub.removeListener(HikePubSub.ATTACHMENT_RESEND, this);
         }
 
         public void uploadFileCallback(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble)
         {
-            if (obj != null && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED 
+            if (obj != null && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED
                 && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
             {
                 JObject data = obj[HikeConstants.FILE_RESPONSE_DATA].ToObject<JObject>();
@@ -67,10 +67,12 @@ namespace windows_client.DbUtils
                 string fileName = data[HikeConstants.FILE_NAME].ToString();
                 string contentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
 
-                //DO NOT Update message text in db. We sent the below line, but we save only filename as message.
+                //DO NOT Update message text in db. We sent the below line, but we save content type as message.
                 convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                chatBubble.scheduleTryingImage();
+
                 convMessage.FileAttachment.FileKey = fileKey;
                 convMessage.FileAttachment.ContentType = contentType;
 
@@ -102,10 +104,10 @@ namespace windows_client.DbUtils
 
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
-                
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if(App.ViewModel.MessageListPageCollection.Contains(convObj))
+                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
                         App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
@@ -118,7 +120,7 @@ namespace windows_client.DbUtils
                     if (vals[1] is bool)
                     {
                         if (!isNewGroup)
-                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms?false:true));
+                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
                     }
                     else if (vals[1] is string)
                     {
@@ -129,7 +131,7 @@ namespace windows_client.DbUtils
 
                         //while writing in iso, we write it as failed and then revert to started
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                        
+
                         MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
                     }
@@ -142,8 +144,6 @@ namespace windows_client.DbUtils
                         ConversationListObject cObj = MessagesTableUtils.addChatMessage(cm, false);
                         if (!isNewGroup)
                             mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
-                        
-
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             if (App.ViewModel.MessageListPageCollection.Contains(convObj))
@@ -275,7 +275,7 @@ namespace windows_client.DbUtils
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
                 Utils.GroupCache.Remove(groupId);
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 //TODO : Delete file also later
             }
             #endregion
@@ -312,7 +312,7 @@ namespace windows_client.DbUtils
                     bw.DoWork += new DoWorkEventHandler(deleteGroupsAsync);
                     bw.RunWorkerAsync(convMsisdn);
                     Utils.GroupCache.Remove(convMsisdn);
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
                 ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
@@ -358,7 +358,7 @@ namespace windows_client.DbUtils
         private void updateDbBatch(long[] ids, int status)
         {
             string msisdn = MessagesTableUtils.updateAllMsgStatus(ids, status);
-            ConversationTableUtils.updateLastMsgStatus(msisdn,status);
+            ConversationTableUtils.updateLastMsgStatus(msisdn, status);
         }
 
         private void deleteGroupsAsync(object sender, DoWorkEventArgs e)
@@ -379,7 +379,7 @@ namespace windows_client.DbUtils
 
         private void deleteAllGroupsAsync(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;           
+            BackgroundWorker worker = sender as BackgroundWorker;
             if ((worker.CancellationPending == true))
             {
                 e.Cancel = true;
