@@ -108,11 +108,14 @@ namespace windows_client
                 });
             }
         }
-
+        bool isCalled = false;
         public void processEnterName()
         {
+            if (isCalled)
+                return;
+            isCalled = true;
             txtBxEnterName.IsReadOnly = false;
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
             Uri nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = "Getting you in";

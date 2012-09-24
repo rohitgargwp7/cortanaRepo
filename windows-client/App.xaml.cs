@@ -188,6 +188,7 @@ namespace windows_client
             PIN_SCREEN,     // EnterPin Screen
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
+            WALKTHROUGH_SCREEN // Walkthrough Screen
         }
 
         #endregion
@@ -384,6 +385,9 @@ namespace windows_client
                 case PageState.SETNAME_SCREEN:
                     createDatabaseAsync();
                     nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                    break;
+                case PageState.WALKTHROUGH_SCREEN:
+                    nUri = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
                     break;
                 case PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
