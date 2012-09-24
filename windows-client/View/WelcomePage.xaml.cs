@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Tasks;
+using windows_client.DbUtils;
 
 
 namespace windows_client
@@ -50,8 +51,13 @@ namespace windows_client
             }
 
             nextIconButton.IsEnabled = false;
-            if(App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
-                App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
+            try
+            {
+                if (App.appSettings.Contains(App.IS_DB_CREATED)) // if db is created then only delete tables.
+                    MiscDBUtil.clearDatabase();
+                //App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
+            }
+            catch { }
             isClicked = true;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
