@@ -109,7 +109,7 @@ namespace windows_client.View
         {
             get
             {
-                return SmileyParser._emoticonImagesForList0;
+                return SmileyParser.Instance._emoticonImagesForList0;
             }
         }
 
@@ -117,7 +117,7 @@ namespace windows_client.View
         {
             get
             {
-                return SmileyParser._emoticonImagesForList1;
+                return SmileyParser.Instance._emoticonImagesForList1;
             }
         }
 
@@ -125,7 +125,7 @@ namespace windows_client.View
         {
             get
             {
-                return SmileyParser._emoticonImagesForList2;
+                return SmileyParser.Instance._emoticonImagesForList2;
             }
         }
 
@@ -1787,21 +1787,21 @@ namespace windows_client.View
         private void emotList0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             int index = emotList0.SelectedIndex;
-            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            int index = emotList1.SelectedIndex + SmileyParser.emoticon0Size;
-            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+            int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            int index = emotList2.SelectedIndex + SmileyParser.emoticon0Size + SmileyParser.emoticon1Size;
-            sendMsgTxtbox.Text += SmileyParser.emoticonStrings[index];
+            int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
+            sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
             emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
