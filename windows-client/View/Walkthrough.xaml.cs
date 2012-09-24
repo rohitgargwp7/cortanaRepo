@@ -17,6 +17,7 @@ namespace windows_client.View
 {
     public partial class Walkthrough : PhoneApplicationPage
     {
+        bool isClicked = false;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -39,8 +40,19 @@ namespace windows_client.View
             walkThrough.ApplicationBar = appBar;
         }
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
+        }
         private void doneBtn_Click(object sender, EventArgs e)
         {
+            // this is done to avoid navigation exception
+            if (isClicked)
+                return;
+            isClicked = true;
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
             NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 

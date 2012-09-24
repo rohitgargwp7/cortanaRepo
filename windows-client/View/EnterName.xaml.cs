@@ -25,8 +25,8 @@ namespace windows_client
         public EnterName()
         {
             InitializeComponent();
-            App.appSettings.Remove(App.ACCOUNT_NAME);
-            App.appSettings.Remove(App.SET_NAME_FAILED);
+            App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
+            App.RemoveKeyFromAppSettings(App.SET_NAME_FAILED);
             if (!App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED) && !App.isABScanning)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
 
@@ -59,13 +59,13 @@ namespace windows_client
                 progressBar.IsEnabled = false;
                 nameErrorTxt.Text = "Network Error. Try Again!!";
                 nameErrorTxt.Visibility = Visibility.Visible;
-                App.appSettings.Remove(App.ACCOUNT_NAME);
+                App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                 App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);
                 return;
             }
             if (App.appSettings.Contains(App.CONTACT_SCANNING_FAILED))
             {
-                App.appSettings.Remove(App.CONTACT_SCANNING_FAILED);
+                App.RemoveKeyFromAppSettings(App.CONTACT_SCANNING_FAILED);
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             }
 
@@ -93,13 +93,13 @@ namespace windows_client
                     msgTxtBlk.Opacity = 0;
                     nameErrorTxt.Text = "Error!! Name not set. Try Again!!";
                     nameErrorTxt.Visibility = Visibility.Visible;
-                    App.appSettings.Remove(App.ACCOUNT_NAME);
+                    App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                     App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);
                 });
                 return;
             }
             App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
-            App.appSettings.Remove(App.SET_NAME_FAILED);
+            App.RemoveKeyFromAppSettings(App.SET_NAME_FAILED);
             if (App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED)) // shows that addressbook is already scanned
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -108,11 +108,14 @@ namespace windows_client
                 });
             }
         }
-
+        bool isCalled = false;
         public void processEnterName()
         {
+            if (isCalled)
+                return;
+            isCalled = true;
             txtBxEnterName.IsReadOnly = false;
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
             Uri nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = "Getting you in";

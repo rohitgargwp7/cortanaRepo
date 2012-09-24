@@ -104,12 +104,13 @@ namespace windows_client
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
+                    
+                    if (obj == null)
+                        return;
                     if (convMessage.FileAttachment != null)
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
-                    if (obj == null)
-                        return;
                     object[] vals = null;
 
                     if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc msg
@@ -271,14 +272,13 @@ namespace windows_client
                 int invited = (int)data[HikeConstants.ALL_INVITEE];
                 int invited_joined = (int)data[HikeConstants.ALL_INVITEE_JOINED];
                 String totalCreditsPerMonth = (string)data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
-                App.appSettings[App.INVITED] = invited;
-                App.appSettings[App.INVITED_JOINED] = invited_joined;
+                App.WriteToIsoStorageSettings(App.INVITED,invited);
+                App.WriteToIsoStorageSettings(App.INVITED_JOINED, invited_joined);
 
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
-                    App.appSettings[App.TOTAL_CREDITS_PER_MONTH] = totalCreditsPerMonth;
+                    App.WriteToIsoStorageSettings(App.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
                 }
-                App.appSettings.Save();
                 this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
             }
             #endregion

@@ -255,7 +255,7 @@ namespace windows_client.utils
                 Debug.WriteLine("Time to add addressbook {0}", msec);
                 UsersTableUtils.addBlockList(blockList);
                 App.WriteToIsoStorageSettings(App.IS_ADDRESS_BOOK_SCANNED, true);
-                App.appSettings.Remove(App.CONTACT_SCANNING_FAILED);
+                App.RemoveKeyFromAppSettings(App.CONTACT_SCANNING_FAILED);
             }
             App.Ab_scanned = true;
             App.isABScanning = false;

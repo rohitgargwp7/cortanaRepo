@@ -554,7 +554,7 @@ namespace windows_client.View
             }
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
-            appSettings.Clear();
+            App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
@@ -575,7 +575,7 @@ namespace windows_client.View
             progress.Show();
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
-            appSettings.Clear();
+            App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
@@ -670,9 +670,12 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
-                App.ViewModel.MessageListPageCollection.RemoveAt(0);
-                App.ViewModel.MessageListPageCollection.Insert(0, c);
+                if (App.ViewModel.MessageListPageCollection.Count > 0)
+                {
+                    ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
+                    App.ViewModel.MessageListPageCollection.RemoveAt(0);
+                    App.ViewModel.MessageListPageCollection.Insert(0, c);
+                }
             });
         }
 

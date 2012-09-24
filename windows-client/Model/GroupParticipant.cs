@@ -184,7 +184,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (Utils.getGroupParticipant(Name, Msisdn, _grpId).IsOnHike)
+                if (_isOnHike)
                 {
                     return UI_Utils.Instance.HikeMsgBackground;
                 }
