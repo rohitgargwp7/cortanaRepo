@@ -629,13 +629,6 @@ namespace windows_client
 
         public Paragraph LinkifyAll(string message)
         {
-            bool isPhone = PhoneNumberRegex.IsMatch(message);
-
-            MatchCollection m = EmailRegex.Matches(message);
-            bool isEmail = m.Count > 0;
-            m = HyperLinkRegex.Matches(message);
-            bool isLink = m.Count > 0;
-
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
             int startIndex = 0;
