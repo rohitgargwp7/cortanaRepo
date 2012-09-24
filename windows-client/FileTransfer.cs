@@ -80,55 +80,6 @@ namespace windows_client
             }
         }
 
-
-
-        //public void uploadFile(string fileName)
-        //{
-        //    Uri uploadUriTarget = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL), UriKind.Absolute);
-
-        //    string relativeFilePath = "/" + fileName;
-        //    string sourcePath = "shared/transfers" + relativeFilePath;
-        //    Uri sourceUri = new Uri("/" + sourcePath, UriKind.Relative);
-
-        //    Uri downloadResponse = new Uri("shared/transfers/response", UriKind.RelativeOrAbsolute);
-
-        //    BackgroundTransferRequest transferRequest = new BackgroundTransferRequest(uploadUriTarget);
-
-
-        //    byte[] dataToSend;
-        //    Attachment.readFileFromIsolatedStorage(sourcePath, out dataToSend);
-
-
-
-        //    // Set the transfer method. GET and POST are supported.
-        //    transferRequest.Tag = relativeFilePath;
-        //    transferRequest.Method = "POST";
-        //    transferRequest.TransferStatusChanged += new EventHandler<BackgroundTransferEventArgs>(transfer_TransferStatusChanged);
-        //    transferRequest.TransferProgressChanged += new EventHandler<BackgroundTransferEventArgs>(transfer_TransferProgressChanged);
-        //    //transferRequest.DownloadLocation = downloadResponse;
-        //    transferRequest.Headers["Content-Name"] = "ic_phone_big.png";
-        //    transferRequest.Headers["Cookie"] = "user=" + AccountUtils.mToken;
-        //    transferRequest.Headers["Content-Type"] = "";
-        //    transferRequest.Headers["Connection"] = "Keep-Alive";
-        //    transferRequest.Headers["X-Thumbnail-Required"] = "0";
-
-        //    transferRequest.UploadLocation = sourceUri;
-
-        //    try
-        //    {
-        //        BackgroundTransferService.Add(transferRequest);
-        //    }
-        //    catch (InvalidOperationException ex)
-        //    {
-        //        MessageBox.Show("Unable to add background transfer request. " + ex.Message);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show("Unable to add background transfer request.");
-        //    }
-        //}
-
-
         private void ProcessTransfer(BackgroundTransferRequest transfer)
         {
             switch (transfer.TransferStatus)
