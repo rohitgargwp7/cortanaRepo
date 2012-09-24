@@ -172,9 +172,6 @@
     <Compile Include="View\NewSelectUserPage.xaml.cs">
       <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SelectUserToMsg.xaml.cs">
-      <DependentUpon>SelectUserToMsg.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -258,10 +255,6 @@
     <Page Include="View\NewSelectUserPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\SelectUserToMsg.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Settings.xaml">
       <SubType>Designer</SubType>
