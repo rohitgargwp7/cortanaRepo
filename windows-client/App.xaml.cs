@@ -575,5 +575,36 @@ namespace windows_client
                 }
             }
         }
+
+        public static void ClearAppSettings()
+        {
+            lock (lockObj)
+            {
+                try
+                {
+                    appSettings.Clear();
+                }
+                catch
+                {
+                    Debug.WriteLine("Problem while clearing isolated storage.");
+                }
+            }
+        }
+
+        public static void RemoveKeyFromAppSettings(string key)
+        {
+            lock (lockObj)
+            {
+                try
+                {
+                    appSettings.Remove(key);
+                    appSettings.Save();
+                }
+                catch
+                {
+                    Debug.WriteLine("Problem while removing key from isolated storage.");
+                }
+            }
+        }
     }
 }

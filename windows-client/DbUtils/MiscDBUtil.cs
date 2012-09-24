@@ -22,7 +22,7 @@ namespace windows_client.DbUtils
             ConversationTableUtils.deleteAllConversations();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {                
-                App.appSettings.Remove(App.GROUPS_CACHE);
+                App.RemoveKeyFromAppSettings(App.GROUPS_CACHE);
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
                 try

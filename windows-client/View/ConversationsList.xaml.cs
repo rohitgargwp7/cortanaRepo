@@ -554,7 +554,7 @@ namespace windows_client.View
             }
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
-            appSettings.Clear();
+            App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }
@@ -575,7 +575,7 @@ namespace windows_client.View
             progress.Show();
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
-            appSettings.Clear();
+            App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
         }

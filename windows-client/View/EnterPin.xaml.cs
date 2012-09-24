@@ -113,7 +113,7 @@ namespace windows_client
 
         private void goBackLogic()
         {
-            App.appSettings.Remove(App.MSISDN_SETTING);
+            App.RemoveKeyFromAppSettings(App.MSISDN_SETTING);
             App.appSettings.Save();
 
             if (NavigationService.CanGoBack)
