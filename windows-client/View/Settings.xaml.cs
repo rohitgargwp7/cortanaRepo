@@ -33,8 +33,8 @@ namespace windows_client.View
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
         {
             this.pushNotifications.Content = "On";
-            App.appSettings[App.IS_PUSH_ENABLED] = true;
-            App.appSettings.Save();
+            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
+
             try
             {
                 HttpNotificationChannel pushChannel;
@@ -73,8 +73,8 @@ namespace windows_client.View
         private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)
         {
             this.pushNotifications.Content = "Off";
-            App.appSettings[App.IS_PUSH_ENABLED] = false;
-            App.appSettings.Save();
+            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,false);
+
             try
             {
                 HttpNotificationChannel pushChannel;

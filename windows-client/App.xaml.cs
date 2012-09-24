@@ -583,6 +583,7 @@ namespace windows_client
                 try
                 {
                     appSettings.Clear();
+                    appSettings.Save();
                 }
                 catch
                 {
