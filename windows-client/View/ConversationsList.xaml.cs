@@ -142,7 +142,7 @@ namespace windows_client.View
                     #region InitializeEmoticons
 
                     Stopwatch st = Stopwatch.StartNew();
-                    SmileyParser.loadEmoticons();
+                    SmileyParser.Instance.initializeSmileyParser();
                     st.Stop();
                     long msec = st.ElapsedMilliseconds;
                     Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
@@ -673,7 +673,6 @@ namespace windows_client.View
                 ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
                 App.ViewModel.MessageListPageCollection.RemoveAt(0);
                 App.ViewModel.MessageListPageCollection.Insert(0, c);
-            
             });
         }
 
@@ -816,52 +815,9 @@ namespace windows_client.View
             if (richTextBox.Tag == null)
                 return;
             string messageString = richTextBox.Tag.ToString();
-
-            MatchCollection matchCollection = SmileyParser.SmileyPattern.Matches(messageString);
-            Paragraph p = new Paragraph();
-            int startIndex = 0;
-            int endIndex = -1;
-
-            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
-            for (int i = 0; i < maxCount; i++)
-            {
-                String emoticon = matchCollection[i].ToString();
-
-                //Regex never returns an empty string. Still have added an extra check
-                if (String.IsNullOrEmpty(emoticon))
-                    continue;
-
-                int index = matchCollection[i].Index;
-                endIndex = index - 1;
-
-                if (index > 0)
-                {
-                    Run r = new Run();
-                    r.Text = messageString.Substring(startIndex, endIndex - startIndex + 1);
-                    p.Inlines.Add(r);
-                }
-
-                startIndex = index + emoticon.Length;
-
-                //TODO check if imgPath is null or not
-                Image img = new Image();
-                img.Source = SmileyParser.lookUpFromCache(emoticon);
-                img.Height = 25;
-                img.Width = 25;
-                img.Margin = imgMargin;
-
-                InlineUIContainer ui = new InlineUIContainer();
-                ui.Child = img;
-                p.Inlines.Add(ui);
-            }
-            if (startIndex < messageString.Length)
-            {
-                Run r2 = new Run();
-                r2.Text = messageString.Substring(startIndex, messageString.Length - startIndex);
-                p.Inlines.Add(r2);
-            }
+            Paragraph linkified = SmileyParser.Instance.LinkifyEmoticons(messageString);
             richTextBox.Blocks.Clear();
-            richTextBox.Blocks.Add(p);
+            richTextBox.Blocks.Add(linkified);
         }
         #endregion
 
