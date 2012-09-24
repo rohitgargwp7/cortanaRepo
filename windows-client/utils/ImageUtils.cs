@@ -27,6 +27,7 @@ namespace windows_client.utils
         private BitmapImage sent;
         private BitmapImage delivered;
         private BitmapImage read;
+        private BitmapImage trying;
         private BitmapImage defaultAvatarBitmapImage;
         private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
@@ -215,6 +216,16 @@ namespace windows_client.utils
                 if (read == null)
                     read = new BitmapImage(new Uri("/View/images/ic_read.png", UriKind.Relative));
                 return read;
+            }
+        }
+
+        public BitmapImage Trying
+        {
+            get
+            {
+                if (trying == null)
+                    trying = new BitmapImage(new Uri("/View/images/trying_icon.png", UriKind.Relative));
+                return trying;
             }
         }
 
