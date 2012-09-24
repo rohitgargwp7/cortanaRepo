@@ -623,7 +623,10 @@ namespace windows_client
         {
             Hyperlink caller = sender as Hyperlink;
             PhoneCallTask phoneCallTask = new PhoneCallTask();
-            phoneCallTask.PhoneNumber = caller.TargetName;
+            string targetPhoneNumber = caller.TargetName.Replace("-", "");
+            targetPhoneNumber.Trim();
+            targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+            phoneCallTask.PhoneNumber = caller.TargetName.Replace("-", "");
             phoneCallTask.Show();
         }
 
