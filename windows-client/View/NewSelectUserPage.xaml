@@ -41,7 +41,7 @@
                                                 Opacity="1" Height="11" Width="194" />
                 </StackPanel>
             </StackPanel>
-            <TextBlock Name="title" Text="new chat" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,5" Height="80"/>
+            <TextBlock Name="title" Text="new group" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,5" Height="100"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
