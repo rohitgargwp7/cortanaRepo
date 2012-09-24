@@ -225,9 +225,9 @@ namespace windows_client
         //private string emailRegexPattern = "^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$";
         //private string hyperLinkRegexPattern = "^[a-zA-Z0-9\\-\\.]+\\.(com|org|net|mil|edu|gov|in|uk|us)$";
 
-        private string emailRegexPattern = @"(^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$)";
-        private string hyperLinkRegexPattern = @"(^[a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|gov|in|uk|us)$)";
-        private string phoneNumberRegexPattern = @"^([0-9\(\)\/\+ \-]*)$";
+        private string emailRegexPattern = @"(([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+))";
+        private string hyperLinkRegexPattern = @"([a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|gov|in|uk|us))";
+        private string phoneNumberRegexPattern = @"([\d\+\-]*)";
 
         private Regex emailRegex;
         public Regex EmailRegex
@@ -624,14 +624,19 @@ namespace windows_client
             Hyperlink caller = sender as Hyperlink;
             PhoneCallTask phoneCallTask = new PhoneCallTask();
             string targetPhoneNumber = caller.TargetName.Replace("-", "");
-            targetPhoneNumber.Trim();
+            targetPhoneNumber = targetPhoneNumber.Trim();
             targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
-            phoneCallTask.PhoneNumber = caller.TargetName.Replace("-", "");
+            phoneCallTask.PhoneNumber = targetPhoneNumber;
             phoneCallTask.Show();
         }
 
         public Paragraph LinkifyAll(string message)
         {
+            Regex emoticon = new Regex(":\\)\\)");
+            bool emoticonMatch = emoticon.IsMatch(message);
+
+            bool isPhone = PhoneNumberRegex.IsMatch(message);
+
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
             int startIndex = 0;
