@@ -483,11 +483,11 @@ namespace windows_client.View
                 /* Check if it is a forwarded msg */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG))
                 {
+                    NavigationService.RemoveBackEntry(); // remove last chat thread page
                     if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is string)
                     {
                         sendMsgTxtbox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
                         PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                        NavigationService.RemoveBackEntry(); // remove last chat thread page
                     }
                     //else if (PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
                     //{
@@ -854,8 +854,7 @@ namespace windows_client.View
 
         private void forwardAttachmentMessage()
         {
-            if (this.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE) &&
-                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG) &&
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.FORWARD_MSG) &&
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] is object[])
             {
                 object[] attachmentData = (object[])PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG];
@@ -891,7 +890,6 @@ namespace windows_client.View
                 vals[1] = sourceFilePath;
                 mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
-                NavigationService.RemoveBackEntry(); // remove last chat thread page
             }
         }
 

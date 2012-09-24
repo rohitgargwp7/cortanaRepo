@@ -40,6 +40,12 @@ namespace windows_client.View
             walkThrough.ApplicationBar = appBar;
         }
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
+        }
         private void doneBtn_Click(object sender, EventArgs e)
         {
             // this is done to avoid navigation exception

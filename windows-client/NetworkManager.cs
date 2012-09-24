@@ -104,12 +104,13 @@ namespace windows_client
                     ConvMessage convMessage = new ConvMessage(jsonObj);
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
+                    
+                    if (obj == null)
+                        return;
                     if (convMessage.FileAttachment != null)
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
-                    if (obj == null)
-                        return;
                     object[] vals = null;
 
                     if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc msg
