@@ -670,10 +670,12 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
-                App.ViewModel.MessageListPageCollection.RemoveAt(0);
-                App.ViewModel.MessageListPageCollection.Insert(0, c);
-            
+                if (App.ViewModel.MessageListPageCollection.Count > 0)
+                {
+                    ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
+                    App.ViewModel.MessageListPageCollection.RemoveAt(0);
+                    App.ViewModel.MessageListPageCollection.Insert(0, c);
+                }
             });
         }
 

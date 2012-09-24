@@ -1085,7 +1085,7 @@ namespace windows_client.View
                     if (chatBubble is ReceivedChatBubble)
                     {
                         chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
-                        FileTransfer.Instance.downloadFile(chatBubble, mContactNumber);
+                        FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
                         MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
                     }
                     else if (chatBubble is SentChatBubble)
