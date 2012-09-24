@@ -13,8 +13,8 @@ namespace windows_client.utils
             DateTime now = DateTime.UtcNow;
 
             TimeSpan span = now.Subtract(messageTime);
-            messageTime = messageTime.AddHours(5);
-            messageTime = messageTime.AddMinutes(30);
+
+            messageTime = messageTime.ToLocalTime();
 
             StringBuilder messageTimeString = new StringBuilder();
             if (span.Days < 1)
@@ -46,8 +46,8 @@ namespace windows_client.utils
             DateTime now = DateTime.UtcNow;
 
             TimeSpan span = now.Subtract(messageTime);
-            messageTime = messageTime.AddHours(5);
-            messageTime = messageTime.AddMinutes(30);
+
+            messageTime = messageTime.ToLocalTime();
 
             StringBuilder messageTimeString = new StringBuilder();
             if (span.Days < 1)
