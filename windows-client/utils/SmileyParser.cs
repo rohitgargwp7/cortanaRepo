@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client
 {
@@ -226,6 +227,7 @@ namespace windows_client
 
         private string emailRegexPattern = @"(^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$)";
         private string hyperLinkRegexPattern = @"(^[a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|gov|in|uk|us)$)";
+        private string phoneNumberRegexPattern = @"^([0-9\(\)\/\+ \-]*)$";
 
         private Regex emailRegex;
         public Regex EmailRegex
@@ -249,10 +251,22 @@ namespace windows_client
             }
         }
 
+        private Regex phoneNumberRegex;
+        public Regex PhoneNumberRegex
+        {
+            get
+            {
+                if (phoneNumberRegex == null)
+                    phoneNumberRegex = new Regex(phoneNumberRegexPattern);
+                return phoneNumberRegex;
+            }
+        }
+
         public enum RegexType
         {
             EMAIL = 0,
             URL,
+            PHONE_NO,
             EMOTICONS
         }
 
@@ -263,7 +277,8 @@ namespace windows_client
                 return RegexType.EMAIL;
             if (HyperLinkRegex.IsMatch(s))
                 return RegexType.URL;
-            //            if(EmoticonRegex.IsMatch(s))
+            if (PhoneNumberRegex.IsMatch(s))
+                return RegexType.PHONE_NO;
             return RegexType.EMOTICONS;
         }
 
@@ -555,6 +570,8 @@ namespace windows_client
                 patternString.Append(emailRegexPattern);
                 patternString.Append('|');
                 patternString.Append(hyperLinkRegexPattern);
+                patternString.Append('|');
+                patternString.Append(phoneNumberRegexPattern);
                 patternString.Append(')');
             }
             return new Regex("(" + patternString.ToString());
@@ -602,9 +619,18 @@ namespace windows_client
             }
             return p;
         }
+        private void selectUserBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Hyperlink caller = sender as Hyperlink;
+            PhoneCallTask phoneCallTask = new PhoneCallTask();
+            phoneCallTask.PhoneNumber = caller.TargetName;
+            phoneCallTask.Show();
+        }
 
         public Paragraph LinkifyAll(string message)
         {
+            bool isPhone = PhoneNumberRegex.IsMatch(message);
+
             MatchCollection m = EmailRegex.Matches(message);
             bool isEmail = m.Count > 0;
             m = HyperLinkRegex.Matches(message);
@@ -643,17 +669,23 @@ namespace windows_client
                     {
                         Hyperlink MyLink = new Hyperlink();
                         string url = regexMatch;
-                        if (regexType == RegexType.EMAIL && !regexMatch.StartsWith("mailto:"))
+                        if (regexType == RegexType.EMAIL && !regexMatch.StartsWith("call:"))
                             url = "mailto:" + regexMatch;
                         else if (regexType == RegexType.URL && !regexMatch.StartsWith("http://") && !regexMatch.StartsWith("ftp://") &&
                             !regexMatch.StartsWith("https://"))
                             url = "http://" + regexMatch;
-                        
-                        MyLink.NavigateUri = new Uri(url);
+                        if (regexType == RegexType.PHONE_NO)
+                        {
+                            MyLink.Click += new RoutedEventHandler(selectUserBtn_Click);
+                            MyLink.TargetName = regexMatch;
+                        }
+                        else
+                        {
+                            MyLink.NavigateUri = new Uri(url);
+                            MyLink.TargetName = "_blank";
+                        } 
                         MyLink.Inlines.Add(regexMatch);
-                        MyLink.TargetName = "_blank";
                         p.Inlines.Add(MyLink);
-
                     }
                     catch (UriFormatException)
                     {
