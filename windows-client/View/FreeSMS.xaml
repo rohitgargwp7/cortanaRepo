@@ -10,26 +10,26 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="False">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="360"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" x:Name="FreeSMSGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="60"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Free SMS" Margin="10,10,0,0"/>
+            <TextBlock Grid.Row="0" Text="Free SMS" Margin="25,30,0,0"/>
 
-            <Grid Grid.Row="1" VerticalAlignment="Center">
+            <Grid Grid.Row="1" Margin="0,60,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -42,9 +42,13 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Free SMS left" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0"/>
-                <TextBlock Text="Max per month: 300" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
-                <Rectangle Height="4" Fill="#eeeeec" Grid.Column="0" Grid.Row="1" Margin="0,0,20,0"></Rectangle>
-                <Rectangle Height="4" Fill="#eeeeec" Grid.Column="2" Grid.Row="1" Margin="20,0,0,0"></Rectangle>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2">
+                    <TextBlock Text="Max per month: " Foreground="#9b9b9b" />
+                    <TextBlock x:Name="MaxCredits" Text="300"></TextBlock>
+                </StackPanel>
+                
+                <Rectangle Height="2" Fill="#181818" Grid.Column="0" Grid.Row="1" Margin="0,0,20,0"></Rectangle>
+                <Rectangle Height="2" Fill="#181818" Grid.Column="2" Grid.Row="1" Margin="20,0,0,0"></Rectangle>
 
                 <Grid x:Name="SMSCounterGrid" Grid.Row="1" Grid.Column="1">
                     <Grid.ColumnDefinitions>
@@ -53,16 +57,16 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Rectangle Grid.Column="0" Fill="#333333" Margin="5"></Rectangle>
-                    <TextBlock x:Name="t0" Text="2" Grid.Column="0" HorizontalAlignment="Center" FontSize="45"></TextBlock>
-                    <Rectangle Grid.Column="1" Fill="#333333" Margin="5"></Rectangle>
+                    <Rectangle x:Name="r0" Grid.Column="0" Margin="5"></Rectangle>
+                    <TextBlock x:Name="t0" Text="2"  Grid.Column="0" HorizontalAlignment="Center" FontSize="45"></TextBlock>
+                    <Rectangle x:Name="r1" Grid.Column="1"  Margin="5"></Rectangle>
                     <TextBlock x:Name="t1" Text="2" Grid.Column="1" HorizontalAlignment="Center" FontSize="45"></TextBlock>
-                    <Rectangle Grid.Column="2" Fill="#333333" Margin="5"></Rectangle>
+                    <Rectangle x:Name="r2" Grid.Column="2" Margin="5"></Rectangle>
                     <TextBlock x:Name="t2" Text="2" Grid.Column="2" HorizontalAlignment="Center" FontSize="45"></TextBlock>
-                    
+
                 </Grid>
             </Grid>
-            <TextBlock Grid.Row="2" Text="Your free SMS refills on the 1st of every month" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Row="2" Margin="0,0,0,15" Foreground="#9f9f9f" Text="Your free SMS refills on the 1st of every month" HorizontalAlignment="Center"/>
         </Grid>
 
         <Grid x:Name="InviteFriendsGrid" Grid.Row="1" Margin="1,0,-1,0">
@@ -77,14 +81,14 @@
                 <TextBlock Text="Invite Friends, Earn Rewards." FontWeight="Light" FontSize="25" HorizontalAlignment="Center"/>
                 <TextBlock Text="For every friend who joins you get:" FontWeight="Light" FontSize="20" HorizontalAlignment="Center"/>
             </StackPanel>
-            
+
             <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Image Source="images\freesms.png" Height="30" Width="30"></Image>
                 <TextBlock MaxWidth="150" Margin="13,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap" Text="50 Free SMS every month"></TextBlock>
                 <Button Content="Invite Now" BorderThickness="2" Height="80"></Button>
-            
+
             </StackPanel>
-            
+
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
