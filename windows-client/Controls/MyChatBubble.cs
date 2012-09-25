@@ -26,24 +26,21 @@ namespace windows_client.Controls
         private ConvMessage.State _messageState;
         public Attachment FileAttachment;
 
-        public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
+//        public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
 
-        public string Text
-        {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
+        public string Text;
+        
 
-        public static DependencyProperty TimeStampProperty = DependencyProperty.Register("TimeStamp", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
+//        public static DependencyProperty TimeStampProperty = DependencyProperty.Register("TimeStamp", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
 
-        public string TimeStamp
-        {
-            get { return (string)GetValue(TimeStampProperty); }
-            set
-            {
-                SetValue(TimeStampProperty, value);
-            }
-        }
+        public string TimeStamp;
+        //{
+        //    get { return (string)GetValue(TimeStampProperty); }
+        //    set
+        //    {
+        //        SetValue(TimeStampProperty, value);
+        //    }
+        //}
 
         //TODO: Try to use a single property for timestamp.
         //either dispose off the convmessage or else keep a reference to it in this class

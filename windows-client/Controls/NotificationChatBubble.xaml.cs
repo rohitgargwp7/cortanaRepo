@@ -54,7 +54,7 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.Reward;
                     break;
             }
-            Text = message;
+            UserName.Text = message;
         }
     }
 }

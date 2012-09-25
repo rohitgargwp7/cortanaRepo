@@ -24,7 +24,7 @@ namespace windows_client.Controls
             // Required to initialize variables
             InitializeComponent();
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            initializeBasedOnState(cm.HasAttachment, contentType);
+            initializeBasedOnState(cm.HasAttachment, contentType, cm.Message);
             //IsSms is false for group chat
             if (cm.IsSms)
             {
@@ -80,7 +80,7 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(true, "image");
+            initializeBasedOnState(true, "image", cm.Message);
             if (!cm.IsSms)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
@@ -195,7 +195,7 @@ namespace windows_client.Controls
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType)
+        private void initializeBasedOnState(bool hasAttachment, string contentType, string messageString)
         {
             BubbleBg = new Rectangle();
             Grid.SetRowSpan(BubbleBg, 2);
@@ -252,12 +252,12 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBox(24);
+                MessageText = new LinkifiedTextBox(24, messageString);
                 MessageText.Width = 340;
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
-                Binding messageTextBinding = new Binding("Text");
-                MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
+                //Binding messageTextBinding = new Binding("Text");
+                //MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, 0);
                 Grid.SetColumn(MessageText, 1);
                 wrapperGrid.Children.Add(MessageText);

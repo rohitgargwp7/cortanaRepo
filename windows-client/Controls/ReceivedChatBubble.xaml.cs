@@ -21,7 +21,7 @@ namespace windows_client.Controls
             string contentType = cm.FileAttachment == null?"": cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            initializeBasedOnState(cm.HasAttachment, contentType, showDownload);
+            initializeBasedOnState(cm.HasAttachment, contentType, showDownload, cm.Message);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
@@ -73,7 +73,7 @@ namespace windows_client.Controls
 
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType, bool showDownload)
+        private void initializeBasedOnState(bool hasAttachment, string contentType, bool showDownload, string messageString)
         {
             Rectangle BubbleBg = new Rectangle();
             BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
@@ -134,11 +134,11 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 24);
+                MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 24, messageString);
                 MessageText.Width = 340;
                 MessageText.Margin = messageTextMargin;
-                Binding messageTextBinding = new Binding("Text");
-                MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
+                //Binding messageTextBinding = new Binding("Text");
+                //MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, 0);
                 wrapperGrid.Children.Add(MessageText);
 
