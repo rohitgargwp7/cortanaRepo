@@ -172,6 +172,9 @@
     <Compile Include="View\NewSelectUserPage.xaml.cs">
       <DependentUpon>NewSelectUserPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Privacy.xaml.cs">
+      <DependentUpon>Privacy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -256,6 +259,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Privacy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -284,6 +291,9 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\unlink_account_black.png" />
+    <Content Include="View\images\unlink_account_white.png" />
     <Resource Include="hi.png" />
     <Content Include="View\images\3rewards.jpg" />
     <Content Include="View\images\add_users.png" />
@@ -304,6 +314,7 @@
     <Content Include="View\images\chat_waiting.png" />
     <Content Include="View\images\default_group.png" />
     <Content Include="View\images\default_user.png" />
+    <Content Include="View\images\delete_account_black.png" />
     <Content Include="View\images\download_icon.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />
     <Content Include="View\images\emoticons\emo_im_02_happy.png" />
