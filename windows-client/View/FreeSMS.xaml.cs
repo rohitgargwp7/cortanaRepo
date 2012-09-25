@@ -27,8 +27,8 @@ namespace windows_client.View
 
         private void initpageBasedOnState()
         {
-//            int creditsRemaining = (int)App.appSettings[App.SMS_SETTING];
-            int creditsRemaining = 8796;
+            int creditsRemaining = (int)App.appSettings[App.SMS_SETTING];
+//            int creditsRemaining = 8796;
             TextBlock t3 = null;
             Rectangle r3 = null;
             if (creditsRemaining > 999)
