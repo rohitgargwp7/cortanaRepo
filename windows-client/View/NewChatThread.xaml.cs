@@ -25,6 +25,7 @@ namespace windows_client.View
 {
     public partial class NewChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
+        
         #region CONSTANTS AND PAGE OBJECTS
 
         private readonly string ON_HIKE_TEXT = "Free Message...";
@@ -34,7 +35,7 @@ namespace windows_client.View
         private readonly string UNBLOCK_USER = "UNBLOCK";
 
         private string groupOwner = null;
-        private string mContactNumber;
+        public string mContactNumber;
         private string mContactName = null;
         private string lastText = "";
 
