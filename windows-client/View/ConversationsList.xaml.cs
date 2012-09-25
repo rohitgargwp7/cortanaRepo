@@ -406,7 +406,6 @@ namespace windows_client.View
             }
         }
 
-
         private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
@@ -441,20 +440,13 @@ namespace windows_client.View
                 profileImage.UriSource = uri;
                 profileImage.ImageOpened += imageOpenedHandler;
             }
-            //else if (e.TaskResult == TaskResult.Cancel)
-            //{
-            //    isProfilePicTapped = false;
-            //    progressBarTop.IsEnabled = false;
-            //    progressBarTop.Opacity = 0;
-            //}
-            else
+            else if (e.TaskResult == TaskResult.Cancel)
             {
-                Uri uri = new Uri("/View/images/enter_name.png", UriKind.Relative);
-                profileImage = new BitmapImage(uri);
-                profileImage.CreateOptions = BitmapCreateOptions.None;
-                profileImage.UriSource = uri;
-                profileImage.ImageOpened += imageOpenedHandler;
+                isProfilePicTapped = false;
+                progressBarTop.IsEnabled = false;
+                progressBarTop.Opacity = 0;
             }
+
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
