@@ -755,7 +755,6 @@ namespace windows_client.Model
 
         public ConvMessage(JObject obj, bool isSelfGenerated)
         {
-
             // If the message is a group message we get a TO field consisting of the Group ID
             string toVal = obj[HikeConstants.TO].ToString();
             this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/

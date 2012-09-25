@@ -185,8 +185,9 @@ namespace windows_client.DbUtils
 
         public static ConversationListObject addChatMessage(ConvMessage convMsg, bool isNewGroup)
         {
+            if (convMsg == null)
+                return null;
             ConversationListObject obj = null;
-
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.

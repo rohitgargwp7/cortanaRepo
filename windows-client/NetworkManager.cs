@@ -114,14 +114,31 @@ namespace windows_client
                     object[] vals = null;
 
                     if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc msg
-                    {
-                        vals = new object[3];
+                    {                       
                         JObject oj = ConvMessage.ProcessGCLogic(obj.Msisdn);
-                        ConvMessage cm = new ConvMessage(oj, true);
-                        MessagesTableUtils.addChatMessage(cm, false);
+                        if (oj != null)
+                        {
+                            ConvMessage cm;
+                            try
+                            {
+                                cm = new ConvMessage(oj, true);
+                                vals = new object[3];
+                                vals[2] = cm;
+                                MessagesTableUtils.addChatMessage(cm, false);
+                            }
+                            catch (Exception e)
+                            {
+                                vals = new object[2];
+                                cm = null;
+                                Debug.WriteLine("NETWORK MANAGER :: Problem while parsing json and creating ConvMessage object.");
+                            }                                                      
+                        }
+                        else
+                        {
+                            vals = new object[2];
+                        }
                         obj.IsFirstMsg = false;
                         ConversationTableUtils.updateConversation(obj);
-                        vals[2] = cm;
                     }
                     else
                         vals = new object[2];
@@ -565,6 +582,19 @@ namespace windows_client
                                 return true;
                             }
                             l[k].IsDND = dnd;
+                            if (!l[k].IsOnHike && onhike) // this is the case where client thinks that a given user is not on hike but actually he is onl hike
+                            {
+                                ConversationListObject co = null;
+                                ConversationsList.ConvMap.TryGetValue(grpId, out co);
+                                if (co != null)
+                                {
+                                    co.IsFirstMsg = false;
+                                    ConversationTableUtils.updateConversation(co);
+                                    if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == grpId)
+                                        App.newChatThreadPage.IsFirstMsg = false;
+                                    UsersTableUtils.updateOnHikeStatus(ms,true);
+                                }                                    
+                            }
                             l[k].IsOnHike = onhike;
                             output = false;
                             break;
