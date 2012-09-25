@@ -20,6 +20,7 @@ namespace windows_client.View
         bool isClicked = false;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
+        private bool secondScreenSeen = false;
 
         public Walkthrough()
         {
@@ -70,6 +71,7 @@ namespace windows_client.View
                     break;
                     
                 case 1:
+                    secondScreenSeen = true;
                     box0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
                     box1.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
                     box2.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
@@ -81,7 +83,8 @@ namespace windows_client.View
                     box0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
                     box1.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
                     box2.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
-                    nextIconButton.IsEnabled = true;
+                    if(secondScreenSeen)
+                        nextIconButton.IsEnabled = true;
                     if (swipeLeft.Visibility == Visibility.Visible)
                         swipeLeft.Visibility = Visibility.Collapsed;
                     break;
