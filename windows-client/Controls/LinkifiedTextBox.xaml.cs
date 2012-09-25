@@ -38,28 +38,28 @@ namespace windows_client.Controls
         #endregion
 
         #region FontColor
-        public static DependencyProperty ForegroundColorProperty =
-        DependencyProperty.Register("ForegroundColor", typeof(SolidColorBrush), typeof(LinkifiedTextBox),
-            new PropertyMetadata(ChangedForeground));
+        //public static DependencyProperty ForegroundColorProperty =
+        //DependencyProperty.Register("ForegroundColor", typeof(SolidColorBrush), typeof(LinkifiedTextBox),
+        //    new PropertyMetadata(ChangedForeground));
 
-        public SolidColorBrush ForegroundColor
-        {
-            get { return (SolidColorBrush)GetValue(ForegroundColorProperty); }
-            set { SetValue(ForegroundColorProperty, value); }
-        }
+        //public SolidColorBrush ForegroundColor
+        //{
+        //    get { return (SolidColorBrush)GetValue(ForegroundColorProperty); }
+        //    set { SetValue(ForegroundColorProperty, value); }
+        //}
 
-        private static void ChangedForeground(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((LinkifiedTextBox)d).ChangedForeground(e);
-        }
+        //private static void ChangedForeground(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    ((LinkifiedTextBox)d).ChangedForeground(e);
+        //}
 
-        private void ChangedForeground(DependencyPropertyChangedEventArgs e)
-        {
-            if (e.OldValue != e.NewValue)
-            {
-                this.RichText.Foreground = (SolidColorBrush)e.NewValue;
-            }
-        }
+        //private void ChangedForeground(DependencyPropertyChangedEventArgs e)
+        //{
+        //    if (e.OldValue != e.NewValue)
+        //    {
+        //        this.RichText.Foreground = (SolidColorBrush)e.NewValue;
+        //    }
+        //}
         #endregion
 
         public LinkifiedTextBox()
