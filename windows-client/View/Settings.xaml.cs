@@ -113,5 +113,15 @@ namespace windows_client.View
                     e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
                     );
         }
+
+        private void vibrate_Checked(object sender, RoutedEventArgs e)
+        {
+            this.vibrate.Content = "On";
+        }
+
+        private void vibrate_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.vibrate.Content = "Off";
+        }
     }
 }
