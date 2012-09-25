@@ -99,18 +99,20 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4, 10, 0,0">
                         <Button Height="Auto" Tap="onProfilePicButtonTap">
                             <StackPanel Orientation="Horizontal" Margin="-15">
-                                <Border BorderBrush="Black" BorderThickness="3">
-                                    <Image x:Name="avatarImage" Height="80"  Source="images\default_user.png" />
-                                </Border>
+                                <!--<Border BorderBrush="Black" BorderThickness="3">-->
+                                    <Image x:Name="avatarImage" Height="83"  Source="images\default_user.png" />
+                                <!--</Border>-->
                             </StackPanel>
                         </Button>
 
                         <StackPanel Name="accountStackPanel" Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
                             <TextBlock x:Name="accountName" FontSize="35" Text="UNKNOWN"/>
-                            <StackPanel Orientation="Horizontal">
+                            <!--<StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Free SMS remaining: " FontFamily="Segoe WP SemiLight" Foreground="#8d8d8d"></TextBlock>
                                 <TextBlock x:Name="creditsTxtBlck" Text="" Foreground="#8d8d8d"></TextBlock>
-                            </StackPanel>
+                            </StackPanel>-->
+                            <TextBlock Text="Edit Profile" FontFamily="Segoe WP SemiLight"/>
+
                         </StackPanel>
                     </StackPanel>
 
@@ -125,7 +127,7 @@
                             </Image>
                             <TextBlock Text="Settings" FontSize="39" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Privacy_Tap">
                             <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Height="35"></Image>
                             <TextBlock Text="Privacy" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
