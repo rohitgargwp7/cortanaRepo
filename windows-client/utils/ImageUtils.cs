@@ -16,6 +16,8 @@ namespace windows_client.utils
         private SolidColorBrush hikeMsgBackground;
         private SolidColorBrush walkThroughSelectedColumn;
         private SolidColorBrush walkThroughUnselectedColumn;
+        private SolidColorBrush black;
+        private SolidColorBrush white;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -106,6 +108,26 @@ namespace windows_client.utils
                 if (walkThroughUnselectedColumn == null)
                     walkThroughUnselectedColumn = new SolidColorBrush(Color.FromArgb(255, 0xe8, 0xe9, 0xe9));
                 return walkThroughUnselectedColumn;
+            }
+        }
+
+        public SolidColorBrush Black
+        {
+            get
+            {
+                if (black == null)
+                    black = new SolidColorBrush(Color.FromArgb(255, 0x0, 0x0, 0x0));
+                return black;
+            }
+        }
+
+        public SolidColorBrush White
+        {
+            get
+            {
+                if (white == null)
+                    white = new SolidColorBrush(Color.FromArgb(255, 0xff, 0xff, 0xff));
+                return white;
             }
         }
         
