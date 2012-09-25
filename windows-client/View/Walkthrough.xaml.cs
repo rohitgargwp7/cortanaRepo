@@ -34,7 +34,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = "Done";
+            nextIconButton.Text = "let's hike";
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);

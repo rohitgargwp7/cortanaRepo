@@ -46,7 +46,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            nextIconButton.Text = "done";
+            nextIconButton.Text = "save";
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;
             appBar.Buttons.Add(nextIconButton);
