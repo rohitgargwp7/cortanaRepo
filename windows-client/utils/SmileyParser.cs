@@ -670,7 +670,7 @@ namespace windows_client
                     {
                         Hyperlink MyLink = new Hyperlink();
                         string url = regexMatch;
-                        if (regexType == RegexType.EMAIL && !regexMatch.StartsWith("call:"))
+                        if (regexType == RegexType.EMAIL)
                             url = "mailto:" + regexMatch;
                         else if (regexType == RegexType.URL && !regexMatch.StartsWith("http://") && !regexMatch.StartsWith("ftp://") &&
                             !regexMatch.StartsWith("https://"))
