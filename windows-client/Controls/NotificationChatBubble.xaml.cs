@@ -56,27 +56,5 @@ namespace windows_client.Controls
             }
             Text = message;
         }
-
-
-        public NotificationChatBubble(string message, bool onHike) {
-            // Required to initialize variables
-            InitializeComponent();
-            if (Utils.isDarkTheme())
-                notStackPanel.Background = new SolidColorBrush(Color.FromArgb(51,51,51,1));
-            if (!String.IsNullOrEmpty(message))
-            {
-                this.Text = message;
-            }
-            this.NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
-            if (onHike)
-            {
-                //this.HikeBubble.Source = UI_Utils.Instance.MessageReadBitmapImage;
-            }
-            else
-            {
-                //this.HikeBubble.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
-
-            }
-        }
     }
 }

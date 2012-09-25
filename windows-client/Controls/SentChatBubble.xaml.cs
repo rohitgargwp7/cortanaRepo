@@ -7,6 +7,8 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Data;
+using Microsoft.Phone.Reactive;
+using System;
 
 namespace windows_client.Controls
 {
@@ -14,13 +16,14 @@ namespace windows_client.Controls
     {
         private SolidColorBrush bubbleColor;
         private ConvMessage.State messageState;
+        private IScheduler scheduler = Scheduler.NewThread;
 
-        public SentChatBubble(ConvMessage cm)
+        public SentChatBubble(ConvMessage cm, bool readFromDB)
             : base(cm)
         {
             // Required to initialize variables
             InitializeComponent();
-            string contentType = cm.FileAttachment == null?"": cm.FileAttachment.ContentType;
+            string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             initializeBasedOnState(cm.HasAttachment, contentType);
             //IsSms is false for group chat
             if (cm.IsSms)
@@ -48,10 +51,16 @@ namespace windows_client.Controls
                         this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
                     }
                     break;
+                case ConvMessage.State.SENT_UNCONFIRMED:
+                    if (readFromDB)
+                        this.SDRImage.Source = UI_Utils.Instance.Trying;
+                    else
+                        scheduleTryingImage();
+                    break;
                 default:
                     break;
             }
-            if (cm.FileAttachment!=null && cm.FileAttachment.Thumbnail!=null)
+            if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null)
             {
                 using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
                 {
@@ -61,7 +70,7 @@ namespace windows_client.Controls
                     this.MessageImage.Source = fileThumbnail;
                 }
             }
-            
+
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
@@ -91,36 +100,6 @@ namespace windows_client.Controls
             }
         }
 
-        //public SentChatBubble(MyChatBubble chatBubble, long messageId, bool onHike)
-        //    :base(chatBubble, messageId)
-        //{
-        //    InitializeComponent();
-        //    string contentType = chatBubble.FileAttachment == null ? "" : chatBubble.FileAttachment.ContentType;
-        //    initializeBasedOnState(chatBubble.FileAttachment != null, contentType);
-
-        //    if (onHike)
-        //    {
-        //        bubbleColor = UI_Utils.Instance.HikeMsgBackground;
-        //        uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
-        //    }
-        //    else
-        //    {
-        //        bubbleColor = UI_Utils.Instance.SmsBackground;
-        //        uploadProgress.Background = UI_Utils.Instance.SmsBackground;
-        //    }
-        //    this.BubblePoint.Fill = bubbleColor;
-        //    this.BubbleBg.Fill = bubbleColor;
-        //    if (chatBubble.FileAttachment != null && (chatBubble.FileAttachment.ContentType.Contains("video") ||
-        //        (chatBubble.FileAttachment.ContentType.Contains("image"))))
-        //    {
-        //        if (chatBubble is SentChatBubble)
-        //            this.MessageImage.Source = (chatBubble as SentChatBubble).MessageImage.Source;
-        //        else if (chatBubble is ReceivedChatBubble)
-        //            this.MessageImage.Source = (chatBubble as ReceivedChatBubble).MessageImage.Source;
-        //    }
-        //}
-
-
         public void SetSentMessageStatus(ConvMessage.State msgState)
         {
             if ((int)messageState < (int)msgState)
@@ -146,7 +125,26 @@ namespace windows_client.Controls
                         case ConvMessage.State.SENT_FAILED:
                             this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
                             break;
+                        case ConvMessage.State.SENT_UNCONFIRMED:
+                            scheduleTryingImage();
+                            break;
                     }
+                });
+            }
+        }
+
+        public void scheduleTryingImage()
+        {
+            scheduler.Schedule(setTryingImage, TimeSpan.FromSeconds(3));
+        }
+
+        private void setTryingImage()
+        {
+            if (this.messageState == ConvMessage.State.SENT_UNCONFIRMED)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    this.SDRImage.Source = UI_Utils.Instance.Trying;
                 });
             }
         }
@@ -271,7 +269,7 @@ namespace windows_client.Controls
             Grid.SetRowSpan(SDRImage, 2);
             Grid.SetColumn(SDRImage, 0);
             wrapperGrid.Children.Add(SDRImage);
-            
+
 
             TimeStampBlock = new TextBlock();
             TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;

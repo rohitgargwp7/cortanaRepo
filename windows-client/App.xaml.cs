@@ -268,7 +268,7 @@ namespace windows_client
                     ConversationsList.LoadMessages();
                     if (ConversationsList.ConvMap == null)
                         ConversationsList.ConvMap = new Dictionary<string, ConversationListObject>();
-                    SmileyParser.loadEmoticons();
+                    SmileyParser.Instance.initializeSmileyParser();
                 }
             }
         }

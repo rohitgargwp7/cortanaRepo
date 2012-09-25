@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows.Documents;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace windows_client.utils
 {
@@ -26,12 +27,15 @@ namespace windows_client.utils
         private BitmapImage sent;
         private BitmapImage delivered;
         private BitmapImage read;
+        private BitmapImage trying;
         private BitmapImage defaultAvatarBitmapImage;
         private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
         private BitmapImage reward;
         private BitmapImage participantLeft;
         private SolidColorBrush receiveMessageForeground;
+        private Thickness convListEmoticonMargin;
+
 
         private static volatile UI_Utils instance = null;
 
@@ -215,6 +219,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage Trying
+        {
+            get
+            {
+                if (trying == null)
+                    trying = new BitmapImage(new Uri("/View/images/trying_icon.png", UriKind.Relative));
+                return trying;
+            }
+        }
+
         public BitmapImage DefaultAvatarBitmapImage
         {
             get
@@ -272,6 +286,16 @@ namespace windows_client.utils
                 if (receiveMessageForeground == null)
                     receiveMessageForeground = new SolidColorBrush(Color.FromArgb(255, 83, 83, 83));
                 return receiveMessageForeground;
+            }
+        }
+
+        public Thickness ConvListEmoticonMargin
+        {
+            get
+            { 
+                if(convListEmoticonMargin == null)
+                    convListEmoticonMargin = new Thickness(0, 5, 0, 0);
+                return convListEmoticonMargin;
             }
         }
 
