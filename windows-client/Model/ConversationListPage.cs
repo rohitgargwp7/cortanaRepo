@@ -219,6 +219,8 @@ namespace windows_client.Model
                 {
                     if (_avatar == null)
                     {
+                        if (Utils.isGroupConversation(_msisdn))
+                            return UI_Utils.Instance.DefaultGroupImage;
                         return UI_Utils.Instance.DefaultAvatarBitmapImage;
                     }
                     else
