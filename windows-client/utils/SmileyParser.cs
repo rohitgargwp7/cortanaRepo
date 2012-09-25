@@ -277,8 +277,8 @@ namespace windows_client
                 return RegexType.EMAIL;
             if (HyperLinkRegex.IsMatch(s))
                 return RegexType.URL;
-            if (PhoneNumberRegex.IsMatch(s))
-                return RegexType.PHONE_NO;
+            //if (PhoneNumberRegex.IsMatch(s))
+            //    return RegexType.PHONE_NO;
             return RegexType.EMOTICONS;
         }
 
@@ -570,8 +570,8 @@ namespace windows_client
                 patternString.Append(emailRegexPattern);
                 patternString.Append('|');
                 patternString.Append(hyperLinkRegexPattern);
-                patternString.Append('|');
-                patternString.Append(phoneNumberRegexPattern);
+                //patternString.Append('|');
+                //patternString.Append(phoneNumberRegexPattern);
                 patternString.Append(')');
             }
             return new Regex("(" + patternString.ToString());
