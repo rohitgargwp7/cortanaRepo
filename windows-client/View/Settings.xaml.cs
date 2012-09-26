@@ -117,11 +117,13 @@ namespace windows_client.View
         private void vibrate_Checked(object sender, RoutedEventArgs e)
         {
             this.vibrate.Content = "On";
+            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED, true);
         }
 
         private void vibrate_Unchecked(object sender, RoutedEventArgs e)
         {
             this.vibrate.Content = "Off";
+            App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED, false);
         }
     }
 }

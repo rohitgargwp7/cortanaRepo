@@ -20,6 +20,7 @@ using System.Windows.Documents;
 using Microsoft.Phone.Notification;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
+using Microsoft.Devices;
 
 namespace windows_client.View
 {
@@ -693,7 +694,13 @@ namespace windows_client.View
                         emptyScreenImage.Opacity = 0;
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
-
+                bool isVibrateEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                if (isVibrateEnabled)
+                {
+                    VibrateController vibrate = VibrateController.Default;
+                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                }
 
             }
             #endregion

@@ -47,6 +47,8 @@ namespace windows_client
         public static string SET_NAME_FAILED = "setNameFailed";
         public static string EMAIL = "email";
         public static string GENDER = "gender";
+        public static readonly string VIBRATE_PREF = "vibratePref";
+
 
         #endregion
 
