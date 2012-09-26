@@ -285,14 +285,6 @@ namespace windows_client.View
                 grpImage.UriSource = uri;
                 grpImage.ImageOpened += imageOpenedHandler;
             }
-            else
-            {
-                Uri uri = new Uri("/View/images/enter_name.png", UriKind.Relative);
-                grpImage = new BitmapImage(uri);
-                grpImage.CreateOptions = BitmapCreateOptions.None;
-                grpImage.UriSource = uri;
-                grpImage.ImageOpened += imageOpenedHandler;
-            }
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
