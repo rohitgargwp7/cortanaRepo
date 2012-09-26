@@ -20,12 +20,13 @@ using Microsoft.Phone.Tasks;
 using System.IO;
 using windows_client.Controls;
 using System.Text;
+using Microsoft.Devices;
 
 namespace windows_client.View
 {
     public partial class NewChatThread : PhoneApplicationPage, HikePubSub.Listener, INotifyPropertyChanged
     {
-        
+
         #region CONSTANTS AND PAGE OBJECTS
 
         private readonly string ON_HIKE_TEXT = "Free Message...";
@@ -1461,6 +1462,32 @@ namespace windows_client.View
         private static bool abc = true;
         private static bool isReleaseMode = true;
 
+        private void adjustAspectRatio(int width, int height, bool isThumbnail, out int adjustedWidth, out int adjustedHeight)
+        {
+            int maxHeight, maxWidth;
+            if (isThumbnail)
+            {
+                maxHeight = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT;
+                maxWidth = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH;
+            }
+            else
+            {
+                maxHeight = HikeConstants.ATTACHMENT_MAX_HEIGHT;
+                maxWidth = HikeConstants.ATTACHMENT_MAX_WIDTH;
+            }
+
+            if (height > width)
+            {
+                adjustedHeight = maxHeight;
+                adjustedWidth = (width * adjustedHeight) / height;
+            }
+            else
+            {
+                adjustedWidth = maxWidth;
+                adjustedHeight = (height * adjustedWidth) / width;
+            }
+        }
+
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
@@ -1477,23 +1504,18 @@ namespace windows_client.View
 
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
 
-                int thumbnailHeight, thumbnailWidth;
-                if (image.PixelHeight > image.PixelWidth)
-                {
-                    thumbnailHeight = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT;
-                    thumbnailWidth = (image.PixelWidth * thumbnailHeight) / image.PixelHeight;
-                }
-                else
-                {
-                    thumbnailWidth = HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH;
-                    thumbnailHeight = (image.PixelHeight * thumbnailWidth) / image.PixelWidth;
-                }
+                int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
+
+                adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
+                adjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
 
                 using (var msSmallImage = new MemoryStream())
                 {
                     writeableBitmap.SaveJpeg(msSmallImage, thumbnailWidth, thumbnailHeight, 0, 50);
                     thumbnailBytes = msSmallImage.ToArray();
                 }
+
+
 
                 string fileName = image.UriSource.ToString();
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
@@ -1509,7 +1531,7 @@ namespace windows_client.View
 
                 using (var msLargeImage = new MemoryStream())
                 {
-                    writeableBitmap.SaveJpeg(msLargeImage, image.PixelWidth, image.PixelHeight, 0, 65);
+                    writeableBitmap.SaveJpeg(msLargeImage, imageWidth, imageHeight, 0, 65);
                     fileBytes = msLargeImage.ToArray();
                 }
                 object[] vals = new object[3];
@@ -1571,7 +1593,15 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
+            this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
         }
+
+        private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
+
+        }
+
 
         #endregion
 
@@ -1973,6 +2003,9 @@ namespace windows_client.View
                         toast.Message = cObj.LastMessage;
                         toast.ImageSource = new BitmapImage(new Uri("ApplicationIcon.png", UriKind.RelativeOrAbsolute));
                         toast.Show();
+
+                        VibrateController vibrate = VibrateController.Default;
+                        vibrate.Start(TimeSpan.FromMilliseconds(1000));
                     });
                 }
             }
@@ -2310,5 +2343,6 @@ namespace windows_client.View
                     break;
             }
         }
+
     }
 }

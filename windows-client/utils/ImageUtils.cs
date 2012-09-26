@@ -36,7 +36,9 @@ namespace windows_client.utils
         private BitmapImage reward;
         private BitmapImage participantLeft;
         private SolidColorBrush receiveMessageForeground;
-        private Thickness convListEmoticonMargin;
+        private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
+        private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 300, 15, 0);
+        private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
 
 
         private static volatile UI_Utils instance = null;
@@ -130,7 +132,7 @@ namespace windows_client.utils
                 return white;
             }
         }
-        
+
         public BitmapImage OnHikeImage
         {
             get
@@ -314,12 +316,27 @@ namespace windows_client.utils
         public Thickness ConvListEmoticonMargin
         {
             get
-            { 
-                if(convListEmoticonMargin == null)
-                    convListEmoticonMargin = new Thickness(0, 5, 0, 0);
+            {
                 return convListEmoticonMargin;
             }
         }
+
+        public Thickness ChatThreadKeyPadUpMargin
+        {
+            get
+            {
+                return chatThreadKeyPadUpMargin;
+            }
+        }
+
+        public Thickness ChatThreadKeyPadDownMargin
+        {
+            get
+            {
+                return chatThreadKeyPadDownMargin;
+            }
+        }
+
 
         #endregion
     }
