@@ -227,7 +227,7 @@ namespace windows_client
 
         private string emailRegexPattern = @"(([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+))";
         private string hyperLinkRegexPattern = @"([a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|gov|in|uk|us))";
-        private string phoneNumberRegexPattern = @"([\d\+\-]*)";
+        private string phoneNumberRegexPattern = @"\b(\+?[\d-]{8,13})";
 
         private Regex emailRegex;
         public Regex EmailRegex
@@ -277,8 +277,8 @@ namespace windows_client
                 return RegexType.EMAIL;
             if (HyperLinkRegex.IsMatch(s))
                 return RegexType.URL;
-            //if (PhoneNumberRegex.IsMatch(s))
-            //    return RegexType.PHONE_NO;
+            if (PhoneNumberRegex.IsMatch(s))
+                return RegexType.PHONE_NO;
             return RegexType.EMOTICONS;
         }
 
@@ -570,8 +570,8 @@ namespace windows_client
                 patternString.Append(emailRegexPattern);
                 patternString.Append('|');
                 patternString.Append(hyperLinkRegexPattern);
-                //patternString.Append('|');
-                //patternString.Append(phoneNumberRegexPattern);
+                patternString.Append('|');
+                patternString.Append(phoneNumberRegexPattern);
                 patternString.Append(')');
             }
             return new Regex("(" + patternString.ToString());
