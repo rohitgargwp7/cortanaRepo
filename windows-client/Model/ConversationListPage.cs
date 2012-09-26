@@ -169,6 +169,8 @@ namespace windows_client.Model
                         return UI_Utils.Instance.Delivered;
                     case ConvMessage.State.SENT_DELIVERED_READ:
                         return UI_Utils.Instance.Read;
+                    case ConvMessage.State.SENT_UNCONFIRMED:
+                        return UI_Utils.Instance.Trying;
                     default:
                         return null;
                 }
