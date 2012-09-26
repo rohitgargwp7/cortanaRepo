@@ -25,7 +25,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal">
-            <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,0,0, 0">
+            <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,-10,0, 0">
                 <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
             </StackPanel>
             <toolkit:PerformanceProgressBar Name="progressBarTop" Width="340" Height="12" 
@@ -93,7 +93,6 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4, 10, 0,0">
@@ -131,15 +130,14 @@
                             <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Height="35"></Image>
                             <TextBlock Text="Privacy" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5">
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Help_Tap">
                             <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
                             <TextBlock Text="Help" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Grid.Row="2">
+                    <!--<StackPanel Grid.Row="2">
                         <Image Source="images\Made_with_love.png" Height="20" Margin="0,0,0,10"/>
-
-                    </StackPanel>
+                    </StackPanel>-->
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>

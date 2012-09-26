@@ -847,5 +847,10 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/Privacy.xaml", UriKind.Relative));
         }
+
+        private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
+        }
     }
 }
