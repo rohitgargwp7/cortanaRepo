@@ -632,11 +632,6 @@ namespace windows_client
 
         public Paragraph LinkifyAll(string message)
         {
-            Regex emoticon = new Regex(":\\)\\)");
-            bool emoticonMatch = emoticon.IsMatch(message);
-
-            bool isPhone = PhoneNumberRegex.IsMatch(message);
-
             MatchCollection matchCollection = ChatThreadRegex.Matches(message);
             var p = new Paragraph();
             int startIndex = 0;
@@ -702,8 +697,11 @@ namespace windows_client
                         //TODO check if imgPath is null or not
                         Image img = new Image();
                         img.Source = lookUpFromCache(regexMatch);
-                        img.Height = 40;
-                        img.Width = 40;
+                        img.Height = 35;
+                        img.Width = 35;
+                        img.Margin  = new Thickness(0, 5, 0, -4);
+                       
+
                         InlineUIContainer ui = new InlineUIContainer();
                         ui.Child = img;
                         p.Inlines.Add(ui);
