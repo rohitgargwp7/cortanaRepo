@@ -56,6 +56,15 @@ namespace windows_client
         public static readonly int ATTACHMENT_MAX_WIDTH = 800;
         public static readonly int MAX_EMOTICON_SUPPORTED = 10;
 
+
+        public static readonly string termsAndConditionsLink_White = "http://hike.in/terms/wp7";
+        public static readonly string faqsLink_White = "";
+        public static readonly string termsAndConditionsLink_Black = "http://hike.in/terms/wp7/black.html";
+        public static readonly string faqsLink_Black = "";
+        public static readonly string contactUsLink = "http://support.hike.in";
+
+
+
         /* how long to wait between sending publish and receiving an acknowledgement */
 
         public static readonly long MESSAGE_DELIVERY_TIMEOUT = 5 * 1000;
