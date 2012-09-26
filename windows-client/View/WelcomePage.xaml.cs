@@ -113,14 +113,7 @@ namespace windows_client
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //Uri privacyUri = new Uri(Uri.EscapeUriString("http://www.windowsphonegeek.com"),
-            //           UriKind.RelativeOrAbsolute);
-
-            //WebBrowserTask webBrowserTask = new WebBrowserTask();
-            //webBrowserTask.Uri = privacyUri;
-            //webBrowserTask.Show();
-            NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
-
+            NavigationService.Navigate(new Uri("/View/FAQTerms.xaml?page=legal", UriKind.Relative));
         }
     }
 }
