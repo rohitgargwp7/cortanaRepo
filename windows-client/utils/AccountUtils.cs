@@ -18,9 +18,21 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        public static readonly string HOST = "staging.im.hike.in";
+        public static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
-        private static readonly int PORT = 8080;
+        public static readonly string STAGING_HOST = "staging.im.hike.in";
+
+        public static readonly string MQTT_HOST = "mq.im.hike.in";
+
+        public static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
+
+        private static readonly int PRODUCTION_PORT = 80;
+
+        private static readonly int STAGING_PORT = 8080;
+
+        public static string HOST = PRODUCTION_HOST;
+
+        public static int PORT = PRODUCTION_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
 

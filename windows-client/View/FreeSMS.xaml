@@ -85,7 +85,7 @@
             <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Image Source="images\freesms.png" Height="30" Width="30"></Image>
                 <TextBlock MaxWidth="150" Margin="13,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap" Text="50 Free SMS every month"></TextBlock>
-                <Button Content="Invite Now" BorderThickness="2" Height="80"></Button>
+                <Button Content="Invite Now" BorderThickness="2" Height="80" Name="inviteBtn" Click="inviteBtn_Click"></Button>
 
             </StackPanel>
 
