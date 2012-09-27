@@ -59,9 +59,9 @@ namespace windows_client
 
 
         public static readonly string termsAndConditionsLink_White = "http://hike.in/terms/wp7";
-        public static readonly string faqsLink_White = "";
+        public static readonly string faqsLink_White = "http://hike.in/help/wp7/";
         public static readonly string termsAndConditionsLink_Black = "http://hike.in/terms/wp7/black.html";
-        public static readonly string faqsLink_Black = "";
+        public static readonly string faqsLink_Black = "http://hike.in/help/wp7/";
         public static readonly string contactUsLink = "http://support.hike.in";
 
 
