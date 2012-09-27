@@ -30,9 +30,9 @@ namespace windows_client.utils
 
         private static readonly int STAGING_PORT = 8080;
 
-        public static string HOST = PRODUCTION_HOST;
+        public static string HOST = STAGING_HOST;
 
-        public static int PORT = PRODUCTION_PORT;
+        public static int PORT = STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
 
