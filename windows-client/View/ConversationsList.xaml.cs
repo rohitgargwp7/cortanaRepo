@@ -260,7 +260,7 @@ namespace windows_client.View
             #endregion
 
             #region CHECK UPDATES
-            checkForUpdates();
+            //checkForUpdates();
             #endregion
 
         }
