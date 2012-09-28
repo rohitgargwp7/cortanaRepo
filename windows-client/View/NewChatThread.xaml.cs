@@ -1213,7 +1213,8 @@ namespace windows_client.View
                 }
                 else
                 {
-                    chatBubble = new ReceivedChatBubble(convMessage);
+                    chatBubble = new ReceivedChatBubble(convMessage, isGroupChat, Utils.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                    
                 }
                 this.MessageList.Children.Add(chatBubble);
                 ScrollToBottom();
@@ -1364,10 +1365,8 @@ namespace windows_client.View
 
         private void inviteUserBtn_Click(object sender, EventArgs e)
         {
-
             if (isOnHike)
                 return;
-
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
