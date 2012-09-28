@@ -16,6 +16,8 @@ using windows_client.utils;
 using windows_client.Controls;
 using windows_client.View;
 using windows_client.DbUtils;
+using Microsoft.Xna.Framework.Media;
+using System.IO;
 
 namespace windows_client
 {
@@ -114,12 +116,17 @@ namespace windows_client
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
+                                if (chatBubble.FileAttachment.ContentType.Contains("image"))
+                                {
+                                    IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
+                                    MediaLibrary library = new MediaLibrary();
+                                    library.SavePicture(chatBubble.FileAttachment.FileName, myFileStream);
+                                }
                                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                                 if (currentPage != null)
                                 {
                                     currentPage.displayAttachment(chatBubble, true);
                                 }
-
                             }
                         }
                         else
@@ -164,6 +171,7 @@ namespace windows_client
         void transfer_TransferStatusChanged(object sender, BackgroundTransferEventArgs e)
         {
             ProcessTransfer(e.Request);
+
         }
 
         void transfer_TransferProgressChanged(object sender, BackgroundTransferEventArgs e)
@@ -173,7 +181,9 @@ namespace windows_client
             if (chatBubble != null)
             {
                 if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.CANCELED)
+                {
                     chatBubble.updateProgress(e.Request.BytesReceived * 100 / e.Request.TotalBytesToReceive);
+                }
                 else
                 {
                     try
