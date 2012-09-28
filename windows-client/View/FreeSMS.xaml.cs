@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
@@ -81,6 +82,11 @@ namespace windows_client.View
             if (r3 != null)
                 r3.Fill = r0.Fill;
 
+
+        }
+
+        private void inviteBtn_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

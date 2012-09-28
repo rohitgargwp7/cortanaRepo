@@ -9,6 +9,7 @@ using System;
 using System.Windows.Media;
 using System.Windows;
 using System.IO;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client.utils
 {
@@ -265,6 +266,18 @@ namespace windows_client.utils
                 return null;
             char[] delimiters = new char[] { ',' };
             return msg.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static void TellAFriend()
+        {
+            string inviteToken = "";
+            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            string inviteMsg = string.Format(App.invite_message, inviteToken);
+            ShareLinkTask shareLinkTask = new ShareLinkTask();
+            shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
+            shareLinkTask.Title = "HIKE";
+            shareLinkTask.Message = inviteMsg;
+            shareLinkTask.Show();
         }
 
     }
