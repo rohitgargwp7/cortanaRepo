@@ -39,7 +39,8 @@ namespace windows_client.utils
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 300, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
-
+        private FontFamily groupChatMessageHeader;
+        private FontFamily messageText;
 
         private static volatile UI_Utils instance = null;
 
@@ -312,6 +313,29 @@ namespace windows_client.utils
                 return receiveMessageForeground;
             }
         }
+
+        
+
+        public FontFamily GroupChatMessageHeader
+        {
+            get
+            {
+                if (groupChatMessageHeader == null)
+                    groupChatMessageHeader = new FontFamily("Segoe WP Bold");
+                return groupChatMessageHeader;
+            }
+        }
+
+        public FontFamily MessageText
+        {
+            get
+            {
+                if (messageText == null)
+                    messageText = new FontFamily("Segoe WP SemiLight");
+                return messageText;
+            }
+        }
+
 
         public Thickness ConvListEmoticonMargin
         {
