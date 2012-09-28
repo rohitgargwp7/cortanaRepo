@@ -86,13 +86,13 @@ namespace windows_client.Controls
             RichText.Blocks.Add(richtext);
         }
 
-        public LinkifiedTextBox(SolidColorBrush foreground, string text)
-        {
-            InitializeComponent();
-            this.RichText.Foreground = foreground;
-            this.Text = text;
-            Paragraph richtext = SmileyParser.Instance.LinkifyAll(this.Text);
-            RichText.Blocks.Add(richtext);
-        }
+        //public LinkifiedTextBox(SolidColorBrush foreground, string text)
+        //{
+        //    InitializeComponent();
+        //    this.RichText.Foreground = foreground;
+        //    this.Text = text;
+        //    Paragraph richtext = SmileyParser.Instance.LinkifyAll(this.Text);
+        //    RichText.Blocks.Add(richtext);
+        //}
     }
 }
