@@ -18,6 +18,7 @@ namespace windows_client.utils
         private SolidColorBrush walkThroughUnselectedColumn;
         private SolidColorBrush black;
         private SolidColorBrush white;
+        private SolidColorBrush groupChatHeaderColor;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -131,6 +132,16 @@ namespace windows_client.utils
                 if (white == null)
                     white = new SolidColorBrush(Color.FromArgb(255, 0xff, 0xff, 0xff));
                 return white;
+            }
+        }
+
+        public SolidColorBrush GroupChatHeaderColor
+        {
+            get
+            {
+                if (groupChatHeaderColor == null)
+                    groupChatHeaderColor = new SolidColorBrush(Color.FromArgb(255, 0x53, 0x53, 0x53));
+                return groupChatHeaderColor;
             }
         }
 
