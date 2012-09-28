@@ -13,7 +13,7 @@ namespace windows_client.Controls
     public partial class ReceivedChatBubble : MyChatBubble
     {
 
-        public ReceivedChatBubble(ConvMessage cm)
+        public ReceivedChatBubble(ConvMessage cm, bool isGroupChat, string userName)
             : base(cm)
         {
             // Required to initialize variables
@@ -21,7 +21,7 @@ namespace windows_client.Controls
             string contentType = cm.FileAttachment == null?"": cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            initializeBasedOnState(cm.HasAttachment, contentType, showDownload, cm.Message);
+            initializeBasedOnState(cm.HasAttachment, contentType, showDownload, cm.Message, isGroupChat, userName);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
@@ -70,15 +70,35 @@ namespace windows_client.Controls
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 6, 0, 0);
         private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
+        private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType, bool showDownload, string messageString)
+        private void initializeBasedOnState(bool hasAttachment, string contentType, bool showDownload, string messageString,
+            bool isGroupChat, string userName)
         {
             Rectangle BubbleBg = new Rectangle();
             BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
-            Grid.SetRowSpan(BubbleBg, 2);
+            Grid.SetRowSpan(BubbleBg, 2 + (isGroupChat?1:0));
             wrapperGrid.Children.Add(BubbleBg);
+
+            int rowNumber = 0;
+
+            if (isGroupChat)
+            {
+                //RowDefinition r0 = new RowDefinition();
+                //r0.Height = GridLength.Auto;
+                //wrapperGrid.RowDefinitions.Add(r0);
+
+                TextBlock textBlck = new TextBlock();
+                textBlck.Text = userName + " :";
+                textBlck.FontSize = 22;
+                textBlck.FontFamily = UI_Utils.Instance.GroupChatMessageHeader;
+                textBlck.Margin = userNameMargin;
+                Grid.SetRow(textBlck, 0);
+                wrapperGrid.Children.Add(textBlck);
+                rowNumber = 1;
+            }
 
             if (hasAttachment)
             {
@@ -89,7 +109,7 @@ namespace windows_client.Controls
                 r2.Height = GridLength.Auto;
                 attachment.RowDefinitions.Add(r1);
                 attachment.RowDefinitions.Add(r2);
-                Grid.SetRow(attachment, 0);
+                Grid.SetRow(attachment, rowNumber);
                 Grid.SetColumn(attachment, 1);
                 wrapperGrid.Children.Add(attachment);
 
@@ -134,12 +154,13 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 24, messageString);
+                MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 22, messageString);
                 MessageText.Width = 340;
                 MessageText.Margin = messageTextMargin;
+                MessageText.FontFamily = UI_Utils.Instance.MessageText;
                 //Binding messageTextBinding = new Binding("Text");
                 //MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
-                Grid.SetRow(MessageText, 0);
+                Grid.SetRow(MessageText, rowNumber);
                 wrapperGrid.Children.Add(MessageText);
 
             }
@@ -150,7 +171,7 @@ namespace windows_client.Controls
             TimeStampBlock.Foreground = progressColor;
             TimeStampBlock.Text = TimeStamp;
             TimeStampBlock.Margin = timeStampBlockMargin;
-            Grid.SetRow(TimeStampBlock, 1);
+            Grid.SetRow(TimeStampBlock, rowNumber + 1);
             wrapperGrid.Children.Add(TimeStampBlock);
         }
     }
