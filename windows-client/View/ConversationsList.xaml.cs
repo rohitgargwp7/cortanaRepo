@@ -260,7 +260,7 @@ namespace windows_client.View
             #endregion
 
             #region CHECK UPDATES
-            //checkForUpdates();
+            checkForUpdates();
             #endregion
 
         }
@@ -999,9 +999,16 @@ namespace windows_client.View
 
         private void openMarketPlace(string searchTerms)
         {
-            MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
-            marketplaceSearchTask.SearchTerms = searchTerms;
-            marketplaceSearchTask.Show();
+            //MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
+            //marketplaceSearchTask.SearchTerms = searchTerms;
+            //marketplaceSearchTask.Show();
+
+            MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+
+            marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
+            marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+
+            marketplaceDetailTask.Show();
         }
 
         #endregion
