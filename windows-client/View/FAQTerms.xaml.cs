@@ -55,12 +55,12 @@ namespace windows_client.View
                     if (page.Equals("legal"))
                     {
 //                        header.Text = "Legal";
-                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.termsAndConditionsLink_Black), UriKind.RelativeOrAbsolute);
+                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.TERMS_AND_CONDITIONS_BLACK), UriKind.RelativeOrAbsolute);
                     }
                     else if (page.Equals("faq"))
                     {
 //                        header.Text = "FAQs";
-                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.faqsLink_Black), UriKind.RelativeOrAbsolute);
+                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.FAQS_LINK_BLACK), UriKind.RelativeOrAbsolute);
                     }
                 }
                 else
@@ -68,12 +68,12 @@ namespace windows_client.View
                     if (page.Equals("legal"))
                     {
 //                        header.Text = "Legal";
-                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.termsAndConditionsLink_White), UriKind.RelativeOrAbsolute);
+                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.TERMS_AND_CONDITIONS_WHITE), UriKind.RelativeOrAbsolute);
                     }
                     else if (page.Equals("faq"))
                     {
 //                        header.Text = "FAQs";
-                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.faqsLink_White), UriKind.RelativeOrAbsolute);
+                        browser.Source = new Uri(Uri.EscapeUriString(HikeConstants.FAQS_LINK_WHITE), UriKind.RelativeOrAbsolute);
                     }
                 }
             }

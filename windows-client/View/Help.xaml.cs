@@ -30,7 +30,7 @@ namespace windows_client.View
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             WebBrowserTask wbt = new WebBrowserTask();
-            wbt.Uri = new Uri(Uri.EscapeUriString(HikeConstants.contactUsLink), UriKind.RelativeOrAbsolute);
+            wbt.Uri = new Uri(Uri.EscapeUriString(HikeConstants.CONTACT_US_LINK), UriKind.RelativeOrAbsolute);
             wbt.Show();
         }
 
