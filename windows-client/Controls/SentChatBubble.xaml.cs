@@ -252,10 +252,11 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBox(24, messageString);
+                MessageText = new LinkifiedTextBox(22, messageString);
                 MessageText.Width = 340;
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
+                MessageText.FontFamily = UI_Utils.Instance.MessageText;
                 //Binding messageTextBinding = new Binding("Text");
                 //MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, 0);
