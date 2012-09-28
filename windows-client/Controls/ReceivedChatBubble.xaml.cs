@@ -91,9 +91,10 @@ namespace windows_client.Controls
                 //wrapperGrid.RowDefinitions.Add(r0);
 
                 TextBlock textBlck = new TextBlock();
-                textBlck.Text = userName + " :";
+                textBlck.Text = userName + " -";
                 textBlck.FontSize = 22;
                 textBlck.FontFamily = UI_Utils.Instance.GroupChatMessageHeader;
+                textBlck.Foreground = UI_Utils.Instance.GroupChatHeaderColor;
                 textBlck.Margin = userNameMargin;
                 Grid.SetRow(textBlck, 0);
                 wrapperGrid.Children.Add(textBlck);
