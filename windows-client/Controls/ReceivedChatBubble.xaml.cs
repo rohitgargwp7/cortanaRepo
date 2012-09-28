@@ -68,7 +68,7 @@ namespace windows_client.Controls
         
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
-        private static Thickness messageTextMargin = new Thickness(0, 6, 0, 0);
+        private static Thickness messageTextMargin = new Thickness(0, 12, 0, 0);
         private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
@@ -157,7 +157,8 @@ namespace windows_client.Controls
             {
                 MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 22, messageString);
                 MessageText.Width = 340;
-                MessageText.Margin = messageTextMargin;
+                if(!isGroupChat)
+                    MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.MessageText;
                 //Binding messageTextBinding = new Binding("Text");
                 //MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
