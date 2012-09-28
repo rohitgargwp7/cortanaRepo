@@ -78,6 +78,7 @@ namespace windows_client.utils
             appSettings[App.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
             appSettings[App.IS_PUSH_ENABLED] = (bool)true;
             appSettings[App.VIBRATE_PREF] = (bool)true;
+            appSettings[App.LAST_UPDATE_CHECK_TIME] = (long)-1;
             appSettings.Save();
         }
 
