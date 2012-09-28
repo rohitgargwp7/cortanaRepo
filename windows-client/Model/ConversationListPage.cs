@@ -139,6 +139,7 @@ namespace windows_client.Model
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("LastMessageColor");
+                    NotifyPropertyChanged("SDRStatusImage");
                 }
             }
         }
