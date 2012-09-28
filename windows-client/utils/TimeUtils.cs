@@ -71,6 +71,20 @@ namespace windows_client.utils
             return messageTimeString.ToString();
         }
 
+
+        public static int numberOfHoursElapsed(long timestamp)
+        {
+            long ticks = timestamp * 10000000;
+            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+            DateTime messageTime = new DateTime(ticks);
+            DateTime now = DateTime.UtcNow;
+            TimeSpan span = now.Subtract(messageTime);
+            return span.Hours;
+        }
+
+
+
+
         public static string getRelativeTime(long timestamp)
         {
 //            TimeSpan.FromMilliseconds(milliseconds);
