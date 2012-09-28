@@ -7,6 +7,7 @@ using System.IO.IsolatedStorage;
 using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -100,13 +101,21 @@ namespace windows_client
 
             Uri nextPage = new Uri("/View/EnterPin.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation*/
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            try
             {
-                txtEnterPhone.IsReadOnly = false;
-                NavigationService.Navigate(nextPage);
-                progressBar.Opacity = 0;
-                progressBar.IsEnabled = false;
-            });
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    txtEnterPhone.IsReadOnly = false;
+                    PhoneApplicationService.Current.State["EnteredPhone"] = txtEnterPhone.Text;
+                    NavigationService.Navigate(nextPage);
+                    progressBar.Opacity = 0;
+                    progressBar.IsEnabled = false;
+                });
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("Exception handled in page EnterNumber Screen : "+e.StackTrace);
+            }
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -136,6 +145,12 @@ namespace windows_client
                 nextIconButton.IsEnabled = false;
             else
                 nextIconButton.IsEnabled = true;
+            if (PhoneApplicationService.Current.State.ContainsKey("EnteredPhone"))
+            {
+                txtEnterPhone.Text = (string)PhoneApplicationService.Current.State["EnteredPhone"];
+                txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
+                PhoneApplicationService.Current.State.Remove("EnteredPhone");
+            }
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

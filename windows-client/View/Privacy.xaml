@@ -41,11 +41,11 @@
             <Image x:Name="unlinkAccount" Width="32" Source="/View/images/unlink_account_white.png" Grid.Row="0" Grid.Column="0"></Image>
             <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" Grid.Row="1" Grid.Column="0"></Image>
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,10,0,0" Tap="Unlink_Tap">
-                <TextBlock Text="Unlink Account" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                <TextBlock Name="unlinkTxtBlk" Text="Unlink Account" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Logout your account from this device" FontSize="20"/>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,10,0,0" Tap="Delete_Tap">
-                <TextBlock Text="Delete Account" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                <TextBlock Name="deleteTxtBlk" Text="Delete Account" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Permanently delete your hike account" FontSize="20"/>
             </StackPanel>
 

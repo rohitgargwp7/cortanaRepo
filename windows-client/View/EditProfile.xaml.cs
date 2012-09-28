@@ -75,6 +75,7 @@ namespace windows_client.View
 
         private void doneBtn_Click(object sender, EventArgs e)
         {
+            shouldSendProfile = false;
             nameErrorTxt.Opacity = 0;
             emailErrorTxt.Opacity = 0;
 

@@ -487,10 +487,10 @@ namespace windows_client.Model
                     }
 
                 }
-                if (_groupParticipant != null) // reprsents group chat
-                {
-                    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
-                }
+                //if (_groupParticipant != null) // reprsents group chat
+                //{
+                //    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
+                //}
 
                 Timestamp = (long)data[HikeConstants.TIMESTAMP];
 

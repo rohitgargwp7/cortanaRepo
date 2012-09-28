@@ -285,6 +285,12 @@ namespace windows_client.View
                 grpImage.UriSource = uri;
                 grpImage.ImageOpened += imageOpenedHandler;
             }
+            else if (e.TaskResult == TaskResult.Cancel)
+            {
+                isProfilePicTapped = false;
+                progressBar.IsEnabled = false;
+                progressBar.Opacity = 0;
+            }
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)

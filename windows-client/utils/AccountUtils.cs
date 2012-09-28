@@ -184,7 +184,14 @@ namespace windows_client.utils
             addToken(req);
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
         }
-
+        public static void unlinkAccount(postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/unlink")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            addToken(req);
+            req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
+        }
         public static void updateProfileIcon(byte[] buffer, postResponseFunction finalCallbackFunction, string groudId)
         {
             Uri requestUri;

@@ -22,8 +22,6 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using System.Reflection;
-using System.Net;
-using System.Text;
 using Microsoft.Xna.Framework.GamerServices;
 
 namespace windows_client.View
@@ -43,15 +41,12 @@ namespace windows_client.View
         byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
         private bool firstLoad = true;
-        public MyProgressIndicator progress = null; // there should be just one instance of this.
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
         private PhotoChooserTask photoChooserTask;
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
-        ApplicationBarMenuItem delAccountMenu;
-        ApplicationBarMenuItem unlinkAccountMenu;
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
         private IScheduler scheduler = Scheduler.NewThread;
@@ -116,21 +111,6 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            //GK handle here
-            if (isCriticalUpdate)
-            {
-                Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
-                new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
-                asyncResult =>
-                {
-                    int? returned = Guide.EndShowMessageBox(asyncResult);
-                    if (returned != null && returned == 0)
-                    {
-                        openMarketPlace(searchTermsForUpdate);
-                    }
-                }, null);
-            }
-            
             if (firstLoad)
             {
                 if (convMap == null)
@@ -323,14 +303,6 @@ namespace windows_client.View
             delConvsMenu.Text = DELETE_ALL_CONVERSATIONS;
             delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
             appBar.MenuItems.Add(delConvsMenu);
-
-            delAccountMenu = new ApplicationBarMenuItem();
-            delAccountMenu.Text = "delete account";
-            delAccountMenu.Click += new EventHandler(deleteAccount_Click);
-
-            unlinkAccountMenu = new ApplicationBarMenuItem();
-            unlinkAccountMenu.Text = "unlink account";
-            unlinkAccountMenu.Click += new EventHandler(unlinkAccount_Click);
         }
 
         public static void ReloadConversations() // running on some background thread
@@ -369,7 +341,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.USER_LEFT, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.addListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
@@ -383,7 +354,6 @@ namespace windows_client.View
             mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.removeListener(HikePubSub.ACCOUNT_DELETED, this);
             mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
@@ -536,66 +506,6 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
         }
 
-        #region Delete Account
-
-        private void deleteAccount_Click(object sender, EventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting account.", "Delete Account ?", MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
-                return;
-            if (progress == null)
-            {
-                progress = new MyProgressIndicator("Deleting Account...");
-            }
-
-            disableAppBar();
-            progress.Show();
-            AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
-        }
-
-        // will be called on UI Thread
-        private void deleteAccountResponse_Callback(JObject obj)
-        {
-            if (obj == null || "fail" == (string)obj["stat"])
-            {
-                Debug.WriteLine("Delete Account", "Could not delete account !!");
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBoxResult result = MessageBox.Show("Cannot not delete account. Try again later.", "Delete Account Failed?", MessageBoxButton.OKCancel);
-                    enableAppBar();
-                    progress.Hide();
-                    progress = null;
-                });
-                return;
-            }
-            NetworkManager.turnOffNetworkManager = true;
-            App.MqttManagerInstance.disconnectFromBroker(false);
-            App.ClearAppSettings();
-            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-            mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
-        }
-
-        #endregion
-
-        private void unlinkAccount_Click(object sender, EventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show("Are you sure about unlinking account.", "Unlink Account ?", MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
-                return;
-            if (progress == null)
-            {
-                progress = new MyProgressIndicator("Unlinking Account...");
-            }
-
-            disableAppBar();
-            progress.Show();
-            NetworkManager.turnOffNetworkManager = true;
-            App.MqttManagerInstance.disconnectFromBroker(false);
-            App.ClearAppSettings();
-            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-            mPubSub.publish(HikePubSub.DELETE_ACCOUNT, null);
-        }
-
         private void createGroup_Click(object sender, EventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
@@ -662,19 +572,11 @@ namespace windows_client.View
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(1, delConvsMenu);
-                if (appBar.MenuItems.Contains(delAccountMenu))
-                    appBar.MenuItems.Remove(delAccountMenu);
-                if (appBar.MenuItems.Contains(unlinkAccountMenu))
-                    appBar.MenuItems.Remove(unlinkAccountMenu);
             }
             else if (selectedIndex == 1)
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                if (!appBar.MenuItems.Contains(delAccountMenu))
-                    appBar.MenuItems.Insert(0, delAccountMenu);
-                if (!appBar.MenuItems.Contains(unlinkAccountMenu))
-                    appBar.MenuItems.Insert(0, unlinkAccountMenu);
             }
         }
 
@@ -697,8 +599,6 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
-            string version = GetVersionNumber();
-
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -729,6 +629,7 @@ namespace windows_client.View
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                     }
                 }
+
             }
             #endregion
             #region USER_LEFT USER_JOINED
@@ -775,23 +676,6 @@ namespace windows_client.View
                 //{
                 //    creditsTxtBlck.Text = Convert.ToString((int)obj);
                 //});
-            }
-            #endregion
-            #region ACCOUNT_DELETED
-            else if (HikePubSub.ACCOUNT_DELETED == type)
-            {
-                removeListeners();
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    emptyScreenImage.Opacity = 1;
-                    myListBox.ItemsSource = null;
-                    App.ViewModel.MessageListPageCollection.Clear();
-                    convMap.Clear();
-                    progress.Hide();
-                    progress = null;
-                    NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
-                });
-                return;
             }
             #endregion
             #region DELETED_ALL_CONVERSATIONS

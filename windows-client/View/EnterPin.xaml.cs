@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -121,8 +122,16 @@ namespace windows_client
             }
             else
             {
-                Uri nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
-                NavigationService.Navigate(nextPage);
+                PhoneApplicationService.Current.State.Remove("EnteredPhone");
+                try
+                {
+                    Uri nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
+                    NavigationService.Navigate(nextPage);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Exception handled in page EnterPin Screen : " + e.StackTrace);
+                }
             }
         }
 
