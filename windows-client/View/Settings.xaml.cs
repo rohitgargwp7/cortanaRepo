@@ -21,6 +21,11 @@ namespace windows_client.View
         public Settings()
         {
             InitializeComponent();
+            initializeBaseOnState();
+        }
+
+        private void initializeBaseOnState()
+        {
             bool isPushEnabled = true;
             App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             this.pushNotifications.IsChecked = isPushEnabled;
@@ -28,6 +33,15 @@ namespace windows_client.View
                 this.pushNotifications.Content = "On";
             else
                 this.pushNotifications.Content = "Off";
+            
+            bool isVibrateEnabled = true;
+            App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+            this.vibrate.IsChecked = isVibrateEnabled;
+            if (isVibrateEnabled)
+                this.vibrate.Content = "On";
+            else
+                this.vibrate.Content = "Off";
+
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
