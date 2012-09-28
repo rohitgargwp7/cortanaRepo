@@ -77,8 +77,8 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME,DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE,SET_PROFILE
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -144,9 +144,9 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_NAME, name, finalCallbackFunction });
         }
 
-        public static void setGroupName(string name,string grpId ,postResponseFunction finalCallbackFunction)
+        public static void setGroupName(string name, string grpId, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + string.Format("/group/{0}/name",grpId))) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + string.Format("/group/{0}/name", grpId))) as HttpWebRequest;
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
@@ -205,8 +205,6 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "PUT";
             req.ContentType = "";
-            
-            //            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
@@ -214,6 +212,61 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage, 
                 chatbubble });
         }
+
+        public static void checkForUpdates(postResponseFunction callback)
+        {
+            HttpWebRequest request =
+            (HttpWebRequest)HttpWebRequest.Create(HikeConstants.UPDATE_URL);
+            request.BeginGetResponse(GetRequestCallback, new object[] {request, callback});
+        }
+
+        static void GetRequestCallback(IAsyncResult result)
+        {
+            object[] vars = (object[])result.AsyncState;
+
+            HttpWebRequest request = vars[0] as HttpWebRequest;
+            postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
+            JObject jObject = null;
+            if (request != null)
+            {
+                try
+                {
+                    WebResponse response = request.EndGetResponse(result);
+                    Stream responseStream = response.GetResponseStream();
+                    string data;
+                    if (string.Equals(response.Headers[HttpRequestHeader.ContentEncoding], "gzip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        data = decompressResponse(responseStream);
+                    }
+                    else
+                    {
+                        using (var reader = new StreamReader(responseStream))
+                        {
+                            data = reader.ReadToEnd();
+                        }
+                        jObject = JObject.Parse(data);
+                    }
+                }
+                catch (IOException ioe)
+                {
+                }
+                catch (WebException we)
+                {
+                }
+                catch (JsonException je)
+                {
+                }
+                catch (Exception e)
+                {
+                }
+                finally
+                {
+                    finalCallbackFunction(jObject);
+                }
+            }
+        }
+        
+
 
         private static void setParams_Callback(IAsyncResult result)
         {
@@ -256,7 +309,7 @@ namespace windows_client.utils
                     data.Add("name", nameToSet);
                     break;
 
-                    case RequestType.SET_PROFILE:
+                case RequestType.SET_PROFILE:
                     JObject jo = vars[2] as JObject;
                     data = jo;
                     finalCallbackFunction = vars[3] as postResponseFunction;
@@ -280,7 +333,6 @@ namespace windows_client.utils
                 case RequestType.DELETE_ACCOUNT:
                     finalCallbackFunction = vars[2] as postResponseFunction;
                     break;
-
                 case RequestType.POST_PROFILE_ICON:
                     byte[] imageBytes = (byte[])vars[2];
                     finalCallbackFunction = vars[3] as postResponseFunction;
