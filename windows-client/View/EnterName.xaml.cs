@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Text;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -121,9 +122,16 @@ namespace windows_client
             msgTxtBlk.Text = "Getting you in";
             Thread.Sleep(2 * 1000);
             PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
-            NavigationService.Navigate(nextPage);
-            progressBar.Opacity = 0;
-            progressBar.IsEnabled = false;
+            try
+            {
+                NavigationService.Navigate(nextPage);
+                progressBar.Opacity = 0;
+                progressBar.IsEnabled = false;
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("Exception handled in page EnterName Screen : " + e.StackTrace);
+            }
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
