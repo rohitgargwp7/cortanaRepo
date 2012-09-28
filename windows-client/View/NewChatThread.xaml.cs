@@ -1594,6 +1594,8 @@ namespace windows_client.View
         {
             sendMsgTxtbox.Background = textBoxBackground;
             this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
+            if (this.emoticonPanel.Visibility == Visibility.Visible)
+                this.emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
@@ -1718,6 +1720,7 @@ namespace windows_client.View
                 emoticonPanel.Visibility = Visibility.Visible;
             else
                 emoticonPanel.Visibility = Visibility.Collapsed;
+            this.Focus();
         }
 
         private void fileTransferButton_Click(object sender, EventArgs e)
