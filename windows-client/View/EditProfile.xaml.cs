@@ -37,6 +37,7 @@ namespace windows_client.View
             genderList.Add("Male");
             genderList.Add("Female");
             genderListPicker.ItemsSource = genderList;
+            TiltEffect.TiltableItems.Add(typeof(ListPickerItem));
             prepopulate();
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;

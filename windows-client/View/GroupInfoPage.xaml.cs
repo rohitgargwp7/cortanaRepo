@@ -12,6 +12,7 @@ using System.IO;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
+using System.Windows.Controls;
 
 namespace windows_client.View
 {
@@ -87,6 +88,7 @@ namespace windows_client.View
             {
                 addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
             }
+            TiltEffect.TiltableItems.Add(typeof(TextBlock));
         }
 
 
