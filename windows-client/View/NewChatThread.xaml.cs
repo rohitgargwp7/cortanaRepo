@@ -1609,18 +1609,14 @@ namespace windows_client.View
         #endregion
 
         #region CONTEXT MENU
-        //TODO - 1) replace click events with tap
-        // 2) Add delete event
 
         private void MenuItem_Click_Forward(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            //MessageBox.Show("Inside forward");
             isContextMenuTapped = true;
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             if (chatBubble.FileAttachment == null)
             {
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = chatBubble.Text;
-                //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
                 NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
             else
@@ -1629,7 +1625,6 @@ namespace windows_client.View
                 attachmentForwardMessage[0] = chatBubble;
                 attachmentForwardMessage[1] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
-                //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
                 NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
         }

@@ -54,7 +54,7 @@ namespace windows_client.Controls
 
         protected override void uploadOrDownloadCompleted()
         {
-            if(this.PlayIcon!=null)
+            if(this.PlayIcon!=null && this.FileAttachment.ContentType.Contains("image"))
                 this.PlayIcon.Visibility = Visibility.Collapsed;
         }
 
