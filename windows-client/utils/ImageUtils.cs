@@ -332,7 +332,7 @@ namespace windows_client.utils
             get
             {
                 if (groupChatMessageHeader == null)
-                    groupChatMessageHeader = new FontFamily("Segoe WP Bold");
+                    groupChatMessageHeader = new FontFamily("Segoe WP Semibold");
                 return groupChatMessageHeader;
             }
         }
