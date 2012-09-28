@@ -21,6 +21,10 @@ using Microsoft.Phone.Notification;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
+using System.Reflection;
+using System.Net;
+using System.Text;
+using Microsoft.Xna.Framework.GamerServices;
 
 namespace windows_client.View
 {
@@ -112,6 +116,21 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            //GK handle here
+            if (isCriticalUpdate)
+            {
+                Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
+                new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                asyncResult =>
+                {
+                    int? returned = Guide.EndShowMessageBox(asyncResult);
+                    if (returned != null && returned == 0)
+                    {
+                        openMarketPlace(searchTermsForUpdate);
+                    }
+                }, null);
+            }
+            
             if (firstLoad)
             {
                 if (convMap == null)
@@ -238,6 +257,10 @@ namespace windows_client.View
                 {
                 }
             }
+            #endregion
+
+            #region CHECK UPDATES
+            checkForUpdates();
             #endregion
 
         }
@@ -674,6 +697,8 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            string version = GetVersionNumber();
+
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -704,7 +729,6 @@ namespace windows_client.View
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                     }
                 }
-
             }
             #endregion
             #region USER_LEFT USER_JOINED
@@ -862,5 +886,124 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
+
+        #region IN APP UPDATE
+        private static string GetVersionNumber()
+        {
+            var asm = Assembly.GetExecutingAssembly();
+            var parts = asm.FullName.Split(',');
+            return parts[1].Split('=')[1];
+        }
+
+        public void checkForUpdates()
+        {
+            long lastTimeStamp = -1;
+            App.appSettings.TryGetValue<long>(App.LAST_UPDATE_CHECK_TIME, out lastTimeStamp);
+            //if (lastTimeStamp == -1 || TimeUtils.numberOfHoursElapsed(lastTimeStamp) >= HikeConstants.CHECK_FOR_UPDATE_TIME)
+            //{
+                AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
+//            }
+        }
+
+        private bool isCriticalUpdate = false;
+        private string searchTermsForUpdate = "";
+        private string latestVersionString = "";
+
+        public void checkUpdate_Callback(JObject obj)
+        {
+            //try
+            //{
+                if (obj != null)
+                {
+                    string critical = obj[HikeConstants.CRITICAL].ToString();
+                    string latest = obj[HikeConstants.LATEST].ToString();
+                    string current = GetVersionNumber();
+
+                    latestVersionString = latest;
+                    critical = critical.Replace(".", "");
+                    latest = latest.Replace(".", "");
+                    current = current.Replace(".", "");
+
+                    int criticalVersion = Convert.ToInt32(critical) * 10;
+                    int latestVersion = Convert.ToInt32(latest) * 10;
+                    int currentVersion = Convert.ToInt32(current);
+
+                    string lastDismissedUpdate = "";
+                    App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
+
+                    searchTermsForUpdate = obj[HikeConstants.SEARCH_TERMS].ToString();
+
+
+                    int lastDismissedVersion = -1;
+                    if (!String.IsNullOrEmpty(lastDismissedUpdate))
+                    {
+                        lastDismissedVersion = Convert.ToInt32(lastDismissedUpdate.Replace(".", ""));
+                    }
+
+                    if (criticalVersion > currentVersion)
+                    {
+                        Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
+                        new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                        asyncResult =>
+                        {
+                            int? returned = Guide.EndShowMessageBox(asyncResult);
+                            if (returned != null && returned == 0)
+                            {
+                                openMarketPlace(searchTermsForUpdate);
+                            }
+                        }, null);
+                        isCriticalUpdate = true;
+                        //critical update
+                    }
+                    else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
+                    {
+                        //important update
+                        Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
+                        new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
+                        asyncResult =>
+                        {
+                            int? returned = Guide.EndShowMessageBox(asyncResult);
+                            if (returned != null && returned == 0)
+                            {
+                                openMarketPlace(searchTermsForUpdate);
+                            }
+                            else if (returned != null && returned == 1)
+                            {
+                                App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
+                            }
+                        }, null);
+                    }
+
+                    App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
+                }
+            //}
+            //catch (Exception)
+            //{ 
+            //}
+        }
+
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            if (!String.IsNullOrEmpty(latestVersionString))
+            {
+                App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
+            }
+            if (isCriticalUpdate)
+            {
+                //GK quit the app here http://stackoverflow.com/questions/4338589/close-a-wp7-application-programatically
+
+            }
+
+        }
+
+        private void openMarketPlace(string searchTerms)
+        {
+            MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
+            marketplaceSearchTask.SearchTerms = searchTerms;
+            marketplaceSearchTask.Show();
+        }
+
+        #endregion
     }
 }
