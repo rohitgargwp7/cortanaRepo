@@ -924,8 +924,8 @@ namespace windows_client.View
                     latest = latest.Replace(".", "");
                     current = current.Replace(".", "");
 
-                    int criticalVersion = Convert.ToInt32(critical) * 10;
-                    int latestVersion = Convert.ToInt32(latest) * 10;
+                    int criticalVersion = Convert.ToInt32(critical);
+                    int latestVersion = Convert.ToInt32(latest);
                     int currentVersion = Convert.ToInt32(current);
 
                     string lastDismissedUpdate = "";
