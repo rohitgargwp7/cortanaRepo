@@ -48,6 +48,8 @@ namespace windows_client
         public static string EMAIL = "email";
         public static string GENDER = "gender";
         public static readonly string VIBRATE_PREF = "vibratePref";
+        public static readonly string LAST_UPDATE_CHECK_TIME = "lastUpdateTime";
+        public static readonly string LAST_DISMISSED_UPDATE_VERSION = "lastDismissedUpdate";
 
 
         #endregion

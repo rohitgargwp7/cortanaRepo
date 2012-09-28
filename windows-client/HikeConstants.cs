@@ -24,6 +24,11 @@ namespace windows_client
         public static readonly string METADATA_DND = "dnd";
         public static readonly string ANALYTICS_EVENT = "ae";
 
+        public static readonly string CRITICAL = "critical";
+        public static readonly string LATEST = "latest";
+        public static readonly string SEARCH_TERMS = "search";
+
+
         public static readonly string SOUND_PREF = "soundPref";
         public static readonly string VIBRATE_PREF = "vibratePref";
         public static readonly string HIKEBOT = "TD-HIKE";
@@ -57,14 +62,19 @@ namespace windows_client
         public static readonly int MAX_EMOTICON_SUPPORTED = 10;
         public static readonly int VIBRATE_DURATION = 1000;
 
+        public static readonly int CHECK_FOR_UPDATE_TIME = 48;
 
-        public static readonly string termsAndConditionsLink_White = "http://hike.in/terms/wp7";
-        public static readonly string faqsLink_White = "http://hike.in/help/wp7/";
-        public static readonly string termsAndConditionsLink_Black = "http://hike.in/terms/wp7/black.html";
-        public static readonly string faqsLink_Black = "http://hike.in/help/wp7/";
-        public static readonly string contactUsLink = "http://support.hike.in";
+        public static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp7";
+        public static readonly string FAQS_LINK_WHITE = "http://hike.in/help/wp7/";
+        public static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
+        public static readonly string FAQS_LINK_BLACK = "http://hike.in/help/wp7/";
+        public static readonly string CONTACT_US_LINK = "http://support.hike.in";
+        public static readonly string UPDATE_URL = "http://get.hike.in/updates/wp7";
 
-
+        public static readonly string NORMAL_UPDATE_TEXT = "A new version of hike is out. Would you like to update the app?";
+        public static readonly string CRITICAL_UPDATE_TEXT = "To continue using hike, an update is required.";
+        public static readonly string NORMAL_UPDATE_HEADING = "Update available";
+        public static readonly string CRITICAL_UPDATE_HEADING = "Important update";
 
         /* how long to wait between sending publish and receiving an acknowledgement */
 
