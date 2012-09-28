@@ -15,7 +15,7 @@ using Microsoft.Phone.Tasks;
 
 namespace windows_client.View
 {
-    public partial class FreeSMS : PhoneApplicationPage
+    public partial class FreeSMS : PhoneApplicationPage,HikePubSub.Listener
     {
         private readonly SolidColorBrush rectangleColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private readonly Thickness box4Margin = new Thickness(5, 5, 5, 5);
@@ -24,6 +24,7 @@ namespace windows_client.View
         {
             InitializeComponent();
             initpageBasedOnState();
+            App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED,this);
         }
 
         private void initpageBasedOnState()
@@ -88,6 +89,17 @@ namespace windows_client.View
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        public void onEventReceived(string type, object obj)
+        {
+            if (HikePubSub.INVITEE_NUM_CHANGED == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MaxCredits.Text = (string)App.appSettings[App.TOTAL_CREDITS_PER_MONTH];
+                });
+            }
         }
     }
 }

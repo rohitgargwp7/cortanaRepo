@@ -295,8 +295,9 @@ namespace windows_client
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
                     App.WriteToIsoStorageSettings(App.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
+                    this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                 }
-                this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
+                
             }
             #endregion
             #region GROUP CHAT RELATED
