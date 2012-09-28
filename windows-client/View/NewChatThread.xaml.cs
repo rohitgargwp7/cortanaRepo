@@ -206,6 +206,7 @@ namespace windows_client.View
                 if (_attachmentUploaded == null)
                 {
                     _attachmentUploaded = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
+                    _attachmentUploaded.Add("copy", MenuItem_Click_Copy);
                     _attachmentUploaded.Add("forward", MenuItem_Click_Forward);
                     _attachmentUploaded.Add("delete", MenuItem_Click_Delete);
                 }
@@ -1636,7 +1637,10 @@ namespace windows_client.View
         private void MenuItem_Click_Copy(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            Clipboard.SetText(chatBubble.Text);
+            if(chatBubble.FileAttachment == null)
+                Clipboard.SetText(chatBubble.Text);
+            else if(!String.IsNullOrEmpty(chatBubble.FileAttachment.FileKey))
+                Clipboard.SetText(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + chatBubble.FileAttachment.FileKey);
         }
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
