@@ -1372,6 +1372,7 @@ namespace windows_client.View
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             ConvMessage convMessage = new ConvMessage(string.Format(App.invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.MessageId = TempMessageId;
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
             sendMsg(convMessage, false, false);
