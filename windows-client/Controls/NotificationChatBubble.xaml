@@ -23,7 +23,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="#b4b4b4" BorderThickness="2"/>
-            <StackPanel Orientation="Horizontal" Name="notStackPanel" Margin="0,3,0,3">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="notStackPanel" Margin="0,3,0,3">
                 <Image x:Name="NotificationImage" Height="20" Width="20" VerticalAlignment="Center" Margin="10,0,0,0"></Image>
                 <TextBlock x:Name="UserName" Height="Auto" MaxWidth="380" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeNormal}" 
                           Margin="8,0,0,3"  Text="{Binding Text, Mode=OneTime}" VerticalAlignment="Center"/>
