@@ -479,7 +479,6 @@
     <Content Include="View\images\emoticons\emo_im_97_horror.png" />
     <Content Include="View\images\emoticons\emo_im_98_money.png" />
     <Content Include="View\images\emoticons\emo_im_99_nothing.png" />
-    <Content Include="View\images\empty_screen_tip.png" />
     <Content Include="View\images\enter_name.png" />
     <Resource Include="View\images\help.png" />
     <Content Include="View\images\error_icon.png" />
