@@ -1390,6 +1390,8 @@ namespace windows_client.View
             {
                 return;
             }
+            if(sendMsgTxtbox.Text.Trim().Length == 1)
+                this.sendMsgTxtbox.Foreground = UI_Utils.Instance.Black;
 
             lastText = sendMsgTxtbox.Text;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
