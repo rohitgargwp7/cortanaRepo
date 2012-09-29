@@ -300,6 +300,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\empty_screen_logo_black.png" />
+    <Content Include="View\images\empty_screen_logo_white.png" />
+    <Content Include="View\images\empty_screen_tip_black.png" />
+    <Content Include="View\images\empty_screen_tip_white.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
     <Resource Include="hi.png" />
