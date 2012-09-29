@@ -69,7 +69,7 @@ namespace windows_client
             ":?-(",  // 18 sorry 
             ":'-(",  // 19 cry 
             "l-o",  // 20 boring 
-            ":0",  // 21 hungry 
+            ":-0",  // 21 hungry 
             "(scared)",  // 22 scared 
             "o_o",  // 23 shock 
             "(sweat)",  // 24 sweat 
