@@ -12,10 +12,8 @@ using windows_client.utils;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using System.IO;
-using Phone.Controls;
 using System.Diagnostics;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using Microsoft.Phone.Notification;
 using System.Net.NetworkInformation;
@@ -240,7 +238,7 @@ namespace windows_client.View
             #endregion
 
             #region CHECK UPDATES
-            checkForUpdates();
+            //checkForUpdates();
             #endregion
 
         }
@@ -783,83 +781,105 @@ namespace windows_client.View
         {
             long lastTimeStamp = -1;
             App.appSettings.TryGetValue<long>(App.LAST_UPDATE_CHECK_TIME, out lastTimeStamp);
-            //if (lastTimeStamp == -1 || TimeUtils.numberOfHoursElapsed(lastTimeStamp) >= HikeConstants.CHECK_FOR_UPDATE_TIME)
-            //{
+            if (lastTimeStamp == -1 || TimeUtils.numberOfHoursElapsed(lastTimeStamp) >= HikeConstants.CHECK_FOR_UPDATE_TIME)
+            {
                 AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
-//            }
+            }
+            else
+            {
+                string appID = "";
+                App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, out appID);
+                if (!String.IsNullOrEmpty(appID))
+                {
+                    Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
+                    new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                    asyncResult =>
+                    {
+                        int? returned = Guide.EndShowMessageBox(asyncResult);
+                        if (returned != null && returned == 0)
+                        {
+                            openMarketPlace(appID);
+                        }
+                    }, null);
+                }
+            }
         }
 
         private bool isCriticalUpdate = false;
-        private string searchTermsForUpdate = "";
+        //private string searchTermsForUpdate = "";
         private string latestVersionString = "";
+        private string appID = "";
 
         public void checkUpdate_Callback(JObject obj)
         {
             //try
             //{
-                if (obj != null)
+            if (obj != null)
+            {
+                string critical = obj[HikeConstants.CRITICAL].ToString();
+                string latest = obj[HikeConstants.LATEST].ToString();
+                string current = GetVersionNumber();
+
+                latestVersionString = latest;
+                critical = critical.Replace(".", "");
+                latest = latest.Replace(".", "");
+                current = current.Replace(".", "");
+
+                int criticalVersion = Convert.ToInt32(critical);
+                int latestVersion = Convert.ToInt32(latest);
+                int currentVersion = Convert.ToInt32(current);
+
+                string lastDismissedUpdate = "";
+                App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
+                appID = obj[HikeConstants.APP_ID].ToString();
+
+                int lastDismissedVersion = -1;
+                if (!String.IsNullOrEmpty(lastDismissedUpdate))
                 {
-                    string critical = obj[HikeConstants.CRITICAL].ToString();
-                    string latest = obj[HikeConstants.LATEST].ToString();
-                    string current = GetVersionNumber();
-
-                    latestVersionString = latest;
-                    critical = critical.Replace(".", "");
-                    latest = latest.Replace(".", "");
-                    current = current.Replace(".", "");
-
-                    int criticalVersion = Convert.ToInt32(critical);
-                    int latestVersion = Convert.ToInt32(latest);
-                    int currentVersion = Convert.ToInt32(current);
-
-                    string lastDismissedUpdate = "";
-                    App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
-
-                    searchTermsForUpdate = obj[HikeConstants.SEARCH_TERMS].ToString();
-
-
-                    int lastDismissedVersion = -1;
-                    if (!String.IsNullOrEmpty(lastDismissedUpdate))
-                    {
-                        lastDismissedVersion = Convert.ToInt32(lastDismissedUpdate.Replace(".", ""));
-                    }
-
-                    if (criticalVersion > currentVersion)
-                    {
-                        Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
-                        new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
-                        asyncResult =>
-                        {
-                            int? returned = Guide.EndShowMessageBox(asyncResult);
-                            if (returned != null && returned == 0)
-                            {
-                                openMarketPlace(searchTermsForUpdate);
-                            }
-                        }, null);
-                        isCriticalUpdate = true;
-                        //critical update
-                    }
-                    else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
-                    {
-                        //important update
-                        Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
-                        new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
-                        asyncResult =>
-                        {
-                            int? returned = Guide.EndShowMessageBox(asyncResult);
-                            if (returned != null && returned == 0)
-                            {
-                                openMarketPlace(searchTermsForUpdate);
-                            }
-                            else if (returned != null && returned == 1)
-                            {
-                                App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-                            }
-                        }, null);
-                    }
-
-                    App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
+                    lastDismissedVersion = Convert.ToInt32(lastDismissedUpdate.Replace(".", ""));
                 }
+
+                if (criticalVersion > currentVersion)
+                {
+                    App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, appID);
+
+                    Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
+                    new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                    asyncResult =>
+                    {
+                        int? returned = Guide.EndShowMessageBox(asyncResult);
+                        if (returned != null && returned == 0)
+                        {
+                            openMarketPlace(appID);
+                        }
+                    }, null);
+                    isCriticalUpdate = true;
+                    //critical update
+                }
+                else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
+                {
+                    App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, "");
+
+                    //normal update
+
+                    Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
+                    new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
+                    asyncResult =>
+                    {
+                        int? returned = Guide.EndShowMessageBox(asyncResult);
+                        if (returned != null && returned == 0)
+                        {
+                            openMarketPlace(appID);
+                        }
+                        else if (returned != null && returned == 1)
+                        {
+                            App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
+                        }
+                    }, null);
+                }
+
+                App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
+            }
             //}
             //catch (Exception)
             //{ 
@@ -881,17 +901,14 @@ namespace windows_client.View
 
         }
 
-        private void openMarketPlace(string searchTerms)
+        private void openMarketPlace(string appID)
         {
             //MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
             //marketplaceSearchTask.SearchTerms = searchTerms;
             //marketplaceSearchTask.Show();
-
             MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-
-            marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
+            marketplaceDetailTask.ContentIdentifier = appID;
             marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-
             marketplaceDetailTask.Show();
         }
 

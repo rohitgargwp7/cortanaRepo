@@ -26,7 +26,7 @@ namespace windows_client
 
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
-        public static readonly string SEARCH_TERMS = "search";
+        public static readonly string APP_ID = "appID";
 
 
         public static readonly string SOUND_PREF = "soundPref";
