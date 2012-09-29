@@ -150,9 +150,15 @@ namespace windows_client.View
                 firstLoad = false;
             }
             if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
                 emptyScreenImage.Opacity = 1;
+                emptyScreenTip.Opacity = 1;
+            }
             else
+            {
                 emptyScreenImage.Opacity = 0;
+                emptyScreenTip.Opacity = 0;
+            }
         }
 
         #endregion
@@ -169,9 +175,15 @@ namespace windows_client.View
             myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
                 emptyScreenImage.Opacity = 1;
+                emptyScreenTip.Opacity = 1;
+            }
             else
+            {
                 emptyScreenImage.Opacity = 0;
+                emptyScreenTip.Opacity = 0;
+            }
 
             appBar.Mode = ApplicationBarMode.Default;
             appBar.IsMenuEnabled = true;
@@ -369,6 +381,13 @@ namespace windows_client.View
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
                 privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
                 helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
+                emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
+                emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
+            }
+            else
+            {
+                emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
+                emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
             }
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
@@ -614,7 +633,10 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (emptyScreenImage.Visibility == Visibility.Visible)
+                    {
+                        emptyScreenTip.Opacity = 0;
                         emptyScreenImage.Opacity = 0;
+                    }
                     App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
                 bool isVibrateEnabled = true;
@@ -684,6 +706,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.MessageListPageCollection.Clear();
                     emptyScreenImage.Opacity = 1;
+                    emptyScreenTip.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     enableAppBar();
