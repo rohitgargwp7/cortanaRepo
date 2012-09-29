@@ -1382,17 +1382,22 @@ namespace windows_client.View
 
         #region PAGE EVENTS
 
+        private bool isEmptyString = true;
+
         private void sendMsgTxtbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (lastText.Equals(sendMsgTxtbox.Text))
                 return;
             if (String.IsNullOrEmpty(sendMsgTxtbox.Text.Trim()))
             {
+                isEmptyString = true;
                 return;
             }
-            if(sendMsgTxtbox.Text.Trim().Length == 1)
+            if (isEmptyString)
+            {
                 this.sendMsgTxtbox.Foreground = UI_Utils.Instance.Black;
-
+                isEmptyString = false;
+            }
             lastText = sendMsgTxtbox.Text;
             lastTextChangedTime = TimeUtils.getCurrentTimeStamp();
             scheduler.Schedule(sendEndTypingNotification, TimeSpan.FromSeconds(5));
