@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Grid.Row="0" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-                <toolkit:PerformanceProgressBar x:Name="progressBar"
+            <toolkit:PerformanceProgressBar x:Name="progressBar"
                                                 VerticalAlignment="Bottom" 
                                                 Margin="0,0,0,5" 
                                                 Background="Transparent" 
@@ -42,7 +42,7 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="90"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
@@ -51,9 +51,7 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0" Height="100">
                 <Button Height="Auto">
                     <StackPanel Orientation="Horizontal" Margin="-15">
-                        <Border BorderBrush="Black" BorderThickness="3">
-                            <Image x:Name="groupImage" Height="80" Width="80" Tap="onGroupProfileTap" Source="images\default_group.png" />
-                        </Border>
+                        <Image x:Name="groupImage" Height="80" Width="80" Tap="onGroupProfileTap" Source="images\default_group.png" />
                     </StackPanel>
                 </Button>
                 <StackPanel Orientation="Vertical" Margin="0, 0,0,0">
@@ -61,15 +59,12 @@
                     <TextBox Name="groupNameTxtBox" Text="GROUP NAME" Height="68" 
                              VerticalAlignment="Center" Width="330" 
                              FontSize="24" TextWrapping="Wrap"></TextBox>
-                    <!--<StackPanel Background="#e5e5e5" Orientation="Vertical" Margin="0,12,0,5" Height="Auto">
-                        <TextBlock Margin="10,0,0,5"  TextWrapping="Wrap" x:Name="groupName" Text="Sample" Foreground="Black" FontSize="30" Width="290"></TextBlock>
-                    </StackPanel>-->
                 </StackPanel>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="35,30,0,0">
-                <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="35" Height="35"></Image>
-                <TextBlock Text="Participants" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="35" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
+                <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="40" Height="40"></Image>
+                <TextBlock Text="Participants" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
             <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="35,5,0,0">
                 <ListBox.ItemTemplate>
