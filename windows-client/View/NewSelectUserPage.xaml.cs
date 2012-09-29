@@ -35,7 +35,6 @@ namespace windows_client.View
         List<Group<ContactInfo>> glistFiltered = null;
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
         private List<Group<ContactInfo>> defaultJumpList = null;
-        private readonly SolidColorBrush textBoxBorder = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
         private string charsEntered;
 
         private readonly int MAX_SMS_USRES_ALLOWED = 5;
@@ -815,7 +814,7 @@ namespace windows_client.View
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
         {
-            enterNameTxt.BorderBrush = textBoxBorder;
+            enterNameTxt.BorderBrush = UI_Utils.Instance.Black;
         }
 
         private void enterNameTxt_Tap(object sender, System.Windows.Input.GestureEventArgs e)

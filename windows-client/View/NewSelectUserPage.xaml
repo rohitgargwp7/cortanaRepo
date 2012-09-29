@@ -41,8 +41,8 @@
                                                 Opacity="1" Height="11" Width="194" />
                 </StackPanel>
             </StackPanel>
-            <TextBlock Text="HIKE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="23,0,0,5" />
-            <TextBlock Name="title" Text="with" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="23,0,0,0" />
+            <TextBlock Text="HIKE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
+            <TextBlock Name="title" Text="with" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="30,-10,0,0" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -53,7 +53,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,0,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search"
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" BorderThickness="2" BorderBrush="Black" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" Hint=" search"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
             
             <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
