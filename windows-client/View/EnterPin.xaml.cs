@@ -15,7 +15,6 @@ namespace windows_client
     {
         bool isTSorFirstLaunch = false;
         string pinEntered;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -104,7 +103,7 @@ namespace windows_client
         private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Hint = "Pin";
-            txtBxEnterPin.Foreground = textBoxBackground;
+            txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
         }
 
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
@@ -138,7 +137,10 @@ namespace windows_client
         private void txtBxEnterPin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text))
+            {
                 nextIconButton.IsEnabled = true;
+                txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
+            }
             else
                 nextIconButton.IsEnabled = false;
         }

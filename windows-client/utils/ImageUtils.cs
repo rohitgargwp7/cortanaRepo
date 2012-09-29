@@ -19,6 +19,7 @@ namespace windows_client.utils
         private SolidColorBrush black;
         private SolidColorBrush white;
         private SolidColorBrush groupChatHeaderColor;
+        private SolidColorBrush signUpForeground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -142,6 +143,16 @@ namespace windows_client.utils
                 if (groupChatHeaderColor == null)
                     groupChatHeaderColor = new SolidColorBrush(Color.FromArgb(255, 0x53, 0x53, 0x53));
                 return groupChatHeaderColor;
+            }
+        }
+
+        public SolidColorBrush SignUpForeground
+        {
+            get
+            {
+                if (signUpForeground == null)
+                    signUpForeground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
+                return signUpForeground;
             }
         }
 

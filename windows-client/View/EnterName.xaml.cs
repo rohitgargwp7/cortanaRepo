@@ -19,7 +19,6 @@ namespace windows_client
         bool isTSorFirstLaunch = false;
         private string SCANNING_CONTACTS = "Scanning Contacts ...";
         private string ac_name;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         public ApplicationBar appBar;
         public ApplicationBarIconButton nextIconButton;
 
@@ -191,13 +190,16 @@ namespace windows_client
         private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
         {
             txtBxEnterName.Hint = "Name";
-            txtBxEnterName.Foreground = textBoxBackground;
+            txtBxEnterName.Foreground = UI_Utils.Instance.SignUpForeground;
         }
 
         private void txtBxEnterName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtBxEnterName.Text))
+            {
                 nextIconButton.IsEnabled = true;
+                txtBxEnterName.Foreground = UI_Utils.Instance.SignUpForeground;
+            }
             else
                 nextIconButton.IsEnabled = false;
         }

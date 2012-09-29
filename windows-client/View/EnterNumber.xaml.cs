@@ -15,7 +15,6 @@ namespace windows_client
     {
         bool isTSorFirstLaunch = false;
         string phoneNumber;
-        private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
 
@@ -189,7 +188,7 @@ namespace windows_client
         private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
         {
             txtEnterPhone.Hint = "Phone Number";
-            txtEnterPhone.Foreground = textBoxBackground;
+            txtEnterPhone.Foreground = UI_Utils.Instance.SignUpForeground;
         }
 
         private void txtEnterPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -197,7 +196,7 @@ namespace windows_client
             if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
             {
                 nextIconButton.IsEnabled = true;
-                txtEnterPhone.Foreground = textBoxBackground;
+                txtEnterPhone.Foreground = UI_Utils.Instance.SignUpForeground;
             }
             else
             {
