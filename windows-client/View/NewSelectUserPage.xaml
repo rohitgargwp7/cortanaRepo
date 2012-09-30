@@ -41,7 +41,7 @@
                                                 Opacity="1" Height="11" Width="194" />
                 </StackPanel>
             </StackPanel>
-            <TextBlock Text="HIKE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
+            <TextBlock Text="CHAT" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
             <TextBlock Name="title" Text="with" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="30,-10,0,0" />
         </StackPanel>
 
