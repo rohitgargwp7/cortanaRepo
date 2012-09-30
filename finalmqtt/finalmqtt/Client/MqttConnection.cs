@@ -47,7 +47,7 @@ namespace finalmqtt.Client
         private byte[] bufferForSocketReads;
         private readonly String id;
         private volatile bool stopped;
-//        private volatile bool connected;
+        //        private volatile bool connected;
         private volatile bool connackReceived;
         private volatile bool disconnectSent = false;
 
@@ -67,7 +67,7 @@ namespace finalmqtt.Client
         {
             this.id = id;
             this.stopped = true;
-//            this.connected = false;
+            //            this.connected = false;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
             this.mqttListener = listener;
             this.pendingOutput = new List<byte>();
@@ -149,24 +149,37 @@ namespace finalmqtt.Client
         /// <param name="e"></param>
         private void onReadCompleted(object s, SocketAsyncEventArgs e)
         {
-            if (e.SocketError == SocketError.Success)
+            try
             {
-                input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
-            }
-            else
-            {
-                if (mqttListener != null)
+                if (e.SocketError == SocketError.Success)
                 {
-                    if (_socket != null)
-                    {
-                        _socket.Close();
-                        _socket = null;
-                    }
-                    mqttListener.onDisconnected();
+                    input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
                 }
+                else
+                {
+                    if (mqttListener != null)
+                    {
+                        if (_socket != null)
+                        {
+                            _socket.Close();
+                            _socket = null;
+                        }
+                        mqttListener.onDisconnected();
+                    }
+                }
+                readMessagesFromBuffer();
+                read();
             }
-            readMessagesFromBuffer();
-            read();
+            catch (Exception)
+            {
+                if (_socket != null)
+                {
+                    _socket.Close();
+                    _socket = null;
+                }
+                mqttListener.onDisconnected();
+            }
+
         }
 
         /// <summary>
@@ -209,6 +222,11 @@ namespace finalmqtt.Client
             }
             catch
             {
+                if (_socket != null)
+                {
+                    _socket.Close();
+                    _socket = null;
+                }
                 mqttListener.onDisconnected();
             }
         }
