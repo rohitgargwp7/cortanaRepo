@@ -176,6 +176,7 @@ namespace windows_client.Controls
                             break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
                             setContextMenu(currentPage.AttachmentCanceledOrFailed);
+                            MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.COMPLETED:
                             setContextMenu(currentPage.AttachmentUploaded);
