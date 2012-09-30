@@ -17,7 +17,7 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
-            <RowDefinition Height="646"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <phone:WebBrowser Grid.Row="0" x:Name="browser" Margin="0,0,5,0" />
     </Grid>
