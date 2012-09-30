@@ -831,7 +831,7 @@ namespace windows_client.Model
                 {
                     this._message = HikeConstants.GROUP_CHAT_END;
                 }
-                else // Group member left
+                else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT)// Group member left
                 {
                     this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
                     GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
@@ -843,7 +843,7 @@ namespace windows_client.Model
             if(saveCache)
                 App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             this._timestamp = TimeUtils.getCurrentTimeStamp();
-            this.MessageStatus = isSelfGenerated ? State.RECEIVED_READ : State.RECEIVED_UNREAD;
+            this.MessageStatus = State.UNKNOWN;
         }
 
         public static JObject ProcessGCLogic(string grpId)

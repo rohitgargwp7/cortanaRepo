@@ -102,7 +102,7 @@ namespace windows_client.DbUtils
                     isNewGroup = (bool)vals[1];
                 }
 
-                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>

@@ -611,7 +611,14 @@ namespace windows_client.View
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
-            mContactName = Utils.defaultGroupName(mContactNumber);
+            if (isNewgroup)
+                mContactName = Utils.defaultGroupName(mContactNumber);
+            else
+            {
+                GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                if(gif != null && string.IsNullOrEmpty(gif.GroupName))
+                    mContactName = Utils.defaultGroupName(mContactNumber);
+            }
             userName.Text = mContactName;
             if (isNewgroup)
             {
