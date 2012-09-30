@@ -49,10 +49,10 @@
                 <TextBlock Text="Legal" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Read Terms of service and privacy policy" FontSize="20"/>
             </StackPanel>
-            <StackPanel Grid.Row="3" Grid.Column="1" Margin="20,15,0,0" Tap="Updates_Tap">
+            <!--<StackPanel Grid.Row="3" Grid.Column="1" Margin="20,15,0,0" Tap="Updates_Tap">
                 <TextBlock Text="Updates" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Check for updates" FontSize="20"/>
-            </StackPanel>
+            </StackPanel>-->
             <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,15,0,0" Tap="Walkthrough_Tap">
                 <TextBlock Text="Walkthrough" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="View the meet hike walkthrough" FontSize="20"/>
