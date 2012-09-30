@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.View
 {
@@ -19,6 +20,14 @@ namespace windows_client.View
         public Help()
         {
             InitializeComponent();
+            if (utils.Utils.isDarkTheme())
+            {
+                this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love_dark.png", UriKind.Relative));
+            }
+            else
+            {
+                this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love.png", UriKind.Relative));
+            }
         }
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)

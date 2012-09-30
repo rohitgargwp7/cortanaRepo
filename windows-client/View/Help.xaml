@@ -14,20 +14,20 @@
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="8,0,0,0">
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="646"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
+        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="8,0,0,0" Height="Auto">
             <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
             <TextBlock Text="help" FontFamily="Segoe WP SemiLight" FontSize="68" FontStretch="Expanded"  Margin="23,0,0,0" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="5,10,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="13,10,0,0" Background="Transparent">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -58,6 +58,7 @@
                 <TextBlock Text="View the meet hike walkthrough" FontSize="20"/>
             </StackPanel>
         </Grid>
+        <Image x:Name="made_with_love" Grid.Row="2" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
     </Grid>
 
 </phone:PhoneApplicationPage>
