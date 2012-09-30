@@ -52,10 +52,18 @@ namespace windows_client.Controls
                     }
                     break;
                 case ConvMessage.State.SENT_UNCONFIRMED:
-                    if (readFromDB)
+                    if (this.FileAttachment != null)
+                    {
+                        this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                    }
+                    else if (readFromDB)
+                    {
                         this.SDRImage.Source = UI_Utils.Instance.Trying;
+                    }
                     else
+                    {
                         scheduleTryingImage();
+                    }
                     break;
                 default:
                     break;
@@ -102,7 +110,7 @@ namespace windows_client.Controls
 
         public void SetSentMessageStatus(ConvMessage.State msgState)
         {
-            if ((int)messageState < (int)msgState)
+            if ((int)messageState <= (int)msgState)
             {
                 messageState = msgState;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -126,7 +134,14 @@ namespace windows_client.Controls
                             this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
                             break;
                         case ConvMessage.State.SENT_UNCONFIRMED:
-                            scheduleTryingImage();
+                            if (this.FileAttachment != null)
+                            {
+                                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                            }
+                            else
+                            {
+                                scheduleTryingImage();
+                            }
                             break;
                     }
                 });
