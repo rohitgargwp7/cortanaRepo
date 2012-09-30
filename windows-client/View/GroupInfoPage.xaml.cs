@@ -59,11 +59,11 @@ namespace windows_client.View
 
             saveIconButton = new ApplicationBarIconButton();
             saveIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            saveIconButton.Text = "done";
+            saveIconButton.Text = "save";
             saveIconButton.Click += new EventHandler(doneBtn_Click);
             saveIconButton.IsEnabled = true;
             appBar.Buttons.Add(saveIconButton);
-            groupInfoPage.ApplicationBar = appBar;
+            //groupInfoPage.ApplicationBar = appBar;
 
             initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
@@ -423,6 +423,18 @@ namespace windows_client.View
                     MessageBox.Show("Cannot change GroupName. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                 });
             }
+        }
+
+        private void groupNameTxtBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            groupInfoPage.ApplicationBar = appBar;
+
+        }
+
+        private void groupNameTxtBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            groupInfoPage.ApplicationBar = null;
+
         }
     }
 }

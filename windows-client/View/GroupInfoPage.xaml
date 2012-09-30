@@ -57,8 +57,8 @@
                 <StackPanel Orientation="Vertical" Margin="0, 0,0,0">
                     <TextBlock FontSize="24" Opacity="0.6" Text="Group Name" Margin="20,2,0,0"/>
                     <TextBox Name="groupNameTxtBox" Text="GROUP NAME" Height="68" 
-                             VerticalAlignment="Center" Width="330" 
-                             FontSize="24" TextWrapping="Wrap"></TextBox>
+                             VerticalAlignment="Center" Width="330" GotFocus="groupNameTxtBox_GotFocus"
+                             FontSize="24" TextWrapping="Wrap" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
                 </StackPanel>
             </StackPanel>
 
