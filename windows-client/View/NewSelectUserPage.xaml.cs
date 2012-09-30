@@ -177,8 +177,8 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
 
-            if (isGroupChat)
-                title.Text = "new group chat";
+            //if (isGroupChat)
+            //    title.Text = "new group chat";
             progressBar.Opacity = 1;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
