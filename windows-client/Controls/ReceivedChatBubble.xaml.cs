@@ -86,10 +86,6 @@ namespace windows_client.Controls
 
             if (isGroupChat)
             {
-                //RowDefinition r0 = new RowDefinition();
-                //r0.Height = GridLength.Auto;
-                //wrapperGrid.RowDefinitions.Add(r0);
-
                 TextBlock textBlck = new TextBlock();
                 textBlck.Text = userName + " -";
                 textBlck.FontSize = 22;
@@ -142,8 +138,6 @@ namespace windows_client.Controls
                     Grid.SetRow(PlayIcon, 0);
                     attachment.Children.Add(PlayIcon);
                 }
-                
-
                 downloadProgress = new ProgressBar();
                 downloadProgress.Height = 10;
                 downloadProgress.Background = UI_Utils.Instance.TextBoxBackground;
@@ -160,13 +154,9 @@ namespace windows_client.Controls
                 if(!isGroupChat)
                     MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.MessageText;
-                //Binding messageTextBinding = new Binding("Text");
-                //MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, rowNumber);
                 wrapperGrid.Children.Add(MessageText);
-
             }
-
             TimeStampBlock = new TextBlock();
             TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
             TimeStampBlock.FontSize = 18;
