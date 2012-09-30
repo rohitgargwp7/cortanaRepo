@@ -69,7 +69,7 @@ namespace windows_client.DbUtils
 
                 //DO NOT Update message text in db. We sent the below line, but we save content type as message.
                 convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
-
+                //here message status should be updated in db, as on event listener message state should be unknown
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 chatBubble.scheduleTryingImage();
 
@@ -101,7 +101,7 @@ namespace windows_client.DbUtils
                 {
                     isNewGroup = (bool)vals[1];
                 }
-
+                //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
 
