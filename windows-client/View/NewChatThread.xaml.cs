@@ -857,7 +857,7 @@ namespace windows_client.View
                     messageText = "video";
 
                 ConvMessage convMessage = new ConvMessage(messageText, mContactNumber,
-                    TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                    TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
                 convMessage.MessageId = TempMessageId;
@@ -1498,7 +1498,7 @@ namespace windows_client.View
                 byte[] fileBytes;
                 BitmapImage image = (BitmapImage)sender;
 
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
                 convMessage.MessageId = TempMessageId;
@@ -1515,9 +1515,6 @@ namespace windows_client.View
                     writeableBitmap.SaveJpeg(msSmallImage, thumbnailWidth, thumbnailHeight, 0, 50);
                     thumbnailBytes = msSmallImage.ToArray();
                 }
-
-
-
                 string fileName = image.UriSource.ToString();
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
 
