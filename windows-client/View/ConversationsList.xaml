@@ -104,20 +104,13 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4, 10, 0,0">
                         <Button Height="Auto" Tap="onProfilePicButtonTap">
                             <StackPanel Orientation="Horizontal" Margin="-15">
-                                <!--<Border BorderBrush="Black" BorderThickness="3">-->
                                     <Image x:Name="avatarImage" Height="83"  Source="images\default_user.png" />
-                                <!--</Border>-->
                             </StackPanel>
                         </Button>
 
                         <StackPanel Name="accountStackPanel" Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
                             <TextBlock x:Name="accountName" FontSize="35" Text="UNKNOWN"/>
-                            <!--<StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Free SMS remaining: " FontFamily="Segoe WP SemiLight" Foreground="#8d8d8d"></TextBlock>
-                                <TextBlock x:Name="creditsTxtBlck" Text="" Foreground="#8d8d8d"></TextBlock>
-                            </StackPanel>-->
                             <TextBlock Text="Edit Profile" FontFamily="Segoe WP SemiLight"/>
-
                         </StackPanel>
                     </StackPanel>
 
@@ -126,6 +119,11 @@
                             <Image Name ="freeSmsImage" VerticalAlignment="Center" Source="images\free_sms.png" Height="35">
                             </Image>
                             <TextBlock Text="Free SMS" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                        </StackPanel>
+                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Invite_Tap" Margin="15,15,0,5">
+                            <Image Name ="invite" VerticalAlignment="Center" Source="images\free_sms.png" Height="35">
+                            </Image>
+                            <TextBlock Text="Invite" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,15,0,5">
                             <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="35">

@@ -248,7 +248,6 @@ namespace windows_client.View
                 }
             }
             #endregion
-
             #region CHECK UPDATES
             //checkForUpdates();
             #endregion
@@ -474,7 +473,7 @@ namespace windows_client.View
 
             using (var msSmallImage = new MemoryStream())
             {
-                writeableBitmap.SaveJpeg(msSmallImage, 35, 35, 0, 95);
+                writeableBitmap.SaveJpeg(msSmallImage, 83, 83, 0, 95);
                 thumbnailBytes = msSmallImage.ToArray();
             }
 
@@ -792,6 +791,12 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
 
+        private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+
         #region IN APP UPDATE
         private static string GetVersionNumber()
         {
@@ -882,9 +887,7 @@ namespace windows_client.View
                 else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
                 {
                     App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, "");
-
                     //normal update
-
                     Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
                     new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
                     asyncResult =>
@@ -936,5 +939,6 @@ namespace windows_client.View
         }
 
         #endregion
+
     }
 }
