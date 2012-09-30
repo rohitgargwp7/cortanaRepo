@@ -104,7 +104,7 @@
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4, 10, 0,0">
                         <Button Height="Auto" Tap="onProfilePicButtonTap">
                             <StackPanel Orientation="Horizontal" Margin="-15">
-                                    <Image x:Name="avatarImage" Height="83"  Source="images\default_user.png" />
+                                <Image x:Name="avatarImage" Height="83"  Source="images\default_user.png" />
                             </StackPanel>
                         </Button>
 
@@ -115,10 +115,13 @@
                     </StackPanel>
 
                     <StackPanel Margin="0, 25, 0,10" Orientation="Vertical" Grid.Row="1">
-                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="FreeSMS_Tap" Margin="15,15,0,5">
-                            <Image Name ="freeSmsImage" VerticalAlignment="Center" Source="images\free_sms.png" Height="35">
+                        <StackPanel  Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,15,0,5">
+                            <Image Name ="freeSmsImage" VerticalAlignment="Top" Margin="0,10,0,0" Source="images\free_sms.png" Height="35">
                             </Image>
-                            <TextBlock Text="Free SMS" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Free SMS" FontFamily="Segoe WP SemiLight" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                                <TextBlock x:Name="creditsTxtBlck" FontSize="18" Margin="15,0,0,0"></TextBlock>
+                            </StackPanel>
                         </StackPanel>
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Invite_Tap" Margin="15,15,0,5">
                             <Image Name ="invite" VerticalAlignment="Center" Height="35">

@@ -394,7 +394,7 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
                 accountName.Text = name;
-            //creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]);
+            creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]) + " Left";
 
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
@@ -693,10 +693,10 @@ namespace windows_client.View
             #region SMS_CREDIT_CHANGED
             else if (HikePubSub.SMS_CREDIT_CHANGED == type)
             {
-                //Deployment.Current.Dispatcher.BeginInvoke(() =>
-                //{
-                //    creditsTxtBlck.Text = Convert.ToString((int)obj);
-                //});
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    creditsTxtBlck.Text = Convert.ToString((int)obj) + " Left";
+                });
             }
             #endregion
             #region DELETED_ALL_CONVERSATIONS
