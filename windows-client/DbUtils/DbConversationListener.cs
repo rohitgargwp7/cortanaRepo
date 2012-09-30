@@ -72,10 +72,8 @@ namespace windows_client.DbUtils
                 //here message status should be updated in db, as on event listener message state should be unknown
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 chatBubble.scheduleTryingImage();
-
                 convMessage.FileAttachment.FileKey = fileKey;
                 convMessage.FileAttachment.ContentType = contentType;
-
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
                 chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
@@ -102,7 +100,7 @@ namespace windows_client.DbUtils
                     isNewGroup = (bool)vals[1];
                 }
                 //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
-                convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>

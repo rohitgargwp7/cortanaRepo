@@ -94,7 +94,7 @@ namespace windows_client.DbUtils
                     groupName = (string)PhoneApplicationService.Current.State[convMessage.Msisdn];
                     PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
                 }
-                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, ConvMessage.State.SENT_UNCONFIRMED);
+                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, convMessage.MessageStatus);
             }
             else
             {
