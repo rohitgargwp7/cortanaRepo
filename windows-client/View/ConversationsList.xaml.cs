@@ -382,11 +382,13 @@ namespace windows_client.View
                 helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
+                invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
             }
             else
             {
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
+                invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
             }
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
