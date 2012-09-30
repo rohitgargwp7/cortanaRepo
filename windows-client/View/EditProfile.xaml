@@ -50,7 +50,7 @@
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="1">
                 <TextBlock Text="Phone" Margin="13,0,0,0"/>
-                <TextBox x:Name="phone" InputScope="Number" IsReadOnly="True"/>
+                <TextBox x:Name="phone" InputScope="TelephoneCountryCode" IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="2">
                 <StackPanel Orientation="Horizontal">
@@ -60,7 +60,7 @@
                                Text="Enter Correct Email" 
                                Margin="245,0,0,0" Foreground="Red" FontSize="15" />
                 </StackPanel>
-                <TextBox x:Name="email"/>
+                <TextBox x:Name="email" InputScope="EmailUserName"/>
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Row="3">
                 <TextBlock Text="Gender" Margin="13,0,0,0"/>
