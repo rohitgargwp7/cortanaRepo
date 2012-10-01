@@ -1,0 +1,38 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="windows_client.View.Invite"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="646"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="INVITE" FontFamily="Segoe WP Semibold" FontSize="23" FontStretch="Expanded"  Margin="25,25,0,0"/>
+    
+        <Grid Grid.Row="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Social_Tap" Grid.Row="0" Text="Social" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,50,0,0"/>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Email_Tap" Grid.Row="1" Text="Email" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Messaging_Tap"  Grid.Row="2" Text="Messaging" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
+
+        </Grid>
+    </Grid>
+</phone:PhoneApplicationPage>
