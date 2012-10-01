@@ -163,6 +163,8 @@ namespace windows_client.DbUtils
 
         public static Dictionary<long, Attachment> getAllFileAttachment(string msisdn)
         {
+            if (msisdn == null) // this is imp as explicit handling of null is required to check exception
+                return null;
             msisdn = msisdn.Replace(":", "_");
             string fileDirectory = HikeConstants.FILES_ATTACHMENT + "/" + msisdn;
             Dictionary<long, Attachment> msgIdAttachmentMap = new Dictionary<long, Attachment>();

@@ -363,7 +363,7 @@ namespace windows_client.DbUtils
             App.ViewModel.ConvMsisdnsToUpdate.Remove(obj.Msisdn);
         }
 
-        public static string updateMsgStatus(long msgID, int val)
+        public static string updateMsgStatus(string fromUser, long msgID, int val)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
             {
@@ -372,9 +372,16 @@ namespace windows_client.DbUtils
                 {
                     if ((int)message.MessageStatus < val)
                     {
-                        message.MessageStatus = (ConvMessage.State)val;
-                        SubmitWithConflictResolve(context);
-                        return message.Msisdn;
+                        if (fromUser == null || fromUser == message.Msisdn)
+                        {
+                            message.MessageStatus = (ConvMessage.State)val;
+                            SubmitWithConflictResolve(context);
+                            return message.Msisdn;
+                        }
+                        else
+                        {
+                            return null;
+                        }
                     }
                 }
                 else
@@ -391,7 +398,7 @@ namespace windows_client.DbUtils
         /// <param name="ids"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static string updateAllMsgStatus(long[] ids, int status)
+        public static string updateAllMsgStatus(string fromUser,long[] ids, int status)
         {
             bool shouldSubmit = false;
             string msisdn = null;
@@ -404,9 +411,12 @@ namespace windows_client.DbUtils
                     {
                         if ((int)message.MessageStatus < status)
                         {
-                            message.MessageStatus = (ConvMessage.State)status;
-                            msisdn = message.Msisdn;
-                            shouldSubmit = true;
+                            if (fromUser == null || fromUser == message.Msisdn)
+                            {
+                                message.MessageStatus = (ConvMessage.State)status;
+                                msisdn = message.Msisdn;
+                                shouldSubmit = true;
+                            }
                         }
                     }
                 }
