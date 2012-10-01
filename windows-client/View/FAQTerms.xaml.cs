@@ -18,7 +18,7 @@ namespace windows_client.View
     public partial class FAQTerms : PhoneApplicationPage
     {
         private ApplicationBar appBar;
-        ApplicationBarIconButton nextIconButton;
+        //ApplicationBarIconButton nextIconButton;
         public FAQTerms()
         {
             InitializeComponent();
@@ -28,19 +28,18 @@ namespace windows_client.View
             appBar.IsVisible = true;
 //            appBar.IsMenuEnabled = false;
 
-            nextIconButton = new ApplicationBarIconButton();
-            nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = "accept";
-            nextIconButton.Click += new EventHandler(doneBtn_Click);
-            nextIconButton.IsEnabled = true;
-            appBar.Buttons.Add(nextIconButton);
-            help.ApplicationBar = appBar;
+            //nextIconButton = new ApplicationBarIconButton();
+            //nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            //nextIconButton.Text = "accept";
+            //nextIconButton.Click += new EventHandler(doneBtn_Click);
+            //nextIconButton.IsEnabled = true;
+            //appBar.Buttons.Add(nextIconButton);
+            //help.ApplicationBar = appBar;
         }
 
         private void doneBtn_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
-
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
