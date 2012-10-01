@@ -78,7 +78,8 @@ namespace windows_client.Controls
             bool isGroupChat, string userName)
         {
             Rectangle BubbleBg = new Rectangle();
-            BubbleBg.Fill = UI_Utils.Instance.TextBoxBackground;
+            BubbleBg.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
+            bubblePointer.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
             Grid.SetRowSpan(BubbleBg, 2 + (isGroupChat?1:0));
             wrapperGrid.Children.Add(BubbleBg);
 
