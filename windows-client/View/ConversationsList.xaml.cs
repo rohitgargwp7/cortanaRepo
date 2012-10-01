@@ -796,7 +796,7 @@ namespace windows_client.View
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
+            NavigationService.Navigate(new Uri("/View/Invite.xaml", UriKind.Relative));
         }
 
 
