@@ -68,8 +68,8 @@ namespace windows_client.View
             initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 95;
-            photoChooserTask.PixelWidth = 95;
+            photoChooserTask.PixelHeight = 83;
+            photoChooserTask.PixelWidth = 83;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             string grpId = groupId.Replace(":", "_");
@@ -302,7 +302,7 @@ namespace windows_client.View
 
             using (var msSmallImage = new MemoryStream())
             {
-                writeableBitmap.SaveJpeg(msSmallImage, 45, 45, 0, 95);
+                writeableBitmap.SaveJpeg(msSmallImage, 83, 83, 0, 95);
                 buffer = msSmallImage.ToArray();
             }
             //send image to server here and insert in db after getting response
@@ -316,8 +316,8 @@ namespace windows_client.View
                 if (obj != null && "ok" == (string)obj["stat"])
                 {
                     groupImage.Source = grpImage;
-                    groupImage.Height = 90;
-                    groupImage.Width = 90;
+                    groupImage.Height = 83;
+                    groupImage.Width = 83;
                     object[] vals = new object[3];
                     vals[0] = groupId;
                     vals[1] = buffer;
