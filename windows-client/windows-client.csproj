@@ -308,6 +308,7 @@
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
     <Content Include="View\images\made_with_love_dark.png" />
+    <Content Include="View\images\new_message.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
     <Resource Include="hi.png" />
