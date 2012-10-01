@@ -107,6 +107,7 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            this.myListBox.SelectedIndex = -1;
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             if (firstLoad)
