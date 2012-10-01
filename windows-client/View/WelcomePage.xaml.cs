@@ -31,7 +31,7 @@ namespace windows_client
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            nextIconButton.Text = "next";
+            nextIconButton.Text = "accept";
             nextIconButton.Click += new EventHandler(getStarted_click);
             appBar.Buttons.Add(nextIconButton);
             welcomePage.ApplicationBar = appBar;
