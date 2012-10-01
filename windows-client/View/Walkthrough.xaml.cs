@@ -66,8 +66,6 @@ namespace windows_client.View
                     box1.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
                     box2.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
                     nextIconButton.IsEnabled = false;
-                    if (swipeLeft.Visibility == Visibility.Collapsed)
-                        swipeLeft.Visibility = Visibility.Visible;
                     break;
                     
                 case 1:
@@ -76,8 +74,6 @@ namespace windows_client.View
                     box1.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
                     box2.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
                     nextIconButton.IsEnabled = false;
-                    if (swipeLeft.Visibility == Visibility.Collapsed)
-                        swipeLeft.Visibility = Visibility.Visible;
                     break;
                 case 2:
                     box0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
@@ -85,8 +81,6 @@ namespace windows_client.View
                     box2.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
                     if(secondScreenSeen)
                         nextIconButton.IsEnabled = true;
-                    if (swipeLeft.Visibility == Visibility.Visible)
-                        swipeLeft.Visibility = Visibility.Collapsed;
                     break;
             }
         }

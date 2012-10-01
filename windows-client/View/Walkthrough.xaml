@@ -17,12 +17,77 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="header" HorizontalAlignment="Center" Margin="0,0,0,0">
+
+        <controls:Pivot x:Name="walkThroughPvt" Grid.Row="0" Margin="0,0,0,0" SelectionChanged="walkThroughPvt_SelectionChanged">
+            <controls:PivotItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,35,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="/View/images/hiketohike.jpg" Margin="0,0,0,0" Height="27" Grid.Row="0"></Image>
+                        <TextBlock Foreground="Black" Text="Free, always, worldwide" TextWrapping="Wrap" Grid.Row="1" 
+                                   HorizontalAlignment="Center" FontSize="22" FontFamily="Segoe WP Semibold" TextAlignment="Center" Width="300" Margin="0,35,0,0"></TextBlock>
+                    </Grid>
+                    <Image Source="/View/images/phone_hiketohike.jpg" VerticalAlignment="Top" Height="354" Margin="0,80,0,0" Grid.Row="1"/>
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="0,35,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Source="/View/images/hiketosms.jpg" Margin="0,0,0,0" Height="27" Grid.Row="0"></Image>
+                        <TextBlock Width="280" Foreground="Black" Text="Also message friends not on hike for free" TextWrapping="Wrap" Grid.Row="1" 
+                                   HorizontalAlignment="Center" FontSize="22" FontFamily="Segoe WP Semibold" TextAlignment="Center" Margin="0,35,0,0"></TextBlock>
+                    </Grid>
+                    <Image Source="/View/images/phone_hiketosms.jpg" VerticalAlignment="Top" Height="354" Margin="0,52,0,0" Grid.Row="1"/>
+
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBlock Foreground="#1f88cd" Text="Invite Friends Earn Rewards." TextWrapping="Wrap" Grid.Row="0" 
+                                   HorizontalAlignment="Center" FontSize="28" FontFamily="Segoe WP Bold" TextAlignment="Center" Margin="0,30,0,0"></TextBlock>
+                        <TextBlock Width="350" Text="For every friend who joins you get 50 Free SMS every month" TextWrapping="Wrap" Grid.Row="1" 
+                                   HorizontalAlignment="Center" FontSize="22" FontFamily="Segoe WP Semibold" Foreground="Black" TextAlignment="Center" Margin="0,35,0,0"></TextBlock>
+                    </Grid>
+                    <Image Source="/View/images/phone_hikerewards.jpg" VerticalAlignment="Top" Margin="0,50,0,0" Height="352" Grid.Row="1"/>
+
+                </Grid>
+
+            </controls:PivotItem>
+
+        </controls:Pivot>
+
+        <Grid x:Name="header" Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,40">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -33,80 +98,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Foreground="Black" Grid.Row="0" Margin="0,25,0,0" HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="3" FontSize="32" FontFamily="Segoe WP SemiLight" Text="Meet hike"/>
+            <!--<TextBlock Foreground="Black" Grid.Row="0" Margin="0,25,0,0" HorizontalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="3" FontSize="32" FontFamily="Segoe WP SemiLight" Text="Meet hike"/>-->
             <Rectangle x:Name="box0" Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="5,10,5,0" Grid.Column="0"/>
             <Rectangle x:Name="box1" Height="15" Width="15" Fill="#e8e9e9" Grid.Row="1" Margin="5,10,5,0" Grid.Column="1"/>
             <Rectangle x:Name="box2" Height="15" Width="15" Fill="#e8e9e9" Grid.Row="1" Margin="5,10,5,0" Grid.Column="2"/>
         </Grid>
-
-        <controls:Pivot x:Name="walkThroughPvt" Grid.Row="1" Margin="0,0,0,0" SelectionChanged="walkThroughPvt_SelectionChanged">
-            <controls:PivotItem>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Image Source="/View/images/phone_hiketohike.jpg" VerticalAlignment="Top" Height="354" Margin="0,0,0,0" Grid.Row="0"/>
-
-                    <Grid Grid.Row="1" Margin="0,45,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Image Source="/View/images/hiketohike.jpg" Margin="0,0,0,0" Height="27" Grid.Row="0"></Image>
-                        <TextBlock Foreground="Black" Text="Messaging friends on hike is free, always, worldwide" TextWrapping="Wrap" Grid.Row="1" 
-                                   HorizontalAlignment="Center" FontSize="22" TextAlignment="Center" Width="300" Margin="0,20,0,0"></TextBlock>
-                    </Grid>
-                </Grid>
-
-            </controls:PivotItem>
-
-            <controls:PivotItem>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Image Source="/View/images/phone_hiketosms.jpg" VerticalAlignment="Top" Height="354" Margin="0,0,0,0" Grid.Row="0"/>
-                    <Grid Grid.Row="1" Margin="0,45,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Image Source="/View/images/hiketosms.jpg" Margin="0,10,0,0" Height="27" Grid.Row="0"></Image>
-                        <TextBlock Foreground="Black" Text="You can also message friends and family who aren't on hike with Free hike SMS" TextWrapping="Wrap" Grid.Row="1" 
-                                   HorizontalAlignment="Center" FontSize="22" TextAlignment="Center" Width="400" Margin="0,20,0,0"></TextBlock>
-                    </Grid>
-                </Grid>
-            </controls:PivotItem>
-
-            <controls:PivotItem>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Image Source="/View/images/phone_hikerewards.jpg" VerticalAlignment="Top" Margin="0,0,0,0" Height="352" Grid.Row="0"/>
-                    <Grid Grid.Row="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <TextBlock Foreground="Black" Text="Invite Friends Earn Rewards." TextWrapping="Wrap" Grid.Row="0" 
-                                   HorizontalAlignment="Center" FontSize="24" FontFamily="Segoe WP Semibold" TextAlignment="Center" Margin="0,20,0,0"></TextBlock>
-                        <TextBlock Text="For every friend who joins you get -" TextWrapping="Wrap" Grid.Row="1" 
-                                   HorizontalAlignment="Center" FontSize="20" Foreground="#616161" TextAlignment="Center" Margin="0,5,0,0"></TextBlock>
-                        <Image Source="/View/images/3rewards.jpg" Margin="0,35,0,0" Height="76" Grid.Row="2"></Image>
-                    </Grid>
-
-                </Grid>
-
-            </controls:PivotItem>
-
-        </controls:Pivot>
-
-        <TextBlock x:Name="swipeLeft" Text="swipe left to continue" Grid.Row="2" HorizontalAlignment="Center" Foreground="LightGray" Margin="0,10,0,25"></TextBlock>
-
     </Grid>
 </phone:PhoneApplicationPage>
