@@ -33,6 +33,7 @@ namespace windows_client.utils
         private BitmapImage delivered;
         private BitmapImage read;
         private BitmapImage trying;
+        private BitmapImage unread;
         private BitmapImage defaultAvatarBitmapImage;
         private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
@@ -291,6 +292,17 @@ namespace windows_client.utils
                 return trying;
             }
         }
+
+        public BitmapImage Unread
+        {
+            get
+            {
+                if (unread == null)
+                    unread = new BitmapImage(new Uri("/View/images/new_message.png", UriKind.Relative));
+                return unread;
+            }
+        }
+
 
         public BitmapImage DefaultAvatarBitmapImage
         {
