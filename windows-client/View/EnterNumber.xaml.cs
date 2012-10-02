@@ -111,9 +111,9 @@ namespace windows_client
                     progressBar.IsEnabled = false;
                 });
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Debug.WriteLine("Exception handled in page EnterNumber Screen : "+e.StackTrace);
+                Debug.WriteLine("Exception handled in page EnterNumber Screen : " + e.StackTrace);
             }
         }
 
@@ -202,6 +202,11 @@ namespace windows_client
             {
                 nextIconButton.IsEnabled = false;
             }
+        }
+
+        private void txtEnterPhone_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.txtEnterPhone.Background = UI_Utils.Instance.White;
         }
     }
 }

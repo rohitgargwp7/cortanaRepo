@@ -203,5 +203,10 @@ namespace windows_client
             else
                 nextIconButton.IsEnabled = false;
         }
+
+        private void txtBxEnterName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.txtBxEnterName.Background = UI_Utils.Instance.White;
+        }
     }
 }
