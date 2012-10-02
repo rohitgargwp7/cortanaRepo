@@ -18,7 +18,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = true;     // change this for PRODUCTION or STAGING
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -62,6 +62,16 @@ namespace windows_client.utils
             }
         }
 
+        public static string FILE_TRANSFER_BASE
+        {
+            get
+            {
+                if (IS_PRODUCTION)
+                    return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
+                return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
+            }
+        }
+
         #endregion
 
         public static string HOST = IS_PRODUCTION ? PRODUCTION_HOST : STAGING_HOST;
@@ -69,7 +79,7 @@ namespace windows_client.utils
         public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
-        
+
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
         public static string mToken = null;
@@ -268,61 +278,6 @@ namespace windows_client.utils
                 chatbubble });
         }
 
-        public static void checkForUpdates(postResponseFunction callback)
-        {
-            HttpWebRequest request =
-            (HttpWebRequest)HttpWebRequest.Create(HikeConstants.UPDATE_URL);
-            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
-        }
-
-        static void GetRequestCallback(IAsyncResult result)
-        {
-            object[] vars = (object[])result.AsyncState;
-
-            HttpWebRequest request = vars[0] as HttpWebRequest;
-            postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
-            JObject jObject = null;
-            if (request != null)
-            {
-                try
-                {
-                    WebResponse response = request.EndGetResponse(result);
-                    Stream responseStream = response.GetResponseStream();
-                    string data;
-                    if (string.Equals(response.Headers[HttpRequestHeader.ContentEncoding], "gzip", StringComparison.OrdinalIgnoreCase))
-                    {
-                        data = decompressResponse(responseStream);
-                    }
-                    else
-                    {
-                        using (var reader = new StreamReader(responseStream))
-                        {
-                            data = reader.ReadToEnd();
-                        }
-                        jObject = JObject.Parse(data);
-                    }
-                }
-                catch (IOException ioe)
-                {
-                }
-                catch (WebException we)
-                {
-                }
-                catch (JsonException je)
-                {
-                }
-                catch (Exception e)
-                {
-                }
-                finally
-                {
-                    finalCallbackFunction(jObject);
-                }
-            }
-        }
-
-
-
         private static void setParams_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -444,6 +399,60 @@ namespace windows_client.utils
             postStream.Close();
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
         }
+
+        public static void checkForUpdates(postResponseFunction callback)
+        {
+            HttpWebRequest request =
+            (HttpWebRequest)HttpWebRequest.Create(HikeConstants.UPDATE_URL);
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        }
+
+        static void GetRequestCallback(IAsyncResult result)
+        {
+            object[] vars = (object[])result.AsyncState;
+
+            HttpWebRequest request = vars[0] as HttpWebRequest;
+            postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
+            JObject jObject = null;
+            if (request != null)
+            {
+                try
+                {
+                    WebResponse response = request.EndGetResponse(result);
+                    Stream responseStream = response.GetResponseStream();
+                    string data;
+                    if (string.Equals(response.Headers[HttpRequestHeader.ContentEncoding], "gzip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        data = decompressResponse(responseStream);
+                    }
+                    else
+                    {
+                        using (var reader = new StreamReader(responseStream))
+                        {
+                            data = reader.ReadToEnd();
+                        }
+                        jObject = JObject.Parse(data);
+                    }
+                }
+                catch (IOException ioe)
+                {
+                }
+                catch (WebException we)
+                {
+                }
+                catch (JsonException je)
+                {
+                }
+                catch (Exception e)
+                {
+                }
+                finally
+                {
+                    finalCallbackFunction(jObject);
+                }
+            }
+        }
+
 
         public static string Decompress(string compressedText)
         {
