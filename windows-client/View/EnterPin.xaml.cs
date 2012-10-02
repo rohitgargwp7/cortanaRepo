@@ -190,5 +190,10 @@ namespace windows_client
             }
         }
 
+        private void txtBxEnterPin_LostFocus(object sender, RoutedEventArgs e)
+        {
+            txtBxEnterPin.Background = UI_Utils.Instance.White;
+        }
+
     }
 }
