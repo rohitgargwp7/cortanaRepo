@@ -458,46 +458,46 @@ namespace windows_client
             if(ms == null)
                 return;
             /* Process UO for 1-1 chat*/
-            if (!ConversationsList.ConvMap.ContainsKey(ms))
-                return;
 
-            object[] vals = null;
-            ConvMessage cm = new ConvMessage();
-            cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
-            cm.Timestamp = TimeUtils.getCurrentTimeStamp();
-            cm.Msisdn = ms;
-            cm.MessageId = -1;
-            cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-            if(isOptInMsg)
-                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
-            else
-                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_JOINED;
-            ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-
-            if (credits <= 0)
-                vals = new object[2];
-            else                    // this shows that we have to show credits msg as this user got credits.
+            if (!isOptInMsg || ConversationsList.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
             {
-                string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
-                JObject o = new JObject();
-                o.Add("t", "credits_gained");
-                ConvMessage cmCredits = new ConvMessage();
-                cmCredits.MetaDataString = o.ToString(Newtonsoft.Json.Formatting.None);
-                cmCredits.Message = text;
-                cmCredits.Timestamp = TimeUtils.getCurrentTimeStamp();
-                cmCredits.Msisdn = ms;
-                cmCredits.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
-                obj = MessagesTableUtils.addChatMessage(cmCredits, false);
+                object[] vals = null;
+                ConvMessage cm = new ConvMessage();
+                cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                cm.Timestamp = TimeUtils.getCurrentTimeStamp();
+                cm.Msisdn = ms;
+                cm.MessageId = -1;
+                cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                if (isOptInMsg)
+                    cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
+                else
+                    cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_JOINED;
+                ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
 
-                vals = new object[3];
-                vals[2] = cmCredits;
+                if (credits <= 0)
+                    vals = new object[2];
+                else                    // this shows that we have to show credits msg as this user got credits.
+                {
+                    string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                    JObject o = new JObject();
+                    o.Add("t", "credits_gained");
+                    ConvMessage cmCredits = new ConvMessage();
+                    cmCredits.MetaDataString = o.ToString(Newtonsoft.Json.Formatting.None);
+                    cmCredits.Message = text;
+                    cmCredits.Timestamp = TimeUtils.getCurrentTimeStamp();
+                    cmCredits.Msisdn = ms;
+                    cmCredits.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                    cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
+                    obj = MessagesTableUtils.addChatMessage(cmCredits, false);
+
+                    vals = new object[3];
+                    vals[2] = cmCredits;
+                }
+
+                vals[0] = cm;
+                vals[1] = obj;
+                pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
-
-            vals[0] = cm;
-            vals[1] = obj;
-            pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
-
             // UPDATE group cache
             foreach (string key in Utils.GroupCache.Keys)
             {
