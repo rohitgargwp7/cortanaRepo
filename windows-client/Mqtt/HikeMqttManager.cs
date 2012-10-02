@@ -51,12 +51,14 @@ namespace windows_client.Mqtt
 
         // taken from preferences
         // host name of the server we're receiving push notifications from
-        private String brokerHostName = AccountUtils.HOST;
+
+
+        private String brokerHostName = AccountUtils.MQTT_HOST;
 
 
         // defaults - this sample uses very basic defaults for it's interactions
         // with message brokers
-        private int brokerPortNumber = 1883;
+        private int brokerPortNumber = AccountUtils.MQTT_PORT;
 
         //        private HikeMqttPersistence persistence = null;
 
@@ -340,7 +342,7 @@ namespace windows_client.Mqtt
         {
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             mqttConnection = null;
-            if(!disconnectCalled)
+            if (!disconnectCalled)
                 connect();
         }
 
