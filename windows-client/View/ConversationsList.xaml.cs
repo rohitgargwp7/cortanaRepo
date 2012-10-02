@@ -21,6 +21,7 @@ using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using System.Reflection;
 using Microsoft.Xna.Framework.GamerServices;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -391,6 +392,7 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
             }
+            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
@@ -883,7 +885,6 @@ namespace windows_client.View
             {
             }
         }
-
 
         private IAsyncResult showCriticalUpdateMessage()
         {

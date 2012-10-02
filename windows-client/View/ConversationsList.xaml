@@ -107,15 +107,15 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Image x:Name="avatarImage" Grid.Column="0" Margin="15,0,5,0" Tap="onProfilePicButtonTap" Height="83" Source="images\default_user.png" />
-                        <Image Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,1" Source="images\change_pic.png" />
+                        <Image Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0" Source="images\change_pic.png" />
 
                         <StackPanel Grid.Column="1" Name="accountStackPanel" Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
                             <TextBlock x:Name="accountName" FontSize="35" Text="UNKNOWN"/>
-                            <TextBlock Text="Edit Profile" FontFamily="Segoe WP SemiLight"/>
+                            <TextBlock x:Name="editProfileTextBlck" Text="Edit Profile"/>
                         </StackPanel>
                     </Grid>
                     
-                    <StackPanel Margin="0, 25, 0,10" Orientation="Vertical" Grid.Row="1">
+                    <StackPanel Margin="0, 15, 0,10" Orientation="Vertical" Grid.Row="1">
                         <StackPanel  Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,15,0,5">
                             <Image Name ="freeSmsImage" VerticalAlignment="Top" Margin="0,10,0,0" Source="images\free_sms.png" Height="35">
                             </Image>
@@ -129,23 +129,20 @@
                             </Image>
                             <TextBlock Text="Invite" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Privacy_Tap">
+                            <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Height="35"></Image>
+                            <TextBlock Text="Privacy" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
+                        </StackPanel>
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,15,0,5">
                             <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="35">
                             </Image>
                             <TextBlock Text="Settings" FontSize="39" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Privacy_Tap">
-                            <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Height="35"></Image>
-                            <TextBlock Text="Privacy" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Help_Tap">
                             <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
                             <TextBlock Text="Help" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                     </StackPanel>
-                    <!--<StackPanel Grid.Row="2">
-                        <Image Source="images\Made_with_love.png" Height="20" Margin="0,0,0,10"/>
-                    </StackPanel>-->
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
