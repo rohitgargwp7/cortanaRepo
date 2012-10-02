@@ -250,6 +250,13 @@ namespace windows_client
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+            Debug.WriteLine("SERVER SETTING : " + env);
+            Debug.WriteLine("HOST : "+AccountUtils.HOST);
+            Debug.WriteLine("PORT : " + AccountUtils.PORT);
+            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
+            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+
             _isLaunch = true;
             Stopwatch st = Stopwatch.StartNew();
             instantiateClasses();

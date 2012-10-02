@@ -837,6 +837,7 @@ namespace windows_client.Model
                     GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
                     this._message = gp.FirstName + HikeConstants.USER_LEFT;
                     gp.HasLeft = true;
+                    gp.IsUsed = false;
                     saveCache = true;
                 }
             }

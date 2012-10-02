@@ -18,28 +18,87 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        public static readonly string PRODUCTION_HOST = "api.im.hike.in";
+        private static bool IS_PRODUCTION;
 
-        public static readonly string STAGING_HOST = "staging.im.hike.in";
+        private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
-        public static readonly string MQTT_HOST = "mq.im.hike.in";
+        private static readonly string STAGING_HOST = "staging.im.hike.in";
 
-        public static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
+        private static readonly string MQTT_HOST_SERVER = "mqtt.im.hike.in";
+
+        private static readonly string FILE_TRANSFER_HOST = "ft.im.hike.in";
 
         private static readonly int PRODUCTION_PORT = 80;
 
         private static readonly int STAGING_PORT = 8080;
 
-        public static string HOST = STAGING_HOST;
+        // This is the first function that gets called when any static field is called externally or class is loaded
+        static AccountUtils()
+        {
+            IS_PRODUCTION = false;        // use this to set PRODUCTION or STAGINIG server
+        }
 
-        public static int PORT = STAGING_PORT;
+        public static bool IsProd
+        {
+            get
+            {
+                return IS_PRODUCTION;
+            }
+        }
+
+        #region MQTT RELATED
+
+        public static string MQTT_HOST
+        {
+            get
+            {
+                if (IS_PRODUCTION)
+                    return MQTT_HOST_SERVER;
+                return STAGING_HOST;
+            }
+        }
+
+        public static int MQTT_PORT
+        {
+            get
+            {
+                if (IS_PRODUCTION)
+                    return STAGING_PORT;
+                return 1883;
+            }
+        }
+
+        #endregion
+
+        public static string HOST = IS_PRODUCTION ? PRODUCTION_HOST : STAGING_HOST;
+
+        public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
-
+        
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
         public static string mToken = null;
         private static string uid = null;
+
+        public class AccountInfo
+        {
+            public string token;
+
+            public string msisdn;
+
+            public string uid;
+
+            public int smsCredits;
+
+            public AccountInfo(string token, string msisdn, string uid, int smsCredits)
+            {
+                this.token = token;
+                this.msisdn = msisdn;
+                this.uid = uid;
+                this.smsCredits = smsCredits;
+            }
+        }
 
         public static string UID
         {
@@ -64,24 +123,7 @@ namespace windows_client.utils
             }
         }
 
-        public class AccountInfo
-        {
-            public string token;
 
-            public string msisdn;
-
-            public string uid;
-
-            public int smsCredits;
-
-            public AccountInfo(string token, string msisdn, string uid, int smsCredits)
-            {
-                this.token = token;
-                this.msisdn = msisdn;
-                this.uid = uid;
-                this.smsCredits = smsCredits;
-            }
-        }
 
         public delegate void postResponseFunction(JObject obj);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
@@ -236,7 +278,7 @@ namespace windows_client.utils
         {
             HttpWebRequest request =
             (HttpWebRequest)HttpWebRequest.Create(HikeConstants.UPDATE_URL);
-            request.BeginGetResponse(GetRequestCallback, new object[] {request, callback});
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
         static void GetRequestCallback(IAsyncResult result)
@@ -284,7 +326,7 @@ namespace windows_client.utils
                 }
             }
         }
-        
+
 
 
         private static void setParams_Callback(IAsyncResult result)
