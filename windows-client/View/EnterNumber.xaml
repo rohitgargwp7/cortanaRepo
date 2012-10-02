@@ -53,8 +53,8 @@
                 <Image Source="images\hike_logo_small.png" Height="40" Margin="0,25,0,10"></Image>
                 <Rectangle Height="1" Margin="2,15,0,0" Fill="#e5e5e5"></Rectangle>
 
-                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" Text="  We couldn't pull your phone #" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
-                <TextBlock x:Name="txtBlkEnterNumber" TextWrapping="Wrap" Text="Enter it below to get started" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
+                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" Text="  We couldn't pull your phone number." FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                <TextBlock x:Name="txtBlkEnterNumber" TextWrapping="Wrap" Text="Enter it below to get started." FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
 
                 <Border BorderThickness="2" Width="310" Height="56" Margin="5,10,0,0" BorderBrush="Black">
                     <StackPanel x:Name="enterNumberPanel" Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" Background="White">
