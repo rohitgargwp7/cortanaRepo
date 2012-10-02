@@ -18,7 +18,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION;
+        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -31,12 +31,6 @@ namespace windows_client.utils
         private static readonly int PRODUCTION_PORT = 80;
 
         private static readonly int STAGING_PORT = 8080;
-
-        // This is the first function that gets called when any static field is called externally or class is loaded
-        static AccountUtils()
-        {
-            IS_PRODUCTION = false;        // use this to set PRODUCTION or STAGINIG server
-        }
 
         public static bool IsProd
         {
