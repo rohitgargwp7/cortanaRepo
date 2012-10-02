@@ -89,6 +89,7 @@ namespace windows_client
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 txtBxEnterPin.IsReadOnly = false;
+                PhoneApplicationService.Current.State.Remove("EnteredPhone");
                 NavigationService.Navigate(nextPage);
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
@@ -121,7 +122,6 @@ namespace windows_client
             }
             else
             {
-                PhoneApplicationService.Current.State.Remove("EnteredPhone");
                 try
                 {
                     Uri nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);

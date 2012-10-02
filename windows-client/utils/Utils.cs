@@ -270,15 +270,52 @@ namespace windows_client.utils
 
         public static void TellAFriend()
         {
-            string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(App.invite_message, inviteToken);
-            ShareLinkTask shareLinkTask = new ShareLinkTask();
-            shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
-            shareLinkTask.Title = "HIKE";
-            shareLinkTask.Message = inviteMsg;
-            shareLinkTask.Show();
+            
         }
 
+        public static string GetVersion()
+        {
+            Uri manifest = new Uri("WMAppManifest.xml", UriKind.Relative);
+            var si = Application.GetResourceStream(manifest);
+            if (si != null)
+            {
+                using (StreamReader sr = new StreamReader(si.Stream))
+                {
+                    bool haveApp = false;
+                    while (!sr.EndOfStream)
+                    {
+                        string line = sr.ReadLine();
+                        if (!haveApp)
+                        {
+                            int i = line.IndexOf("AppPlatformVersion=\"", StringComparison.InvariantCulture);
+                            if (i >= 0)
+                            {
+                                haveApp = true;
+                                line = line.Substring(i + 20);
+                                int z = line.IndexOf("\"");
+                                if (z >= 0)
+                                {
+                                    // if you're interested in the app plat version at all                        
+                                    // AppPlatformVersion = line.Substring(0, z);                      
+                                }
+                            }
+                        }
+
+                        int y = line.IndexOf("Version=\"", StringComparison.InvariantCulture);
+                        if (y >= 0)
+                        {
+                            int z = line.IndexOf("\"", y + 9, StringComparison.InvariantCulture);
+                            if (z >= 0)
+                            {
+                                // We have the version, no need to read on.                      
+                                return line.Substring(y + 9, z - y - 9);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return "Unknown";
+        }  
     }
 }

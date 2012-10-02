@@ -796,7 +796,15 @@ namespace windows_client.View
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/Invite.xaml", UriKind.Relative));
+            Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
+            try
+            {
+                NavigationService.Navigate(nextPage);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
+            }
         }
 
 

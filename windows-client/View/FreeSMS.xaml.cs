@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
 using Microsoft.Phone.Tasks;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -88,7 +89,15 @@ namespace windows_client.View
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
+            try
+            {
+                NavigationService.Navigate(nextPage);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("FREE SMS SCREEN :: Exception while navigating to Invite screen : "+ex.StackTrace);
+            }
         }
 
         public void onEventReceived(string type, object obj)

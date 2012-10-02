@@ -189,7 +189,7 @@ namespace windows_client
                     msgID = -1;
                 }
                 this.pubSub.publish(HikePubSub.SERVER_RECEIVED_MSG, msgID);
-                updateDB(msgID, (int)ConvMessage.State.SENT_CONFIRMED);
+                updateDB(null,msgID, (int)ConvMessage.State.SENT_CONFIRMED);
             }
             #endregion
             #region DELIVERY_REPORT
@@ -208,7 +208,7 @@ namespace windows_client
                 }
                 //logger.Info("NETWORK MANAGER", "Delivery report received for msgid : " + msgID + "	;	REPORT : DELIVERED");
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, msgID);
-                updateDB(msgID, (int)ConvMessage.State.SENT_DELIVERED);
+                updateDB(msisdn,msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
             #endregion
             #region MESSAGE_READ
@@ -227,7 +227,7 @@ namespace windows_client
                     ids[i] = Int64.Parse(msgIds[i].ToString());
                 }
                 //logger.Info("NETWORK MANAGER", "Delivery report received : " + "	;	REPORT : DELIVERED READ");
-                updateDbBatch(ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
+                updateDbBatch(msisdn,ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, ids);
             }
             #endregion
@@ -611,20 +611,20 @@ namespace windows_client
 
         }
 
-        private void updateDB(long msgID, int status)
+        private void updateDB(string fromUser,long msgID, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateMsgStatus(msgID, status); // update covmsg
-            ConversationTableUtils.updateLastMsgStatus(msisdn,status); // update conversationObj
+            string msisdn = MessagesTableUtils.updateMsgStatus(fromUser,msgID, status); // update covmsg
+            ConversationTableUtils.updateLastMsgStatus(msisdn,status); // update conversationObj, null is already checked in the function
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
         }
 
-        private void updateDbBatch(long[] ids, int status)
+        private void updateDbBatch(string fromUser,long[] ids, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
             ConversationTableUtils.updateLastMsgStatus(msisdn,status);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
