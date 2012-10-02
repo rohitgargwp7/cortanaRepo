@@ -130,11 +130,11 @@
                             <TextBlock Text="Invite" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Privacy_Tap">
-                            <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Height="35"></Image>
+                            <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Width="26" Height="35"></Image>
                             <TextBlock Text="Privacy" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                         <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,15,0,5">
-                            <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="35">
+                            <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="34" Width="34">
                             </Image>
                             <TextBlock Text="Settings" FontSize="39" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
                         </StackPanel>

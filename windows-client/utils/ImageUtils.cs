@@ -168,7 +168,7 @@ namespace windows_client.utils
                     if (Utils.isDarkTheme())
                         receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x50, 0x50, 0x50));
                     else
-                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xf2, 0xf2, 0xf2));
+                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
                 }
                 return receivedChatBubbleColor;
             }
