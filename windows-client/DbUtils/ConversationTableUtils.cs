@@ -292,8 +292,11 @@ namespace windows_client.DbUtils
             if (ConversationsList.ConvMap.ContainsKey(msisdn))
             {
                 obj = ConversationsList.ConvMap[msisdn];
-                obj.MessageStatus = (ConvMessage.State)status;
-                saveConvObject(obj, msisdn.Replace(":", "_"));
+                if (obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
+                {
+                    obj.MessageStatus = (ConvMessage.State)status;
+                    saveConvObject(obj, msisdn.Replace(":", "_"));
+                }
             }
         }
 

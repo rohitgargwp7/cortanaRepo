@@ -614,7 +614,8 @@ namespace windows_client
         private void updateDB(string fromUser,long msgID, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateMsgStatus(fromUser,msgID, status); // update covmsg
+            string msisdn = MessagesTableUtils.updateMsgStatus(null, msgID, status);  // TODO : Change this once corrected @ server
+            //string msisdn = MessagesTableUtils.updateMsgStatus(fromUser,msgID, status); // update covmsg
             ConversationTableUtils.updateLastMsgStatus(msisdn,status); // update conversationObj, null is already checked in the function
             st.Stop();
             long msec = st.ElapsedMilliseconds;
@@ -624,7 +625,8 @@ namespace windows_client
         private void updateDbBatch(string fromUser,long[] ids, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status);
+            //string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
             ConversationTableUtils.updateLastMsgStatus(msisdn,status);
             st.Stop();
             long msec = st.ElapsedMilliseconds;

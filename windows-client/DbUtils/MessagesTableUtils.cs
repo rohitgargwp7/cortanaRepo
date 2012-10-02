@@ -355,14 +355,6 @@ namespace windows_client.DbUtils
             return obj;
         }
 
-
-        private static void updateConvThreadPool(object p)
-        {
-            ConversationListObject obj = (ConversationListObject)p;
-            ConversationTableUtils.updateConversation(obj);
-            App.ViewModel.ConvMsisdnsToUpdate.Remove(obj.Msisdn);
-        }
-
         public static string updateMsgStatus(string fromUser, long msgID, int val)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024"))
