@@ -1446,17 +1446,6 @@ namespace windows_client.View
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
             }
-            else
-            {
-#if DEBUG
-                isReleaseMode = false;
-                Uri uri = new Uri("/View/images/ic_phone_big.png", UriKind.Relative);
-                BitmapImage image = new BitmapImage(uri);
-                image.CreateOptions = BitmapCreateOptions.None;
-                image.UriSource = uri;
-                image.ImageOpened += imageOpenedHandler;
-#endif
-            }
         }
 
         //TODO remove these bools in release build. these are used because imageOpenHandler is called twice i debug
