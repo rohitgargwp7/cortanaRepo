@@ -1617,6 +1617,7 @@ namespace windows_client.View
 
         private void MenuItem_Click_Copy(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
+            isContextMenuTapped = true;
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
             if(chatBubble.FileAttachment == null)
                 Clipboard.SetText(chatBubble.Text);
@@ -1626,6 +1627,7 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
+            isContextMenuTapped = true;
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
             if (msg == null)
             {
