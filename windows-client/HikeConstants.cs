@@ -52,6 +52,7 @@ namespace windows_client
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
+        public static readonly string FILE_TRANSFER_COPY_BASE_URL = "http://hike.in/f";
 
         public static readonly string pushNotificationChannelName = "HikeApp";
 

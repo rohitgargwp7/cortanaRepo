@@ -1621,7 +1621,7 @@ namespace windows_client.View
             if(chatBubble.FileAttachment == null)
                 Clipboard.SetText(chatBubble.Text);
             else if(!String.IsNullOrEmpty(chatBubble.FileAttachment.FileKey))
-                Clipboard.SetText(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + chatBubble.FileAttachment.FileKey);
+                Clipboard.SetText(HikeConstants.FILE_TRANSFER_COPY_BASE_URL + "/" + chatBubble.FileAttachment.FileKey);
         }
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
