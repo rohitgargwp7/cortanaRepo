@@ -94,7 +94,8 @@ namespace windows_client
                         // removed by the system.
                         ReceivedChatBubble chatBubble;
                         requestIdChatBubbleMap.TryGetValue(transfer.RequestId, out chatBubble);
-                        chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
+                        if(chatBubble !=null)
+                            chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                         RemoveTransferRequest(transfer.RequestId);
                         //RemoveTransferRequest(transfer.RequestId);
                         // In this example, the downloaded file is moved into the root
@@ -116,7 +117,7 @@ namespace windows_client
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
-                                if (chatBubble.FileAttachment.ContentType.Contains("image"))
+                                if (chatBubble!=null && chatBubble.FileAttachment.ContentType.Contains("image"))
                                 {
                                     IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                     MediaLibrary library = new MediaLibrary();
