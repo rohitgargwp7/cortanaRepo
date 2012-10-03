@@ -44,8 +44,10 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (NavigationService.CanGoBack)
+            if (NavigationService.CanGoBack && !PhoneApplicationService.Current.State.ContainsKey("FromHelpPage"))
                 NavigationService.RemoveBackEntry();
+            else
+                PhoneApplicationService.Current.State.Remove("FromHelpPage");
         }
         private void doneBtn_Click(object sender, EventArgs e)
         {
