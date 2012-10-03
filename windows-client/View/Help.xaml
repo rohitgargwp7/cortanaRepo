@@ -37,15 +37,15 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,15,0,0" Tap="FAQs_Tap">
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,30,0,0" Tap="FAQs_Tap">
                 <TextBlock Text="FAQs" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Frequently asked questions" FontSize="20"/>
             </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,15,0,0" Tap="ContactUs_Tap">
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,30,0,0" Tap="ContactUs_Tap">
                 <TextBlock Text="Contact Us" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Contact our support team for help" FontSize="20"/>
             </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,15,0,0" Tap="Legal_Tap">
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,30,0,0" Tap="Legal_Tap">
                 <TextBlock Text="Legal" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Read Terms of service and privacy policy" FontSize="20"/>
             </StackPanel>
@@ -53,7 +53,7 @@
                 <TextBlock Text="Updates" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Check for updates" FontSize="20"/>
             </StackPanel>-->
-            <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,15,0,0" Tap="Walkthrough_Tap">
+            <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
                 <TextBlock Text="Walkthrough" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="View the meet hike walkthrough" FontSize="20"/>
             </StackPanel>

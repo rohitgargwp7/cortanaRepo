@@ -22,11 +22,11 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <TextBlock Text="privacy" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Height="80"/>
+            <TextBlock Text="privacy" FontFamily="Segoe WP SemiLight" FontSize="68" Margin="23,0,0,0" Height="100"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,10,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,5,0,0" Background="Transparent">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -38,13 +38,13 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Image x:Name="unlinkAccount" Width="32" Source="/View/images/unlink_account_white.png" Grid.Row="0" Grid.Column="0"></Image>
-            <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" Grid.Row="1" Grid.Column="0"></Image>
-            <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,10,0,0" Tap="Unlink_Tap">
+            <Image x:Name="unlinkAccount" Width="32" Source="/View/images/unlink_account_white.png" VerticalAlignment="Center" Margin="0,4,0,0" Grid.Row="0" Grid.Column="0"></Image>
+            <Image x:Name="deleteAccount" Width="28" Source="/View/images/delete_account_white.png" VerticalAlignment="Center" Margin="0,4,0,0" Grid.Row="1" Grid.Column="0"></Image>
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,30,0,0" Tap="Unlink_Tap">
                 <TextBlock Name="unlinkTxtBlk" Text="Unlink Account" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Logout your account from this device" FontSize="20"/>
             </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,10,0,0" Tap="Delete_Tap">
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,30,0,0" Tap="Delete_Tap">
                 <TextBlock Name="deleteTxtBlk" Text="Delete Account" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Permanently delete your hike account" FontSize="20"/>
             </StackPanel>

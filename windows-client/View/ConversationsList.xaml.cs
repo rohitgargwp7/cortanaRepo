@@ -401,8 +401,8 @@ namespace windows_client.View
 
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 95;
-            photoChooserTask.PixelWidth = 95;
+            photoChooserTask.PixelHeight = 83;
+            photoChooserTask.PixelWidth = 83;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Stopwatch st = Stopwatch.StartNew();
@@ -493,8 +493,8 @@ namespace windows_client.View
                 if (obj != null && "ok" == (string)obj["stat"])
                 {
                     avatarImage.Source = profileImage;
-                    avatarImage.Height = 90;
-                    avatarImage.Width = 90;
+                    avatarImage.MaxHeight = 83;
+                    avatarImage.MaxWidth = 83;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
                     vals[1] = thumbnailBytes;
@@ -870,7 +870,6 @@ namespace windows_client.View
                     if (criticalVersion > currentVersion)
                     {
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-
                         criticalMessageBox = showCriticalUpdateMessage();
                         //critical update
                     }

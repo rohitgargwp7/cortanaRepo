@@ -24,11 +24,11 @@
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
             <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-            <TextBlock Text="settings" FontFamily="Segoe WP SemiLight" FontSize="68" FontStretch="Expanded"  Margin="23,0,0,0"/>
+            <TextBlock Text="settings" FontFamily="Segoe WP SemiLight" FontSize="68"  Margin="25,0,0,0"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="15,10,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="17,30,0,0" Background="Transparent">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

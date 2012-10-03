@@ -40,11 +40,6 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480">
             <StackPanel Orientation="Vertical" Margin="24,0,20,0">
-                <!--<Image  Margin="1,25,0,15" HorizontalAlignment="Left" Height="40" Width="127">
-                    <Image.Source>
-                        <BitmapImage UriSource="images\hike_header.png" CreateOptions="BackgroundCreation"></BitmapImage>
-                    </Image.Source>
-                </Image>-->
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                         <Image Name="userImage" Height="50"></Image>
                     <TextBlock x:Name="userName" Text="Madhur Garg" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
@@ -148,48 +143,7 @@
                             </ListBox>
                         </Grid>
                     </controls:PivotItem>
-
                 </controls:Pivot>
-
-                <!--<ListBox Width="Auto" Height="Auto" Name="optionsList" Tap="optionsList_Tap">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <toolkit:WrapPanel/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.Items>
-                        <ListBoxItem>
-                            <StackPanel Orientation="Vertical" Width="150" >
-                                <Image Margin="3" Height="50">
-                                    <Image.Source>
-                                        <BitmapImage UriSource="images\emoticons\emo_im_01_bigsmile.png" CreateOptions="BackgroundCreation"></BitmapImage>
-                                    </Image.Source>
-                                </Image>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel Orientation="Vertical" Width="150">
-                                <Image Margin="3" Height="50">
-                                    <Image.Source>
-                                        <BitmapImage UriSource="images\emoticons\emo_im_102_scorn.png" CreateOptions="BackgroundCreation"></BitmapImage>
-                                    </Image.Source>
-                                </Image>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel Orientation="Vertical" Width="150">
-                                <Image Margin="3" Height="50">
-                                    <Image.Source>
-                                        <BitmapImage UriSource="images\emoticons\emo_im_111_grin.png" CreateOptions="BackgroundCreation"></BitmapImage>
-                                    </Image.Source>
-
-                                </Image>
-                            </StackPanel>
-                        </ListBoxItem>
-                    </ListBox.Items>
-                </ListBox>-->
-
-
                 <Grid HorizontalAlignment="Center" Margin="0,0,15,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -217,7 +171,6 @@
 
                 </Grid>
             </StackPanel>
-
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
