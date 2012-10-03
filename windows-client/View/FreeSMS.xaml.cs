@@ -31,8 +31,11 @@ namespace windows_client.View
         private void initpageBasedOnState()
         {
             int creditsRemaining = (int)App.appSettings[App.SMS_SETTING];
-            if (App.appSettings.Contains(App.TOTAL_CREDITS_PER_MONTH))
-                MaxCredits.Text = (string)App.appSettings[App.TOTAL_CREDITS_PER_MONTH];
+            if (App.appSettings.Contains(HikeConstants.TOTAL_CREDITS_PER_MONTH))
+            {
+                int max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
+                MaxCredits.Text = Convert.ToString( max > 0 ? max:0);
+            }
 //            int creditsRemaining = 8796;
             TextBlock t3 = null;
             Rectangle r3 = null;
@@ -112,7 +115,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MaxCredits.Text = (string)App.appSettings[App.TOTAL_CREDITS_PER_MONTH];
+                    MaxCredits.Text = (string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH];
                 });
             }
         }

@@ -585,7 +585,7 @@ namespace windows_client.View
             Utils.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd, isNewgroup);
+            groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd);
             if (isNewgroup)
                 mContactName = Utils.defaultGroupName(mContactNumber);
             else
@@ -614,7 +614,7 @@ namespace windows_client.View
             }
         }
 
-        private JObject createGroupJsonPacket(string type, List<GroupParticipant> usersToAdd, bool isNewGroup)
+        private JObject createGroupJsonPacket(string type, List<GroupParticipant> usersToAdd)
         {
             JObject obj = new JObject();
             try
@@ -631,13 +631,13 @@ namespace windows_client.View
                         nameMsisdn[HikeConstants.MSISDN] = usersToAdd[i].Msisdn;
                         array.Add(nameMsisdn);
                     }
-                    if (isNewGroup) // if new group add owners info also
-                    {
-                        JObject nameMsisdn = new JObject();
-                        nameMsisdn[HikeConstants.NAME] = (string)App.appSettings[App.ACCOUNT_NAME];
-                        nameMsisdn[HikeConstants.MSISDN] = App.MSISDN;
-                        array.Add(nameMsisdn);
-                    }
+                    //if (isNewGroup) // if new group add owners info also
+                    //{
+                    //    JObject nameMsisdn = new JObject();
+                    //    nameMsisdn[HikeConstants.NAME] = (string)App.appSettings[App.ACCOUNT_NAME];
+                    //    nameMsisdn[HikeConstants.MSISDN] = App.MSISDN;
+                    //    array.Add(nameMsisdn);
+                    //}
 
                     obj[HikeConstants.DATA] = array;
                 }
@@ -1308,7 +1308,7 @@ namespace windows_client.View
                     NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
                     if (Utils.isGroupConversation(mContactNumber))
                     {
-                        type = NotificationChatBubble.MessageType.USER_JOINED_HIKE;
+                        type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
                     }
                     MyChatBubble chatBubble = new NotificationChatBubble(type, convMessage.Message);
                     this.MessageList.Children.Add(chatBubble);
