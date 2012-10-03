@@ -21,6 +21,7 @@ using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using System.Reflection;
 using Microsoft.Xna.Framework.GamerServices;
+using System.Windows.Media;
 
 namespace windows_client.View
 {
@@ -391,6 +392,7 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
             }
+            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
@@ -536,7 +538,8 @@ namespace windows_client.View
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
             //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
-            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            if (isAppEnabled)
+                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
@@ -809,119 +812,130 @@ namespace windows_client.View
 
 
         #region IN APP UPDATE
-        private static string GetVersionNumber()
-        {
-            var asm = Assembly.GetExecutingAssembly();
-            var parts = asm.FullName.Split(',');
-            return parts[1].Split('=')[1];
-        }
+
+        private bool isAppEnabled = true;
+        private IAsyncResult criticalMessageBox = null;//this variable can be ignored/removed. was kept only to dismiss message box on backkey press
+                                                        //which does not work
+        private string latestVersionString = "";
 
         public void checkForUpdates()
         {
             long lastTimeStamp = -1;
             App.appSettings.TryGetValue<long>(App.LAST_UPDATE_CHECK_TIME, out lastTimeStamp);
-            if (lastTimeStamp == -1 || TimeUtils.numberOfHoursElapsed(lastTimeStamp) >= HikeConstants.CHECK_FOR_UPDATE_TIME)
+
+            if (Utils.isCriticalUpdatePending())
+            {
+                showCriticalUpdateMessage();
+            }
+            else if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
             {
                 AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
             }
-            else
-            {
-                string appID = "";
-                App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, out appID);
-                if (!String.IsNullOrEmpty(appID))
-                {
-                    Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
-                    new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
-                    asyncResult =>
-                    {
-                        int? returned = Guide.EndShowMessageBox(asyncResult);
-                        if (returned != null && returned == 0)
-                        {
-                            openMarketPlace(appID);
-                        }
-                    }, null);
-                }
-            }
         }
 
-        private bool isCriticalUpdate = false;
-        //private string searchTermsForUpdate = "";
-        private string latestVersionString = "";
-        private string appID = "";
 
         public void checkUpdate_Callback(JObject obj)
         {
-            //try
-            //{
-            if (obj != null)
+            try
             {
-                string critical = obj[HikeConstants.CRITICAL].ToString();
-                string latest = obj[HikeConstants.LATEST].ToString();
-                string current = GetVersionNumber();
-
-                latestVersionString = latest;
-                critical = critical.Replace(".", "");
-                latest = latest.Replace(".", "");
-                current = current.Replace(".", "");
-
-                int criticalVersion = Convert.ToInt32(critical);
-                int latestVersion = Convert.ToInt32(latest);
-                int currentVersion = Convert.ToInt32(current);
-
-                string lastDismissedUpdate = "";
-                App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
-                appID = obj[HikeConstants.APP_ID].ToString();
-
-                int lastDismissedVersion = -1;
-                if (!String.IsNullOrEmpty(lastDismissedUpdate))
+                if (obj != null)
                 {
-                    lastDismissedVersion = Convert.ToInt32(lastDismissedUpdate.Replace(".", ""));
-                }
+                    string critical = obj[HikeConstants.CRITICAL].ToString();
+                    string latest = obj[HikeConstants.LATEST].ToString();
+                    string current = Utils.GetVersion();
 
-                if (criticalVersion > currentVersion)
-                {
-                    App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, appID);
+                    latestVersionString = latest;
+                    critical = critical.Replace(".", "");
+                    latest = latest.Replace(".", "");
+                    current = current.Replace(".", "");
 
-                    Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
-                    new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
-                    asyncResult =>
+                    int criticalVersion = Convert.ToInt32(critical);
+                    int latestVersion = Convert.ToInt32(latest);
+                    int currentVersion = Convert.ToInt32(current);
+
+                    string lastDismissedUpdate = "";
+                    App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
+                    string appID = obj[HikeConstants.APP_ID].ToString();
+
+                    int lastDismissedVersion = -1;
+                    if (!String.IsNullOrEmpty(lastDismissedUpdate))
                     {
-                        int? returned = Guide.EndShowMessageBox(asyncResult);
-                        if (returned != null && returned == 0)
-                        {
-                            openMarketPlace(appID);
-                        }
-                    }, null);
-                    isCriticalUpdate = true;
-                    //critical update
-                }
-                else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
-                {
-                    App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, "");
-                    //normal update
-                    Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
-                    new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
-                    asyncResult =>
-                    {
-                        int? returned = Guide.EndShowMessageBox(asyncResult);
-                        if (returned != null && returned == 0)
-                        {
-                            openMarketPlace(appID);
-                        }
-                        else if (returned != null && returned == 1)
-                        {
-                            App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-                        }
-                    }, null);
-                }
+                        lastDismissedVersion = Convert.ToInt32(lastDismissedUpdate.Replace(".", ""));
+                    }
 
-                App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
+                    if (criticalVersion > currentVersion)
+                    {
+                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, appID);
+                        App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
+
+                        criticalMessageBox = showCriticalUpdateMessage();
+                        //critical update
+                    }
+                    else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
+                    {
+                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, "");
+                        showNormalUpdateMessage();
+                        //normal update
+                    }
+
+                    App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
+                }
             }
-            //}
-            //catch (Exception)
-            //{ 
-            //}
+            catch (Exception)
+            {
+            }
         }
+
+        private IAsyncResult showCriticalUpdateMessage()
+        {
+            return Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
+                 new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                 asyncResult =>
+                 {
+                     int? returned = Guide.EndShowMessageBox(asyncResult);
+                     if (returned != null && returned == 0)
+                     {
+                         openMarketPlace();
+                     }
+                     else
+                     {
+                         criticalUpdateMessageBoxReturned(returned);
+                     }
+
+                 }, null);
+        }
+
+        private IAsyncResult showNormalUpdateMessage()
+        {
+            return Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
+                 new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
+                 asyncResult =>
+                 {
+                     int? returned = Guide.EndShowMessageBox(asyncResult);
+                     if (returned != null && returned == 0)
+                     {
+                         openMarketPlace();
+                     }
+                     else if (returned != null && returned == 1)
+                     {
+                         App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
+                     }
+                 }, null);
+        }
+
+        private void criticalUpdateMessageBoxReturned(int? ret)
+        {
+            if (ret == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    LayoutRoot.IsHitTestVisible = false;
+                    appBar.IsMenuEnabled = false;
+                    isAppEnabled = false;
+                });
+            }
+        }
+
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
@@ -930,23 +944,24 @@ namespace windows_client.View
             {
                 App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
             }
-            if (isCriticalUpdate)
-            {
-                //GK quit the app here http://stackoverflow.com/questions/4338589/close-a-wp7-application-programatically
-
-            }
-
         }
 
-        private void openMarketPlace(string appID)
+        private void openMarketPlace()
         {
             //MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
-            //marketplaceSearchTask.SearchTerms = searchTerms;
+            //marketplaceSearchTask.SearchTerms = appID;
             //marketplaceSearchTask.Show();
-            MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-            marketplaceDetailTask.ContentIdentifier = appID;
-            marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-            marketplaceDetailTask.Show();
+
+            //keep the code below for final. it is commented for testing
+            string appID;
+            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, out appID);
+            if (String.IsNullOrEmpty(appID))
+            {
+                MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+                marketplaceDetailTask.ContentIdentifier = appID;
+                marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+                marketplaceDetailTask.Show();
+            }
         }
 
         #endregion

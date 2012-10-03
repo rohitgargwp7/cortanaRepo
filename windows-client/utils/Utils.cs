@@ -273,6 +273,28 @@ namespace windows_client.utils
             
         }
 
+        public static bool isCriticalUpdatePending()
+        {
+            try
+            {
+                string lastCriticalVersion = "";
+                App.appSettings.TryGetValue<string>(App.LAST_CRITICAL_VERSION, out lastCriticalVersion);
+                if (String.IsNullOrEmpty(lastCriticalVersion))
+                    return false;
+                lastCriticalVersion = lastCriticalVersion.Replace(".", "");
+                int lastCriticalVersionNumber = Convert.ToInt32(lastCriticalVersion);
+                string currentVersion = Utils.GetVersion();
+                currentVersion = currentVersion.Replace(".", "");
+                int currentVersionNumber = Convert.ToInt32(currentVersion);
+                return lastCriticalVersionNumber > currentVersionNumber;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
         public static string GetVersion()
         {
             Uri manifest = new Uri("WMAppManifest.xml", UriKind.Relative);

@@ -21,6 +21,7 @@ namespace windows_client.utils
         private SolidColorBrush groupChatHeaderColor;
         private SolidColorBrush signUpForeground;
         private SolidColorBrush receivedChatBubbleColor;
+        private SolidColorBrush editProfileForeground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -165,11 +166,26 @@ namespace windows_client.utils
                 if (receivedChatBubbleColor == null)
                 {
                     if (Utils.isDarkTheme())
-                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
+                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0x50, 0x50, 0x50));
                     else
-                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xf2, 0xf2, 0xf2));
+                        receivedChatBubbleColor = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
                 }
                 return receivedChatBubbleColor;
+            }
+        }
+
+        public SolidColorBrush EditProfileForeground
+        {
+            get
+            {
+                if (editProfileForeground == null)
+                {
+                    if (Utils.isDarkTheme())
+                        editProfileForeground = new SolidColorBrush(Color.FromArgb(255, 0xa8, 0xa8, 0xa8));
+                    else
+                        editProfileForeground = new SolidColorBrush(Color.FromArgb(255, 0x8d, 0x8d, 0x8d));
+                }
+                return editProfileForeground;
             }
         }
 

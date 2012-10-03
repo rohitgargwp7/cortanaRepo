@@ -51,7 +51,7 @@ namespace windows_client
         public static readonly string FILES_MESSAGE_PREFIX = "I sent you a file. To view go to ";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
-        public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.BASE + "/user/ft";
+        public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
 
         public static readonly string pushNotificationChannelName = "HikeApp";
 
@@ -62,7 +62,7 @@ namespace windows_client
         public static readonly int MAX_EMOTICON_SUPPORTED = 10;
         public static readonly int VIBRATE_DURATION = 1000;
 
-        public static readonly int CHECK_FOR_UPDATE_TIME = 48;
+        public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
         public static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp7";
         public static readonly string FAQS_LINK_WHITE = "http://hike.in/help/wp7/";
