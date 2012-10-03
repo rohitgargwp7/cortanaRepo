@@ -51,7 +51,7 @@ namespace windows_client
         public static readonly string LAST_UPDATE_CHECK_TIME = "lastUpdateTime";
         public static readonly string LAST_DISMISSED_UPDATE_VERSION = "lastDismissedUpdate";
         public static readonly string LAST_CRITICAL_VERSION = "lastCriticalVersion";
-        public static readonly string APP_ID_FOR_LAST_CRITICAL_UPDATE = "appID";
+        public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
 
 
         #endregion
