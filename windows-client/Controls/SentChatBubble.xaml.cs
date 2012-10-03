@@ -24,7 +24,7 @@ namespace windows_client.Controls
             // Required to initialize variables
             InitializeComponent();
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            initializeBasedOnState(cm.HasAttachment, contentType, cm.Message);
+            initializeBasedOnState(cm.HasAttachment, contentType, cm.Message, cm.IsSms);
             //IsSms is false for group chat
             if (cm.IsSms)
             {
@@ -88,7 +88,7 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(true, "image", cm.Message);
+            initializeBasedOnState(true, "image", cm.Message, cm.IsSms);
             if (!cm.IsSms)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
@@ -210,7 +210,7 @@ namespace windows_client.Controls
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType, string messageString)
+        private void initializeBasedOnState(bool hasAttachment, string contentType, string messageString, bool isSMS)
         {
             BubbleBg = new Rectangle();
             Grid.SetRowSpan(BubbleBg, 2);
@@ -257,7 +257,17 @@ namespace windows_client.Controls
                 }
                 uploadProgress = new ProgressBar();
                 uploadProgress.Height = 10;
+                if (isSMS)
+                {
+                    uploadProgress.Background = UI_Utils.Instance.SmsBackground;
+                }
+                else
+                {
+                    uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
+                }
+                uploadProgress.Opacity = 0;
                 uploadProgress.Foreground = progressColor;
+                uploadProgress.Value = 0;
                 uploadProgress.Minimum = 0;
                 uploadProgress.MaxHeight = 100;
                 Grid.SetRow(uploadProgress, 1);
@@ -265,13 +275,11 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBox(UI_Utils.Instance.White,22, messageString);
+                MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
                 MessageText.Width = 340;
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.MessageText;
-                //Binding messageTextBinding = new Binding("Text");
-                //MessageText.SetBinding(LinkifiedTextBox.TextProperty, messageTextBinding);
                 Grid.SetRow(MessageText, 0);
                 Grid.SetColumn(MessageText, 1);
                 wrapperGrid.Children.Add(MessageText);
@@ -288,7 +296,15 @@ namespace windows_client.Controls
             TimeStampBlock = new TextBlock();
             TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
             TimeStampBlock.FontSize = 18;
-            TimeStampBlock.Foreground = UI_Utils.Instance.SentChatBubbleTimestamp;
+            if (isSMS)
+            {
+                TimeStampBlock.Foreground = UI_Utils.Instance.SMSSentChatBubbleTimestamp;
+            }
+            else
+            {
+                uploadProgress.Background = UI_Utils.Instance.HikeSentChatBubbleTimestamp;
+            }
+
             TimeStampBlock.Text = TimeStamp;
             TimeStampBlock.Margin = timeStampBlockMargin;
             Grid.SetRow(TimeStampBlock, 1);

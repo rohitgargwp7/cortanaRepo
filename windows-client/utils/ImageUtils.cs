@@ -23,7 +23,8 @@ namespace windows_client.utils
         private SolidColorBrush receivedChatBubbleColor;
         private SolidColorBrush editProfileForeground;
         private SolidColorBrush receivedChatBubbleTimestamp;
-        private SolidColorBrush sentChatBubbleTimestamp;
+        private SolidColorBrush hikeSentChatBubbleTimestamp;
+        private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
@@ -210,15 +211,27 @@ namespace windows_client.utils
             }
         }
 
-        public SolidColorBrush SentChatBubbleTimestamp
+        public SolidColorBrush HikeSentChatBubbleTimestamp
         {
             get
             {
-                if (sentChatBubbleTimestamp == null)
+                if (hikeSentChatBubbleTimestamp == null)
                 {
-                    sentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xa4, 0xd9, 0xf3));
+                    hikeSentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xb4, 0xd9, 0xf3));
                 }
-                return sentChatBubbleTimestamp;
+                return hikeSentChatBubbleTimestamp;
+            }
+        }
+
+        public SolidColorBrush SMSSentChatBubbleTimestamp
+        {
+            get
+            {
+                if (smsSentChatBubbleTimestamp == null)
+                {
+                    smsSentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xd6, 0xea, 0xb9));
+                }
+                return smsSentChatBubbleTimestamp;
             }
         }
 
