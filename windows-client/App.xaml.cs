@@ -39,7 +39,7 @@ namespace windows_client
         public static string invite_message = "Hey! I\'m using hike, a new free messaging service from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!";
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
-        public static readonly string TOTAL_CREDITS_PER_MONTH = "tc";
+
         public static readonly string GROUPS_CACHE = "GroupsCache";
         public static readonly string IS_DB_CREATED = "is_db_created";
         public static readonly string IS_PUSH_ENABLED = "is_push_enabled";

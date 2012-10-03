@@ -39,7 +39,7 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.ChatAcceptedImage;
                     break;
                 case MessageType.USER_JOINED_HIKE:
-                    NotificationImage.Source = UI_Utils.Instance.ChatAcceptedImage;
+                    NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
                     break;
                 case MessageType.PARTICIPANT_LEFT:
                     NotificationImage.Source = UI_Utils.Instance.ParticipantLeft;

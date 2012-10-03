@@ -179,7 +179,7 @@ namespace windows_client.View
 
             //if (isGroupChat)
             //    title.Text = "new group chat";
-            progressBar.Opacity = 1;
+            shellProgress.IsVisible = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
@@ -190,7 +190,7 @@ namespace windows_client.View
             {
                 jumpList = getGroupedList(allContactsList);
                 contactsListBox.ItemsSource = jumpList;
-                progressBar.Opacity = 0;
+                shellProgress.IsVisible = false;
             };
             initPage();
         }

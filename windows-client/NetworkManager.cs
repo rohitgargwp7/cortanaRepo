@@ -294,7 +294,7 @@ namespace windows_client
 
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
-                    App.WriteToIsoStorageSettings(App.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
+                    App.WriteToIsoStorageSettings(HikeConstants.TOTAL_CREDITS_PER_MONTH, totalCreditsPerMonth);
                     this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                 }
                 
@@ -564,6 +564,9 @@ namespace windows_client
                 Utils.GroupCache.TryGetValue(grpId, out l);
                 if (l == null)
                     return true;
+
+                bool removeFirstMsgLogic = false;
+                bool firstMsgLogic = false;
                 bool saveCache = false;
                 bool output = true;
                 for (int i = 0; i < arr.Count; i++)
@@ -576,33 +579,46 @@ namespace windows_client
                     {
                         if (l[k].Msisdn == ms)
                         {
+                            output = false;
+                            if (!l[k].IsOnHike && onhike) // this is the case where client thinks that a given user is not on hike but actually he is on hike
+                            {
+                                removeFirstMsgLogic = true;
+                                l[k].IsOnHike = onhike;
+                                saveCache = true;
+                                UsersTableUtils.updateOnHikeStatus(ms, true);                          
+                            }
+
+                            if (l[k].IsDND != dnd)
+                            {
+                                if (!l[k].IsDND && !l[k].IsOnHike)
+                                    firstMsgLogic = true;
+                                l[k].IsDND = dnd;
+                                saveCache = true;
+                            }
+
                             if (l[k].HasLeft)
                             {
                                 l[k].HasLeft = false;
-                                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                                return true;
+                                saveCache = true;
+                                output = true;
                             }
-                            l[k].IsDND = dnd;
-                            if (!l[k].IsOnHike && onhike) // this is the case where client thinks that a given user is not on hike but actually he is onl hike
-                            {
-                                ConversationListObject co = null;
-                                ConversationsList.ConvMap.TryGetValue(grpId, out co);
-                                if (co != null)
-                                {
-                                    co.IsFirstMsg = false;
-                                    ConversationTableUtils.updateConversation(co);
-                                    if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == grpId)
-                                        App.newChatThreadPage.IsFirstMsg = false;
-                                    UsersTableUtils.updateOnHikeStatus(ms,true);
-                                }                                    
-                            }
-                            l[k].IsOnHike = onhike;
-                            output = false;
                             break;
                         }
                     }
                 }
-                if (!output)
+                if (!firstMsgLogic && removeFirstMsgLogic)
+                {
+                    ConversationListObject co = null;
+                    ConversationsList.ConvMap.TryGetValue(grpId, out co);
+                    if (co != null)
+                    {
+                        co.IsFirstMsg = false;
+                        ConversationTableUtils.updateConversation(co);
+                        if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == grpId)
+                            App.newChatThreadPage.IsFirstMsg = false;
+                    }       
+                }
+                if (saveCache)
                     App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 return output;
             }
