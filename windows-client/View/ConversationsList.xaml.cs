@@ -856,6 +856,10 @@ namespace windows_client.View
                     string lastDismissedUpdate = "";
                     App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
                     string appID = obj[HikeConstants.APP_ID].ToString();
+                    if (!String.IsNullOrEmpty(appID))
+                    {
+                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
+                    }
 
                     int lastDismissedVersion = -1;
                     if (!String.IsNullOrEmpty(lastDismissedUpdate))
@@ -865,7 +869,6 @@ namespace windows_client.View
 
                     if (criticalVersion > currentVersion)
                     {
-                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, appID);
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
 
                         criticalMessageBox = showCriticalUpdateMessage();
@@ -873,7 +876,6 @@ namespace windows_client.View
                     }
                     else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
                     {
-                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, "");
                         showNormalUpdateMessage();
                         //normal update
                     }
@@ -949,15 +951,16 @@ namespace windows_client.View
         private void openMarketPlace()
         {
             //MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
-            //marketplaceSearchTask.SearchTerms = appID;
+            //marketplaceSearchTask.SearchTerms = "whatsapp";
             //marketplaceSearchTask.Show();
 
             //keep the code below for final. it is commented for testing
             string appID;
-            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, out appID);
-            if (String.IsNullOrEmpty(appID))
+            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
+            if (!String.IsNullOrEmpty(appID))
             {
                 MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+//                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
                 marketplaceDetailTask.ContentIdentifier = appID;
                 marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
                 marketplaceDetailTask.Show();
