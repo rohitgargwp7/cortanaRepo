@@ -24,6 +24,7 @@ namespace windows_client.utils
         private SolidColorBrush editProfileForeground;
         private SolidColorBrush receivedChatBubbleTimestamp;
         private SolidColorBrush sentChatBubbleTimestamp;
+        private SolidColorBrush receivedChatBubbleProgress;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -201,7 +202,7 @@ namespace windows_client.utils
                 if (receivedChatBubbleTimestamp == null)
                 {
                     if (Utils.isDarkTheme())
-                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0x57, 0x57, 0x57));
+                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xbc, 0xbc, 0xbc));
                     else
                         receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0x83, 0x83, 0x83));
                 }
@@ -221,6 +222,20 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush ReceivedChatBubbleProgress
+        {
+            get
+            {
+                if (receivedChatBubbleProgress == null)
+                {
+                    if (Utils.isDarkTheme())
+                        receivedChatBubbleProgress = new SolidColorBrush(Color.FromArgb(255, 0xb8, 0xb8, 0xb8));
+                    else
+                        receivedChatBubbleProgress = new SolidColorBrush(Color.FromArgb(255, 0x33, 0x33, 0x33));
+                }
+                return receivedChatBubbleProgress;
+            }
+        }
 
         public BitmapImage OnHikeImage
         {
