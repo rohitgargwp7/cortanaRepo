@@ -349,6 +349,8 @@ namespace windows_client.View
                     App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                 }
             }
+            MessageBoxResult result = MessageBox.Show("Your friends have been invited", "Invite Sent", MessageBoxButton.OK);
+
 
         }
 
