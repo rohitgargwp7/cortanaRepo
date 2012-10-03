@@ -31,6 +31,8 @@ namespace windows_client.View
         private void initpageBasedOnState()
         {
             int creditsRemaining = (int)App.appSettings[App.SMS_SETTING];
+            if (App.appSettings.Contains(App.TOTAL_CREDITS_PER_MONTH))
+                MaxCredits.Text = (string)App.appSettings[App.TOTAL_CREDITS_PER_MONTH];
 //            int creditsRemaining = 8796;
             TextBlock t3 = null;
             Rectangle r3 = null;

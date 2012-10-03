@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
@@ -33,7 +34,6 @@ namespace windows_client.View
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/FAQTerms.xaml?page=faq", UriKind.Relative));
-
         }
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -55,8 +55,8 @@ namespace windows_client.View
         
         private void Walkthrough_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            PhoneApplicationService.Current.State["FromHelpPage"] = true;
             NavigationService.Navigate(new Uri("/View/Walkthrough.xaml", UriKind.Relative));
-
         }
     }
 }

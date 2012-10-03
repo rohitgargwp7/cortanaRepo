@@ -73,10 +73,10 @@ namespace windows_client
                 //logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    //GetStarted.Content = "Network Error. Try Again.";
-                    //GetStarted.Foreground = new SolidColorBrush(Colors.Red);
+                    NetworkErrorTxtBlk.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
+                    nextIconButton.IsEnabled = true;
                 });
                 isClicked = false;
                 return;
