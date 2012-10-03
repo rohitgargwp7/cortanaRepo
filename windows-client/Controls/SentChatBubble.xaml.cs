@@ -302,7 +302,7 @@ namespace windows_client.Controls
             }
             else
             {
-                uploadProgress.Background = UI_Utils.Instance.HikeSentChatBubbleTimestamp;
+                TimeStampBlock.Foreground = UI_Utils.Instance.HikeSentChatBubbleTimestamp;
             }
 
             TimeStampBlock.Text = TimeStamp;
