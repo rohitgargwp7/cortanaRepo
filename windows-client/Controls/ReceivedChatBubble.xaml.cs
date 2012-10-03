@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Data;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.Controls
 {
@@ -39,6 +40,12 @@ namespace windows_client.Controls
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                if (this.temporaryProgressBar!=null && this.temporaryProgressBar.Visibility == Visibility.Visible)
+                {
+                    this.temporaryProgressBar.Visibility = Visibility.Collapsed;
+                    this.downloadProgress.Visibility = Visibility.Visible;
+                }
+
                 this.downloadProgress.Value = progressValue;
                 if (progressValue == this.downloadProgress.Maximum)
                 {
@@ -58,6 +65,21 @@ namespace windows_client.Controls
                 this.PlayIcon.Visibility = Visibility.Collapsed;
         }
 
+        protected override void uploadOrDownloadStarted()
+        {
+            if (this.downloadProgress.Visibility == Visibility.Visible)
+                this.downloadProgress.Visibility = Visibility.Collapsed;
+            this.downloadProgress.Value = 0;
+            if (this.temporaryProgressBar != null)
+            {
+                this.temporaryProgressBar.IsEnabled = true;
+                this.temporaryProgressBar.Opacity = 1;
+                this.temporaryProgressBar.Visibility = Visibility.Visible;
+                temporaryProgressBar.IsIndeterminate = true;
+            }
+        }
+
+
 
         private Grid attachment;
         public Image MessageImage;
@@ -65,6 +87,7 @@ namespace windows_client.Controls
         private ProgressBar downloadProgress;
         private LinkifiedTextBox MessageText;
         private TextBlock TimeStampBlock;
+        private PerformanceProgressBar temporaryProgressBar;
         
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
@@ -72,7 +95,6 @@ namespace windows_client.Controls
         private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
-        private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
 
         private void initializeBasedOnState(bool hasAttachment, string contentType, bool showDownload, string messageString,
             bool isGroupChat, string userName)
@@ -138,13 +160,28 @@ namespace windows_client.Controls
                     PlayIcon.Margin = imgMargin;
                     Grid.SetRow(PlayIcon, 0);
                     attachment.Children.Add(PlayIcon);
+
                 }
                 downloadProgress = new ProgressBar();
                 downloadProgress.Height = 10;
-                downloadProgress.Background = UI_Utils.Instance.TextBoxBackground;
-                downloadProgress.Foreground = progressColor;
+                downloadProgress.Background = new SolidColorBrush(Color.FromArgb(255, 0x99, 0x99, 0x99));
+                downloadProgress.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;
                 downloadProgress.Minimum = 0;
                 downloadProgress.MaxHeight = 100;
+                downloadProgress.Opacity = 0;
+                if (showDownload)
+                {
+                    temporaryProgressBar = new PerformanceProgressBar();
+                    temporaryProgressBar.Height = 10;
+//                    temporaryProgressBar.Background = UI_Utils.Instance.TextBoxBackground;
+                    temporaryProgressBar.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;
+                    temporaryProgressBar.IsEnabled = false;
+                    temporaryProgressBar.Opacity = 1;
+                    downloadProgress.Visibility = Visibility.Collapsed;
+                    downloadProgress.Opacity = 1;
+                    Grid.SetRow(temporaryProgressBar, 1);
+                    attachment.Children.Add(temporaryProgressBar);
+                }
                 Grid.SetRow(downloadProgress, 1);
                 attachment.Children.Add(downloadProgress);
             }
