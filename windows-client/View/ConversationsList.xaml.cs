@@ -251,7 +251,7 @@ namespace windows_client.View
             }
             #endregion
             #region CHECK UPDATES
-            //checkForUpdates();
+            checkForUpdates();
             #endregion
 
         }
@@ -401,8 +401,8 @@ namespace windows_client.View
 
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 95;
-            photoChooserTask.PixelWidth = 95;
+            photoChooserTask.PixelHeight = 83;
+            photoChooserTask.PixelWidth = 83;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Stopwatch st = Stopwatch.StartNew();
@@ -493,8 +493,8 @@ namespace windows_client.View
                 if (obj != null && "ok" == (string)obj["stat"])
                 {
                     avatarImage.Source = profileImage;
-                    avatarImage.Height = 90;
-                    avatarImage.Width = 90;
+                    avatarImage.MaxHeight = 83;
+                    avatarImage.MaxWidth = 83;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
                     vals[1] = thumbnailBytes;
@@ -856,6 +856,10 @@ namespace windows_client.View
                     string lastDismissedUpdate = "";
                     App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
                     string appID = obj[HikeConstants.APP_ID].ToString();
+                    if (!String.IsNullOrEmpty(appID))
+                    {
+                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
+                    }
 
                     int lastDismissedVersion = -1;
                     if (!String.IsNullOrEmpty(lastDismissedUpdate))
@@ -865,15 +869,12 @@ namespace windows_client.View
 
                     if (criticalVersion > currentVersion)
                     {
-                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, appID);
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-
                         criticalMessageBox = showCriticalUpdateMessage();
                         //critical update
                     }
                     else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
                     {
-                        App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, "");
                         showNormalUpdateMessage();
                         //normal update
                     }
@@ -949,15 +950,16 @@ namespace windows_client.View
         private void openMarketPlace()
         {
             //MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
-            //marketplaceSearchTask.SearchTerms = appID;
+            //marketplaceSearchTask.SearchTerms = "whatsapp";
             //marketplaceSearchTask.Show();
 
             //keep the code below for final. it is commented for testing
             string appID;
-            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_CRITICAL_UPDATE, out appID);
-            if (String.IsNullOrEmpty(appID))
+            App.appSettings.TryGetValue<string>(App.APP_ID_FOR_LAST_UPDATE, out appID);
+            if (!String.IsNullOrEmpty(appID))
             {
                 MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
+//                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
                 marketplaceDetailTask.ContentIdentifier = appID;
                 marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
                 marketplaceDetailTask.Show();

@@ -23,6 +23,14 @@ namespace windows_client.Controls
         {
             InitializeComponent();
             setNotificationMessage(messageType, message);
+            if (Utils.isDarkTheme())
+            {
+                border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 0x3a, 0x3a, 0x3a));
+            }
+            else
+            {
+                border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
+            }
         }
 
         public void setNotificationMessage(MessageType messageType, string message)
