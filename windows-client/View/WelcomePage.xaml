@@ -68,11 +68,8 @@
                 <Button Height="70" Margin="0,0,0,135" Content="Terms and Privacy" Width="280" HorizontalAlignment="Center" FontSize="20" FontStyle="Normal" Tap="Privacy_Tap" BorderThickness="2"></Button>
                 <TextBlock Text="Push notifications are turned on by default" HorizontalAlignment="Center" Foreground="#909090"/>
                 <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,20" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0"/>
-
             </StackPanel>
-            
-
         </Grid>
-        </Grid>
+    </Grid>
 
 </phone:PhoneApplicationPage>
