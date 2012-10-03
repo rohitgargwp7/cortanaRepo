@@ -22,6 +22,8 @@ namespace windows_client.utils
         private SolidColorBrush signUpForeground;
         private SolidColorBrush receivedChatBubbleColor;
         private SolidColorBrush editProfileForeground;
+        private SolidColorBrush receivedChatBubbleTimestamp;
+        private SolidColorBrush sentChatBubbleTimestamp;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -144,7 +146,10 @@ namespace windows_client.utils
             get
             {
                 if (groupChatHeaderColor == null)
-                    groupChatHeaderColor = new SolidColorBrush(Color.FromArgb(255, 0x53, 0x53, 0x53));
+                    if (Utils.isDarkTheme())
+                        groupChatHeaderColor = UI_Utils.Instance.White;
+                    else
+                        groupChatHeaderColor = new SolidColorBrush(Color.FromArgb(255, 0x53, 0x53, 0x53));
                 return groupChatHeaderColor;
             }
         }
@@ -188,6 +193,34 @@ namespace windows_client.utils
                 return editProfileForeground;
             }
         }
+
+        public SolidColorBrush ReceivedChatBubbleTimestamp
+        {
+            get
+            {
+                if (receivedChatBubbleTimestamp == null)
+                {
+                    if (Utils.isDarkTheme())
+                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0x57, 0x57, 0x57));
+                    else
+                        receivedChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0x83, 0x83, 0x83));
+                }
+                return receivedChatBubbleTimestamp;
+            }
+        }
+
+        public SolidColorBrush SentChatBubbleTimestamp
+        {
+            get
+            {
+                if (sentChatBubbleTimestamp == null)
+                {
+                    sentChatBubbleTimestamp = new SolidColorBrush(Color.FromArgb(255, 0xa4, 0xd9, 0xf3));
+                }
+                return sentChatBubbleTimestamp;
+            }
+        }
+
 
         public BitmapImage OnHikeImage
         {

@@ -206,7 +206,7 @@ namespace windows_client.Controls
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 6, 0, 0);
-        private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
+        private static Thickness timeStampBlockMargin = new Thickness(12, 0, 18, 6);
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
 
@@ -255,8 +255,6 @@ namespace windows_client.Controls
                     Grid.SetRow(PlayIcon, 0);
                     attachment.Children.Add(PlayIcon);
                 }
-
-                //    <ProgressBar Grid.Row="1" x:Name="uploadProgress" Margin="0,5,0,0" Grid.Column="1" Height="8" Background="Transparent" Foreground="#333333" Minimum="0" Maximum="100"></ProgressBar>
                 uploadProgress = new ProgressBar();
                 uploadProgress.Height = 10;
                 uploadProgress.Foreground = progressColor;
@@ -267,7 +265,7 @@ namespace windows_client.Controls
             }
             else
             {
-                MessageText = new LinkifiedTextBox(22, messageString);
+                MessageText = new LinkifiedTextBox(UI_Utils.Instance.White,22, messageString);
                 MessageText.Width = 340;
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
@@ -290,7 +288,7 @@ namespace windows_client.Controls
             TimeStampBlock = new TextBlock();
             TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
             TimeStampBlock.FontSize = 18;
-            TimeStampBlock.Foreground = progressColor;
+            TimeStampBlock.Foreground = UI_Utils.Instance.SentChatBubbleTimestamp;
             TimeStampBlock.Text = TimeStamp;
             TimeStampBlock.Margin = timeStampBlockMargin;
             Grid.SetRow(TimeStampBlock, 1);

@@ -161,7 +161,7 @@ namespace windows_client.Controls
             TimeStampBlock = new TextBlock();
             TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
             TimeStampBlock.FontSize = 18;
-            TimeStampBlock.Foreground = progressColor;
+            TimeStampBlock.Foreground = UI_Utils.Instance.ReceivedChatBubbleTimestamp;
             TimeStampBlock.Text = TimeStamp;
             TimeStampBlock.Margin = timeStampBlockMargin;
             Grid.SetRow(TimeStampBlock, rowNumber + 1);
