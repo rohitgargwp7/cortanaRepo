@@ -445,8 +445,8 @@ namespace windows_client.View
                 isProfilePicTapped = false;
                 return;
             }
-            progressBarTop.IsEnabled = true;
-            progressBarTop.Opacity = 1;
+            //progressBarTop.IsEnabled = true;
+            shellProgress.IsVisible = true;
             if (e.TaskResult == TaskResult.OK)
             {
                 Uri uri = new Uri(e.OriginalFileName);
@@ -458,8 +458,8 @@ namespace windows_client.View
             else if (e.TaskResult == TaskResult.Cancel)
             {
                 isProfilePicTapped = false;
-                progressBarTop.IsEnabled = false;
-                progressBarTop.Opacity = 0;
+                //progressBarTop.IsEnabled = false;
+                shellProgress.IsVisible = false;
             }
 
         }
@@ -505,8 +505,8 @@ namespace windows_client.View
                 {
                     MessageBox.Show("Cannot change Profile Image. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                 }
-                progressBarTop.IsEnabled = false;
-                progressBarTop.Opacity = 0;
+                //progressBarTop.IsEnabled = false;
+                shellProgress.IsVisible = false;
                 isProfilePicTapped = false;
             });
         }
