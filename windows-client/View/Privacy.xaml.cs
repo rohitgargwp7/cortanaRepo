@@ -45,7 +45,7 @@ namespace windows_client.View
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about unlinking account.", "Unlink Account ?", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Account", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
@@ -77,7 +77,7 @@ namespace windows_client.View
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting account.", "Delete Account ?", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete your account?", "Delete Account", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
