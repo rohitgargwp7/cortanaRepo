@@ -328,11 +328,10 @@ namespace finalmqtt.Client
                 {
                     map.Add(messageId, cb);
                     Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
-                    scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
+                    scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(5));
                 }
             }
         }
-
 
         public bool ping(Callback cb)// throws IOException
         {
