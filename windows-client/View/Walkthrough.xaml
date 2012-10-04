@@ -28,6 +28,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0" Margin="0,35,0,0">
@@ -40,6 +41,7 @@
                                    HorizontalAlignment="Center" FontSize="24" FontFamily="Segoe WP Semibold" TextAlignment="Center" Width="300" Margin="0,35,0,0"></TextBlock>
                     </Grid>
                     <Image Source="/View/images/phone_hiketohike.jpg" VerticalAlignment="Top" Height="354" Margin="0,80,0,0" Grid.Row="1"/>
+                    <TextBlock Text="*Free SMS can only be sent within India" Grid.Row="2" Margin="0,48,0,0" FontSize="14" Foreground="#6b6f71" HorizontalAlignment="Center"/>
                 </Grid>
             </controls:PivotItem>
 
