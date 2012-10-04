@@ -65,7 +65,7 @@
                 <TextBlock Height="25" HorizontalAlignment="Center" 
                            VerticalAlignment="Center" Margin="0,3,0,0" 
                            Name="pinErrorTxt" Text="Invalid PIN. Try again !!" 
-                           Opacity="0" FontSize="18" Foreground="Red"/>
+                           Visibility="Collapsed" FontSize="18" Foreground="Red"/>
 
                 
                 <StackPanel Orientation="Horizontal" Height="50" Margin="0,5,0,0" >

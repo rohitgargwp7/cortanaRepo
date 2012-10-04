@@ -219,6 +219,8 @@ namespace windows_client.View
                 else // failure from server
                 {
                     MakeFieldsReadOnly(false);
+                    if(App.appSettings.Contains(App.EMAIL))
+                        email.Text = (string)App.appSettings[App.EMAIL];
                     progressBar.IsEnabled = false;
                     progressBar.Opacity = 0;
                     MessageBox.Show("Unable to change email/gender. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);

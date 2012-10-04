@@ -49,13 +49,13 @@ namespace windows_client
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 pinErrorTxt.Text = "Network Error. Try Again!!";
-                pinErrorTxt.Opacity = 1;
+                pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                 return;
             }
             txtBxEnterPin.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             string unAuthMsisdn = (string)App.appSettings[App.MSISDN_SETTING];
-            pinErrorTxt.Opacity = 0;
+            pinErrorTxt.Visibility = System.Windows.Visibility.Collapsed;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             AccountUtils.registerAccount(pinEntered, unAuthMsisdn, new AccountUtils.postResponseFunction(pinPostResponse_Callback));
@@ -70,7 +70,7 @@ namespace windows_client
                 // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    pinErrorTxt.Opacity = 1;
+                    pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     txtBxEnterPin.IsReadOnly = false;
@@ -161,9 +161,9 @@ namespace windows_client
                     obj = null;
                 }
 
-                if (this.State.TryGetValue("pinErrorTxt.Opacity", out obj))
+                if (this.State.TryGetValue("pinErrorTxt.Visibility", out obj))
                 {
-                    pinErrorTxt.Opacity = (int)obj;
+                    pinErrorTxt.Visibility = (Visibility)obj;
                     pinErrorTxt.Text = (string)this.State["pinErrorTxt.Text"];
                 }
             }
@@ -178,15 +178,15 @@ namespace windows_client
             else
                 this.State.Remove("txtBxEnterPin");
 
-            if (pinErrorTxt.Opacity == 1)
+            if (pinErrorTxt.Visibility == System.Windows.Visibility.Visible)
             {
                 this.State["pinErrorTxt.Text"] = pinErrorTxt.Text;
-                this.State["pinErrorTxt.Opacity"] = (int)pinErrorTxt.Opacity;
+                this.State["pinErrorTxt.Visibility"] = pinErrorTxt.Visibility;
             }
             else
             {
                 this.State.Remove("pinErrorTxt.Text");
-                this.State.Remove("pinErrorTxt.Opacity");
+                this.State.Remove("pinErrorTxt.Visibility");
             }
         }
 
