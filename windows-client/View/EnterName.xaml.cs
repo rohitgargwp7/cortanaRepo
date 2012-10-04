@@ -57,7 +57,7 @@ namespace windows_client
                 msgTxtBlk.Opacity = 0;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                nameErrorTxt.Text = "Network Error. Try Again!!";
+                nameErrorTxt.Text = "Connectivity Problem. hike cannot login because it is not connected to the internet.";
                 nameErrorTxt.Visibility = Visibility.Visible;
                 App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                 App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);

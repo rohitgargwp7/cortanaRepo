@@ -273,7 +273,7 @@ namespace windows_client.View
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
                 isProfilePicTapped = false;
                 return;
             }
@@ -343,7 +343,7 @@ namespace windows_client.View
                 if (!gp.IsOnHike)
                 {
                     long time = utils.TimeUtils.getCurrentTimeStamp();
-                    ConvMessage convMessage = new ConvMessage(App.invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                    ConvMessage convMessage = new ConvMessage(App.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
                     convMessage.IsInvite = true;
                     App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                 }
@@ -379,7 +379,7 @@ namespace windows_client.View
                 {
                     if (!NetworkInterface.GetIsNetworkAvailable())
                     {
-                        result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                        result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
                         return;
                     }
                     shellProgress.IsVisible = true;

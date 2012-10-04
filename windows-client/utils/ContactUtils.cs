@@ -64,7 +64,7 @@ namespace windows_client.utils
                             if (enterNamePage.isClicked)
                             {
                                 enterNamePage.msgTxtBlk.Opacity = 0;
-                                enterNamePage.nameErrorTxt.Text = "Network Error. Try Again!!";
+                                enterNamePage.nameErrorTxt.Text = "No network connectivity. Please try again.";
                                 enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
                                 enterNamePage.progressBar.IsEnabled = false;
                                 enterNamePage.progressBar.Opacity = 0;
