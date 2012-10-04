@@ -845,13 +845,6 @@ namespace windows_client.View
                     string current = Utils.GetVersion();
 
                     latestVersionString = latest;
-                    critical = critical.Replace(".", "");
-                    latest = latest.Replace(".", "");
-                    current = current.Replace(".", "");
-
-                    int criticalVersion = Convert.ToInt32(critical);
-                    int latestVersion = Convert.ToInt32(latest);
-                    int currentVersion = Convert.ToInt32(current);
 
                     string lastDismissedUpdate = "";
                     App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
@@ -861,24 +854,18 @@ namespace windows_client.View
                         App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
                     }
 
-                    int lastDismissedVersion = -1;
-                    if (!String.IsNullOrEmpty(lastDismissedUpdate))
-                    {
-                        lastDismissedVersion = Convert.ToInt32(lastDismissedUpdate.Replace(".", ""));
-                    }
-
-                    if (criticalVersion > currentVersion)
+                    if (Utils.compareVersion(critical, current) == 1)
                     {
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
                         criticalMessageBox = showCriticalUpdateMessage();
                         //critical update
                     }
-                    else if ((latestVersion > currentVersion) && (lastDismissedVersion == -1 || lastDismissedVersion < latestVersion))
+                    else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
+                        (Utils.compareVersion(latest, lastDismissedUpdate) == 1)))
                     {
                         showNormalUpdateMessage();
                         //normal update
                     }
-
                     App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
                 }
             }

@@ -33,7 +33,7 @@ namespace windows_client.utils
             }
         }
 
-        public static GroupParticipant getGroupParticipant(string defaultName, string msisdn,string grpId)
+        public static GroupParticipant getGroupParticipant(string defaultName, string msisdn, string grpId)
         {
             if (grpId == null)
                 return null;
@@ -54,14 +54,14 @@ namespace windows_client.utils
                 }
             }
             ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp = new GroupParticipant(grpId,cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn: defaultName,msisdn,cInfo != null ? cInfo.OnHike : true);
+            GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             if (groupCache.ContainsKey(grpId))
             {
                 groupCache[grpId].Add(gp);
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE,Utils.GroupCache);
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 return gp;
             }
-            
+
             List<GroupParticipant> ll = new List<GroupParticipant>();
             ll.Add(gp);
             groupCache.Add(grpId, ll);
@@ -71,7 +71,7 @@ namespace windows_client.utils
 
         public static void savedAccountCredentials(JObject obj)
         {
-            App.MSISDN = (string)obj["msisdn"]; 
+            App.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
             appSettings[App.MSISDN_SETTING] = App.MSISDN;
             appSettings[App.UID_SETTING] = (string)obj["uid"];
@@ -90,9 +90,9 @@ namespace windows_client.utils
 
         public static string defaultGroupName(string grpId)
         {
-            
+
             List<GroupParticipant> groupParticipants = null;
-            Utils.GroupCache.TryGetValue(grpId,out groupParticipants);
+            Utils.GroupCache.TryGetValue(grpId, out groupParticipants);
             if (groupParticipants == null || groupParticipants.Count == 0) // this should not happen as at this point cache should be populated
                 return "GROUP";
             List<GroupParticipant> activeMembers = GetActiveGroupParticiants(grpId);
@@ -107,7 +107,7 @@ namespace windows_client.utils
                     + activeMembers[1].FirstName;
                 default:
                     return activeMembers[0].FirstName + " and "
-                    + (activeMembers.Count-1) + " others";
+                    + (activeMembers.Count - 1) + " others";
             }
         }
 
@@ -180,35 +180,35 @@ namespace windows_client.utils
             }
         }
 
-        public static ConvMessage [] splitUserJoinedMessage(ConvMessage convMessage)
+        public static ConvMessage[] splitUserJoinedMessage(ConvMessage convMessage)
         {
-            string[] names= null;
+            string[] names = null;
             ConvMessage[] c = null;
 
             if (convMessage.Message.IndexOf(',') == -1) // only one name in message ex "abc joined the group chat"
             {
                 int spaceIndex = convMessage.Message.IndexOf(" ");
-            
+
                 ConvMessage cm = new ConvMessage(convMessage.Message.Substring(0, spaceIndex) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
                 cm.GrpParticipantState = convMessage.GrpParticipantState;
                 c = new ConvMessage[1];
                 c[0] = cm;
                 return c;
             }
-                
+
             else
                 names = convMessage.Message.Split(','); // ex : "a,b joined the group chat"
-           
+
             c = new ConvMessage[names.Length];
             int i = 0;
-            for (; i < names.Length-1; i++)
+            for (; i < names.Length - 1; i++)
             {
                 c[i] = new ConvMessage(names[i] + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
                 c[i].GrpParticipantState = convMessage.GrpParticipantState;
             }
             names[i] = names[i].Trim();
             int idx = names[i].IndexOf(" ");
-            c[i] = new ConvMessage(names[i].Substring(0,idx) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
+            c[i] = new ConvMessage(names[i].Substring(0, idx) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
             c[i].GrpParticipantState = convMessage.GrpParticipantState;
             return c;
         }
@@ -227,9 +227,9 @@ namespace windows_client.utils
                 {
                     using (var writer = new BinaryWriter(file))
                     {
-                        int count = groupCache !=null? groupCache.Count:0;
+                        int count = groupCache != null ? groupCache.Count : 0;
                         writer.Write(count);
-                        if(count !=0)
+                        if (count != 0)
                         {
                             foreach (string key in groupCache.Keys)
                             {
@@ -270,7 +270,45 @@ namespace windows_client.utils
 
         public static void TellAFriend()
         {
-            
+
+        }
+
+        /***
+         * returns 
+         * -1 if v1 < v2
+         * 1 is v1>v2
+         * 0 if v1=v2
+         * */
+        public static int compareVersion(string version1, string version2)
+        {
+            string[] version1_parts = version1.Split('.');
+            string[] version2_parts = version2.Split('.');
+            int i;
+            int min = version1_parts.Length < version2_parts.Length ? version1_parts.Length : version2_parts.Length;
+            for (i = 0; i < min && version1_parts[i] == version2_parts[i]; i++) ;
+
+            int v1, v2;
+            if (version1_parts.Length == version2_parts.Length)
+            {
+                if (i == version2_parts.Length)
+                    return 0;
+                v1 = Convert.ToInt32(version1_parts[i]);
+                v2 = Convert.ToInt32(version2_parts[i]);
+            }
+            else if (version1_parts.Length > version2_parts.Length)
+            {
+                v2 = 0;
+                v1 = Convert.ToInt32(version1_parts[i]);
+            }
+            else
+            {
+                v1 = 0;
+                v2 = Convert.ToInt32(version2_parts[i]);
+            }
+            if (v1 > v2)
+                return 1;
+            return -1;
+
         }
 
         public static bool isCriticalUpdatePending()
@@ -281,12 +319,8 @@ namespace windows_client.utils
                 App.appSettings.TryGetValue<string>(App.LAST_CRITICAL_VERSION, out lastCriticalVersion);
                 if (String.IsNullOrEmpty(lastCriticalVersion))
                     return false;
-                lastCriticalVersion = lastCriticalVersion.Replace(".", "");
-                int lastCriticalVersionNumber = Convert.ToInt32(lastCriticalVersion);
                 string currentVersion = Utils.GetVersion();
-                currentVersion = currentVersion.Replace(".", "");
-                int currentVersionNumber = Convert.ToInt32(currentVersion);
-                return lastCriticalVersionNumber > currentVersionNumber;
+                return compareVersion(lastCriticalVersion, currentVersion) == 1;
             }
             catch (Exception)
             {
@@ -338,6 +372,6 @@ namespace windows_client.utils
             }
 
             return "Unknown";
-        }  
+        }
     }
 }
