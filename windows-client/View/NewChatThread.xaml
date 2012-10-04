@@ -48,8 +48,8 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,20,0" Tap="MessageList_Tap">
-            <StackPanel Name="MessageList" Margin="0,0,15,0" VerticalAlignment="Bottom">
+        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Tap="MessageList_Tap">
+            <StackPanel Name="MessageList" Margin="0,0,26,0" VerticalAlignment="Bottom">
 
             </StackPanel>
         </ScrollViewer>

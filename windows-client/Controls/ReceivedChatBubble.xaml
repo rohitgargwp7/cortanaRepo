@@ -7,11 +7,11 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	x:Class="windows_client.Controls.ReceivedChatBubble"
-	d:DesignWidth="332" d:DesignHeight="86"
+	d:DesignWidth="372" d:DesignHeight="86"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
-    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,100,14" HorizontalAlignment="Left">
-        <Grid d:LayoutOverrides="Width, Height" Margin="0">
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,90,14" HorizontalAlignment="Left">
+        <Grid d:LayoutOverrides="Width">
             <Grid.RowDefinitions>
                 <RowDefinition Height="14" />
                 <RowDefinition Height="Auto" />

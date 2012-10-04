@@ -188,7 +188,7 @@ namespace windows_client.Controls
             else
             {
                 MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 22, messageString);
-                MessageText.Width = 340;
+                MessageText.Width = 330;
                 if(!isGroupChat)
                     MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.MessageText;
