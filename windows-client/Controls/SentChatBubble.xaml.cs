@@ -276,7 +276,7 @@ namespace windows_client.Controls
             else
             {
                 MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
-                MessageText.Width = 340;
+                MessageText.Width = 330;
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.MessageText;
