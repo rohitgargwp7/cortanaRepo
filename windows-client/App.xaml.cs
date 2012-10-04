@@ -36,7 +36,7 @@ namespace windows_client
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
-        public static string sms_invite_message = "Hi! I’m using hike, an new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!";
+        public static string sms_invite_message = "Hi! I’m using hike, a new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!";
         
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
