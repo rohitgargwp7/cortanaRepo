@@ -588,10 +588,11 @@ namespace windows_client
                                 UsersTableUtils.updateOnHikeStatus(ms, true);                          
                             }
 
+                            if (!l[k].IsOnHike && l[k].IsDND)
+                                firstMsgLogic = true;
+
                             if (l[k].IsDND != dnd)
                             {
-                                if (!l[k].IsDND && !l[k].IsOnHike)
-                                    firstMsgLogic = true;
                                 l[k].IsDND = dnd;
                                 saveCache = true;
                             }

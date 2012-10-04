@@ -277,8 +277,7 @@ namespace windows_client.View
                 isProfilePicTapped = false;
                 return;
             }
-            progressBar.IsEnabled = true;
-            progressBar.Opacity = 1;
+            shellProgress.IsVisible = true; ;
             if (e.TaskResult == TaskResult.OK)
             {
                 Uri uri = new Uri(e.OriginalFileName);
@@ -290,8 +289,8 @@ namespace windows_client.View
             else if (e.TaskResult == TaskResult.Cancel)
             {
                 isProfilePicTapped = false;
-                progressBar.IsEnabled = false;
-                progressBar.Opacity = 0;
+                //progressBar.IsEnabled = false;
+                shellProgress.IsVisible = false;
             }
         }
 
@@ -328,8 +327,8 @@ namespace windows_client.View
                 {
                     MessageBox.Show("Cannot change Group Image. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                 }
-                progressBar.IsEnabled = false;
-                progressBar.Opacity = 0;
+                //progressBar.IsEnabled = false;
+                shellProgress.IsVisible = false;
                 isProfilePicTapped = false;
             });
         }
@@ -383,8 +382,8 @@ namespace windows_client.View
                         result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                         return;
                     }
-                    progressBar.Opacity = 1;
-                    progressBar.IsEnabled = true;
+                    shellProgress.IsVisible = true;
+                    //progressBar.IsEnabled = true;
                     groupNameTxtBox.IsReadOnly = true;
                     saveIconButton.IsEnabled = false;
                     AccountUtils.setGroupName(groupName, groupId, new AccountUtils.postResponseFunction(setName_Callback));
@@ -409,8 +408,8 @@ namespace windows_client.View
                 {
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
-                    progressBar.Opacity = 0;
-                    progressBar.IsEnabled = false;
+                    shellProgress.IsVisible = false;
+                    //progressBar.IsEnabled = false;
                 });
             }
             else
@@ -419,8 +418,8 @@ namespace windows_client.View
                 {
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
-                    progressBar.Opacity = 0;
-                    progressBar.IsEnabled = false;
+                    shellProgress.IsVisible = false;
+                    //progressBar.IsEnabled = false;
                     this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
                     MessageBox.Show("Cannot change GroupName. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                 });

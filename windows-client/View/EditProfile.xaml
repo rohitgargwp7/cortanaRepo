@@ -14,6 +14,10 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     Name="editProfile" shell:SystemTray.IsVisible="True">
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="False" />
+    </shell:SystemTray.ProgressIndicator>
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -67,14 +71,6 @@
                 <toolkit:ListPicker x:Name="genderListPicker"/>
             </StackPanel>
         </Grid>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,500,0,0" Grid.Row="1"
-                                                Background="Transparent" IsIndeterminate="True" 
-                                                VerticalAlignment="Center" 
-                                                VerticalContentAlignment="Center" 
-                                                FontSize="24" HorizontalAlignment="Stretch" 
-                                                HorizontalContentAlignment="Center" 
-                                                IsEnabled="False" IsTabStop="True" 
-                                                Opacity="0"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

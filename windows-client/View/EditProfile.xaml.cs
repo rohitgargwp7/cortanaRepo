@@ -86,15 +86,15 @@ namespace windows_client.View
                 return;
             }
             this.Focus(); // this will hide keyboard
-            progressBar.IsEnabled = true;
-            progressBar.Opacity = 1;
+            //progressBar.IsEnabled = true;
+            shellProgress.IsVisible = true;
 
             // if name is empty simply dont do anything
             if (string.IsNullOrWhiteSpace(name.Text))
             {
                 nameErrorTxt.Opacity = 1;
-                progressBar.IsEnabled = false;
-                progressBar.Opacity = 0;
+                //progressBar.IsEnabled = false;
+                shellProgress.IsVisible = false; ;
                 return;
             }
 
@@ -109,8 +109,8 @@ namespace windows_client.View
                 else //if email is not valid
                 {
                     emailErrorTxt.Opacity = 1;
-                    progressBar.IsEnabled = false;
-                    progressBar.Opacity = 0;
+                    //progressBar.IsEnabled = false;
+                    shellProgress.IsVisible = false;
                     return;
                 }
             }
@@ -138,8 +138,8 @@ namespace windows_client.View
                 {
                     MessageBox.Show("Nothing is changed!!", "Profile Not Updated!", MessageBoxButton.OK);
                 }
-                progressBar.IsEnabled = false;
-                progressBar.Opacity = 0;
+                //progressBar.IsEnabled = false;
+                shellProgress.IsVisible = false;
             }
         }
 
@@ -178,16 +178,16 @@ namespace windows_client.View
                     else
                     {
                         MakeFieldsReadOnly(false);
-                        progressBar.IsEnabled = false;
-                        progressBar.Opacity = 0;
+                        //progressBar.IsEnabled = false;
+                        shellProgress.IsVisible = false;
                         MessageBox.Show("Profile Has been updated successfully.", "Profile Updated.", MessageBoxButton.OK);
                     }
                 }
                 else
                 {
                     MakeFieldsReadOnly(false);
-                    progressBar.IsEnabled = false;
-                    progressBar.Opacity = 0;
+                    //progressBar.IsEnabled = false;
+                    shellProgress.IsVisible = false;
                     MessageBox.Show("Unable to change profile. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                 }
             });
@@ -212,15 +212,19 @@ namespace windows_client.View
                         App.WriteToIsoStorageSettings(App.GENDER, genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "");
                     }
                     MakeFieldsReadOnly(false);
-                    progressBar.IsEnabled = false;
-                    progressBar.Opacity = 0;
+                    //progressBar.IsEnabled = false;
+                    //progressBar.Opacity = 0;
+                    shellProgress.IsVisible = false;
                     MessageBox.Show("Profile Has been updated successfully.", "Profile Updated.", MessageBoxButton.OK);
                 }
                 else // failure from server
                 {
                     MakeFieldsReadOnly(false);
-                    progressBar.IsEnabled = false;
-                    progressBar.Opacity = 0;
+                    if(App.appSettings.Contains(App.EMAIL))
+                        email.Text = (string)App.appSettings[App.EMAIL];
+                    //progressBar.IsEnabled = false;
+                    //progressBar.Opacity = 0;
+                    shellProgress.IsVisible = false;
                     MessageBox.Show("Unable to change email/gender. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
                     
                 }
