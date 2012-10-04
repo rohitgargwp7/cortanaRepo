@@ -74,11 +74,11 @@ namespace windows_client
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show("Unable to add background transfer request. " + ex.Message);
+                MessageBox.Show("Unable to download file. " + ex.Message);
             }
             catch (Exception e)
             {
-                MessageBox.Show("Unable to add background transfer request.");
+                MessageBox.Show("Unable to download file.");
             }
         }
 
