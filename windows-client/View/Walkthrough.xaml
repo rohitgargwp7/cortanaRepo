@@ -56,7 +56,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Image Source="/View/images/hiketosms.jpg" Margin="0,0,0,0" Height="27" Grid.Row="0"></Image>
-                        <TextBlock Width="280" Foreground="Black" Text="Also message friends not on hike for free with Free hike SMS" TextWrapping="Wrap" Grid.Row="1" 
+                        <TextBlock Width="350" Foreground="Black" Text="Also message friends not on hike for free with Free hike SMS" TextWrapping="Wrap" Grid.Row="1" 
                                    HorizontalAlignment="Center" FontSize="24" FontFamily="Segoe WP Semibold" TextAlignment="Center" Margin="0,35,0,0"></TextBlock>
                     </Grid>
                     <Image Source="/View/images/phone_hiketosms.jpg" VerticalAlignment="Top" Height="354" Margin="0,52,0,0" Grid.Row="1"/>
@@ -78,7 +78,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock Foreground="#1f88cd" Text="Invite Friends Earn Rewards." TextWrapping="Wrap" Grid.Row="0" 
                                    HorizontalAlignment="Center" FontSize="28" FontFamily="Segoe WP Bold" TextAlignment="Center" Margin="0,30,0,0"></TextBlock>
-                        <TextBlock Width="350" Text="For every friend who joins you get 50 Free SMS every month" TextWrapping="Wrap" Grid.Row="1" 
+                        <TextBlock Width="380" Text="For every friend who joins you get 50 Free hike SMS every month" TextWrapping="Wrap" Grid.Row="1" 
                                    HorizontalAlignment="Center" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="Black" TextAlignment="Center" Margin="0,35,0,0"></TextBlock>
                     </Grid>
                     <Image Source="/View/images/phone_hikerewards.jpg" VerticalAlignment="Top" Margin="0,50,0,0" Height="352" Grid.Row="1"/>
