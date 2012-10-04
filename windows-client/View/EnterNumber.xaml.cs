@@ -48,7 +48,7 @@ namespace windows_client
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                msisdnErrorTxt.Text = "Network Error. Try Again!!";
+                msisdnErrorTxt.Text = "No network connectivity. Please try again.";
                 msisdnErrorTxt.Visibility = Visibility.Visible;
                 return;
             }
