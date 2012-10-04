@@ -57,7 +57,7 @@ namespace windows_client
                 msgTxtBlk.Opacity = 0;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                nameErrorTxt.Text = "Network Error. Try Again!!";
+                nameErrorTxt.Text = "No network connectivity. Please try again.";
                 nameErrorTxt.Visibility = Visibility.Visible;
                 App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                 App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);

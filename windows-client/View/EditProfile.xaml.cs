@@ -82,7 +82,7 @@ namespace windows_client.View
 
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
                 return;
             }
             this.Focus(); // this will hide keyboard
@@ -180,7 +180,7 @@ namespace windows_client.View
                         MakeFieldsReadOnly(false);
                         //progressBar.IsEnabled = false;
                         shellProgress.IsVisible = false;
-                        MessageBox.Show("Profile Has been updated successfully.", "Profile Updated.", MessageBoxButton.OK);
+                        MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
                     }
                 }
                 else
@@ -188,7 +188,7 @@ namespace windows_client.View
                     MakeFieldsReadOnly(false);
                     //progressBar.IsEnabled = false;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Unable to change profile. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                    MessageBox.Show("Unable to change name. Try again.", "Something went wrong", MessageBoxButton.OK);
                 }
             });
         }
@@ -215,7 +215,7 @@ namespace windows_client.View
                     //progressBar.IsEnabled = false;
                     //progressBar.Opacity = 0;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Profile Has been updated successfully.", "Profile Updated.", MessageBoxButton.OK);
+                    MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
                 }
                 else // failure from server
                 {
@@ -225,7 +225,7 @@ namespace windows_client.View
                     //progressBar.IsEnabled = false;
                     //progressBar.Opacity = 0;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Unable to change email/gender. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                    MessageBox.Show("Unable to change email or gender. Try again.", "Something went wrong", MessageBoxButton.OK);
                     
                 }
             });

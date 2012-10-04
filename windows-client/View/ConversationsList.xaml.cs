@@ -296,7 +296,7 @@ namespace windows_client.View
             /* Add icons */
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
-            composeIconButton.Text = "Compose";
+            composeIconButton.Text = "new chat";
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
@@ -441,7 +441,7 @@ namespace windows_client.View
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Connection Problem. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
                 isProfilePicTapped = false;
                 return;
             }
@@ -517,7 +517,7 @@ namespace windows_client.View
 
         private void deleteAllConvs_Click(object sender, EventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats ?", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             disableAppBar();
@@ -544,7 +544,7 @@ namespace windows_client.View
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting conversation.", "Delete Conversation ?", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting this chat.", "Delete Chat?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
