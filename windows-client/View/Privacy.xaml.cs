@@ -45,7 +45,7 @@ namespace windows_client.View
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Account", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to unlink your Hike account from this device?", "Unlink Account", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
@@ -62,7 +62,7 @@ namespace windows_client.View
                 Debug.WriteLine("Unlink Account", "Could not unlink account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show("Cannot not unlink account. Try again later.", "Unlink Account Failed?", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show("hike couldn't unlink your account. Please try again.", "Account not unlinked", MessageBoxButton.OKCancel);
                     progress.Hide();
                     progress = null;
                 });
@@ -77,7 +77,7 @@ namespace windows_client.View
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete your account?", "Delete Account", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete your Hike account permanently?", "Delete Account", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
@@ -95,7 +95,7 @@ namespace windows_client.View
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show("Cannot not delete account. Try again later.", "Delete Account Failed?", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show("hike couldn't delete your account. Please try again.", "Account not deleted", MessageBoxButton.OKCancel);
                     progress.Hide();
                     progress = null;
                 });
