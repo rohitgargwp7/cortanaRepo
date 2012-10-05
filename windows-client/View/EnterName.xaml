@@ -10,8 +10,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="False" Name="enterName"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True" Name="enterName"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -38,7 +38,7 @@
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,32,0,0">
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -56,7 +56,7 @@
                 <Rectangle Height="2" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto" Height="60">
-                    <TextBlock TextWrapping="Wrap" Text="Your are all set on" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                    <TextBlock TextWrapping="Wrap" Text="You're all set on" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                     <TextBlock x:Name="txtBlckPhoneNumber" TextWrapping="Wrap" Text="" FontSize="25"  TextAlignment="Center" Margin="0,27,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                 </StackPanel>
                 <TextBlock TextWrapping="Wrap" Text="What's your name?" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />

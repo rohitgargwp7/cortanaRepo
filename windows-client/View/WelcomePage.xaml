@@ -56,7 +56,7 @@
             <StackPanel Orientation="Vertical" Grid.Row="0">
                 <Image Source="images\signup_logo.png" Margin="0,150,0,20" Height="104"></Image>
                 <!--<Image Source="images\splash_text.png" Height="30"></Image>-->
-                <TextBlock Text="Free Messaging for life" FontSize="25" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Text="Fun, free messaging for life" FontSize="25" HorizontalAlignment="Center"></TextBlock>
                 <TextBlock Height="30" Name="NetworkErrorTxtBlk" Text="Network Error. Try Again!!" 
                            FontSize="18" HorizontalAlignment="Center" 
                            Foreground="Red" Opacity="0"/>
