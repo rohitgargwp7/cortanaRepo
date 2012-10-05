@@ -1228,7 +1228,7 @@ namespace windows_client.View
                         GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMessage.Msisdn);
                         string text = HikeConstants.USER_JOINED_GROUP_CHAT;
                         NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED;
-                        if (vars[1] == "0")
+                        if (vars[1] == "0" && !gp.IsOnHike)
                         {
                             text = HikeConstants.USER_INVITED;
                             type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED;

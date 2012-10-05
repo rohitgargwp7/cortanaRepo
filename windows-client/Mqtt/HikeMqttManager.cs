@@ -370,7 +370,7 @@ namespace windows_client.Mqtt
             JObject dataObj;
             int msgId;
 
-            if (objType == NetworkManager.MESSAGE)
+            if (objType == NetworkManager.MESSAGE || objType == NetworkManager.INVITE)
             {
                 dataObj = JObject.FromObject(data);
                 JToken messageIdToken;
