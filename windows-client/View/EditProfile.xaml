@@ -45,7 +45,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Full Name" Margin="13,0,0,0"/>
                     <TextBlock Name="nameErrorTxt" Opacity="0" 
-                               Text="Enter Correct Name" 
+                               Text="Please enter your name" 
                                VerticalAlignment="Center"
                                Margin="204,0,0,0" Foreground="Red" 
                                FontSize="15" />

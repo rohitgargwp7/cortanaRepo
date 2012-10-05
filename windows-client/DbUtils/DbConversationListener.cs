@@ -322,7 +322,7 @@ namespace windows_client.DbUtils
             {
                 MessagesTableUtils.deleteAllMessages();
                 ConversationTableUtils.deleteAllConversations();
-                MiscDBUtil.deleteAllAttachmentData();
+                MiscDBUtil.DeleteAllAttachmentData();
                 foreach (string convMsisdn in ConversationsList.ConvMap.Keys)
                 {
                     if (Utils.isGroupConversation(convMsisdn))
