@@ -517,7 +517,7 @@ namespace windows_client.View
 
         private void deleteAllConvs_Click(object sender, EventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats.", "Delete All Chats?", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats?", "Delete All Chats", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             disableAppBar();
@@ -544,7 +544,7 @@ namespace windows_client.View
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting this chat.", "Delete Chat?", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Are you sure about deleting this chat?", "Delete Chat", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
