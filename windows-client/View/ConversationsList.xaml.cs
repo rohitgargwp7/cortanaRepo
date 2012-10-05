@@ -115,7 +115,7 @@ namespace windows_client.View
             {
                 if (convMap == null)
                     convMap = new Dictionary<string, ConversationListObject>();
-                progressBar.Opacity = 1; ;
+                progressBar.Opacity = 1;
                 progressBar.IsEnabled = true;
                 mPubSub = App.HikePubSubInstance;
                 registerListeners();
@@ -253,6 +253,7 @@ namespace windows_client.View
             #region CHECK UPDATES
             checkForUpdates();
             #endregion
+
 
         }
 
@@ -537,9 +538,8 @@ namespace windows_client.View
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
-            //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
-            if (isAppEnabled)
-                NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            //if (isAppEnabled)
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
@@ -813,9 +813,9 @@ namespace windows_client.View
 
         #region IN APP UPDATE
 
-        private bool isAppEnabled = true;
+        //private bool isAppEnabled = true;
         private IAsyncResult criticalMessageBox = null;//this variable can be ignored/removed. was kept only to dismiss message box on backkey press
-                                                        //which does not work
+        //which does not work
         private string latestVersionString = "";
 
         public void checkForUpdates()
@@ -832,7 +832,6 @@ namespace windows_client.View
                 AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
             }
         }
-
 
         public void checkUpdate_Callback(JObject obj)
         {
@@ -904,7 +903,7 @@ namespace windows_client.View
                      {
                          openMarketPlace();
                      }
-                     else if (returned != null && returned == 1)
+                     else if (returned == null || returned == 1)
                      {
                          App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
                      }
@@ -919,7 +918,8 @@ namespace windows_client.View
                 {
                     LayoutRoot.IsHitTestVisible = false;
                     appBar.IsMenuEnabled = false;
-                    isAppEnabled = false;
+                    //                    isAppEnabled = false;
+                    composeIconButton.IsEnabled = false;
                 });
             }
         }
@@ -928,10 +928,10 @@ namespace windows_client.View
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             base.OnBackKeyPress(e);
-            if (!String.IsNullOrEmpty(latestVersionString))
-            {
-                App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-            }
+            //if (!String.IsNullOrEmpty(latestVersionString))
+            //{
+            //    App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
+            //}
         }
 
         private void openMarketPlace()
@@ -946,7 +946,7 @@ namespace windows_client.View
             if (!String.IsNullOrEmpty(appID))
             {
                 MarketplaceDetailTask marketplaceDetailTask = new MarketplaceDetailTask();
-//                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
+                //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
                 marketplaceDetailTask.ContentIdentifier = appID;
                 marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
                 marketplaceDetailTask.Show();
