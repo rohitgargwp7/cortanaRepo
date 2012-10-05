@@ -1282,7 +1282,7 @@ namespace windows_client.View
                     {
                         for (int i = 0; i < waitingParticipants.Count; i++)
                         {
-                            msgText.Append(waitingParticipants[0]);
+                            msgText.Append(waitingParticipants[i]);
                             if (i == waitingParticipants.Count - 2)
                                 msgText.Append(" and ");
                             else if (i < waitingParticipants.Count - 2)

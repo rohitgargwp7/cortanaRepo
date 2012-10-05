@@ -93,7 +93,15 @@ namespace windows_client
                 //logger.Info("WebSocketPublisher", "Invalid JSON message: " + msg +", Exception : "+e);
                 return;
             }
-            string type = (string)jsonObj[HikeConstants.TYPE];
+            string type = null;
+            try
+            {
+                type = (string)jsonObj[HikeConstants.TYPE];
+            }
+            catch
+            {
+                return;
+            }
             string msisdn = (string)jsonObj[HikeConstants.FROM];
 
             #region MESSAGE
