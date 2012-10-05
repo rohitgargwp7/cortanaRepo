@@ -595,7 +595,11 @@ namespace windows_client
                             }
 
                             if (!onhike) // is any user is not on hike, first msg logic will be there
+                            {
                                 firstMsgLogic = true;
+                                l[k].IsOnHike = onhike;
+                                saveCache = true;
+                            }
 
                             if (l[k].HasLeft)
                             {
@@ -607,7 +611,7 @@ namespace windows_client
                         }
                     }
                 }
-                if (!firstMsgLogic && removeFirstMsgLogic)
+                if (!firstMsgLogic && removeFirstMsgLogic) // this turn off first msg logic
                 {
                     ConversationListObject co = null;
                     ConversationsList.ConvMap.TryGetValue(grpId, out co);
