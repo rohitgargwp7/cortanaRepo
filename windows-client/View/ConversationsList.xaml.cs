@@ -111,6 +111,10 @@ namespace windows_client.View
             this.myListBox.SelectedIndex = -1;
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            if (Utils.isCriticalUpdatePending())
+            {
+                showCriticalUpdateMessage();
+            }
             if (firstLoad)
             {
                 if (convMap == null)
@@ -235,10 +239,11 @@ namespace windows_client.View
                         // Register for this notification only if you need to receive the notifications while your application is running.
                         //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
-                        if (pushChannel.ChannelUri == null)
-                            return;
-                        System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                        AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                        if (pushChannel.ChannelUri != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                            AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                        }
                     }
                 }
                 catch (InvalidOperationException ioe)
@@ -814,8 +819,6 @@ namespace windows_client.View
         #region IN APP UPDATE
 
         //private bool isAppEnabled = true;
-        private IAsyncResult criticalMessageBox = null;//this variable can be ignored/removed. was kept only to dismiss message box on backkey press
-        //which does not work
         private string latestVersionString = "";
 
         public void checkForUpdates()
@@ -823,11 +826,7 @@ namespace windows_client.View
             long lastTimeStamp = -1;
             App.appSettings.TryGetValue<long>(App.LAST_UPDATE_CHECK_TIME, out lastTimeStamp);
 
-            if (Utils.isCriticalUpdatePending())
-            {
-                showCriticalUpdateMessage();
-            }
-            else if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
+            if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
             {
                 AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
             }
@@ -856,7 +855,7 @@ namespace windows_client.View
                     if (Utils.compareVersion(critical, current) == 1)
                     {
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-                        criticalMessageBox = showCriticalUpdateMessage();
+                        showCriticalUpdateMessage();
                         //critical update
                     }
                     else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
@@ -873,41 +872,47 @@ namespace windows_client.View
             }
         }
 
-        private IAsyncResult showCriticalUpdateMessage()
+        private void showCriticalUpdateMessage()
         {
-            return Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
-                 new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
-                 asyncResult =>
-                 {
-                     int? returned = Guide.EndShowMessageBox(asyncResult);
-                     if (returned != null && returned == 0)
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
+                     new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
                      {
-                         openMarketPlace();
-                     }
-                     else
-                     {
-                         criticalUpdateMessageBoxReturned(returned);
-                     }
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null && returned == 0)
+                         {
+                             openMarketPlace();
+                         }
+                         else
+                         {
+                             criticalUpdateMessageBoxReturned(returned);
+                         }
 
-                 }, null);
+                     }, null);
+            }
         }
 
-        private IAsyncResult showNormalUpdateMessage()
+        private void showNormalUpdateMessage()
         {
-            return Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
-                 new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
-                 asyncResult =>
-                 {
-                     int? returned = Guide.EndShowMessageBox(asyncResult);
-                     if (returned != null && returned == 0)
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
+                     new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
+                     asyncResult =>
                      {
-                         openMarketPlace();
-                     }
-                     else if (returned == null || returned == 1)
-                     {
-                         App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-                     }
-                 }, null);
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null && returned == 0)
+                         {
+                             openMarketPlace();
+                         }
+                         else if (returned == null || returned == 1)
+                         {
+                             App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
+                         }
+                     }, null);
+            }
         }
 
         private void criticalUpdateMessageBoxReturned(int? ret)
