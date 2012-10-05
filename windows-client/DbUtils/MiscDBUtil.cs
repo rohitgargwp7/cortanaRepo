@@ -17,9 +17,11 @@ namespace windows_client.DbUtils
 
         public static void clearDatabase()
         {
-            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS
+            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS
 
             ConversationTableUtils.deleteAllConversations();
+            DeleteAllThumbnails();
+            DeleteAllAttachmentData();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {                
                 App.RemoveKeyFromAppSettings(App.GROUPS_CACHE);
@@ -132,6 +134,26 @@ namespace windows_client.DbUtils
                 }
             }
             return data;
+        }
+
+        public static void DeleteAllThumbnails()
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                string[] files = store.GetFileNames(THUMBNAILS + "\\*");
+                foreach (string fileName in files)
+                {
+                    try
+                    {
+                        store.DeleteFile(THUMBNAILS + "\\" + fileName);
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("File {0} does not exist.", THUMBNAILS + "\\" + fileName);
+                    }
+                }
+            }
+
         }
 
         #region FILE TRANSFER UTILS
@@ -304,7 +326,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void deleteAllAttachmentData()
+        public static void DeleteAllAttachmentData()
         {
             string[] attachmentPaths = new string[2];
             attachmentPaths[0] = HikeConstants.FILES_ATTACHMENT;

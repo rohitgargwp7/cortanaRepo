@@ -64,7 +64,7 @@
                 </Border>
                 <TextBlock Height="25" HorizontalAlignment="Center" 
                            VerticalAlignment="Center" Margin="0,3,0,0" 
-                           Name="pinErrorTxt" Text="Invalid PIN. Try again !!" 
+                           Name="pinErrorTxt" Text="PIN not valid. Please try again." 
                            Visibility="Collapsed" FontSize="18" Foreground="Red"/>
 
                 

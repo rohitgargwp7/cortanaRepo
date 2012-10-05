@@ -48,14 +48,14 @@ namespace windows_client
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                msisdnErrorTxt.Text = "No network connectivity. Please try again.";
+                msisdnErrorTxt.Text = "Connectivity issue.";
                 msisdnErrorTxt.Visibility = Visibility.Visible;
                 return;
             }
             txtEnterPhone.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             msgTxtBlk.Opacity = 1;
-            msgTxtBlk.Text = "Verifying your number";
+            msgTxtBlk.Text = "Verifying your number.";
             msisdnErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -87,7 +87,7 @@ namespace windows_client
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     msgTxtBlk.Opacity = 0;
-                    msisdnErrorTxt.Text = "Unable to send PIN. Kindly check Phone Number.";
+                    msisdnErrorTxt.Text = "Incorrect phone number.";
                     msisdnErrorTxt.Visibility = Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;

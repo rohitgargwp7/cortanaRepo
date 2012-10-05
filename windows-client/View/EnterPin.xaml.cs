@@ -48,7 +48,7 @@ namespace windows_client
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                pinErrorTxt.Text = "No network connectivity. Please try again.";
+                pinErrorTxt.Text = "Connectivity issue.";
                 pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                 return;
             }
