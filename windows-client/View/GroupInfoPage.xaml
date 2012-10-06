@@ -69,7 +69,7 @@
                     <TextBlock Grid.Column="1" Grid.Row="0" FontSize="24" Opacity="0.6" Text="Group Name" Margin="20,15,0,0" />
                 <TextBox Margin="-15,0,0,0" Grid.Column="1" Grid.Row="1" Name="groupNameTxtBox" Text="GROUP NAME" Height="72" 
                              VerticalAlignment="Center" Width="330" GotFocus="groupNameTxtBox_GotFocus"
-                             FontSize="24" TextWrapping="Wrap" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
+                             FontSize="24" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
                 
             </Grid>
 
