@@ -48,7 +48,7 @@ namespace windows_client.DbUtils
 
             }
             #endregion
-            #region DELETE USERS, BLOCKLIST, THUMBNAILS
+            #region DELETE USERS, BLOCKLIST
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 context.blockedUsersTable.DeleteAllOnSubmit<Blocked>(context.GetTable<Blocked>());
