@@ -11,19 +11,24 @@ namespace windows_client.Mqtt
         private HikePacket packet;
         bool called;
         private HikeMqttManager hikeMqttManager;
+        private int qos;
 
-        public PublishCB(HikePacket packet, HikeMqttManager hikeMqttManager)
+        public PublishCB(HikePacket packet, HikeMqttManager hikeMqttManager, int qos)
         {
             this.packet = packet;
             this.called = false;
             this.hikeMqttManager = hikeMqttManager;
+            this.qos = qos;
         }
 
         public void onSuccess()
         {
             if (packet != null)
             {
-                MqttDBUtils.removeSentMessage(packet.MessageId);
+                if (qos > 0)
+                {
+                    MqttDBUtils.removeSentMessage(packet.MessageId);
+                }
                 if (packet.MessageId > 0) // represents ack for message that is recieved by server
                 {
                     JObject obj = new JObject();
@@ -37,10 +42,12 @@ namespace windows_client.Mqtt
         public void onFailure(Exception value)
         {
             hikeMqttManager.ping();
-            MqttDBUtils.addSentMessage(packet);
-
             if (packet != null)
             {
+                if (qos > 0)
+                {
+                    MqttDBUtils.addSentMessage(packet);
+                }
                 if (packet.MessageId > 0) // represents ack for message that is recieved by server
                 {
                     JObject obj = new JObject();

@@ -304,7 +304,7 @@ namespace windows_client.Mqtt
                 this.connect();
                 return;
             }
-            PublishCB pbCB = new PublishCB(packet, this);
+            PublishCB pbCB = new PublishCB(packet, this, qos);
             String tempString = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
 
             mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
