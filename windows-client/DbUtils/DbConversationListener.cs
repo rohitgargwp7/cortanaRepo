@@ -356,7 +356,7 @@ namespace windows_client.DbUtils
         private void updateDbBatch(long[] ids, int status)
         {
             string msisdn = MessagesTableUtils.updateAllMsgStatus(null,ids, status);
-            ConversationTableUtils.updateLastMsgStatus(msisdn, status);
+            ConversationTableUtils.updateLastMsgStatus(ids[ids.Length-1],msisdn, status);
         }
 
         private void deleteGroupsAsync(object sender, DoWorkEventArgs e)

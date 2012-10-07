@@ -1683,6 +1683,7 @@ namespace windows_client.View
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                 }
+                obj.MessageStatus = lastMessageBubble.MessageStatus;
             }
             else
             {

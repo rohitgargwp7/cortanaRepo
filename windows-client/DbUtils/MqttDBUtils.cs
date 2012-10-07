@@ -49,7 +49,10 @@ namespace windows_client.DbUtils
             {
                 using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
                 {
-                    context.mqttMessages.DeleteAllOnSubmit<HikePacket>(DbCompiledQueries.GetMqttMsgForMsgId(context, msgId));
+                    List<HikePacket> entriesToDelete = DbCompiledQueries.GetMqttMsgForMsgId(context, msgId).ToList();
+                    if (entriesToDelete == null || entriesToDelete.Count == 0)
+                        return;
+                    context.mqttMessages.DeleteAllOnSubmit<HikePacket>(entriesToDelete);
                     try
                     {
                         context.SubmitChanges(ConflictMode.ContinueOnConflict);

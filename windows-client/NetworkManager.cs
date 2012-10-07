@@ -763,7 +763,7 @@ namespace windows_client
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateMsgStatus(null, msgID, status);  // TODO : Change this once corrected @ server
             //string msisdn = MessagesTableUtils.updateMsgStatus(fromUser,msgID, status); // update covmsg
-            ConversationTableUtils.updateLastMsgStatus(msisdn, status); // update conversationObj, null is already checked in the function
+            ConversationTableUtils.updateLastMsgStatus(msgID,msisdn, status); // update conversationObj, null is already checked in the function
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
@@ -774,7 +774,7 @@ namespace windows_client
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status);
             //string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
-            ConversationTableUtils.updateLastMsgStatus(msisdn, status);
+            ConversationTableUtils.updateLastMsgStatus(ids[ids.Length-1],msisdn, status);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);
