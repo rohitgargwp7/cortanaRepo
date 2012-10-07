@@ -29,6 +29,7 @@ namespace windows_client.Mqtt
                     obj[HikeConstants.TYPE] = NetworkManager.SERVER_REPORT;
                     obj[HikeConstants.DATA] = Convert.ToString(packet.MessageId);
                     NetworkManager.Instance.onMessage(obj.ToString());
+                    MqttDBUtils.removeSentMessage(packet.MessageId);
                 }
             }
         }
