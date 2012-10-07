@@ -271,12 +271,17 @@ namespace windows_client.View
 
         private void ManagePage()
         {
+            bool isGC = false;
             mPubSub = App.HikePubSubInstance;
             initPageBasedOnState();
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
+            if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
+            {
+                this.State.Remove(HikeConstants.GROUP_CHAT);
+                isGC = true;
+            }
             BackgroundWorker bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
             bw.DoWork += (s, e) =>
             {
                 Stopwatch st = Stopwatch.StartNew();
@@ -286,9 +291,8 @@ namespace windows_client.View
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
-                if (this.State.ContainsKey(HikeConstants.GROUP_CHAT))
+                if (isGC)
                 {
-                    this.State.Remove(HikeConstants.GROUP_CHAT);
                     ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -592,7 +596,7 @@ namespace windows_client.View
             else
             {
                 GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                if(gif != null && string.IsNullOrEmpty(gif.GroupName))
+                if (gif != null && string.IsNullOrEmpty(gif.GroupName))
                     mContactName = Utils.defaultGroupName(mContactNumber);
             }
             userName.Text = mContactName;
@@ -1004,7 +1008,10 @@ namespace windows_client.View
         {
             PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
-            NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
+            Dispatcher.BeginInvoke(() =>
+            {
+                NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
+            });
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -1620,9 +1627,9 @@ namespace windows_client.View
         {
             isContextMenuTapped = true;
             MyChatBubble chatBubble = ((sender as MenuItem).DataContext as MyChatBubble);
-            if(chatBubble.FileAttachment == null)
+            if (chatBubble.FileAttachment == null)
                 Clipboard.SetText(chatBubble.Text);
-            else if(!String.IsNullOrEmpty(chatBubble.FileAttachment.FileKey))
+            else if (!String.IsNullOrEmpty(chatBubble.FileAttachment.FileKey))
                 Clipboard.SetText(HikeConstants.FILE_TRANSFER_COPY_BASE_URL + "/" + chatBubble.FileAttachment.FileKey);
         }
 
@@ -1748,21 +1755,21 @@ namespace windows_client.View
         {
             int index = emotList0.SelectedIndex;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
-            emoticonPanel.Visibility = Visibility.Collapsed;
+            //emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList1_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             int index = emotList1.SelectedIndex + SmileyParser.Instance.emoticon0Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
-            emoticonPanel.Visibility = Visibility.Collapsed;
+            //emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void emotList2_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             int index = emotList2.SelectedIndex + SmileyParser.Instance.emoticon0Size + SmileyParser.Instance.emoticon1Size;
             sendMsgTxtbox.Text += SmileyParser.Instance.emoticonStrings[index];
-            emoticonPanel.Visibility = Visibility.Collapsed;
+            //emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         #endregion

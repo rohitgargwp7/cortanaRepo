@@ -432,17 +432,21 @@ namespace windows_client.View
             if (charsLength > 0)
             {
                 if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)))
+                {
                     listToIterate = groupListDictionary[charsEntered.Substring(0, charsEntered.Length - 1)];
+                    if (listToIterate == null)
+                        listToIterate = jumpList;
+                }
                 else
                     listToIterate = jumpList;
             }
             else
                 listToIterate = jumpList;
-
             bool createNewFilteredList = true;
             for (int i = start; i < end; i++)
             {
-                for (int j = 0; j < (listToIterate[i].Items == null ? 0 : listToIterate[i].Items.Count); j++)
+                int maxJ = listToIterate == null ? 0 : (listToIterate[i].Items == null ? 0 : listToIterate[i].Items.Count);
+                for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i].Items[j];
                     if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
