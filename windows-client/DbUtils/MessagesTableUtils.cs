@@ -103,9 +103,12 @@ namespace windows_client.DbUtils
                             {
                                 SentChatBubble sentChatBubble;
                                 currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
-                                currentPage.OutgoingMsgsMap.Remove(currentMessageId);
-                                currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
-                                sentChatBubble.MessageId = convMessage.MessageId;
+                                if (sentChatBubble != null)
+                                {
+                                    currentPage.OutgoingMsgsMap.Remove(currentMessageId);
+                                    currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                                    sentChatBubble.MessageId = convMessage.MessageId;
+                                }
                             }
                         }
                     });
