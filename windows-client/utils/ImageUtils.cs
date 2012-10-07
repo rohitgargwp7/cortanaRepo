@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using System.Windows.Documents;
-using System.Text.RegularExpressions;
-using System.Windows.Controls;
 using System.Windows;
 
 namespace windows_client.utils
