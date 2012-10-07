@@ -301,7 +301,6 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            updateConversations();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -311,9 +310,9 @@ namespace windows_client
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.OK)
-                return;
+            //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OKCancel);
+            //if (result == MessageBoxResult.OK)
+            //    return;
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // A navigation has failed; break into the debugger
@@ -331,13 +330,13 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
             // Running on a device / emulator without debugging
-            e.Handled = true;
-            Error.Exception = e.ExceptionObject;
-            Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
-            });
+            //e.Handled = true;
+            //Error.Exception = e.ExceptionObject;
+            //Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
+            //Deployment.Current.Dispatcher.BeginInvoke(() =>
+            //{
+            //    (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+            //});
 
         }
 
