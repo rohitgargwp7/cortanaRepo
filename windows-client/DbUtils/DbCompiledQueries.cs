@@ -227,6 +227,7 @@ namespace windows_client.DbUtils
                     CompiledQuery.Compile<HikeMqttPersistenceDb, IQueryable<HikePacket>>
                     ((HikeMqttPersistenceDb hdc) =>
                         from o in hdc.mqttMessages
+                        orderby o.MqttId
                         select o);
                 return q;
             }
