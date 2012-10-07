@@ -328,7 +328,7 @@ namespace finalmqtt.Client
                 {
                     map.Add(messageId, cb);
                     Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
-                    scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(5));
+                    scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
                 }
             }
         }
