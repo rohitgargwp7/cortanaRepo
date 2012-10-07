@@ -130,7 +130,6 @@ namespace windows_client.Mqtt
                         mqttConnection.disconnect(new DisconnectCB(reconnect, this));
                         mqttConnection = null;
                     }
-
                     setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
                 }
                 catch (Exception e)
@@ -237,7 +236,7 @@ namespace windows_client.Mqtt
 
         public void ping()
         {
-            lock (lockObj)
+            lock (lockObj) //ideally we should not have lock here, as we are reading only but added lock for safety
             {
                 if (disconnectCalled == false)
                 {
@@ -255,16 +254,19 @@ namespace windows_client.Mqtt
 
         public void reconnect()
         {
-            if (this.connectionStatus == MQTTConnectionStatus.CONNECTING)
-                return;
-
-            if (mqttConnection != null)
+            lock (lockObj)
             {
-                mqttConnection.disconnect(new DisconnectCB(false, this));
-                mqttConnection = null;
+                if (this.connectionStatus == MQTTConnectionStatus.CONNECTING)
+                    return;
+
+                if (mqttConnection != null)
+                {
+                    mqttConnection.disconnect(new DisconnectCB(false, this));
+                    mqttConnection = null;
+                }
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+                connect();
             }
-            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-            connect();
         }
 
         public void connect()
@@ -350,10 +352,13 @@ namespace windows_client.Mqtt
 
         public void onDisconnected()
         {
-            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-            mqttConnection = null;
-            if (!disconnectCalled)
-                connect();
+            lock (lockObj)
+            {
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+                mqttConnection = null;
+                if (!disconnectCalled)
+                    connect();
+            }
         }
 
         public void onPublish(String topic, byte[] body)
