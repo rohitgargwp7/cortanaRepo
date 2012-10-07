@@ -206,7 +206,7 @@ namespace windows_client.Controls
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 6, 0, 0);
-        private static Thickness timeStampBlockMargin = new Thickness(12, 0, 18, 6);
+        private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
 
