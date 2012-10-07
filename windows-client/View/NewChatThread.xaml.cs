@@ -426,6 +426,7 @@ namespace windows_client.View
                 if (Utils.isGroupConversation(mContactNumber)) // represents group chat
                 {
                     isGroupChat = true;
+                    BlockTxtBlk.Text = "You have blocked this group. Unblock to continue hiking";
                     GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;

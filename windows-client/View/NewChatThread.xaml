@@ -188,7 +188,7 @@
         <Rectangle x:Name="overlayRectangle" Grid.Row="0" Opacity="0.85" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
         <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
-            <TextBlock HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="You have blocked this user. Unblock to continue hiking" Foreground="#FFFFFF" FontSize="30"></TextBlock>
+            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="You have blocked this user. Unblock to continue hiking" Foreground="#FFFFFF" FontSize="30"></TextBlock>
             <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="Unblock" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
     </Grid>
