@@ -1891,7 +1891,10 @@ namespace windows_client.View
             {
                 //logger.("ConvMessage", "invalid json message", e);
             }
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            object[] publishData = new object[2];
+            publishData[0] = obj;
+            publishData[1] = 0; //qos
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
             //endTypingSent = !notificationType;
         }
 
