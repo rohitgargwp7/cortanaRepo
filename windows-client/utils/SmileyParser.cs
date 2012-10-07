@@ -77,7 +77,7 @@ namespace windows_client
             ":D",  // 26 lol 
             ":o",  // 27 woo 
             ":-O",  // 28 surprise 
-            ":-&lt;",  // 29 frown 
+            ":-<",  // 29 frown 
             "X(",  // 30 angry 
             "(wornout)",  // 31 wornout 
             "(stop)",  // 32 stop 
@@ -115,7 +115,7 @@ namespace windows_client
             "(music)",  // 64 music 
             ":-B",  // 65 nerd 
             "(ninja)",  // 66 ninja 
-            "&lt;:--)",  // 67 party 
+            "<:--)",  // 67 party 
             "P-(",  // 68 pirate 
             ":-@",  // 69 rage 
             "(@>---)",  // 70 rose 
