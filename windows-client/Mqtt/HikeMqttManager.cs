@@ -20,7 +20,6 @@ namespace windows_client.Mqtt
     {
         public MqttConnection mqttConnection;
         private HikePubSub pubSub;
-        private object lockObj = new object();
 
         // constants used to define MQTT connection status
         public enum MQTTConnectionStatus
@@ -120,21 +119,18 @@ namespace windows_client.Mqtt
         //        [MethodImpl(MethodImplOptions.Synchronized)]
         public void disconnectFromBroker(bool reconnect)
         {
-            lock (lockObj)
+            try
             {
-                try
+                if (mqttConnection != null)
                 {
-                    if (mqttConnection != null)
-                    {
-                        disconnectCalled = true;
-                        mqttConnection.disconnect(new DisconnectCB(reconnect, this));
-                        mqttConnection = null;
-                    }
-                    setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+                    disconnectCalled = true;
+                    mqttConnection.disconnect(new DisconnectCB(reconnect, this));
+                    mqttConnection = null;
                 }
-                catch (Exception e)
-                {
-                }
+                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+            }
+            catch (Exception e)
+            {
             }
         }
 
@@ -143,33 +139,30 @@ namespace windows_client.Mqtt
         //[MethodImpl(MethodImplOptions.Synchronized)]
         public void connectToBroker()
         {
-            lock (lockObj)
+            if (connectionStatus == MQTTConnectionStatus.CONNECTING)
             {
-                if (connectionStatus == MQTTConnectionStatus.CONNECTING)
+                return;
+            }
+
+            if (mqttConnection == null)
+            {
+                if (!init())
                 {
                     return;
                 }
+                mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
+                mqttConnection.MqttListener = this;
+            }
 
-                if (mqttConnection == null)
-                {
-                    if (!init())
-                    {
-                        return;
-                    }
-                    mqttConnection = new MqttConnection(clientId, brokerHostName, brokerPortNumber, uid, password, new ConnectCB(this));
-                    mqttConnection.MqttListener = this;
-                }
-
-                try
-                {
-                    // try to connect
-                    setConnectionStatus(MQTTConnectionStatus.CONNECTING);
-                    mqttConnection.connect();
-                }
-                catch (Exception e)
-                {
-                    /* couldn't connect, schedule a ping even earlier? */
-                }
+            try
+            {
+                // try to connect
+                setConnectionStatus(MQTTConnectionStatus.CONNECTING);
+                mqttConnection.connect();
+            }
+            catch (Exception e)
+            {
+                /* couldn't connect, schedule a ping even earlier? */
             }
         }
 
@@ -236,44 +229,37 @@ namespace windows_client.Mqtt
 
         public void ping()
         {
-            lock (lockObj) //ideally we should not have lock here, as we are reading only but added lock for safety
+            try
             {
-                try
+                if (disconnectCalled == false)
                 {
-                    if (disconnectCalled == false)
+                    if (mqttConnection != null)
                     {
-                        if (mqttConnection != null)
-                        {
-                            mqttConnection.ping(new PingCB(this));
-                        }
-                        else
-                        {
-                            connect();
-                        }
+                        mqttConnection.ping(new PingCB(this));
+                    }
+                    else
+                    {
+                        connect();
                     }
                 }
-                catch (Exception)
-                {
-                    connect();
-                }
+            }
+            catch (Exception)
+            {
+                connect();
             }
         }
 
         public void reconnect()
         {
-            lock (lockObj)
+            if (this.connectionStatus == MQTTConnectionStatus.CONNECTING)
+                return;
+            if (mqttConnection != null)
             {
-                if (this.connectionStatus == MQTTConnectionStatus.CONNECTING)
-                    return;
-
-                if (mqttConnection != null)
-                {
-                    mqttConnection.disconnect(new DisconnectCB(false, this));
-                    mqttConnection = null;
-                }
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-                connect();
+                mqttConnection.disconnect(new DisconnectCB(false, this));
+                mqttConnection = null;
             }
+            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+            connect();
         }
 
         public void connect()
@@ -359,13 +345,10 @@ namespace windows_client.Mqtt
 
         public void onDisconnected()
         {
-            lock (lockObj)
-            {
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
-                mqttConnection = null;
-                if (!disconnectCalled)
-                    connect();
-            }
+            setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
+            mqttConnection = null;
+            if (!disconnectCalled)
+                connect();
         }
 
         public void onPublish(String topic, byte[] body)
