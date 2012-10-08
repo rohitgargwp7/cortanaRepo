@@ -1668,6 +1668,7 @@ namespace windows_client.View
                         obj.LastMessage = "audio";
                     if (lastMessageBubble.FileAttachment.ContentType.Contains("video"))
                         obj.LastMessage = "video";
+                    obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble is NotificationChatBubble)
                 {
@@ -1682,8 +1683,8 @@ namespace windows_client.View
                     //obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
+                    obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
-                obj.MessageStatus = lastMessageBubble.MessageStatus;
             }
             else
             {
