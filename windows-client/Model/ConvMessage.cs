@@ -438,7 +438,11 @@ namespace windows_client.Model
                         fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
                         fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
                         this.HasAttachment = true;
-                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), System.Convert.FromBase64String(thumbnail.ToString()),
+
+                        byte[] base64Decoded = null;
+                        if (thumbnail != null)
+                            base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
+                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                     }
                     else
@@ -777,13 +781,13 @@ namespace windows_client.Model
                     bool onhike = true;
                     bool dnd = true;
                     try
-                    { 
-                        onhike = (bool)nameMsisdn["onhike"]; 
+                    {
+                        onhike = (bool)nameMsisdn["onhike"];
                     }
                     catch { }
                     try
-                    { 
-                        dnd = (bool)nameMsisdn["dnd"]; 
+                    {
+                        dnd = (bool)nameMsisdn["dnd"];
                     }
                     catch { }
 
@@ -841,7 +845,7 @@ namespace windows_client.Model
                     saveCache = true;
                 }
             }
-            if(saveCache)
+            if (saveCache)
                 App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             this._timestamp = TimeUtils.getCurrentTimeStamp();
             this.MessageStatus = State.UNKNOWN;
