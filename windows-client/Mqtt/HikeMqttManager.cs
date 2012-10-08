@@ -117,7 +117,7 @@ namespace windows_client.Mqtt
  * Terminates a connection to the message broker.
  */
         //synchronized
-//        [MethodImpl(MethodImplOptions.Synchronized)]
+        //        [MethodImpl(MethodImplOptions.Synchronized)]
         public void disconnectFromBroker(bool reconnect)
         {
             lock (lockObj)
@@ -238,16 +238,23 @@ namespace windows_client.Mqtt
         {
             lock (lockObj) //ideally we should not have lock here, as we are reading only but added lock for safety
             {
-                if (disconnectCalled == false)
+                try
                 {
-                    if (mqttConnection != null)
+                    if (disconnectCalled == false)
                     {
-                        mqttConnection.ping(new PingCB(this));
+                        if (mqttConnection != null)
+                        {
+                            mqttConnection.ping(new PingCB(this));
+                        }
+                        else
+                        {
+                            connect();
+                        }
                     }
-                    else
-                    {
-                        connect();
-                    }
+                }
+                catch (Exception)
+                {
+                    connect();
                 }
             }
         }
