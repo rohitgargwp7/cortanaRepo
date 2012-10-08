@@ -302,9 +302,10 @@ namespace finalmqtt.Client
         /// <param name="cb">Callback to be called in case of error</param>
         public void sendCallbackMessage(Message msg, Callback cb)
         {
-            if (!_socket.Connected || !connackReceived)
+            if (_socket == null || !_socket.Connected || !connackReceived || msg == null)
             {
-                cb.onFailure(null);
+                if (cb != null)
+                    cb.onFailure(null);
                 return;
             }
             try
@@ -314,14 +315,16 @@ namespace finalmqtt.Client
             }
             catch (ObjectDisposedException ode)
             {
-                cb.onFailure(ode);
+                if (cb != null)
+                    cb.onFailure(ode);
             }
             catch (SocketException se)
             {
-                cb.onFailure(se);
+                if (cb != null)
+                    cb.onFailure(se);
             }
 
-            if (msg is RetryableMessage)
+            if (msg is RetryableMessage && cb!=null)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
                 if (messageId != 0)
