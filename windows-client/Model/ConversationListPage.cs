@@ -28,6 +28,7 @@ namespace windows_client.Model
         private ConvMessage.State _messageStatus;
         private byte[] _avatar;
         private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
+        private long _lastMsgId;
         #endregion
 
         #region Properties
@@ -159,6 +160,21 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
+        public long LastMsgId
+        {
+            get
+            {
+                return _lastMsgId;
+            }
+            set
+            {
+                if (_lastMsgId != value)
+                {
+                    _lastMsgId = value;
+                }
+            }
+        }
         public BitmapImage SDRStatusImage
         {
             get
@@ -303,7 +319,7 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus,long lastMsgId)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
@@ -312,10 +328,11 @@ namespace windows_client.Model
             this._isOnhike = isOnhike;
             this._avatar = avatar;
             this._messageStatus = msgStatus;
+            this._lastMsgId = lastMsgId;
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus)
-            : this(msisdn, contactName, lastMessage, false, timestamp, null, msgStatus)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus,long lastMsgId)
+            : this(msisdn, contactName, lastMessage, false, timestamp, null, msgStatus, lastMsgId)
         {
 
         }
@@ -364,6 +381,7 @@ namespace windows_client.Model
             writer.Write(_isOnhike);
             writer.Write((int)_messageStatus);
             writer.Write(_isFirstMsg);
+            writer.Write(_lastMsgId);
         }
 
         public void Read(BinaryReader reader)
@@ -377,6 +395,7 @@ namespace windows_client.Model
             _isOnhike = reader.ReadBoolean();
             _messageStatus = (ConvMessage.State)reader.ReadInt32();
             _isFirstMsg = reader.ReadBoolean();
+            _lastMsgId = reader.ReadInt64();
         }
         
         #region INotifyPropertyChanged Members

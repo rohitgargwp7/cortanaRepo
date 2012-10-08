@@ -19,9 +19,7 @@ using Microsoft.Phone.Notification;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
-using System.Reflection;
 using Microsoft.Xna.Framework.GamerServices;
-using System.Windows.Media;
 
 namespace windows_client.View
 {

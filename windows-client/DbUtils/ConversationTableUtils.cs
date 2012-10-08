@@ -57,7 +57,7 @@ namespace windows_client.DbUtils
             * Contactname : GroupOwner
             */
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
-                true, convMessage.Timestamp, null, convMessage.MessageStatus);
+                true, convMessage.Timestamp, null, convMessage.MessageStatus,convMessage.MessageId);
            
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
@@ -94,14 +94,14 @@ namespace windows_client.DbUtils
                     groupName = (string)PhoneApplicationService.Current.State[convMessage.Msisdn];
                     PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
                 }
-                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, convMessage.MessageStatus);
+                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, convMessage.MessageStatus,convMessage.MessageId);
             }
             else
             {
                 ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
                 byte [] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
                 obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
-                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus);
+                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus,convMessage.MessageId);
             }
 
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
@@ -145,6 +145,13 @@ namespace windows_client.DbUtils
             else
                 obj.IsFirstMsg = false;
 
+            Stopwatch st1 = Stopwatch.StartNew();
+            MessagesTableUtils.addMessage(convMessage);
+            obj.LastMsgId = convMessage.MessageId;
+            st1.Stop();
+            long msec1 = st1.ElapsedMilliseconds;
+            Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                           
             Stopwatch st = Stopwatch.StartNew();
             saveConvObject(obj, obj.Msisdn.Replace(":","_"));
             st.Stop();
@@ -284,7 +291,7 @@ namespace windows_client.DbUtils
             //}
         }
 
-        public static void updateLastMsgStatus(string msisdn, int status)
+        public static void updateLastMsgStatus(long id,string msisdn, int status)
         {
             if (msisdn == null)
                 return;
@@ -292,6 +299,8 @@ namespace windows_client.DbUtils
             if (ConversationsList.ConvMap.ContainsKey(msisdn))
             {
                 obj = ConversationsList.ConvMap[msisdn];
+                if (obj.LastMsgId != id)
+                    return;
                 if (obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
                 {
                     obj.MessageStatus = (ConvMessage.State)status;

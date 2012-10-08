@@ -507,7 +507,7 @@ namespace windows_client.Model
             }
             catch (Exception e)
             {
-
+                throw new Exception("Error in parsing json");
             }
         }
 

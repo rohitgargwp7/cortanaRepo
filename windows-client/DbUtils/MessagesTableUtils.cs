@@ -133,6 +133,7 @@ namespace windows_client.DbUtils
             //List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
             if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
+                addMessage(convMsg);
                 string groupName = Utils.defaultGroupName(convMsg.Msisdn);
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 ConversationsList.ConvMap[convMsg.Msisdn] = obj;
@@ -178,11 +179,14 @@ namespace windows_client.DbUtils
                 else
                     obj.LastMessage = convMsg.Message;
 
+                addMessage(convMsg);
+
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
+                obj.LastMsgId = convMsg.MessageId;
                 ConversationTableUtils.updateConversation(obj);
             }
-            addMessage(convMsg);
+            
             return obj;
         }
 
@@ -341,19 +345,21 @@ namespace windows_client.DbUtils
                     obj.LastMessage = convMsg.Message;
                 #endregion
 
+                Stopwatch st1 = Stopwatch.StartNew();
+                addMessage(convMsg);
+                st1.Stop();
+                long msec1 = st1.ElapsedMilliseconds;
+                Debug.WriteLine("Time to add chat msg : {0}", msec1);
+            
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
+                obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
                 ConversationTableUtils.updateConversation(obj);
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
-            Stopwatch st1 = Stopwatch.StartNew();
-            addMessage(convMsg);
-            st1.Stop();
-            long msec1 = st1.ElapsedMilliseconds;
-            Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
             return obj;
         }
