@@ -200,12 +200,6 @@ namespace windows_client.DbUtils
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
 
-                Stopwatch st1 = Stopwatch.StartNew();
-                addMessage(convMsg);
-                st1.Stop();
-                long msec1 = st1.ElapsedMilliseconds;
-                Debug.WriteLine("Time to add chat msg : {0}", msec1);
-            
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
                 ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
             }

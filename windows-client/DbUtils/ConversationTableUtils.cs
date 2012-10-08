@@ -145,6 +145,13 @@ namespace windows_client.DbUtils
             else
                 obj.IsFirstMsg = false;
 
+            Stopwatch st1 = Stopwatch.StartNew();
+            MessagesTableUtils.addMessage(convMessage);
+            obj.LastMsgId = convMessage.MessageId;
+            st1.Stop();
+            long msec1 = st1.ElapsedMilliseconds;
+            Debug.WriteLine("Time to add chat msg : {0}", msec1);
+                           
             Stopwatch st = Stopwatch.StartNew();
             saveConvObject(obj, obj.Msisdn.Replace(":","_"));
             st.Stop();
