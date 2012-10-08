@@ -629,6 +629,8 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConversationListObject mObj = (ConversationListObject)vals[1];
+                if (mObj == null)
+                    return;
                 if (convMap.ContainsKey(mObj.Msisdn))
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
