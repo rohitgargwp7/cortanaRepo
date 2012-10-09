@@ -232,10 +232,17 @@ namespace windows_client
             else if (DELIVERY_REPORT == type) // this handles the case when msg with msgId is recieved by the recipient but is unread
             {
                 string id = (string)jsonObj[HikeConstants.DATA];
+                JToken msisdnToken = null;
+                string msisdnToCheck = null;
                 long msgID;
                 try
                 {
                     msgID = Int64.Parse(id);
+                    jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                    if (msisdnToken != null)
+                        msisdnToCheck = msisdnToken.ToString();
+                    else
+                        msisdnToCheck = msisdn;
                 }
                 catch (FormatException e)
                 {
@@ -245,16 +252,24 @@ namespace windows_client
                 }
                 //logger.Info("NETWORK MANAGER", "Delivery report received for msgid : " + msgID + "	;	REPORT : DELIVERED");
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, msgID);
-                updateDB(msisdn, msgID, (int)ConvMessage.State.SENT_DELIVERED);
+                updateDB(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
             #endregion
             #region MESSAGE_READ
             else if (MESSAGE_READ == type) // Message read by recipient
             {
                 JArray msgIds = null;
+                JToken msisdnToken = null;
+                string msisdnToCheck = null;
+                
                 try
                 {
                     msgIds = (JArray)jsonObj["d"];
+                    jsonObj.TryGetValue(HikeConstants.TO, out msisdnToken);
+                    if (msisdnToken != null)
+                        msisdnToCheck = msisdnToken.ToString();
+                    else
+                        msisdnToCheck = msisdn;
                 }
                 catch
                 {
@@ -272,7 +287,7 @@ namespace windows_client
                     ids[i] = Int64.Parse(msgIds[i].ToString());
                 }
                 //logger.Info("NETWORK MANAGER", "Delivery report received : " + "	;	REPORT : DELIVERED READ");
-                updateDbBatch(msisdn, ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
+                updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
                 this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, ids);
             }
             #endregion
@@ -379,23 +394,29 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
+                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}",jsonObj.ToString());
                     KeyValuePair<string, JToken> kv;
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
                     while (keyVals.MoveNext())
                     {
                         kv = keyVals.Current;
+                        Debug.WriteLine("AI :: Key : " + kv.Key);
                         string val = kv.Value.ToObject<string>();
+                        Debug.WriteLine("AI :: Value : " + val);
                         App.WriteToIsoStorageSettings(kv.Key, val);
                     }
 
                     JToken it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
                     if (it != null)
                     {
+                        string tc = it.ToString().Trim();
+                        Debug.WriteLine("Account Info :: TOTAL_CREDITS_PER_MONTH : " + tc);
                         this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                     }
                 }
-                catch
+                catch(Exception e)
                 {
+                    Debug.WriteLine("NETWORK MANAGER :: Account Info Json Exception "+e.StackTrace);
                     return;
                 }
 
@@ -761,8 +782,7 @@ namespace windows_client
         private void updateDB(string fromUser, long msgID, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateMsgStatus(null, msgID, status);  // TODO : Change this once corrected @ server
-            //string msisdn = MessagesTableUtils.updateMsgStatus(fromUser,msgID, status); // update covmsg
+            string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
             ConversationTableUtils.updateLastMsgStatus(msgID,msisdn, status); // update conversationObj, null is already checked in the function
             st.Stop();
             long msec = st.ElapsedMilliseconds;
@@ -772,8 +792,7 @@ namespace windows_client
         private void updateDbBatch(string fromUser, long[] ids, int status)
         {
             Stopwatch st = Stopwatch.StartNew();
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status);
-            //string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
             ConversationTableUtils.updateLastMsgStatus(ids[ids.Length-1],msisdn, status);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
