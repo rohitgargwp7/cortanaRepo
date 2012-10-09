@@ -77,7 +77,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
                         <TextBlock Foreground="#1f88cd" Text="Invite Friends Earn Rewards." TextWrapping="Wrap" Grid.Row="0" 
-                                   HorizontalAlignment="Center" FontSize="28" FontFamily="Segoe WP Bold" TextAlignment="Center" Margin="0,30,0,0"></TextBlock>
+                                   HorizontalAlignment="Center" FontSize="30" FontFamily="Segoe WP Semibold" TextAlignment="Center" Margin="0,30,0,0"></TextBlock>
                         <TextBlock Width="380" Text="For every friend who joins, you get 50 Free hike SMS every month" TextWrapping="Wrap" Grid.Row="1" 
                                    HorizontalAlignment="Center" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="Black" TextAlignment="Center" Margin="0,35,0,0"></TextBlock>
                     </Grid>
