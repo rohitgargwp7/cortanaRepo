@@ -38,9 +38,15 @@ namespace windows_client.View
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            WebBrowserTask wbt = new WebBrowserTask();
-            wbt.Uri = new Uri(Uri.EscapeUriString(HikeConstants.CONTACT_US_LINK), UriKind.RelativeOrAbsolute);
-            wbt.Show();
+            EmailComposeTask contactUsMail = new EmailComposeTask();
+            contactUsMail.To = "support@bsb.in";
+            try
+            {
+                contactUsMail.Show();
+            }
+            catch
+            {
+            }
         }
 
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)
