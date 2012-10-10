@@ -250,8 +250,11 @@ namespace windows_client
                     msgID = -1;
                     return;
                 }
-                //logger.Info("NETWORK MANAGER", "Delivery report received for msgid : " + msgID + "	;	REPORT : DELIVERED");
-                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, msgID);
+
+                object[] vals = new object[2];
+                vals[0] = msgID;
+                vals[1] = msisdnToCheck;
+                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED, vals);
                 updateDB(msisdnToCheck, msgID, (int)ConvMessage.State.SENT_DELIVERED);
             }
             #endregion
@@ -286,9 +289,11 @@ namespace windows_client
                 {
                     ids[i] = Int64.Parse(msgIds[i].ToString());
                 }
-                //logger.Info("NETWORK MANAGER", "Delivery report received : " + "	;	REPORT : DELIVERED READ");
+                object[] vals = new object[2];
+                vals[0] = ids;
+                vals[1] = msisdnToCheck;
                 updateDbBatch(msisdnToCheck, ids, (int)ConvMessage.State.SENT_DELIVERED_READ);
-                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, ids);
+                this.pubSub.publish(HikePubSub.MESSAGE_DELIVERED_READ, vals);
             }
             #endregion
             #region USER_JOINED USER_LEFT
