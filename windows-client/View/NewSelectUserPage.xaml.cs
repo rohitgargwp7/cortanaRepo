@@ -862,6 +862,5 @@ namespace windows_client.View
         {
             contactsListBox.Focus();
         }
-
     }
 }
