@@ -858,5 +858,10 @@ namespace windows_client.View
             }
         }
 
+        private void contactsListBox_ScrollingStarted(object sender, EventArgs e)
+        {
+            contactsListBox.Focus();
+        }
+
     }
 }
