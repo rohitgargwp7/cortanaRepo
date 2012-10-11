@@ -65,12 +65,36 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
-        public static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp7";
-        public static readonly string FAQS_LINK_WHITE = "http://hike.in/help/wp7/";
-        public static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
-        public static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp7/black.html";
-        public static readonly string CONTACT_US_LINK = "http://support.hike.in";
+        private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp7";
+        private static readonly string FAQS_LINK_WHITE = "http://hike.in/help/wp7/";
+        private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
+        private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp7/black.html";
+        private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = "http://get.hike.in/updates/wp7";
+
+        public static string FAQS_LINK
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    return FAQS_LINK_BLACK;
+                }
+                return FAQS_LINK_WHITE;
+            }
+        }
+
+        public static string TERMS_LINK
+        {
+            get
+            {
+                if (Utils.isDarkTheme())
+                {
+                    return TERMS_AND_CONDITIONS_BLACK;
+                }
+                return TERMS_AND_CONDITIONS_WHITE;
+            }
+        }
 
         public static readonly string NORMAL_UPDATE_TEXT = "A new version of hike is out. Would you like to update the app?";
         public static readonly string CRITICAL_UPDATE_TEXT = "To continue using hike, an update is required.";
