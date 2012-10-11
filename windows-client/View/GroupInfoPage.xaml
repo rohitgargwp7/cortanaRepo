@@ -27,7 +27,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="group info" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,0" Height="90"/>
+        <TextBlock Text="group info" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="21,0,0,0" Height="90"/>
 
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
             <Grid.RowDefinitions>
@@ -62,7 +62,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Image x:Name="groupImage" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="27,12,5,0" Tap="onGroupProfileTap" Height="83" Source="images\default_group.png" />
+                <Image x:Name="groupImage" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="24,12,5,0" Tap="onGroupProfileTap" Height="83" Source="images\default_group.png" />
                 <Image Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,12" Source="images\change_pic.png" />
 
                 <!--<StackPanel Grid.Column="1" Orientation="Vertical" Margin="0, 0,0,0">-->
@@ -74,11 +74,11 @@
             </Grid>
 
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="27,30,0,0">
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="24,30,0,0">
                 <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="40" Height="40"></Image>
                 <TextBlock Text="Participants" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
-            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="27,5,0,0">
+            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="24,5,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
