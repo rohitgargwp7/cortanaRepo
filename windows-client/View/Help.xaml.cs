@@ -33,7 +33,9 @@ namespace windows_client.View
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/FAQTerms.xaml?page=faq", UriKind.Relative));
+            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            webBrowserTask.Uri = new Uri(HikeConstants.FAQS_LINK, UriKind.Absolute);
+            webBrowserTask.Show();
         }
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -51,7 +53,9 @@ namespace windows_client.View
 
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/FAQTerms.xaml?page=legal", UriKind.Relative));
+            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            webBrowserTask.Uri = new Uri(HikeConstants.TERMS_LINK, UriKind.Absolute);
+            webBrowserTask.Show();
         }
 
         private void Updates_Tap(object sender, System.Windows.Input.GestureEventArgs e)
