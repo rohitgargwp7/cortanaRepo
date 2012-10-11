@@ -12,6 +12,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    toolkit:TiltEffect.IsTiltEnabled="True"
     shell:SystemTray.IsVisible="True" DataContext="{Binding}" Name="selectUserPage">
 
     <shell:SystemTray.ProgressIndicator>
@@ -50,7 +51,7 @@
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsBouncy="True"
-                          IsFlatList="False">
+                          IsFlatList="False" ScrollingStarted="contactsListBox_ScrollingStarted">
                 <toolkit:LongListSelector.GroupItemsPanel>
                     <ItemsPanelTemplate>
                         <toolkit:WrapPanel Orientation="Horizontal"/>

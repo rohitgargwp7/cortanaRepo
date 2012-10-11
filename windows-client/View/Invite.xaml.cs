@@ -31,7 +31,7 @@ namespace windows_client.View
             string inviteMsg = string.Format(external_invite_message, inviteToken);
             ShareLinkTask shareLinkTask = new ShareLinkTask();
             shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
-            shareLinkTask.Title = "hike. Fun, free messaging for life";
+            //shareLinkTask.Title = "hike.";
             shareLinkTask.Message = inviteMsg;
             try
             {
