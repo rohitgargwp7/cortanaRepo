@@ -2055,7 +2055,11 @@ namespace windows_client.View
 
             else if (HikePubSub.MESSAGE_DELIVERED == type)
             {
-                long msgId = (long)obj;
+                object[] vals = (object[])obj;
+                long msgId = (long)vals[0];
+                string msisdnToCheck = (string)vals[1];
+                if (msisdnToCheck != mContactNumber)
+                    return;
                 try
                 {
                     SentChatBubble msg = msgMap[msgId];
@@ -2076,7 +2080,11 @@ namespace windows_client.View
 
             else if (HikePubSub.MESSAGE_DELIVERED_READ == type)
             {
-                long[] ids = (long[])obj;
+                object[] vals = (object[])obj;
+                long[] ids = (long[])vals[0];
+                string msisdnToCheck = (string)vals[1];
+                if (msisdnToCheck != mContactNumber)
+                    return;
                 // TODO we could keep a map of msgId -> conversation objects somewhere to make this faster
                 for (int i = 0; i < ids.Length; i++)
                 {
