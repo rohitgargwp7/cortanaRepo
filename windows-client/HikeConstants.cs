@@ -23,6 +23,7 @@ namespace windows_client
         public static readonly string METADATA = "md";
         public static readonly string METADATA_DND = "dnd";
         public static readonly string ANALYTICS_EVENT = "ae";
+        public static readonly string LOG_EVENT = "ae";//for analytics
 
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
