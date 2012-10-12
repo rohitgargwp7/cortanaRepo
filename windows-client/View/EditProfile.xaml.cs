@@ -259,5 +259,33 @@ namespace windows_client.View
             if (this.State.ContainsKey("genderListPicker.SelectedIndex"))
                 genderListPicker.SelectedIndex = (int)this.State["genderListPicker.SelectedIndex"];
         }
+
+        private void textbox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ContentPanel.Margin = new Thickness(15, 0, 15, 220);
+        }
+
+        private void textbox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ContentPanel.Margin = new Thickness(15, 0, 15,  0);
+
+        }
+
+        private void name_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                email.Focus();
+            }
+        }
+
+        private void email_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                genderListPicker.Focus();
+            }
+
+        }
     }
 }

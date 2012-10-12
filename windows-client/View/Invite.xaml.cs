@@ -17,7 +17,7 @@ namespace windows_client.View
     public partial class Invite : PhoneApplicationPage
     {
         string email_invite = "Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!";
-        string external_invite_message = "I’m using @hikeapp, an awesome new free messaging app! Download the app at http://get.hike.in/{0} to start messaging me for free!";
+        string external_invite_message = "I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp";
 
         public Invite()
         {
@@ -31,7 +31,6 @@ namespace windows_client.View
             string inviteMsg = string.Format(external_invite_message, inviteToken);
             ShareLinkTask shareLinkTask = new ShareLinkTask();
             shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
-            shareLinkTask.Title = "hike. Fun, free messaging for life";
             shareLinkTask.Message = inviteMsg;
             try
             {

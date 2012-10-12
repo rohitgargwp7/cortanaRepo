@@ -18,12 +18,12 @@
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="False" />
     </shell:SystemTray.ProgressIndicator>
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="585"/>
+            <RowDefinition Height="520"/>
             <RowDefinition Height="0*" />
         </Grid.RowDefinitions>
 
@@ -32,46 +32,48 @@
             <TextBlock Text="edit profile" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,0" />
         </StackPanel>
 
-        <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="15,0,15,71" Background="Transparent">
+        <ScrollViewer Grid.Row="1">
+            <!--ContentPanel - place additional content here-->
+            <Grid x:Name="ContentPanel"  Margin="15,0,15,0" Background="Transparent">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
-                <RowDefinition Height="100"/>
-                <RowDefinition Height="100"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Vertical" Grid.Row="0">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Full Name" Margin="13,0,0,0"/>
-                    <TextBlock Name="nameErrorTxt" Opacity="0" 
+                <StackPanel Orientation="Vertical" Grid.Row="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Full Name" Margin="13,0,0,0"/>
+                        <TextBlock Name="nameErrorTxt" Opacity="0" 
                                Text="Please enter your name" 
                                VerticalAlignment="Center"
                                Margin="204,0,0,0" Foreground="Red" 
                                FontSize="15" />
+                    </StackPanel>
+                    <TextBox x:Name="name" KeyDown="name_KeyDown" />
                 </StackPanel>
-                <TextBox x:Name="name"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Row="1">
-                <TextBlock Text="Phone" Margin="13,0,0,0"/>
-                <TextBox x:Name="phone" InputScope="TelephoneCountryCode" IsReadOnly="True"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Row="2">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Email" Margin="13,0,0,0"/>
-                    <TextBlock Name="emailErrorTxt" Opacity="0" 
+                <StackPanel Orientation="Vertical" Grid.Row="1">
+                    <TextBlock Text="Phone" Margin="13,0,0,0"/>
+                    <TextBox x:Name="phone" InputScope="TelephoneCountryCode" LostFocus="textbox_LostFocus" GotFocus="textbox_GotFocus" IsReadOnly="True"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Grid.Row="2">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Email" Margin="13,0,0,0"/>
+                        <TextBlock Name="emailErrorTxt" Opacity="0" 
                                VerticalAlignment="Center" 
                                Text="Enter Correct Email" 
                                Margin="245,0,0,0" Foreground="Red" FontSize="15" />
+                    </StackPanel>
+                    <TextBox x:Name="email" KeyDown="email_KeyDown" InputScope="EmailUserName" LostFocus="textbox_LostFocus" GotFocus="textbox_GotFocus"/>
                 </StackPanel>
-                <TextBox x:Name="email" InputScope="EmailUserName"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Row="3">
-                <TextBlock Text="Gender" Margin="13,0,0,0"/>
-                <toolkit:ListPicker x:Name="genderListPicker"/>
-            </StackPanel>
-        </Grid>
+                <StackPanel Orientation="Vertical" Grid.Row="3">
+                    <TextBlock Text="Gender" Margin="13,0,0,0"/>
+                    <toolkit:ListPicker x:Name="genderListPicker"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 
 </phone:PhoneApplicationPage>

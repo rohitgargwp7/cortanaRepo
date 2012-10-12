@@ -51,7 +51,7 @@
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsBouncy="True"
-                          IsFlatList="False">
+                          IsFlatList="False" ScrollingStarted="contactsListBox_ScrollingStarted">
                 <toolkit:LongListSelector.GroupItemsPanel>
                     <ItemsPanelTemplate>
                         <toolkit:WrapPanel Orientation="Horizontal"/>

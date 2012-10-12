@@ -122,16 +122,20 @@ namespace windows_client.DbUtils
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (store.FileExists(THUMBNAILS + "\\" + msisdn)) // Check if file exists
+                try
                 {
-                    using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn, FileMode.Open, FileAccess.Read))
+                    if (store.FileExists(THUMBNAILS + "\\" + msisdn)) // Check if file exists
                     {
-                        data = new byte[isfs.Length];
-                        // Read the entire file and then close it
-                        isfs.Read(data, 0, data.Length);
-                        isfs.Close();
+                        using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn, FileMode.Open, FileAccess.Read))
+                        {
+                            data = new byte[isfs.Length];
+                            // Read the entire file and then close it
+                            isfs.Read(data, 0, data.Length);
+                            isfs.Close();
+                        }
                     }
                 }
+                catch { }
             }
             return data;
         }

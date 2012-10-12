@@ -53,9 +53,13 @@
                 <TextBlock Text="Updates" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="Check for updates" FontSize="20"/>
             </StackPanel>-->
-            <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
+            <StackPanel Grid.Row="3" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
                 <TextBlock Text="Walkthrough" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                 <TextBlock Text="View the meet hike walkthrough" FontSize="20"/>
+            </StackPanel>
+            <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,30,0,0">
+                <TextBlock Text="Version" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                <TextBlock Text="1.1.0.0" FontSize="20"/>
             </StackPanel>
         </Grid>
         <Image x:Name="made_with_love" Grid.Row="2" VerticalAlignment="Bottom" Margin="0,0,0,0"/>

@@ -113,7 +113,9 @@ namespace windows_client
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/FAQTerms.xaml?page=legal", UriKind.Relative));
+            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            webBrowserTask.Uri = new Uri(HikeConstants.TERMS_LINK, UriKind.Absolute);
+            webBrowserTask.Show();
         }
     }
 }
