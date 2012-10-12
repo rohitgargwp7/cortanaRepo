@@ -902,7 +902,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                ConversationsList.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
+                App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
             });
         }
 
@@ -983,7 +983,7 @@ namespace windows_client.View
 
         private void leaveGroup_Click(object sender, EventArgs e)
         {
-            if (!ConversationsList.ConvMap.ContainsKey(mContactNumber))
+            if (!App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                 return;
             /*
              * 1. Delete from DB (pubsub)
@@ -996,9 +996,9 @@ namespace windows_client.View
 
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
-            ConversationListObject cObj = ConversationsList.ConvMap[mContactNumber];
+            ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
             App.ViewModel.MessageListPageCollection.Remove(cObj);
-            ConversationsList.ConvMap.Remove(mContactNumber);
+            App.ViewModel.ConvMap.Remove(mContactNumber);
             Utils.GroupCache.Remove(mContactNumber);
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             NavigationService.GoBack();
@@ -1646,7 +1646,7 @@ namespace windows_client.View
                 msg.FileAttachment.FileState = Attachment.AttachmentState.CANCELED;
             bool delConv = false;
             this.MessageList.Children.Remove(msg);
-            ConversationListObject obj = ConversationsList.ConvMap[mContactNumber];
+            ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             MyChatBubble lastMessageBubble = null;
             if (isTypingNotificationActive && this.MessageList.Children.Count > 1)
@@ -1691,7 +1691,7 @@ namespace windows_client.View
             {
                 // no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
-                ConversationsList.ConvMap.Remove(mContactNumber);
+                App.ViewModel.ConvMap.Remove(mContactNumber);
                 delConv = true;
             }
             object[] o = new object[3];
@@ -1968,7 +1968,7 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                if (ConversationsList.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
+                if (App.ViewModel.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
                     isGcFirstMsg = true;
                 else
                     isGcFirstMsg = false;
@@ -2251,7 +2251,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    mContactName = ConversationsList.ConvMap[mContactNumber].NameToShow;
+                    mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                     userName.Text = mContactName;
                 });
             }
@@ -2269,7 +2269,7 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    mContactName = ConversationsList.ConvMap[mContactNumber].NameToShow;
+                    mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                     userName.Text = mContactName;
                 });
             }

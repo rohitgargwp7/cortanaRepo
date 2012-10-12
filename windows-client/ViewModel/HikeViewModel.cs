@@ -7,22 +7,22 @@ namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged
     {
-        private List<string> _convMsisdnsToUpdate = new List<string>();
+        private Dictionary<string,ConversationListObject> _convMap ;
 
-        public List<string> ConvMsisdnsToUpdate
+        public Dictionary<string, ConversationListObject> ConvMap
         {
             get
             {
-                return _convMsisdnsToUpdate;
+                return _convMap;
             }
             set
             {
-                if (value != _convMsisdnsToUpdate)
-                    _convMsisdnsToUpdate = value;
+                if (value != _convMap)
+                    _convMap = value;
             }
         }
 
-        private ObservableCollection<ConversationListObject> _messageListPageCollection = new ObservableCollection<ConversationListObject>();
+        private ObservableCollection<ConversationListObject> _messageListPageCollection;
 
         public ObservableCollection<ConversationListObject> MessageListPageCollection
         {
@@ -35,6 +35,20 @@ namespace windows_client.ViewModel
                 _messageListPageCollection = value;
                 NotifyPropertyChanged("MessageListPageCollection");
             }
+        }
+
+        public HikeViewModel(List<ConversationListObject> convList)
+        {
+            _messageListPageCollection = new ObservableCollection<ConversationListObject>(convList);
+            _convMap = new Dictionary<string,ConversationListObject>(convList.Count);
+            for (int i = 0; i < convList.Count; i++)
+                _convMap[convList[i].Msisdn] = convList[i];
+        }
+
+        public HikeViewModel()
+        {
+            _messageListPageCollection = new ObservableCollection<ConversationListObject>();
+            _convMap = new Dictionary<string, ConversationListObject>();
         }
 
         #region INotifyPropertyChanged Members

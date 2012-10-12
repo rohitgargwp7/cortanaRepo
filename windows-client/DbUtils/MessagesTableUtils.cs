@@ -131,12 +131,12 @@ namespace windows_client.DbUtils
         {
             ConversationListObject obj = null;
             //List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
-            if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
+            if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
                 addMessage(convMsg);
                 string groupName = Utils.defaultGroupName(convMsg.Msisdn);
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
-                ConversationsList.ConvMap[convMsg.Msisdn] = obj;
+                App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
                 GroupTableUtils.addGroupInfo(gi);
             }
@@ -147,7 +147,7 @@ namespace windows_client.DbUtils
                 if (existingMembers == null)
                     return null;
 
-                obj = ConversationsList.ConvMap[convMsg.Msisdn];
+                obj = App.ViewModel.ConvMap[convMsg.Msisdn];
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
 
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set                
@@ -195,17 +195,17 @@ namespace windows_client.DbUtils
             if (convMsg == null)
                 return null;
             ConversationListObject obj = null;
-            if (!ConversationsList.ConvMap.ContainsKey(convMsg.Msisdn))
+            if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
-                ConversationsList.ConvMap.Add(convMsg.Msisdn, obj);
+                App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
             else
             {
-                obj = ConversationsList.ConvMap[convMsg.Msisdn];
+                obj = App.ViewModel.ConvMap[convMsg.Msisdn];
                 #region PARTICIPANT_JOINED
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {

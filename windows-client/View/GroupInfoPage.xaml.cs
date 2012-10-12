@@ -205,7 +205,7 @@ namespace windows_client.View
                         if (!gp.IsOnHike && !EnableInviteBtn)
                             EnableInviteBtn = true;
                     }
-                    groupName = ConversationsList.ConvMap[groupId].NameToShow;
+                    groupName = App.ViewModel.ConvMap[groupId].NameToShow;
                     groupNameTxtBox.Text = groupName;
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
@@ -224,7 +224,7 @@ namespace windows_client.View
                         if (groupMembersOC[i].Msisdn == leaveMsisdn)
                         {
                             groupMembersOC.RemoveAt(i);
-                            groupName = ConversationsList.ConvMap[groupId].NameToShow;
+                            groupName = App.ViewModel.ConvMap[groupId].NameToShow;
                             groupNameTxtBox.Text = groupName; 
                             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                             return;

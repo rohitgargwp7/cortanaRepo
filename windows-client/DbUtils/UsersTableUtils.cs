@@ -191,17 +191,12 @@ namespace windows_client.DbUtils
                     for (int i = 0; i < ids.Count; i++)
                     {
                         context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
-                        if (ConversationsList.ConvMap.ContainsKey(ids[i].Msisdn))
+                        if (App.ViewModel.ConvMap.ContainsKey(ids[i].Msisdn))
                         {
-                            //ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(chats, ids[i].Msisdn).FirstOrDefault();
-                            //if (cObj.ContactName != null)
-                            //{
-                            //    cObj.ContactName = null;
-                            //    shouldSubmit = true;
-                            //}
-                            ConversationListObject obj = ConversationsList.ConvMap[ids[i].Msisdn];
+                            ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
                             ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
+                            ConversationTableUtils.saveConvObjectList();
                         }
                     }
                     //if (shouldSubmit)

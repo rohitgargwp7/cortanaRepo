@@ -611,7 +611,7 @@ namespace windows_client
                 return;
             /* Process UO for 1-1 chat*/
 
-            if (!isOptInMsg || ConversationsList.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
+            if (!isOptInMsg || App.ViewModel.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
             {
                 object[] vals = null;
                 ConvMessage cm = new ConvMessage();
@@ -710,7 +710,7 @@ namespace windows_client
         /// <returns></returns>
         private bool AddGroupmembers(JArray arr, string grpId)
         {
-            if (ConversationsList.ConvMap.ContainsKey(grpId))
+            if (App.ViewModel.ConvMap.ContainsKey(grpId))
             {
                 List<GroupParticipant> l = null;
                 Utils.GroupCache.TryGetValue(grpId, out l);
@@ -766,7 +766,7 @@ namespace windows_client
                 if (!firstMsgLogic && removeFirstMsgLogic) // this turn off first msg logic
                 {
                     ConversationListObject co = null;
-                    ConversationsList.ConvMap.TryGetValue(grpId, out co);
+                    App.ViewModel.ConvMap.TryGetValue(grpId, out co);
                     if (co != null)
                     {
                         co.IsFirstMsg = false;

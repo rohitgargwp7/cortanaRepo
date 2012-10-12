@@ -336,8 +336,8 @@ namespace windows_client.View
                 contact.Msisdn = normalizeNumber(contact.Name);
                 contact.Name = null;
                 contact = GetContactIfExists(contact);
-                if (ConversationsList.ConvMap.ContainsKey(contact.Msisdn))
-                    contact.OnHike = ConversationsList.ConvMap[contact.Msisdn].IsOnhike;
+                if (App.ViewModel.ConvMap.ContainsKey(contact.Msisdn))
+                    contact.OnHike = App.ViewModel.ConvMap[contact.Msisdn].IsOnhike;
             }
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
             string uri = "/View/NewChatThread.xaml";

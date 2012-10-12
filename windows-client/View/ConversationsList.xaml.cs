@@ -40,26 +40,12 @@ namespace windows_client.View
         private bool firstLoad = true;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
-        private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
         private PhotoChooserTask photoChooserTask;
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
         private IScheduler scheduler = Scheduler.NewThread;
-
-        public static Dictionary<string, ConversationListObject> ConvMap
-        {
-            get
-            {
-                return convMap;
-            }
-            set
-            {
-                if (value != convMap)
-                    convMap = value;
-            }
-        }
 
         #endregion
 
@@ -115,8 +101,6 @@ namespace windows_client.View
             }
             if (firstLoad)
             {
-                if (convMap == null)
-                    convMap = new Dictionary<string, ConversationListObject>();
                 progressBar.Opacity = 1;
                 progressBar.IsEnabled = true;
                 mPubSub = App.HikePubSubInstance;
@@ -262,30 +246,15 @@ namespace windows_client.View
 
         public static void LoadMessages()
         {
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
-            stopwatch.Stop();
-            long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Debug.WriteLine("Time to get {0} Conversations from DB : {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
-            if (conversationList == null || conversationList.Count == 0)
+            if (App.ViewModel.MessageListPageCollection == null || App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 return;
             }
-            for (int i = 0; i < conversationList.Count; i++)
+            foreach (string key in App.ViewModel.ConvMap.Keys)
             {
-                stopwatch.Reset();
-                stopwatch.Start();
-                string id = conversationList[i].Msisdn.Replace(":", "_");
+                string id = key.Replace(":", "_");
                 byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
-                stopwatch.Stop();
-                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                ConversationListObject conv = conversationList[i];
-                conv.Avatar = _avatar;
-                if (convMap == null)
-                    convMap = new Dictionary<string, ConversationListObject>();
-                convMap.Add(conv.Msisdn, conv);
-                App.ViewModel.MessageListPageCollection.Add(conv);
+                App.ViewModel.ConvMap[key].Avatar = _avatar;
             }
         }
 
@@ -327,7 +296,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 App.ViewModel.MessageListPageCollection.Clear();
-                convMap.Clear();
+                App.ViewModel.ConvMap.Clear();
                 LoadMessages();
             });
 
@@ -562,7 +531,7 @@ namespace windows_client.View
 
         private void deleteConversation(ConversationListObject convObj)
         {
-            convMap.Remove(convObj.Msisdn); // removed entry from map for UI
+            App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -631,7 +600,7 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
-                if (convMap.ContainsKey(mObj.Msisdn))
+                if (App.ViewModel.ConvMap.ContainsKey(mObj.Msisdn))
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -639,7 +608,7 @@ namespace windows_client.View
                             scheduler.Schedule(RefreshNewConversationObject, TimeSpan.FromMilliseconds(5));
                     });
                 }
-                convMap[mObj.Msisdn] = mObj;
+                App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (emptyScreenImage.Visibility == Visibility.Visible)
@@ -668,7 +637,7 @@ namespace windows_client.View
                 string msisdn = (string)obj;
                 try
                 {
-                    ConversationListObject convObj = convMap[msisdn];
+                    ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
                     convObj.IsOnhike = HikePubSub.USER_JOINED == type;
                 }
                 catch (KeyNotFoundException)
@@ -681,10 +650,10 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 string msisdn = (string)vals[0];
-                if (!convMap.ContainsKey(msisdn))
+                if (!App.ViewModel.ConvMap.ContainsKey(msisdn))
                     return;
 
-                ConversationListObject convObj = convMap[msisdn];
+                ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
                 byte[] _avatar = (byte[])vals[1];
                 try
                 {
@@ -711,7 +680,7 @@ namespace windows_client.View
             #region DELETED_ALL_CONVERSATIONS
             else if (HikePubSub.DELETED_ALL_CONVERSATIONS == type)
             {
-                convMap.Clear();
+                App.ViewModel.ConvMap.Clear();
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.ViewModel.MessageListPageCollection.Clear();
@@ -740,7 +709,7 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 string groupId = (string)vals[0];
                 string groupName = (string)vals[1];
-                ConversationListObject cObj = convMap[groupId];
+                ConversationListObject cObj = App.ViewModel.ConvMap[groupId];
                 cObj.ContactName = groupName;
             }
 
