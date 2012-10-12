@@ -529,6 +529,7 @@ namespace windows_client.View
             progressBar.IsEnabled = true;
             NetworkManager.turnOffNetworkManager = true;
             mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
+            Analytics.Instance.addEvent(Analytics.DELETE_ALL_CHATS);
         }
 
         private void createGroup_Click(object sender, EventArgs e)
@@ -542,6 +543,7 @@ namespace windows_client.View
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
             //if (isAppEnabled)
+            Analytics.Instance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
@@ -779,16 +781,19 @@ namespace windows_client.View
 
         private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.Instance.addEvent(Analytics.SETTINGS);
             NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
         }
 
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.Instance.addEvent(Analytics.EDIT_PROFILE);
             NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
 
         private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.Instance.addEvent(Analytics.FREE_SMS);
             NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
 
@@ -799,11 +804,13 @@ namespace windows_client.View
 
         private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.Instance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.Instance.addEvent(Analytics.INVITE);
             Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
             try
             {
@@ -841,9 +848,7 @@ namespace windows_client.View
                     string critical = obj[HikeConstants.CRITICAL].ToString();
                     string latest = obj[HikeConstants.LATEST].ToString();
                     string current = Utils.GetVersion();
-
                     latestVersionString = latest;
-
                     string lastDismissedUpdate = "";
                     App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
                     string appID = obj[HikeConstants.APP_ID].ToString();
