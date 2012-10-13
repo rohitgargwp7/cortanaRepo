@@ -70,11 +70,13 @@ namespace windows_client.Model
 
         public JObject serialize()
         {
+            if (eventMap.Count == 0)
+                return null;
             JObject eventsData = new JObject();
             eventsData["tag"] = "mob";
             foreach (KeyValuePair<string, int> entry in eventMap)
             {
-                if (entry.Value != 0)
+                if (entry.Value > 0)
                 {
                     eventsData[entry.Key] = entry.Value;
                 }
@@ -92,11 +94,8 @@ namespace windows_client.Model
                 writer.Write(eventMap.Count);
                 foreach (KeyValuePair<string, int> entry in eventMap)
                 {
-                    if (entry.Value > 0)
-                    {
-                        writer.WriteString(entry.Key);
-                        writer.Write(entry.Value);
-                    }
+                    writer.WriteString(entry.Key);
+                    writer.Write(entry.Value);
                 }
             }
         }
@@ -140,7 +139,7 @@ namespace windows_client.Model
         }
 
         private void readObject()
-        { 
+        {
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
             {
@@ -155,7 +154,7 @@ namespace windows_client.Model
                         this.Read(reader);
                     }
                 }
-            }        
+            }
         }
     }
 }
