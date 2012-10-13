@@ -87,13 +87,16 @@ namespace windows_client.Model
 
         public void Write(BinaryWriter writer)
         {
-            writer.Write(eventMap.Count);
-            foreach (KeyValuePair<string, int> entry in eventMap)
+            if (eventMap != null && eventMap.Count > 0)
             {
-                if (entry.Value > 0)
+                writer.Write(eventMap.Count);
+                foreach (KeyValuePair<string, int> entry in eventMap)
                 {
-                    writer.WriteString(entry.Key);
-                    writer.Write(entry.Value);
+                    if (entry.Value > 0)
+                    {
+                        writer.WriteString(entry.Key);
+                        writer.Write(entry.Value);
+                    }
                 }
             }
         }
