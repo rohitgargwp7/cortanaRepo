@@ -80,6 +80,7 @@ namespace windows_client.utils
             appSettings[App.IS_PUSH_ENABLED] = (bool)true;
             appSettings[App.VIBRATE_PREF] = (bool)true;
             appSettings[App.LAST_UPDATE_CHECK_TIME] = (long)-1;
+            appSettings[App.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
         }
 
