@@ -830,12 +830,16 @@ namespace windows_client.View
             App.appSettings.TryGetValue<long>(App.LAST_ANALYTICS_POST_TIME, out lastAnalyticsTimeStamp);
             if (lastAnalyticsTimeStamp > 0 && TimeUtils.isAnalyticsTimeElapsed(lastAnalyticsTimeStamp))
             {
-                object[] publishData = new object[2];
-                publishData[0] = App.AnalyticsInstance.serialize();
-                publishData[1] = 1; //qos
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
+                JObject analyticsJson = App.AnalyticsInstance.serialize();
+                if (analyticsJson != null)
+                {
+                    object[] publishData = new object[2];
+                    publishData[0] = analyticsJson;
+                    publishData[1] = 1; //qos
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
+                    App.AnalyticsInstance.clearObject();
+                }
                 App.WriteToIsoStorageSettings(App.LAST_ANALYTICS_POST_TIME, TimeUtils.getCurrentTimeStamp());
-                App.AnalyticsInstance.clearObject();
             }
         }
 
