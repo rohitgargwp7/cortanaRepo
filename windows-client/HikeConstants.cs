@@ -23,7 +23,7 @@ namespace windows_client
         public static readonly string METADATA = "md";
         public static readonly string METADATA_DND = "dnd";
         public static readonly string ANALYTICS_EVENT = "ae";
-        public static readonly string LOG_EVENT = "ae";//for analytics
+        public static readonly string LOG_EVENT = "le";//for analytics
 
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
@@ -66,7 +66,7 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
-        public static readonly int PUSH_ANALYTICS_TIME = 12;//hours on prod and minutes on staging
+        public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
         public static readonly string ANALYTICS_OBJECT_DIRECTORY = "analytics";
 
