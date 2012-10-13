@@ -5,6 +5,7 @@ namespace windows_client.utils
 {
     public class TimeUtils
     {
+        //used on conversation list
         public static string getTimeString(long timestamp)
         {
             long ticks = timestamp * 10000000;
