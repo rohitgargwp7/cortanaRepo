@@ -53,6 +53,7 @@ namespace windows_client
         public static readonly string LAST_DISMISSED_UPDATE_VERSION = "lastDismissedUpdate";
         public static readonly string LAST_CRITICAL_VERSION = "lastCriticalVersion";
         public static readonly string APP_ID_FOR_LAST_UPDATE = "appID";
+        public static readonly string LAST_ANALYTICS_POST_TIME = "analyticsTime";
 
 
         #endregion
@@ -72,6 +73,7 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static Dictionary<string, GroupParticipant> groupsCache = null;
         private static UI_Utils ui_utils;
+        private static Analytics _analytics;
         private static object lockObj = new object();
 
         #endregion
@@ -181,6 +183,20 @@ namespace windows_client
             }
         }
 
+        public static Analytics AnalyticsInstance
+        {
+            get
+            {
+                return _analytics;
+            }
+            set
+            {
+                if (value != _analytics)
+                {
+                    _analytics = value;
+                }
+            }
+        }
 
         #endregion
 
@@ -295,6 +311,7 @@ namespace windows_client
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            App.AnalyticsInstance.saveObject();
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -304,6 +321,7 @@ namespace windows_client
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            App.AnalyticsInstance.saveObject();
         }
 
         // Code to execute if a navigation fails
@@ -460,6 +478,13 @@ namespace windows_client
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
 
+            st.Reset();
+            st.Start();
+            App.AnalyticsInstance = Analytics.Instance;
+            st.Stop();
+            msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
+
             if (_viewModel == null)
                 _viewModel = new HikeViewModel();
         }
@@ -485,6 +510,10 @@ namespace windows_client
                     if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
                     {
                         store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
+                    }
+                    if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
+                    {
+                        store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
                     }
                 }
                 // Create the database if it does not exist.

@@ -256,7 +256,7 @@ namespace windows_client.View
             #region CHECK UPDATES
             checkForUpdates();
             #endregion
-
+            postAnalytics();
 
         }
 
@@ -529,10 +529,12 @@ namespace windows_client.View
             progressBar.IsEnabled = true;
             NetworkManager.turnOffNetworkManager = true;
             mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
+            App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
         }
 
         private void createGroup_Click(object sender, EventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -542,6 +544,7 @@ namespace windows_client.View
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
             //if (isAppEnabled)
+            App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
@@ -779,16 +782,19 @@ namespace windows_client.View
 
         private void Notifications_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.SETTINGS);
             NavigationService.Navigate(new Uri("/View/Settings.xaml", UriKind.Relative));
         }
 
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
             NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
 
         private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.FREE_SMS);
             NavigationService.Navigate(new Uri("/View/FreeSMS.xaml", UriKind.Relative));
         }
 
@@ -799,11 +805,13 @@ namespace windows_client.View
 
         private void Help_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE);
             Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
             try
             {
@@ -814,6 +822,28 @@ namespace windows_client.View
                 Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
             }
         }
+
+        #region ANALYTICS
+        public void postAnalytics()
+        {
+            long lastAnalyticsTimeStamp = -1;
+            App.appSettings.TryGetValue<long>(App.LAST_ANALYTICS_POST_TIME, out lastAnalyticsTimeStamp);
+            if (lastAnalyticsTimeStamp > 0 && TimeUtils.isAnalyticsTimeElapsed(lastAnalyticsTimeStamp))
+            {
+                JObject analyticsJson = App.AnalyticsInstance.serialize();
+                if (analyticsJson != null)
+                {
+                    object[] publishData = new object[2];
+                    publishData[0] = analyticsJson;
+                    publishData[1] = 1; //qos
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
+                    App.AnalyticsInstance.clearObject();
+                }
+                App.WriteToIsoStorageSettings(App.LAST_ANALYTICS_POST_TIME, TimeUtils.getCurrentTimeStamp());
+            }
+        }
+
+        #endregion
 
 
         #region IN APP UPDATE
@@ -841,9 +871,7 @@ namespace windows_client.View
                     string critical = obj[HikeConstants.CRITICAL].ToString();
                     string latest = obj[HikeConstants.LATEST].ToString();
                     string current = Utils.GetVersion();
-
                     latestVersionString = latest;
-
                     string lastDismissedUpdate = "";
                     App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);
                     string appID = obj[HikeConstants.APP_ID].ToString();
