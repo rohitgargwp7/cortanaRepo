@@ -104,6 +104,11 @@ namespace windows_client.Model
             }
         }
 
+        public void clearObject() //call after publish
+        {
+            eventMap.Clear();
+        }
+
         public void saveObject()
         {
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
