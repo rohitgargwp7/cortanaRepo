@@ -12,7 +12,8 @@ namespace windows_client.Controls
 {
     public partial class ConversationBox : UserControl
     {
-        public ConversationBox(BitmapImage profileImage, string userName, string lastMessage, long timeStamp)
+        public ConversationBox(BitmapImage profileImage, string userName, string lastMessage, long timeStamp, 
+            bool isSentMessage) //set it true is we have to show SDR, set false for event notification messages
         {
             this.profileImage.Source = profileImage;
             this.userName.Text = userName;
