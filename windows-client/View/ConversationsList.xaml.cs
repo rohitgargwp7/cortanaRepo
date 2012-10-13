@@ -256,7 +256,7 @@ namespace windows_client.View
             #region CHECK UPDATES
             checkForUpdates();
             #endregion
-
+            postAnalytics();
 
         }
 
@@ -821,6 +821,24 @@ namespace windows_client.View
                 Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
             }
         }
+
+        #region ANALYTICS
+        public void postAnalytics()
+        {
+            long lastAnalyticsTimeStamp = -1;
+            App.appSettings.TryGetValue<long>(App.LAST_ANALYTICS_POST_TIME, out lastAnalyticsTimeStamp);
+            if (lastAnalyticsTimeStamp > 0 && TimeUtils.isAnalyticsTimeElapsed(lastAnalyticsTimeStamp))
+            {
+                object[] publishData = new object[2];
+                publishData[0] = App.AnalyticsInstance.serialize();
+                publishData[1] = 1; //qos
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, publishData);
+                App.WriteToIsoStorageSettings(App.LAST_ANALYTICS_POST_TIME, TimeUtils.getCurrentTimeStamp());
+                App.AnalyticsInstance.clearObject();
+            }
+        }
+
+        #endregion
 
 
         #region IN APP UPDATE
