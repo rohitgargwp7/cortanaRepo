@@ -534,6 +534,7 @@ namespace windows_client.View
 
         private void createGroup_Click(object sender, EventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
             //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
