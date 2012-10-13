@@ -87,6 +87,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ConversationBox.xaml.cs">
+      <DependentUpon>ConversationBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MyChatBubble.cs" />
     <Compile Include="Controls\NotificationChatBubble.xaml.cs">
       <DependentUpon>NotificationChatBubble.xaml</DependentUpon>
@@ -200,6 +203,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\ConversationBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\NotificationChatBubble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
