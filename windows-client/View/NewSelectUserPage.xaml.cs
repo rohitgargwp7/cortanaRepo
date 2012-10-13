@@ -617,6 +617,7 @@ namespace windows_client.View
 
         private void refreshContacts_Click(object sender, EventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);

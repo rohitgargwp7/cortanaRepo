@@ -13,6 +13,7 @@ namespace windows_client.Model
 
         public static readonly string DELETE_ALL_CHATS = "coDelAll";
         public static readonly string COMPOSE = "coCom";
+        public static readonly string GROUP_CHAT = "coGrp";
 
         //pr = profile screen
         public static readonly string FREE_SMS = "prFrS";
@@ -25,6 +26,13 @@ namespace windows_client.Model
         public static readonly string INVITE_SOCIAL = "inSo";
         public static readonly string INVITE_EMAIL = "inEm";
         public static readonly string INVITE_MESSAGE = "inMsg";
+
+        //su = select user
+        public static readonly string REFRESH_CONTACTS = "suRC";
+
+        //ct = chat thread
+        public static readonly string GROUP_INFO = "ctGI";
+
 
         private Dictionary<string, int> eventMap = new Dictionary<string, int>();
 
