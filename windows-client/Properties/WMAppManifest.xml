@@ -20,6 +20,9 @@
     </Capabilities>
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="" />
+      <ExtendedTask Name="BackgroundTask">
+        <BackgroundServiceAgent Specifier="ScheduledTaskAgent" Name="HikeBackgroundAgent" Source="HikeBackgroundAgent" Type="HikeBackgroundAgent.ScheduledAgent" />
+      </ExtendedTask>
     </Tasks>
     <Tokens>
       <PrimaryToken TokenID="windows_clientToken" TaskName="_default">
