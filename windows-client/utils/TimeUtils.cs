@@ -85,6 +85,18 @@ namespace windows_client.utils
                 return span.Minutes > HikeConstants.CHECK_FOR_UPDATE_TIME;
         }
 
+        public static bool isAnalyticsTimeElapsed(long timestamp)
+        {
+            long ticks = timestamp * 10000000;
+            ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
+            DateTime messageTime = new DateTime(ticks);
+            DateTime now = DateTime.UtcNow;
+            TimeSpan span = now.Subtract(messageTime);
+            if (AccountUtils.IsProd)
+                return span.Hours > HikeConstants.ANALYTICS_POST_TIME;
+            else
+                return span.Minutes > HikeConstants.ANALYTICS_POST_TIME;
+        }
 
 
 

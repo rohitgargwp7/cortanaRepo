@@ -1081,6 +1081,7 @@ namespace windows_client.View
 
         private void groupInfo_Click(object sender, EventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
             PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
             Dispatcher.BeginInvoke(() =>

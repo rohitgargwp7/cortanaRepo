@@ -101,7 +101,6 @@ namespace windows_client.Model
                     _fileState = value;
                 }
             }
-
         }
 
         //newly received messages
@@ -124,20 +123,6 @@ namespace windows_client.Model
         public Attachment()
         {
             // TODO: Complete member initialization
-        }
-
-        public static string[] getAttachmentFiles(string msisdn)
-        {
-            string filePath = HikeConstants.FILE_TRANSFER_LOCATION + "/" + "Attachments" + "/" + msisdn + "/*";
-            string[] fileNames = null;
-            using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                if (myIsolatedStorage.FileExists(filePath))
-                {
-                    fileNames = myIsolatedStorage.GetFileNames(filePath);
-                }
-            }
-            return fileNames;
         }
 
         public void Write(BinaryWriter writer)

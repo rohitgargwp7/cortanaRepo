@@ -23,6 +23,7 @@ namespace windows_client
         public static readonly string METADATA = "md";
         public static readonly string METADATA_DND = "dnd";
         public static readonly string ANALYTICS_EVENT = "ae";
+        public static readonly string LOG_EVENT = "le";//for analytics
 
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
@@ -65,11 +66,15 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
+        public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
+        public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
+        public static readonly string ANALYTICS_OBJECT_DIRECTORY = "analytics";
+
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp7";
         private static readonly string FAQS_LINK_WHITE = "http://hike.in/help/wp7/";
         private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
         private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp7/black.html";
-        private static readonly string CONTACT_US_LINK = "http://support.hike.in";
+        //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = "http://get.hike.in/updates/wp7";
 
         public static string FAQS_LINK

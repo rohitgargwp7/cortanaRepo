@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -26,6 +27,7 @@ namespace windows_client.View
 
         private void Social_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE_SOCIAL);
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(external_invite_message, inviteToken);
@@ -43,6 +45,7 @@ namespace windows_client.View
 
         private void Email_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE_EMAIL);
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(email_invite, inviteToken);
@@ -60,6 +63,7 @@ namespace windows_client.View
 
         private void Messaging_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE_MESSAGE);
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(App.sms_invite_message, inviteToken);
