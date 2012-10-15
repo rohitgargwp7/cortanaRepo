@@ -515,6 +515,11 @@ namespace windows_client
                     {
                         store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
                     }
+                    if (!store.DirectoryExists(HikeConstants.BACKGROUND_AGENT_DIRECTORY))
+                    {
+                        store.CreateDirectory(HikeConstants.BACKGROUND_AGENT_DIRECTORY);
+                    }
+
                 }
                 // Create the database if it does not exist.
                 Stopwatch st = Stopwatch.StartNew();
