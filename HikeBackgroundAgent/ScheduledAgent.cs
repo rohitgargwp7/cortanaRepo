@@ -79,7 +79,6 @@ namespace HikeBackgroundAgent
         protected override void OnInvoke(ScheduledTask task)
         {
             //TODO: Add code to perform your task in background
-            readUserToken();
             HttpNotificationChannel pushChannel = HttpNotificationChannel.Find("Whatsapp");
             if (pushChannel == null)
             {
