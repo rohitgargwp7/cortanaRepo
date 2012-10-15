@@ -70,6 +70,10 @@ namespace windows_client
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
         public static readonly string ANALYTICS_OBJECT_DIRECTORY = "analytics";
 
+        //file for sharing info with background agent
+        public static readonly string BACKGROUND_AGENT_FILE = "token";
+        public static readonly string BACKGROUND_AGENT_DIRECTORY = "ba";
+
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp7";
         private static readonly string FAQS_LINK_WHITE = "http://hike.in/help/wp7/";
         private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
