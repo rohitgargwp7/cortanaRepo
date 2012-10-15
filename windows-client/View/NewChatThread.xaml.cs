@@ -1591,6 +1591,7 @@ namespace windows_client.View
         {
             sendMsgTxtbox.Background = textBoxBackground;
             this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
+            ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
         }
