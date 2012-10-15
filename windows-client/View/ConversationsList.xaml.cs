@@ -45,7 +45,6 @@ namespace windows_client.View
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
-        private IScheduler scheduler = Scheduler.NewThread;
 
         #endregion
 
@@ -296,12 +295,7 @@ namespace windows_client.View
         private void registerListeners()
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.addListener(HikePubSub.USER_JOINED, this);
-            mPubSub.addListener(HikePubSub.USER_LEFT, this);
-            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
         }
@@ -309,12 +303,7 @@ namespace windows_client.View
         private void removeListeners()
         {
             mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.removeListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.removeListener(HikePubSub.USER_JOINED, this);
-            mPubSub.removeListener(HikePubSub.USER_LEFT, this);
-            mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
         }
@@ -554,19 +543,6 @@ namespace windows_client.View
 
         #region PUBSUB
 
-        private void RefreshNewConversationObject()
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                if (App.ViewModel.MessageListPageCollection.Count > 0)
-                {
-                    ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
-                    App.ViewModel.MessageListPageCollection.RemoveAt(0);
-                    App.ViewModel.MessageListPageCollection.Insert(0, c);
-                }
-            });
-        }
-
         public void onEventReceived(string type, object obj)
         {
             #region MESSAGE_RECEIVED
@@ -576,15 +552,7 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
-                if (App.ViewModel.ConvMap.ContainsKey(mObj.Msisdn))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (!App.ViewModel.MessageListPageCollection.Remove(mObj))
-                            scheduler.Schedule(RefreshNewConversationObject, TimeSpan.FromMilliseconds(5));
-                    });
-                }
-                App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
+                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (emptyScreenImage.Visibility == Visibility.Visible)
@@ -592,7 +560,6 @@ namespace windows_client.View
                         emptyScreenTip.Opacity = 0;
                         emptyScreenImage.Opacity = 0;
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -603,44 +570,6 @@ namespace windows_client.View
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                     }
-                }
-
-            }
-            #endregion
-            #region USER_LEFT USER_JOINED
-            else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
-            {
-                string msisdn = (string)obj;
-                try
-                {
-                    ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
-                    convObj.IsOnhike = HikePubSub.USER_JOINED == type;
-                }
-                catch (KeyNotFoundException)
-                {
-                }
-            }
-            #endregion
-            #region UPDATE_UI
-            else if (HikePubSub.UPDATE_UI == type)
-            {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
-                if (!App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    return;
-
-                ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
-                byte[] _avatar = (byte[])vals[1];
-                try
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        convObj.Avatar = _avatar;
-                        //convObj.NotifyPropertyChanged("AvatarImage");
-                    });
-                }
-                catch (KeyNotFoundException)
-                {
                 }
             }
             #endregion
@@ -677,18 +606,6 @@ namespace windows_client.View
                     accountName.Text = (string)obj;
                 });
             }
-            #endregion
-            #region GROUP NAME CHANGED
-
-            else if (HikePubSub.GROUP_NAME_CHANGED == type)
-            {
-                object[] vals = (object[])obj;
-                string groupId = (string)vals[0];
-                string groupName = (string)vals[1];
-                ConversationListObject cObj = App.ViewModel.ConvMap[groupId];
-                cObj.ContactName = groupName;
-            }
-
             #endregion
         }
 

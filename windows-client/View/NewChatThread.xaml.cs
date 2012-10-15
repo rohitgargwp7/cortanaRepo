@@ -357,6 +357,7 @@ namespace windows_client.View
                         contact = new ContactInfo();
                         contact.Msisdn = msisdn;
                         contact.Name = null;
+                        contact.OnHike = true; // this is assumed bcoz there is very less chance for an sms user to send push
                     }
                     this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
                 }
@@ -411,6 +412,7 @@ namespace windows_client.View
                 isFirstLaunch = false;
             }
             #endregion
+            #region NORMAL LAUNCH
             else if (App.APP_LAUNCH_STATE == App.LaunchState.NORMAL_LAUNCH) // non tombstone case
             {
                 if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
@@ -428,6 +430,7 @@ namespace windows_client.View
                     processGroupJoin(false);
                 }
             }
+            #endregion
             App.newChatThreadPage = this;
         }
 
@@ -454,6 +457,7 @@ namespace windows_client.View
             {
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 e.Cancel = true;
+                return;
             }
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
@@ -495,6 +499,10 @@ namespace windows_client.View
                 }
 
                 isOnHike = convObj.IsOnhike;
+                if (App.IS_TOMBSTONED) // in this case avatar needs to be re calculated
+                {
+                    convObj.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
+                }
                 userImage.Source = convObj.AvatarImage;
                 isGcFirstMsg = convObj.IsFirstMsg;
             }
