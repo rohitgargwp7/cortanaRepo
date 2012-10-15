@@ -129,6 +129,7 @@
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Test\Test.cs" />
+    <Compile Include="utils\BackgroundAgentHelper.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
@@ -539,6 +540,10 @@
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HikeBackgroundAgent\HikeBackgroundAgent.csproj">
+      <Project>{2144BD9C-1636-48D7-980B-2B1D4341234A}</Project>
+      <Name>HikeBackgroundAgent</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Phone.Controls\Phone.Controls.csproj">
       <Project>{BE66B5CF-E495-4BB9-A261-9123B6974011}</Project>
       <Name>Phone.Controls</Name>
