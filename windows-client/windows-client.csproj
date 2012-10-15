@@ -180,6 +180,9 @@
     <Compile Include="View\Privacy.xaml.cs">
       <DependentUpon>Privacy.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\RecordMedia.xaml.cs">
+      <DependentUpon>RecordMedia.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -269,6 +272,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Privacy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RecordMedia.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
