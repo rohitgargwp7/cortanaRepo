@@ -25,6 +25,7 @@ namespace windows_client
         #region Hike Specific Constants
 
         public static NewChatThread newChatThreadPage = null;
+        public static readonly string LAUNCH_STATE = "app_launch_state";
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
         public static readonly string MSISDN_SETTING = "msisdn";
@@ -37,7 +38,7 @@ namespace windows_client
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
         public static string sms_invite_message = "Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!";
-        
+
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
 
@@ -60,8 +61,9 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        private static bool _isLaunch = false;
-        public static bool isConvCreated = false;
+        private static bool _isTombstoneLaunch = false;
+        private static bool _isAppLaunched = false;
+        //public static bool isConvCreated = false;
         public static string MSISDN;
         public static bool ab_scanned = false;
         public static bool isABScanning = false;
@@ -73,7 +75,7 @@ namespace windows_client
         private static Dictionary<string, GroupParticipant> groupsCache = null;
         private static UI_Utils ui_utils;
         private static object lockObj = new object();
-
+        private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         #endregion
 
         #region PROPERTIES
@@ -82,7 +84,7 @@ namespace windows_client
         {
             get
             {
-                return _isLaunch;
+                return _isAppLaunched;
             }
         }
 
@@ -181,12 +183,26 @@ namespace windows_client
             }
         }
 
+        public static LaunchState APP_LAUNCH_STATE
+        {
+            get { return _appLaunchState; }
+            set
+            {
+                if (value != _appLaunchState)
+                    _appLaunchState = value;
+            }
+        }
+
+        public static bool IS_TOMBSTONED
+        {
+            get { return _isTombstoneLaunch; }
+        }
 
         #endregion
 
         #endregion
 
-        #region Page State
+        #region PAGE STATE
 
         public enum PageState
         {
@@ -196,6 +212,17 @@ namespace windows_client
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
             WALKTHROUGH_SCREEN // Walkthrough Screen
+        }
+
+        #endregion
+
+        #region APP LAUNCH STATE
+
+        public enum LaunchState
+        {
+            NORMAL_LAUNCH, // user clicks the app from menu
+            PUSH_NOTIFICATION_LAUNCH,   // app is alunched after push notification is clicked
+            SHARE_PICKER_LAUNCH  // app is alunched after share is clicked
         }
 
         #endregion
@@ -219,7 +246,7 @@ namespace windows_client
 
             // Phone-specific initialization
             InitializePhoneApplication();
-
+            //CreateURIMapping();
             // Show graphics profiling information while debugging.
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -246,42 +273,37 @@ namespace windows_client
                 App.MSISDN = (string)appSettings[App.MSISDN_SETTING];
                 AccountUtils.UID = (string)appSettings[App.UID_SETTING];
             }
+            RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
         }
 
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            #region SERVER INFO
             string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
             Debug.WriteLine("SERVER SETTING : " + env);
-            Debug.WriteLine("HOST : "+AccountUtils.HOST);
+            Debug.WriteLine("HOST : " + AccountUtils.HOST);
             Debug.WriteLine("PORT : " + AccountUtils.PORT);
             Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
             Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+            #endregion
 
-            _isLaunch = true;
-            Stopwatch st = Stopwatch.StartNew();
+            _isAppLaunched = true;
             instantiateClasses();
-            loadPage();
-            st.Stop();
-            long msec = st.ElapsedMilliseconds;
-            Debug.WriteLine("App : Time to load page : {0}", msec);
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            if (!isConvCreated)
+            _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
+            _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
+            _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
+
+            if (_isTombstoneLaunch)
             {
                 instantiateClasses();
-                PageState ps = PageState.WELCOME_SCREEN;
-                appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
-                if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
-                {
-                    ConversationsList.LoadMessages();
-                    SmileyParser.Instance.initializeSmileyParser();
-                }
             }
         }
 
@@ -304,13 +326,58 @@ namespace windows_client
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
         }
 
+        void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            RootFrame.Navigating -= RootFrame_Navigating;
+            string targetPage = e.Uri.ToString();
+            //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
+            if (targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            {
+                _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
+                string param = GetParamFromUri(targetPage);
+                e.Cancel = true;
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    RootFrame.Navigate(new Uri("/View/NewChatThread.xaml?" + param, UriKind.Relative));
+                });
+            }
+
+            else if (targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            {
+                _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
+                e.Cancel = true;
+                int idx = targetPage.IndexOf("?") + 1;
+                string param = targetPage.Substring(idx);
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    RootFrame.Navigate(new Uri("/View/NewSelectUserPage.xaml?" + param, UriKind.Relative));
+                });
+            }
+            else
+            {
+                _appLaunchState = LaunchState.NORMAL_LAUNCH;
+                e.Cancel = true;
+                RootFrame.Dispatcher.BeginInvoke(delegate
+                {
+                    loadPage();
+                });
+            }
+            PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
+        }
+
+        private string GetParamFromUri(string targetPage)
+        {
+            int idx = targetPage.IndexOf("msisdn");
+            return targetPage.Substring(idx);
+        }
+
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
-            //    return;
+            return;
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // A navigation has failed; break into the debugger
@@ -327,14 +394,14 @@ namespace windows_client
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
-            // Running on a device / emulator without debugging
-            //e.Handled = true;
-            //Error.Exception = e.ExceptionObject;
-            //Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
-            //Deployment.Current.Dispatcher.BeginInvoke(() =>
-            //{
-            //    (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
-            //});
+            //Running on a device / emulator without debugging
+            e.Handled = true;
+            Error.Exception = e.ExceptionObject;
+            Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+            });
 
         }
 
@@ -412,22 +479,24 @@ namespace windows_client
 
         private static void instantiateClasses()
         {
+            #region GROUP CACHE
             if (!App.appSettings.Contains(App.GROUPS_CACHE))
             {
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-                WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             }
 
-            else
+            else if (Utils.GroupCache == null)
                 Utils.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
-
+            #endregion
+            #region PUBSUB
             Stopwatch st = Stopwatch.StartNew();
             if (App.HikePubSubInstance == null)
                 App.HikePubSubInstance = new HikePubSub(); // instantiate pubsub
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Pubsub : {0}", msec);
-
+            #endregion
+            #region DBCONVERSATION LISTENER
             st.Reset();
             st.Start();
             if (App.DbListener == null)
@@ -435,14 +504,16 @@ namespace windows_client
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate DbListeners : {0}", msec);
-
+            #endregion
+            #region NETWORK MANAGER
             st.Reset();
             st.Start();
             App.NetworkManagerInstance = NetworkManager.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Network Manager : {0}", msec);
-
+            #endregion
+            #region MQTT MANAGER
             st.Reset();
             st.Start();
             if (App.MqttManagerInstance == null)
@@ -450,15 +521,16 @@ namespace windows_client
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
-
+            #endregion
+            #region UI UTILS
             st.Reset();
             st.Start();
             App.UI_UtilsInstance = UI_Utils.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate UI_Utils : {0}", msec);
-
-            #region INSTANTIATE VIEW MODEL
+            #endregion
+            #region VIEW MODEL
 
             st.Reset();
             st.Start();
@@ -474,6 +546,14 @@ namespace windows_client
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
 
+            #endregion
+            #region SMILEY
+            PageState ps = PageState.WELCOME_SCREEN;
+            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
+            if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
+            {
+                SmileyParser.Instance.initializeSmileyParser();
+            }
             #endregion
         }
 

@@ -53,14 +53,53 @@ namespace windows_client.View
 
         public ConversationsList()
         {
-            Stopwatch stPage = Stopwatch.StartNew();
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            stPage.Stop();
-            long tinmsec = stPage.ElapsedMilliseconds;
-            Debug.WriteLine("Conversations List Page : Total Loading time : {0}", tinmsec);
-            App.isConvCreated = true;
+            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            this.myListBox.SelectedIndex = -1;
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
+            if (Utils.isCriticalUpdatePending())
+            {
+                showCriticalUpdateMessage();
+            }
+            if (firstLoad)
+            {
+                progressBar.Opacity = 1;
+                progressBar.IsEnabled = true;
+                mPubSub = App.HikePubSubInstance;
+                registerListeners();
+
+                #region LOAD MESSAGES
+
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (ss, ee) =>
+                {
+                    LoadMessages();
+                };
+                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
+                bw.RunWorkerAsync();
+
+                #endregion
+
+                firstLoad = false;
+            }
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                emptyScreenImage.Opacity = 1;
+                emptyScreenTip.Opacity = 1;
+            }
+            else
+            {
+                emptyScreenImage.Opacity = 0;
+                emptyScreenTip.Opacity = 0;
+            }
         }
 
         //Push notifications
@@ -88,75 +127,28 @@ namespace windows_client.View
         //}
         #endregion
 
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            this.myListBox.SelectedIndex = -1;
-            while (NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
-            if (Utils.isCriticalUpdatePending())
-            {
-                showCriticalUpdateMessage();
-            }
-            if (firstLoad)
-            {
-                progressBar.Opacity = 1;
-                progressBar.IsEnabled = true;
-                mPubSub = App.HikePubSubInstance;
-                registerListeners();
-                #region LOAD MESSAGES
-
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += (ss, ee) =>
-                {
-                    if (App.IsAppLaunched)  // represents normal launch
-                        LoadMessages();
-                    else // tombstone launch
-                    {
-                        Debug.WriteLine("CONVERSATIONS LIST :: Recovered from tombstone.");
-                    }
-
-                };
-                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
-                bw.RunWorkerAsync();
-
-                #endregion
-
-                if (App.IsAppLaunched)
-                {
-                    #region InitializeEmoticons
-
-                    Stopwatch st = Stopwatch.StartNew();
-                    SmileyParser.Instance.initializeSmileyParser();
-                    st.Stop();
-                    long msec = st.ElapsedMilliseconds;
-                    Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
-
-                    #endregion
-                }
-                firstLoad = false;
-            }
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
-                emptyScreenImage.Opacity = 1;
-                emptyScreenTip.Opacity = 1;
-            }
-            else
-            {
-                emptyScreenImage.Opacity = 0;
-                emptyScreenTip.Opacity = 0;
-            }
-        }
-
         #endregion
 
         #region ConvList Page
 
+        public static void LoadMessages()
+        {
+            if (App.ViewModel.MessageListPageCollection == null || App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                MessageBox.Show("Messagelist Empty"); // todo : comment later
+                return;
+            }
+            foreach (string key in App.ViewModel.ConvMap.Keys)
+            {
+                string id = key.Replace(":", "_");
+                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
+                App.ViewModel.ConvMap[key].Avatar = _avatar;
+            }
+        }
+
         /* This function will run on UI Thread */
         private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
             progressBar.Opacity = 0;
             progressBar.IsEnabled = false;
 
@@ -240,24 +232,8 @@ namespace windows_client.View
             #region CHECK UPDATES
             checkForUpdates();
             #endregion
-
-
         }
-
-        public static void LoadMessages()
-        {
-            if (App.ViewModel.MessageListPageCollection == null || App.ViewModel.MessageListPageCollection.Count == 0)
-            {
-                return;
-            }
-            foreach (string key in App.ViewModel.ConvMap.Keys)
-            {
-                string id = key.Replace(":", "_");
-                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
-                App.ViewModel.ConvMap[key].Avatar = _avatar;
-            }
-        }
-
+      
         private void initAppBar()
         {
             appBar = new ApplicationBar();

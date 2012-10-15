@@ -155,7 +155,7 @@ namespace windows_client
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-
+            
             if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
                 this.State["txtEnterPhone"] = txtEnterPhone.Text;
             else

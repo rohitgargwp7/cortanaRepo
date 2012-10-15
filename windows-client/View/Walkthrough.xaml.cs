@@ -44,11 +44,19 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (NavigationService.CanGoBack && !PhoneApplicationService.Current.State.ContainsKey("FromHelpPage"))
-                NavigationService.RemoveBackEntry();
-            else
-                PhoneApplicationService.Current.State.Remove("FromHelpPage");
+            if (PhoneApplicationService.Current.State.ContainsKey("FromNameScreen")) // represents page is launched from entername screen
+            {
+                SmileyParser.Instance.initializeSmileyParser();
+                if(NavigationService.CanGoBack)
+                    NavigationService.RemoveBackEntry();
+            }
         }
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove("FromNameScreen");
+        }
+
         private void doneBtn_Click(object sender, EventArgs e)
         {
             // this is done to avoid navigation exception
