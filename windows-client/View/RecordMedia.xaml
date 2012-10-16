@@ -17,25 +17,25 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="300"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="MainPanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="ApplicationTitle" Text="WINDOWS PHONE MICROPHONE SAMPLE" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="UserHelp" Text="press record" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Height="200" />
+            <TextBlock x:Name="UserHelp" Text="record audio" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Height="200" />
         </StackPanel>
-        <Image x:Name="StatusImage" Grid.Row="1" Height="334" Width="366" 
+        <Image Grid.Row="1" Height="161"  
                HorizontalAlignment="Center" VerticalAlignment="Center"
-               Source="Images/blank.png" Margin="61,0,53,97" />
-        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
-            <TextBlock x:Name="runningTime" Text="0:0" ></TextBlock>
-            <TextBlock Text="/ 2:00"/>
+               Source="images\mic_icon.png" />
+        <StackPanel x:Name="timeBar" Orientation="Horizontal" Opacity="0" Grid.Row="2" HorizontalAlignment="Center">
+            <TextBlock x:Name="runningTime"  FontFamily="Segoe WP SemiLight" FontSize="50" Text="0:0" ></TextBlock>
+            <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" FontSize="50"/>
         </StackPanel>
-        <StackPanel Grid.Row="3" HorizontalAlignment="Center">
-            <TextBlock x:Name="message" Text="TAP ICON TO RECORD"/>
+        <StackPanel Grid.Row="3" HorizontalAlignment="Center" Margin="0,20,0,0">
+            <Image x:Name="statusImage" Source="images\icon_record.png" Tap="Record_Tap"  Height="56"></Image>
+            <TextBlock x:Name="message" Text="TAP ICON TO RECORD" Margin="0,10,0,0"/>
         </StackPanel>
         <!--ContentPanel - place additional content here-->
     </Grid>
@@ -43,12 +43,10 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
             <shell:ApplicationBar.Buttons>
-                <shell:ApplicationBarIconButton x:Name="recordButton" Text="record" IconUri="/Images/record.png" Click="recordButton_Click" IsEnabled="True"/>
-                <shell:ApplicationBarIconButton x:Name="playButton" Text="play" IconUri="/Images/play.png" Click="playButton_Click" IsEnabled="False"/>
-                <shell:ApplicationBarIconButton x:Name="stopButton" Text="stop" IconUri="/Images/stop.png" Click="stopButton_Click" IsEnabled="False"/>
+                <shell:ApplicationBarIconButton x:Name="cancel" Text="cancel" IconUri="/images/icon_cross.png" Click="cancel_Click" IsEnabled="True"/>
+                <shell:ApplicationBarIconButton x:Name="send" Text="play" IconUri="/images/icon_tick.png" Click="send_Click" IsEnabled="False"/>
             </shell:ApplicationBar.Buttons>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
-
 
 </phone:PhoneApplicationPage>
