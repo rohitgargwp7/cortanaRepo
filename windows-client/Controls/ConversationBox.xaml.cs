@@ -15,13 +15,15 @@ namespace windows_client.Controls
     {
         private ConvMessage.State _messageStatus;
         private byte[] _avatar;
+        private long _lastMsgId;
 
         //GK add message id as private member if required
 
-        public ConversationBox(byte[] avatar, string userName, string lastMessage, long timeStamp,
+        public ConversationBox(long msgId, byte[] avatar, string userName, string lastMessage, long timeStamp,
             bool isNotification,  //set it true for event notification messages
             ConvMessage.State messageState)
         {
+            this._lastMsgId = msgId;
             this._avatar = avatar;
             this.userName.Text = userName;
             this.lastMessage.Text = lastMessage;
@@ -29,18 +31,33 @@ namespace windows_client.Controls
             this._messageStatus = messageState;
         }
 
-        public ConversationBox(string userName, string lastMessage, long timeStamp,
+        public ConversationBox(long msgId, string userName, string lastMessage, long timeStamp,
             ConvMessage.State messageState)
-            :this(null, userName, lastMessage, timeStamp, false, messageState)
+            :this(msgId, null, userName, lastMessage, timeStamp, false, messageState)
         { 
         
         }
 
-        public ConversationBox(byte[] avatar, string userName, string lastMessage, long timeStamp,
+        public ConversationBox(long msgId, byte[] avatar, string userName, string lastMessage, long timeStamp,
             ConvMessage.State messageState)
-            : this(avatar, userName, lastMessage, timeStamp, false, messageState)
+            : this(msgId, avatar, userName, lastMessage, timeStamp, false, messageState)
         {
 
+        }
+
+        public long LastMsgId
+        {
+            get
+            {
+                return _lastMsgId;
+            }
+            set
+            {
+                if (_lastMsgId != value)
+                {
+                    _lastMsgId = value;
+                }
+            }
         }
 
 
