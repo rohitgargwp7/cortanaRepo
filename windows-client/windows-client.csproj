@@ -314,9 +314,15 @@
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
+    <Content Include="View\images\icon_cross.png" />
+    <Content Include="View\images\icon_play.png" />
+    <Content Include="View\images\icon_record.png" />
+    <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Resource Include="View\images\logo_main_white.png" />
     <Content Include="View\images\made_with_love_dark.png" />
+    <Content Include="View\images\mic_icon.png" />
     <Content Include="View\images\new_message.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
