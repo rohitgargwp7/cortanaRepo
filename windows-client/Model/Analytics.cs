@@ -131,10 +131,6 @@ namespace windows_client.Model
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
             {
-                if (store.FileExists(filePath))
-                {
-                    store.DeleteFile(filePath);
-                }
                 using (var file = store.OpenFile(filePath, FileMode.Create, FileAccess.Write))
                 {
                     using (var writer = new BinaryWriter(file))
