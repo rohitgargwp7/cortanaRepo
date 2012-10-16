@@ -24,7 +24,6 @@ namespace windows_client
 
         #region Hike Specific Constants
 
-        public static NewChatThread newChatThreadPage = null;
         public static readonly string LAUNCH_STATE = "app_launch_state";
         public static readonly string PAGE_STATE = "page_State";
         public static readonly string ACCOUNT_NAME = "accountName";
@@ -62,6 +61,7 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
+        public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
         //public static bool isConvCreated = false;
