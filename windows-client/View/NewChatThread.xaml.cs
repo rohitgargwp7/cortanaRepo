@@ -1100,6 +1100,7 @@ namespace windows_client.View
                     vals[0] = mContactNumber;
                     vals[1] = groupOwner;
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, vals);
+                    menuItem1.Text = BLOCK_USER + "group owner";
                 }
                 else
                 {
@@ -1107,12 +1108,11 @@ namespace windows_client.View
 
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
-
                     isTypingNotificationEnabled = true;
+                    menuItem1.Text = BLOCK_USER;
                 }
                 fileTransferIconButton.IsEnabled = true;
                 mUserIsBlocked = false;
-                menuItem1.Text = BLOCK_USER;
                 showOverlay(false);
             }
             else     // BLOCK REQUEST
@@ -1124,20 +1124,19 @@ namespace windows_client.View
                     vals[0] = mContactNumber;
                     vals[1] = groupOwner;
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, vals);
+                    menuItem1.Text = UNBLOCK_USER + "group owner";
                 }
                 else
                 {
                     mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
-
                     emoticonsIconButton.IsEnabled = false;
                     sendIconButton.IsEnabled = false;
-
                     isTypingNotificationEnabled = false;
-                    emoticonPanel.Visibility = Visibility.Collapsed;
+                    menuItem1.Text = UNBLOCK_USER;
                 }
+                emoticonPanel.Visibility = Visibility.Collapsed;
                 fileTransferIconButton.IsEnabled = false;
-                mUserIsBlocked = true;
-                menuItem1.Text = UNBLOCK_USER;
+                mUserIsBlocked = true;                
                 showOverlay(true); //true means show block animation
             }
         }
