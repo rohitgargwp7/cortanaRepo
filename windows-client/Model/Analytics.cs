@@ -114,10 +114,16 @@ namespace windows_client.Model
             int value = -1;
             for (int i = 0; i < count; i++)
             {
-                key = reader.ReadString();
-                value = reader.ReadInt32();
-                if (!String.IsNullOrEmpty(key) && value > 0)
-                    eventMap[key] = value;
+                try
+                {
+                    key = reader.ReadString();
+                    value = reader.ReadInt32();
+                    if (!String.IsNullOrEmpty(key) && value > 0)
+                        eventMap[key] = value;
+                }
+                catch
+                {
+                }
             }
         }
 
