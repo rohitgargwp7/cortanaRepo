@@ -102,16 +102,21 @@ namespace windows_client.Model
 
         public void Read(BinaryReader reader)
         {
-            int count = reader.ReadInt32();
-            string key;
-            int value = -1;
-            for (int i = 0; i < count; i++)
+            try
             {
-                key = reader.ReadString();
-                value = reader.ReadInt32();
-                if (!String.IsNullOrEmpty(key) && value > 0)
-                    eventMap[key] = value;
+                int count = reader.ReadInt32();
+                string key;
+                int value = -1;
+                for (int i = 0; i < count; i++)
+                {
+                    key = reader.ReadString();
+                    value = reader.ReadInt32();
+                    if (!String.IsNullOrEmpty(key) && value > 0)
+                        eventMap[key] = value;
+                }
             }
+            catch (IOException)
+            { }
         }
 
         public void clearObject() //call after publish
