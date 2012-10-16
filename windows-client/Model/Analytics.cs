@@ -112,6 +112,11 @@ namespace windows_client.Model
             }
             string key;
             int value = -1;
+            /*
+             * exception shud be handled for each element rather than complete set.
+             * reason : there could be problem in 1 or 2 entries and hence all other entries should be recoreded
+             * in the map.
+             */
             for (int i = 0; i < count; i++)
             {
                 try

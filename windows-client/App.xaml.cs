@@ -397,9 +397,8 @@ namespace windows_client
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
+            //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
-            return;
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // A navigation has failed; break into the debugger
@@ -637,11 +636,6 @@ namespace windows_client
                 Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
             };
             bw.RunWorkerAsync();
-        }
-
-        private void updateConversations()
-        {
-
         }
 
         /* This function should always be used to store values to isolated storage
