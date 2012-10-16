@@ -20,7 +20,6 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Phone.Scheduler;
 
 namespace windows_client.View
 {
@@ -208,7 +207,6 @@ namespace windows_client.View
             appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             if (isPushEnabled)
             {
-                BackgroundAgentHelper.StartPeriodicAgent();
                 HttpNotificationChannel pushChannel;
                 // Try to find the push channel.
                 pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
@@ -261,9 +259,6 @@ namespace windows_client.View
             postAnalytics();
 
         }
-
-
-
 
         public static void LoadMessages()
         {
@@ -987,6 +982,7 @@ namespace windows_client.View
                 //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
                 marketplaceDetailTask.ContentIdentifier = appID;
                 marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+              
                 marketplaceDetailTask.Show();
             }
         }
