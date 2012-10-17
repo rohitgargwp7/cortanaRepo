@@ -29,10 +29,6 @@ namespace windows_client.View
         private byte[] _buffer;
         private TimeSpan _duration;
 
-        private int maxPlayDuration = HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED;
-        private int state = 0;
-
-
         private BitmapImage recordIcon = new BitmapImage(new Uri("/View/images/icon_record.png", UriKind.Relative));
         private BitmapImage playIcon = new BitmapImage(new Uri("/View/images/icon_play.png", UriKind.Relative));
         private BitmapImage stopIcon = new BitmapImage(new Uri("/View/images/icon_play.png", UriKind.Relative));
@@ -41,7 +37,18 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarIconButton cancelIconButton = null;
         ApplicationBarIconButton sendIconButton = null;
+        private int recordedDuration = -1;
 
+
+        private enum RecorderState
+        { 
+            NOTHING_RECORDED = 0,
+            RECORDED,
+            RECORDING,
+            PLAYING,
+        }
+
+        private RecorderState myState = RecorderState.NOTHING_RECORDED;
 
         public RecordMedia()
         {
@@ -77,10 +84,10 @@ namespace windows_client.View
 
             //add icon for cancel
             cancelIconButton = new ApplicationBarIconButton();
-            cancelIconButton.IconUri = new Uri("/View/images/icon_cross.png", UriKind.Relative);
-            cancelIconButton.Text = "refresh";
+            cancelIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
+            cancelIconButton.Text = "re-record";
             cancelIconButton.Click += new EventHandler(refresh_Click);
-            cancelIconButton.IsEnabled = true;
+            cancelIconButton.IsEnabled = false;
             appBar.Buttons.Add(cancelIconButton);
 
             //add icon for send
@@ -120,7 +127,7 @@ namespace windows_client.View
         private void record()
         {
             // Get audio data in 1/2 second chunks
-            microphone.BufferDuration = TimeSpan.FromMilliseconds(500);
+            microphone.BufferDuration = TimeSpan.FromMilliseconds(300);
             // Allocate memory to hold the audio data
             buffer = new byte[microphone.GetSampleSizeInBytes(microphone.BufferDuration)];
             // Set the stream back to zero in case there is already something in it
@@ -134,17 +141,18 @@ namespace windows_client.View
             progressTimer.Start();
             statusImage.Source = recordIcon;
             message.Text = "RECORDING";
-            maxPlayingTime.Text = " / " + formatTime(maxPlayDuration);
-
+            maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
+            cancelIconButton.IsEnabled = true;
             sendIconButton.IsEnabled = false;
+            myState = RecorderState.RECORDING;
         }
 
         void showProgress(object sender, EventArgs e)
         {
-            runningSeconds++;
             runningTime.Text = formatTime(runningSeconds);
             if (runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
                 stop();
+            runningSeconds++;
         }
 
         private void stop()
@@ -156,17 +164,22 @@ namespace windows_client.View
                 microphone.Stop();
                 UpdateWavHeader(stream);
             }
-            else if (soundInstance.State == SoundState.Playing)
+            else if (soundInstance!=null && soundInstance.State == SoundState.Playing)
             {
                 soundInstance.Stop();
             }
             timeBar.Opacity = 0;
-            maxPlayDuration = runningSeconds;
+            if (myState == RecorderState.RECORDING)
+            {
+                recordedDuration = runningSeconds;
+                runningTime.Text = formatTime(0);
+            }
             runningSeconds = 0;
             message.Text = "TAP TO PLAY";
             statusImage.Source = playIcon;
             progressTimer.Stop();
             sendIconButton.IsEnabled = true;
+            myState = RecorderState.RECORDED;
         }
 
         private void play()
@@ -182,7 +195,8 @@ namespace windows_client.View
             progressTimer.Start();
             message.Text = "PLAYING";
             statusImage.Source = playStopIcon;
-            maxPlayingTime.Text = " / " + formatTime(maxPlayDuration);
+            maxPlayingTime.Text = " / " + formatTime(recordedDuration);
+            myState = RecorderState.PLAYING;
         }
 
         private void playSound()
@@ -204,31 +218,28 @@ namespace windows_client.View
 
         private void Record_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            switch (state)
+            MicrophoneState m = microphone.State;
+            switch (myState)
             {
-                case 0:
-                    state = 1;
+                case RecorderState.NOTHING_RECORDED:
                     record();
                     break;
-                case 1:
-                    state = 2;
-                    stop();
-                    break;
-                case 2:
-                    state = 1;
+                case RecorderState.RECORDED:
                     play();
+                    break;
+                default:
+                    stop();
                     break;
             }
         }
 
         private void refresh_Click(object sender, EventArgs e)
         {
-            if (state > 0)
+            if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
                 stop();
-            maxPlayDuration = HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED;
             message.Text = "TAP ICON TO RECORD";
             statusImage.Source = recordIcon;
-            state = 0;
+            myState = RecorderState.NOTHING_RECORDED;
         }
 
         private void send_Click(object sender, EventArgs e)
