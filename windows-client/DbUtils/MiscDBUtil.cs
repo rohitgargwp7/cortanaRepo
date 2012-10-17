@@ -119,6 +119,7 @@ namespace windows_client.DbUtils
 
         public static byte[] getThumbNailForMsisdn(string msisdn)
         {
+            msisdn = msisdn.Replace(":","_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {

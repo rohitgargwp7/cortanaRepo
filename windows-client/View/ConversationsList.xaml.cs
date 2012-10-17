@@ -40,26 +40,11 @@ namespace windows_client.View
         private bool firstLoad = true;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
-        private static Dictionary<string, ConversationListObject> convMap = null; // this holds msisdn -> conversation mapping
         private PhotoChooserTask photoChooserTask;
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
-        private IScheduler scheduler = Scheduler.NewThread;
-
-        public static Dictionary<string, ConversationListObject> ConvMap
-        {
-            get
-            {
-                return convMap;
-            }
-            set
-            {
-                if (value != convMap)
-                    convMap = value;
-            }
-        }
 
         #endregion
 
@@ -67,14 +52,53 @@ namespace windows_client.View
 
         public ConversationsList()
         {
-            Stopwatch stPage = Stopwatch.StartNew();
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            stPage.Stop();
-            long tinmsec = stPage.ElapsedMilliseconds;
-            Debug.WriteLine("Conversations List Page : Total Loading time : {0}", tinmsec);
-            App.isConvCreated = true;
+            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+        }
+
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            this.myListBox.SelectedIndex = -1;
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
+            if (Utils.isCriticalUpdatePending())
+            {
+                showCriticalUpdateMessage();
+            }
+            if (firstLoad)
+            {
+                progressBar.Opacity = 1;
+                progressBar.IsEnabled = true;
+                mPubSub = App.HikePubSubInstance;
+                registerListeners();
+
+                #region LOAD MESSAGES
+
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (ss, ee) =>
+                {
+                    LoadMessages();
+                };
+                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
+                bw.RunWorkerAsync();
+
+                #endregion
+
+                firstLoad = false;
+            }
+            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                emptyScreenImage.Opacity = 1;
+                emptyScreenTip.Opacity = 1;
+            }
+            else
+            {
+                emptyScreenImage.Opacity = 0;
+                emptyScreenTip.Opacity = 0;
+            }
         }
 
         //Push notifications
@@ -102,77 +126,27 @@ namespace windows_client.View
         //}
         #endregion
 
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            this.myListBox.SelectedIndex = -1;
-            while (NavigationService.CanGoBack)
-                NavigationService.RemoveBackEntry();
-            if (Utils.isCriticalUpdatePending())
-            {
-                showCriticalUpdateMessage();
-            }
-            if (firstLoad)
-            {
-                if (convMap == null)
-                    convMap = new Dictionary<string, ConversationListObject>();
-                progressBar.Opacity = 1;
-                progressBar.IsEnabled = true;
-                mPubSub = App.HikePubSubInstance;
-                registerListeners();
-                #region LOAD MESSAGES
-
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.DoWork += (ss, ee) =>
-                {
-                    if (App.IsAppLaunched)  // represents normal launch
-                        LoadMessages();
-                    else // tombstone launch
-                    {
-                        Debug.WriteLine("CONVERSATIONS LIST :: Recovered from tombstone.");
-                    }
-
-                };
-                bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(loadingCompleted);
-                bw.RunWorkerAsync();
-
-                #endregion
-
-                if (App.IsAppLaunched)
-                {
-                    #region InitializeEmoticons
-
-                    Stopwatch st = Stopwatch.StartNew();
-                    SmileyParser.Instance.initializeSmileyParser();
-                    st.Stop();
-                    long msec = st.ElapsedMilliseconds;
-                    Debug.WriteLine("APP: Time to Instantiate emoticons : {0}", msec);
-
-                    #endregion
-                }
-                firstLoad = false;
-            }
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
-            {
-                emptyScreenImage.Opacity = 1;
-                emptyScreenTip.Opacity = 1;
-            }
-            else
-            {
-                emptyScreenImage.Opacity = 0;
-                emptyScreenTip.Opacity = 0;
-            }
-        }
-
         #endregion
 
         #region ConvList Page
 
+        public static void LoadMessages()
+        {
+            if (App.ViewModel.MessageListPageCollection == null || App.ViewModel.MessageListPageCollection.Count == 0)
+            {
+                return;
+            }
+            foreach (string key in App.ViewModel.ConvMap.Keys)
+            {
+                string id = key.Replace(":", "_");
+                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
+                App.ViewModel.ConvMap[key].Avatar = _avatar;
+            }
+        }
+
         /* This function will run on UI Thread */
         private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
             progressBar.Opacity = 0;
             progressBar.IsEnabled = false;
 
@@ -257,38 +231,8 @@ namespace windows_client.View
             checkForUpdates();
             #endregion
             postAnalytics();
-
         }
-
-        public static void LoadMessages()
-        {
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            List<ConversationListObject> conversationList = ConversationTableUtils.getAllConversations();
-            stopwatch.Stop();
-            long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Debug.WriteLine("Time to get {0} Conversations from DB : {1} ms", conversationList == null ? 0 : conversationList.Count, elapsedMilliseconds);
-            if (conversationList == null || conversationList.Count == 0)
-            {
-                return;
-            }
-            for (int i = 0; i < conversationList.Count; i++)
-            {
-                stopwatch.Reset();
-                stopwatch.Start();
-                string id = conversationList[i].Msisdn.Replace(":", "_");
-                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(id);
-                stopwatch.Stop();
-                elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                ConversationListObject conv = conversationList[i];
-                conv.Avatar = _avatar;
-                if (convMap == null)
-                    convMap = new Dictionary<string, ConversationListObject>();
-                convMap.Add(conv.Msisdn, conv);
-                App.ViewModel.MessageListPageCollection.Add(conv);
-            }
-        }
-
+      
         private void initAppBar()
         {
             appBar = new ApplicationBar();
@@ -327,7 +271,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 App.ViewModel.MessageListPageCollection.Clear();
-                convMap.Clear();
+                App.ViewModel.ConvMap.Clear();
                 LoadMessages();
             });
 
@@ -351,12 +295,7 @@ namespace windows_client.View
         private void registerListeners()
         {
             mPubSub.addListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.addListener(HikePubSub.USER_JOINED, this);
-            mPubSub.addListener(HikePubSub.USER_LEFT, this);
-            mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
         }
@@ -364,12 +303,7 @@ namespace windows_client.View
         private void removeListeners()
         {
             mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.removeListener(HikePubSub.SEND_NEW_MSG, this);
-            mPubSub.removeListener(HikePubSub.USER_JOINED, this);
-            mPubSub.removeListener(HikePubSub.USER_LEFT, this);
-            mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
             mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
         }
@@ -565,7 +499,7 @@ namespace windows_client.View
 
         private void deleteConversation(ConversationListObject convObj)
         {
-            convMap.Remove(convObj.Msisdn); // removed entry from map for UI
+            App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -612,19 +546,6 @@ namespace windows_client.View
 
         #region PUBSUB
 
-        private void RefreshNewConversationObject()
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                if (App.ViewModel.MessageListPageCollection.Count > 0)
-                {
-                    ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
-                    App.ViewModel.MessageListPageCollection.RemoveAt(0);
-                    App.ViewModel.MessageListPageCollection.Insert(0, c);
-                }
-            });
-        }
-
         public void onEventReceived(string type, object obj)
         {
             #region MESSAGE_RECEIVED
@@ -634,15 +555,7 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
-                if (convMap.ContainsKey(mObj.Msisdn))
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (!App.ViewModel.MessageListPageCollection.Remove(mObj))
-                            scheduler.Schedule(RefreshNewConversationObject, TimeSpan.FromMilliseconds(5));
-                    });
-                }
-                convMap[mObj.Msisdn] = mObj;
+                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (emptyScreenImage.Visibility == Visibility.Visible)
@@ -650,7 +563,6 @@ namespace windows_client.View
                         emptyScreenTip.Opacity = 0;
                         emptyScreenImage.Opacity = 0;
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, mObj);
                 });
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -661,44 +573,6 @@ namespace windows_client.View
                         VibrateController vibrate = VibrateController.Default;
                         vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
                     }
-                }
-
-            }
-            #endregion
-            #region USER_LEFT USER_JOINED
-            else if ((HikePubSub.USER_LEFT == type) || (HikePubSub.USER_JOINED == type))
-            {
-                string msisdn = (string)obj;
-                try
-                {
-                    ConversationListObject convObj = convMap[msisdn];
-                    convObj.IsOnhike = HikePubSub.USER_JOINED == type;
-                }
-                catch (KeyNotFoundException)
-                {
-                }
-            }
-            #endregion
-            #region UPDATE_UI
-            else if (HikePubSub.UPDATE_UI == type)
-            {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
-                if (!convMap.ContainsKey(msisdn))
-                    return;
-
-                ConversationListObject convObj = convMap[msisdn];
-                byte[] _avatar = (byte[])vals[1];
-                try
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        convObj.Avatar = _avatar;
-                        //convObj.NotifyPropertyChanged("AvatarImage");
-                    });
-                }
-                catch (KeyNotFoundException)
-                {
                 }
             }
             #endregion
@@ -714,7 +588,7 @@ namespace windows_client.View
             #region DELETED_ALL_CONVERSATIONS
             else if (HikePubSub.DELETED_ALL_CONVERSATIONS == type)
             {
-                convMap.Clear();
+                App.ViewModel.ConvMap.Clear();
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.ViewModel.MessageListPageCollection.Clear();
@@ -735,18 +609,6 @@ namespace windows_client.View
                     accountName.Text = (string)obj;
                 });
             }
-            #endregion
-            #region GROUP NAME CHANGED
-
-            else if (HikePubSub.GROUP_NAME_CHANGED == type)
-            {
-                object[] vals = (object[])obj;
-                string groupId = (string)vals[0];
-                string groupName = (string)vals[1];
-                ConversationListObject cObj = convMap[groupId];
-                cObj.ContactName = groupName;
-            }
-
             #endregion
         }
 
@@ -969,9 +831,6 @@ namespace windows_client.View
 
         private void openMarketPlace()
         {
-            //MarketplaceSearchTask marketplaceSearchTask = new MarketplaceSearchTask();
-            //marketplaceSearchTask.SearchTerms = "whatsapp";
-            //marketplaceSearchTask.Show();
 
             //keep the code below for final. it is commented for testing
             string appID;
