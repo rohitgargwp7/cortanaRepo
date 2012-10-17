@@ -171,6 +171,15 @@
 
                 </Grid>
             </StackPanel>
+            
+            <StackPanel x:Name="attachmentMenu" Visibility="Collapsed" Orientation="Horizontal" Margin="0,0,0,-10">
+                <StackPanel Tap="sendImage_Tap" Width="200">
+                    <TextBlock Text="Send Image" FontSize="30"></TextBlock>
+                </StackPanel>
+                <StackPanel Tap="sendAudio_Tap" Width="200">
+                    <TextBlock Text="Send Audio" FontSize="30"></TextBlock>
+                </StackPanel>
+            </StackPanel>
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 

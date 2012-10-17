@@ -1733,9 +1733,18 @@ namespace windows_client.View
 
         private void fileTransferButton_Click(object sender, EventArgs e)
         {
+            if (attachmentMenu.Visibility == Visibility.Collapsed)
+                attachmentMenu.Visibility = Visibility.Visible;
+            else
+                attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void sendImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
             try
             {
                 photoChooserTask.Show();
+                attachmentMenu.Visibility = Visibility.Collapsed;
             }
             catch (System.InvalidOperationException ex)
             {
@@ -1743,6 +1752,11 @@ namespace windows_client.View
             }
         }
 
+        private void sendAudio_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/RecordMedia.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
 
         private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
