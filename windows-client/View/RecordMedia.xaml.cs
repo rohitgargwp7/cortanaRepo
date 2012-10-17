@@ -29,7 +29,7 @@ namespace windows_client.View
         private byte[] _buffer;
         private TimeSpan _duration;
 
-        private int maxPlayDuration = 120;
+        private int maxPlayDuration = HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED;
         private int state = 0;
 
 
@@ -134,6 +134,8 @@ namespace windows_client.View
             progressTimer.Start();
             statusImage.Source = recordIcon;
             message.Text = "RECORDING";
+            maxPlayingTime.Text = " / " + formatTime(maxPlayDuration);
+
             sendIconButton.IsEnabled = false;
         }
 
@@ -141,7 +143,7 @@ namespace windows_client.View
         {
             runningSeconds++;
             runningTime.Text = formatTime(runningSeconds);
-            if (runningSeconds >= 120)
+            if (runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
                 stop();
         }
 
@@ -223,7 +225,7 @@ namespace windows_client.View
         {
             if (state > 0)
                 stop();
-            maxPlayDuration = 120;
+            maxPlayDuration = HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED;
             message.Text = "TAP ICON TO RECORD";
             statusImage.Source = recordIcon;
             state = 0;
