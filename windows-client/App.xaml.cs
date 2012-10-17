@@ -404,6 +404,7 @@ namespace windows_client
                 // A navigation has failed; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
+            App.AnalyticsInstance.saveObject();
         }
 
         // Code to execute on Unhandled Exceptions
@@ -423,7 +424,7 @@ namespace windows_client
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
             });
-
+            App.AnalyticsInstance.saveObject();
         }
 
         #region Phone application initialization
