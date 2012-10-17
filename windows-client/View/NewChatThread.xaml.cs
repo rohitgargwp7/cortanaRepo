@@ -374,6 +374,34 @@ namespace windows_client.View
                 isFirstLaunch = false;
             }
             #endregion
+            #region Audio FT
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            {
+                byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+
+                string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
+
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
+                convMessage.MessageId = TempMessageId;
+
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment.ContentType = "audio/voice";
+                convMessage.Message = "audio";
+
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+                msgMap.Add(convMessage.MessageId, chatBubble);
+
+                addNewAttachmentMessageToUI(chatBubble);
+                object[] vals = new object[3];
+                vals[0] = convMessage;
+                vals[1] = audioBytes;
+                vals[2] = chatBubble;
+                mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+            }
+            #endregion
             #region TOMBSTONE HANDLING
             else if (App.IS_TOMBSTONED)
             {
@@ -430,6 +458,7 @@ namespace windows_client.View
                     processGroupJoin(false);
                 }
             }
+
             #endregion
             App.newChatThreadPage = this;
         }
@@ -1577,16 +1606,14 @@ namespace windows_client.View
         {
             byte[] thumbnailBytes;
             byte[] fileBytes;
-                
+            
             ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
             convMessage.HasAttachment = true;
             convMessage.MessageId = TempMessageId;
 
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-
             int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
-
             adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
             adjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
 
@@ -1601,7 +1628,7 @@ namespace windows_client.View
             }
             else
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
-            //MessageBox.Show(fileName, "FILENAME", MessageBoxButton.OK);
+            
             convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
             convMessage.FileAttachment.ContentType = "image";
             convMessage.Message = "image";
