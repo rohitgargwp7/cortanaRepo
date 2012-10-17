@@ -170,6 +170,7 @@ namespace windows_client
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string FORWARD_MSG = "forwardedText";
+        public static string AUDIO_RECORDED = "audioRecorded";
         public static string DND = "dnd";
         public static string INVITE_TOKEN="invite_token";
 
