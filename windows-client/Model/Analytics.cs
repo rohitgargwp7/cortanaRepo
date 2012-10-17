@@ -89,14 +89,11 @@ namespace windows_client.Model
 
         public void Write(BinaryWriter writer)
         {
-            if (eventMap != null && eventMap.Count > 0)
+            writer.Write(eventMap.Count);
+            foreach (KeyValuePair<string, int> entry in eventMap)
             {
-                writer.Write(eventMap.Count);
-                foreach (KeyValuePair<string, int> entry in eventMap)
-                {
-                    writer.WriteString(entry.Key);
-                    writer.Write(entry.Value);
-                }
+                writer.WriteString(entry.Key);
+                writer.Write(entry.Value);
             }
         }
 
@@ -140,13 +137,16 @@ namespace windows_client.Model
         public void saveObject()
         {
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            if (eventMap != null && eventMap.Count > 0)
             {
-                using (var file = store.OpenFile(filePath, FileMode.Create, FileAccess.Write))
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
-                    using (var writer = new BinaryWriter(file))
+                    using (var file = store.OpenFile(filePath, FileMode.Create, FileAccess.Write))
                     {
-                        this.Write(writer);
+                        using (var writer = new BinaryWriter(file))
+                        {
+                            this.Write(writer);
+                        }
                     }
                 }
             }
