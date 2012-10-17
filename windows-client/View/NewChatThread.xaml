@@ -172,14 +172,24 @@
                 </Grid>
             </StackPanel>
             
-            <StackPanel x:Name="attachmentMenu" Visibility="Collapsed" Orientation="Horizontal" Margin="0,0,0,-10">
-                <StackPanel Tap="sendImage_Tap" Width="200">
-                    <TextBlock Text="Send Image" FontSize="30"></TextBlock>
+            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="75" Background="#292929">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="25,0,0,0" Tap="sendImage_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="images\menu_photo_icon.png" Height="26"/>
+                    <TextBlock Text="Send Image" FontSize="22" Foreground="#f6f6f6" Margin="15,0,0,0"></TextBlock>
                 </StackPanel>
-                <StackPanel Tap="sendAudio_Tap" Width="200">
-                    <TextBlock Text="Send Audio" FontSize="30"></TextBlock>
+                <Rectangle Width="1" Fill="#080808" Grid.Column="1"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="25,0,0,0" Tap="sendAudio_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="images\menu_audio_icon.png" Height="30"/>
+                    <TextBlock Text="Send Audio" FontSize="22" Foreground="#f6f6f6" Margin="15,0,0,0"></TextBlock>
                 </StackPanel>
-            </StackPanel>
+
+            </Grid>
+            
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
