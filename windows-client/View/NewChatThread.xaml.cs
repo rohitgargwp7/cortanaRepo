@@ -344,7 +344,7 @@ namespace windows_client.View
                 else if (Utils.isGroupConversation(msisdn))
                 {
                     ConversationListObject co = new ConversationListObject();
-                    co.ContactName = " ... ";
+                    co.ContactName = "New Group";
                     co.Msisdn = msisdn;
                     co.IsOnhike = true;
                     this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = co;
@@ -2051,7 +2051,7 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                if (App.ViewModel.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
+                if (App.ViewModel.ConvMap.ContainsKey(convMessage.Msisdn) && App.ViewModel.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
                     isGcFirstMsg = true;
                 else
                     isGcFirstMsg = false;
@@ -2119,10 +2119,11 @@ namespace windows_client.View
                 long msgId = (long)obj;
                 try
                 {
-                    SentChatBubble msg = msgMap[msgId];
+                    SentChatBubble msg = null;
+                    msgMap.TryGetValue(msgId,out msg);
                     if (msg != null)
                     {
-                        //                        msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
+                        //msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_CONFIRMED);
                     }
                 }
@@ -2145,7 +2146,8 @@ namespace windows_client.View
                     return;
                 try
                 {
-                    SentChatBubble msg = msgMap[msgId];
+                    SentChatBubble msg = null;
+                    msgMap.TryGetValue(msgId,out msg);
                     if (msg != null)
                     {
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED);
@@ -2173,7 +2175,8 @@ namespace windows_client.View
                 {
                     try
                     {
-                        SentChatBubble msg = msgMap[ids[i]];
+                        SentChatBubble msg = null;
+                        msgMap.TryGetValue(ids[i],out msg);
                         if (msg != null)
                         {
                             msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED_READ);
@@ -2334,14 +2337,21 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
-                    userName.Text = mContactName;
+                    try
+                    {
+                        mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
+                        userName.Text = mContactName;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("NEW_CHAT_THREAD :: Exception in participant left group : " + ex.StackTrace);
+                    }
                 });
             }
 
             #endregion
 
-            #region PARTICIPANT_LEFT_GROUP
+            #region PARTICIPANT_JOINED_GROUP
 
             else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
@@ -2352,8 +2362,15 @@ namespace windows_client.View
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
-                    userName.Text = mContactName;
+                    try
+                    {
+                        mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
+                        userName.Text = mContactName;
+                    }
+                    catch(Exception ex)
+                    {
+                        Debug.WriteLine("NEW_CHAT_THREAD :: Exception in participant joined group : "+ex.StackTrace);
+                    }
                 });
             }
 
