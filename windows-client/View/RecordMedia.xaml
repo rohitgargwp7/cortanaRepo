@@ -10,8 +10,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True" Name="recordMedia">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -40,13 +40,13 @@
         <!--ContentPanel - place additional content here-->
     </Grid>
 
-    <phone:PhoneApplicationPage.ApplicationBar>
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
             <shell:ApplicationBar.Buttons>
-                <shell:ApplicationBarIconButton x:Name="cancel" Text="cancel" IconUri="/images/icon_cross.png" Click="cancel_Click" IsEnabled="True"/>
-                <shell:ApplicationBarIconButton x:Name="send" Text="play" IconUri="/images/icon_tick.png" Click="send_Click" IsEnabled="False"/>
+                <shell:ApplicationBarIconButton x:Name="cancel" Text="cancel" IconUri="/View/images/icon_cross.png" Click="cancel_Click" IsEnabled="True"/>
+                <shell:ApplicationBarIconButton x:Name="sendButton" Text="send" IconUri="/View/images/icon_tick.png" Click="send_Click" IsEnabled="False"/>
             </shell:ApplicationBar.Buttons>
         </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
 
 </phone:PhoneApplicationPage>

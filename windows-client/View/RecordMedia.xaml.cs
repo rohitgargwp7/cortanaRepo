@@ -33,6 +33,16 @@ namespace windows_client.View
         private int state = 0;
 
 
+        private BitmapImage recordIcon = new BitmapImage(new Uri("/View/images/icon_record.png", UriKind.Relative));
+        private BitmapImage playIcon = new BitmapImage(new Uri("/View/images/icon_play.png", UriKind.Relative));
+        private BitmapImage stopIcon = new BitmapImage(new Uri("/View/images/icon_play.png", UriKind.Relative));
+        private BitmapImage playStopIcon = new BitmapImage(new Uri("/View/images/icon_play_stop.png", UriKind.Relative));
+
+        private ApplicationBar appBar;
+        ApplicationBarIconButton cancelIconButton = null;
+        ApplicationBarIconButton sendIconButton = null;
+
+
         public RecordMedia()
         {
             InitializeComponent();
@@ -58,6 +68,30 @@ namespace windows_client.View
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromSeconds(1);
             progressTimer.Tick += new EventHandler(showProgress);
+
+            //app bar
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = false;
+
+            //add icon for cancel
+            cancelIconButton = new ApplicationBarIconButton();
+            cancelIconButton.IconUri = new Uri("/View/images/icon_cross.png", UriKind.Relative);
+            cancelIconButton.Text = "cancel";
+            cancelIconButton.Click += new EventHandler(send_Click);
+            cancelIconButton.IsEnabled = true;
+            appBar.Buttons.Add(cancelIconButton);
+
+            //add icon for send
+            sendIconButton = new ApplicationBarIconButton();
+            sendIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
+            sendIconButton.Text = "send";
+            sendIconButton.Click += new EventHandler(send_Click);
+            sendIconButton.IsEnabled = false;
+            appBar.Buttons.Add(sendIconButton);
+
+            recordMedia.ApplicationBar = appBar;
         }
 
         void dt_Tick(object sender, EventArgs e)
@@ -95,8 +129,9 @@ namespace windows_client.View
             microphone.Start();
             timeBar.Opacity = 1;
             progressTimer.Start();
-            statusImage.Source = new BitmapImage(new Uri("/images/icon_record.png", UriKind.Relative));
+            statusImage.Source = recordIcon;
             message.Text = "RECORDING";
+            sendIconButton.IsEnabled = false;
         }
 
         void showProgress(object sender, EventArgs e)
@@ -123,8 +158,9 @@ namespace windows_client.View
             maxPlayDuration = runningSeconds;
             runningSeconds = 0;
             message.Text = "TAP TO PLAY";
-            statusImage.Source = new BitmapImage(new Uri("/images/icon_play.png", UriKind.Relative));
+            statusImage.Source = playIcon;
             progressTimer.Stop();
+            sendIconButton.IsEnabled = true;
         }
 
         private void play()
@@ -139,8 +175,7 @@ namespace windows_client.View
             runningSeconds = 0;
             progressTimer.Start();
             message.Text = "PLAYING";
-            statusImage.Source = new BitmapImage(new Uri("/images/icon_play.png", UriKind.Relative));
-
+            statusImage.Source = playStopIcon;
             maxPlayingTime.Text = " / " + formatTime(maxPlayDuration);
         }
 
@@ -175,6 +210,7 @@ namespace windows_client.View
                     break;
                 case 2:
                     play();
+                    state = 1;
                     break;
             }
         }
@@ -184,12 +220,13 @@ namespace windows_client.View
             state = 0;
             maxPlayDuration = 120;
             message.Text = "TAP ICON TO RECORD";
-            statusImage.Source = new BitmapImage(new Uri("/images/icon_record.png", UriKind.Relative));
+            statusImage.Source = recordIcon;
         }
 
         private void send_Click(object sender, EventArgs e)
         {
-
+            PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED] = stream.ToArray();
+            NavigationService.GoBack();
         }
 
     }
