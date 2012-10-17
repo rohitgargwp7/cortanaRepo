@@ -126,6 +126,8 @@ namespace windows_client.View
 
         private void record()
         {
+            progressTimer.Start();
+
             // Get audio data in 1/2 second chunks
             microphone.BufferDuration = TimeSpan.FromMilliseconds(300);
             // Allocate memory to hold the audio data
@@ -138,7 +140,6 @@ namespace windows_client.View
             // Start recording
             microphone.Start();
             timeBar.Opacity = 1;
-            progressTimer.Start();
             statusImage.Source = recordIcon;
             message.Text = "RECORDING";
             maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
@@ -157,6 +158,7 @@ namespace windows_client.View
 
         private void stop()
         {
+            progressTimer.Stop();
             if (microphone.State == MicrophoneState.Started)
             {
                 // In RECORD mode, user clicked the 
@@ -177,13 +179,13 @@ namespace windows_client.View
             runningSeconds = 0;
             message.Text = "TAP TO PLAY";
             statusImage.Source = playIcon;
-            progressTimer.Stop();
             sendIconButton.IsEnabled = true;
             myState = RecorderState.RECORDED;
         }
 
         private void play()
         {
+            progressTimer.Start();
             if (stream.Length > 0)
             {
                 // Play the audio in a new thread so the UI can update.
@@ -192,7 +194,6 @@ namespace windows_client.View
             }
             timeBar.Opacity = 1;
             runningSeconds = 0;
-            progressTimer.Start();
             message.Text = "PLAYING";
             statusImage.Source = playStopIcon;
             maxPlayingTime.Text = " / " + formatTime(recordedDuration);
