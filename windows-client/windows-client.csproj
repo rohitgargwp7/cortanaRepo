@@ -323,6 +323,8 @@
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
     <Content Include="View\images\made_with_love_dark.png" />
+    <Content Include="View\images\menu_audio_icon.png" />
+    <Content Include="View\images\menu_photo_icon.png" />
     <Content Include="View\images\mic_icon.png" />
     <Resource Include="View\images\mic_icon_black.png" />
     <Content Include="View\images\new_message.png" />
