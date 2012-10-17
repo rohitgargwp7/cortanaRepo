@@ -116,7 +116,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.ViewModel.MessageListPageCollection.Clear();
-                    ConversationsList.ConvMap.Clear();
+                    App.ViewModel.ConvMap.Clear();
                     try
                     {
                         progress.Hide();

@@ -102,21 +102,34 @@ namespace windows_client.Model
 
         public void Read(BinaryReader reader)
         {
-            try
+            int count = 0;
+            try // here end of stream error cound come
             {
-                int count = reader.ReadInt32();
-                string key;
-                int value = -1;
-                for (int i = 0; i < count; i++)
+                count = reader.ReadInt32();
+            }
+            catch
+            {
+            }
+            string key;
+            int value = -1;
+            /*
+             * exception shud be handled for each element rather than complete set.
+             * reason : there could be problem in 1 or 2 entries and hence all other entries should be recoreded
+             * in the map.
+             */
+            for (int i = 0; i < count; i++)
+            {
+                try
                 {
                     key = reader.ReadString();
                     value = reader.ReadInt32();
                     if (!String.IsNullOrEmpty(key) && value > 0)
                         eventMap[key] = value;
                 }
+                catch
+                {
+                }
             }
-            catch (IOException)
-            { }
         }
 
         public void clearObject() //call after publish
@@ -129,10 +142,6 @@ namespace windows_client.Model
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
             {
-                if (store.FileExists(filePath))
-                {
-                    store.DeleteFile(filePath);
-                }
                 using (var file = store.OpenFile(filePath, FileMode.Create, FileAccess.Write))
                 {
                     using (var writer = new BinaryWriter(file))

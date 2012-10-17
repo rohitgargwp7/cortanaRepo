@@ -65,7 +65,6 @@ namespace windows_client.View
         
         private void Walkthrough_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State["FromHelpPage"] = true;
             NavigationService.Navigate(new Uri("/View/Walkthrough.xaml", UriKind.Relative));
         }
     }

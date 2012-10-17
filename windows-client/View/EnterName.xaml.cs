@@ -120,6 +120,7 @@ namespace windows_client
             txtBxEnterName.IsReadOnly = false;
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
             Uri nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
+            PhoneApplicationService.Current.State["FromNameScreen"] = true;
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = "Getting you in";
             Thread.Sleep(2 * 1000);

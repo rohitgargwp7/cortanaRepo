@@ -205,6 +205,7 @@ namespace windows_client.DbUtils
                 {
                     // delete the conversation from DB.
                     ConversationTableUtils.deleteConversation(c.Msisdn);
+                    ConversationTableUtils.saveConvObjectList();
                 }
                 else
                 {
@@ -314,6 +315,7 @@ namespace windows_client.DbUtils
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
                 ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
+                ConversationTableUtils.saveConvObjectList();
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
             }
             #endregion
@@ -323,7 +325,7 @@ namespace windows_client.DbUtils
                 MessagesTableUtils.deleteAllMessages();
                 ConversationTableUtils.deleteAllConversations();
                 MiscDBUtil.DeleteAllAttachmentData();
-                foreach (string convMsisdn in ConversationsList.ConvMap.Keys)
+                foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
                 {
                     if (Utils.isGroupConversation(convMsisdn))
                     {

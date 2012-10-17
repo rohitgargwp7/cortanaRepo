@@ -23,11 +23,11 @@ namespace windows_client.DbUtils
             List<ConversationListObject> convList = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY+"\\*");
+                string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
                 convList = new List<ConversationListObject>(files.Length);
                 foreach (string fileName in files)
                 {
-                    using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY+"\\"+fileName, FileMode.Open, FileAccess.Read))
+                    using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY + "\\" + fileName, FileMode.Open, FileAccess.Read))
                     {
                         using (var reader = new BinaryReader(file))
                         {
@@ -37,7 +37,7 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-            } 
+            }
             convList.Sort();
             return convList;
             /*
@@ -57,8 +57,8 @@ namespace windows_client.DbUtils
             * Contactname : GroupOwner
             */
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
-                true, convMessage.Timestamp, null, convMessage.MessageStatus,convMessage.MessageId);
-           
+                true, convMessage.Timestamp, null, convMessage.MessageStatus, convMessage.MessageId);
+
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
@@ -66,7 +66,7 @@ namespace windows_client.DbUtils
                 if (vals == null || vals.Length == 0)
                     return null;
                 string[] vars = vals[vals.Length - 1].Split(':');
-                GroupParticipant gp = Utils.getGroupParticipant(null,vars[0],obj.Msisdn); // get last element of group in sorted order.
+                GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], obj.Msisdn); // get last element of group in sorted order.
                 string text = HikeConstants.USER_JOINED_GROUP_CHAT;
                 if (vars[1] == "0")
                     text = HikeConstants.USER_INVITED;
@@ -76,10 +76,11 @@ namespace windows_client.DbUtils
                     obj.IsFirstMsg = true;
                     PhoneApplicationService.Current.State.Remove("GC_" + convMessage.Msisdn);
                 }
-                
+
             }
             string msisdn = obj.Msisdn.Replace(":", "_");
             saveConvObject(obj, msisdn);
+            saveNewConv(obj);
             return obj;
         }
 
@@ -94,14 +95,14 @@ namespace windows_client.DbUtils
                     groupName = (string)PhoneApplicationService.Current.State[convMessage.Msisdn];
                     PhoneApplicationService.Current.State.Remove(convMessage.Msisdn);
                 }
-                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, convMessage.MessageStatus,convMessage.MessageId);
+                obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message, true, convMessage.Timestamp, null, convMessage.MessageStatus, convMessage.MessageId);
             }
             else
             {
                 ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(convMessage.Msisdn);
-                byte [] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
+                byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
                 obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
-                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus,convMessage.MessageId);
+                    contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
             }
 
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
@@ -128,12 +129,12 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
             {
-                obj.LastMessage = string.Format(HikeConstants.DND_USER,obj.NameToShow);
+                obj.LastMessage = string.Format(HikeConstants.DND_USER, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
             {
-                obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE,obj.NameToShow);
+                obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
             if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn)) // this is to store firstMsg logic
@@ -151,9 +152,10 @@ namespace windows_client.DbUtils
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;
             Debug.WriteLine("Time to add chat msg : {0}", msec1);
-                           
+
             Stopwatch st = Stopwatch.StartNew();
-            saveConvObject(obj, obj.Msisdn.Replace(":","_"));
+            saveNewConv(obj);
+            saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
@@ -165,146 +167,84 @@ namespace windows_client.DbUtils
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY+"\\*");
-                foreach (string fileName in files)
-                {
-                    try
-                    {
-                        store.DeleteFile(CONVERSATIONS_DIRECTORY+"\\" + fileName);
-                    }
-                    catch
-                    {
-                        Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY+"\\" + fileName);
-                    }
-                }
+                store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
             }
         }
 
         public static void deleteConversation(string msisdn)
         {
-            msisdn = msisdn.Replace(":","_");
+            msisdn = msisdn.Replace(":", "_");
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 try
                 {
-                    if (store.FileExists(CONVERSATIONS_DIRECTORY+"\\" + msisdn))
-                        store.DeleteFile(CONVERSATIONS_DIRECTORY+"\\" + msisdn);
+                    if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + msisdn))
+                        store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + msisdn);
                 }
                 catch
                 {
                 }
             }
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    context.conversations.DeleteAllOnSubmit<ConversationListObject>(DbCompiledQueries.GetConvForMsisdn(context, msisdn));
-            //    MessagesTableUtils.SubmitWithConflictResolve(context);
-            //}
         }
 
         public static void updateOnHikeStatus(string msisdn, bool joined)
         {
-            if (ConversationsList.ConvMap.ContainsKey(msisdn))
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                ConversationListObject obj = ConversationsList.ConvMap[msisdn];
+                ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
                 saveConvObject(obj, msisdn);
+                saveConvObjectList();
             }
         }
 
         public static void updateConversation(ConversationListObject obj)
         {
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
-            //lock (lockObj)
-            //{
-            //    using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + "; Max Buffer Size = 2048"))
-            //    {
-            //        ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
-            //        if (cObj.ContactName != obj.ContactName)
-            //            cObj.ContactName = obj.ContactName;
-            //        cObj.MessageStatus = obj.MessageStatus;
-            //        cObj.LastMessage = obj.LastMessage;
-            //        cObj.TimeStamp = obj.TimeStamp;
-            //        MessagesTableUtils.SubmitWithConflictResolve(context);
-            //    }
-            //}
+            saveConvObjectList();
         }
         public static bool updateGroupName(string grpId, string groupName)
         {
-            if (!ConversationsList.ConvMap.ContainsKey(grpId))
+            if (!App.ViewModel.ConvMap.ContainsKey(grpId))
                 return false;
-            ConversationListObject obj = ConversationsList.ConvMap[grpId];
+            ConversationListObject obj = App.ViewModel.ConvMap[grpId];
             obj.ContactName = groupName;
-            string msisdn = grpId.Replace(":","_");
+            string msisdn = grpId.Replace(":", "_");
             saveConvObject(obj, msisdn);
+            saveConvObjectList();
             return true;
-
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, grpId).FirstOrDefault();
-            //    if (cObj == null)
-            //        return false; ;
-            //    if (cObj.ContactName != groupName)
-            //    {
-            //        cObj.ContactName = groupName;
-            //        MessagesTableUtils.SubmitWithConflictResolve(context);
-            //    }
-            //    else
-            //        return false;
-            //}
-            //return true;
         }
         internal static void updateConversation(List<ContactInfo> cn)
         {
+            saveConvObjectList();
+            return;
             for (int i = 0; i < cn.Count; i++)
             {
-                if (ConversationsList.ConvMap.ContainsKey(cn[i].Msisdn))
+                if (App.ViewModel.ConvMap.ContainsKey(cn[i].Msisdn))
                 {
-                    ConversationListObject obj = ConversationsList.ConvMap[cn[i].Msisdn]; //update UI
+                    ConversationListObject obj = App.ViewModel.ConvMap[cn[i].Msisdn]; //update UI
                     obj.ContactName = cn[i].Name;
                     obj.IsOnhike = cn[i].OnHike;
                     saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
                 }
             }
-
-            //bool shouldSubmit = false;
-            //using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            //{
-            //    for (int i = 0; i < cn.Count; i++)
-            //    {
-            //        if (ConversationsList.ConvMap.ContainsKey(cn[i].Msisdn))
-            //        {
-            //            ConversationListObject obj = ConversationsList.ConvMap[cn[i].Msisdn]; //update UI
-            //            obj.ContactName = cn[i].Name;
-
-            //            ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(context, obj.Msisdn).FirstOrDefault();
-            //            if (cObj.ContactName != cn[i].Name)
-            //            {
-            //                cObj.ContactName = cn[i].Name;
-            //                shouldSubmit = true;
-            //            }
-            //        }
-            //    }
-            //    if (shouldSubmit)
-            //    {
-            //        MessagesTableUtils.SubmitWithConflictResolve(context);
-            //    }
-            //}
         }
 
-        public static void updateLastMsgStatus(long id,string msisdn, int status)
+        public static void updateLastMsgStatus(long id, string msisdn, int status)
         {
             if (msisdn == null)
                 return;
             ConversationListObject obj = null;
-            if (ConversationsList.ConvMap.ContainsKey(msisdn))
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
             {
-                obj = ConversationsList.ConvMap[msisdn];
+                obj = App.ViewModel.ConvMap[msisdn];
                 if (obj.LastMsgId != id)
                     return;
                 if (obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
                 {
                     obj.MessageStatus = (ConvMessage.State)status;
                     saveConvObject(obj, msisdn.Replace(":", "_"));
+                    saveConvObjectList();
                 }
             }
         }
@@ -331,21 +271,100 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void saveConvObjectList(List<ConversationListObject> cObjList)
+        public static void saveConvObjectList()
         {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            int convs = 0;
+            Stopwatch st = Stopwatch.StartNew();
+            Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
+            lock (lockObj)
             {
-                for (int i = 0; i < cObjList.Count; i++)
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
-                    string FileName = CONVERSATIONS_DIRECTORY+"\\" + cObjList[i].Msisdn;
+                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
                     using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
                     {
                         using (var writer = new BinaryWriter(file))
                         {
-                            cObjList[i].Write(writer);
+                            if (convMap != null && convMap.Count > 0)
+                            {
+                                writer.Write(convMap.Count);
+                                foreach (ConversationListObject item in convMap.Values)
+                                {
+                                    item.Write(writer);
+                                    convs++;
+                                }
+                            }
                         }
                     }
                 }
+            }
+            st.Stop();
+            long mSec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
+        }
+
+        public static void saveNewConv(ConversationListObject obj)
+        {
+            int convs = 0;
+            Stopwatch st = Stopwatch.StartNew();
+            Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
+            lock (lockObj)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
+                    using (var file = store.OpenFile(FileName, FileMode.Append, FileAccess.Write))
+                    {
+                        using (var writer = new BinaryWriter(file))
+                        {
+                            int count = (convMap == null ? 0 : convMap.Count) + 1;
+                            writer.Write(count);
+                            obj.Write(writer);
+                            if (convMap != null && convMap.Count > 0)
+                            {                               
+                                foreach (ConversationListObject item in convMap.Values)
+                                {
+                                    item.Write(writer);
+                                    convs++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            st.Stop();
+            long mSec = st.ElapsedMilliseconds;
+            Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
+        }
+
+        public static List<ConversationListObject> getAllConvs()
+        {
+            List<ConversationListObject> convList = null;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs"))
+                    return null;
+                using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = new BinaryReader(file))
+                    {
+                        int count = reader.ReadInt32();
+                        if (count > 0)
+                        {
+                            convList = new List<ConversationListObject>(count);
+                            for (int i = 0; i < count; i++)
+                            {
+                                ConversationListObject item = new ConversationListObject();
+                                item.Read(reader);
+                                convList.Add(item);
+                            }
+                            convList.Sort();
+                            return convList;
+                        }
+                        return null;
+                    }
+                }
+
             }
         }
     }
