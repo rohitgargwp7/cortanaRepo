@@ -13,6 +13,7 @@ namespace windows_client
 {
     public class SmileyParser
     {
+        private bool IS_INSTANTIATED = false;
         public BitmapImage[] _emoticonImagesForList0 = null;
         public BitmapImage[] _emoticonImagesForList1 = null;
         public BitmapImage[] _emoticonImagesForList2 = null;
@@ -279,6 +280,8 @@ namespace windows_client
 
         public void initializeSmileyParser()
         {
+            if (IS_INSTANTIATED)
+                return;
             _emoticonImagesForList0 = new BitmapImage[emoticon0Size];
             int i, j, k = 0;
             for (i = 0; i < emoticon0Size; i++)
@@ -303,6 +306,7 @@ namespace windows_client
                 _emoticonImagesForList2[k].CreateOptions = BitmapCreateOptions.BackgroundCreation;
                 _emoticonImagesForList2[k].UriSource = new Uri(emoticonPaths[i + j + k], UriKind.Relative);
             }
+            IS_INSTANTIATED = true;
         }
 
         //static void imageOpenedHandler(object sender, RoutedEventArgs e)

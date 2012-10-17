@@ -30,6 +30,22 @@ namespace windows_client.Misc
             }
         }
 
+        public static void WriteList<T>(this BinaryWriter writer, Dictionary<string,T> map) where T : IBinarySerializable
+        {
+            if (map != null)
+            {
+                writer.Write(map.Count);
+                foreach (T item in map.Values)
+                {
+                    item.Write(writer);
+                }
+            }
+            else
+            {
+                writer.Write(0);
+            }
+        }
+
         public static void WriteList(this BinaryWriter writer, List<string> list)
         {
             if (list != null)

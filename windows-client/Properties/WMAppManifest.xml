@@ -19,16 +19,19 @@
       <Capability Name="ID_CAP_APPOINTMENTS" />
     </Capabilities>
     <Tasks>
-      <DefaultTask Name="_default" NavigationPage="" />
+      <DefaultTask Name="_default" NavigationPage="View/sharePicker.xaml" />
     </Tasks>
     <Tokens>
       <PrimaryToken TokenID="windows_clientToken" TaskName="_default">
         <TemplateType5>
           <BackgroundImageURI IsRelative="true" IsResource="false">View\images\Application_TileImage_173x173.png</BackgroundImageURI>
           <Count>0</Count>
-          <Title>hike</Title>
+          <Title>Hike</Title>
         </TemplateType5>
       </PrimaryToken>
     </Tokens>
+    <Extensions>
+      <Extension ExtensionName="Photos_Extra_Share" ConsumerID="{5B04B775-356B-4AA0-AAF8-6491FFEA5632}" TaskID="_default" />
+    </Extensions>
   </App>
 </Deployment>

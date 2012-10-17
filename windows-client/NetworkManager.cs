@@ -8,11 +8,6 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.IO.IsolatedStorage;
-using System.Windows.Resources;
-using System.IO;
-using windows_client.View;
-using Microsoft.Phone.Shell;
 
 namespace windows_client
 {
@@ -46,9 +41,6 @@ namespace windows_client
         public static bool turnOffNetworkManager = true;
 
         private HikePubSub pubSub;
-
-        private static long totalTime = 0;
-        private static int numberOfImages = 0;
 
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -169,7 +161,6 @@ namespace windows_client
 
                     vals[0] = convMessage;
                     vals[1] = obj;
-
                     pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
                 catch (Exception e)
@@ -264,7 +255,7 @@ namespace windows_client
                 JArray msgIds = null;
                 JToken msisdnToken = null;
                 string msisdnToCheck = null;
-                
+
                 try
                 {
                     msgIds = (JArray)jsonObj["d"];
@@ -312,6 +303,7 @@ namespace windows_client
                     return;
                 }
                 bool joined = USER_JOINED == type;
+
                 if (joined)
                 {
                     // if user is in contact list then only show the joined msg
@@ -399,7 +391,7 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}",jsonObj.ToString());
+                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
                     KeyValuePair<string, JToken> kv;
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
                     while (keyVals.MoveNext())
@@ -419,9 +411,9 @@ namespace windows_client
                         this.pubSub.publish(HikePubSub.INVITEE_NUM_CHANGED, null);
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Account Info Json Exception "+e.StackTrace);
+                    Debug.WriteLine("NETWORK MANAGER :: Account Info Json Exception " + e.StackTrace);
                     return;
                 }
 
@@ -507,9 +499,9 @@ namespace windows_client
                     if (goAhead)
                         this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCN packet : "+e.StackTrace);
+                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCN packet : " + e.StackTrace);
                 }
             }
             #endregion
@@ -538,6 +530,7 @@ namespace windows_client
                     object[] vals = new object[2];
                     vals[0] = convMsg;
                     vals[1] = cObj;
+
                     this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
                 }
@@ -564,6 +557,7 @@ namespace windows_client
                         object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = cObj;
+      
                         this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                         this.pubSub.publish(HikePubSub.GROUP_END, groupId);
                     }
@@ -611,7 +605,7 @@ namespace windows_client
                 return;
             /* Process UO for 1-1 chat*/
 
-            if (!isOptInMsg || ConversationsList.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
+            if (!isOptInMsg || App.ViewModel.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
             {
                 object[] vals = null;
                 ConvMessage cm = new ConvMessage();
@@ -648,6 +642,7 @@ namespace windows_client
 
                 vals[0] = cm;
                 vals[1] = obj;
+
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             // UPDATE group cache
@@ -691,6 +686,7 @@ namespace windows_client
 
                         values[0] = convMsg;
                         values[1] = co;
+
                         pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
                         l[i].HasOptIn = true;
                         break;
@@ -710,7 +706,7 @@ namespace windows_client
         /// <returns></returns>
         private bool AddGroupmembers(JArray arr, string grpId)
         {
-            if (ConversationsList.ConvMap.ContainsKey(grpId))
+            if (App.ViewModel.ConvMap.ContainsKey(grpId))
             {
                 List<GroupParticipant> l = null;
                 Utils.GroupCache.TryGetValue(grpId, out l);
@@ -766,7 +762,7 @@ namespace windows_client
                 if (!firstMsgLogic && removeFirstMsgLogic) // this turn off first msg logic
                 {
                     ConversationListObject co = null;
-                    ConversationsList.ConvMap.TryGetValue(grpId, out co);
+                    App.ViewModel.ConvMap.TryGetValue(grpId, out co);
                     if (co != null)
                     {
                         co.IsFirstMsg = false;
@@ -788,7 +784,7 @@ namespace windows_client
         {
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateMsgStatus(fromUser, msgID, status);
-            ConversationTableUtils.updateLastMsgStatus(msgID,msisdn, status); // update conversationObj, null is already checked in the function
+            ConversationTableUtils.updateLastMsgStatus(msgID, msisdn, status); // update conversationObj, null is already checked in the function
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED : {0}", msec);
@@ -798,7 +794,7 @@ namespace windows_client
         {
             Stopwatch st = Stopwatch.StartNew();
             string msisdn = MessagesTableUtils.updateAllMsgStatus(fromUser, ids, status);
-            ConversationTableUtils.updateLastMsgStatus(ids[ids.Length-1],msisdn, status);
+            ConversationTableUtils.updateLastMsgStatus(ids[ids.Length - 1], msisdn, status);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to update msg status DELIVERED READ : {0}", msec);

@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+using Microsoft.Phone.UserData;
+using Newtonsoft.Json.Linq;
+using Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
-using Phone.Controls;
-using Microsoft.Phone.Shell;
-using System.Windows.Media;
-using System.ComponentModel;
-using System.Windows;
-using Microsoft.Phone.UserData;
-using System.Threading;
-using Newtonsoft.Json.Linq;
-using System.Text;
-using System.Windows.Input;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using System.Net.NetworkInformation;
 
 
 namespace windows_client.View
@@ -195,6 +194,21 @@ namespace windows_client.View
             initPage();
         }
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            // Get a dictionary of query string keys and values.
+            IDictionary<string, string> queryStrings = this.NavigationContext.QueryString;
+
+            // Ensure that there is at least one key in the query string, and check 
+            // whether the "FileId" key is present.
+            if (queryStrings.ContainsKey("FileId"))
+            {              
+                PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
+                queryStrings.Clear();
+            }
+        }
+
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             if (!canGoBack)
@@ -336,8 +350,8 @@ namespace windows_client.View
                 contact.Msisdn = normalizeNumber(contact.Name);
                 contact.Name = null;
                 contact = GetContactIfExists(contact);
-                if (ConversationsList.ConvMap.ContainsKey(contact.Msisdn))
-                    contact.OnHike = ConversationsList.ConvMap[contact.Msisdn].IsOnhike;
+                if (App.ViewModel.ConvMap.ContainsKey(contact.Msisdn))
+                    contact.OnHike = App.ViewModel.ConvMap[contact.Msisdn].IsOnhike;
             }
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
             string uri = "/View/NewChatThread.xaml";
