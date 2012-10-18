@@ -87,7 +87,7 @@
                 <TextBlock Text="Earn extra 50 free SMS per month" FontWeight="Light" FontSize="24" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center"/>
                 <TextBlock Text="for every friend who joins hike because of you" Foreground="#6e6e6e" FontSize="20" HorizontalAlignment="Center"/>
             </StackPanel>
-            <Button Grid.Row="1" VerticalAlignment="Top" Margin="0,15,0,0" Width="150" FontFamily="Segoe WP Semibold" FontSize="18" Content="Invite Now" BorderThickness="2" Height="70" Name="inviteBtn" Click="inviteBtn_Click"></Button>
+            <Button Grid.Row="1" VerticalAlignment="Top" Margin="0,15,0,0" Width="150" FontFamily="Segoe WP Semibold" FontSize="18" Content="Invite Now" BorderThickness="2" Height="65" Name="inviteBtn" Click="inviteBtn_Click"></Button>
             <TextBlock Grid.Row="2" Foreground="#828282" Margin="0,0,0,40" HorizontalAlignment="Center" Text="*Free SMS can only be sent within India"/>
         </Grid>
     </Grid>
