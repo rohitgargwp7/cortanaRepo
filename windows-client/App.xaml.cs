@@ -321,7 +321,13 @@ namespace windows_client
         {
             _isAppLaunched = false; // this means app is activated, could be tombstone or dormant state
             _isTombstoneLaunch = !e.IsApplicationInstancePreserved; //e.IsApplicationInstancePreserved  --> if this is true its dormant else tombstoned
-            _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
+            try
+            {
+                _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
+            }
+            catch
+            {
+            }
 
             if (_isTombstoneLaunch)
             {
