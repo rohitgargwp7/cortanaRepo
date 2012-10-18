@@ -98,10 +98,9 @@ namespace windows_client.View
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
         {
-            Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
             try
             {
-                NavigationService.Navigate(nextPage);
+                NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
             }
             catch (Exception ex)
             {
