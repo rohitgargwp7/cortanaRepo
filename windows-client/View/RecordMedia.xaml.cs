@@ -129,7 +129,7 @@ namespace windows_client.View
             progressTimer.Start();
 
             // Get audio data in 1/2 second chunks
-            microphone.BufferDuration = TimeSpan.FromMilliseconds(300);
+            microphone.BufferDuration = TimeSpan.FromMilliseconds(500);
             // Allocate memory to hold the audio data
             buffer = new byte[microphone.GetSampleSizeInBytes(microphone.BufferDuration)];
             // Set the stream back to zero in case there is already something in it
@@ -185,6 +185,7 @@ namespace windows_client.View
 
         private void play()
         {
+            timeBar.Opacity = 0;
             progressTimer.Start();
             if (stream.Length > 0)
             {
@@ -192,11 +193,11 @@ namespace windows_client.View
                 Thread soundThread = new Thread(new ThreadStart(playSound));
                 soundThread.Start();
             }
-            timeBar.Opacity = 1;
             runningSeconds = 0;
             message.Text = "PLAYING";
             statusImage.Source = playStopIcon;
             maxPlayingTime.Text = " / " + formatTime(recordedDuration);
+            timeBar.Opacity = 1;
             myState = RecorderState.PLAYING;
         }
 
