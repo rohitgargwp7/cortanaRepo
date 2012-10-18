@@ -26,9 +26,9 @@
         <StackPanel x:Name="MainPanel" Grid.Row="0" Margin="12,17,0,28">
             <TextBlock x:Name="UserHelp" Text="record audio" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Height="200" />
         </StackPanel>
-        <Image Grid.Row="1" Height="161"  
+        <Image Grid.Row="1" x:Name="micImage" Height="161"  
                HorizontalAlignment="Center" Margin="0,0,0,45"
-               Source="images\mic_icon.png" />
+               />
         <StackPanel x:Name="timeBar" Orientation="Horizontal" Opacity="0" Grid.Row="2" HorizontalAlignment="Center">
             <TextBlock x:Name="runningTime"  FontFamily="Segoe WP SemiLight" FontSize="50" Text="0:0" ></TextBlock>
             <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" FontSize="50"/>
