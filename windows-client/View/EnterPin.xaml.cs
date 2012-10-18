@@ -151,7 +151,7 @@ namespace windows_client
             if(NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (isTSorFirstLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
+            if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
                 if (this.State.TryGetValue("txtBxEnterPin", out obj))
@@ -172,22 +172,27 @@ namespace windows_client
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-
-            if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text))
-                this.State["txtBxEnterPin"] = txtBxEnterPin.Text;
-            else
-                this.State.Remove("txtBxEnterPin");
-
-            if (pinErrorTxt.Visibility == System.Windows.Visibility.Visible)
+            string uri = e.Uri.ToString();
+            if (!uri.Contains("View"))
             {
-                this.State["pinErrorTxt.Text"] = pinErrorTxt.Text;
-                this.State["pinErrorTxt.Visibility"] = pinErrorTxt.Visibility;
+                if (!string.IsNullOrWhiteSpace(txtBxEnterPin.Text))
+                    this.State["txtBxEnterPin"] = txtBxEnterPin.Text;
+                else
+                    this.State.Remove("txtBxEnterPin");
+
+                if (pinErrorTxt.Visibility == System.Windows.Visibility.Visible)
+                {
+                    this.State["pinErrorTxt.Text"] = pinErrorTxt.Text;
+                    this.State["pinErrorTxt.Visibility"] = pinErrorTxt.Visibility;
+                }
+                else
+                {
+                    this.State.Remove("pinErrorTxt.Text");
+                    this.State.Remove("pinErrorTxt.Visibility");
+                }
             }
             else
-            {
-                this.State.Remove("pinErrorTxt.Text");
-                this.State.Remove("pinErrorTxt.Visibility");
-            }
+                App.IS_TOMBSTONED = false;
         }
 
         private void txtBxEnterPin_LostFocus(object sender, RoutedEventArgs e)

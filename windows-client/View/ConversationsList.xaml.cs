@@ -232,7 +232,7 @@ namespace windows_client.View
             #endregion
             postAnalytics();
         }
-      
+
         private void initAppBar()
         {
             appBar = new ApplicationBar();
@@ -398,8 +398,9 @@ namespace windows_client.View
                 isProfilePicTapped = false;
                 //progressBarTop.IsEnabled = false;
                 shellProgress.IsVisible = false;
+                if (e.Error != null)
+                    MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
             }
-
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
@@ -555,7 +556,7 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
-                
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (emptyScreenImage.Visibility == Visibility.Visible)

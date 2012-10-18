@@ -16,7 +16,6 @@ namespace windows_client
     public partial class EnterName : PhoneApplicationPage
     {
         public bool isClicked = false;
-        bool isTSorFirstLaunch = false;
         private string SCANNING_CONTACTS = "Scanning Contacts ...";
         private string ac_name;
         public ApplicationBar appBar;
@@ -45,7 +44,6 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterName.ApplicationBar = appBar;
-            isTSorFirstLaunch = true;
         }
 
         private void btnEnterPin_Click(object sender, EventArgs e)
@@ -142,7 +140,7 @@ namespace windows_client
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            if (isTSorFirstLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
+            if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
                 if (this.State.TryGetValue("txtBxEnterName", out obj))
@@ -163,22 +161,28 @@ namespace windows_client
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-
-            if (!string.IsNullOrWhiteSpace(txtBxEnterName.Text))
-                this.State["txtBxEnterName"] = txtBxEnterName.Text;
-            else
-                this.State.Remove("txtBxEnterName");
-
-            if (msgTxtBlk.Opacity == 1)
+            string uri = e.Uri.ToString();
+            if (!uri.Contains("View"))
             {
-                this.State["nameErrorTxt.Text"] = nameErrorTxt.Text;
-                this.State["nameErrorTxt.Visibility"] = nameErrorTxt.Visibility;
+
+                if (!string.IsNullOrWhiteSpace(txtBxEnterName.Text))
+                    this.State["txtBxEnterName"] = txtBxEnterName.Text;
+                else
+                    this.State.Remove("txtBxEnterName");
+
+                if (msgTxtBlk.Opacity == 1)
+                {
+                    this.State["nameErrorTxt.Text"] = nameErrorTxt.Text;
+                    this.State["nameErrorTxt.Visibility"] = nameErrorTxt.Visibility;
+                }
+                else
+                {
+                    this.State.Remove("nameErrorTxt.Text");
+                    this.State.Remove("nameErrorTxt.Visibility");
+                }
             }
             else
-            {
-                this.State.Remove("nameErrorTxt.Text");
-                this.State.Remove("nameErrorTxt.Visibility");
-            }
+                App.IS_TOMBSTONED = false;
         }
 
         void EnterNamePage_Loaded(object sender, RoutedEventArgs e)

@@ -13,7 +13,6 @@ namespace windows_client
 {
     public partial class EnterNumber : PhoneApplicationPage
     {
-        bool isTSorFirstLaunch = false;
         string phoneNumber;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
@@ -36,7 +35,6 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterNumber.ApplicationBar = appBar;
-            isTSorFirstLaunch = true;
         }
 
         private void enterPhoneBtn_Click(object sender, EventArgs e)
@@ -123,7 +121,7 @@ namespace windows_client
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
-            if (isTSorFirstLaunch) /* ****************************    HANDLING TOMBSTONE    *************************** */
+            if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
                 if (this.State.TryGetValue("txtEnterPhone", out obj))
@@ -155,22 +153,27 @@ namespace windows_client
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
-            
-            if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
-                this.State["txtEnterPhone"] = txtEnterPhone.Text;
-            else
-                this.State.Remove("txtEnterPhone");
+            string uri = e.Uri.ToString();
+            if (!uri.Contains("View"))
+            {
+                if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
+                    this.State["txtEnterPhone"] = txtEnterPhone.Text;
+                else
+                    this.State.Remove("txtEnterPhone");
 
-            if (msisdnErrorTxt.Visibility == Visibility.Visible)
-            {
-                this.State["msisdnErrorTxt.Text"] = msisdnErrorTxt.Text;
-                this.State["msisdnErrorTxt.Visibility"] = msisdnErrorTxt.Visibility;
+                if (msisdnErrorTxt.Visibility == Visibility.Visible)
+                {
+                    this.State["msisdnErrorTxt.Text"] = msisdnErrorTxt.Text;
+                    this.State["msisdnErrorTxt.Visibility"] = msisdnErrorTxt.Visibility;
+                }
+                else
+                {
+                    this.State.Remove("msisdnErrorTxt.Text");
+                    this.State.Remove("msisdnErrorTxt.Visibility");
+                }
             }
             else
-            {
-                this.State.Remove("msisdnErrorTxt.Text");
-                this.State.Remove("msisdnErrorTxt.Visibility");
-            }
+                App.IS_TOMBSTONED = false;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

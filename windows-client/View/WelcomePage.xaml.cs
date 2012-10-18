@@ -9,6 +9,7 @@ using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using Microsoft.Phone.Tasks;
 using windows_client.DbUtils;
+using System.Diagnostics;
 
 
 namespace windows_client
@@ -23,7 +24,7 @@ namespace windows_client
         public WelcomePage()
         {
             InitializeComponent();
-            App.createDatabaseAsync();                
+            App.createDatabaseAsync();
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
@@ -87,7 +88,7 @@ namespace windows_client
                 nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
             }
             /* account creation successfull */
-            else 
+            else
             {
                 utils.Utils.savedAccountCredentials(obj);
                 nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
@@ -96,8 +97,8 @@ namespace windows_client
             }
 
             /*This is used to avoid cross thread invokation exception*/
-            Deployment.Current.Dispatcher.BeginInvoke(() => 
-            { 
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
                 NavigationService.Navigate(nextPage);
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
@@ -109,6 +110,24 @@ namespace windows_client
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            if (App.IS_TOMBSTONED)
+            {
+                if (this.State.ContainsKey("NetworkErrorTxtBlk.Opacity"))
+                    NetworkErrorTxtBlk.Opacity = (int)this.State["NetworkErrorTxtBlk.Opacity"];
+            }
+        }
+
+        protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            string uri = e.Uri.ToString();
+            Debug.WriteLine("Welcome :: "+uri);
+            if (!uri.Contains("View")) // this means app is not navigating to a new page so save for tombstone
+            {
+                this.State["NetworkErrorTxtBlk.Opacity"] = (int)NetworkErrorTxtBlk.Opacity;
+            }
+            else
+                App.IS_TOMBSTONED = false;
         }
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
