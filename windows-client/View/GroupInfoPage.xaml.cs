@@ -251,10 +251,14 @@ namespace windows_client.View
             }
             else if (HikePubSub.GROUP_END == type)
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                string gId = (string)obj;
+                if (gId == groupId)
                 {
-                    NavigationService.GoBack();
-                });
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        NavigationService.GoBack();
+                    });
+                }
             }
         }
         #endregion
@@ -366,7 +370,6 @@ namespace windows_client.View
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = Utils.GetActiveGroupParticiants(groupId);
-            //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
