@@ -161,6 +161,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
+            mPubSub.addListener(HikePubSub.GROUP_END, this);
         }
         public void onEventReceived(string type, object obj)
         {
@@ -247,6 +248,13 @@ namespace windows_client.View
                         PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                     });
                 }
+            }
+            else if (HikePubSub.GROUP_END == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    NavigationService.GoBack();
+                });
             }
         }
         #endregion
