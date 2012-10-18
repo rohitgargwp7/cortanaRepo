@@ -291,6 +291,8 @@ namespace windows_client.View
                 isProfilePicTapped = false;
                 //progressBar.IsEnabled = false;
                 shellProgress.IsVisible = false;
+                if (e.Error != null)
+                    MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
             }
         }
 
