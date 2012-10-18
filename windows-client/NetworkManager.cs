@@ -570,6 +570,19 @@ namespace windows_client
             #endregion
 
             #endregion
+            #region INTERNATIONAL USER
+            else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
+            {
+                ConvMessage cm = new ConvMessage(jsonObj);
+                ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                if (obj == null)
+                    return;
+                object []vals = new object[2];
+                vals[0] = cm;
+                vals[1] = obj;
+                pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+            }
+            #endregion
             #region OTHER
             else
             {

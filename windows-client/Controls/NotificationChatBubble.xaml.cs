@@ -16,6 +16,7 @@ namespace windows_client.Controls
             USER_JOINED_HIKE, // Sms user joined hike
             WAITING,
             REWARD,
+            INTERNATIONAL_USER_BLOCKED
         }
 
 
@@ -59,6 +60,9 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.Waiting;
                     break;
                 case MessageType.REWARD:
+                    NotificationImage.Source = UI_Utils.Instance.Reward;
+                    break;
+                case MessageType.INTERNATIONAL_USER_BLOCKED:
                     NotificationImage.Source = UI_Utils.Instance.Reward;
                     break;
             }

@@ -66,7 +66,8 @@ namespace windows_client.Model
             USER_JOINED,
             DND_USER,
             GROUP_JOINED_OR_WAITING,
-            CREDITS_GAINED
+            CREDITS_GAINED,
+            INTERNATIONAL_USER
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -101,6 +102,10 @@ namespace windows_client.Model
             else if ("credits_gained" == type)
             {
                 return ParticipantInfoState.CREDITS_GAINED;
+            }
+            else if(HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
+            {
+                return ParticipantInfoState.INTERNATIONAL_USER;
             }
             else  // shows type == null
             {
@@ -459,19 +464,19 @@ namespace windows_client.Model
                 }
                 else
                 {
-                    _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
+                    _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client or system msg*/
                     _groupParticipant = null;
                 }
 
                 JObject data = (JObject)obj[HikeConstants.DATA];
                 JToken msg;
 
-                if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg))
+                if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg)) // if sms 
                 {
                     _message = msg.ToString();
                     _isSms = true;
                 }
-                else
+                else       // if not sms
                 {
                     _isSms = false;
                     if (this.HasAttachment)
@@ -487,7 +492,10 @@ namespace windows_client.Model
                     }
                     else
                     {
-                        _message = (string)data[HikeConstants.HIKE_MESSAGE];
+                        if (participantInfoState == ParticipantInfoState.INTERNATIONAL_USER)
+                            _message = "SMS works only to India at the moment.";
+                        else
+                            _message = (string)data[HikeConstants.HIKE_MESSAGE];
                     }
 
                 }

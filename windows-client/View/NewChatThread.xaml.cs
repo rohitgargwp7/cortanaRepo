@@ -1469,6 +1469,14 @@ namespace windows_client.View
                     ScrollToBottom();
                 }
                 #endregion
+                #region INTERNATIONAL_USER
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_USER)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, convMessage.Message);
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                #endregion
             }
             catch (Exception)
             { }

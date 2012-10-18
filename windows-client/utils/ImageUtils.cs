@@ -418,6 +418,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage IntUserBlocked
+        {
+            get
+            {
+                if (reward == null)
+                    reward = new BitmapImage(new Uri("/View/images/error_icon.png", UriKind.Relative));
+                return reward;
+            }
+        }
+
         public BitmapImage ParticipantLeft
         {
             get
