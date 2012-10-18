@@ -63,12 +63,17 @@ namespace windows_client
         public static readonly int ATTACHMENT_MAX_WIDTH = 800;
         public static readonly int MAX_EMOTICON_SUPPORTED = 10;
         public static readonly int VIBRATE_DURATION = 1000;
+        public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 120;
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
         public static readonly string ANALYTICS_OBJECT_DIRECTORY = "analytics";
+
+        //file for sharing info with background agent
+        public static readonly string BACKGROUND_AGENT_FILE = "token";
+        public static readonly string BACKGROUND_AGENT_DIRECTORY = "ba";
 
         private static readonly string TERMS_AND_CONDITIONS_WHITE = "http://hike.in/terms/wp7";
         private static readonly string FAQS_LINK_WHITE = "http://hike.in/help/wp7/";
@@ -166,6 +171,7 @@ namespace windows_client
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string FORWARD_MSG = "forwardedText";
+        public static string AUDIO_RECORDED = "audioRecorded";
         public static string DND = "dnd";
         public static string INVITE_TOKEN="invite_token";
 

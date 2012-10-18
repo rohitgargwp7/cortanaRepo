@@ -88,7 +88,7 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(true, "image", cm.Message, cm.IsSms);
+            initializeBasedOnState(true, cm.FileAttachment.ContentType, cm.Message, cm.IsSms);
             if (!cm.IsSms)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
@@ -99,12 +99,15 @@ namespace windows_client.Controls
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
-            using (var memStream = new MemoryStream(thumbnailsBytes))
+            if (thumbnailsBytes != null && thumbnailsBytes.Length > 0)
             {
-                memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage fileThumbnail = new BitmapImage();
-                fileThumbnail.SetSource(memStream);
-                this.MessageImage.Source = fileThumbnail;
+                using (var memStream = new MemoryStream(thumbnailsBytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage fileThumbnail = new BitmapImage();
+                    fileThumbnail.SetSource(memStream);
+                    this.MessageImage.Source = fileThumbnail;
+                }
             }
         }
 

@@ -409,6 +409,7 @@ namespace windows_client
                 // A navigation has failed; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
+            App.AnalyticsInstance.saveObject();
         }
 
         // Code to execute on Unhandled Exceptions
@@ -428,7 +429,7 @@ namespace windows_client
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
             });
-
+            App.AnalyticsInstance.saveObject();
         }
 
         #region Phone application initialization
@@ -615,6 +616,11 @@ namespace windows_client
                     {
                         store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
                     }
+                    if (!store.DirectoryExists(HikeConstants.BACKGROUND_AGENT_DIRECTORY))
+                    {
+                        store.CreateDirectory(HikeConstants.BACKGROUND_AGENT_DIRECTORY);
+                    }
+
                 }
                 // Create the database if it does not exist.
                 Stopwatch st = Stopwatch.StartNew();

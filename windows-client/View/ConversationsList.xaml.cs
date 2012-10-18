@@ -842,6 +842,7 @@ namespace windows_client.View
                 //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
                 marketplaceDetailTask.ContentIdentifier = appID;
                 marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
+              
                 marketplaceDetailTask.Show();
             }
         }

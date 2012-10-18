@@ -128,6 +128,7 @@
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Test\Test.cs" />
+    <Compile Include="utils\BackgroundAgentHelper.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
@@ -178,6 +179,9 @@
     </Compile>
     <Compile Include="View\Privacy.xaml.cs">
       <DependentUpon>Privacy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RecordMedia.xaml.cs">
+      <DependentUpon>RecordMedia.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -271,6 +275,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\RecordMedia.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -305,9 +313,20 @@
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
+    <Content Include="View\images\icon_cross.png" />
+    <Content Include="View\images\icon_play.png" />
+    <Content Include="View\images\icon_play_stop.png" />
+    <Content Include="View\images\icon_record.png" />
+    <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Resource Include="View\images\logo_main_white.png" />
+    <Resource Include="View\images\logo_main_black.png" />
     <Content Include="View\images\made_with_love_dark.png" />
+    <Content Include="View\images\menu_audio_icon.png" />
+    <Content Include="View\images\menu_photo_icon.png" />
+    <Content Include="View\images\mic_icon.png" />
+    <Resource Include="View\images\mic_icon_black.png" />
     <Content Include="View\images\new_message.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
