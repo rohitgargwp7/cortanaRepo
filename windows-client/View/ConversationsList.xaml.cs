@@ -62,6 +62,7 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             this.myListBox.SelectedIndex = -1;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
+            App.newChatThreadPage = null;
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             if (Utils.isCriticalUpdatePending())
@@ -101,6 +102,11 @@ namespace windows_client.View
             }
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            removeListeners();
+        }
         //Push notifications
         #region push notifications
         public void postPushNotification_Callback(JObject obj)
@@ -302,10 +308,14 @@ namespace windows_client.View
 
         private void removeListeners()
         {
-            mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
-            mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
+            try
+            {
+                mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+                mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+                mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
+                mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
+            }
+            catch { }
         }
 
         #endregion
@@ -841,7 +851,7 @@ namespace windows_client.View
                 //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
                 marketplaceDetailTask.ContentIdentifier = appID;
                 marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-              
+
                 marketplaceDetailTask.Show();
             }
         }

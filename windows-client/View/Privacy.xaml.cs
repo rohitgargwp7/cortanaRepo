@@ -38,9 +38,23 @@ namespace windows_client.View
             RegisterListeners();
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            RemoveListeners();
+            base.OnRemovedFromJournal(e);
+        }
         private void RegisterListeners()
         {
             App.HikePubSubInstance.addListener(HikePubSub.ACCOUNT_DELETED, this);
+        }
+
+        private void RemoveListeners()
+        {
+            try
+            {
+                App.HikePubSubInstance.removeListener(HikePubSub.ACCOUNT_DELETED, this);
+            }
+            catch { }
         }
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)

@@ -94,9 +94,10 @@ namespace windows_client.View
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
-            base.OnRemovedFromJournal(e);
+            removeListeners();
             PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_ID_FROM_CHATTHREAD);
             PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_NAME_FROM_CHATTHREAD);
+            base.OnRemovedFromJournal(e);
         }
 
         private void initPageBasedOnState()
@@ -163,6 +164,21 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
         }
+        private void removeListeners()
+        {
+            try
+            {
+                mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
+                mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+                mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
+                mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
+                mPubSub.removeListener(HikePubSub.GROUP_END, this);
+            }
+            catch
+            {
+            }
+        }
+
         public void onEventReceived(string type, object obj)
         {
             if (HikePubSub.UPDATE_UI == type)
@@ -370,6 +386,7 @@ namespace windows_client.View
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = Utils.GetActiveGroupParticiants(groupId);
+            PhoneApplicationService.Current.State["Group_GroupId"] = groupId;
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 

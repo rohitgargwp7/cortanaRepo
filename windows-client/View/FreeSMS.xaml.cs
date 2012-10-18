@@ -28,6 +28,17 @@ namespace windows_client.View
             App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED,this);
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            try
+            {
+                App.HikePubSubInstance.removeListener(HikePubSub.INVITEE_NUM_CHANGED, this);
+            }
+            catch
+            {
+            }
+            base.OnRemovedFromJournal(e);
+        }
         private void initpageBasedOnState()
         {
             int creditsRemaining = (int)App.appSettings[App.SMS_SETTING];

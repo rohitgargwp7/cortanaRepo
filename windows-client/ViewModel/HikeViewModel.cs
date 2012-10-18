@@ -80,6 +80,15 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
 
+        private void RemoveListeners()
+        {
+            App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.UPDATE_UI, this);
+            App.HikePubSubInstance.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
+        }
+
         public void onEventReceived(string type, object obj)
         {
             #region MESSAGE_RECEIVED
