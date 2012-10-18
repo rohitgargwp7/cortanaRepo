@@ -344,6 +344,7 @@ namespace windows_client
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
+            PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
