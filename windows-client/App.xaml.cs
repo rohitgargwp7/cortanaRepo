@@ -198,6 +198,11 @@ namespace windows_client
         public static bool IS_TOMBSTONED
         {
             get { return _isTombstoneLaunch; }
+            set
+            {
+                if (value != _isTombstoneLaunch)
+                    _isTombstoneLaunch = value;
+            }
         }
 
         public static Analytics AnalyticsInstance

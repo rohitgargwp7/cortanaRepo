@@ -1530,6 +1530,11 @@ namespace windows_client.View
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
             }
+            else if(e.TaskResult == TaskResult.Cancel)
+            {
+                if (e.Error != null)
+                    MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
+            }
         }
 
         //TODO remove these bools in release build. these are used because imageOpenHandler is called twice i debug
