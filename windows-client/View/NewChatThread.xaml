@@ -42,7 +42,7 @@
             <StackPanel Orientation="Vertical" Margin="24,0,20,0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                         <Image Name="userImage" Height="50"></Image>
-                    <TextBlock x:Name="userName" Text="Madhur Garg" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
+                    <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

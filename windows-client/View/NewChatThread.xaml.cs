@@ -331,11 +331,11 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
-            if (this.NavigationContext.QueryString.ContainsKey("msisdn")) 
+            if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
-                if(Char.IsDigit(msisdn[0]))
+                if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
@@ -414,6 +414,7 @@ namespace windows_client.View
             #endregion
             #region NORMAL LAUNCH
             else if (App.APP_LAUNCH_STATE == App.LaunchState.NORMAL_LAUNCH) // non tombstone case
+            //else
             {
                 if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
                 {
@@ -446,7 +447,6 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            removeListeners();
             if (App.newChatThreadPage == this)
                 App.newChatThreadPage = null;
         }
@@ -473,6 +473,7 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
+            GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
 
@@ -485,7 +486,7 @@ namespace windows_client.View
                 {
                     isGroupChat = true;
                     BlockTxtBlk.Text = "You have blocked this group. Unblock to continue hiking";
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
                 }
@@ -591,7 +592,7 @@ namespace windows_client.View
             }
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
-            initBlockUnblockState();
+            initBlockUnblockState(gi);
         }
 
         private void processGroupJoin(bool isNewgroup)
@@ -981,8 +982,12 @@ namespace windows_client.View
             });
         }
 
-        private void initBlockUnblockState()
+        private void initBlockUnblockState(GroupInfo gi)
         {
+            if (gi != null) // this shows its a group chat 
+            {
+                mUserIsBlocked = UsersTableUtils.isUserBlocked(gi.GroupOwner);
+            }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (mUserIsBlocked)
@@ -1096,16 +1101,12 @@ namespace windows_client.View
             {
                 if (isGroupChat)
                 {
-                    object[] vals = new object[2];
-                    vals[0] = mContactNumber;
-                    vals[1] = groupOwner;
-                    mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, vals);
+                    mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                     menuItem1.Text = BLOCK_USER + "group owner";
                 }
                 else
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
-
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
                     isTypingNotificationEnabled = true;
@@ -1120,10 +1121,7 @@ namespace windows_client.View
                 this.Focus();
                 if (isGroupChat)
                 {
-                    object[] vals = new object[2];
-                    vals[0] = mContactNumber;
-                    vals[1] = groupOwner;
-                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, vals);
+                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
                     menuItem1.Text = UNBLOCK_USER + "group owner";
                 }
                 else
