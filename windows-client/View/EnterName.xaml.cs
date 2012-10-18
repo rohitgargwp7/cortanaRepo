@@ -75,6 +75,9 @@ namespace windows_client
             msgTxtBlk.Opacity = 1;
             msgTxtBlk.Text = SCANNING_CONTACTS;
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
+
+            //for push notifications
+            BackgroundAgentHelper.storeUserTokenForBA();
         }
 
         private void setName_Callback(JObject obj)

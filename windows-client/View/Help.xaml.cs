@@ -67,5 +67,11 @@ namespace windows_client.View
         {
             NavigationService.Navigate(new Uri("/View/Walkthrough.xaml", UriKind.Relative));
         }
+
+        private void rateAndReview_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
+            marketplaceReviewTask.Show();
+        }
     }
 }
