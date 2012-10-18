@@ -55,13 +55,13 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             this.myListBox.SelectedIndex = -1;
+            App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             if (Utils.isCriticalUpdatePending())
@@ -471,7 +471,6 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.GROUP_CHAT);
             PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP] = true;
-            //NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Relative));
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
