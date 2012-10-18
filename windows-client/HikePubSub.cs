@@ -160,7 +160,8 @@ namespace windows_client
                     list = new List<Listener>();
                     listeners[type] = list;
                 }
-                list.Add(listener);
+                if(!list.Contains(listener))
+                    list.Add(listener);
             }
         }
 
