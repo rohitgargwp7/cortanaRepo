@@ -281,10 +281,8 @@ namespace windows_client.DbUtils
             #region BLOCK GROUP OWNER
             else if (HikePubSub.BLOCK_GROUPOWNER == type)
             {
-                object[] vals = (object[])obj;
-                string groupId = (string)vals[0];
-                string groupOwner = (string)vals[1];
-                UsersTableUtils.block(groupId);
+                string groupOwner = (string)obj;
+                UsersTableUtils.block(groupOwner);
                 JObject blockObj = blockUnblockSerialize("b", groupOwner);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, blockObj);
             }
@@ -292,10 +290,8 @@ namespace windows_client.DbUtils
             #region UNBLOCK GROUP OWNER
             else if (HikePubSub.UNBLOCK_GROUPOWNER == type)
             {
-                object[] vals = (object[])obj;
-                string groupId = (string)vals[0];
-                string groupOwner = (string)vals[1];
-                UsersTableUtils.unblock(groupId);
+                string groupOwner = (string)obj;
+                UsersTableUtils.unblock(groupOwner);
                 JObject unblockObj = blockUnblockSerialize("ub", groupOwner);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
             }
