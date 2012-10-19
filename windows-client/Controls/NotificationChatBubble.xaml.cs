@@ -63,7 +63,7 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.Reward;
                     break;
                 case MessageType.INTERNATIONAL_USER_BLOCKED:
-                    NotificationImage.Source = UI_Utils.Instance.Reward;
+                    NotificationImage.Source = UI_Utils.Instance.IntUserBlocked;
                     break;
             }
             UserName.Text = message;
