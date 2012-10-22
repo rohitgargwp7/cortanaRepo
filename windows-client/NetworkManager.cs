@@ -82,7 +82,6 @@ namespace windows_client
             }
             catch (JsonReaderException e)
             {
-                //logger.Info("WebSocketPublisher", "Invalid JSON message: " + msg +", Exception : "+e);
                 return;
             }
             string type = null;
@@ -497,7 +496,22 @@ namespace windows_client
 
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)
+                    {
+                        //ConvMessage cm = new ConvMessage();
+                        //cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                        //cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
+                        //cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                        //cm.Timestamp = TimeUtils.getCurrentTimeStamp();
+                        //cm.Msisdn = groupId;
+                        //ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                        //if (obj == null)
+                        //    return;
+                        //object[] values = new object[2];
+                        //vals[0] = cm;
+                        //vals[1] = obj;                       
                         this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
+                        //this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -516,6 +530,7 @@ namespace windows_client
                 */
                 try
                 {
+                    JToken bisToken = null;
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupParticipant gp = Utils.getGroupParticipant(null, fromMsisdn, groupId);
@@ -529,8 +544,8 @@ namespace windows_client
 
                     object[] vals = new object[2];
                     vals[0] = convMsg;
-                    vals[1] = cObj;
-
+                    vals[1] = cObj;     
+           
                     this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
                 }
@@ -573,12 +588,7 @@ namespace windows_client
             #region INTERNATIONAL USER
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
             {
-                ConvMessage cm = new ConvMessage();
-                cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
-                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.INTERNATIONAL_USER;
-                cm.Message = "SMS can only be sent to India.";
-                cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                cm.Timestamp = TimeUtils.getCurrentTimeStamp();
+                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.INTERNATIONAL_USER,jsonObj);
                 cm.Msisdn = msisdn;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                 if (obj == null)
@@ -627,16 +637,12 @@ namespace windows_client
             if (!isOptInMsg || App.ViewModel.ConvMap.ContainsKey(ms)) // if this is UJ or conversation has this msisdn go in
             {
                 object[] vals = null;
-                ConvMessage cm = new ConvMessage();
-                cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
-                cm.Timestamp = TimeUtils.getCurrentTimeStamp();
-                cm.Msisdn = ms;
-                cm.MessageId = -1;
-                cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                ConvMessage cm = null;
                 if (isOptInMsg)
-                    cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
+                    cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
                 else
-                    cm.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_JOINED;
+                    cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
+                cm.Msisdn = ms;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
 
                 if (credits <= 0)
@@ -646,13 +652,9 @@ namespace windows_client
                     string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
                     JObject o = new JObject();
                     o.Add("t", "credits_gained");
-                    ConvMessage cmCredits = new ConvMessage();
-                    cmCredits.MetaDataString = o.ToString(Newtonsoft.Json.Formatting.None);
+                    ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
                     cmCredits.Message = text;
-                    cmCredits.Timestamp = TimeUtils.getCurrentTimeStamp();
                     cmCredits.Msisdn = ms;
-                    cmCredits.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                    cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
                     obj = MessagesTableUtils.addChatMessage(cmCredits, false);
 
                     vals = new object[3];
@@ -673,14 +675,9 @@ namespace windows_client
                     if (l[i].Msisdn == ms) // if this msisdn exists in group
                     {
                         object[] values = null;
-                        ConvMessage convMsg = new ConvMessage();
-                        convMsg.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
-                        convMsg.Timestamp = TimeUtils.getCurrentTimeStamp();
-                        convMsg.MessageId = -1;
+                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN,jsonObj);
                         convMsg.Msisdn = key;
                         convMsg.Message = ms;
-                        convMsg.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                        convMsg.GrpParticipantState = ConvMessage.ParticipantInfoState.USER_OPT_IN;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
 
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
@@ -688,14 +685,9 @@ namespace windows_client
                             string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
                             JObject o = new JObject();
                             o.Add("t", "credits_gained");
-                            ConvMessage cmCredits = new ConvMessage();
-                            cmCredits.MetaDataString = o.ToString(Newtonsoft.Json.Formatting.None);
-                            cmCredits.MessageId = -1;
+                            ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED,o);
                             cmCredits.Message = text;
-                            cmCredits.Timestamp = TimeUtils.getCurrentTimeStamp();
                             cmCredits.Msisdn = key;
-                            cmCredits.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                            cmCredits.GrpParticipantState = ConvMessage.ParticipantInfoState.CREDITS_GAINED;
                             co = MessagesTableUtils.addChatMessage(cmCredits, false);
                             values = new object[3];
                             values[2] = cmCredits;

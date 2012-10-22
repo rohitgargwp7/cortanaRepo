@@ -166,6 +166,7 @@ namespace windows_client
         public static string USER_LEFT = " left the group chat";
         public static readonly string GROUP_CHAT_END = "This group chat has ended.";
         public static string USER_JOINED_HIKE = "{0} just joined hike!";
+        public static string SMS_INDIA = "SMS can only be sent to India.";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
@@ -212,6 +213,8 @@ namespace windows_client
             public static string GROUP_USER_JOINED_OR_WAITING ="gujow";
             public static string USER_OPT_IN = "uo";
             public static string USER_JOIN = "uj";
+            public static string SMS_USER = "sms_user";
+            public static string HIKE_USER = "hike_user";
         }
     }
 }
