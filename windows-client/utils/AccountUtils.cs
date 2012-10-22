@@ -18,7 +18,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = true;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -136,7 +136,7 @@ namespace windows_client.utils
 
         private enum RequestType
         {
-            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
+            REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
             POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE
         }
         private static void addToken(HttpWebRequest req)
@@ -192,6 +192,16 @@ namespace windows_client.utils
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.VALIDATE_NUMBER, phoneNo, finalCallbackFunction });
         }
+
+        public static void postForCallMe(string msisdn, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/pin-call")) as HttpWebRequest;
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.CALL_ME, msisdn, finalCallbackFunction });
+        }
+
 
         public static void setName(string name, postResponseFunction finalCallbackFunction)
         {
@@ -312,6 +322,12 @@ namespace windows_client.utils
                     string numberToValidate = vars[2] as string;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("phone_no", numberToValidate);
+                    break;
+
+                case RequestType.CALL_ME:
+                    string msisdn = vars[2] as string;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    data.Add("msisdn", msisdn);
                     break;
 
                 case RequestType.SET_NAME:
