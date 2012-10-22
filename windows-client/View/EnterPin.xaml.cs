@@ -40,8 +40,6 @@ namespace windows_client
             appBar.Buttons.Add(nextIconButton);
             enterPin.ApplicationBar = appBar;
             isTSorFirstLaunch = true;
-            scheduler.Schedule(showCallMeOption, TimeSpan.FromSeconds(callMeTimeout));
-
         }
 
         private void btnEnterPin_Click(object sender, EventArgs e)
@@ -155,6 +153,8 @@ namespace windows_client
             base.OnNavigatedTo(e);
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+
+            scheduler.Schedule(showCallMeOption, TimeSpan.FromSeconds(callMeTimeout));
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
