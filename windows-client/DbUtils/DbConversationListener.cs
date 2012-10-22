@@ -302,10 +302,8 @@ namespace windows_client.DbUtils
                 string convMsisdn = (string)obj;
                 if (Utils.isGroupConversation(convMsisdn)) // if Group Conversation delete groups too
                 {
-                    BackgroundWorker bw = new BackgroundWorker();
-                    bw.WorkerSupportsCancellation = true;
-                    bw.DoWork += new DoWorkEventHandler(deleteGroupsAsync);
-                    bw.RunWorkerAsync(convMsisdn);
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                    GroupTableUtils.deleteGroupWithId(convMsisdn);
                     Utils.GroupCache.Remove(convMsisdn);
                     App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
@@ -333,11 +331,9 @@ namespace windows_client.DbUtils
                         App.MqttManagerInstance.mqttPublishToServer(jObj);
                     }
                 }
-
-                BackgroundWorker bw = new BackgroundWorker();
-                bw.WorkerSupportsCancellation = true;
-                bw.DoWork += new DoWorkEventHandler(deleteAllGroupsAsync);
-                bw.RunWorkerAsync();
+                Utils.GroupCache.Clear();
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                GroupTableUtils.deleteAllGroups();
                 mPubSub.publish(HikePubSub.DELETED_ALL_CONVERSATIONS, null);
             }
             #endregion
@@ -355,37 +351,6 @@ namespace windows_client.DbUtils
         {
             string msisdn = MessagesTableUtils.updateAllMsgStatus(null,ids, status);
             ConversationTableUtils.updateLastMsgStatus(ids[ids.Length-1],msisdn, status);
-        }
-
-        private void deleteGroupsAsync(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            string msisdn = (string)e.Argument;
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                Utils.GroupCache.Remove(msisdn);
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                GroupTableUtils.deleteGroupWithId(msisdn);
-            }
-        }
-
-        private void deleteAllGroupsAsync(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if ((worker.CancellationPending == true))
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                Utils.GroupCache.Clear();
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                GroupTableUtils.deleteAllGroups();
-            }
         }
     }
 }
