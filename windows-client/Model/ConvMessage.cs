@@ -66,7 +66,8 @@ namespace windows_client.Model
             USER_JOINED,
             DND_USER,
             GROUP_JOINED_OR_WAITING,
-            CREDITS_GAINED
+            CREDITS_GAINED,
+            INTERNATIONAL_USER
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -101,6 +102,10 @@ namespace windows_client.Model
             else if ("credits_gained" == type)
             {
                 return ParticipantInfoState.CREDITS_GAINED;
+            }
+            else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
+            {
+                return ParticipantInfoState.INTERNATIONAL_USER;
             }
             else  // shows type == null
             {
@@ -406,119 +411,6 @@ namespace windows_client.Model
             MessageStatus = msgState;
         }
 
-        public ConvMessage(JObject obj)
-        {
-            try
-            {
-                bool isFileTransfer;
-                JObject metadataObject = null;
-                JToken val = null;
-                obj.TryGetValue(HikeConstants.TO, out val);
-
-                JToken metadataToken = null;
-                obj[HikeConstants.DATA].ToObject<JObject>().TryGetValue(HikeConstants.METADATA, out metadataToken);
-
-                if (metadataToken != null)
-                {
-                    metadataObject = JObject.FromObject(metadataToken);
-                    JToken filesToken = null;
-                    isFileTransfer = metadataObject.TryGetValue("files", out filesToken);
-                    if (isFileTransfer)
-                    {
-                        JArray files = metadataObject["files"].ToObject<JArray>();
-                        JObject fileObject = files[0].ToObject<JObject>();
-
-                        JToken fileName;
-                        JToken fileKey;
-                        JToken thumbnail;
-                        JToken contentType;
-
-                        fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
-                        fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
-                        fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
-                        fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
-                        this.HasAttachment = true;
-
-                        byte[] base64Decoded = null;
-                        if (thumbnail != null)
-                            base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), base64Decoded,
-                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-                    }
-                    else
-                    {
-                        metadataJsonString = metadataObject.ToString(Newtonsoft.Json.Formatting.None);
-                    }
-
-                }
-                participantInfoState = fromJSON(metadataObject);
-                if (val != null) // represents group message
-                {
-                    _msisdn = val.ToString();
-                    _groupParticipant = (string)obj[HikeConstants.FROM];
-                }
-                else
-                {
-                    _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
-                    _groupParticipant = null;
-                }
-
-                JObject data = (JObject)obj[HikeConstants.DATA];
-                JToken msg;
-
-                if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg))
-                {
-                    _message = msg.ToString();
-                    _isSms = true;
-                }
-                else
-                {
-                    _isSms = false;
-                    if (this.HasAttachment)
-                    {
-                        string messageText = "";
-                        if (this.FileAttachment.ContentType.Contains("image"))
-                            messageText = "image";
-                        else if (this.FileAttachment.ContentType.Contains("audio"))
-                            messageText = "audio";
-                        else if (this.FileAttachment.ContentType.Contains("video"))
-                            messageText = "video";
-                        this._message = messageText;
-                    }
-                    else
-                    {
-                        _message = (string)data[HikeConstants.HIKE_MESSAGE];
-                    }
-
-                }
-                //if (_groupParticipant != null) // reprsents group chat
-                //{
-                //    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
-                //}
-
-                Timestamp = (long)data[HikeConstants.TIMESTAMP];
-
-                /* prevent us from receiving a message from the future */
-
-                long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
-                this.Timestamp = (this.Timestamp > now) ? now : this.Timestamp;
-
-                /* if we're deserialized an object from json, it's always unread */
-                this.MessageStatus = State.RECEIVED_UNREAD;
-                this._messageId = -1;
-                string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
-                this.MappedMessageId = System.Int64.Parse(mappedMsgID);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error in parsing json");
-            }
-        }
-
-        public ConvMessage()
-        {
-        }
-
         public JObject serialize(bool isHikeMsg)
         {
             JObject obj = new JObject();
@@ -755,6 +647,128 @@ namespace windows_client.Model
 
             }
             return obj;
+        }
+
+        public ConvMessage(JObject obj)
+        {
+            try
+            {
+                bool isFileTransfer;
+                JObject metadataObject = null;
+                JToken val = null;
+                obj.TryGetValue(HikeConstants.TO, out val);
+
+                JToken metadataToken = null;
+                try
+                {
+                    obj[HikeConstants.DATA].ToObject<JObject>().TryGetValue(HikeConstants.METADATA, out metadataToken);
+                }
+                catch { }
+
+                if (metadataToken != null)
+                {
+                    metadataObject = JObject.FromObject(metadataToken);
+                    JToken filesToken = null;
+                    isFileTransfer = metadataObject.TryGetValue("files", out filesToken);
+                    if (isFileTransfer)
+                    {
+                        JArray files = metadataObject["files"].ToObject<JArray>();
+                        JObject fileObject = files[0].ToObject<JObject>();
+
+                        JToken fileName;
+                        JToken fileKey;
+                        JToken thumbnail;
+                        JToken contentType;
+
+                        fileObject.TryGetValue(HikeConstants.FILE_CONTENT_TYPE, out contentType);
+                        fileObject.TryGetValue(HikeConstants.FILE_NAME, out fileName);
+                        fileObject.TryGetValue(HikeConstants.FILE_KEY, out fileKey);
+                        fileObject.TryGetValue(HikeConstants.FILE_THUMBNAIL, out thumbnail);
+                        this.HasAttachment = true;
+
+                        byte[] base64Decoded = null;
+                        if (thumbnail != null)
+                            base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
+                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), base64Decoded,
+                           contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                    }
+                    else
+                    {
+                        metadataJsonString = metadataObject.ToString(Newtonsoft.Json.Formatting.None);
+                    }
+
+                }
+                participantInfoState = fromJSON(metadataObject);
+                if (val != null) // represents group message
+                {
+                    _msisdn = val.ToString();
+                    _groupParticipant = (string)obj[HikeConstants.FROM];
+                }
+                else
+                {
+                    _msisdn = (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client or system msg*/
+                    _groupParticipant = null;
+                }
+
+                JObject data = (JObject)obj[HikeConstants.DATA];
+                JToken msg;
+
+
+                if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg)) // if sms 
+                {
+                    _message = msg.ToString();
+                    _isSms = true;
+                }
+                else       // if not sms
+                {
+                    _isSms = false;
+                    if (this.HasAttachment)
+                    {
+                        string messageText = "";
+                        if (this.FileAttachment.ContentType.Contains("image"))
+                            messageText = "image";
+                        else if (this.FileAttachment.ContentType.Contains("audio"))
+                            messageText = "audio";
+                        else if (this.FileAttachment.ContentType.Contains("video"))
+                            messageText = "video";
+                        this._message = messageText;
+                    }
+                    else
+                    {
+                        if (participantInfoState == ParticipantInfoState.INTERNATIONAL_USER)
+                            _message = "SMS works only to India at the moment.";
+                        else
+                            _message = (string)data[HikeConstants.HIKE_MESSAGE];
+                    }
+
+                }
+                //if (_groupParticipant != null) // reprsents group chat
+                //{
+                //    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
+                //}
+                JToken ts = null;
+                if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
+                    _timestamp = ts.ToObject<long>();
+
+                /* prevent us from receiving a message from the future */
+
+                long now = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                this.Timestamp = (this.Timestamp > now) ? now : this.Timestamp;
+
+                /* if we're deserialized an object from json, it's always unread */
+                this.MessageStatus = State.RECEIVED_UNREAD;
+                this._messageId = -1;
+                string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
+                this.MappedMessageId = System.Int64.Parse(mappedMsgID);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error in parsing json");
+            }
+        }
+
+        public ConvMessage()
+        {
         }
 
         public ConvMessage(JObject obj, bool isSelfGenerated)

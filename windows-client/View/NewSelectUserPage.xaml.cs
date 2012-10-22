@@ -21,7 +21,7 @@ using windows_client.utils;
 
 namespace windows_client.View
 {
-    public partial class NewSelectUserPage : PhoneApplicationPage
+    public partial class NewSelectUserPage : PhoneApplicationPage, HikePubSub.Listener
     {
         bool canGoBack = true;
         private bool isClicked = false;
@@ -192,6 +192,7 @@ namespace windows_client.View
                 shellProgress.IsVisible = false;
             };
             initPage();
+            App.HikePubSubInstance.addListener(HikePubSub.GROUP_END, this);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -203,7 +204,7 @@ namespace windows_client.View
             // Ensure that there is at least one key in the query string, and check 
             // whether the "FileId" key is present.
             if (queryStrings.ContainsKey("FileId"))
-            {              
+            {
                 PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
                 queryStrings.Clear();
             }
@@ -218,9 +219,15 @@ namespace windows_client.View
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
-            base.OnRemovedFromJournal(e);
+            try
+            {
+                App.HikePubSubInstance.removeListener(HikePubSub.GROUP_END, this);
+            }
+            catch { }
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
+            PhoneApplicationService.Current.State.Remove("Group_GroupId");
+            base.OnRemovedFromJournal(e);
         }
 
         private void initPage()
@@ -477,7 +484,7 @@ namespace windows_client.View
             List<Group<ContactInfo>> list = null;
             if (areCharsNumber)
             {
-                
+
                 if (glistFiltered == null || createNewFilteredList)
                 {
                     if (defaultJumpList == null)
@@ -876,6 +883,24 @@ namespace windows_client.View
         private void contactsListBox_ScrollingStarted(object sender, EventArgs e)
         {
             contactsListBox.Focus();
+        }
+
+        public void onEventReceived(string type, object obj)
+        {
+            if (HikePubSub.GROUP_END == type)
+            {
+                string gId = (string)obj;
+                if (gId == (string)PhoneApplicationService.Current.State["Group_GroupId"])
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
+                        PhoneApplicationService.Current.State.Remove("Group_GroupId");
+                        NavigationService.RemoveBackEntry();
+                        NavigationService.GoBack();
+                    });
+                }
+            }
         }
     }
 }

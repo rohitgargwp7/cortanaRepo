@@ -79,6 +79,15 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<ContactInfo> getAllContactsToInvite()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users where user.OnHike==false orderby user.Name select user;
+                return users.ToList<ContactInfo>();
+            }
+        }
+
         public static ContactInfo getContactInfoFromMSISDN(string msisdn)
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -228,15 +237,6 @@ namespace windows_client.DbUtils
                 return;
             deleteMultipleRows(updatedContacts);
             addContacts(updatedContacts);
-        }
-
-        public static List<ContactInfo> getAllContactsToInvite()
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();
-                return (res==null || res.Count == 0) ? null : res;
-            }
         }
 
         private static void SubmitWithConflictResolve(HikeUsersDb context)

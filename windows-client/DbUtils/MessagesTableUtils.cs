@@ -81,14 +81,21 @@ namespace windows_client.DbUtils
         }
 
         /* Adds a chat message to message Table.*/
-        public static void addMessage(ConvMessage convMessage)
+        public static bool addMessage(ConvMessage convMessage)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
                 long currentMessageId = convMessage.MessageId;
 
                 context.messages.InsertOnSubmit(convMessage);
-                context.SubmitChanges();
+                try
+                {
+                    context.SubmitChanges();
+                }
+                catch
+                {
+                    return false;
+                }
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     long msgId = convMessage.MessageId;
@@ -124,6 +131,7 @@ namespace windows_client.DbUtils
                     });
                 }
             }
+            return true;
         }
 
         // this is called in case of gcj from Network manager
@@ -346,7 +354,9 @@ namespace windows_client.DbUtils
                 #endregion
 
                 Stopwatch st1 = Stopwatch.StartNew();
-                addMessage(convMsg);
+                bool success = addMessage(convMsg);
+                if (!success)
+                    return null;
                 st1.Stop();
                 long msec1 = st1.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);

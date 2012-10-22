@@ -570,6 +570,25 @@ namespace windows_client
             #endregion
 
             #endregion
+            #region INTERNATIONAL USER
+            else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
+            {
+                ConvMessage cm = new ConvMessage();
+                cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.INTERNATIONAL_USER;
+                cm.Message = "SMS can only be sent to India.";
+                cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                cm.Timestamp = TimeUtils.getCurrentTimeStamp();
+                cm.Msisdn = msisdn;
+                ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                if (obj == null)
+                    return;
+                object []vals = new object[2];
+                vals[0] = cm;
+                vals[1] = obj;
+                pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+            }
+            #endregion
             #region OTHER
             else
             {

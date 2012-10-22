@@ -202,7 +202,7 @@ namespace windows_client
 
         public static class MqttMessageTypes
         {
-
+            public static readonly string BLOCK_INTERNATIONAL_USER = "bis";
             public static readonly string GROUP_CHAT_JOIN = "gcj";
             public static readonly string GROUP_CHAT_LEAVE = "gcl";
             public static readonly string GROUP_CHAT_END = "gce";

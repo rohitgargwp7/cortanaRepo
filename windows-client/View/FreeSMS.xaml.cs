@@ -28,6 +28,17 @@ namespace windows_client.View
             App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED,this);
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            try
+            {
+                App.HikePubSubInstance.removeListener(HikePubSub.INVITEE_NUM_CHANGED, this);
+            }
+            catch
+            {
+            }
+            base.OnRemovedFromJournal(e);
+        }
         private void initpageBasedOnState()
         {
             int creditsRemaining = (int)App.appSettings[App.SMS_SETTING];
@@ -98,10 +109,9 @@ namespace windows_client.View
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
         {
-            Uri nextPage = new Uri("/View/Invite.xaml", UriKind.Relative);
             try
             {
-                NavigationService.Navigate(nextPage);
+                NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
             }
             catch (Exception ex)
             {

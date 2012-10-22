@@ -171,6 +171,9 @@
     <Compile Include="View\Invite.xaml.cs">
       <DependentUpon>Invite.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\InviteUsers.xaml.cs">
+      <DependentUpon>InviteUsers.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NewChatThread.xaml.cs">
       <DependentUpon>NewChatThread.xaml</DependentUpon>
     </Compile>
@@ -263,6 +266,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\InviteUsers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\NewChatThread.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -308,6 +315,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="View\images\change_pic.png" />
+    <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
     <Content Include="View\images\empty_screen_logo_white.png" />

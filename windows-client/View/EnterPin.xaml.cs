@@ -14,7 +14,7 @@ namespace windows_client
 {
     public partial class EnterPin : PhoneApplicationPage
     {
-        bool isTSorFirstLaunch = false;
+        bool isNextClicked = false;
         string pinEntered;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
@@ -39,11 +39,13 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterPin.ApplicationBar = appBar;
-            isTSorFirstLaunch = true;
         }
 
         private void btnEnterPin_Click(object sender, EventArgs e)
         {
+            if (isNextClicked)
+                return;
+            isNextClicked = true;
             pinEntered = txtBxEnterPin.Text.Trim();
             if (string.IsNullOrEmpty(pinEntered))
                 return;
@@ -53,6 +55,7 @@ namespace windows_client
                 progressBar.IsEnabled = false;
                 pinErrorTxt.Text = "Connectivity issue.";
                 pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
+                isNextClicked = false;
                 return;
             }
             txtBxEnterPin.IsReadOnly = true;
@@ -80,6 +83,7 @@ namespace windows_client
                     if (!string.IsNullOrWhiteSpace(pinEntered))
                         nextIconButton.IsEnabled = true;
                 });
+                isNextClicked = false;
                 return;
             }
 
@@ -117,6 +121,8 @@ namespace windows_client
 
         private void goBackLogic()
         {
+            if (isNextClicked)
+                return;
             App.RemoveKeyFromAppSettings(App.MSISDN_SETTING);
 
             if (NavigationService.CanGoBack)

@@ -331,11 +331,11 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             #region PUSH NOTIFICATION
             // push notification , needs to be handled just once.
-            if (this.NavigationContext.QueryString.ContainsKey("msisdn")) 
+            if (this.NavigationContext.QueryString.ContainsKey("msisdn"))
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
-                if(Char.IsDigit(msisdn[0]))
+                if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
@@ -442,6 +442,7 @@ namespace windows_client.View
             #endregion
             #region NORMAL LAUNCH
             else if (App.APP_LAUNCH_STATE == App.LaunchState.NORMAL_LAUNCH) // non tombstone case
+            //else
             {
                 if (isFirstLaunch) // case is first launch and normal launch i.e no tombstone
                 {
@@ -476,6 +477,7 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
+
             if (App.newChatThreadPage == this)
                 App.newChatThreadPage = null;
         }
@@ -490,7 +492,7 @@ namespace windows_client.View
             }
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
-                Uri nUri = new Uri("/View/ConversationsList.xaml",UriKind.Relative);
+                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                 NavigationService.Navigate(nUri);
             }
             base.OnBackKeyPress(e);
@@ -502,6 +504,7 @@ namespace windows_client.View
 
         private void initPageBasedOnState()
         {
+            GroupInfo gi = null;
             bool isAddUser = false;
             #region OBJECT FROM CONVLIST PAGE
 
@@ -514,7 +517,7 @@ namespace windows_client.View
                 {
                     isGroupChat = true;
                     BlockTxtBlk.Text = "You have blocked this group. Unblock to continue hiking";
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
                 }
@@ -620,7 +623,7 @@ namespace windows_client.View
             }
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
-            initBlockUnblockState();
+            initBlockUnblockState(gi);
         }
 
         private void processGroupJoin(bool isNewgroup)
@@ -1010,8 +1013,12 @@ namespace windows_client.View
             });
         }
 
-        private void initBlockUnblockState()
+        private void initBlockUnblockState(GroupInfo gi)
         {
+            if (gi != null) // this shows its a group chat 
+            {
+                mUserIsBlocked = UsersTableUtils.isUserBlocked(gi.GroupOwner);
+            }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (mUserIsBlocked)
@@ -1053,20 +1060,24 @@ namespace windows_client.View
 
         private void removeListeners()
         {
-            mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
-            mPubSub.removeListener(HikePubSub.SERVER_RECEIVED_MSG, this);
-            mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED, this);
-            mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
-            mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
-            mPubSub.removeListener(HikePubSub.USER_JOINED, this);
-            mPubSub.removeListener(HikePubSub.USER_LEFT, this);
-            mPubSub.removeListener(HikePubSub.TYPING_CONVERSATION, this);
-            mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
-            mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
-            mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
-            mPubSub.removeListener(HikePubSub.GROUP_END, this);
-            mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
-            mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+            try
+            {
+                mPubSub.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
+                mPubSub.removeListener(HikePubSub.SERVER_RECEIVED_MSG, this);
+                mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED, this);
+                mPubSub.removeListener(HikePubSub.MESSAGE_DELIVERED_READ, this);
+                mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
+                mPubSub.removeListener(HikePubSub.USER_JOINED, this);
+                mPubSub.removeListener(HikePubSub.USER_LEFT, this);
+                mPubSub.removeListener(HikePubSub.TYPING_CONVERSATION, this);
+                mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
+                mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
+                mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
+                mPubSub.removeListener(HikePubSub.GROUP_END, this);
+                mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
+                mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
+            }
+            catch { }
         }
         #endregion
 
@@ -1125,16 +1136,12 @@ namespace windows_client.View
             {
                 if (isGroupChat)
                 {
-                    object[] vals = new object[2];
-                    vals[0] = mContactNumber;
-                    vals[1] = groupOwner;
-                    mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, vals);
+                    mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                     menuItem1.Text = BLOCK_USER + "group owner";
                 }
                 else
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_USER, mContactNumber);
-
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
                     isTypingNotificationEnabled = true;
@@ -1149,10 +1156,7 @@ namespace windows_client.View
                 this.Focus();
                 if (isGroupChat)
                 {
-                    object[] vals = new object[2];
-                    vals[0] = mContactNumber;
-                    vals[1] = groupOwner;
-                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, vals);
+                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
                     menuItem1.Text = UNBLOCK_USER + "group owner";
                 }
                 else
@@ -1165,7 +1169,7 @@ namespace windows_client.View
                 }
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 fileTransferIconButton.IsEnabled = false;
-                mUserIsBlocked = true;                
+                mUserIsBlocked = true;
                 showOverlay(true); //true means show block animation
             }
         }
@@ -1465,6 +1469,14 @@ namespace windows_client.View
                     ScrollToBottom();
                 }
                 #endregion
+                #region INTERNATIONAL_USER
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_USER)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, convMessage.Message);
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                #endregion
             }
             catch (Exception)
             { }
@@ -1559,7 +1571,7 @@ namespace windows_client.View
                 image.UriSource = uri;
                 image.ImageOpened += imageOpenedHandler;
             }
-            else if(e.TaskResult == TaskResult.Cancel)
+            else if (e.TaskResult == TaskResult.Cancel)
             {
                 if (e.Error != null)
                     MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
@@ -1607,11 +1619,11 @@ namespace windows_client.View
             abc = !abc;
         }
 
-        private void SendImage(BitmapImage image,string fileName)
+        private void SendImage(BitmapImage image, string fileName)
         {
             byte[] thumbnailBytes;
             byte[] fileBytes;
-            
+
             ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
             convMessage.HasAttachment = true;
@@ -1629,11 +1641,11 @@ namespace windows_client.View
             }
             if (fileName.StartsWith("{")) // this is from share picker
             {
-                fileName = "PhotoChooser-"+fileName.Substring(1, fileName.Length - 2) + ".jpg";
+                fileName = "PhotoChooser-" + fileName.Substring(1, fileName.Length - 2) + ".jpg";
             }
             else
                 fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
-            
+
             convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
             convMessage.FileAttachment.ContentType = "image";
             convMessage.Message = "image";
@@ -2167,7 +2179,7 @@ namespace windows_client.View
                 try
                 {
                     SentChatBubble msg = null;
-                    msgMap.TryGetValue(msgId,out msg);
+                    msgMap.TryGetValue(msgId, out msg);
                     if (msg != null)
                     {
                         //msg.MessageStatus = ConvMessage.State.SENT_CONFIRMED;
@@ -2194,7 +2206,7 @@ namespace windows_client.View
                 try
                 {
                     SentChatBubble msg = null;
-                    msgMap.TryGetValue(msgId,out msg);
+                    msgMap.TryGetValue(msgId, out msg);
                     if (msg != null)
                     {
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED);
@@ -2223,7 +2235,7 @@ namespace windows_client.View
                     try
                     {
                         SentChatBubble msg = null;
-                        msgMap.TryGetValue(ids[i],out msg);
+                        msgMap.TryGetValue(ids[i], out msg);
                         if (msg != null)
                         {
                             msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED_READ);
@@ -2414,9 +2426,9 @@ namespace windows_client.View
                         mContactName = App.ViewModel.ConvMap[mContactNumber].NameToShow;
                         userName.Text = mContactName;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("NEW_CHAT_THREAD :: Exception in participant joined group : "+ex.StackTrace);
+                        Debug.WriteLine("NEW_CHAT_THREAD :: Exception in participant joined group : " + ex.StackTrace);
                     }
                 });
             }
