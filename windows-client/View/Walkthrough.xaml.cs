@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.utils;
@@ -44,9 +35,9 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            SmileyParser.Instance.initializeSmileyParser();
             if (PhoneApplicationService.Current.State.ContainsKey("FromNameScreen")) // represents page is launched from entername screen
             {
-                SmileyParser.Instance.initializeSmileyParser();
                 if(NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
@@ -64,6 +55,7 @@ namespace windows_client.View
                 return;
             isClicked = true;
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
             NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 

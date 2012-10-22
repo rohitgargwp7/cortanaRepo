@@ -20,6 +20,7 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
+using Phone.Controls;
 
 namespace windows_client.View
 {
@@ -45,7 +46,7 @@ namespace windows_client.View
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
-
+        public MyProgressIndicator progress = null; // there should be just one instance of this.
         #endregion
 
         #region Page Based Functions
@@ -153,6 +154,10 @@ namespace windows_client.View
         /* This function will run on UI Thread */
         private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
+            {
+                ShowLaunchMessages();
+            }
             progressBar.Opacity = 0;
             progressBar.IsEnabled = false;
 
@@ -174,9 +179,9 @@ namespace windows_client.View
             appBar.Opacity = 1;
             NetworkManager.turnOffNetworkManager = false;
             App.MqttManagerInstance.connect();
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_NEW_INSTALLATION))
+            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
             {
-                PhoneApplicationService.Current.State.Remove(HikeConstants.IS_NEW_INSTALLATION);
+                App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 Utils.requestAccountInfo();
             }
 
@@ -239,6 +244,37 @@ namespace windows_client.View
             postAnalytics();
         }
 
+        private void ShowLaunchMessages()
+        {
+            List<ContactInfo> cl = null;
+            App.appSettings.TryGetValue("ContactsToShow", out cl);
+            if (cl == null)
+                return;
+            for (int i = 0; i < cl.Count; i++)
+            {
+                ConvMessage c = null;
+                JObject j = new JObject();
+                if (cl[i].OnHike)
+                {
+                    j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
+                    c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER,j);
+                    c.Message = cl[i].Name + " is on hike.";
+                }
+                else
+                {
+                    j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.SMS_USER;
+                    c = new ConvMessage(ConvMessage.ParticipantInfoState.SMS_USER, j);
+                    c.Message = "Send " + cl[i].Name + " free sms.";
+                }
+                c.Msisdn = cl[i].Msisdn;
+                ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
+                if (obj == null)
+                    return;
+                App.ViewModel.ConvMap[c.Msisdn] = obj;
+                App.ViewModel.MessageListPageCollection.Add(obj);
+            }
+            App.appSettings.Remove("ContactsToShow");
+        }
         private void initAppBar()
         {
             appBar = new ApplicationBar();
@@ -470,8 +506,11 @@ namespace windows_client.View
             if (result == MessageBoxResult.Cancel)
                 return;
             disableAppBar();
-            progressBar.Opacity = 1;
-            progressBar.IsEnabled = true;
+            if (progress == null)
+            {
+                progress = new MyProgressIndicator("Deleting Chats ...");
+            }
+            progress.Show();
             NetworkManager.turnOffNetworkManager = true;
             mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
@@ -604,8 +643,8 @@ namespace windows_client.View
                     App.ViewModel.MessageListPageCollection.Clear();
                     emptyScreenImage.Opacity = 1;
                     emptyScreenTip.Opacity = 1;
-                    progressBar.Opacity = 0;
-                    progressBar.IsEnabled = false;
+                    progress.Hide();
+                    progress = null;
                     enableAppBar();
                 });
                 NetworkManager.turnOffNetworkManager = false;
