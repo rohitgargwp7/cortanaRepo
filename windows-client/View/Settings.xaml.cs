@@ -139,17 +139,5 @@ namespace windows_client.View
             this.vibrate.Content = "Off";
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
         }
-
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            if (this.pushNotifications.IsChecked == true)
-            {
-                BackgroundAgentHelper.StartPeriodicAgent();
-            }
-            else
-            {
-                BackgroundAgentHelper.RemoveAgent();
-            }
-        }
     }
 }
