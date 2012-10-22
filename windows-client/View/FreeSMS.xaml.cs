@@ -47,7 +47,6 @@ namespace windows_client.View
                 int max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
                 MaxCredits.Text = Convert.ToString( max > 0 ? max:0);
             }
-//            int creditsRemaining = 8796;
             TextBlock t3 = null;
             Rectangle r3 = null;
             if (creditsRemaining > 999)
@@ -59,13 +58,15 @@ namespace windows_client.View
                 r3 = new Rectangle();
                 r3.Fill = rectangleColor;
                 r3.Margin = box4Margin;
-                r3.Width = 40;
+                r3.Width = 47;
+                r3.Height = 76;
                 Grid.SetColumn(r3, 3);
                 SMSCounterGrid.Children.Add(r3);
 
                 t3 = new TextBlock();
                 t3.FontSize = 45;
                 t3.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                t3.VerticalAlignment = System.Windows.VerticalAlignment.Center;
                 Grid.SetColumn(t3, 3);
                 SMSCounterGrid.Children.Add(t3);
             }
