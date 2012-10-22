@@ -62,7 +62,7 @@
 
                 <StackPanel Grid.Row="5" Grid.Column="1" Margin="20,30,0,0">
                     <TextBlock Text="Version" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="1.1.0.0" FontSize="20"/>
+                    <TextBlock x:Name="applicationVersion" Text="1.1.0.0" FontSize="20"/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
