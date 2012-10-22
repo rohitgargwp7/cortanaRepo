@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
+using Microsoft.Phone.Reactive;
 
 namespace windows_client
 {
@@ -17,6 +18,8 @@ namespace windows_client
         string pinEntered;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
+        private IScheduler scheduler = Scheduler.NewThread;
+        private readonly int callMeTimeout = 10;
 
         public EnterPin()
         {
@@ -154,8 +157,10 @@ namespace windows_client
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if(NavigationService.CanGoBack)
+            if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+
+            scheduler.Schedule(showCallMeOption, TimeSpan.FromSeconds(callMeTimeout));
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
@@ -204,6 +209,26 @@ namespace windows_client
         private void txtBxEnterPin_LostFocus(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Background = UI_Utils.Instance.White;
+        }
+
+        private void showCallMeOption()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                callMe.Opacity = 1;
+            });
+        }
+
+
+        private void callMe_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            string msisdn;
+            App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out msisdn);
+            AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
+        }
+
+        private void callMePostResponse_Callback(JObject obj)
+        { 
         }
 
     }
