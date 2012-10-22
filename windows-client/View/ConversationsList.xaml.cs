@@ -781,7 +781,7 @@ namespace windows_client.View
                 {
                     string critical = obj[HikeConstants.CRITICAL].ToString();
                     string latest = obj[HikeConstants.LATEST].ToString();
-                    string current = Utils.GetVersion();
+                    string current = Utils.getAppVersion();
                     latestVersionString = latest;
                     string lastDismissedUpdate = "";
                     App.appSettings.TryGetValue<string>(App.LAST_DISMISSED_UPDATE_VERSION, out lastDismissedUpdate);

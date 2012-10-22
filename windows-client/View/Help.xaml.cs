@@ -29,7 +29,7 @@ namespace windows_client.View
             {
                 this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love.png", UriKind.Relative));
             }
-            applicationVersion.Text = utils.Utils.GetVersion();
+            applicationVersion.Text = utils.Utils.getAppVersion();
         }
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)

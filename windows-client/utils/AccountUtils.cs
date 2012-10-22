@@ -309,7 +309,7 @@ namespace windows_client.utils
                     data[HikeConstants.DEVICE_ID] = Utils.getDeviceId();
 //                    data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
                     data[HikeConstants.DEVICE_VERSION] = Utils.getOSVersion();
-                    data[HikeConstants.APP_VERSION] = Utils.GetVersion();
+                    data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
                     string inviteToken = "";
                     if (!string.IsNullOrEmpty(inviteToken))
                         data[HikeConstants.INVITE_TOKEN_KEY] = inviteToken;

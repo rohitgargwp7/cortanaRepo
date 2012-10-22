@@ -319,7 +319,7 @@ namespace windows_client.utils
                 App.appSettings.TryGetValue<string>(App.LAST_CRITICAL_VERSION, out lastCriticalVersion);
                 if (String.IsNullOrEmpty(lastCriticalVersion))
                     return false;
-                string currentVersion = Utils.GetVersion();
+                string currentVersion = Utils.getAppVersion();
                 return compareVersion(lastCriticalVersion, currentVersion) == 1;
             }
             catch (Exception)
@@ -329,7 +329,7 @@ namespace windows_client.utils
         }
 
 
-        public static string GetVersion()
+        public static string getAppVersion()
         {
             Uri manifest = new Uri("WMAppManifest.xml", UriKind.Relative);
             var si = Application.GetResourceStream(manifest);
@@ -405,7 +405,7 @@ namespace windows_client.utils
         {
             JObject info = new JObject();
             info["_device"] = getDeviceModel();
-            info["_app_version"] = GetVersion();
+            info["_app_version"] = getAppVersion();
             info["tag"] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getDeviceId();
