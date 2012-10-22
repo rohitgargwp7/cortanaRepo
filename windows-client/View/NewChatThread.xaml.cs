@@ -1419,6 +1419,22 @@ namespace windows_client.View
                     ScrollToBottom();
                 }
                 #endregion
+                #region HIKE_USER
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.HIKE_USER)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                #endregion
+                #region SMS_USER
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.SMS_USER)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED, convMessage.Message);
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                #endregion
                 #region USER_OPT_IN
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
                 {
@@ -1473,6 +1489,27 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, convMessage.Message);
+                    this.MessageList.Children.Add(chatBubble);
+                    ScrollToBottom();
+                }
+                #endregion
+                #region INTERNATIONAL_GROUPCHAT_USER
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_GROUP_USER)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, HikeConstants.SMS_INDIA);
+                    this.MessageList.Children.Add(chatBubble);
+
+                    string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
+                    MyChatBubble chatBubbleLeft = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + HikeConstants.USER_LEFT);
+                    this.MessageList.Children.Add(chatBubbleLeft);
+
+                    ScrollToBottom();
+                }
+                #endregion
+                #region GROUP NAME CHANGED
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
                     this.MessageList.Children.Add(chatBubble);
                     ScrollToBottom();
                 }
