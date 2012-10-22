@@ -62,12 +62,16 @@ namespace windows_client.Model
             PARTICIPANT_LEFT, // The participant has left
             PARTICIPANT_JOINED, // The participant has joined
             GROUP_END, // Group chat has ended
+            GROUP_NAME_CHANGE,
             USER_OPT_IN,
             USER_JOINED,
+            HIKE_USER,
+            SMS_USER,
             DND_USER,
             GROUP_JOINED_OR_WAITING,
             CREDITS_GAINED,
-            INTERNATIONAL_USER
+            INTERNATIONAL_USER,
+            INTERNATIONAL_GROUP_USER
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -81,6 +85,9 @@ namespace windows_client.Model
             }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
+                JToken jt = null;
+                if (obj.TryGetValue("st", out jt))
+                    return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
@@ -99,6 +106,14 @@ namespace windows_client.Model
             {
                 return ParticipantInfoState.USER_JOINED;
             }
+            else if (HikeConstants.MqttMessageTypes.HIKE_USER == type)
+            {
+                return ParticipantInfoState.HIKE_USER;
+            }
+            else if (HikeConstants.MqttMessageTypes.SMS_USER == type)
+            {
+                return ParticipantInfoState.SMS_USER;
+            }
             else if ("credits_gained" == type)
             {
                 return ParticipantInfoState.CREDITS_GAINED;
@@ -106,6 +121,10 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
             {
                 return ParticipantInfoState.INTERNATIONAL_USER;
+            }
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type)
+            {
+                return ParticipantInfoState.GROUP_NAME_CHANGE;
             }
             else  // shows type == null
             {
@@ -849,7 +868,7 @@ namespace windows_client.Model
                 {
                     this._message = HikeConstants.GROUP_CHAT_END;
                 }
-                else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT)// Group member left
+                else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
                 {
                     this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
                     GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
@@ -862,7 +881,26 @@ namespace windows_client.Model
             if (saveCache)
                 App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             this._timestamp = TimeUtils.getCurrentTimeStamp();
-            this.MessageStatus = State.UNKNOWN;
+            if (isSelfGenerated)
+                this.MessageStatus = State.UNKNOWN;
+            else
+                this.MessageStatus = State.RECEIVED_UNREAD;
+        }
+
+        public ConvMessage(ParticipantInfoState participantInfoState,JObject jsonObj)
+        {
+            this.MessageId = -1;
+            this.participantInfoState = participantInfoState;
+            this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+            this.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+            this.Timestamp = TimeUtils.getCurrentTimeStamp();
+            switch (this.participantInfoState)
+            {
+                case ParticipantInfoState.INTERNATIONAL_USER: 
+                    this.Message = HikeConstants.SMS_INDIA;
+                    break;
+                default: break;
+            }
         }
 
         public static JObject ProcessGCLogic(string grpId)

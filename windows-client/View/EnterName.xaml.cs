@@ -122,7 +122,6 @@ namespace windows_client
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = "Getting you in";
             Thread.Sleep(2 * 1000);
-            PhoneApplicationService.Current.State[HikeConstants.IS_NEW_INSTALLATION] = true;
             try
             {
                 NavigationService.Navigate(nextPage);

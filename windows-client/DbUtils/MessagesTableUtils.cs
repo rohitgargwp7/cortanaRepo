@@ -244,7 +244,7 @@ namespace windows_client.DbUtils
                 }
                 #endregion
                 #region PARTICIPANT_LEFT
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT)
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_GROUP_USER)
                 {
                     obj.LastMessage = convMsg.Message;
                     GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
@@ -346,6 +346,14 @@ namespace windows_client.DbUtils
                         obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
+                }
+                #endregion\
+                #region GROUP NAME CHANGED
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
+                {
+                    GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
+                    //convMsg.Message = gp.FirstName + " changed the group name.";
+                    convMsg.Message = "Group Name changed by a group member.";
                 }
                 #endregion
                 #region NO_INFO Or OTHER MSGS

@@ -16,7 +16,8 @@ namespace windows_client.Controls
             USER_JOINED_HIKE, // Sms user joined hike
             WAITING,
             REWARD,
-            INTERNATIONAL_USER_BLOCKED
+            INTERNATIONAL_USER_BLOCKED,
+            UNKNOWN
         }
 
 
