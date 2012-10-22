@@ -82,6 +82,14 @@ namespace windows_client
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
         public static readonly string UPDATE_URL = "http://get.hike.in/updates/wp7";
 
+        //for device info
+        public static readonly string DEVICE_TYPE = "devicetype";//The OS
+        public static readonly string DEVICE_ID = "deviceid";//A unique ID of the device
+        public static readonly string DEVICE_TOKEN = "devicetoken";// A unique ID of the device 
+        public static readonly string DEVICE_VERSION = "deviceversion";//The current OS version
+        public static readonly string APP_VERSION = "appversion";//The app version
+        public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
+
         public static string FAQS_LINK
         {
             get
@@ -144,9 +152,9 @@ namespace windows_client
         public static string TOTAL_CREDITS_PER_MONTH = "tc";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
-        public static string MSISDN="msisdn";
+        public static string MSISDN = "msisdn";
         public static string NAME = "name";
-        public static string NEW_USER="nu";
+        public static string NEW_USER = "nu";
         public static string DND_NUMBERS = "dndnumbers";
         public static string START_NEW_GROUP = "start_new_group";
         public static string EXISTING_GROUP_MEMBERS = "existing_group_members";
@@ -174,7 +182,7 @@ namespace windows_client
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string DND = "dnd";
-        public static string INVITE_TOKEN="invite_token";
+        public static string INVITE_TOKEN = "invite_token";
 
         public static class Extras
         {
@@ -210,7 +218,7 @@ namespace windows_client
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static string ACCOUNT_INFO = "ai";
-            public static string GROUP_USER_JOINED_OR_WAITING ="gujow";
+            public static string GROUP_USER_JOINED_OR_WAITING = "gujow";
             public static string USER_OPT_IN = "uo";
             public static string USER_JOIN = "uj";
             public static string SMS_USER = "sms_user";
