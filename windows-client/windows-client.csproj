@@ -128,7 +128,6 @@
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
     <Compile Include="Test\Test.cs" />
-    <Compile Include="utils\BackgroundAgentHelper.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
