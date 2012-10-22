@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using windows_client.DbUtils;
 using System;
 using System.Diagnostics;
-using System;
-using System.Windows.Media;
 using System.Windows;
 using System.IO;
-using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Info;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.utils
 {
@@ -374,5 +373,51 @@ namespace windows_client.utils
 
             return "Unknown";
         }
+
+        public static string getOSVersion()
+        {
+            return System.Environment.OSVersion.Version.Major.ToString() + "." + System.Environment.OSVersion.Version.Minor.ToString()
+                + "." + System.Environment.OSVersion.Version.Build.ToString();
+            
+        }
+
+        //unique id for device. note:- it is not imei number
+        public static string getDeviceId()
+        {
+            byte[] uniqueId = (byte[])DeviceExtendedProperties.GetValue("DeviceUniqueId");
+            return BitConverter.ToString(uniqueId);
+        }
+
+        //carrier DeviceNetworkInformation.CellularMobileOperator;
+
+        public static string getDeviceModel()
+        {
+            string model = null;
+            object theModel = null;
+
+            if (Microsoft.Phone.Info.DeviceExtendedProperties.TryGetValue("DeviceName", out theModel))
+                model = theModel as string;
+
+            return model;
+        }
+
+        public static JObject deviceInforForAnalytics()
+        {
+            JObject info = new JObject();
+            info["_device"] = getDeviceModel();
+            info["_app_version"] = GetVersion();
+            info["tag"] = "cbs";
+            info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
+            info["device_id"] = getDeviceId();
+            //info["_resolution"] = "800x480";
+            info["_os_version"] = getOSVersion();
+            info["_os"] = "windows";
+            JObject infoPacket = new JObject();
+            infoPacket[HikeConstants.DATA] = info;
+            infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
+            return infoPacket;
+        }
+
+
     }
 }
