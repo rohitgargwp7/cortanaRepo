@@ -10,7 +10,6 @@ namespace windows_client.Model
     public class Analytics : IBinarySerializable
     {
         //co = conversations screen
-
         public static readonly string DELETE_ALL_CHATS = "coDelAll";
         public static readonly string COMPOSE = "coCom";
         public static readonly string GROUP_CHAT = "coGrp";
@@ -18,6 +17,7 @@ namespace windows_client.Model
         //pr = profile screen
         public static readonly string FREE_SMS = "prFrS";
         public static readonly string INVITE = "prInv";
+        public static readonly string PRIVACY = "prPrvc";
         public static readonly string SETTINGS = "prSet";
         public static readonly string HELP = "prHlp";
         public static readonly string EDIT_PROFILE = "prEdtPr";
@@ -32,6 +32,16 @@ namespace windows_client.Model
 
         //ct = chat thread
         public static readonly string GROUP_INFO = "ctGI";
+
+        //hp = help
+        public static readonly string FAQS = "hpFAQ";
+        public static readonly string CONTACT_US = "hpCU";
+        public static readonly string LEGAL = "hpLgl";
+        public static readonly string WALKTHROUGH = "hpWt";
+        public static readonly string RATE_APP = "hpRA";
+
+        //gi = group info
+        public static readonly string INVITE_SMS_PARTICIPANTS = "giInv";
 
 
         private Dictionary<string, int> eventMap = new Dictionary<string, int>();
