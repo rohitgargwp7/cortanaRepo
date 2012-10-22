@@ -217,6 +217,7 @@ namespace windows_client
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 callMe.Opacity = 1;
+                callMeButton.Focus();   
             });
         }
 
