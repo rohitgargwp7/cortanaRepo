@@ -159,9 +159,10 @@ namespace windows_client
             base.OnNavigatedTo(e);
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-
-            scheduler.Schedule(showCallMeOption, TimeSpan.FromSeconds(callMeTimeout));
-
+            if (callMe.Opacity == 0)
+            {
+                scheduler.Schedule(showCallMeOption, TimeSpan.FromSeconds(callMeTimeout));
+            }
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
