@@ -67,6 +67,8 @@ namespace windows_client
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
+        public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 20; //seconds
+
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
         public static readonly string ANALYTICS_OBJECT_DIRECTORY = "analytics";
@@ -80,7 +82,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
         private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp7/black.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
-        public static readonly string UPDATE_URL = "http://get.hike.in/updates/wp7";
+        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp7" : "http://staging.get.hike.in/updates/wp7";
 
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS

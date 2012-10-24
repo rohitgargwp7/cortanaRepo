@@ -125,7 +125,7 @@ namespace windows_client.Controls
         //    ContextMenuService.SetContextMenu(this, contextMenu);
         //}
 
-        private void setContextMenu(Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary)
+        protected void setContextMenu(Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary)
         {
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = true;
@@ -160,37 +160,8 @@ namespace windows_client.Controls
         { }
 
 
-        public void setAttachmentState(Attachment.AttachmentState attachmentState)
+        public virtual void setAttachmentState(Attachment.AttachmentState attachmentState)
         {
-            this.FileAttachment.FileState = attachmentState;
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
-                if (currentPage != null)
-                {
-                    switch (attachmentState)
-                    {
-                        case Attachment.AttachmentState.CANCELED:
-                            uploadOrDownloadCanceled();
-                            setContextMenu(currentPage.AttachmentCanceledOrFailed);
-                            break;
-                        case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
-                            setContextMenu(currentPage.AttachmentCanceledOrFailed);
-                            MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
-                            break;
-                        case Attachment.AttachmentState.COMPLETED:
-                            setContextMenu(currentPage.AttachmentUploaded);
-                            uploadOrDownloadCompleted();
-                            MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
-                            break;
-                        case Attachment.AttachmentState.STARTED:
-                            setContextMenu(currentPage.AttachmentUploading);
-                            uploadOrDownloadStarted();
-                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
-                            break;
-                    }
-                }
-            });
         }
     }
 }

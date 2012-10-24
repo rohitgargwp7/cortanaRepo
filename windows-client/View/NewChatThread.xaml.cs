@@ -61,6 +61,7 @@ namespace windows_client.View
 
         private int mCredits;
         private long lastTextChangedTime;
+        private long lastTypingNotificationShownTime;
 
         private HikePubSub mPubSub;
         private IScheduler scheduler = Scheduler.NewThread;
@@ -81,8 +82,10 @@ namespace windows_client.View
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _nonAttachmentMenu;
         private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploading;
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploaded;
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentCanceledOrFailed = null;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploadedorDownloaded;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploadCanceledOrFailed = null;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentDownloading;
+        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentDownloadCanceledOrFailed = null;
         #endregion
 
         #region UI VALUES
@@ -200,39 +203,75 @@ namespace windows_client.View
             }
         }
 
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploaded
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploadedOrDownloaded
         {
             get
             {
-                if (_attachmentUploaded == null)
+                if (_attachmentUploadedorDownloaded == null)
                 {
-                    _attachmentUploaded = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _attachmentUploaded.Add("copy", MenuItem_Click_Copy);
-                    _attachmentUploaded.Add("forward", MenuItem_Click_Forward);
-                    _attachmentUploaded.Add("delete", MenuItem_Click_Delete);
+                    _attachmentUploadedorDownloaded = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
+                    _attachmentUploadedorDownloaded.Add("copy", MenuItem_Click_Copy);
+                    _attachmentUploadedorDownloaded.Add("forward", MenuItem_Click_Forward);
+                    _attachmentUploadedorDownloaded.Add("delete", MenuItem_Click_Delete);
                 }
-                return _attachmentUploaded;
+                return _attachmentUploadedorDownloaded;
             }
             set
             {
-                _attachmentUploaded = value;
+                _attachmentUploadedorDownloaded = value;
             }
         }
 
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentCanceledOrFailed
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploadCanceledOrFailed
         {
             get
             {
-                if (_attachmentCanceledOrFailed == null)
+                if (_attachmentUploadCanceledOrFailed == null)
                 {
-                    _attachmentCanceledOrFailed = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _attachmentCanceledOrFailed.Add("delete", MenuItem_Click_Delete);
+                    _attachmentUploadCanceledOrFailed = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
+                    _attachmentUploadCanceledOrFailed.Add("delete", MenuItem_Click_Delete);
                 }
-                return _attachmentCanceledOrFailed;
+                return _attachmentUploadCanceledOrFailed;
             }
             set
             {
-                _attachmentCanceledOrFailed = value;
+                _attachmentUploadCanceledOrFailed = value;
+            }
+        }
+
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentDownloading
+        {
+            get
+            {
+                if (_attachmentDownloading == null)
+                {
+                    _attachmentDownloading = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
+                    _attachmentDownloading.Add("copy", MenuItem_Click_Copy);
+                    _attachmentDownloading.Add("cancel", MenuItem_Click_Cancel);
+                }
+                return _attachmentDownloading;
+            }
+            set
+            {
+                _attachmentDownloading = value;
+            }
+        }
+
+        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentDownloadCanceledOrFailed
+        {
+            get
+            {
+                if (_attachmentDownloadCanceledOrFailed == null)
+                {
+                    _attachmentDownloadCanceledOrFailed = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
+                    _attachmentDownloadCanceledOrFailed.Add("copy", MenuItem_Click_Copy);
+                    _attachmentDownloadCanceledOrFailed.Add("delete", MenuItem_Click_Delete);
+                }
+                return _attachmentDownloadCanceledOrFailed;
+            }
+            set
+            {
+                _attachmentDownloadCanceledOrFailed = value;
             }
         }
 
@@ -490,6 +529,13 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
+            if (attachmentMenu.Visibility == Visibility.Visible)
+            {
+                attachmentMenu.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+                return;
+            }
+
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
@@ -611,7 +657,7 @@ namespace windows_client.View
             #endregion
 
             userName.Text = mContactName;
-            if(groupOwner != null)
+            if (groupOwner != null)
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
             else
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
@@ -1012,7 +1058,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if(App.ViewModel.ConvMap.ContainsKey(msisdn))
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
             });
         }
@@ -1296,10 +1342,10 @@ namespace windows_client.View
                         switch (convMessage.FileAttachment.FileState)
                         {
                             case Attachment.AttachmentState.CANCELED:
-                                contextMenuDictionary = AttachmentCanceledOrFailed;
+                                contextMenuDictionary = AttachmentUploadCanceledOrFailed;
                                 break;
                             case Attachment.AttachmentState.COMPLETED:
-                                contextMenuDictionary = AttachmentUploaded;
+                                contextMenuDictionary = AttachmentUploadedOrDownloaded;
                                 break;
                             default:
                                 contextMenuDictionary = AttachmentUploading;
@@ -2117,13 +2163,22 @@ namespace windows_client.View
                 isTypingNotificationActive = true;
                 ScrollToBottom();
             });
+            lastTypingNotificationShownTime = TimeUtils.getCurrentTimeStamp();
+            scheduler.Schedule(autoHideTypingNotification, TimeSpan.FromSeconds(HikeConstants.TYPING_NOTIFICATION_AUTOHIDE));
+        }
+
+        private void autoHideTypingNotification()
+        {
+            long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
+            if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
+                HideTypingNotification();
         }
 
         private void HideTypingNotification()
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (!isTypingNotificationEnabled || isTypingNotificationActive)
+                if ((!isTypingNotificationEnabled || isTypingNotificationActive) && this.MessageList.Children.Contains(typingNotificationImage))
                     this.MessageList.Children.Remove(typingNotificationImage);
                 if (isTypingNotificationActive)
                     isTypingNotificationActive = false;

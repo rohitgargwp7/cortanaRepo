@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Data;
 using Microsoft.Phone.Controls;
+using windows_client.DbUtils;
+using windows_client.View;
 
 namespace windows_client.Controls
 {
@@ -79,6 +81,38 @@ namespace windows_client.Controls
             }
         }
 
+        public override void setAttachmentState(Attachment.AttachmentState attachmentState)
+        {
+            this.FileAttachment.FileState = attachmentState;
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                if (currentPage != null)
+                {
+                    switch (attachmentState)
+                    {
+                        case Attachment.AttachmentState.CANCELED:
+                            uploadOrDownloadCanceled();
+                            setContextMenu(currentPage.AttachmentDownloadCanceledOrFailed);
+                            break;
+                        case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
+                            setContextMenu(currentPage.AttachmentDownloadCanceledOrFailed);
+                            MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
+                            break;
+                        case Attachment.AttachmentState.COMPLETED:
+                            setContextMenu(currentPage.AttachmentUploadedOrDownloaded);
+                            uploadOrDownloadCompleted();
+                            MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
+                            break;
+                        case Attachment.AttachmentState.STARTED:
+                            setContextMenu(currentPage.AttachmentDownloading);
+                            uploadOrDownloadStarted();
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
+                            break;
+                    }
+                }
+            });
+        }
 
 
         private Grid attachment;
