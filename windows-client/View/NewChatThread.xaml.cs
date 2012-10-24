@@ -1023,13 +1023,11 @@ namespace windows_client.View
                 {
                     //sendMsgBtn.IsEnabled = false;
                     showOverlay(true);
-                    fileTransferIconButton.IsEnabled = false;
                 }
                 else
                 {
                     //sendMsgBtn.IsEnabled = true;
                     showOverlay(false);
-                    fileTransferIconButton.IsEnabled = true;
                 }
             });
         }
@@ -1145,7 +1143,6 @@ namespace windows_client.View
                     isTypingNotificationEnabled = true;
                     menuItem1.Text = BLOCK_USER;
                 }
-                fileTransferIconButton.IsEnabled = true;
                 mUserIsBlocked = false;
                 showOverlay(false);
             }
@@ -1167,7 +1164,6 @@ namespace windows_client.View
                     menuItem1.Text = UNBLOCK_USER;
                 }
                 emoticonPanel.Visibility = Visibility.Collapsed;
-                fileTransferIconButton.IsEnabled = false;
                 mUserIsBlocked = true;
                 showOverlay(true); //true means show block animation
             }
@@ -2041,6 +2037,7 @@ namespace windows_client.View
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
                 sendIconButton.IsEnabled = false;
+                fileTransferIconButton.IsEnabled = false;
             }
             else
             {
@@ -2049,10 +2046,19 @@ namespace windows_client.View
                 MessageList.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
-                emoticonsIconButton.IsEnabled = true;
-                sendIconButton.IsEnabled = true;
+                if (isGroupChat && !isGroupAlive)
+                {
+                    emoticonsIconButton.IsEnabled = false;
+                    sendIconButton.IsEnabled = false;
+                    fileTransferIconButton.IsEnabled = false;
+                }
+                else
+                {
+                    emoticonsIconButton.IsEnabled = true;
+                    sendIconButton.IsEnabled = true;
+                    fileTransferIconButton.IsEnabled = true;
+                }
             }
-
         }
 
         #endregion
