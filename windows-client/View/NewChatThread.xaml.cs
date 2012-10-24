@@ -851,6 +851,8 @@ namespace windows_client.View
             inviteMenuItem = new ApplicationBarMenuItem();
             inviteMenuItem.Text = "invite user";
             inviteMenuItem.Click += new EventHandler(inviteUserBtn_Click);
+            if (mUserIsBlocked)
+                inviteMenuItem.IsEnabled = false;
         }
 
         #endregion
@@ -1144,6 +1146,8 @@ namespace windows_client.View
                     sendIconButton.IsEnabled = true;
                     isTypingNotificationEnabled = true;
                     menuItem1.Text = BLOCK_USER;
+                    if (inviteMenuItem != null)
+                        inviteMenuItem.IsEnabled = true;
                 }
                 fileTransferIconButton.IsEnabled = true;
                 mUserIsBlocked = false;
