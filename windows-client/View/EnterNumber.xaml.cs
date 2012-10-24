@@ -440,7 +440,7 @@ namespace windows_client
 
         void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
         {
-            txtEnterPhone.Hint = "Enter your number here";
+            txtEnterPhone.Hint = "Phone Number";
             string ISORegion = "";
             string countryCodeName = CultureInfo.CurrentCulture.Name;
             try
@@ -471,7 +471,7 @@ namespace windows_client
 
         private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtEnterPhone.Hint = "Enter your number here";
+            txtEnterPhone.Hint = "Phone Number";
             txtEnterPhone.Foreground = UI_Utils.Instance.SignUpForeground;
         }
 
