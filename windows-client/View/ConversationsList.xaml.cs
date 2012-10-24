@@ -183,6 +183,12 @@ namespace windows_client.View
             {
                 App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 Utils.requestAccountInfo();
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
+            }
+            else if (App.appSettings.Contains("New_Update"))
+            {
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
+                App.RemoveKeyFromAppSettings("New_Update");
             }
 
             // move to seperate thread later

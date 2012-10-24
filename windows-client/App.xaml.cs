@@ -582,7 +582,7 @@ namespace windows_client
 
             if (_viewModel == null)
             {
-                string current_ver = null;
+                string current_ver = "1.0.0.0";
                 List<ConversationListObject> convList = null;
 
                 // If version exists means build is 1.3.0.0 or later else 1.1.0.0
@@ -610,6 +610,12 @@ namespace windows_client
                             store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
                         }
                     }
+                }
+                if (current_ver == null)
+                    current_ver = "1.0.0.0";
+                if(!isNewInstall && Utils.compareVersion(Utils.getAppVersion(),current_ver)==1) // this is update
+                {
+                    App.WriteToIsoStorageSettings("New_Update", true);
                 }
             }
             st.Stop();
