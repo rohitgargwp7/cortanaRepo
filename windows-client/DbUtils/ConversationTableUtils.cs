@@ -387,7 +387,7 @@ namespace windows_client.DbUtils
                 {
                     try
                     {
-                        if (fileName == CONVERSATIONS_DIRECTORY + "\\" + "Convs")
+                        if (fileName == "Convs")
                             continue;
                         store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
                     }
