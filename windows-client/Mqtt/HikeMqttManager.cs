@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.Phone.Reactive;
 using System.Threading;
 using System.Windows;
+using System.ComponentModel;
 
 namespace windows_client.Mqtt
 {
@@ -264,6 +265,16 @@ namespace windows_client.Mqtt
 
         public void connect()
         {
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (ss, ee) =>
+            {
+                connectInBackground();
+            };
+            bw.RunWorkerAsync();
+        }
+
+        private void connectInBackground()
+        {
             disconnectCalled = false;
             if (isConnected())
             {
@@ -280,6 +291,7 @@ namespace windows_client.Mqtt
                 scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
             }
         }
+
 
         public void send(HikePacket packet, int qos)
         {
