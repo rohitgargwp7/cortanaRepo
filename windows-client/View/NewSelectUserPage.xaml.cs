@@ -442,11 +442,15 @@ namespace windows_client.View
         private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
         {
             bool areCharsNumber = false;
+            bool isPlus = false;
             if (isNumber(charsEntered))
             {
                 areCharsNumber = true;
                 if (charsEntered.StartsWith("+"))
+                {
+                    isPlus = true;
                     charsEntered = charsEntered.Substring(1);
+                }
             }
             List<Group<ContactInfo>> listToIterate = null;
             int charsLength = charsEntered.Length - 1;
@@ -498,9 +502,9 @@ namespace windows_client.View
                     list = glistFiltered;
                     list[26].Items.Insert(0, defaultContact);
                 }
-
+                charsEntered = isPlus ? "+" : "" + charsEntered;
                 list[26].Items[0].Name = charsEntered;
-                if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
+                if (IsNumberValid(charsEntered))
                 {
                     list[26].Items[0].Msisdn = TAP_MSG;
                 }
@@ -515,6 +519,38 @@ namespace windows_client.View
             if (areCharsNumber)
                 return list;
             return glistFiltered;
+        }
+
+        private bool IsNumberValid(string charsEntered)
+        {
+            // TODO : Use regex if required
+            // CASES 
+            /*
+             * 1. If number starts with '+'
+             */
+
+            if (charsEntered.StartsWith("+"))
+            {
+                if (charsEntered.Length < 8 || charsEntered.Length > 15)
+                    return false;
+            }
+            else if (charsEntered.StartsWith("0"))
+            {
+                int i = 0;
+                while (i<charsEntered.Length && charsEntered[i] == '0')
+                    i++;
+                if(i>1) // more than 1 zeros
+                    return false;
+                string num = charsEntered.Substring(i); // no leading zeros now.
+                if (num.Length < 8 || num.Length > 15)
+                    return false;
+            }
+            else
+            {
+                if (charsEntered.Length < 8 || charsEntered.Length > 15)
+                    return false;
+            }
+            return true; ;
         }
 
         #region GROUP CHAT RELATED
@@ -787,13 +823,17 @@ namespace windows_client.View
 
         private string normalizeNumber(string msisdn)
         {
-            switch (msisdn.Length)
+            switch (msisdn[0])
             {
-                case 10: return ("+91" + msisdn);
-                case 11: return ("+91" + msisdn.Substring(1));
-                case 12: return ("+" + msisdn);
-                case 13: return msisdn;
-                default: return msisdn;
+                case '+': return msisdn;
+                case '0':
+                    string country_code = "";
+                    App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING,out country_code);
+                    return (country_code + msisdn.Substring(1));
+                default: 
+                    string country_code2 = "";
+                    App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
+                    return country_code2 + msisdn;
             }
         }
 
