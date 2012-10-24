@@ -19,7 +19,7 @@ namespace windows_client
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
         private IScheduler scheduler = Scheduler.NewThread;
-        private readonly int callMeTimeout = 10;
+        private readonly int callMeTimeout = 15;
 
         public EnterPin()
         {
@@ -249,11 +249,21 @@ namespace windows_client
                 string msisdn;
                 App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out msisdn);
                 AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
+                MessageBox.Show("Calling you for PIN.", "", MessageBoxButton.OK);
+
             }
         }
 
         private void callMePostResponse_Callback(JObject obj)
-        { 
+        {
+            if (obj == null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show("Couldn't call you. Try again later.", "", MessageBoxButton.OK);
+                });
+
+            }
         }
 
     }

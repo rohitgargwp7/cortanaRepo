@@ -122,10 +122,10 @@ namespace windows_client.View
         public void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
         {
             // Error handling logic
-            Dispatcher.BeginInvoke(() =>
-                MessageBox.Show(String.Format("A push notification {0} error occurred.  {1} ({2}) {3}",
-                    e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
-                    );
+            //Dispatcher.BeginInvoke(() =>
+            //    MessageBox.Show(String.Format("A push notification {0} error occurred.  {1} ({2}) {3}",
+            //        e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
+            //        );
         }
 
         private void vibrate_Checked(object sender, RoutedEventArgs e)

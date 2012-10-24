@@ -50,11 +50,11 @@
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
                 <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,10"></Image>
 
-                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" HorizontalAlignment="Left" MaxWidth="400" Text="We couldn't pull your phone #. Enter it below :" FontSize="24"  TextAlignment="Left" Margin="24,30,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
+                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" HorizontalAlignment="Left" MaxWidth="400" Text="We couldn't pull your phone #. Enter it below :" FontSize="24"  TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
 
-                <toolkit:PhoneTextBox x:Name="txtEnterCountry" BorderThickness="2" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78"/>
+                <toolkit:PhoneTextBox x:Name="txtEnterCountry" BorderThickness="2" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Left" Margin="12,-2,0,0" Width="454" Height="78"/>
 
-                <toolkit:PhoneTextBox x:Name="txtEnterPhone" BorderThickness="2" GotFocus="txtEnterPhone_GotFocus" LostFocus="txtEnterPhone_LostFocus" InputScope="TelephoneCountryCode" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78" TextChanged="txtEnterPhone_TextChanged" />
+                <toolkit:PhoneTextBox KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" MaxLength="15" BorderThickness="2" GotFocus="txtEnterPhone_GotFocus" LostFocus="txtEnterPhone_LostFocus" InputScope="Number" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78" TextChanged="txtEnterPhone_TextChanged" />
 
                 <TextBlock Height="25" TextAlignment="Left" 
                            Margin="24,0,0,0" Name="msisdnErrorTxt" 
@@ -84,13 +84,13 @@
         <toolkit:LongListSelector Tap="countryList_Tap" Margin="24,0,0,0" Grid.Row="0" Visibility="Collapsed" x:Name="countryList" Background="Transparent" IsFlatList="True">
             <toolkit:LongListSelector.ListHeaderTemplate>
                 <DataTemplate>
-                    <TextBlock Text="Select Country"/>
+                    <TextBlock Text="SELECT COUNTRY" FontFamily="Segoe WP Semibold" FontSize="22"/>
                 </DataTemplate>
             </toolkit:LongListSelector.ListHeaderTemplate>
 
             <toolkit:LongListSelector.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" FontSize="42"/>
+                    <TextBlock Text="{Binding}" FontFamily="Segoe WP SemiLight" Margin="0,12,0,12" FontSize="36"/>
                 </DataTemplate>
             </toolkit:LongListSelector.ItemTemplate>
 

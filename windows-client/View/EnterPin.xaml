@@ -51,14 +51,8 @@
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.Row="0">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
                 <Image Source="images\hike_logo_small.png" HorizontalAlignment="Left" Height="40" Margin="24,15,0,0"></Image>
-                <!--<Rectangle Height="1" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>-->
 
-                <TextBlock x:Name="txtBlkSMSPin" TextWrapping="Wrap" MaxWidth="400" Text="Thanks! Did you get an SMS pin? Enter it below :" FontSize="24" HorizontalAlignment="Left" TextAlignment="Left" Margin="24,30,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
-                <!--<TextBlock x:Name="txtBlkEnterPin" TextWrapping="Wrap" Text="Enter pin" FontSize="20" TextAlignment="Left" Margin="24,30,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />-->
-
-                <!--<Border BorderThickness="2" Width="310" Height="56" Margin="24,10,0,0" HorizontalAlignment="Left" BorderBrush="Black">
-                    <StackPanel Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" Background="White">-->
-                        <!--<Image Source="images\sms_pin.png" Margin="15,10,0,10" Height="20" />-->
+                <TextBlock x:Name="txtBlkSMSPin" TextWrapping="Wrap" MaxWidth="400" Text="Thanks! Did you get an SMS pin? Enter it below :" FontSize="24" HorizontalAlignment="Left" TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
                 <toolkit:PhoneTextBox x:Name="txtBxEnterPin" HorizontalAlignment="Left" Width="454" Height="78" BorderThickness="2" LostFocus="txtBxEnterPin_LostFocus" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" InputScope="Number" Margin="12,0,0,0" TextChanged="txtBxEnterPin_TextChanged" />
 
 
@@ -79,7 +73,7 @@
                                                 IsEnabled="False" IsTabStop="True" Opacity="0" Margin="0,10,0,0"/>
                 <StackPanel x:Name="callMe" Margin="12,0,0,0" Opacity="0">
                     <TextBlock Text="Didn't receive an SMS?" FontSize="22" FontFamily="Segoe WP" Margin="12,0,0,0"/>
-                    <Button x:Name="callMeButton" FontSize="19" Content="Call me for the PIN" Tap="callMe_Tap" BorderThickness="2" FontFamily="Segoe WP" Width="210" HorizontalAlignment="Left"/>
+                    <Button x:Name="callMeButton" FontSize="19" Content="Call me" Tap="callMe_Tap" BorderThickness="2" FontFamily="Segoe WP" Width="210" HorizontalAlignment="Left"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
