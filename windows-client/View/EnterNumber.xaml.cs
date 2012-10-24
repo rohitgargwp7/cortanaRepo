@@ -42,6 +42,12 @@ namespace windows_client
             phoneNumber = txtEnterPhone.Text.Trim();
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
+            if (phoneNumber.Length < 10 || phoneNumber.Length > 15)
+            {
+                MessageBox.Show("Enter valid phone number.", "Incorrect Phone Number", MessageBoxButton.OK);
+                txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
+                return;
+            }
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
                 progressBar.Opacity = 0;
