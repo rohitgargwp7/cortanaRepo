@@ -55,7 +55,7 @@
                 <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,0"></Image>
                 <!--<Rectangle Height="2" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>-->
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="Auto" Height="35" Margin="24,30,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="Auto" Height="35" Margin="24,20,0,0">
                     <TextBlock TextWrapping="Wrap" Text="You're all set on " FontSize="24"  TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                     <TextBlock x:Name="txtBlckPhoneNumber" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" Text="" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                 </StackPanel>
