@@ -90,7 +90,7 @@ namespace windows_client.View
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
         private Thickness imgMargin = new Thickness(0, 5, 0, 15);
         private Image typingNotificationImage;
-
+        private ApplicationBarMenuItem groupInfoMenuItem;
         #endregion
 
         #region PROPERTY
@@ -518,6 +518,8 @@ namespace windows_client.View
                     isGroupChat = true;
                     BlockTxtBlk.Text = "You have blocked this group. Unblock to continue hiking";
                     gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
+                    if (gi != null)
+                        groupOwner = gi.GroupOwner;
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
                 }
@@ -609,7 +611,10 @@ namespace windows_client.View
             #endregion
 
             userName.Text = mContactName;
-            mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
+            if(groupOwner != null)
+                mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
+            else
+                mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
             initAppBar(isGroupChat, isAddUser);
             if (!isOnHike)
             {
@@ -623,7 +628,7 @@ namespace windows_client.View
             }
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
-            initBlockUnblockState(gi);
+            initBlockUnblockState();
         }
 
         private void processGroupJoin(bool isNewgroup)
@@ -782,7 +787,7 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                ApplicationBarMenuItem groupInfoMenuItem = new ApplicationBarMenuItem();
+                groupInfoMenuItem = new ApplicationBarMenuItem();
                 groupInfoMenuItem.Text = "group info";
                 groupInfoMenuItem.Click += new EventHandler(groupInfo_Click);
                 appBar.MenuItems.Add(groupInfoMenuItem);
@@ -792,11 +797,6 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
 
-                if (groupOwner == null) // case where someone else created the group
-                {
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                    groupOwner = (gi != null) ? gi.GroupOwner : null;
-                }
                 if (groupOwner != null)
                 {
                     if (groupOwner != App.MSISDN) // represents current user is not group owner
@@ -804,6 +804,7 @@ namespace windows_client.View
                         menuItem1 = new ApplicationBarMenuItem();
                         if (mUserIsBlocked)
                         {
+                            groupInfoMenuItem.IsEnabled = false;
                             menuItem1.Text = UNBLOCK_USER + " group owner";
                         }
                         else
@@ -1009,16 +1010,13 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
+                if(App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
             });
         }
 
-        private void initBlockUnblockState(GroupInfo gi)
+        private void initBlockUnblockState()
         {
-            if (gi != null) // this shows its a group chat 
-            {
-                mUserIsBlocked = UsersTableUtils.isUserBlocked(gi.GroupOwner);
-            }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (mUserIsBlocked)
@@ -1110,12 +1108,11 @@ namespace windows_client.View
             jObj[HikeConstants.TO] = mContactNumber;
 
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
-            mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
             ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
             App.ViewModel.MessageListPageCollection.Remove(cObj);
             App.ViewModel.ConvMap.Remove(mContactNumber);
-            Utils.GroupCache.Remove(mContactNumber);
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+
+            mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
             NavigationService.GoBack();
         }
 
@@ -1138,6 +1135,7 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                     menuItem1.Text = BLOCK_USER + "group owner";
+                    groupInfoMenuItem.IsEnabled = true;
                 }
                 else
                 {
@@ -1158,6 +1156,7 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
                     menuItem1.Text = UNBLOCK_USER + "group owner";
+                    groupInfoMenuItem.IsEnabled = false;
                 }
                 else
                 {
@@ -2004,7 +2003,6 @@ namespace windows_client.View
 
         private void updateChatMetadata()
         {
-            //mMetadataNumChars.setVisibility(View.VISIBLE);
             if (mCredits <= 0)
             {
                 if (!string.IsNullOrEmpty(sendMsgTxtbox.Text))
