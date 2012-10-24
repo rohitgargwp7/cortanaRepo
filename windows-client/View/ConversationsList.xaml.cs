@@ -270,10 +270,9 @@ namespace windows_client.View
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
                 if (obj == null)
                     return;
-                App.ViewModel.ConvMap[c.Msisdn] = obj;
-                App.ViewModel.MessageListPageCollection.Add(obj);
+                App.ViewModel.MessageListPageCollection.Insert(0,obj);
             }
-            App.appSettings.Remove("ContactsToShow");
+            App.RemoveKeyFromAppSettings("ContactsToShow");
         }
 
         private void initAppBar()
