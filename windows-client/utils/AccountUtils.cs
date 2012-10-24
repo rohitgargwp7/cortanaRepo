@@ -477,7 +477,6 @@ namespace windows_client.utils
             }
         }
 
-
         public static string Decompress(string compressedText)
         {
             byte[] byteArray;
@@ -514,6 +513,7 @@ namespace windows_client.utils
 
             return sb.ToString();
         }
+
         public static byte[] StreamToByteArray(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];
@@ -698,6 +698,8 @@ namespace windows_client.utils
                 {
                     return null;
                 }
+                int hikeCount = 1, smsCount = 1;
+                List<ContactInfo> msgToShow = new List<ContactInfo>(5);
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
                 KeyValuePair<string, JToken> kv;
@@ -718,13 +720,28 @@ namespace windows_client.utils
                             continue;
                         }
                         bool onhike = (bool)entry["onhike"];
-                        ContactInfo info = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
-                        server_contacts.Add(info);
+                        List<string> msisdns = new List<string>();
+                        ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
+                        if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
+                        {
+                            msisdns.Add(cn.Msisdn);
+                            msgToShow.Add(cn);
+                            hikeCount++;
+                        }
+                        if (!onhike && smsCount <= 2 && !msisdns.Contains(cn.Msisdn))
+                        {
+                            msisdns.Add(cn.Msisdn);
+                            msgToShow.Add(cn);
+                            smsCount++;
+                        }
+                        msisdns = null;
+                        server_contacts.Add(cn);
                         totalContacts++;
                     }
                 }
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
+                App.WriteToIsoStorageSettings("ContactsToShow",msgToShow);
                 return server_contacts;
             }
             catch (ArgumentException)
