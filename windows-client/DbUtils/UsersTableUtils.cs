@@ -204,13 +204,9 @@ namespace windows_client.DbUtils
                         {
                             ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
-                            ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
+                            //ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
                             ConversationTableUtils.saveConvObjectList();
                         }
-                    }
-                    //if (shouldSubmit)
-                    {
-                      //  MessagesTableUtils.SubmitWithConflictResolve(chats);
                     }
                 }
                 SubmitWithConflictResolve(context);

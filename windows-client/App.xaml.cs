@@ -292,8 +292,7 @@ namespace windows_client
             if (appSettings.Contains(App.TOKEN_SETTING))
             {
                 AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
-                App.MSISDN = (string)appSettings[App.MSISDN_SETTING];
-                AccountUtils.UID = (string)appSettings[App.UID_SETTING];
+                appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
         }
@@ -576,11 +575,35 @@ namespace windows_client
 
             if (_viewModel == null)
             {
-                List<ConversationListObject> convList = ConversationTableUtils.getAllConvs();
+                string current_ver = null;
+                List<ConversationListObject> convList = null;
+
+                // If version exists means build is 1.3.0.0 or later else 1.1.0.0
+                if (!appSettings.TryGetValue<string>("File_System_Version", out current_ver))
+                    convList = ConversationTableUtils.getAllConversations();
+                else
+                    convList = ConversationTableUtils.getAllConvs();
+
                 if (convList == null || convList.Count == 0 || !App.appSettings.Contains(App.IS_DB_CREATED))
                     _viewModel = new HikeViewModel();
                 else
                     _viewModel = new HikeViewModel(convList);
+
+                if (!appSettings.TryGetValue<string>("File_System_Version", out current_ver))
+                {
+                    // save the new single file in isolated storage, delete all old files.
+                    ConversationTableUtils.saveConvObjectList(); // this will save the map
+                    ConversationTableUtils.deleteAllConversationsOld();
+
+                    // instantiate new directories
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
+                        {
+                            store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
+                        }
+                    }
+                }
             }
             st.Stop();
             msec = st.ElapsedMilliseconds;
@@ -595,6 +618,9 @@ namespace windows_client
                 SmileyParser.Instance.initializeSmileyParser();
             }
             #endregion
+
+            if (!appSettings.Contains("File_System_Version") || (string)appSettings["File_System_Version"] != Utils.getAppVersion())
+                App.WriteToIsoStorageSettings("File_System_Version",Utils.getAppVersion());
         }
 
         public static void createDatabaseAsync()
@@ -623,11 +649,6 @@ namespace windows_client
                     {
                         store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
                     }
-                    if (!store.DirectoryExists(HikeConstants.BACKGROUND_AGENT_DIRECTORY))
-                    {
-                        store.CreateDirectory(HikeConstants.BACKGROUND_AGENT_DIRECTORY);
-                    }
-
                 }
                 // Create the database if it does not exist.
                 Stopwatch st = Stopwatch.StartNew();

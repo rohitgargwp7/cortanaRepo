@@ -890,7 +890,11 @@ namespace windows_client.View
             if (HikePubSub.GROUP_END == type)
             {
                 string gId = (string)obj;
-                if (gId == (string)PhoneApplicationService.Current.State["Group_GroupId"])
+                object gIdSaved = null;
+                PhoneApplicationService.Current.State.TryGetValue("Group_GroupId", out gIdSaved);
+                if (gIdSaved == null)
+                    return;
+                if (gId == gIdSaved.ToString())
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
