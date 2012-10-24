@@ -19,7 +19,7 @@ namespace windows_client
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
         private IScheduler scheduler = Scheduler.NewThread;
-        private readonly int callMeTimeout = 10;
+        private readonly int callMeTimeout = 15;
 
         public EnterPin()
         {
