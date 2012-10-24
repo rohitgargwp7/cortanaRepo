@@ -290,13 +290,13 @@ namespace windows_client
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-            if (appSettings.Count <= 1) // 1 is to handle the case where delete/unlink account happened.
+            if (appSettings.Contains(TOKEN_SETTING))
                 isNewInstall = false;
 
             /* Load App token if its there*/
-            if (appSettings.Contains(App.TOKEN_SETTING))
+            if (appSettings.Contains(TOKEN_SETTING))
             {
-                AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
+                AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
@@ -366,7 +366,7 @@ namespace windows_client
             RootFrame.Navigating -= RootFrame_Navigating;
             string targetPage = e.Uri.ToString();
             //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
-            if (targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
@@ -378,7 +378,7 @@ namespace windows_client
                 });
             }
 
-            else if (targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            else if (targetPage != null &&  targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
