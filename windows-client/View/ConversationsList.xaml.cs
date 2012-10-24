@@ -224,7 +224,7 @@ namespace windows_client.View
 
                         if (pushChannel.ChannelUri != null)
                         {
-                            System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                            Debug.WriteLine(pushChannel.ChannelUri.ToString());
                             AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
                         }
                     }
@@ -257,7 +257,7 @@ namespace windows_client.View
                 if (cl[i].OnHike)
                 {
                     j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
-                    c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER,j);
+                    c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER, j);
                     c.Message = cl[i].Name + " is on hike.";
                 }
                 else
@@ -275,6 +275,7 @@ namespace windows_client.View
             }
             App.appSettings.Remove("ContactsToShow");
         }
+
         private void initAppBar()
         {
             appBar = new ApplicationBar();
@@ -505,15 +506,40 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats?", "Delete All Chats", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+            shellProgress.IsVisible = true;
             disableAppBar();
-            if (progress == null)
-            {
-                progress = new MyProgressIndicator("Deleting Chats ...");
-            }
-            progress.Show();
             NetworkManager.turnOffNetworkManager = true;
-            mPubSub.publish(HikePubSub.DELETE_ALL_CONVERSATIONS, null);
+            ClearAllDB();
+            App.ViewModel.ConvMap.Clear();
+            App.ViewModel.MessageListPageCollection.Clear();
+            emptyScreenImage.Opacity = 1;
+            emptyScreenTip.Opacity = 1;
+            enableAppBar();
+            NetworkManager.turnOffNetworkManager = false;
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
+            shellProgress.IsVisible = false;
+        }
+
+        private void ClearAllDB()
+        {
+            MessagesTableUtils.deleteAllMessages();
+            ConversationTableUtils.deleteAllConversations();
+            MiscDBUtil.DeleteAllAttachmentData();
+            foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
+            {
+                if (Utils.isGroupConversation(convMsisdn))
+                {
+                    Utils.GroupCache.Clear();
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                    JObject jObj = new JObject();
+                    jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
+                    jObj[HikeConstants.TO] = convMsisdn;
+                    App.MqttManagerInstance.mqttPublishToServer(jObj);
+                }
+            }
+            Utils.GroupCache.Clear();
+            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            GroupTableUtils.deleteAllGroups();
         }
 
         private void createGroup_Click(object sender, EventArgs e)
@@ -632,22 +658,6 @@ namespace windows_client.View
                 {
                     creditsTxtBlck.Text = Convert.ToString((int)obj) + " Left";
                 });
-            }
-            #endregion
-            #region DELETED_ALL_CONVERSATIONS
-            else if (HikePubSub.DELETED_ALL_CONVERSATIONS == type)
-            {
-                App.ViewModel.ConvMap.Clear();
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    App.ViewModel.MessageListPageCollection.Clear();
-                    emptyScreenImage.Opacity = 1;
-                    emptyScreenTip.Opacity = 1;
-                    progress.Hide();
-                    progress = null;
-                    enableAppBar();
-                });
-                NetworkManager.turnOffNetworkManager = false;
             }
             #endregion
             #region UPDATE_ACCOUNT_NAME
@@ -862,7 +872,6 @@ namespace windows_client.View
                 {
                     LayoutRoot.IsHitTestVisible = false;
                     appBar.IsMenuEnabled = false;
-                    //                    isAppEnabled = false;
                     composeIconButton.IsEnabled = false;
                 });
             }
@@ -890,8 +899,11 @@ namespace windows_client.View
                 //                marketplaceDetailTask.ContentIdentifier = "c14e93aa-27d7-df11-a844-00237de2db9e";
                 marketplaceDetailTask.ContentIdentifier = appID;
                 marketplaceDetailTask.ContentType = MarketplaceContentType.Applications;
-
-                marketplaceDetailTask.Show();
+                try
+                {
+                    marketplaceDetailTask.Show();
+                }
+                catch { }
             }
         }
 
