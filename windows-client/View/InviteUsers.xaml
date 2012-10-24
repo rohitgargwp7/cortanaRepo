@@ -28,8 +28,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
-            <TextBlock Text="INVITE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
-            <TextBlock Name="title" Text="friends" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="30,-10,0,0" />
+            <TextBlock Text="INVITE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="24,0,0,5" />
+            <TextBlock Name="title" Text="friends" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="24,-10,0,0" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -40,7 +40,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,6"
+            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,56"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsBouncy="True"
