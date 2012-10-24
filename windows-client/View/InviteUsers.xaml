@@ -79,8 +79,8 @@
                 </toolkit:LongListSelector.GroupHeaderTemplate>
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="-18,0,0,0" Name="ItemStackPanel" Tap="ItemStackPanel_Tap">
-                            <CheckBox HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel" Tap="ItemStackPanel_Tap">
+                            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
                                 <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="36" />
                                 <StackPanel Orientation="Horizontal">
