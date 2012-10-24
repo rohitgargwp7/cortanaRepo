@@ -490,6 +490,13 @@ namespace windows_client.View
                 e.Cancel = true;
                 return;
             }
+            if (attachmentMenu.Visibility == Visibility.Visible)
+            {
+                attachmentMenu.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+                return;
+            }
+
             if (App.APP_LAUNCH_STATE != App.LaunchState.NORMAL_LAUNCH) //  in this case back would go to conversation list
             {
                 Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
