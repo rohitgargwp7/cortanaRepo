@@ -319,7 +319,7 @@ namespace windows_client.DbUtils
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
                     string FileName = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
-                    using (var file = store.OpenFile(FileName, FileMode.Append, FileAccess.Write))
+                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
                     {
                         using (var writer = new BinaryWriter(file))
                         {
