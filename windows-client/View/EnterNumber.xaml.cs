@@ -479,13 +479,16 @@ namespace windows_client
         {
             if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
             {
-                nextIconButton.IsEnabled = true;
                 txtEnterPhone.Foreground = UI_Utils.Instance.SignUpForeground;
             }
             else
             {
                 nextIconButton.IsEnabled = false;
             }
+            if (txtEnterPhone.Text.Length > 9)
+                nextIconButton.IsEnabled = true;
+            else
+                nextIconButton.IsEnabled = false;
         }
 
         private void txtEnterPhone_LostFocus(object sender, RoutedEventArgs e)
@@ -512,6 +515,25 @@ namespace windows_client
 
             countryList.Visibility = Visibility.Collapsed;
             ContentPanel.Visibility = Visibility.Visible;
+        }
+
+        private void txtEnterPhone_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (txtEnterPhone.Text.Length > 0)
+            {
+                string lastCharacter = txtEnterPhone.Text.Substring(txtEnterPhone.Text.Length - 1);
+                bool isDigit = true;
+                double num;
+                isDigit = Double.TryParse(lastCharacter, out num);
+                if (!isDigit)
+                {
+                    if (string.IsNullOrEmpty(txtEnterPhone.Text) || txtEnterPhone.Text.Length == 1)
+                        txtEnterPhone.Text = "";
+                    else
+                        txtEnterPhone.Text = txtEnterPhone.Text.Substring(0, txtEnterPhone.Text.Length - 1);
+                }
+                txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
+            }
         }
     }
 }

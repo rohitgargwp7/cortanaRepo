@@ -54,7 +54,7 @@
 
                 <toolkit:PhoneTextBox x:Name="txtEnterCountry" BorderThickness="2" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78"/>
 
-                <toolkit:PhoneTextBox x:Name="txtEnterPhone" BorderThickness="2" GotFocus="txtEnterPhone_GotFocus" LostFocus="txtEnterPhone_LostFocus" InputScope="TelephoneCountryCode" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78" TextChanged="txtEnterPhone_TextChanged" />
+                <toolkit:PhoneTextBox KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" MaxLength="15" BorderThickness="2" GotFocus="txtEnterPhone_GotFocus" LostFocus="txtEnterPhone_LostFocus" InputScope="Number" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78" TextChanged="txtEnterPhone_TextChanged" />
 
                 <TextBlock Height="25" TextAlignment="Left" 
                            Margin="24,0,0,0" Name="msisdnErrorTxt" 
