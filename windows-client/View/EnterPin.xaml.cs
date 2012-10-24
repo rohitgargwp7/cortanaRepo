@@ -44,11 +44,11 @@ namespace windows_client
         private void btnEnterPin_Click(object sender, EventArgs e)
         {
             if (isNextClicked)
-                return;
-            isNextClicked = true;
+                return;           
             pinEntered = txtBxEnterPin.Text.Trim();
             if (string.IsNullOrEmpty(pinEntered))
                 return;
+            isNextClicked = true;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
                 progressBar.Opacity = 0;
@@ -82,8 +82,9 @@ namespace windows_client
                     txtBxEnterPin.IsReadOnly = false;
                     if (!string.IsNullOrWhiteSpace(pinEntered))
                         nextIconButton.IsEnabled = true;
+                    txtBxEnterPin.Select(txtBxEnterPin.Text.Length, 0);
+                    isNextClicked = false;
                 });
-                isNextClicked = false;
                 return;
             }
 
@@ -110,8 +111,12 @@ namespace windows_client
 
         private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtBxEnterPin.Hint = "Pin";
-            txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
+            try
+            {
+                txtBxEnterPin.Hint = "Pin";
+                txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
+            }
+            catch { }
         }
 
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
@@ -177,6 +182,12 @@ namespace windows_client
                 {
                     pinErrorTxt.Visibility = (Visibility)obj;
                     pinErrorTxt.Text = (string)this.State["pinErrorTxt.Text"];
+                    obj = null;
+                }
+                if (this.State.TryGetValue("callMe.Opacity", out obj))
+                {
+                    callMe.Opacity = (int)this.State["callMe.Opacity"];
+                    obj = null;
                 }
             }
         }
@@ -202,6 +213,12 @@ namespace windows_client
                     this.State.Remove("pinErrorTxt.Text");
                     this.State.Remove("pinErrorTxt.Visibility");
                 }
+                if (callMe.Opacity == 1)
+                {
+                    this.State["callMe.Opacity"] = (int)callMe.Opacity;
+                }
+                else
+                    this.State.Remove("callMe.Opacity");
             }
             else
                 App.IS_TOMBSTONED = false;
@@ -209,7 +226,11 @@ namespace windows_client
 
         private void txtBxEnterPin_LostFocus(object sender, RoutedEventArgs e)
         {
-            txtBxEnterPin.Background = UI_Utils.Instance.White;
+            try
+            {
+                txtBxEnterPin.Background = UI_Utils.Instance.White;
+            }
+            catch { }
         }
 
         private void showCallMeOption()
@@ -220,7 +241,6 @@ namespace windows_client
                 callMeButton.Focus();   
             });
         }
-
 
         private void callMe_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
