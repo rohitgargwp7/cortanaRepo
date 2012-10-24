@@ -657,7 +657,7 @@ namespace windows_client.View
             #endregion
 
             userName.Text = mContactName;
-            if(groupOwner != null)
+            if (groupOwner != null)
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
             else
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(mContactNumber);
@@ -1058,7 +1058,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if(App.ViewModel.ConvMap.ContainsKey(msisdn))
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     App.ViewModel.ConvMap[msisdn].MessageStatus = ConvMessage.State.RECEIVED_READ; // this is to notify ConvList.
             });
         }
@@ -2169,7 +2169,8 @@ namespace windows_client.View
 
         private void autoHideTypingNotification()
         {
-            if (TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime > HikeConstants.TYPING_NOTIFICATION_AUTOHIDE * 1000)
+            long timeElapsed = TimeUtils.getCurrentTimeStamp() - lastTypingNotificationShownTime;
+            if (timeElapsed >= HikeConstants.TYPING_NOTIFICATION_AUTOHIDE)
                 HideTypingNotification();
         }
 
@@ -2421,7 +2422,7 @@ namespace windows_client.View
             {
                 if (mContactNumber == (obj as string))
                 {
-                   HideTypingNotification();
+                    HideTypingNotification();
                 }
             }
 
