@@ -69,6 +69,10 @@ namespace windows_client.utils
         }
         #endregion
 
+        private UI_Utils()
+        {
+        }
+
         #region public  properties
         public SolidColorBrush TextBoxBackground
         {

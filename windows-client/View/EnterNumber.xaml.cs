@@ -433,6 +433,14 @@ namespace windows_client
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
+            if (countryList.Visibility == Visibility.Visible && ContentPanel.Visibility == Visibility.Collapsed)
+            {
+                e.Cancel = true;
+                ContentPanel.Visibility = Visibility.Visible;
+                countryList.Visibility = Visibility.Collapsed;
+                base.OnBackKeyPress(e);
+                return;
+            }
             base.OnBackKeyPress(e);
             Uri nextPage = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
@@ -512,7 +520,6 @@ namespace windows_client
             string selectedCountryCode = countryList.SelectedItem as string;
             txtEnterCountry.Text = countryCode = selectedCountryCode;
             txtEnterCountry.Foreground = UI_Utils.Instance.Black;
-
             countryList.Visibility = Visibility.Collapsed;
             ContentPanel.Visibility = Visibility.Visible;
         }

@@ -41,6 +41,9 @@ namespace windows_client
             }
         }
 
+        private SmileyParser()
+        {
+        }
         //121 is missing
         public string[] emoticonStrings = 
         {

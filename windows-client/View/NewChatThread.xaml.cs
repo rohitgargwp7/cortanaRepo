@@ -897,6 +897,8 @@ namespace windows_client.View
             inviteMenuItem = new ApplicationBarMenuItem();
             inviteMenuItem.Text = "invite user";
             inviteMenuItem.Click += new EventHandler(inviteUserBtn_Click);
+            if (mUserIsBlocked)
+                inviteMenuItem.IsEnabled = false;
         }
 
         #endregion
@@ -1188,6 +1190,8 @@ namespace windows_client.View
                     sendIconButton.IsEnabled = true;
                     isTypingNotificationEnabled = true;
                     menuItem1.Text = BLOCK_USER;
+                    if (inviteMenuItem != null)
+                        inviteMenuItem.IsEnabled = true;
                 }
                 mUserIsBlocked = false;
                 showOverlay(false);
@@ -1208,6 +1212,8 @@ namespace windows_client.View
                     sendIconButton.IsEnabled = false;
                     isTypingNotificationEnabled = false;
                     menuItem1.Text = UNBLOCK_USER;
+                    if (inviteMenuItem != null)
+                        inviteMenuItem.IsEnabled = false;
                 }
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 mUserIsBlocked = true;

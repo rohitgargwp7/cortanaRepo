@@ -368,7 +368,7 @@ namespace windows_client
                 catch
                 {
                 }
-                string totalCreditsPerMonth = null;
+                string totalCreditsPerMonth = "0";
                 try
                 {
                     totalCreditsPerMonth = (string)data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
@@ -395,11 +395,29 @@ namespace windows_client
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
                     while (keyVals.MoveNext())
                     {
-                        kv = keyVals.Current;
-                        Debug.WriteLine("AI :: Key : " + kv.Key);
-                        string val = kv.Value.ToObject<string>();
-                        Debug.WriteLine("AI :: Value : " + val);
-                        App.WriteToIsoStorageSettings(kv.Key, val);
+                        try
+                        {
+                            kv = keyVals.Current;
+                            Debug.WriteLine("AI :: Key : " + kv.Key);
+                            JToken valTok = kv.Value;
+                            object oj = valTok.ToObject<object>();
+                            string val = null;
+                            if (oj is JObject)
+                            {
+                                JObject jj = (JObject)oj;
+                                val = jj.ToString(Newtonsoft.Json.Formatting.None);
+                            }
+                            else if (oj is JArray)
+                            {
+                                JArray jarr = (JArray)oj;
+                                val = jarr.ToString(Newtonsoft.Json.Formatting.None);
+                            }
+                            else
+                                val = oj.ToString();
+                            Debug.WriteLine("AI :: Value : " + val);
+                            App.WriteToIsoStorageSettings(kv.Key, val);
+                        }
+                        catch { }
                     }
 
                     JToken it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];

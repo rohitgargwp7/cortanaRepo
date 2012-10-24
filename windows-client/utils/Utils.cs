@@ -409,7 +409,6 @@ namespace windows_client.utils
             info["tag"] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
             info["device_id"] = getDeviceId();
-            //info["_resolution"] = "800x480";
             info["_os_version"] = getOSVersion();
             info["_os"] = "windows";
             JObject infoPacket = new JObject();
@@ -417,7 +416,5 @@ namespace windows_client.utils
             infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
             return infoPacket;
         }
-
-
     }
 }

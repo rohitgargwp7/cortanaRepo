@@ -85,7 +85,7 @@ namespace windows_client.Model
 
         public JObject serialize()
         {
-            if (eventMap.Count == 0)
+            if (eventMap == null || eventMap.Count == 0)
                 return null;
             JObject eventsData = new JObject();
             eventsData["tag"] = "mob";
@@ -146,7 +146,8 @@ namespace windows_client.Model
 
         public void clearObject() //call after publish
         {
-            eventMap.Clear();
+            if(eventMap != null)
+                eventMap.Clear();
         }
 
         public void saveObject()

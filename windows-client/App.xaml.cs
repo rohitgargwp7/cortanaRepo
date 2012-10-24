@@ -62,6 +62,7 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
+        private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
@@ -289,10 +290,13 @@ namespace windows_client
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
+            if (appSettings.Contains(TOKEN_SETTING))
+                isNewInstall = false;
+
             /* Load App token if its there*/
-            if (appSettings.Contains(App.TOKEN_SETTING))
+            if (appSettings.Contains(TOKEN_SETTING))
             {
-                AccountUtils.Token = (string)appSettings[App.TOKEN_SETTING];
+                AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
@@ -362,7 +366,7 @@ namespace windows_client
             RootFrame.Navigating -= RootFrame_Navigating;
             string targetPage = e.Uri.ToString();
             //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
-            if (targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
+            if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
@@ -374,7 +378,7 @@ namespace windows_client
                 });
             }
 
-            else if (targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            else if (targetPage != null &&  targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
@@ -423,6 +427,7 @@ namespace windows_client
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger
@@ -432,11 +437,12 @@ namespace windows_client
             e.Handled = true;
             Error.Exception = e.ExceptionObject;
             Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
+            MessageBox.Show(e.ExceptionObject.Data.ToString(), "Exception data", MessageBoxButton.OK);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
             });
-            App.AnalyticsInstance.saveObject();
+
         }
 
         #region Phone application initialization
@@ -580,7 +586,7 @@ namespace windows_client
                 List<ConversationListObject> convList = null;
 
                 // If version exists means build is 1.3.0.0 or later else 1.1.0.0
-                if (!appSettings.TryGetValue<string>("File_System_Version", out current_ver))
+                if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
                     convList = ConversationTableUtils.getAllConversations();
                 else
                     convList = ConversationTableUtils.getAllConvs();
@@ -590,7 +596,7 @@ namespace windows_client
                 else
                     _viewModel = new HikeViewModel(convList);
 
-                if (!appSettings.TryGetValue<string>("File_System_Version", out current_ver))
+                if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
                 {
                     // save the new single file in isolated storage, delete all old files.
                     ConversationTableUtils.saveConvObjectList(); // this will save the map

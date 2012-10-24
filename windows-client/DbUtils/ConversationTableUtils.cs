@@ -23,7 +23,11 @@ namespace windows_client.DbUtils
             List<ConversationListObject> convList = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
+                if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
+                    return null;
                 string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                if (files == null)
+                    return null;
                 convList = new List<ConversationListObject>(files.Length);
                 foreach (string fileName in files)
                 {
@@ -344,7 +348,7 @@ namespace windows_client.DbUtils
             List<ConversationListObject> convList = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (!store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs"))
+                if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY) || !store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs"))
                     return null;
                 using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", FileMode.Open, FileAccess.Read))
                 {
@@ -377,6 +381,8 @@ namespace windows_client.DbUtils
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                if (files == null)
+                    return;
                 foreach (string fileName in files)
                 {
                     try
