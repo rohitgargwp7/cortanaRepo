@@ -41,7 +41,8 @@ namespace windows_client.View
         }
         private void initpageBasedOnState()
         {
-            int creditsRemaining = (int)App.appSettings[App.SMS_SETTING];
+            int creditsRemaining = 0;
+            App.appSettings.TryGetValue(App.SMS_SETTING,out creditsRemaining);
             if (App.appSettings.Contains(HikeConstants.TOTAL_CREDITS_PER_MONTH))
             {
                 int max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
