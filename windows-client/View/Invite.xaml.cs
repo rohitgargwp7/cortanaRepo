@@ -28,9 +28,9 @@ namespace windows_client.View
         private void Social_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SOCIAL);
-            string inviteToken = "";
+            string inviteToken = null;
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(external_invite_message, inviteToken);
+            string inviteMsg = string.Format(external_invite_message, inviteToken==null?"":inviteToken);
             ShareLinkTask shareLinkTask = new ShareLinkTask();
             shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
             shareLinkTask.Message = inviteMsg;
