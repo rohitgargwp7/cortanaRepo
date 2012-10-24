@@ -224,7 +224,7 @@ namespace windows_client
         //private string hyperLinkRegexPattern = "^[a-zA-Z0-9\\-\\.]+\\.(com|org|net|mil|edu|gov|in|uk|us)$";
 
         private string emailRegexPattern = @"(([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+))";
-        private string hyperLinkRegexPattern = @"([a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|gov|in|uk|us))";
+        private string hyperLinkRegexPattern = @"((https?://)?[\w\-\.]+\.([a-zA-z]{2,3})[?:/\+=&\w\-\.]*)";
         private string phoneNumberRegexPattern = @"\b(\+?[\d-]{8,13})";
 
         private Regex emailRegex;
