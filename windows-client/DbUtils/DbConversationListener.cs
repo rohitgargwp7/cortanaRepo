@@ -204,7 +204,7 @@ namespace windows_client.DbUtils
                 if (delConv)
                 {
                     // delete the conversation from DB.
-                    ConversationTableUtils.deleteConversation(c.Msisdn);
+                    //ConversationTableUtils.deleteConversation(c.Msisdn);
                     ConversationTableUtils.saveConvObjectList();
                 }
                 else
@@ -270,12 +270,12 @@ namespace windows_client.DbUtils
                  * 4. Delete GroupMembers
                  */
                 string groupId = (string)obj;
-                ConversationTableUtils.deleteConversation(groupId);
+                //ConversationTableUtils.deleteConversation(groupId);
+                ConversationTableUtils.saveConvObjectList();
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
                 Utils.GroupCache.Remove(groupId);
                 App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                //TODO : Delete file also later
             }
             #endregion
             #region BLOCK GROUP OWNER
@@ -308,33 +308,9 @@ namespace windows_client.DbUtils
                     App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
-                ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
+                //ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
                 ConversationTableUtils.saveConvObjectList();
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
-            }
-            #endregion
-            #region DELETE ALL CONVERSATIONS
-            else if (HikePubSub.DELETE_ALL_CONVERSATIONS == type)
-            {
-                MessagesTableUtils.deleteAllMessages();
-                ConversationTableUtils.deleteAllConversations();
-                MiscDBUtil.DeleteAllAttachmentData();
-                foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
-                {
-                    if (Utils.isGroupConversation(convMsisdn))
-                    {
-                        Utils.GroupCache.Clear();
-                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                        JObject jObj = new JObject();
-                        jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
-                        jObj[HikeConstants.TO] = convMsisdn;
-                        App.MqttManagerInstance.mqttPublishToServer(jObj);
-                    }
-                }
-                Utils.GroupCache.Clear();
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                GroupTableUtils.deleteAllGroups();
-                mPubSub.publish(HikePubSub.DELETED_ALL_CONVERSATIONS, null);
             }
             #endregion
         }

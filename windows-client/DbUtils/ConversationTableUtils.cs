@@ -79,7 +79,7 @@ namespace windows_client.DbUtils
 
             }
             string msisdn = obj.Msisdn.Replace(":", "_");
-            saveConvObject(obj, msisdn);
+            //saveConvObject(obj, msisdn);
             saveNewConv(obj);
             return obj;
         }
@@ -155,7 +155,7 @@ namespace windows_client.DbUtils
 
             Stopwatch st = Stopwatch.StartNew();
             saveNewConv(obj);
-            saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+            //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
@@ -193,16 +193,17 @@ namespace windows_client.DbUtils
             {
                 ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
-                saveConvObject(obj, msisdn);
+                //saveConvObject(obj, msisdn);
                 saveConvObjectList();
             }
         }
 
         public static void updateConversation(ConversationListObject obj)
         {
-            saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+            //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             saveConvObjectList();
         }
+
         public static bool updateGroupName(string grpId, string groupName)
         {
             if (!App.ViewModel.ConvMap.ContainsKey(grpId))
@@ -210,10 +211,11 @@ namespace windows_client.DbUtils
             ConversationListObject obj = App.ViewModel.ConvMap[grpId];
             obj.ContactName = groupName;
             string msisdn = grpId.Replace(":", "_");
-            saveConvObject(obj, msisdn);
+            //saveConvObject(obj, msisdn);
             saveConvObjectList();
             return true;
         }
+
         internal static void updateConversation(List<ContactInfo> cn)
         {
             saveConvObjectList();
@@ -225,7 +227,7 @@ namespace windows_client.DbUtils
                     ConversationListObject obj = App.ViewModel.ConvMap[cn[i].Msisdn]; //update UI
                     obj.ContactName = cn[i].Name;
                     obj.IsOnhike = cn[i].OnHike;
-                    saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+                    //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
                 }
             }
         }
@@ -243,7 +245,7 @@ namespace windows_client.DbUtils
                 if (obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
                 {
                     obj.MessageStatus = (ConvMessage.State)status;
-                    saveConvObject(obj, msisdn.Replace(":", "_"));
+                    //saveConvObject(obj, msisdn.Replace(":", "_"));
                     saveConvObjectList();
                 }
             }
@@ -365,6 +367,29 @@ namespace windows_client.DbUtils
                     }
                 }
 
+            }
+        }
+
+
+        /* Handle old versions*/
+        public static void deleteAllConversationsOld()
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                foreach (string fileName in files)
+                {
+                    try
+                    {
+                        if (fileName == CONVERSATIONS_DIRECTORY + "\\" + "Convs")
+                            continue;
+                        store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                    }
+                }
             }
         }
     }
