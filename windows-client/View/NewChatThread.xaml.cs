@@ -1166,6 +1166,8 @@ namespace windows_client.View
                     sendIconButton.IsEnabled = false;
                     isTypingNotificationEnabled = false;
                     menuItem1.Text = UNBLOCK_USER;
+                    if (inviteMenuItem != null)
+                        inviteMenuItem.IsEnabled = false;
                 }
                 emoticonPanel.Visibility = Visibility.Collapsed;
                 mUserIsBlocked = true;
