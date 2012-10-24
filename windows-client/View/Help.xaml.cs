@@ -13,6 +13,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Shell;
+using windows_client.Model;
 
 namespace windows_client.View
 {
@@ -34,6 +35,7 @@ namespace windows_client.View
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.FAQS);
             WebBrowserTask webBrowserTask = new WebBrowserTask();
             webBrowserTask.Uri = new Uri(HikeConstants.FAQS_LINK, UriKind.Absolute);
             webBrowserTask.Show();
@@ -41,6 +43,7 @@ namespace windows_client.View
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.CONTACT_US);
             EmailComposeTask contactUsMail = new EmailComposeTask();
             contactUsMail.To = "support@bsb.in";
             try
@@ -54,6 +57,7 @@ namespace windows_client.View
 
         private void Legal_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.LEGAL);
             WebBrowserTask webBrowserTask = new WebBrowserTask();
             webBrowserTask.Uri = new Uri(HikeConstants.TERMS_LINK, UriKind.Absolute);
             webBrowserTask.Show();
@@ -66,11 +70,13 @@ namespace windows_client.View
         
         private void Walkthrough_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.WALKTHROUGH);
             NavigationService.Navigate(new Uri("/View/Walkthrough.xaml", UriKind.Relative));
         }
 
         private void rateAndReview_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.RATE_APP);
             MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
             marketplaceReviewTask.Show();
         }

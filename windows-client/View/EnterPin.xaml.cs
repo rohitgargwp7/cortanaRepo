@@ -244,9 +244,12 @@ namespace windows_client
 
         private void callMe_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string msisdn;
-            App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out msisdn);
-            AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
+            if (callMe.Opacity == 1)
+            {
+                string msisdn;
+                App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out msisdn);
+                AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
+            }
         }
 
         private void callMePostResponse_Callback(JObject obj)

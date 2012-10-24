@@ -721,6 +721,7 @@ namespace windows_client.View
 
         private void Privacy_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.PRIVACY);
             NavigationService.Navigate(new Uri("/View/Privacy.xaml", UriKind.Relative));
         }
 

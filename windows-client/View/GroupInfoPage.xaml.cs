@@ -366,6 +366,7 @@ namespace windows_client.View
 
         private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
             //TODO start this loop from end, after sorting is done on onHike status
             for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
             {
