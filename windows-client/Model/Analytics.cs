@@ -34,7 +34,7 @@ namespace windows_client.Model
         public static readonly string GROUP_INFO = "ctGI";
 
 
-        private Dictionary<string, int> eventMap = new Dictionary<string, int>();
+        private Dictionary<string, int> eventMap = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile Analytics instance = null;
@@ -56,6 +56,11 @@ namespace windows_client.Model
                 }
                 return instance;
             }
+        }
+
+        private Analytics()
+        {
+            eventMap = new Dictionary<string, int>();
         }
 
         public void addEvent(string eventKey)
