@@ -498,7 +498,7 @@ namespace windows_client
             {
                 nextIconButton.IsEnabled = false;
             }
-            if (txtEnterPhone.Text.Length > 9)
+            if (txtEnterPhone.Text.Length > 7)
                 nextIconButton.IsEnabled = true;
             else
                 nextIconButton.IsEnabled = false;
