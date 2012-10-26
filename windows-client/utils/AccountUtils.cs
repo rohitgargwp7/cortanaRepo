@@ -280,7 +280,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
             req.Method = "PUT";
-            req.ContentType = "";
+            req.ContentType = convMessage.FileAttachment.ContentType.Contains("audio") ? convMessage.FileAttachment.ContentType : "";
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
@@ -387,7 +387,7 @@ namespace windows_client.utils
                     postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
                     ConvMessage convMessage = vars[4] as ConvMessage;
                     SentChatBubble chatBubble = vars[5] as SentChatBubble;
-                    int bufferSize = 1024;
+                    int bufferSize = 2048;
                     int startIndex = 0;
                     int noOfBytesToWrite = 0;
                     double progressValue = 0;
