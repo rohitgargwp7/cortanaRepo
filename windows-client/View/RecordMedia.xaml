@@ -30,7 +30,7 @@
                HorizontalAlignment="Center" Margin="0,0,0,45"
                />
         <StackPanel x:Name="timeBar" Orientation="Horizontal" Opacity="0" Grid.Row="2" HorizontalAlignment="Center">
-            <TextBlock x:Name="runningTime"  FontFamily="Segoe WP SemiLight" FontSize="50" Text="0:0" ></TextBlock>
+            <TextBlock x:Name="runningTime" FontFamily="Segoe WP SemiLight" FontSize="50" Text="00:00" ></TextBlock>
             <TextBlock x:Name="maxPlayingTime" Text=" / 2:00" FontFamily="Segoe WP SemiLight" FontSize="50"/>
         </StackPanel>
         <StackPanel Grid.Row="3" HorizontalAlignment="Center" Margin="0,20,0,0">
