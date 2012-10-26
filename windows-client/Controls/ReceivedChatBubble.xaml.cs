@@ -173,7 +173,7 @@ namespace windows_client.Controls
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Left;
                 MessageImage.Margin = imgMargin;
                 if (contentType.Contains("audio"))
-                    this.MessageImage.Source = UI_Utils.Instance.AudioAttachment;
+                    this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentReceive;
 
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
