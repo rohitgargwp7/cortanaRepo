@@ -9,13 +9,14 @@ using Microsoft.Phone.Shell;
 using System.IO.IsolatedStorage;
 using System.IO;
 using System.Diagnostics;
+using System.Threading;
 
 namespace windows_client.DbUtils
 {
     public class ConversationTableUtils
     {
         public static string CONVERSATIONS_DIRECTORY = "CONVERSATIONS";
-        private static object lockObj = new object();
+        private static object readWriteLock = new object();
         /* This function gets all the conversations shown on the message list page*/
         public static List<ConversationListObject> getAllConversations()
         {
@@ -158,7 +159,7 @@ namespace windows_client.DbUtils
             Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
             Stopwatch st = Stopwatch.StartNew();
-            saveNewConv(obj);
+            //saveNewConv(obj);
             //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             st.Stop();
             long msec = st.ElapsedMilliseconds;
@@ -169,24 +170,11 @@ namespace windows_client.DbUtils
 
         public static void deleteAllConversations()
         {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
-            }
-        }
-
-        public static void deleteConversation(string msisdn)
-        {
-            msisdn = msisdn.Replace(":", "_");
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                try
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + msisdn))
-                        store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + msisdn);
-                }
-                catch
-                {
+                    store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                 }
             }
         }
@@ -198,14 +186,14 @@ namespace windows_client.DbUtils
                 ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
                 //saveConvObject(obj, msisdn);
-                saveConvObjectList();
+                //saveConvObjectList();
             }
         }
 
         public static void updateConversation(ConversationListObject obj)
         {
             //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
-            saveConvObjectList();
+            //saveConvObjectList();
         }
 
         public static bool updateGroupName(string grpId, string groupName)
@@ -216,13 +204,13 @@ namespace windows_client.DbUtils
             obj.ContactName = groupName;
             string msisdn = grpId.Replace(":", "_");
             //saveConvObject(obj, msisdn);
-            saveConvObjectList();
+            //saveConvObjectList();
             return true;
         }
 
         internal static void updateConversation(List<ContactInfo> cn)
         {
-            saveConvObjectList();
+            //saveConvObjectList();
             return;
             for (int i = 0; i < cn.Count; i++)
             {
@@ -250,29 +238,7 @@ namespace windows_client.DbUtils
                 {
                     obj.MessageStatus = (ConvMessage.State)status;
                     //saveConvObject(obj, msisdn.Replace(":", "_"));
-                    saveConvObjectList();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Object is serialized using protobuf and is stored in isolated storage file
-        /// </summary>
-        /// <param name="obj"></param>
-        public static void saveConvObject(ConversationListObject obj, string msisdn)
-        {
-            lock (lockObj)
-            {
-                string FileName = CONVERSATIONS_DIRECTORY + "\\" + msisdn;
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-                {
-                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
-                    {
-                        using (var writer = new BinaryWriter(file))
-                        {
-                            obj.Write(writer);
-                        }
-                    }
+                    //saveConvObjectList();
                 }
             }
         }
@@ -282,11 +248,11 @@ namespace windows_client.DbUtils
             int convs = 0;
             Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
-            lock (lockObj)
+            lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
-                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
+                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + "_Convs";
                     using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
                     {
                         using (var writer = new BinaryWriter(file))
@@ -302,6 +268,8 @@ namespace windows_client.DbUtils
                             }
                         }
                     }
+                    store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
+                    store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                 }
             }
             st.Stop();
@@ -314,11 +282,11 @@ namespace windows_client.DbUtils
             int convs = 0;
             Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
-            lock (lockObj)
+            lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
-                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
+                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + "_Convs";
                     using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
                     {
                         using (var writer = new BinaryWriter(file))
@@ -327,7 +295,7 @@ namespace windows_client.DbUtils
                             writer.Write(count);
                             obj.Write(writer);
                             if (convMap != null && convMap.Count > 0)
-                            {                               
+                            {
                                 foreach (ConversationListObject item in convMap.Values)
                                 {
                                     item.Write(writer);
@@ -336,6 +304,8 @@ namespace windows_client.DbUtils
                             }
                         }
                     }
+                    store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
+                    store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                 }
             }
             st.Stop();
@@ -354,15 +324,24 @@ namespace windows_client.DbUtils
                 {
                     using (var reader = new BinaryReader(file))
                     {
-                        int count = reader.ReadInt32();
+                        int count = 0;
+                        try
+                        {
+                            count = reader.ReadInt32();
+                        }
+                        catch { }
                         if (count > 0)
                         {
                             convList = new List<ConversationListObject>(count);
                             for (int i = 0; i < count; i++)
                             {
-                                ConversationListObject item = new ConversationListObject();
-                                item.Read(reader);
-                                convList.Add(item);
+                                try
+                                {
+                                    ConversationListObject item = new ConversationListObject();
+                                    item.Read(reader);
+                                    convList.Add(item);
+                                }
+                                catch { }
                             }
                             convList.Sort();
                             return convList;
@@ -378,22 +357,25 @@ namespace windows_client.DbUtils
         /* Handle old versions*/
         public static void deleteAllConversationsOld()
         {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
-                if (files == null)
-                    return;
-                foreach (string fileName in files)
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    try
+                    string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                    if (files == null)
+                        return;
+                    foreach (string fileName in files)
                     {
-                        if (fileName == "Convs")
-                            continue;
-                        store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
-                    }
-                    catch
-                    {
-                        Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                        try
+                        {
+                            if (fileName == "Convs")
+                                continue;
+                            store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                        }
                     }
                 }
             }
