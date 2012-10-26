@@ -28,7 +28,8 @@ namespace windows_client.utils
         private BitmapImage chatAcceptedImage;
         private BitmapImage playIcon;
         private BitmapImage downloadIcon;
-        private BitmapImage audioAttachment;
+        private BitmapImage audioAttachmentReceive;
+        private BitmapImage audioAttachmentSend;
         private BitmapImage httpFailed;
         private BitmapImage typingNotificationBitmap;
         private BitmapImage sent;
@@ -301,13 +302,24 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage AudioAttachment
+        public BitmapImage AudioAttachmentReceive
         {
             get
             {
-                if (audioAttachment == null)
-                    audioAttachment = new BitmapImage(new Uri("/View/images/audio_file_icon.png", UriKind.Relative));
-                return audioAttachment;
+                if (audioAttachmentReceive == null)
+                    audioAttachmentReceive = new BitmapImage(new Uri("/View/images/audio_file_icon.png", UriKind.Relative));
+                return audioAttachmentReceive;
+            }
+        }
+        
+
+        public BitmapImage AudioAttachmentSend
+        {
+            get
+            {
+                if (audioAttachmentSend == null)
+                    audioAttachmentSend = new BitmapImage(new Uri("/View/images/audio_file_icon_white.png", UriKind.Relative));
+                return audioAttachmentSend;
             }
         }
 

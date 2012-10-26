@@ -346,7 +346,6 @@ namespace windows_client.View
                 NetworkManager.turnOffNetworkManager = false;
                 App.MqttManagerInstance.connect();
             };
-            bw.RunWorkerAsync();
             emotList0.ItemsSource = imagePathsForList0;
             emotList1.ItemsSource = imagePathsForList1;
             emotList2.ItemsSource = imagePathsForList2;
@@ -360,6 +359,7 @@ namespace windows_client.View
                 typingNotificationImage.Visibility = Visibility.Visible;
                 typingNotificationImage.Margin = imgMargin;
             }
+            bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);

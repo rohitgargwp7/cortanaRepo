@@ -376,6 +376,34 @@ namespace windows_client
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
 
+            if(PhoneApplicationService.Current.State.ContainsKey(HikeConstants.COUNTRY_SELECTED))
+            {
+                txtEnterCountry.Text = countryCode = (string)PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED];
+            }
+            else
+            {
+                string ISORegion = "";
+                string countryCodeName = CultureInfo.CurrentCulture.Name;
+                try
+                {
+                    RegionInfo reg = new RegionInfo(countryCodeName);
+                    ISORegion = reg.TwoLetterISORegionName;
+                }
+                catch (ArgumentException argEx)
+                {
+                    // The country code was not valid 
+                }
+
+                if (isoCodeCountryCode.ContainsKey(ISORegion))
+                {
+                    txtEnterCountry.Text = countryCode = isoCodeCountryCode[ISORegion];
+                }
+                else
+                {
+                    txtEnterCountry.Text = countryCode = "India + 91";
+                }
+            }
+
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
@@ -409,6 +437,8 @@ namespace windows_client
         {
             base.OnNavigatingFrom(e);
             string uri = e.Uri.ToString();
+            PhoneApplicationService.Current.State[HikeConstants.COUNTRY_SELECTED] = txtEnterCountry.Text;
+
             if (!uri.Contains("View"))
             {
                 if (!string.IsNullOrWhiteSpace(txtEnterPhone.Text))
@@ -449,31 +479,6 @@ namespace windows_client
         void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtEnterPhone.Hint = "Phone Number";
-            string ISORegion = "";
-            string countryCodeName = CultureInfo.CurrentCulture.Name;
-            try
-            {
-                RegionInfo reg = new RegionInfo(countryCodeName);
-                //string name = reg.Name;
-                //string displayname = reg.DisplayName;
-                ISORegion = reg.TwoLetterISORegionName;
-                //string currency = reg.CurrencySymbol;
-                //string eng = reg.EnglishName;
-                //string native = reg.NativeName;
-            }
-            catch (ArgumentException argEx)
-            {
-                // The country code was not valid 
-            }
-
-            if (isoCodeCountryCode.ContainsKey(ISORegion))
-            {
-                txtEnterCountry.Text = countryCode = isoCodeCountryCode[ISORegion];
-            }
-            else
-            {
-                txtEnterCountry.Text = countryCode = "India + 91";
-            }
             txtEnterCountry.Foreground = UI_Utils.Instance.Black;
         }
 
@@ -493,7 +498,7 @@ namespace windows_client
             {
                 nextIconButton.IsEnabled = false;
             }
-            if (txtEnterPhone.Text.Length > 9)
+            if (txtEnterPhone.Text.Length > 7)
                 nextIconButton.IsEnabled = true;
             else
                 nextIconButton.IsEnabled = false;

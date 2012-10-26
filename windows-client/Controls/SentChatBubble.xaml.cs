@@ -175,6 +175,8 @@ namespace windows_client.Controls
                 return false;
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                progressValue -= 10;
+                progressValue = progressValue > 0 ? progressValue : 0;
                 this.uploadProgress.Value = progressValue;
                 if (progressValue == this.uploadProgress.Maximum)
                 {
@@ -275,7 +277,7 @@ namespace windows_client.Controls
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Right;
                 MessageImage.Margin = imgMargin;
                 if (contentType.Contains("audio"))
-                    this.MessageImage.Source = UI_Utils.Instance.AudioAttachment;
+                    this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentSend;
 
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);

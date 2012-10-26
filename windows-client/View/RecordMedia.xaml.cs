@@ -136,6 +136,7 @@ namespace windows_client.View
 
         private void record()
         {
+            runningTime.Text = "00:00";
             progressTimer.Start();
 
             // Get audio data in 1/2 second chunks
@@ -160,7 +161,7 @@ namespace windows_client.View
 
         void showProgress(object sender, EventArgs e)
         {
-            runningTime.Text = formatTime(runningSeconds);
+            runningTime.Text = formatTime(runningSeconds+1);
             if (runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
                 stop();
             runningSeconds++;
@@ -196,6 +197,8 @@ namespace windows_client.View
         private void play()
         {
             timeBar.Opacity = 0;
+            runningSeconds = 0;
+            runningTime.Text = "00:00";
             progressTimer.Start();
             if (stream.Length > 0)
             {
@@ -203,7 +206,6 @@ namespace windows_client.View
                 Thread soundThread = new Thread(new ThreadStart(playSound));
                 soundThread.Start();
             }
-            runningSeconds = 0;
             message.Text = "PLAYING";
             statusImage.Source = playStopIcon;
             maxPlayingTime.Text = " / " + formatTime(recordedDuration);

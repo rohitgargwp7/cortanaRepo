@@ -68,6 +68,7 @@ namespace windows_client.DbUtils
                 string fileName = data[HikeConstants.FILE_NAME].ToString();
                 string contentType = data[HikeConstants.FILE_CONTENT_TYPE].ToString();
 
+                chatBubble.updateProgress(110);
                 //DO NOT Update message text in db. We sent the below line, but we save content type as message.
                 convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
                 //here message status should be updated in db, as on event listener message state should be unknown

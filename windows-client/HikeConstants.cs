@@ -166,6 +166,8 @@ namespace windows_client
         public static string GROUP_CHAT = "groupChat";
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
+        public static string COUNTRY_SELECTED = "country_selected";
+
 
         public static string DND_USER = "{0} is on DND. Waiting for {0} to reply.";
         public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
