@@ -22,6 +22,72 @@ namespace windows_client
 
         private Dictionary<string, string> isoCodeCountryCode = new Dictionary<string, string>();
 
+        public class Group<T> : IEnumerable<T>
+        {
+            public Group(string name, List<T> items)
+            {
+                this.Title = name;
+                this.Items = items;
+            }
+
+            public override bool Equals(object obj)
+            {
+                Group<T> that = obj as Group<T>;
+
+                return (that != null) && (this.Title.Equals(that.Title));
+            }
+            public override int GetHashCode()
+            {
+                return this.Title.GetHashCode();
+            }
+            public string Title
+            {
+                get;
+                set;
+            }
+
+            public List<T> Items
+            {
+                get;
+                set;
+            }
+            public bool HasItems
+            {
+                get
+                {
+                    return (Items == null || Items.Count == 0) ? false : true;
+                }
+            }
+
+            /// <summary>
+            /// This is used to colour the tiles - greying out those that have no entries
+            /// </summary>
+            public Brush GroupBackgroundBrush
+            {
+                get
+                {
+                    return (SolidColorBrush)Application.Current.Resources[(HasItems) ? "PhoneAccentBrush" : "PhoneChromeBrush"];
+                }
+            }
+            #region IEnumerable<T> Members
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                return this.Items.GetEnumerator();
+            }
+
+            #endregion
+
+            #region IEnumerable Members
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return this.Items.GetEnumerator();
+            }
+
+            #endregion
+        }
+
         public EnterNumber()
         {
             InitializeComponent();
@@ -42,7 +108,7 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterNumber.ApplicationBar = appBar;
-            this.countryList.ItemsSource = isoCodeCountryCode.Values;
+            this.countryList.ItemsSource = GetGroupedList();
         }
 
         private void initializeCountryCodes()
@@ -546,6 +612,42 @@ namespace windows_client
                 }
                 txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
             }
+        }
+
+        private List<Group<string>> GetGroupedList()
+        {
+            List<Group<string>> glist = createGroups();
+            foreach (string val in isoCodeCountryCode.Values)
+            {
+                string ch = GetCaptionGroup(val);
+                // calculate the index into the list
+                int index = (ch == "#") ? 26 : ch[0] - 'a';
+                // and add the entry
+                glist[index].Items.Add(val);
+            }
+            return glist;
+        }
+
+        private static string GetCaptionGroup(string str)
+        {
+            char key = char.ToLower(str[0]);
+            if (key < 'a' || key > 'z')
+            {
+                key = '#';
+            }
+            return key.ToString();
+        }
+
+        private List<Group<string>> createGroups()
+        {
+            string Groups = "abcdefghijklmnopqrstuvwxyz#";
+            List<Group<string>> glist = new List<Group<string>>(27);
+            foreach (char c in Groups)
+            {
+                Group<string> g = new Group<string>(c.ToString(), new List<string>(1));
+                glist.Add(g);
+            }
+            return glist;
         }
     }
 }

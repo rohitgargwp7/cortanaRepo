@@ -80,17 +80,46 @@
                                                 Opacity="0"/>
             </StackPanel>
         </Grid>
-        
-        <toolkit:LongListSelector Tap="countryList_Tap" Margin="24,0,0,0" Grid.Row="0" Visibility="Collapsed" x:Name="countryList" Background="Transparent" IsFlatList="True">
+
+        <toolkit:LongListSelector Margin="24,20,0,0" Grid.Row="0" Visibility="Collapsed" x:Name="countryList" Background="Transparent" IsFlatList="False" IsBouncy="True">
             <toolkit:LongListSelector.ListHeaderTemplate>
                 <DataTemplate>
-                    <TextBlock Text="SELECT COUNTRY" FontFamily="Segoe WP Semibold" FontSize="22"/>
+                    <TextBlock Text="SELECT COUNTRY" FontFamily="Segoe WP Semibold" Margin="0,0,0,20"  FontSize="22"/>
                 </DataTemplate>
             </toolkit:LongListSelector.ListHeaderTemplate>
-
+            <toolkit:LongListSelector.GroupItemsPanel>
+                <ItemsPanelTemplate>
+                    <toolkit:WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </toolkit:LongListSelector.GroupItemsPanel>
+            <toolkit:LongListSelector.GroupItemTemplate>
+                <DataTemplate>
+                    <Border Background="{Binding GroupBackgroundBrush}" Width="99" Height="99" Margin="6" 
+                                IsHitTestVisible="{Binding HasItems}">
+                        <TextBlock Text="{Binding Title}" 
+                            Style="{StaticResource PhoneTextExtraLargeStyle}"
+                            Margin="{StaticResource PhoneTouchTargetOverhang}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"                                        
+                            VerticalAlignment="Bottom"/>
+                    </Border>
+                </DataTemplate>
+            </toolkit:LongListSelector.GroupItemTemplate>
+            <toolkit:LongListSelector.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent">
+                        <Border Background="{StaticResource PhoneAccentBrush}" 
+                        Width="55" Height="55" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Title}" 
+                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Style="{StaticResource PhoneTextLargeStyle}"
+                                VerticalAlignment="Bottom"/>
+                        </Border>
+                    </Border>
+                </DataTemplate>
+            </toolkit:LongListSelector.GroupHeaderTemplate>
             <toolkit:LongListSelector.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}" FontFamily="Segoe WP SemiLight" Margin="0,12,0,12" FontSize="36"/>
+                    <TextBlock Text="{Binding}" Tap="countryList_Tap" FontFamily="Segoe WP SemiLight" Margin="0,12,0,12" FontSize="36"/>
                 </DataTemplate>
             </toolkit:LongListSelector.ItemTemplate>
 
