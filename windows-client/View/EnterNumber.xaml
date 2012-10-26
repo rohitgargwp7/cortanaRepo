@@ -81,7 +81,7 @@
             </StackPanel>
         </Grid>
 
-        <toolkit:LongListSelector Margin="24,20,0,0" Grid.Row="0" Visibility="Collapsed" x:Name="countryList" Background="Transparent" IsFlatList="False" IsBouncy="True">
+        <toolkit:LongListSelector Margin="24,20,0,0" Grid.Row="0" Visibility="Collapsed" x:Name="countryList" Background="Transparent" IsFlatList="False" IsBouncy="True" GroupViewOpened="countryList_GroupViewOpened" GroupViewClosing="countryList_GroupViewClosing">
             <toolkit:LongListSelector.ListHeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="SELECT COUNTRY" FontFamily="Segoe WP Semibold" Margin="0,0,0,20"  FontSize="22"/>

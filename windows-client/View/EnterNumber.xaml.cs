@@ -19,7 +19,7 @@ namespace windows_client
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
         private string countryCode;
-
+        bool isGroupViewOpened = false;
         private Dictionary<string, string> isoCodeCountryCode = new Dictionary<string, string>();
 
         public class Group<T> : IEnumerable<T>
@@ -529,6 +529,11 @@ namespace windows_client
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
+            if (isGroupViewOpened)
+            {
+                base.OnBackKeyPress(e);
+                return;
+            }
             if (countryList.Visibility == Visibility.Visible && ContentPanel.Visibility == Visibility.Collapsed)
             {
                 e.Cancel = true;
@@ -648,6 +653,16 @@ namespace windows_client
                 glist.Add(g);
             }
             return glist;
+        }
+
+        private void countryList_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
+        {
+            isGroupViewOpened = true;
+        }
+
+        private void countryList_GroupViewClosing(object sender, GroupViewClosingEventArgs e)
+        {
+            isGroupViewOpened = false;
         }
     }
 }
