@@ -9,6 +9,7 @@ using System.ComponentModel;
 using windows_client.utils;
 using windows_client.View;
 using windows_client.Controls;
+using System.Threading;
 
 namespace windows_client.DbUtils
 {
@@ -87,7 +88,6 @@ namespace windows_client.DbUtils
 
         public void onEventReceived(string type, object obj)
         {
-
             #region MESSAGE_SENT
             if (HikePubSub.MESSAGE_SENT == type)
             {
@@ -205,7 +205,7 @@ namespace windows_client.DbUtils
                 {
                     // delete the conversation from DB.
                     //ConversationTableUtils.deleteConversation(c.Msisdn);
-                    ConversationTableUtils.saveConvObjectList();
+                    //ConversationTableUtils.saveConvObjectList();
                 }
                 else
                 {
@@ -271,7 +271,7 @@ namespace windows_client.DbUtils
                  */
                 string groupId = (string)obj;
                 //ConversationTableUtils.deleteConversation(groupId);
-                ConversationTableUtils.saveConvObjectList();
+                //ConversationTableUtils.saveConvObjectList();
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
                 Utils.GroupCache.Remove(groupId);
@@ -309,7 +309,7 @@ namespace windows_client.DbUtils
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
                 //ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
-                ConversationTableUtils.saveConvObjectList();
+                //ConversationTableUtils.saveConvObjectList();
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
             }
             #endregion
