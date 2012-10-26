@@ -1810,7 +1810,6 @@ namespace windows_client.View
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
         {
             this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
-
         }
 
 

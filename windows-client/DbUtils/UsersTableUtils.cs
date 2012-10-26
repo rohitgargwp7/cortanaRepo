@@ -205,7 +205,7 @@ namespace windows_client.DbUtils
                             ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
                             //ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
-                            ConversationTableUtils.saveConvObjectList();
+                            //ConversationTableUtils.saveConvObjectList();
                         }
                     }
                 }
