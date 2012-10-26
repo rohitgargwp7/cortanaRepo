@@ -313,6 +313,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\audio_file_icon_white.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\delete_account_white.png" />
