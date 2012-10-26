@@ -13,8 +13,6 @@ using windows_client.View;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.IO;
 
 namespace windows_client
 {
@@ -62,11 +60,11 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
+
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
-        //public static bool isConvCreated = false;
         public static string MSISDN;
         public static bool ab_scanned = false;
         public static bool isABScanning = false;
@@ -290,6 +288,7 @@ namespace windows_client
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
+
             if (appSettings.Contains(TOKEN_SETTING))
                 isNewInstall = false;
 
@@ -343,7 +342,7 @@ namespace windows_client
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
-            //SerializeConversations();
+            ConversationTableUtils.saveConvObjectList();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -355,6 +354,7 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            ConversationTableUtils.saveConvObjectList();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -412,6 +412,7 @@ namespace windows_client
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
+            ConversationTableUtils.saveConvObjectList();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
@@ -426,6 +427,7 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            ConversationTableUtils.saveConvObjectList();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
@@ -437,7 +439,6 @@ namespace windows_client
             e.Handled = true;
             Error.Exception = e.ExceptionObject;
             Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
-            MessageBox.Show(e.ExceptionObject.Data.ToString(), "Exception data", MessageBoxButton.OK);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
