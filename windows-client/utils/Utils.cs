@@ -378,14 +378,18 @@ namespace windows_client.utils
         {
             return System.Environment.OSVersion.Version.Major.ToString() + "." + System.Environment.OSVersion.Version.Minor.ToString()
                 + "." + System.Environment.OSVersion.Version.Build.ToString();
-            
         }
 
         //unique id for device. note:- it is not imei number
         public static string getDeviceId()
         {
-            byte[] uniqueId = (byte[])DeviceExtendedProperties.GetValue("DeviceUniqueId");
-            return BitConverter.ToString(uniqueId);
+            object uniqueIdObj = null;
+            byte[] uniqueId = null;
+            if (DeviceExtendedProperties.TryGetValue("DeviceUniqueId", out uniqueIdObj))
+            {
+                uniqueId = (byte [])uniqueIdObj;
+            }
+            return uniqueId==null?null:BitConverter.ToString(uniqueId);
         }
 
         //carrier DeviceNetworkInformation.CellularMobileOperator;
