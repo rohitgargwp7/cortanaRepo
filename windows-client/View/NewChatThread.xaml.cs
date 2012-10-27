@@ -1562,8 +1562,10 @@ namespace windows_client.View
                 }
                 #endregion
             }
-            catch (Exception)
-            { }
+            catch (Exception e)
+            {
+                Debug.WriteLine("NEW CHAT THREAD :: "+e.StackTrace);
+            }
         }
 
         private void inviteUserBtn_Click(object sender, EventArgs e)

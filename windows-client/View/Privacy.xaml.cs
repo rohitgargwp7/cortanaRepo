@@ -20,6 +20,7 @@ namespace windows_client.View
 {
     public partial class Privacy : PhoneApplicationPage, HikePubSub.Listener
     {
+        bool canGoBack = true;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
 
         public Privacy()
@@ -42,6 +43,14 @@ namespace windows_client.View
         {
             RemoveListeners();
             base.OnRemovedFromJournal(e);
+        }
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (!canGoBack)
+            {
+                e.Cancel = true;
+            }
+            base.OnBackKeyPress(e);
         }
         private void RegisterListeners()
         {
@@ -66,6 +75,7 @@ namespace windows_client.View
                 progress = new MyProgressIndicator("Unlinking Account...");
 
             progress.Show();
+            canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
         }
 
@@ -79,6 +89,7 @@ namespace windows_client.View
                     MessageBoxResult result = MessageBox.Show("hike couldn't unlink your account. Please try again.", "Account not unlinked", MessageBoxButton.OKCancel);
                     progress.Hide();
                     progress = null;
+                    canGoBack = true;
                 });
                 return;
             }
@@ -99,6 +110,7 @@ namespace windows_client.View
                 progress = new MyProgressIndicator("Deleting Account...");
             }
             progress.Show();
+            canGoBack = false;
             AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
         }
 
@@ -112,6 +124,7 @@ namespace windows_client.View
                     MessageBoxResult result = MessageBox.Show("hike couldn't delete your account. Please try again.", "Account not deleted", MessageBoxButton.OKCancel);
                     progress.Hide();
                     progress = null;
+                    canGoBack = true;
                 });
                 return;
             }
