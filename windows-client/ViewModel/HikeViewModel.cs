@@ -60,15 +60,20 @@ namespace windows_client.ViewModel
 
         private void RefreshNewConversationObject()
         {
-            if (App.ViewModel.MessageListPageCollection.Count > 0)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                try
                 {
-                    ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
-                    App.ViewModel.MessageListPageCollection.RemoveAt(0);
-                    App.ViewModel.MessageListPageCollection.Insert(0, c);
-                });
-            }
+                    if (App.ViewModel.MessageListPageCollection.Count > 0)
+                    {
+                        ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
+                        App.ViewModel.MessageListPageCollection.RemoveAt(0);
+                        App.ViewModel.MessageListPageCollection.Insert(0, c);
+                    }
+                }
+                catch (ArgumentOutOfRangeException)
+                { }
+            });
         }
 
         private void RegisterListeners()
