@@ -118,7 +118,12 @@ namespace windows_client.Model
             set
             {
                 if (value != _isOnHike)
+                {
+                    NotifyPropertyChanging("IsOnHike");
                     _isOnHike = value;
+                    NotifyPropertyChanged("IsOnHike");
+                    NotifyPropertyChanged("SquareColor");
+                }
             }
         }
 

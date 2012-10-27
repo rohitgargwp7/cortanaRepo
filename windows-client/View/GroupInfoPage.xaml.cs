@@ -29,20 +29,16 @@ namespace windows_client.View
         string groupName;
         byte[] buffer = null;
         BitmapImage grpImage = null;
-        private bool _enableInviteBtn = false;
+        private int smsUsers = 0;
+
         public bool EnableInviteBtn
         {
             get
             {
-                return _enableInviteBtn;
-            }
-            set
-            {
-                if (_enableInviteBtn != value)
-                {
-                    _enableInviteBtn = value;
-                    this.inviteBtn.IsEnabled = value;
-                }
+                if (smsUsers > 0)
+                    return true;
+                else
+                    return false;
             }
         }
 
@@ -126,9 +122,9 @@ namespace windows_client.View
             {
                 GroupParticipant gp = smsUsersList[i];
                 groupMembersOC.Add(gp);
+                smsUsers++;
             }
-            if (smsUsersList != null && smsUsersList.Count > 0)
-                EnableInviteBtn = true;
+
             this.inviteBtn.IsEnabled = EnableInviteBtn;
             this.groupChatParticipants.ItemsSource = groupMembersOC;
             registerListeners();
@@ -163,6 +159,8 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
+            mPubSub.addListener(HikePubSub.USER_JOINED, this);
+            mPubSub.addListener(HikePubSub.USER_LEFT, this);
         }
         private void removeListeners()
         {
@@ -173,6 +171,8 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
+                mPubSub.removeListener(HikePubSub.USER_JOINED, this);
+                mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             }
             catch
             {
@@ -181,6 +181,7 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            #region UPDATE_UI
             if (HikePubSub.UPDATE_UI == type)
             {
                 object[] vals = (object[])obj;
@@ -205,6 +206,8 @@ namespace windows_client.View
                     groupImage.Source = empImage;
                 });
             }
+            #endregion
+            #region PARTICIPANT_JOINED_GROUP
             else if (HikePubSub.PARTICIPANT_JOINED_GROUP == type)
             {
                 JObject json = (JObject)obj;
@@ -220,13 +223,18 @@ namespace windows_client.View
                         if (!gp.HasLeft)
                             groupMembersOC.Add(gp);
                         if (!gp.IsOnHike && !EnableInviteBtn)
-                            EnableInviteBtn = true;
+                        {
+                            smsUsers++;
+                            this.inviteBtn.IsEnabled = true;
+                        }
                     }
                     groupName = App.ViewModel.ConvMap[groupId].NameToShow;
                     groupNameTxtBox.Text = groupName;
                     PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                 });
             }
+            #endregion
+            #region PARTICIPANT_LEFT_GROUP
             else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
             {
                 ConvMessage cm = (ConvMessage)obj;
@@ -242,13 +250,15 @@ namespace windows_client.View
                         {
                             groupMembersOC.RemoveAt(i);
                             groupName = App.ViewModel.ConvMap[groupId].NameToShow;
-                            groupNameTxtBox.Text = groupName; 
+                            groupNameTxtBox.Text = groupName;
                             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
                             return;
                         }
                     }
                 });
             }
+            #endregion
+            #region GROUP_NAME_CHANGED
             else if (HikePubSub.GROUP_NAME_CHANGED == type)
             {
                 object[] vals = (object[])obj;
@@ -265,6 +275,8 @@ namespace windows_client.View
                     });
                 }
             }
+            #endregion
+            #region GROUP_END
             else if (HikePubSub.GROUP_END == type)
             {
                 string gId = (string)obj;
@@ -276,6 +288,47 @@ namespace windows_client.View
                     });
                 }
             }
+            #endregion
+            #region USER JOINED HIKE
+            else if (HikePubSub.USER_JOINED == type)
+            {
+                string ms = (string)obj;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    for (int i = 0; i < groupMembersOC.Count; i++)
+                    {
+                        if (groupMembersOC[i].Msisdn == ms)
+                        {
+                            groupMembersOC[i].IsOnHike = true;
+                            smsUsers--;
+                            if(smsUsers == 0)
+                                this.inviteBtn.IsEnabled = false;
+                            return;
+                        }
+                    }
+                });
+            }
+            #endregion
+            #region USER LEFT HIKE
+            else if (HikePubSub.USER_LEFT == type)
+            {
+                string ms = (string)obj;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    for (int i = 0; i < groupMembersOC.Count; i++)
+                    {
+                        if (groupMembersOC[i].Msisdn == ms)
+                        {
+                            smsUsers++;
+                            groupMembersOC[i].IsOnHike = false;
+                            this.inviteBtn.IsEnabled = true;
+                            return;
+                        }
+                    }
+                });
+            }
+
+            #endregion
         }
         #endregion
 
@@ -394,7 +447,7 @@ namespace windows_client.View
         private void doneBtn_Click(object sender, EventArgs e)
         {
             this.Focus();
-            
+
             if (string.IsNullOrWhiteSpace(this.groupNameTxtBox.Text))
             {
                 MessageBoxResult result = MessageBox.Show("Group name cannot be empty!", "Error !!", MessageBoxButton.OK);
