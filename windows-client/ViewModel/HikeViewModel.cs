@@ -62,12 +62,17 @@ namespace windows_client.ViewModel
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (App.ViewModel.MessageListPageCollection.Count > 0)
+                try
                 {
-                    ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
-                    App.ViewModel.MessageListPageCollection.RemoveAt(0);
-                    App.ViewModel.MessageListPageCollection.Insert(0, c);
+                    if (App.ViewModel.MessageListPageCollection.Count > 0)
+                    {
+                        ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
+                        App.ViewModel.MessageListPageCollection.RemoveAt(0);
+                        App.ViewModel.MessageListPageCollection.Insert(0, c);
+                    }
                 }
+                catch (ArgumentOutOfRangeException)
+                { }
             });
         }
 
