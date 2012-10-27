@@ -54,9 +54,16 @@ namespace windows_client.View
             if (isClicked)
                 return;
             isClicked = true;
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-            App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
-            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            if (PhoneApplicationService.Current.State.ContainsKey("FromNameScreen") || App.PageState.WALKTHROUGH_SCREEN == (App.PageState)App.appSettings[App.PAGE_STATE])
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
+                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            }
+            else // this shows this page is from help page
+            {
+                NavigationService.GoBack();
+            }
         }
 
         private void walkThroughPvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
