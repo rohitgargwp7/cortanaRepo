@@ -1024,15 +1024,20 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-
                     string token = PhoneApplicationService.Current.State["SharePicker"] as string;
-                    MediaLibrary library = new MediaLibrary();
-                    Picture picture = library.GetPictureFromToken(token);
-
-                    // Create a WriteableBitmap object and add it to the Image control Source property.
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.CreateOptions = BitmapCreateOptions.None;
-                    bitmap.SetSource(picture.GetImage());
+                    BitmapImage bitmap = bitmap = new BitmapImage(); ;
+                    try
+                    {
+                        MediaLibrary library = new MediaLibrary();
+                        Picture picture = library.GetPictureFromToken(token);
+                        // Create a WriteableBitmap object and add it to the Image control Source property.
+                        bitmap.CreateOptions = BitmapCreateOptions.None;
+                        bitmap.SetSource(picture.GetImage());
+                    }
+                    catch(Exception ex)
+                    {
+                        Debug.WriteLine("Chat Thread :: Exception : "+ex.StackTrace);
+                    }
                     SendImage(bitmap, token);
                     PhoneApplicationService.Current.State.Remove("SharePicker");
                 });
@@ -1564,7 +1569,7 @@ namespace windows_client.View
             }
             catch (Exception e)
             {
-                Debug.WriteLine("NEW CHAT THREAD :: "+e.StackTrace);
+                Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
             }
         }
 
@@ -2023,7 +2028,7 @@ namespace windows_client.View
         {
             if (isOnHike)
             {
-                if (appBar.MenuItems.Contains(inviteMenuItem))
+                if (inviteMenuItem != null && appBar.MenuItems.Contains(inviteMenuItem))
                     appBar.MenuItems.Remove(inviteMenuItem);
             }
             else
