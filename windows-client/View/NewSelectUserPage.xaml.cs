@@ -772,15 +772,30 @@ namespace windows_client.View
                 return;
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap);
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap,true);
             List<ContactInfo.DelContacts> hikeIds = null;
+
+            // Code to delete the removed contacts
             if (ContactUtils.hike_contactsMap != null && ContactUtils.hike_contactsMap.Count != 0)
             {
                 hikeIds = new List<ContactInfo.DelContacts>(ContactUtils.hike_contactsMap.Count);
+                // This loop deletes all those contacts which are removed.
                 foreach (string id in ContactUtils.hike_contactsMap.Keys)
                 {
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
                     hikeIds.Add(dCn);
+                    if(App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn))
+                    {
+                        try
+                        {
+                            // here we are removing name so that Msisdn will be shown instead of Name
+                            App.ViewModel.ConvMap[dCn.Msisdn].ContactName = null;
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("REFRESH CONTACTS :: Delete contact exception "+e.StackTrace);
+                        }
+                    }
                 }
             }
             if (hikeIds != null && hikeIds.Count > 0)

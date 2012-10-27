@@ -218,7 +218,7 @@ namespace windows_client.utils
                 });
                 return;
             }
-            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap);
+            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap,false);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
             int count = 1;
             // waiting for DB to be created
@@ -282,7 +282,11 @@ namespace windows_client.utils
             SaveContactTask saveContactTask = new SaveContactTask();
             saveContactTask.Completed += new EventHandler<SaveContactResult>(saveContactTask_Completed);
             saveContactTask.MobilePhone = phone;
-            saveContactTask.Show();
+            try
+            {
+                saveContactTask.Show();
+            }
+            catch { }
         }
 
         private static void saveContactTask_Completed(object sender, SaveContactResult e)
