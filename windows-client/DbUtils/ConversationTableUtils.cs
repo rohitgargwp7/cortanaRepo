@@ -85,7 +85,7 @@ namespace windows_client.DbUtils
             }
             string msisdn = obj.Msisdn.Replace(":", "_");
             //saveConvObject(obj, msisdn);
-            saveNewConv(obj);
+            //saveNewConv(obj);
             return obj;
         }
 
@@ -257,7 +257,9 @@ namespace windows_client.DbUtils
                     {
                         using (var writer = new BinaryWriter(file))
                         {
-                            if (convMap != null && convMap.Count > 0)
+                            if(convMap == null || convMap.Count == 0)
+                                writer.Write(0);
+                            else
                             {
                                 writer.Write(convMap.Count);
                                 foreach (ConversationListObject item in convMap.Values)
@@ -339,9 +341,10 @@ namespace windows_client.DbUtils
                                 {
                                     ConversationListObject item = new ConversationListObject();
                                     item.Read(reader);
-                                    convList.Add(item);
+                                    if (IsValidConv(item))
+                                        convList.Add(item);
                                 }
-                                catch { }
+                                catch (Exception e) { Debug.WriteLine(e.StackTrace); }
                             }
                             convList.Sort();
                             return convList;
@@ -351,6 +354,23 @@ namespace windows_client.DbUtils
                 }
 
             }
+        }
+
+        // this function will validate the conversation object
+        private static bool IsValidConv(ConversationListObject item)
+        {
+            if (string.IsNullOrWhiteSpace(item.Msisdn))
+                return false;
+            else if (item.Msisdn.Contains((string)App.appSettings[App.UID_SETTING]))
+                return true;
+            else if (item.Msisdn[0] == '+')
+            {
+                double num;
+                if (double.TryParse(item.Msisdn.Substring(1), out num))
+                    return true;
+                return false;
+            }
+            return false;
         }
 
 

@@ -19,7 +19,7 @@ namespace windows_client.DbUtils
         {
             #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS
 
-            ConversationTableUtils.deleteAllConversations();
+            //ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
