@@ -121,6 +121,7 @@ namespace windows_client
                                 {
                                     IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                     MediaLibrary library = new MediaLibrary();
+                                    myFileStream.Seek(0, 0);
                                     library.SavePicture(chatBubble.FileAttachment.FileName, myFileStream);
                                 }
                                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
