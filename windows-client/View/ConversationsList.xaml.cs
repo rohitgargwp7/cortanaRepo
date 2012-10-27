@@ -72,8 +72,7 @@ namespace windows_client.View
             }
             if (firstLoad)
             {
-                progressBar.Opacity = 1;
-                progressBar.IsEnabled = true;
+                shellProgress.IsVisible = true;
                 mPubSub = App.HikePubSubInstance;
                 registerListeners();
 
@@ -158,9 +157,7 @@ namespace windows_client.View
             {
                 ShowLaunchMessages();
             }
-            progressBar.Opacity = 0;
-            progressBar.IsEnabled = false;
-
+            shellProgress.IsVisible = false; ;
             myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -237,10 +234,11 @@ namespace windows_client.View
                 }
                 catch (InvalidOperationException ioe)
                 {
-
+                    Debug.WriteLine("PUSH Exception :: "+ioe.StackTrace);
                 }
-                catch (Exception)
+                catch (Exception ee)
                 {
+                    Debug.WriteLine("PUSH Exception :: " + ee.StackTrace);
                 }
             }
             #endregion
@@ -255,7 +253,10 @@ namespace windows_client.View
             List<ContactInfo> cl = null;
             App.appSettings.TryGetValue("ContactsToShow", out cl);
             if (cl == null)
+            {
+                App.RemoveKeyFromAppSettings("ContactsToShow");
                 return;
+            }
             for (int i = 0; i < cl.Count; i++)
             {
                 ConvMessage c = null;
@@ -528,7 +529,7 @@ namespace windows_client.View
         private void ClearAllDB()
         {
             MessagesTableUtils.deleteAllMessages();
-            ConversationTableUtils.deleteAllConversations();
+            //ConversationTableUtils.deleteAllConversations();
             MiscDBUtil.DeleteAllAttachmentData();
             foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
             {

@@ -91,7 +91,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0" />
+                    <!--<toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0" />-->
                 </Grid>
             </controls:PivotItem>
 
