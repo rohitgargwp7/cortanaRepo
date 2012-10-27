@@ -361,8 +361,14 @@ namespace windows_client.DbUtils
         {
             if (string.IsNullOrWhiteSpace(item.Msisdn))
                 return false;
-            else if (item.Msisdn.Contains((string)App.appSettings[App.UID_SETTING]))
-                return true;
+            else if (item.Msisdn.Contains(":"))
+            {
+                double num;
+                int idx = item.Msisdn.IndexOf(':');
+                if (idx > 0 && double.TryParse(item.Msisdn.Substring(idx+1), out num))
+                    return true;
+                return false;
+            }
             else if (item.Msisdn[0] == '+')
             {
                 double num;
