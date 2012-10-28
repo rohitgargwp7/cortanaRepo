@@ -222,6 +222,7 @@ namespace windows_client.Controls
                             setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
+                            uploadOrDownloadCanceled();
                             setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
