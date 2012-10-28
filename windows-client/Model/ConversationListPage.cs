@@ -18,6 +18,7 @@ namespace windows_client.Model
     [DataContract]
     public class ConversationListObject : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ConversationListObject>, IBinarySerializable
     {
+        private object readWriteLock = new object();
         #region member variables
 
         private string _msisdn;
@@ -101,7 +102,7 @@ namespace windows_client.Model
                 if (_msisdn != value)
                 {
                     NotifyPropertyChanging("Msisdn");
-                    _msisdn = value;
+                    _msisdn = value.Trim();
                     NotifyPropertyChanged("Msisdn");
                 }
             }
