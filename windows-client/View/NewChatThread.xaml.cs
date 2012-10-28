@@ -413,34 +413,6 @@ namespace windows_client.View
                 isFirstLaunch = false;
             }
             #endregion
-            #region Audio FT
-            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
-            {
-                byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
-                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
-
-                string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
-
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-                convMessage.IsSms = !isOnHike;
-                convMessage.HasAttachment = true;
-                convMessage.MessageId = TempMessageId;
-
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
-                convMessage.FileAttachment.ContentType = "audio/voice";
-                convMessage.Message = "audio";
-
-                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
-                msgMap.Add(convMessage.MessageId, chatBubble);
-
-                addNewAttachmentMessageToUI(chatBubble);
-                object[] vals = new object[3];
-                vals[0] = convMessage;
-                vals[1] = audioBytes;
-                vals[2] = chatBubble;
-                mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
-            }
-            #endregion
             #region TOMBSTONE HANDLING
             else if (App.IS_TOMBSTONED)
             {
@@ -501,6 +473,13 @@ namespace windows_client.View
 
             #endregion
             App.newChatThreadPage = this;
+
+            #region AUDIO FT
+            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            {
+                AudioFileTransfer();
+            }
+            #endregion
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -1045,6 +1024,8 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove("SharePicker");
                 });
             }
+            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+                AudioFileTransfer();
         }
 
         private void ScrollToBottomFromUI()
@@ -2557,6 +2538,33 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void AudioFileTransfer()
+        {
+            byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+            PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+
+            string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
+
+            ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = !isOnHike;
+            convMessage.HasAttachment = true;
+            convMessage.MessageId = TempMessageId;
+
+            convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+            convMessage.FileAttachment.ContentType = "audio/voice";
+            convMessage.Message = "audio";
+
+            SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+            msgMap.Add(convMessage.MessageId, chatBubble);
+
+            addNewAttachmentMessageToUI(chatBubble);
+            object[] vals = new object[3];
+            vals[0] = convMessage;
+            vals[1] = audioBytes;
+            vals[2] = chatBubble;
+            App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, vals);
+        }
 
         // this should be called when one gets tap here msg.
         private void smsUser_Click(object sender, EventArgs e)
