@@ -18,7 +18,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = true;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -685,7 +685,7 @@ namespace windows_client.utils
             return updateContacts;
         }
 
-        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id)
+        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id,bool isRefresh)
         {
             try
             {
@@ -699,7 +699,13 @@ namespace windows_client.utils
                     return null;
                 }
                 int hikeCount = 1, smsCount = 1;
-                List<ContactInfo> msgToShow = new List<ContactInfo>(5);
+                List<ContactInfo> msgToShow = null;
+                List<string> msisdns = null;
+                if (!isRefresh)
+                {
+                    msgToShow = new List<ContactInfo>(5);
+                    msisdns = new List<string>();
+                }
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
                 KeyValuePair<string, JToken> kv;
@@ -719,29 +725,47 @@ namespace windows_client.utils
                             count++;
                             continue;
                         }
-                        bool onhike = (bool)entry["onhike"];
-                        List<string> msisdns = new List<string>();
+                        bool onhike = (bool)entry["onhike"];                        
                         ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
-                        if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
+
+                        if (!isRefresh) // this is case for new installation
                         {
-                            msisdns.Add(cn.Msisdn);
-                            msgToShow.Add(cn);
-                            hikeCount++;
+                            if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
+                            {
+                                msisdns.Add(cn.Msisdn);
+                                msgToShow.Add(cn);
+                                hikeCount++;
+                            }
+                            if (!onhike && smsCount <= 2 && !msisdns.Contains(cn.Msisdn))
+                            {
+                                msisdns.Add(cn.Msisdn);
+                                msgToShow.Add(cn);
+                                smsCount++;
+                            }
                         }
-                        if (!onhike && smsCount <= 2 && !msisdns.Contains(cn.Msisdn))
+                        else // this is refresh contacts case
                         {
-                            msisdns.Add(cn.Msisdn);
-                            msgToShow.Add(cn);
-                            smsCount++;
+                            if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn))
+                            {
+                                try
+                                {
+                                    App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name; 
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception "+e.StackTrace);
+                                }
+                            }
                         }
-                        msisdns = null;
                         server_contacts.Add(cn);
                         totalContacts++;
                     }
                 }
+                msisdns = null;
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
-                App.WriteToIsoStorageSettings("ContactsToShow",msgToShow);
+                if(!isRefresh)
+                    App.WriteToIsoStorageSettings("ContactsToShow",msgToShow);
                 return server_contacts;
             }
             catch (ArgumentException)
