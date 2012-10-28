@@ -1272,7 +1272,13 @@ namespace windows_client.View
                 mediaPlayerLauncher.Location = MediaLocationType.Data;
                 mediaPlayerLauncher.Controls = MediaPlaybackControls.Pause | MediaPlaybackControls.Stop;
                 mediaPlayerLauncher.Orientation = MediaPlayerOrientation.Landscape;
-                mediaPlayerLauncher.Show();
+                try
+                {
+                    mediaPlayerLauncher.Show();
+                }
+                catch
+                {
+                }
             }
         }
 
