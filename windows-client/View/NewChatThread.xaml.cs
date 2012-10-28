@@ -1010,6 +1010,9 @@ namespace windows_client.View
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
                 SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
+
+                newChatBubble.SetSentMessageStatusForUploadedAttachments();
+                
                 newChatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                 addNewAttachmentMessageToUI(newChatBubble);
                 msgMap.Add(convMessage.MessageId, newChatBubble);

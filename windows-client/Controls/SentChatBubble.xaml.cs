@@ -113,6 +113,13 @@ namespace windows_client.Controls
             }
         }
 
+        //for those messages where attachment is uploaded but mqtt failed
+        public void SetSentMessageStatusForUploadedAttachments()
+        {
+            this.SDRImage.Source = null;
+            scheduleTryingImage();
+        }
+
         public void SetSentMessageStatus(ConvMessage.State msgState)
         {
             if ((int)messageState <= (int)msgState)
