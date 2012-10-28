@@ -489,6 +489,7 @@ namespace windows_client.View
                 this.State["sendMsgTxtbox.Text"] = sendMsgTxtbox.Text;
             else
                 this.State.Remove("sendMsgTxtbox.Text");
+            App.IS_TOMBSTONED = false;
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
