@@ -603,7 +603,7 @@ namespace windows_client
                 if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
                 {
                     // save the new single file in isolated storage, delete all old files.
-                    ConversationTableUtils.saveConvObjectList(); // this will save the map
+                    //ConversationTableUtils.saveConvObjectList(); // this will save the map
                     ConversationTableUtils.deleteAllConversationsOld();
 
                     // instantiate new directories
