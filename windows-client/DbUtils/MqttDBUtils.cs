@@ -41,12 +41,17 @@ namespace windows_client.DbUtils
         {
             lock (lockObj)
             {
-
-                HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
-                using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+                try
                 {
-                    context.mqttMessages.InsertOnSubmit(mqttMessage);
-                    context.SubmitChanges();
+                    HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
+                    using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+                    {
+                        context.mqttMessages.InsertOnSubmit(mqttMessage);
+                        context.SubmitChanges();
+                    }
+                }
+                catch (Exception e)
+                { 
                 }
             }
             //TODO update observable list
