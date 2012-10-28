@@ -113,6 +113,13 @@ namespace windows_client.Controls
             }
         }
 
+        //for those messages where attachment is uploaded but mqtt failed
+        public void SetSentMessageStatusForUploadedAttachments()
+        {
+            this.SDRImage.Source = null;
+            scheduleTryingImage();
+        }
+
         public void SetSentMessageStatus(ConvMessage.State msgState)
         {
             if ((int)messageState <= (int)msgState)
@@ -215,6 +222,7 @@ namespace windows_client.Controls
                             setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
+                            uploadOrDownloadCanceled();
                             setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
