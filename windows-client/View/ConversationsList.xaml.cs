@@ -62,6 +62,7 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             this.myListBox.SelectedIndex = -1;
+            App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
             while (NavigationService.CanGoBack)
