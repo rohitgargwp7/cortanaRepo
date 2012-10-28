@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data.Linq;
 using System.Diagnostics;
+using System;
 
 namespace windows_client.DbUtils
 {
@@ -18,14 +19,22 @@ namespace windows_client.DbUtils
         /// <returns></returns>
         public static List<HikePacket> getAllSentMessages()
         {
-            List<HikePacket> res;
-            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+            try
             {
-                res = DbCompiledQueries.GetAllSentMessages(context).ToList<HikePacket>();
-                //context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
-                //context.SubmitChanges();
+
+                List<HikePacket> res;
+                using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+                {
+                    res = DbCompiledQueries.GetAllSentMessages(context).ToList<HikePacket>();
+                    //context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
+                    //context.SubmitChanges();
+                }
+                return (res == null || res.Count() == 0) ? null : res;
             }
-            return (res==null || res.Count() == 0)?null:res;
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public static void addSentMessage(HikePacket packet)
