@@ -38,7 +38,7 @@ namespace windows_client.DbUtils
                         {
                             ConversationListObject co = new ConversationListObject();
                             co.Read(reader);
-                            if(IsValidConv(co))
+                            if (IsValidConv(co))
                                 convList.Add(co);
                         }
                     }
@@ -256,7 +256,8 @@ namespace windows_client.DbUtils
                     string FileName = CONVERSATIONS_DIRECTORY + "\\" + "_Convs";
                     try
                     {
-                        store.DeleteFile(FileName);
+                        if (store.FileExists(FileName))
+                            store.DeleteFile(FileName);
                     }
                     catch { }
                     using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write))
@@ -264,7 +265,7 @@ namespace windows_client.DbUtils
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
-                            if(convMap == null || convMap.Count == 0)
+                            if (convMap == null || convMap.Count == 0)
                                 writer.Write(0);
                             else
                             {
@@ -278,8 +279,23 @@ namespace windows_client.DbUtils
                             writer.Flush();
                         }
                     }
-                    store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
-                    store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
+                    try
+                    {
+                        store.CopyFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp",true);
+                        store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("SAVE LIST BACKUP:: " + ex.StackTrace);
+                    }
+                    try
+                    {
+                        store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("SAVE LIST :: "+ex.StackTrace);
+                    }
                 }
             }
             st.Stop();
@@ -328,9 +344,16 @@ namespace windows_client.DbUtils
             List<ConversationListObject> convList = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY) || !store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs"))
+                if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
                     return null;
-                using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", FileMode.Open, FileAccess.Read))
+                string fname;
+                if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs"))
+                    fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
+                else if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp"))
+                    fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp";
+                else
+                    return null;
+                using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read))
                 {
                     using (var reader = new BinaryReader(file))
                     {
@@ -388,7 +411,7 @@ namespace windows_client.DbUtils
                 }
                 return false;
             }
-            catch 
+            catch
             {
                 return false;
             }
