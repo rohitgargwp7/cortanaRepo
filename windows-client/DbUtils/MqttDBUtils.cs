@@ -39,19 +39,22 @@ namespace windows_client.DbUtils
 
         public static void addSentMessage(HikePacket packet)
         {
-            lock (lockObj)
+            if (packet.Message != null && packet.Message.Length < 8000)
             {
-                try
+                lock (lockObj)
                 {
-                    HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
-                    using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+                    try
                     {
-                        context.mqttMessages.InsertOnSubmit(mqttMessage);
-                        context.SubmitChanges();
+                        HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
+                        using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+                        {
+                            context.mqttMessages.InsertOnSubmit(mqttMessage);
+                            context.SubmitChanges();
+                        }
                     }
-                }
-                catch (Exception e)
-                { 
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
             //TODO update observable list
