@@ -14,6 +14,8 @@ using Microsoft.Phone.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Shell;
 using windows_client.Model;
+using Microsoft.Phone.Net.NetworkInformation;
+using windows_client.utils;
 
 namespace windows_client.View
 {
@@ -46,6 +48,16 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.CONTACT_US);
             EmailComposeTask contactUsMail = new EmailComposeTask();
             contactUsMail.To = "support@bsb.in";
+            contactUsMail.Subject = "Feedback on WP7";
+
+            string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+
+            //string country_code = "";
+            //App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+
+            contactUsMail.Body = "\n\n\n\n\nHike Version: " + Utils.getAppVersion() +  
+                "\nWin OS Version: " + Utils.getOSVersion() + "\nPhone Number: " + msisdn + "\nDevice Model: " + Utils.getDeviceModel() +
+                "\nCarrier: " + DeviceNetworkInformation.CellularMobileOperator;
             try
             {
                 contactUsMail.Show();
@@ -67,7 +79,7 @@ namespace windows_client.View
         {
 
         }
-        
+
         private void Walkthrough_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.WALKTHROUGH);
