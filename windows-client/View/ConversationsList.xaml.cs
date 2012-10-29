@@ -645,6 +645,7 @@ namespace windows_client.View
                         emptyScreenTip.Opacity = 0;
                         emptyScreenImage.Opacity = 0;
                     }
+                    convScroller.ScrollToVerticalOffset(0);
                 });
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);

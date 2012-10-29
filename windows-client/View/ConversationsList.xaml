@@ -61,7 +61,7 @@
                             <BitmapImage UriSource="images\empty_screen_tip_black.png" CreateOptions="BackgroundCreation"/>
                         </Image.Source>-->
                     </Image>
-                    <ScrollViewer Height="530" Margin="0, -10,0,0">
+                    <ScrollViewer x:Name="convScroller" Height="530" Margin="0, -10,0,0">
                         <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="-7,0,-25,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
