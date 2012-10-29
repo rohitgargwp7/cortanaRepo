@@ -194,7 +194,7 @@ namespace windows_client.DbUtils
                 obj.LastMsgId = convMsg.MessageId;
                 ConversationTableUtils.updateConversation(obj);
             }
-            
+
             return obj;
         }
 
@@ -252,6 +252,20 @@ namespace windows_client.DbUtils
                         return null;
                     if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
                         obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
+                    List<GroupParticipant> l = Utils.GroupCache[convMsg.Msisdn];
+                    if (obj.IsFirstMsg) // if first msg logic is on 
+                    {
+                        bool toggleLogic = true;
+                        for (int i = 0; i < l.Count; i++)
+                        {
+                            if (!l[i].HasLeft && !l[i].IsOnHike) 
+                            {
+                                toggleLogic = false;
+                            }
+                        }
+                        if (toggleLogic)
+                            obj.IsFirstMsg = false;
+                    }
                 }
                 #endregion
                 #region GROUP_JOINED_OR_WAITING
@@ -368,7 +382,7 @@ namespace windows_client.DbUtils
                 st1.Stop();
                 long msec1 = st1.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);
-            
+
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;
                 obj.LastMsgId = convMsg.MessageId;
@@ -417,7 +431,7 @@ namespace windows_client.DbUtils
         /// <param name="ids"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public static string updateAllMsgStatus(string fromUser,long[] ids, int status)
+        public static string updateAllMsgStatus(string fromUser, long[] ids, int status)
         {
             bool shouldSubmit = false;
             string msisdn = null;

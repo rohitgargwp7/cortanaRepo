@@ -38,7 +38,8 @@ namespace windows_client.DbUtils
                         {
                             ConversationListObject co = new ConversationListObject();
                             co.Read(reader);
-                            convList.Add(co);
+                            if(IsValidConv(co))
+                                convList.Add(co);
                         }
                     }
                 }
@@ -253,10 +254,16 @@ namespace windows_client.DbUtils
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
                     string FileName = CONVERSATIONS_DIRECTORY + "\\" + "_Convs";
-                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
+                    try
                     {
-                        using (var writer = new BinaryWriter(file))
+                        store.DeleteFile(FileName);
+                    }
+                    catch { }
+                    using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(file))
                         {
+                            writer.Seek(0, SeekOrigin.Begin);
                             if(convMap == null || convMap.Count == 0)
                                 writer.Write(0);
                             else
@@ -268,6 +275,7 @@ namespace windows_client.DbUtils
                                     convs++;
                                 }
                             }
+                            writer.Flush();
                         }
                     }
                     store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
@@ -359,24 +367,31 @@ namespace windows_client.DbUtils
         // this function will validate the conversation object
         private static bool IsValidConv(ConversationListObject item)
         {
-            if (string.IsNullOrWhiteSpace(item.Msisdn))
-                return false;
-            else if (item.Msisdn.Contains(":"))
+            try
             {
-                double num;
-                int idx = item.Msisdn.IndexOf(':');
-                if (idx > 0 && double.TryParse(item.Msisdn.Substring(idx+1), out num))
-                    return true;
+                if (string.IsNullOrWhiteSpace(item.Msisdn))
+                    return false;
+                else if (item.Msisdn.Contains(":"))
+                {
+                    double num;
+                    int idx = item.Msisdn.IndexOf(':');
+                    if (idx > 0 && double.TryParse(item.Msisdn.Substring(idx + 1), out num))
+                        return true;
+                    return false;
+                }
+                else if (item.Msisdn[0] == '+')
+                {
+                    double num;
+                    if (double.TryParse(item.Msisdn.Substring(1), out num))
+                        return true;
+                    return false;
+                }
                 return false;
             }
-            else if (item.Msisdn[0] == '+')
+            catch 
             {
-                double num;
-                if (double.TryParse(item.Msisdn.Substring(1), out num))
-                    return true;
                 return false;
             }
-            return false;
         }
 
 
