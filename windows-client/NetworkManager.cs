@@ -565,7 +565,6 @@ namespace windows_client
                 */
                 try
                 {
-                    JToken bisToken = null;
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
                     GroupParticipant gp = Utils.getGroupParticipant(null, fromMsisdn, groupId);

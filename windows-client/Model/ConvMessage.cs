@@ -916,7 +916,7 @@ namespace windows_client.Model
                 JArray array = new JArray();
                 for (int i = 0; i < l.Count; i++)
                 {
-                    if (!l[i].IsOnHike && !l[i].IsUsed)
+                    if (!l[i].IsOnHike && !l[i].IsUsed && !l[i].HasLeft) // used is to track if we have shown joined for a user already
                     {
                         JObject nameMsisdn = new JObject();
                         nameMsisdn[HikeConstants.NAME] = l[i].Name;

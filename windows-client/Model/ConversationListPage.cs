@@ -372,12 +372,20 @@ namespace windows_client.Model
 
         public void Write(BinaryWriter writer)
         {
-            writer.WriteString(_msisdn);
+            if(_msisdn == null)
+                writer.WriteString("*@N@*");
+            else
+                writer.WriteString(_msisdn);
+
             if (_contactName == null)
                 writer.WriteString("*@N@*");
             else
                 writer.WriteString(_contactName);
-            writer.WriteString(_lastMessage);
+
+            if(_lastMessage == null)
+                writer.WriteString("*@N@*");
+            else
+                writer.WriteString(_lastMessage);
             writer.Write(_timeStamp);
             writer.Write(_isOnhike);
             writer.Write((int)_messageStatus);
@@ -388,10 +396,14 @@ namespace windows_client.Model
         public void Read(BinaryReader reader)
         {
             _msisdn = reader.ReadString();
+            if (_msisdn == "*@N@*")
+                _msisdn = null;
             _contactName = reader.ReadString();
             if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
                 _contactName = null;
             _lastMessage = reader.ReadString();
+            if (_lastMessage == "*@N@*")
+                _lastMessage = null;
             _timeStamp = reader.ReadInt64();
             _isOnhike = reader.ReadBoolean();
             _messageStatus = (ConvMessage.State)reader.ReadInt32();
