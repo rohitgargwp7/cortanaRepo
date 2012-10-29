@@ -154,6 +154,15 @@ namespace windows_client
             }
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.COUNTRY_SELECTED))
+            {
+                PhoneApplicationService.Current.State.Remove(HikeConstants.COUNTRY_SELECTED);
+            }
+        }
+
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
