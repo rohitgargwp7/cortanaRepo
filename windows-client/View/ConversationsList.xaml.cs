@@ -113,6 +113,25 @@ namespace windows_client.View
         #region push notifications
         public void postPushNotification_Callback(JObject obj)
         {
+            if (obj == null)
+            {
+                try
+                {
+
+                    HttpNotificationChannel pushChannel;
+                    pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+                    if (pushChannel != null)
+                    {
+                        if (pushChannel.IsShellTileBound)
+                            pushChannel.UnbindToShellTile();
+                        if (pushChannel.IsShellToastBound)
+                            pushChannel.UnbindToShellToast();
+                        pushChannel.Close();
+                    }
+                }
+                catch (Exception)
+                { }
+            }
         }
 
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)

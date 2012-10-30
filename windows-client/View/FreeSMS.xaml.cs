@@ -85,19 +85,19 @@ namespace windows_client.View
 
             if (Utils.isDarkTheme())
             {
-                this.FreeSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
-                t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
-                r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
-                leftUpper.Fill = rightUpper.Fill = UI_Utils.Instance.Black;
-                leftLower.Fill = rightLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2c, 0x2c, 0x2c));
+                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
+                unlimitedTxtBlck.Foreground =  t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
+                unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
+                topUpper.Fill = UI_Utils.Instance.Black;
+                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2c, 0x2c, 0x2c));
             }
             else
             {
-                this.FreeSMSGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xf6, 0xf6, 0xf6));
-                t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.White;
-                r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
-                leftUpper.Fill = rightUpper.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
-                leftLower.Fill = rightLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0xee, 0xee, 0xee));
+                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xf6, 0xf6, 0xf6));
+                unlimitedTxtBlck.Foreground = t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.White;
+                unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
+                topUpper.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
+                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0xee, 0xee, 0xee));
             }
             if (t3 != null)
                 t3.Foreground = t0.Foreground;
