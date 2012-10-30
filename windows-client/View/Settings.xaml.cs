@@ -113,7 +113,14 @@ namespace windows_client.View
 
         public void postPushNotification_Callback(JObject obj)
         {
-            if (obj == null)
+            string stat = "";
+            if (obj != null)
+            {
+                JToken statusToken;
+                obj.TryGetValue("stat", out statusToken);
+                stat = statusToken.ToString();
+            }
+            if (stat != "ok")
             {
                 try
                 {
