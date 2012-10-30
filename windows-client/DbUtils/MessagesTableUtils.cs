@@ -85,6 +85,10 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
+                IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
+                ConvMessage cm = qq.FirstOrDefault();
+                if (cm != null)
+                    return false;
                 long currentMessageId = convMessage.MessageId;
 
                 context.messages.InsertOnSubmit(convMessage);
@@ -141,7 +145,9 @@ namespace windows_client.DbUtils
             //List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
-                addMessage(convMsg);
+                bool success = addMessage(convMsg);
+                if (!success)
+                    return null;
                 string groupName = Utils.defaultGroupName(convMsg.Msisdn);
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
@@ -187,7 +193,9 @@ namespace windows_client.DbUtils
                 else
                     obj.LastMessage = convMsg.Message;
 
-                addMessage(convMsg);
+                bool success = addMessage(convMsg);
+                if (!success)
+                    return null;
 
                 obj.MessageStatus = convMsg.MessageStatus;
                 obj.TimeStamp = convMsg.Timestamp;

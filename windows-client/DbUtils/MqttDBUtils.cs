@@ -33,6 +33,7 @@ namespace windows_client.DbUtils
             }
             catch (Exception e)
             {
+                Debug.WriteLine("Exception while fetching MQTT msgs : "+e.StackTrace);
                 return null;
             }
         }
