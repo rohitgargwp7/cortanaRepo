@@ -115,7 +115,7 @@ namespace windows_client.View
         {
             string stat = "";
             if (obj != null)
-            { 
+            {
                 JToken statusToken;
                 obj.TryGetValue("stat", out statusToken);
                 stat = statusToken.ToString();
@@ -143,7 +143,8 @@ namespace windows_client.View
 
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
         {
-            AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+            if (e.ChannelUri != null)
+                AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
         }
 
         void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
@@ -262,7 +263,7 @@ namespace windows_client.View
                 }
                 catch (InvalidOperationException ioe)
                 {
-                    Debug.WriteLine("PUSH Exception :: "+ioe.StackTrace);
+                    Debug.WriteLine("PUSH Exception :: " + ioe.StackTrace);
                 }
                 catch (Exception ee)
                 {
@@ -305,7 +306,7 @@ namespace windows_client.View
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
                 if (obj == null)
                     return;
-                App.ViewModel.MessageListPageCollection.Insert(0,obj);
+                App.ViewModel.MessageListPageCollection.Insert(0, obj);
             }
             App.RemoveKeyFromAppSettings("ContactsToShow");
         }
@@ -452,7 +453,7 @@ namespace windows_client.View
             }
             catch
             {
-                
+
             }
         }
 
