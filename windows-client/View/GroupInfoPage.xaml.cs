@@ -340,13 +340,16 @@ namespace windows_client.View
             {
                 if (!isProfilePicTapped)
                 {
-                    photoChooserTask.Show();
+                    try
+                    {
+                        photoChooserTask.Show();
+                    }
+                    catch { }
                     isProfilePicTapped = true;
                 }
             }
-            catch (System.InvalidOperationException ex)
+            catch
             {
-                MessageBox.Show("An error occurred.");
             }
         }
 

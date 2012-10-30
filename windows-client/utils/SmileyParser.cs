@@ -625,7 +625,11 @@ namespace windows_client
             targetPhoneNumber = targetPhoneNumber.Trim();
             targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
             phoneCallTask.PhoneNumber = targetPhoneNumber;
-            phoneCallTask.Show();
+            try
+            {
+                phoneCallTask.Show();
+            }
+            catch { }
         }
 
         public Paragraph LinkifyAll(string message)
@@ -677,7 +681,7 @@ namespace windows_client
                         {
                             MyLink.NavigateUri = new Uri(url);
                             MyLink.TargetName = "_blank";
-                        } 
+                        }
                         MyLink.Inlines.Add(regexMatch);
                         p.Inlines.Add(MyLink);
                     }
@@ -697,8 +701,8 @@ namespace windows_client
                         img.Source = lookUpFromCache(regexMatch);
                         img.Height = 35;
                         img.Width = 35;
-//                        img.Margin  = new Thickness(0, 5, 0, 0);
-                       
+                        //                        img.Margin  = new Thickness(0, 5, 0, 0);
+
 
                         InlineUIContainer ui = new InlineUIContainer();
                         ui.Child = img;

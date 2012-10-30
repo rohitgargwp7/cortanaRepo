@@ -1122,7 +1122,11 @@ namespace windows_client.View
             PhoneCallTask phoneCallTask = new PhoneCallTask();
             phoneCallTask.PhoneNumber = mContactNumber;
             phoneCallTask.DisplayName = mContactName;
-            phoneCallTask.Show();
+            try
+            {
+                phoneCallTask.Show();
+            }
+            catch { }
         }
 
         private void addUser_Click(object sender, EventArgs e)
@@ -1954,9 +1958,8 @@ namespace windows_client.View
                 photoChooserTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
-            catch (System.InvalidOperationException ex)
+            catch
             {
-                MessageBox.Show("An error occurred.");
             }
         }
 
@@ -2579,7 +2582,11 @@ namespace windows_client.View
             SmsComposeTask sms = new Microsoft.Phone.Tasks.SmsComposeTask();
             sms.To = mContactNumber; // set phone number
             sms.Body = ""; // set body
-            sms.Show();
+            try
+            {
+                sms.Show();
+            }
+            catch { }
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)

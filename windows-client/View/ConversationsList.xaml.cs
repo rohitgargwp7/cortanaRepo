@@ -450,9 +450,9 @@ namespace windows_client.View
                     isProfilePicTapped = true;
                 }
             }
-            catch (System.InvalidOperationException ex)
+            catch
             {
-                MessageBox.Show("An error occurred.");
+                
             }
         }
 

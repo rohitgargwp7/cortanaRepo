@@ -121,7 +121,7 @@ namespace windows_client
         {
             base.OnNavigatingFrom(e);
             string uri = e.Uri.ToString();
-            Debug.WriteLine("Welcome :: "+uri);
+            Debug.WriteLine("Welcome :: " + uri);
             if (!uri.Contains("View")) // this means app is not navigating to a new page so save for tombstone
             {
                 this.State["NetworkErrorTxtBlk.Opacity"] = (int)NetworkErrorTxtBlk.Opacity;
@@ -134,7 +134,11 @@ namespace windows_client
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
             webBrowserTask.Uri = new Uri(HikeConstants.TERMS_LINK, UriKind.Absolute);
-            webBrowserTask.Show();
+            try
+            {
+                webBrowserTask.Show();
+            }
+            catch { }
         }
     }
 }

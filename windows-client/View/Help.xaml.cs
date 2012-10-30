@@ -40,7 +40,11 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.FAQS);
             WebBrowserTask webBrowserTask = new WebBrowserTask();
             webBrowserTask.Uri = new Uri(HikeConstants.FAQS_LINK, UriKind.Absolute);
-            webBrowserTask.Show();
+            try
+            {
+                webBrowserTask.Show();
+            }
+            catch { }
         }
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -55,7 +59,7 @@ namespace windows_client.View
             //string country_code = "";
             //App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
 
-            contactUsMail.Body = "\n\n\n\n\nHike Version: " + Utils.getAppVersion() +  
+            contactUsMail.Body = "\n\n\n\n\nHike Version: " + Utils.getAppVersion() +
                 "\nWin OS Version: " + Utils.getOSVersion() + "\nPhone Number: " + msisdn + "\nDevice Model: " + Utils.getDeviceModel() +
                 "\nCarrier: " + DeviceNetworkInformation.CellularMobileOperator;
             try
@@ -72,7 +76,11 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.LEGAL);
             WebBrowserTask webBrowserTask = new WebBrowserTask();
             webBrowserTask.Uri = new Uri(HikeConstants.TERMS_LINK, UriKind.Absolute);
-            webBrowserTask.Show();
+            try
+            {
+                webBrowserTask.Show();
+            }
+            catch { }
         }
 
         private void Updates_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -90,7 +98,11 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.RATE_APP);
             MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
-            marketplaceReviewTask.Show();
+            try
+            {
+                marketplaceReviewTask.Show();
+            }
+            catch { }
         }
     }
 }
