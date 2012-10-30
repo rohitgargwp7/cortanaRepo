@@ -97,8 +97,9 @@ namespace windows_client.View
                 unlimitedTxtBlck.Foreground = t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
                 unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
                 topUpper.Fill = UI_Utils.Instance.Black;
-                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2c, 0x2c, 0x2c));
+                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x37, 0x37, 0x37));
                 bottomLine.Fill = UI_Utils.Instance.Black;
+                forEveryFriendTxtBlck.Foreground = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
             }
             else
             {
@@ -108,6 +109,7 @@ namespace windows_client.View
                 topUpper.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
                 topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0xee, 0xee, 0xee));
                 bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
+                forEveryFriendTxtBlck.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x6e, 0x6e, 0x6e));
             }
             if (t3 != null)
                 t3.Foreground = t0.Foreground;

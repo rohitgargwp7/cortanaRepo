@@ -21,12 +21,12 @@
             <RowDefinition Height="260"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="upperGrid" Grid.Row="0">
+        <Grid x:Name="upperGrid" Grid.Row="0" Margin="0,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="220"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="265"/>
+                <RowDefinition Height="270"/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="Free SMS" Margin="25,24,0,0"/>
@@ -67,7 +67,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="hike to SMS" FontSize="28" HorizontalAlignment="Center" Grid.Column="1" Margin="0,15,0,10" Grid.Row="0"/>
+                <TextBlock Text="hike to SMS" FontSize="28" HorizontalAlignment="Center" Grid.Column="1" Margin="0,0,0,10" Grid.Row="0"/>
                 
 
                 <Grid x:Name="SMSCounterGrid" Grid.Row="1" Grid.Column="1">
@@ -99,7 +99,7 @@
 
         </Grid>
         
-        <Rectangle Grid.Row="1" x:Name="bottomLine" Height="1"/>
+        <Rectangle Grid.Row="1" Margin="0,0,0,0" x:Name="bottomLine" Height="1"/>
 
         <Grid x:Name="InviteFriendsGrid" Grid.Row="2" VerticalAlignment="Center" >
             <Grid.RowDefinitions>
@@ -110,7 +110,7 @@
 
             <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Vertical" HorizontalAlignment="Center">
                 <TextBlock Text="Earn an extra 50 free SMS per month" FontWeight="Light" FontSize="24" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center"/>
-                <TextBlock Text="for every friend who joins hike through you" Foreground="#6e6e6e" Margin="0,5,0,0" FontSize="20" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="forEveryFriendTxtBlck" Text="for every friend who joins hike through you" Foreground="#6e6e6e" Margin="0,5,0,0" FontSize="20" HorizontalAlignment="Center"/>
             </StackPanel>
             <Button Grid.Row="1" VerticalAlignment="Top" Margin="0,15,0,15" Width="166" FontFamily="Segoe WP Semibold" FontSize="22" Content="Invite Now" BorderThickness="2" Height="70" Name="inviteBtn" Click="inviteBtn_Click"></Button>
             <TextBlock Grid.Row="2" Foreground="#828282" FontSize="18" Margin="0,15,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="*Free SMS can only be sent to India at the moment"/>
