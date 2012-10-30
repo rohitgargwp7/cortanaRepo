@@ -60,6 +60,7 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
+        private static bool IS_VIEWMODEL_LOADED = false; 
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
@@ -344,7 +345,8 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            ConversationTableUtils.saveConvObjectList();
+            if (IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -357,7 +359,8 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            ConversationTableUtils.saveConvObjectList();
+            if(IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -415,7 +418,8 @@ namespace windows_client
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            ConversationTableUtils.saveConvObjectList();
+            if(IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
@@ -430,7 +434,8 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            ConversationTableUtils.saveConvObjectList();
+            if(IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
@@ -586,6 +591,7 @@ namespace windows_client
             #endregion
             #region VIEW MODEL
 
+            IS_VIEWMODEL_LOADED = false;
             if (_viewModel == null)
             {
                 string current_ver = "1.0.0.0";
@@ -627,7 +633,7 @@ namespace windows_client
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
-
+            IS_VIEWMODEL_LOADED = true;
             #endregion
             #region SMILEY
             PageState ps = PageState.WELCOME_SCREEN;
