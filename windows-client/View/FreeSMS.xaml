@@ -84,7 +84,7 @@
                     <Rectangle Height="76" x:Name="r2" Grid.Column="2" Margin="5"></Rectangle>
                     <TextBlock  x:Name="t2" Text="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="45"></TextBlock>
                 </Grid>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2" Margin="0,10,0,0">
+                <StackPanel x:Name="maxCreditCount" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2" Margin="0,10,0,0">
                     <TextBlock Text="Max per month: " FontSize="22" Foreground="#9b9b9b" />
                     <TextBlock x:Name="MaxCredits" FontSize="22" Text="300"></TextBlock>
                 </StackPanel>
@@ -109,11 +109,11 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Vertical" HorizontalAlignment="Center">
-                <TextBlock Text="Earn extra 50 free SMS per month" FontWeight="Light" FontSize="24" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center"/>
-                <TextBlock Text="for every friend who joins hike because of you" Foreground="#6e6e6e" Margin="0,5,0,0" FontSize="20" HorizontalAlignment="Center"/>
+                <TextBlock Text="Earn an extra 50 free SMS per month" FontWeight="Light" FontSize="24" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center"/>
+                <TextBlock Text="for every friend who joins hike through you" Foreground="#6e6e6e" Margin="0,5,0,0" FontSize="20" HorizontalAlignment="Center"/>
             </StackPanel>
             <Button Grid.Row="1" VerticalAlignment="Top" Margin="0,15,0,15" Width="166" FontFamily="Segoe WP Semibold" FontSize="22" Content="Invite Now" BorderThickness="2" Height="70" Name="inviteBtn" Click="inviteBtn_Click"></Button>
-            <TextBlock Grid.Row="2" Foreground="#828282" FontSize="18" Margin="0,15,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="*Free SMS can only be sent within India"/>
+            <TextBlock Grid.Row="2" Foreground="#828282" FontSize="18" Margin="0,15,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="*Free SMS can only be sent to India at the moment"/>
         </Grid>
     </Grid>
 
