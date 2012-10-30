@@ -395,20 +395,27 @@ namespace windows_client.Model
 
         public void Read(BinaryReader reader)
         {
-            _msisdn = reader.ReadString();
-            if (_msisdn == "*@N@*")
-                _msisdn = null;
-            _contactName = reader.ReadString();
-            if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
-                _contactName = null;
-            _lastMessage = reader.ReadString();
-            if (_lastMessage == "*@N@*")
-                _lastMessage = null;
-            _timeStamp = reader.ReadInt64();
-            _isOnhike = reader.ReadBoolean();
-            _messageStatus = (ConvMessage.State)reader.ReadInt32();
-            _isFirstMsg = reader.ReadBoolean();
-            _lastMsgId = reader.ReadInt64();
+            try
+            {
+                _msisdn = reader.ReadString();
+                if (_msisdn == "*@N@*")
+                    _msisdn = null;
+                _contactName = reader.ReadString();
+                if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
+                    _contactName = null;
+                _lastMessage = reader.ReadString();
+                if (_lastMessage == "*@N@*")
+                    _lastMessage = null;
+                _timeStamp = reader.ReadInt64();
+                _isOnhike = reader.ReadBoolean();
+                _messageStatus = (ConvMessage.State)reader.ReadInt32();
+                _isFirstMsg = reader.ReadBoolean();
+                _lastMsgId = reader.ReadInt64();
+            }
+            catch
+            {
+                throw new Exception("Conversation Object corrupt");
+            }
         }
         
         #region INotifyPropertyChanged Members

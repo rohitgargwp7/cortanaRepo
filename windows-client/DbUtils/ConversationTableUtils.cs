@@ -373,7 +373,14 @@ namespace windows_client.DbUtils
                                 try
                                 {
                                     ConversationListObject item = new ConversationListObject();
-                                    item.Read(reader);
+                                    try
+                                    {
+                                        item.Read(reader);
+                                    }
+                                    catch
+                                    {
+                                        item = null;
+                                    }
                                     if (IsValidConv(item))
                                         convList.Add(item);
                                 }
