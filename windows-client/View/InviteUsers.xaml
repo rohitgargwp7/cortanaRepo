@@ -33,7 +33,7 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,5,0,0" Background="Transparent">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -80,9 +80,9 @@
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel" Tap="ItemStackPanel_Tap">
-                            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                            <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
-                                <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="36" />
+                            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2">
+                                <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
                                     <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />

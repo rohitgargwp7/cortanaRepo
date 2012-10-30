@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace windows_client.View
 {
-    public partial class FreeSMS : PhoneApplicationPage,HikePubSub.Listener
+    public partial class FreeSMS : PhoneApplicationPage, HikePubSub.Listener
     {
         private readonly SolidColorBrush rectangleColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private readonly Thickness box4Margin = new Thickness(5, 5, 5, 5);
@@ -18,7 +18,7 @@ namespace windows_client.View
         {
             InitializeComponent();
             initpageBasedOnState();
-            App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED,this);
+            App.HikePubSubInstance.addListener(HikePubSub.INVITEE_NUM_CHANGED, this);
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -35,7 +35,7 @@ namespace windows_client.View
         private void initpageBasedOnState()
         {
             int creditsRemaining = 0;
-            App.appSettings.TryGetValue(App.SMS_SETTING,out creditsRemaining);
+            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
             if (App.appSettings.Contains(HikeConstants.TOTAL_CREDITS_PER_MONTH))
             {
                 int max = 0;
@@ -44,7 +44,15 @@ namespace windows_client.View
                     max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
                 }
                 catch { }
-                MaxCredits.Text = Convert.ToString( max > 0 ? max:0);
+                MaxCredits.Text = Convert.ToString(max > 0 ? max : 0);
+                if (max > 0)
+                {
+                    maxCreditCount.Opacity = 1;
+                }
+                else
+                {
+                    maxCreditCount.Opacity = 0;
+                }
             }
             TextBlock t3 = null;
             Rectangle r3 = null;
@@ -86,10 +94,12 @@ namespace windows_client.View
             if (Utils.isDarkTheme())
             {
                 upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
-                unlimitedTxtBlck.Foreground =  t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
+                unlimitedTxtBlck.Foreground = t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
                 unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
                 topUpper.Fill = UI_Utils.Instance.Black;
-                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2c, 0x2c, 0x2c));
+                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x37, 0x37, 0x37));
+                bottomLine.Fill = UI_Utils.Instance.Black;
+                forEveryFriendTxtBlck.Foreground = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
             }
             else
             {
@@ -98,6 +108,8 @@ namespace windows_client.View
                 unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
                 topUpper.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
                 topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0xee, 0xee, 0xee));
+                bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
+                forEveryFriendTxtBlck.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x6e, 0x6e, 0x6e));
             }
             if (t3 != null)
                 t3.Foreground = t0.Foreground;
@@ -115,7 +127,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("FREE SMS SCREEN :: Exception while navigating to Invite screen : "+ex.StackTrace);
+                Debug.WriteLine("FREE SMS SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
             }
         }
 
@@ -125,7 +137,18 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MaxCredits.Text = (string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH];
+                    string credits = (string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH];
+                    int creditCount = -1;
+                    int.TryParse(credits, out creditCount);
+                    if (creditCount > 0)
+                    {
+                        MaxCredits.Text = credits;
+                        maxCreditCount.Opacity = 1;
+                    }
+                    else
+                    {
+                        maxCreditCount.Opacity = 0;
+                    }
                 });
             }
         }
