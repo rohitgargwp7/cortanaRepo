@@ -60,7 +60,8 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-
+        private static bool IS_VIEWMODEL_LOADED = false; 
+        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -344,7 +345,8 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            ConversationTableUtils.saveConvObjectList();
+            if (IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -357,7 +359,8 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            ConversationTableUtils.saveConvObjectList();
+            if(IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -381,7 +384,7 @@ namespace windows_client
                 });
             }
 
-            else if (targetPage != null &&  targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
+            else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
@@ -403,7 +406,7 @@ namespace windows_client
                     loadPage();
                 });
             }
-            
+
         }
 
         private string GetParamFromUri(string targetPage)
@@ -415,7 +418,8 @@ namespace windows_client
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            ConversationTableUtils.saveConvObjectList();
+            if(IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
@@ -430,7 +434,8 @@ namespace windows_client
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            ConversationTableUtils.saveConvObjectList();
+            if(IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
@@ -438,15 +443,17 @@ namespace windows_client
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
-            //Running on a device / emulator without debugging
-            e.Handled = true;
-            Error.Exception = e.ExceptionObject;
-            Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            if (!IS_MARKETPLACE)
             {
-                (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
-            });
-
+                //Running on a device / emulator without debugging
+                e.Handled = true;
+                Error.Exception = e.ExceptionObject;
+                Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+                });
+            }
         }
 
         #region Phone application initialization
@@ -584,6 +591,7 @@ namespace windows_client
             #endregion
             #region VIEW MODEL
 
+            IS_VIEWMODEL_LOADED = false;
             if (_viewModel == null)
             {
                 string current_ver = "1.0.0.0";
@@ -617,7 +625,7 @@ namespace windows_client
                 }
                 if (current_ver == null)
                     current_ver = "1.0.0.0";
-                if(!isNewInstall && Utils.compareVersion(Utils.getAppVersion(),current_ver)==1) // this is update
+                if (!isNewInstall && Utils.compareVersion(Utils.getAppVersion(), current_ver) == 1) // this is update
                 {
                     App.WriteToIsoStorageSettings("New_Update", true);
                 }
@@ -625,7 +633,7 @@ namespace windows_client
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
-
+            IS_VIEWMODEL_LOADED = true;
             #endregion
             #region SMILEY
             PageState ps = PageState.WELCOME_SCREEN;
@@ -637,7 +645,7 @@ namespace windows_client
             #endregion
 
             if (!appSettings.Contains("File_System_Version") || (string)appSettings["File_System_Version"] != Utils.getAppVersion())
-                App.WriteToIsoStorageSettings("File_System_Version",Utils.getAppVersion());
+                App.WriteToIsoStorageSettings("File_System_Version", Utils.getAppVersion());
         }
 
         public static void createDatabaseAsync()

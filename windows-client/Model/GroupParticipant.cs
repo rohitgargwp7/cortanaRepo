@@ -10,10 +10,11 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using windows_client.utils;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
-    public class GroupParticipant : INotifyPropertyChanged, INotifyPropertyChanging,IComparable<GroupParticipant>
+    public class GroupParticipant : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<GroupParticipant>
     {
         private string _grpId;
         private string _name; // this is  full name
@@ -47,7 +48,7 @@ namespace windows_client.Model
             _hasOptIn = false;
         }
 
-        public GroupParticipant(string name, string msisdn, bool isOnHike,bool isDND)
+        public GroupParticipant(string name, string msisdn, bool isOnHike, bool isDND)
         {
             _name = name;
             _msisdn = msisdn;
@@ -224,13 +225,20 @@ namespace windows_client.Model
         // Used to notify that a property changed
         public void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (PropertyChanged != null)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                });
-            }
+                    try
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Exception in property : {0}. Exception : {1}",propertyName,ex.StackTrace);
+                    }
+                }
+            });
         }
 
         #endregion

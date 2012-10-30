@@ -153,7 +153,9 @@ namespace windows_client.DbUtils
                 obj.IsFirstMsg = false;
 
             Stopwatch st1 = Stopwatch.StartNew();
-            MessagesTableUtils.addMessage(convMessage);
+            bool success = MessagesTableUtils.addMessage(convMessage);
+            if (!success)
+                return null;
             obj.LastMsgId = convMessage.MessageId;
             st1.Stop();
             long msec1 = st1.ElapsedMilliseconds;
@@ -371,7 +373,14 @@ namespace windows_client.DbUtils
                                 try
                                 {
                                     ConversationListObject item = new ConversationListObject();
-                                    item.Read(reader);
+                                    try
+                                    {
+                                        item.Read(reader);
+                                    }
+                                    catch
+                                    {
+                                        item = null;
+                                    }
                                     if (IsValidConv(item))
                                         convList.Add(item);
                                 }
