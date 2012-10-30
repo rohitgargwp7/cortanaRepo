@@ -85,12 +85,14 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring + ";Max Buffer Size = 1024;"))
             {
-                IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
-                ConvMessage cm = qq.FirstOrDefault();
-                if (cm != null)
-                    return false;
+                if (convMessage.MappedMessageId > 0)
+                {
+                    IQueryable<ConvMessage> qq = DbCompiledQueries.GetMessageForMappedMsgIdMsisdn(context, convMessage.Msisdn, convMessage.MappedMessageId, convMessage.Message);
+                    ConvMessage cm = qq.FirstOrDefault();
+                    if (cm != null)
+                        return false;
+                }
                 long currentMessageId = convMessage.MessageId;
-
                 context.messages.InsertOnSubmit(convMessage);
                 try
                 {
