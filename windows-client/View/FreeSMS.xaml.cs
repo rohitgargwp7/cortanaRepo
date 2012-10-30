@@ -90,6 +90,7 @@ namespace windows_client.View
                 unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
                 topUpper.Fill = UI_Utils.Instance.Black;
                 topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2c, 0x2c, 0x2c));
+                bottomLine.Fill = UI_Utils.Instance.Black;
             }
             else
             {
@@ -98,6 +99,7 @@ namespace windows_client.View
                 unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
                 topUpper.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
                 topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0xee, 0xee, 0xee));
+                bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
             }
             if (t3 != null)
                 t3.Foreground = t0.Foreground;
