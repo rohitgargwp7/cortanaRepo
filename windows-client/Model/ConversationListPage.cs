@@ -372,25 +372,32 @@ namespace windows_client.Model
 
         public void Write(BinaryWriter writer)
         {
-            if(_msisdn == null)
-                writer.WriteString("*@N@*");
-            else
-                writer.WriteString(_msisdn);
+            try
+            {
+                if (_msisdn == null)
+                    writer.WriteString("*@N@*");
+                else
+                    writer.WriteString(_msisdn);
 
-            if (_contactName == null)
-                writer.WriteString("*@N@*");
-            else
-                writer.WriteString(_contactName);
+                if (_contactName == null)
+                    writer.WriteString("*@N@*");
+                else
+                    writer.WriteString(_contactName);
 
-            if(_lastMessage == null)
-                writer.WriteString("*@N@*");
-            else
-                writer.WriteString(_lastMessage);
-            writer.Write(_timeStamp);
-            writer.Write(_isOnhike);
-            writer.Write((int)_messageStatus);
-            writer.Write(_isFirstMsg);
-            writer.Write(_lastMsgId);
+                if (_lastMessage == null)
+                    writer.WriteString("*@N@*");
+                else
+                    writer.WriteString(_lastMessage);
+                writer.Write(_timeStamp);
+                writer.Write(_isOnhike);
+                writer.Write((int)_messageStatus);
+                writer.Write(_isFirstMsg);
+                writer.Write(_lastMsgId);
+            }
+            catch
+            {
+                throw new Exception("Unable to write to a file...");
+            }
         }
 
         public void Read(BinaryReader reader)
