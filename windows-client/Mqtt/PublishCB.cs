@@ -25,10 +25,10 @@ namespace windows_client.Mqtt
         {
             if (packet != null)
             {
-                if (qos > 0)
-                {
-                    MqttDBUtils.removeSentMessage(packet.MessageId);
-                }
+                //if (qos > 0)
+                //{
+                //    MqttDBUtils.removeSentMessage(packet.MessageId);
+                //}
                 if (packet.MessageId > 0) // represents ack for message that is recieved by server
                 {
                     JObject obj = new JObject();
