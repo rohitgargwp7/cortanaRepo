@@ -667,49 +667,56 @@ namespace windows_client
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                try
                 {
-                    if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        store.CreateDirectory(MiscDBUtil.THUMBNAILS);
+                        if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
+                        {
+                            store.CreateDirectory(MiscDBUtil.THUMBNAILS);
+                        }
+
+                        if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
+                        {
+                            store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
+                        }
+                        if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
+                        {
+                            store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
+                        }
+                        if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
+                        {
+                            store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
+                        }
+                    }
+                    // Create the database if it does not exist.
+                    Stopwatch st = Stopwatch.StartNew();
+                    using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
+                    {
+                        if (db.DatabaseExists() == false)
+                            db.CreateDatabase();
                     }
 
-                    if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
+                    using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
                     {
-                        store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
+                        if (db.DatabaseExists() == false)
+                            db.CreateDatabase();
                     }
-                    if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
-                    {
-                        store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
-                    }
-                    if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
-                    {
-                        store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
-                    }
-                }
-                // Create the database if it does not exist.
-                Stopwatch st = Stopwatch.StartNew();
-                using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
-                {
-                    if (db.DatabaseExists() == false)
-                        db.CreateDatabase();
-                }
 
-                using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
-                {
-                    if (db.DatabaseExists() == false)
-                        db.CreateDatabase();
+                    using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
+                    {
+                        if (db.DatabaseExists() == false)
+                            db.CreateDatabase();
+                    }
+                    WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+                    st.Stop();
+                    long msec = st.ElapsedMilliseconds;
+                    Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
-
-                using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
-                {
-                    if (db.DatabaseExists() == false)
-                        db.CreateDatabase();
+                catch 
+                { 
+                    RemoveKeyFromAppSettings(App.IS_DB_CREATED); 
                 }
-                WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
             };
             bw.RunWorkerAsync();
         }
