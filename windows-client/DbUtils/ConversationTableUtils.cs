@@ -281,7 +281,7 @@ namespace windows_client.DbUtils
                             writer.Flush();
                         }
                     }
-                    try
+                    try // TODO REVIEW
                     {
                         store.CopyFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp",true);
                         store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
