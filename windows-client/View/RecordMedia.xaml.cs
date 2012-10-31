@@ -170,8 +170,6 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-            if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
-                stop();
         }
 
         private void stop()
@@ -204,6 +202,8 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
+            if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
+                stop();
             dt.Stop();
             microphone.BufferReady -= this.microphone_BufferReady;
         }
