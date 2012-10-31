@@ -68,6 +68,7 @@ namespace windows_client.View
             App.newChatThreadPage = null;
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            
             if (Utils.isCriticalUpdatePending())
             {
                 showCriticalUpdateMessage();
@@ -177,7 +178,7 @@ namespace windows_client.View
                 App.ViewModel.ConvMap[key].Avatar = _avatar;
             }
         }
-
+        
         /* This function will run on UI Thread */
         private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -185,7 +186,7 @@ namespace windows_client.View
             {
                 ShowLaunchMessages();
             }
-            shellProgress.IsVisible = false; ;
+            shellProgress.IsVisible = false;
             myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -232,7 +233,7 @@ namespace windows_client.View
                     // If the channel was not found, then create a new connection to the push service.
                     if (pushChannel == null)
                     {
-                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName);
+                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName,"*.hike.in");
 
                         // Register for all the events before attempting to open the channel.
                         pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
@@ -303,9 +304,8 @@ namespace windows_client.View
                 }
                 c.Msisdn = cl[i].Msisdn;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
-                if (obj == null)
-                    return;
-                App.ViewModel.MessageListPageCollection.Insert(0,obj);
+                if (obj != null)
+                    App.ViewModel.MessageListPageCollection.Insert(0,obj);
             }
             App.RemoveKeyFromAppSettings("ContactsToShow");
         }
