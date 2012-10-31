@@ -722,7 +722,7 @@ namespace windows_client
                         convMsg.Msisdn = key;
                         convMsg.Message = ms;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
-                        if (co != null)
+                        if (co == null)
                         {
                             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                             return;
@@ -736,6 +736,11 @@ namespace windows_client
                             cmCredits.Message = text;
                             cmCredits.Msisdn = key;
                             co = MessagesTableUtils.addChatMessage(cmCredits, false);
+                            if (co == null)
+                            {
+                                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                                return;
+                            }
                             values = new object[3];
                             values[2] = cmCredits;
                         }

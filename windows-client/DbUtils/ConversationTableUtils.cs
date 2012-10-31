@@ -10,6 +10,7 @@ using System.IO.IsolatedStorage;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows;
 
 namespace windows_client.DbUtils
 {
@@ -251,6 +252,13 @@ namespace windows_client.DbUtils
             int convs = 0;
             Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
+
+            if (convMap == null)
+            {
+                if(!App.IS_MARKETPLACE)
+                    MessageBox.Show("Map is null !!","TESTING",MessageBoxButton.OK);
+                return;
+            }
             lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage

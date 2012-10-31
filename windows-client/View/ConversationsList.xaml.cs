@@ -233,7 +233,7 @@ namespace windows_client.View
                     // If the channel was not found, then create a new connection to the push service.
                     if (pushChannel == null)
                     {
-                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName,"hike.in");
+                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName,HikeConstants.PUSH_CHANNEL_NAME);
 
                         // Register for all the events before attempting to open the channel.
                         pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
