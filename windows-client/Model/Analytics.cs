@@ -88,7 +88,7 @@ namespace windows_client.Model
             if (eventMap == null || eventMap.Count == 0)
                 return null;
             JObject eventsData = new JObject();
-            eventsData["tag"] = "mob";
+            eventsData["tag"] = "wp7";
             foreach (KeyValuePair<string, int> entry in eventMap)
             {
                 if (entry.Value > 0)
