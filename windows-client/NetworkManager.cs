@@ -680,7 +680,11 @@ namespace windows_client
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-
+                    if (obj != null)
+                    {
+                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                        return;
+                    }
                     if (credits <= 0)
                         vals = new object[2];
                     else                    // this shows that we have to show credits msg as this user got credits.
@@ -718,7 +722,11 @@ namespace windows_client
                         convMsg.Msisdn = key;
                         convMsg.Message = ms;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
-
+                        if (co != null)
+                        {
+                            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                            return;
+                        }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
                         {
                             string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
