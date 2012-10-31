@@ -247,6 +247,15 @@ namespace windows_client.View
             }
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (myState == RecorderState.RECORDING)
+            {
+                stop();
+                microphone = null;
+            }
+            base.OnBackKeyPress(e);
+        }
         private void refresh_Click(object sender, EventArgs e)
         {
             if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
