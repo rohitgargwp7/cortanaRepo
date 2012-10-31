@@ -40,6 +40,7 @@ namespace windows_client.View
         ApplicationBarIconButton sendIconButton = null;
         private int recordedDuration = -1;
 
+        private DispatcherTimer dt;
 
         private enum RecorderState
         { 
@@ -67,7 +68,7 @@ namespace windows_client.View
             // Timer to simulate the XNA Framework game loop (Microphone is 
             // from the XNA Framework). We also use this timer to monitor the 
             // state of audio playback so we can update the UI appropriately.
-            DispatcherTimer dt = new DispatcherTimer();
+            dt = new DispatcherTimer();
             dt.Interval = TimeSpan.FromMilliseconds(33);
             dt.Tick += new EventHandler(dt_Tick);
             dt.Start();
@@ -140,7 +141,7 @@ namespace windows_client.View
             progressTimer.Start();
 
             // Get audio data in 1/2 second chunks
-            microphone.BufferDuration = TimeSpan.FromMilliseconds(500);
+            microphone.BufferDuration = TimeSpan.FromMilliseconds(1000);
             // Allocate memory to hold the audio data
             buffer = new byte[microphone.GetSampleSizeInBytes(microphone.BufferDuration)];
             // Set the stream back to zero in case there is already something in it
@@ -165,6 +166,12 @@ namespace windows_client.View
             if (runningSeconds >= HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED)
                 stop();
             runningSeconds++;
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
+                stop();
         }
 
         private void stop()
@@ -192,6 +199,13 @@ namespace windows_client.View
             statusImage.Source = playIcon;
             sendIconButton.IsEnabled = true;
             myState = RecorderState.RECORDED;
+        }
+
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            dt.Stop();
+            microphone.BufferReady -= this.microphone_BufferReady;
         }
 
         private void play()

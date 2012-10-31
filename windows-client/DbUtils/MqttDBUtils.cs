@@ -26,8 +26,8 @@ namespace windows_client.DbUtils
                 using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
                 {
                     res = DbCompiledQueries.GetAllSentMessages(context).ToList<HikePacket>();
-                    //context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
-                    //context.SubmitChanges();
+                    context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
+                    context.SubmitChanges();
                 }
                 return (res == null || res.Count() == 0) ? null : res;
             }

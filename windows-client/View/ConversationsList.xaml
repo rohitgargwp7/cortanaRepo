@@ -62,7 +62,7 @@
                         </Image.Source>-->
                     </Image>
                     <ScrollViewer x:Name="convScroller" Height="530" Margin="0, -10,0,0">
-                        <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="-7,0,-25,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="-9,0,-25,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Vertical">
@@ -72,7 +72,7 @@
                                             <StackPanel Orientation="Vertical">
                                                 <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0">
                                                     <TextBlock Text="{Binding NameToShow}" Width="280" FontSize="39" FontFamily="Segoe WP SemiLight" FontStyle="Normal" FontWeight="ExtraLight" Height="53" Grid.Column="0" Grid.ColumnSpan="2"/>
-                                                    <TextBlock Text="{Binding FormattedTimeStamp}" Margin="15,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Gray"/>
+                                                    <TextBlock Text="{Binding FormattedTimeStamp}" Margin="14,15,10,-5" FontSize="20" Height="30" Grid.Column="1" Grid.ColumnSpan="1" Foreground="Gray"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="10, 0, 0, 0" MaxHeight="35" VerticalAlignment="Top">
                                                     <Image Height="13" Margin="10,0,0,0" Visibility="{Binding SDRStatusImageVisible}" Source="{Binding SDRStatusImage}" VerticalAlignment="Center"></Image>

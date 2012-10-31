@@ -324,7 +324,7 @@ namespace windows_client
                             }
                         }
                     }
-                    if(shouldSave)
+                    if (shouldSave)
                         App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
@@ -388,7 +388,7 @@ namespace windows_client
                 string totalCreditsPerMonth = "0";
                 try
                 {
-                    totalCreditsPerMonth = (string)data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
+                    totalCreditsPerMonth = data[HikeConstants.TOTAL_CREDITS_PER_MONTH].ToString();
                 }
                 catch { }
 
@@ -457,7 +457,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
                 // {"t":"uo", "d":{"msisdn":"", "credits":10}}
-                ProcessUoUjMsgs(jsonObj, true,true);
+                ProcessUoUjMsgs(jsonObj, true, true);
             }
             #endregion
             #region GROUP CHAT RELATED
@@ -578,8 +578,8 @@ namespace windows_client
 
                     object[] vals = new object[2];
                     vals[0] = convMsg;
-                    vals[1] = cObj;     
-           
+                    vals[1] = cObj;
+
                     this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     this.pubSub.publish(HikePubSub.PARTICIPANT_LEFT_GROUP, convMsg);
                 }
@@ -606,7 +606,7 @@ namespace windows_client
                         object[] vals = new object[2];
                         vals[0] = convMessage;
                         vals[1] = cObj;
-      
+
                         this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                         this.pubSub.publish(HikePubSub.GROUP_END, groupId);
                     }
@@ -622,12 +622,12 @@ namespace windows_client
             #region INTERNATIONAL USER
             else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
             {
-                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.INTERNATIONAL_USER,jsonObj);
+                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.INTERNATIONAL_USER, jsonObj);
                 cm.Msisdn = msisdn;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                 if (obj == null)
                     return;
-                object []vals = new object[2];
+                object[] vals = new object[2];
                 vals[0] = cm;
                 vals[1] = obj;
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
@@ -680,7 +680,11 @@ namespace windows_client
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-
+                    if (obj != null)
+                    {
+                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                        return;
+                    }
                     if (credits <= 0)
                         vals = new object[2];
                     else                    // this shows that we have to show credits msg as this user got credits.
@@ -711,23 +715,32 @@ namespace windows_client
                 {
                     if (l[i].Msisdn == ms) // if this msisdn exists in group
                     {
-                        if(!isOptInMsg)
+                        if (!isOptInMsg)
                             l[i].IsOnHike = true;
                         object[] values = null;
-                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN,jsonObj);
+                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
                         convMsg.Msisdn = key;
                         convMsg.Message = ms;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
-
+                        if (co == null)
+                        {
+                            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                            return;
+                        }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
                         {
                             string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
                             JObject o = new JObject();
                             o.Add("t", "credits_gained");
-                            ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED,o);
+                            ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
                             cmCredits.Message = text;
                             cmCredits.Msisdn = key;
                             co = MessagesTableUtils.addChatMessage(cmCredits, false);
+                            if (co == null)
+                            {
+                                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                                return;
+                            }
                             values = new object[3];
                             values[2] = cmCredits;
                         }

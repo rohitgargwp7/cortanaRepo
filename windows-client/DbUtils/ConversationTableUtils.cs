@@ -10,6 +10,7 @@ using System.IO.IsolatedStorage;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows;
 
 namespace windows_client.DbUtils
 {
@@ -205,7 +206,7 @@ namespace windows_client.DbUtils
                 return false;
             ConversationListObject obj = App.ViewModel.ConvMap[grpId];
             obj.ContactName = groupName;
-            string msisdn = grpId.Replace(":", "_");
+            //string msisdn = grpId.Replace(":", "_");
             //saveConvObject(obj, msisdn);
             //saveConvObjectList();
             return true;
@@ -251,6 +252,13 @@ namespace windows_client.DbUtils
             int convs = 0;
             Stopwatch st = Stopwatch.StartNew();
             Dictionary<string, ConversationListObject> convMap = App.ViewModel.ConvMap;
+
+            if (convMap == null)
+            {
+                if(!App.IS_MARKETPLACE)
+                    MessageBox.Show("Map is null !!","TESTING",MessageBoxButton.OK);
+                return;
+            }
             lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
@@ -262,33 +270,45 @@ namespace windows_client.DbUtils
                             store.DeleteFile(FileName);
                     }
                     catch { }
-                    using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write))
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(file))
-                        {
-                            writer.Seek(0, SeekOrigin.Begin);
-                            if (convMap == null || convMap.Count == 0)
-                                writer.Write(0);
-                            else
-                            {
-                                writer.Write(convMap.Count);
-                                foreach (ConversationListObject item in convMap.Values)
-                                {
-                                    item.Write(writer);
-                                    convs++;
-                                }
-                            }
-                            writer.Flush();
-                        }
-                    }
                     try
                     {
-                        store.CopyFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp",true);
+                        using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write))
+                        {
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                if (convMap == null || convMap.Count == 0)
+                                    writer.Write(0);
+                                else
+                                {
+                                    writer.Write(convMap.Count);
+                                    foreach (ConversationListObject item in convMap.Values)
+                                    {
+                                        item.Write(writer);
+                                        convs++;
+                                    }
+                                }
+                                writer.Flush();
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                    try // TODO REVIEW
+                    {
+                        store.CopyFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp", true);
+                    }
+                    catch { }
+                    try
+                    {
                         store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                     }
                     catch (Exception ex)
                     {
                         Debug.WriteLine("SAVE LIST BACKUP:: " + ex.StackTrace);
+                        return;
                     }
                     try
                     {
@@ -296,7 +316,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("SAVE LIST :: "+ex.StackTrace);
+                        Debug.WriteLine("SAVE LIST :: " + ex.StackTrace);
                     }
                 }
             }
@@ -434,7 +454,15 @@ namespace windows_client.DbUtils
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                    string[] files;
+                    try
+                    {
+                        files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                    }
+                    catch
+                    {
+                        files = null;
+                    }
                     if (files == null)
                         return;
                     foreach (string fileName in files)

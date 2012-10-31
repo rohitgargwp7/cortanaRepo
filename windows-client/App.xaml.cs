@@ -61,7 +61,7 @@ namespace windows_client
 
         #region instances
         private static bool IS_VIEWMODEL_LOADED = false; 
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
@@ -79,6 +79,7 @@ namespace windows_client
         private static Analytics _analytics;
         private static object lockObj = new object();
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
+        PageState ps = PageState.WELCOME_SCREEN;
         #endregion
 
         #region PROPERTIES
@@ -290,7 +291,7 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-            if (appSettings.Contains(TOKEN_SETTING))
+            if(appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                 isNewInstall = false;
 
             /* Load App token if its there*/
@@ -411,8 +412,15 @@ namespace windows_client
 
         private string GetParamFromUri(string targetPage)
         {
-            int idx = targetPage.IndexOf("msisdn");
-            return targetPage.Substring(idx);
+            try
+            {
+                int idx = targetPage.IndexOf("msisdn");
+                return targetPage.Substring(idx);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // Code to execute if a navigation fails
@@ -451,7 +459,7 @@ namespace windows_client
                 Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+                        (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
                 });
             }
         }
@@ -494,8 +502,6 @@ namespace windows_client
 
         private void loadPage()
         {
-            PageState ps = PageState.WELCOME_SCREEN;
-            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
             Uri nUri = null;
 
             switch (ps)
@@ -597,13 +603,19 @@ namespace windows_client
                 string current_ver = "1.0.0.0";
                 List<ConversationListObject> convList = null;
 
-                // If version exists means build is 1.3.0.0 or later else 1.1.0.0
-                if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
-                    convList = ConversationTableUtils.getAllConversations();
-                else
-                    convList = ConversationTableUtils.getAllConvs();
-
-                if (convList == null || convList.Count == 0 || !App.appSettings.Contains(App.IS_DB_CREATED))
+                try
+                {
+                    // If version exists means build is 1.4.0.0 or later else 1.1.0.0
+                    if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
+                        convList = ConversationTableUtils.getAllConversations();
+                    else
+                        convList = ConversationTableUtils.getAllConvs();
+                }
+                catch 
+                {
+                    convList = null;
+                }
+                if (convList == null || convList.Count == 0)
                     _viewModel = new HikeViewModel();
                 else
                     _viewModel = new HikeViewModel(convList);
@@ -655,49 +667,56 @@ namespace windows_client
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                try
                 {
-                    if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        store.CreateDirectory(MiscDBUtil.THUMBNAILS);
+                        if (!string.IsNullOrEmpty(MiscDBUtil.THUMBNAILS) && !store.DirectoryExists(MiscDBUtil.THUMBNAILS))
+                        {
+                            store.CreateDirectory(MiscDBUtil.THUMBNAILS);
+                        }
+
+                        if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
+                        {
+                            store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
+                        }
+                        if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
+                        {
+                            store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
+                        }
+                        if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
+                        {
+                            store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
+                        }
+                    }
+                    // Create the database if it does not exist.
+                    Stopwatch st = Stopwatch.StartNew();
+                    using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
+                    {
+                        if (db.DatabaseExists() == false)
+                            db.CreateDatabase();
                     }
 
-                    if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
+                    using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
                     {
-                        store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
+                        if (db.DatabaseExists() == false)
+                            db.CreateDatabase();
                     }
-                    if (!store.DirectoryExists(HikeConstants.SHARED_FILE_LOCATION))
-                    {
-                        store.CreateDirectory(HikeConstants.SHARED_FILE_LOCATION);
-                    }
-                    if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
-                    {
-                        store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
-                    }
-                }
-                // Create the database if it does not exist.
-                Stopwatch st = Stopwatch.StartNew();
-                using (HikeChatsDb db = new HikeChatsDb(MsgsDBConnectionstring))
-                {
-                    if (db.DatabaseExists() == false)
-                        db.CreateDatabase();
-                }
 
-                using (HikeUsersDb db = new HikeUsersDb(UsersDBConnectionstring))
-                {
-                    if (db.DatabaseExists() == false)
-                        db.CreateDatabase();
+                    using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
+                    {
+                        if (db.DatabaseExists() == false)
+                            db.CreateDatabase();
+                    }
+                    WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+                    st.Stop();
+                    long msec = st.ElapsedMilliseconds;
+                    Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
-
-                using (HikeMqttPersistenceDb db = new HikeMqttPersistenceDb(MqttDBConnectionstring))
-                {
-                    if (db.DatabaseExists() == false)
-                        db.CreateDatabase();
+                catch 
+                { 
+                    RemoveKeyFromAppSettings(App.IS_DB_CREATED); 
                 }
-                WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-                st.Stop();
-                long msec = st.ElapsedMilliseconds;
-                Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
             };
             bw.RunWorkerAsync();
         }

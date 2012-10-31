@@ -351,7 +351,7 @@ namespace windows_client
 
         private void enterPhoneBtn_Click(object sender, EventArgs e)
         {
-            phoneNumber = txtEnterPhone.Text.Trim();
+            phoneNumber = countryCode.Substring(countryCode.IndexOf('+')) + txtEnterPhone.Text.Trim();
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
             if (phoneNumber.Length < 10 || phoneNumber.Length > 15)
