@@ -80,6 +80,13 @@ namespace windows_client.Misc
             writer.Write(value.Ticks);
         }
 
+        public static void WriteStringBytes(this BinaryWriter writer,string value)
+        {
+            byte[] ba = Encoding.UTF8.GetBytes(value);
+            writer.Write(ba.Length);
+            writer.Write(ba);
+        }
+
         public static void WriteString(this BinaryWriter writer, string value)
         {
             writer.Write(value ?? string.Empty);
