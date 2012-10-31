@@ -27,7 +27,6 @@ namespace windows_client.View
         private BitmapImage blankImage;
         private BitmapImage microphoneImage;
         private BitmapImage speakerImage;
-        private byte[] _buffer;
         private TimeSpan _duration;
 
         private BitmapImage recordIcon = new BitmapImage(new Uri("/View/images/icon_record.png", UriKind.Relative));
@@ -74,7 +73,6 @@ namespace windows_client.View
             dt.Start();
 
             _duration = microphone.BufferDuration;
-            _buffer = new byte[microphone.GetSampleSizeInBytes(microphone.BufferDuration)];
 
             // Event handler for getting audio data when the buffer is full
             microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
