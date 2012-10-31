@@ -61,7 +61,7 @@ namespace windows_client
 
         #region instances
         private static bool IS_VIEWMODEL_LOADED = false; 
-        public static bool IS_MARKETPLACE = false; // change this to toggle debugging
+        public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
         private static bool _isTombstoneLaunch = false;
