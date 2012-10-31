@@ -12,6 +12,7 @@ using System.Windows.Media;
 using Newtonsoft.Json.Linq;
 using System.Runtime.Serialization;
 using windows_client.Misc;
+using System.Text;
 
 namespace windows_client.Model
 {
@@ -375,19 +376,19 @@ namespace windows_client.Model
             try
             {
                 if (_msisdn == null)
-                    writer.WriteString("*@N@*");
+                    writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteString(_msisdn);
+                    writer.WriteStringBytes(_msisdn);
 
                 if (_contactName == null)
-                    writer.WriteString("*@N@*");
+                    writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteString(_contactName);
+                    writer.WriteStringBytes(_contactName);
 
                 if (_lastMessage == null)
-                    writer.WriteString("*@N@*");
+                    writer.WriteStringBytes("*@N@*");
                 else
-                    writer.WriteString(_lastMessage);
+                    writer.WriteStringBytes(_lastMessage);
                 writer.Write(_timeStamp);
                 writer.Write(_isOnhike);
                 writer.Write((int)_messageStatus);
@@ -404,13 +405,16 @@ namespace windows_client.Model
         {
             try
             {
-                _msisdn = reader.ReadString();
+                int count = reader.ReadInt32();
+                _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_msisdn == "*@N@*")
                     _msisdn = null;
-                _contactName = reader.ReadString();
+                count = reader.ReadInt32();
+                _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
                     _contactName = null;
-                _lastMessage = reader.ReadString();
+                count = reader.ReadInt32();
+                _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
                 if (_lastMessage == "*@N@*")
                     _lastMessage = null;
                 _timeStamp = reader.ReadInt64();
