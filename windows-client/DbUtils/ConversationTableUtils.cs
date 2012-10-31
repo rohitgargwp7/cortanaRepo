@@ -262,33 +262,45 @@ namespace windows_client.DbUtils
                             store.DeleteFile(FileName);
                     }
                     catch { }
-                    using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write))
+                    try
                     {
-                        using (BinaryWriter writer = new BinaryWriter(file))
+                        using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write))
                         {
-                            writer.Seek(0, SeekOrigin.Begin);
-                            if (convMap == null || convMap.Count == 0)
-                                writer.Write(0);
-                            else
+                            using (BinaryWriter writer = new BinaryWriter(file))
                             {
-                                writer.Write(convMap.Count);
-                                foreach (ConversationListObject item in convMap.Values)
+                                writer.Seek(0, SeekOrigin.Begin);
+                                if (convMap == null || convMap.Count == 0)
+                                    writer.Write(0);
+                                else
                                 {
-                                    item.Write(writer);
-                                    convs++;
+                                    writer.Write(convMap.Count);
+                                    foreach (ConversationListObject item in convMap.Values)
+                                    {
+                                        item.Write(writer);
+                                        convs++;
+                                    }
                                 }
+                                writer.Flush();
                             }
-                            writer.Flush();
                         }
+                    }
+                    catch
+                    {
+                        return;
                     }
                     try // TODO REVIEW
                     {
-                        store.CopyFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp",true);
+                        store.CopyFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp", true);
+                    }
+                    catch { }
+                    try
+                    {
                         store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                     }
                     catch (Exception ex)
                     {
                         Debug.WriteLine("SAVE LIST BACKUP:: " + ex.StackTrace);
+                        return;
                     }
                     try
                     {
@@ -296,7 +308,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("SAVE LIST :: "+ex.StackTrace);
+                        Debug.WriteLine("SAVE LIST :: " + ex.StackTrace);
                     }
                 }
             }
@@ -439,9 +451,9 @@ namespace windows_client.DbUtils
                     {
                         files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
                     }
-                    catch 
-                    { 
-                        files = null; 
+                    catch
+                    {
+                        files = null;
                     }
                     if (files == null)
                         return;
