@@ -36,16 +36,16 @@ namespace finalmqtt.Msg
 
         protected override void writeMessage()
         {
-            int id = getMessageId();
+            short id = getMessageId();
             messageData.AddRange(FormatUtil.toMQttString(id));
             //        WriteToStream((ushort)id);
         }
 
         protected override void readMessage(MessageStream input, int msgLength)
         {
-            byte msb = input.readByte();
+            short msb = input.readByte();
             byte lsb = input.readByte();
-            int id = msb >> 8;
+            int id = msb << 8;
             id += lsb;
             setMessageId(id);
 

@@ -29,7 +29,7 @@ namespace mqtttest.Utils
             return mqttString.ToArray();
         }
 
-        public static byte[] toMQttString(int val)
+        public static byte[] toMQttString(short val)
         {
             byte[] data = new byte[2];
             data[0] = (byte)(val >> 8);
