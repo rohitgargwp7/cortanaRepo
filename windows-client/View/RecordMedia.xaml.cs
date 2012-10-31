@@ -200,10 +200,17 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
-                stop();
-            dt.Stop();
-            microphone.BufferReady -= this.microphone_BufferReady;
+            try
+            {
+                if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
+                    stop();
+                dt.Stop();
+                microphone.BufferReady -= this.microphone_BufferReady;
+                buffer = null;
+                stream.Dispose();
+            }
+            catch (Exception) //not really required, but added as an extra check for now
+            { }
         }
 
         private void play()
