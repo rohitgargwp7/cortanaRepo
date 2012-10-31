@@ -79,6 +79,7 @@ namespace windows_client
         private static Analytics _analytics;
         private static object lockObj = new object();
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
+        PageState ps = PageState.WELCOME_SCREEN;
         #endregion
 
         #region PROPERTIES
@@ -290,7 +291,7 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-            if (appSettings.Contains(TOKEN_SETTING))
+            if(appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                 isNewInstall = false;
 
             /* Load App token if its there*/
@@ -411,8 +412,15 @@ namespace windows_client
 
         private string GetParamFromUri(string targetPage)
         {
-            int idx = targetPage.IndexOf("msisdn");
-            return targetPage.Substring(idx);
+            try
+            {
+                int idx = targetPage.IndexOf("msisdn");
+                return targetPage.Substring(idx);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // Code to execute if a navigation fails
@@ -451,7 +459,7 @@ namespace windows_client
                 Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+                        (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
                 });
             }
         }
@@ -494,8 +502,6 @@ namespace windows_client
 
         private void loadPage()
         {
-            PageState ps = PageState.WELCOME_SCREEN;
-            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
             Uri nUri = null;
 
             switch (ps)
@@ -597,12 +603,18 @@ namespace windows_client
                 string current_ver = "1.0.0.0";
                 List<ConversationListObject> convList = null;
 
-                // If version exists means build is 1.3.0.0 or later else 1.1.0.0
-                if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
-                    convList = ConversationTableUtils.getAllConversations();
-                else
-                    convList = ConversationTableUtils.getAllConvs();
-
+                try
+                {
+                    // If version exists means build is 1.4.0.0 or later else 1.1.0.0
+                    if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
+                        convList = ConversationTableUtils.getAllConversations();
+                    else
+                        convList = ConversationTableUtils.getAllConvs();
+                }
+                catch 
+                {
+                    convList = null;
+                }
                 if (convList == null || convList.Count == 0 || !App.appSettings.Contains(App.IS_DB_CREATED))
                     _viewModel = new HikeViewModel();
                 else
