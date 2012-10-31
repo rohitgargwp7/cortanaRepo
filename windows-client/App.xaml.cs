@@ -615,7 +615,7 @@ namespace windows_client
                 {
                     convList = null;
                 }
-                if (convList == null || convList.Count == 0 || !App.appSettings.Contains(App.IS_DB_CREATED))
+                if (convList == null || convList.Count == 0)
                     _viewModel = new HikeViewModel();
                 else
                     _viewModel = new HikeViewModel(convList);
