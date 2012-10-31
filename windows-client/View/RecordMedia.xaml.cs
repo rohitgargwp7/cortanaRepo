@@ -167,6 +167,12 @@ namespace windows_client.View
             runningSeconds++;
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
+                stop();
+        }
+
         private void stop()
         {
             progressTimer.Stop();
