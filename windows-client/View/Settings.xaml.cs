@@ -52,7 +52,9 @@ namespace windows_client.View
             try
             {
                 HttpNotificationChannel pushChannel;
-                pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+
+                pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, "hike.in");
+
                 if (pushChannel != null)
                 {
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
