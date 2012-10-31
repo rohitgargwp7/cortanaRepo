@@ -205,7 +205,7 @@ namespace windows_client.DbUtils
                 return false;
             ConversationListObject obj = App.ViewModel.ConvMap[grpId];
             obj.ContactName = groupName;
-            string msisdn = grpId.Replace(":", "_");
+            //string msisdn = grpId.Replace(":", "_");
             //saveConvObject(obj, msisdn);
             //saveConvObjectList();
             return true;
@@ -434,7 +434,15 @@ namespace windows_client.DbUtils
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                    string[] files;
+                    try
+                    {
+                        files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                    }
+                    catch 
+                    { 
+                        files = null; 
+                    }
                     if (files == null)
                         return;
                     foreach (string fileName in files)
