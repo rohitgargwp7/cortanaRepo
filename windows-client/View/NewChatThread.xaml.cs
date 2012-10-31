@@ -1174,7 +1174,7 @@ namespace windows_client.View
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
-                    menuItem1.Text = BLOCK_USER + "group owner";
+                    menuItem1.Text = BLOCK_USER + " group owner";
                     groupInfoMenuItem.IsEnabled = true;
                 }
                 else
@@ -1196,7 +1196,7 @@ namespace windows_client.View
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
-                    menuItem1.Text = UNBLOCK_USER + "group owner";
+                    menuItem1.Text = UNBLOCK_USER + " group owner";
                     groupInfoMenuItem.IsEnabled = false;
                 }
                 else
