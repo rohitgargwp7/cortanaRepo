@@ -410,7 +410,7 @@ namespace windows_client.View
                 if (gl[26].Items.Count > 0 && gl[26].Items[0].Msisdn != null)
                 {
                     gl[26].Items[0].Name = charsEntered;
-                    if (charsEntered.Length >= 10 && charsEntered.Length <= 13)
+                    if (charsEntered.Length >= 10 && charsEntered.Length <= 15)
                     {
                         gl[26].Items[0].Msisdn = TAP_MSG;
                     }
@@ -502,7 +502,7 @@ namespace windows_client.View
                     list = glistFiltered;
                     list[26].Items.Insert(0, defaultContact);
                 }
-                charsEntered = isPlus ? "+" : "" + charsEntered;
+                charsEntered = (isPlus ? "+" : "") + charsEntered;
                 list[26].Items[0].Name = charsEntered;
                 if (IsNumberValid(charsEntered))
                 {
@@ -531,18 +531,7 @@ namespace windows_client.View
 
             if (charsEntered.StartsWith("+"))
             {
-                if (charsEntered.Length < 8 || charsEntered.Length > 15)
-                    return false;
-            }
-            else if (charsEntered.StartsWith("0"))
-            {
-                int i = 0;
-                while (i<charsEntered.Length && charsEntered[i] == '0')
-                    i++;
-                if(i>1) // more than 1 zeros
-                    return false;
-                string num = charsEntered.Substring(i); // no leading zeros now.
-                if (num.Length < 8 || num.Length > 15)
+                if (charsEntered.Length < 9 || charsEntered.Length > 15)
                     return false;
             }
             else
@@ -838,17 +827,28 @@ namespace windows_client.View
 
         private string normalizeNumber(string msisdn)
         {
-            switch (msisdn[0])
+            if (msisdn.StartsWith("+"))
             {
-                case '+': return msisdn;
-                case '0':
-                    string country_code = "";
-                    App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING,out country_code);
-                    return (country_code + msisdn.Substring(1));
-                default: 
-                    string country_code2 = "";
-                    App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
-                    return country_code2 + msisdn;
+                return msisdn;
+            }
+            else if (msisdn.StartsWith("00"))
+            {
+                /*
+                 * Doing for US numbers
+                 */
+                return "+"+msisdn.Substring(2);
+            }
+            else if (msisdn.StartsWith("0"))
+            {
+                string country_code = "";
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+                return (country_code + msisdn.Substring(1));
+            }
+            else
+            {
+                string country_code2 = "";
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
+                return country_code2 + msisdn;
             }
         }
 
