@@ -201,9 +201,9 @@ namespace windows_client.View
             myState = RecorderState.RECORDED;
         }
 
-        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
-            base.OnNavigatedFrom(e);
+            base.OnRemovedFromJournal(e);
             dt.Stop();
             microphone.BufferReady -= this.microphone_BufferReady;
         }
