@@ -91,7 +91,7 @@ namespace windows_client
         public static readonly string DEVICE_VERSION = "deviceversion";//The current OS version
         public static readonly string APP_VERSION = "appversion";//The app version
         public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
-        public static readonly string PUSH_CHANNEL_NAME = "im.hike.in";//The referral token
+        public static readonly string PUSH_CHANNEL_CN = "hike.in";//The PUSH CN
 
         public static string FAQS_LINK
         {

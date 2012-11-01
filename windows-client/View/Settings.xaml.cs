@@ -53,7 +53,7 @@ namespace windows_client.View
             {
                 HttpNotificationChannel pushChannel;
 
-                pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, "hike.in");
+                pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
 
                 if (pushChannel != null)
                 {
@@ -62,7 +62,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_NAME);
+                    pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                     pushChannel.Open();
