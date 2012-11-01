@@ -67,6 +67,8 @@ namespace windows_client.ViewModel
                     if (App.ViewModel.MessageListPageCollection.Count > 0)
                     {
                         ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
+                        if (c == null)
+                            return;
                         App.ViewModel.MessageListPageCollection.RemoveAt(0);
                         App.ViewModel.MessageListPageCollection.Insert(0, c);
                     }
