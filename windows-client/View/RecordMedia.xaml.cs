@@ -27,7 +27,6 @@ namespace windows_client.View
         private BitmapImage blankImage;
         private BitmapImage microphoneImage;
         private BitmapImage speakerImage;
-        private byte[] _buffer;
         private TimeSpan _duration;
 
         private BitmapImage recordIcon = new BitmapImage(new Uri("/View/images/icon_record.png", UriKind.Relative));
@@ -74,7 +73,6 @@ namespace windows_client.View
             dt.Start();
 
             _duration = microphone.BufferDuration;
-            _buffer = new byte[microphone.GetSampleSizeInBytes(microphone.BufferDuration)];
 
             // Event handler for getting audio data when the buffer is full
             microphone.BufferReady += new EventHandler<EventArgs>(microphone_BufferReady);
@@ -170,8 +168,6 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-            if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
-                stop();
         }
 
         private void stop()
@@ -204,8 +200,17 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            dt.Stop();
-            microphone.BufferReady -= this.microphone_BufferReady;
+            try
+            {
+                if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
+                    stop();
+                dt.Stop();
+                microphone.BufferReady -= this.microphone_BufferReady;
+                buffer = null;
+                stream.Dispose();
+            }
+            catch (Exception) //not really required, but added as an extra check for now
+            { }
         }
 
         private void play()

@@ -144,7 +144,10 @@ namespace windows_client.View
 
         public void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
         {
-            AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+            if (e.ChannelUri != null)
+            {
+                AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+            }
         }
 
         public void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
