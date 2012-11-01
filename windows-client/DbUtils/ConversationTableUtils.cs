@@ -28,7 +28,7 @@ namespace windows_client.DbUtils
                 if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
                     return null;
                 string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
-                if (files == null)
+                if (files == null || files.Length == 0)
                     return null;
                 convList = new List<ConversationListObject>(files.Length);
                 foreach (string fileName in files)

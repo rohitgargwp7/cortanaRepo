@@ -68,7 +68,7 @@ namespace windows_client.View
             App.newChatThreadPage = null;
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            
+
             if (Utils.isCriticalUpdatePending())
             {
                 showCriticalUpdateMessage();
@@ -179,7 +179,7 @@ namespace windows_client.View
                 App.ViewModel.ConvMap[key].Avatar = _avatar;
             }
         }
-        
+
         /* This function will run on UI Thread */
         private void loadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -228,13 +228,22 @@ namespace windows_client.View
                 HttpNotificationChannel pushChannel;
                 // Try to find the push channel.
                 pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-
                 try
                 {
+                    bool secure_push;
                     // If the channel was not found, then create a new connection to the push service.
                     if (pushChannel == null)
                     {
-                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName,HikeConstants.PUSH_CHANNEL_CN);
+                        if (App.appSettings.TryGetValue(HikeConstants.SECURE_PUSH, out secure_push) && secure_push)
+                        {
+                            pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
+                            App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, true);
+                        }
+                        else
+                        {
+                            pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName);
+                            App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
+                        }
 
                         // Register for all the events before attempting to open the channel.
                         pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
@@ -249,6 +258,16 @@ namespace windows_client.View
                     }
                     else
                     {
+                        bool isChannelSecure;
+                        App.appSettings.TryGetValue(HikeConstants.IS_SECURE_CHANNEL, out isChannelSecure);
+                        if (!isChannelSecure && App.appSettings.TryGetValue(HikeConstants.SECURE_PUSH, out secure_push) && secure_push)
+                        {
+                            if (pushChannel.IsShellTileBound)
+                                pushChannel.UnbindToShellTile();
+                            if (pushChannel.IsShellToastBound)
+                                pushChannel.UnbindToShellToast();
+                            pushChannel.Close();
+                        }
                         // The channel was already open, so just register for all the events.
                         pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                         pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
@@ -306,7 +325,7 @@ namespace windows_client.View
                 c.Msisdn = cl[i].Msisdn;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
                 if (obj != null)
-                    App.ViewModel.MessageListPageCollection.Insert(0,obj);
+                    App.ViewModel.MessageListPageCollection.Insert(0, obj);
             }
             App.RemoveKeyFromAppSettings("ContactsToShow");
         }

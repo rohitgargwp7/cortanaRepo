@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using Phone.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using Microsoft.Phone.Notification;
 
 namespace windows_client.View
 {
@@ -98,6 +99,17 @@ namespace windows_client.View
             App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             App.HikePubSubInstance.publish(HikePubSub.DELETE_ACCOUNT, null);
+
+            HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+            if (pushChannel != null)
+            {
+                if (pushChannel.IsShellTileBound)
+                    pushChannel.UnbindToShellTile();
+                if (pushChannel.IsShellToastBound)
+                    pushChannel.UnbindToShellToast();
+                pushChannel.Close();
+            }
+
         }
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -133,6 +145,18 @@ namespace windows_client.View
             App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             App.HikePubSubInstance.publish(HikePubSub.DELETE_ACCOUNT, null);
+
+
+            //delete push channel
+            HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+            if (pushChannel != null)
+            {
+                if (pushChannel.IsShellTileBound)
+                    pushChannel.UnbindToShellTile();
+                if (pushChannel.IsShellToastBound)
+                    pushChannel.UnbindToShellToast();
+                pushChannel.Close();
+            }
         }
 
         public void onEventReceived(string type, object obj)

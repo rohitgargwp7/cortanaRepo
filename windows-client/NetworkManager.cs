@@ -8,6 +8,7 @@ using System.Windows;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
+using Microsoft.Phone.Notification;
 
 namespace windows_client
 {
@@ -418,6 +419,15 @@ namespace windows_client
                             Debug.WriteLine("AI :: Key : " + kv.Key);
                             JToken valTok = kv.Value;
                             object oj = valTok.ToObject<object>();
+                            if (kv.Key == HikeConstants.SECURE_PUSH)
+                            {
+                                if (oj is bool)
+                                {
+                                    bool vall = (bool)oj;
+                                    App.WriteToIsoStorageSettings(HikeConstants.SECURE_PUSH, vall);
+                                }
+                            }
+
                             string val = null;
                             if (oj is JObject)
                             {

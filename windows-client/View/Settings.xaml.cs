@@ -62,6 +62,18 @@ namespace windows_client.View
                 }
                 else
                 {
+                    bool secure_push = false;
+                    if (App.appSettings.TryGetValue(HikeConstants.SECURE_PUSH, out secure_push) && secure_push)
+                    {
+                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
+                        App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, true);
+                    }
+                    else
+                    {
+                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName);
+                        App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
+                    }
+
                     pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
@@ -102,6 +114,7 @@ namespace windows_client.View
                     if (pushChannel.IsShellToastBound)
                         pushChannel.UnbindToShellToast();
                     pushChannel.Close();
+                    App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
                 }
             }
             catch (InvalidOperationException)

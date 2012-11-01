@@ -840,15 +840,15 @@ namespace windows_client.View
             }
             else if (msisdn.StartsWith("0"))
             {
-                string country_code = "";
+                string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                return (country_code + msisdn.Substring(1));
+                return ((country_code == null?"+91":country_code) + msisdn.Substring(1));
             }
             else
             {
-                string country_code2 = "";
+                string country_code2 = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
-                return country_code2 + msisdn;
+                return (country_code2 == null?"+91":country_code2) + msisdn;
             }
         }
 
@@ -876,6 +876,8 @@ namespace windows_client.View
                         return glistFiltered[i].Items[k];
                 }
             }
+            // if not found
+            //contact.Name = contact.Msisdn;
             return contact;
         }
 
