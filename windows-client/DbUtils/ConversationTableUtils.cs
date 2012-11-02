@@ -481,5 +481,50 @@ namespace windows_client.DbUtils
                 }
             }
         }
+
+        /// <summary>
+        /// Object is serialized and is stored in isolated storage file
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void saveConvObject(ConversationListObject obj, string msisdn)
+        {
+            msisdn = msisdn.Replace(":", "_");
+            lock (readWriteLock)
+            {
+                string FileName = CONVERSATIONS_DIRECTORY + "\\" + msisdn;
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
+                    {
+                        using (var writer = new BinaryWriter(file))
+                        {
+                            writer.Seek(0,SeekOrigin.Begin);
+                            obj.Write(writer);
+                            writer.Flush();
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void saveConvObjectList(List<ConversationListObject> cObjList)
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            {
+                for (int i = 0; i < cObjList.Count; i++)
+                {
+                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + cObjList[i].Msisdn;
+                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
+                    {
+                        using (var writer = new BinaryWriter(file))
+                        {
+                            writer.Seek(0, SeekOrigin.Begin);
+                            cObjList[i].Write(writer);
+                            writer.Flush();
+                        }
+                    }
+                }
+            }
+        }
     }
 }
