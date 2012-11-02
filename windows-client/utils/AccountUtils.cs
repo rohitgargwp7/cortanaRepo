@@ -18,7 +18,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = true;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -736,7 +736,7 @@ namespace windows_client.utils
                                 msgToShow.Add(cn);
                                 hikeCount++;
                             }
-                            if (!onhike && smsCount <= 2 && !msisdns.Contains(cn.Msisdn))
+                            if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
                             {
                                 msisdns.Add(cn.Msisdn);
                                 msgToShow.Add(cn);
