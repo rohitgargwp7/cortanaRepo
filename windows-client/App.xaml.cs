@@ -60,7 +60,7 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        private static bool IS_VIEWMODEL_LOADED = false; 
+        public static bool IS_VIEWMODEL_LOADED = false; 
         public static bool IS_MARKETPLACE = true; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
@@ -359,9 +359,6 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            NetworkManager.turnOffNetworkManager = true;
-            if(IS_VIEWMODEL_LOADED)
-                ConversationTableUtils.saveConvObjectList();
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);

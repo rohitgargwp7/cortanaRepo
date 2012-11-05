@@ -936,11 +936,10 @@ namespace windows_client.View
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
+            NetworkManager.turnOffNetworkManager = true;
+            if (App.IS_VIEWMODEL_LOADED)
+                ConversationTableUtils.saveConvObjectList();
             base.OnBackKeyPress(e);
-            //if (!String.IsNullOrEmpty(latestVersionString))
-            //{
-            //    App.WriteToIsoStorageSettings(App.LAST_DISMISSED_UPDATE_VERSION, latestVersionString);
-            //}
         }
 
         private void openMarketPlace()
