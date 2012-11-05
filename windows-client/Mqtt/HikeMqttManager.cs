@@ -84,10 +84,21 @@ namespace windows_client.Mqtt
 
         private IScheduler scheduler = Scheduler.NewThread;
 
-
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
         private volatile bool disconnectCalled = false;
+
+        private int _uniqueMessageId = -2;
+
+        public int UniqueMessageId
+        {
+            get 
+            {
+                if (_uniqueMessageId >= 0)
+                    _uniqueMessageId = -2;
+                return _uniqueMessageId--;
+            }
+        }
 
         public HikePacket getPacketIfUnsent(int mqttId)
         {
@@ -412,7 +423,7 @@ namespace windows_client.Mqtt
             }
             else
             {
-                msgId = -1;
+                msgId = UniqueMessageId; //generate a unique temp message id
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
