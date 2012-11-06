@@ -42,7 +42,10 @@ namespace windows_client.Mqtt
             //logger = NLog.LogManager.GetCurrentClassLogger();
             pubSub = App.HikePubSubInstance;
             pubSub.addListener(HikePubSub.MQTT_PUBLISH, this);
-            //App.appSettings.TryGetValue
+
+            long tempMessageId = -30000;
+            App.appSettings.TryGetValue<long>(App.TEMP_MESSAGE_ID, out tempMessageId);
+            UniqueMessageId = tempMessageId;
         }
 
         // status of MQTT client connection
