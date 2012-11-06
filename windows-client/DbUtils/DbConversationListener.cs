@@ -95,11 +95,7 @@ namespace windows_client.DbUtils
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
-                bool isNewGroup = false;
-                if (vals[1] is bool)
-                {
-                    isNewGroup = (bool)vals[1];
-                }
+                bool isNewGroup = (bool)vals[1];
                 //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
                 //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
@@ -112,64 +108,71 @@ namespace windows_client.DbUtils
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                 });
+                if (!isNewGroup)
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
+            }
+            #endregion
+            #region FORWARD_ATTACHMENT
+            else if (HikePubSub.FORWARD_ATTACHMENT == type)
+            {
+                object[] vals = (object[])obj;
+                ConvMessage convMessage = (ConvMessage)vals[0];
+                string sourceFilePath = (string)vals[1];
 
-                /* This is not a gud way , as its not extendible, MG kindly change it later.*/
-                if (vals.Length == 2)
+
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (vals[1] is bool)
+                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
-                        if (!isNewGroup)
-                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
+                        App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
-                    else if (vals[1] is string)
-                    {
-                        //forward attachment message
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                });
 
-                        string sourceFilePath = vals[1] as string;
-                        string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
+                //forward attachment message
+                string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
+                //while writing in iso, we write it as failed and then revert to started
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
+            }
+            #endregion
+            #region ATTACHMENT_SEND
+            else if (HikePubSub.ATTACHMENT_SENT == type)
+            {
+                object[] vals = (object[])obj;
+                ConvMessage convMessage = (ConvMessage)vals[0];
+                byte[] fileBytes = (byte[])vals[1];
+                SentChatBubble chatbubble = (SentChatBubble)vals[2];
 
-                        //while writing in iso, we write it as failed and then revert to started
-                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
+                //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
 
-                        MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
-                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
-                    }
-                }
-                else if (vals.Length == 3)
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (vals[1] is bool) // this is case for first msg logic
+                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
-                        ConvMessage cm = (ConvMessage)vals[2];
-                        ConversationListObject cObj = MessagesTableUtils.addChatMessage(cm, false);
-                        if (!isNewGroup)
-                            mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
-                        {
-                            if (App.ViewModel.MessageListPageCollection.Contains(convObj))
-                            {
-                                App.ViewModel.MessageListPageCollection.Remove(convObj);
-                            }
-                            App.ViewModel.MessageListPageCollection.Insert(0, convObj);
-                        });
+                        App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
-                    else
-                    {
-                        //send attachment message (new attachment - upload case)
-                        byte[] largeImage = vals[1] as byte[];
-                        SentChatBubble chatbubble = vals[2] as SentChatBubble;
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                });
 
-                        MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId);
+                //send attachment message (new attachment - upload case)
 
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
-                        MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
+                MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId);
 
-                        AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
-                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                                Convert.ToString(convMessage.MessageId), largeImage);
-                        AccountUtils.uploadFile(largeImage, finalCallbackForUploadFile, convMessage, chatbubble);
-                    }
-                }
+                convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
+                MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
+                convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
+
+                AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
+                MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                        Convert.ToString(convMessage.MessageId), fileBytes);
+                AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatbubble);
+
             }
             #endregion
             #region ATTACHMENT_RESEND_OR_FORWARD
@@ -326,8 +329,8 @@ namespace windows_client.DbUtils
 
         private void updateDbBatch(long[] ids, int status)
         {
-            string msisdn = MessagesTableUtils.updateAllMsgStatus(null,ids, status);
-            ConversationTableUtils.updateLastMsgStatus(ids[ids.Length-1],msisdn, status);
+            string msisdn = MessagesTableUtils.updateAllMsgStatus(null, ids, status);
+            ConversationTableUtils.updateLastMsgStatus(ids[ids.Length - 1], msisdn, status);
         }
     }
 }

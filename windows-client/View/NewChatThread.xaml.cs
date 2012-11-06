@@ -1000,7 +1000,7 @@ namespace windows_client.View
                 object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = sourceFilePath;
-                mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+                mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
@@ -1750,7 +1750,7 @@ namespace windows_client.View
             vals[0] = convMessage;
             vals[1] = fileBytes;
             vals[2] = chatBubble;
-            mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+            mPubSub.publish(HikePubSub.ATTACHMENT_SENT, vals);
         }
 
 
@@ -2573,7 +2573,7 @@ namespace windows_client.View
             vals[0] = convMessage;
             vals[1] = audioBytes;
             vals[2] = chatBubble;
-            App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, vals);
+            App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
         }
 
         // this should be called when one gets tap here msg.
