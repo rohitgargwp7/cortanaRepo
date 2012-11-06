@@ -54,13 +54,13 @@ namespace windows_client.DbUtils
         {
             if (packet.Message != null && packet.Message.Length < 8000)
             {
-                if (!addActiveUnsentMessage(packet.MqttId)) //message already exists
-                    return;
+                //if (!addActiveUnsentMessage(packet.MqttId)) //message already exists
+                //    return;
                 lock (lockObj)
                 {
                     try
                     {
-                        HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
+                        HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message);
                         using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
                         {
                             context.mqttMessages.InsertOnSubmit(mqttMessage);

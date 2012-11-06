@@ -6,27 +6,8 @@ namespace windows_client.Model
     [Table(Name = "mqtt_messages")]
     public class HikePacket : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        private long _mqttId;
-        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
-        public long MqttId
-        {
-            get
-            {
-                return _mqttId;
-            }
-            set
-            {
-                if (_mqttId != value)
-                {
-                    NotifyPropertyChanging("MqttId");
-                    _mqttId = value;
-                    NotifyPropertyChanged("MqttId");
-                }
-            }
-        }
-
         private long _messageId;
-        [Column]
+        [Column(IsPrimaryKey = true)]
         public long MessageId
         {
             get
@@ -63,31 +44,10 @@ namespace windows_client.Model
             }
         }
 
-        private long _timestamp;
-
-        [Column]
-        public long Timestamp
-        {
-            get
-            {
-                return _timestamp;
-            }
-            set
-            {
-                if (_timestamp != value)
-                {
-                    NotifyPropertyChanging("Timestamp");
-                    _timestamp = value;
-                    NotifyPropertyChanged("Timestamp");
-                }
-            }
-        }
-
-        public HikePacket(long messageId, byte[] message, long timestamp)
+        public HikePacket(long messageId, byte[] message)
         {
             this._messageId = messageId;
             this._message = message;
-            this._timestamp = timestamp;
         }
 
         public HikePacket()
