@@ -42,6 +42,7 @@ namespace windows_client.Mqtt
             //logger = NLog.LogManager.GetCurrentClassLogger();
             pubSub = App.HikePubSubInstance;
             pubSub.addListener(HikePubSub.MQTT_PUBLISH, this);
+            //App.appSettings.TryGetValue
         }
 
         // status of MQTT client connection
@@ -88,15 +89,22 @@ namespace windows_client.Mqtt
 
         private volatile bool disconnectCalled = false;
 
-        private int _uniqueMessageId = -2;
+        private int _uniqueMessageId = -31000;
 
         public int UniqueMessageId
         {
-            get 
+            set
+            {
+                if (_uniqueMessageId != value)
+                {
+                    _uniqueMessageId = value;
+                }
+            }
+            get
             {
                 if (_uniqueMessageId >= 0)
-                    _uniqueMessageId = -2;
-                return _uniqueMessageId--;
+                    _uniqueMessageId = -31000;
+                return _uniqueMessageId++;
             }
         }
 
@@ -427,7 +435,7 @@ namespace windows_client.Mqtt
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
-            HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
+            HikePacket packet = new HikePacket(msgId, byteData);
             send(packet, qos);
         }
 
