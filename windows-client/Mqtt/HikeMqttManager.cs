@@ -89,9 +89,9 @@ namespace windows_client.Mqtt
 
         private volatile bool disconnectCalled = false;
 
-        private int _uniqueMessageId = -31000;
+        private long _uniqueMessageId = -31000;
 
-        public int UniqueMessageId
+        public long UniqueMessageId
         {
             set
             {
@@ -420,14 +420,14 @@ namespace windows_client.Mqtt
             string objType = data.ToString();
             json.TryGetValue("d", out data);
             JObject dataObj;
-            int msgId;
+            long msgId;
 
             if (objType == NetworkManager.MESSAGE || objType == NetworkManager.INVITE)
             {
                 dataObj = JObject.FromObject(data);
                 JToken messageIdToken;
                 dataObj.TryGetValue("i", out messageIdToken);
-                msgId = Convert.ToInt32(messageIdToken.ToString());
+                msgId = Convert.ToInt64(messageIdToken.ToString());
             }
             else
             {
