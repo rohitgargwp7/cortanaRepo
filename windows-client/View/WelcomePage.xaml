@@ -65,8 +65,9 @@
                 <!--<Image Source="images\terms_link.png" Height="43"></Image>
                 <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-57" Width="Auto" BorderThickness="0" Background="#2e91d3" VerticalAlignment="Bottom" >
                 </Button>-->
-                <Button Height="70" Margin="0,0,0,135" Content="Terms and Privacy" Width="280" HorizontalAlignment="Center" FontSize="20" FontStyle="Normal" Tap="Privacy_Tap" BorderThickness="2"></Button>
-                <TextBlock Text="Push notifications are turned on by default" HorizontalAlignment="Center" Foreground="#909090"/>
+                <HyperlinkButton Name="termsLink" Height="70" Margin="0,0,0,55" Content="Terms and Privacy" Width="280" HorizontalAlignment="Center" FontSize="24" FontStyle="Normal" Tap="Privacy_Tap"/>
+                <TextBlock Text="Push Notifications are turned on by default" Margin="0,0,0,4" HorizontalAlignment="Center" Foreground="#909090"/>
+                <TextBlock Text="Tap next to confirm that you are 13+ years of age" Margin="24,0,24,5" HorizontalAlignment="Center" Foreground="#909090" TextWrapping="Wrap" />
                 <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,20" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0"/>
             </StackPanel>
         </Grid>

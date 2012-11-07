@@ -255,8 +255,8 @@ namespace windows_client.DbUtils
 
             if (convMap == null)
             {
-                if(!App.IS_MARKETPLACE)
-                    MessageBox.Show("Map is null !!","TESTING",MessageBoxButton.OK);
+                if (!App.IS_MARKETPLACE)
+                    MessageBox.Show("Map is null !!", "TESTING", MessageBoxButton.OK);
                 return;
             }
             lock (readWriteLock)
@@ -289,12 +289,15 @@ namespace windows_client.DbUtils
                                     }
                                 }
                                 writer.Flush();
+                                writer.Close();
                             }
+                            file.Close();
+                            file.Dispose();
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        return;
+                        Debug.WriteLine("Exception while writing file : " + e.StackTrace);
                     }
                     try // TODO REVIEW
                     {
@@ -318,6 +321,7 @@ namespace windows_client.DbUtils
                     {
                         Debug.WriteLine("SAVE LIST :: " + ex.StackTrace);
                     }
+                    store.Dispose();
                 }
             }
             st.Stop();
@@ -364,55 +368,65 @@ namespace windows_client.DbUtils
         public static List<ConversationListObject> getAllConvs()
         {
             List<ConversationListObject> convList = null;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            // when reading a file , nobody should write it
+            lock (readWriteLock)
             {
-                if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
-                    return null;
-                string fname;
-                if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs"))
-                    fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
-                else if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp"))
-                    fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp";
-                else
-                    return null;
-                using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read))
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    using (var reader = new BinaryReader(file))
+                    if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
+                        return null;
+                    string fname;
+                    if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs"))
+                        fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs";
+                    else if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp"))
+                        fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp";
+                    else
+                        return null;
+                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read))
                     {
-                        int count = 0;
-                        try
+                        using (var reader = new BinaryReader(file))
                         {
-                            count = reader.ReadInt32();
-                        }
-                        catch { }
-                        if (count > 0)
-                        {
-                            convList = new List<ConversationListObject>(count);
-                            for (int i = 0; i < count; i++)
+                            int count = 0;
+                            try
                             {
-                                try
+                                count = reader.ReadInt32();
+                            }
+                            catch { }
+                            if (count > 0)
+                            {
+                                convList = new List<ConversationListObject>(count);
+                                for (int i = 0; i < count; i++)
                                 {
-                                    ConversationListObject item = new ConversationListObject();
                                     try
                                     {
-                                        item.Read(reader);
+                                        ConversationListObject item = new ConversationListObject();
+                                        try
+                                        {
+                                            item.Read(reader);
+                                        }
+                                        catch
+                                        {
+                                            item = null;
+                                        }
+                                        if (IsValidConv(item))
+                                            convList.Add(item);
                                     }
-                                    catch
-                                    {
-                                        item = null;
-                                    }
-                                    if (IsValidConv(item))
-                                        convList.Add(item);
+                                    catch (Exception e) { Debug.WriteLine(e.StackTrace); }
                                 }
-                                catch (Exception e) { Debug.WriteLine(e.StackTrace); }
+                                convList.Sort();
                             }
-                            convList.Sort();
-                            return convList;
+                            reader.Close();
                         }
-                        return null;
+                        try
+                        {
+                            file.Close();
+                            file.Dispose();
+                        }
+                        catch { }
                     }
+                    store.Dispose();
                 }
-
+                return convList;
             }
         }
 
