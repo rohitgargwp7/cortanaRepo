@@ -11,18 +11,8 @@ namespace windows_client.DbUtils
     {
         private static object lockObj = new object();
 
-        private static Dictionary<long, object> activeUnsentMessages = new Dictionary<long, object>();
-
         #region MqttPersistence
 
-
-        private static bool addActiveUnsentMessage(long msgId)
-        {
-            if (activeUnsentMessages.ContainsKey(msgId))
-                return false;
-            activeUnsentMessages.Add(msgId, null);
-            return true;
-        }
 
         /// <summary>
         /// Retrives all messages thet were unsent previously, and are required to send when connection re-establishes
@@ -54,8 +44,6 @@ namespace windows_client.DbUtils
         {
             if (packet.Message != null && packet.Message.Length < 8000)
             {
-                //if (!addActiveUnsentMessage(packet.MqttId)) //message already exists
-                //    return;
                 lock (lockObj)
                 {
                     try
@@ -77,10 +65,6 @@ namespace windows_client.DbUtils
 
         public static void removeSentMessage(long msgId)
         {
-            if (activeUnsentMessages.ContainsKey(msgId))
-            {
-                activeUnsentMessages.Remove(msgId);
-            }
             lock (lockObj)
             {
                 using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
