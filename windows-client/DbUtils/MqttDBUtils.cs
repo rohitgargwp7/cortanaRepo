@@ -63,13 +63,13 @@ namespace windows_client.DbUtils
             //TODO update observable list
         }
 
-        public static void removeSentMessage(long msgId)
+        public static void removeSentMessage(long timestamp)
         {
             lock (lockObj)
             {
                 using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
                 {
-                    List<HikePacket> entriesToDelete = DbCompiledQueries.GetMqttMsgForMsgId(context, msgId).ToList();
+                    List<HikePacket> entriesToDelete = DbCompiledQueries.GetMqttMsgForTimestamp(context, timestamp).ToList();
                     if (entriesToDelete == null || entriesToDelete.Count == 0)
                         return;
                     context.mqttMessages.DeleteAllOnSubmit<HikePacket>(entriesToDelete);
