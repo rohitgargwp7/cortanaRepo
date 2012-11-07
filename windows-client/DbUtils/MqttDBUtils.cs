@@ -60,7 +60,7 @@ namespace windows_client.DbUtils
                 {
                     try
                     {
-                        HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message);
+                        HikePacket mqttMessage = new HikePacket(packet.MessageId, packet.Message, packet.Timestamp);
                         using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
                         {
                             context.mqttMessages.InsertOnSubmit(mqttMessage);
