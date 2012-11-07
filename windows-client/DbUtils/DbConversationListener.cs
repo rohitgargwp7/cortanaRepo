@@ -39,6 +39,8 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.DELETE_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.ATTACHMENT_RESEND, this);
+            mPubSub.addListener(HikePubSub.ATTACHMENT_SENT, this);
+            mPubSub.addListener(HikePubSub.FORWARD_ATTACHMENT, this);
         }
 
         private void removeListeners()
@@ -56,6 +58,8 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.DELETE_CONVERSATION, this);
             mPubSub.removeListener(HikePubSub.DELETE_ALL_CONVERSATIONS, this);
             mPubSub.removeListener(HikePubSub.ATTACHMENT_RESEND, this);
+            mPubSub.removeListener(HikePubSub.ATTACHMENT_SENT, this);
+            mPubSub.removeListener(HikePubSub.FORWARD_ATTACHMENT, this);
         }
 
         public void uploadFileCallback(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble)
