@@ -42,10 +42,6 @@ namespace windows_client.Mqtt
             //logger = NLog.LogManager.GetCurrentClassLogger();
             pubSub = App.HikePubSubInstance;
             pubSub.addListener(HikePubSub.MQTT_PUBLISH, this);
-
-            long tempMessageId = -30000;
-            App.appSettings.TryGetValue<long>(App.TEMP_MESSAGE_ID, out tempMessageId);
-            UniqueMessageId = tempMessageId;
         }
 
         // status of MQTT client connection
@@ -91,25 +87,6 @@ namespace windows_client.Mqtt
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
         private volatile bool disconnectCalled = false;
-
-        private long _uniqueMessageId = -31000;
-
-        public long UniqueMessageId
-        {
-            set
-            {
-                if (_uniqueMessageId != value)
-                {
-                    _uniqueMessageId = value;
-                }
-            }
-            get
-            {
-                if (_uniqueMessageId >= 0)
-                    _uniqueMessageId = -31000;
-                return _uniqueMessageId++;
-            }
-        }
 
         public HikePacket getPacketIfUnsent(int mqttId)
         {
@@ -434,7 +411,7 @@ namespace windows_client.Mqtt
             }
             else
             {
-                msgId = UniqueMessageId; //generate a unique temp message id
+                msgId = -1;
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);

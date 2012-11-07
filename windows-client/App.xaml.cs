@@ -32,7 +32,6 @@ namespace windows_client
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
-        public static readonly string TEMP_MESSAGE_ID = "messageId";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
@@ -369,7 +368,6 @@ namespace windows_client
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
-            WriteToIsoStorageSettings(App.TEMP_MESSAGE_ID, App.MqttManagerInstance.UniqueMessageId);
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
         }
 
@@ -383,7 +381,6 @@ namespace windows_client
             if (Utils.GroupCache == null)
                 Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            WriteToIsoStorageSettings(App.TEMP_MESSAGE_ID, App.MqttManagerInstance.UniqueMessageId);
             App.AnalyticsInstance.saveObject();
         }
 
@@ -456,7 +453,6 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
             App.AnalyticsInstance.saveObject();
-            WriteToIsoStorageSettings(App.TEMP_MESSAGE_ID, App.MqttManagerInstance.UniqueMessageId);
         }
 
         // Code to execute on Unhandled Exceptions
@@ -466,7 +462,6 @@ namespace windows_client
                 ConversationTableUtils.saveConvObjectList();
             WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
-            WriteToIsoStorageSettings(App.TEMP_MESSAGE_ID, App.MqttManagerInstance.UniqueMessageId);
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger
