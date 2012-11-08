@@ -177,6 +177,8 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="25,0,0,0" Tap="sendImage_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\menu_photo_icon.png" Height="26"/>
@@ -186,6 +188,11 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="25,0,0,0" Tap="sendAudio_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\menu_audio_icon.png" Height="30"/>
                     <TextBlock Text="Send Audio" FontSize="22" Foreground="#f6f6f6" Margin="15,0,0,0"></TextBlock>
+                </StackPanel>
+                <Rectangle Width="3" Fill="#080808" Grid.Column="1"/>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="25,0,0,0" Tap="shareLocation_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="images\menu_audio_icon.png" Height="30"/>
+                    <TextBlock Text="Location" FontSize="22" Foreground="#f6f6f6" Margin="15,0,0,0"></TextBlock>
                 </StackPanel>
 
             </Grid>
