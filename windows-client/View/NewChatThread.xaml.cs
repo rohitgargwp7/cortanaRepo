@@ -22,6 +22,7 @@ using windows_client.Controls;
 using System.Text;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
+using System.Device.Location;
 
 namespace windows_client.View
 {
@@ -1969,6 +1970,43 @@ namespace windows_client.View
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
+        private void shareLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/ShareLocation.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+
+
+            //GeoCoordinateWatcher watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
+            //watcher.MovementThreshold = 20;
+
+            //// Add event handlers for StatusChanged and PositionChanged events
+            ////watcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
+            //watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
+
+            //// Start data acquisition
+            //watcher.Start();
+
+
+
+        }
+
+        void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() => MyPositionChanged(e));
+        }
+
+        void MyPositionChanged(GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            BingMapsTask bingMapsTask = new BingMapsTask();
+            //Omit the Center property to use the user's current location.
+            bingMapsTask.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
+//            bingMapsTask.SearchTerm = "coffee";
+            bingMapsTask.ZoomLevel = 24;
+            bingMapsTask.Show();
+        }
+
+
+        
         private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
