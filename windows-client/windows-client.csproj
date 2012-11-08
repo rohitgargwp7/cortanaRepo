@@ -59,6 +59,7 @@
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Maps, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
@@ -73,7 +74,9 @@
       <HintPath>lib\SharpCompress.WP7.dll</HintPath>
     </Reference>
     <Reference Include="system.data.linq" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Servicemodel.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -189,6 +192,9 @@
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ShareLocation.xaml.cs">
+      <DependentUpon>ShareLocation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Walkthrough.xaml.cs">
       <DependentUpon>Walkthrough.xaml</DependentUpon>
     </Compile>
@@ -290,6 +296,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ShareLocation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Walkthrough.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -332,6 +342,7 @@
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
     <Content Include="View\images\made_with_love_dark.png" />
+    <Content Include="View\images\map-pin.png" />
     <Content Include="View\images\menu_audio_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
     <Content Include="View\images\mic_icon.png" />
