@@ -481,6 +481,12 @@ namespace windows_client.View
                 AudioFileTransfer();
             }
             #endregion
+            #region SHARE LOCATION
+            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            {
+                shareLocation();
+            }
+            #endregion
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -1975,19 +1981,11 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/ShareLocation.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
 
-
             //GeoCoordinateWatcher watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
             //watcher.MovementThreshold = 20;
-
-            //// Add event handlers for StatusChanged and PositionChanged events
             ////watcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
             //watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
-
-            //// Start data acquisition
             //watcher.Start();
-
-
-
         }
 
         void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
@@ -2003,6 +2001,7 @@ namespace windows_client.View
 //            bingMapsTask.SearchTerm = "coffee";
             bingMapsTask.ZoomLevel = 24;
             bingMapsTask.Show();
+            
         }
 
 
@@ -2586,6 +2585,44 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void shareLocation()
+        {
+            object[] locationInfo = (object[])PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION];
+            PhoneApplicationService.Current.State.Remove(HikeConstants.SHARED_LOCATION);
+
+            byte[] imageThumbnail = null;
+            JObject locationJSON = (JObject)locationInfo[0];
+            imageThumbnail = (byte[])locationInfo[1];
+            
+            string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
+
+            string locationJSONString = locationJSON.ToString();
+            byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
+            System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
+
+
+            ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = !isOnHike;
+            convMessage.HasAttachment = true;
+            convMessage.MessageId = TempMessageId;
+
+            convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
+            convMessage.FileAttachment.ContentType = "text/location";
+            convMessage.Message = "location";
+            convMessage.MetaDataString = locationJSONString;
+
+
+            SentChatBubble chatBubble = new SentChatBubble(convMessage, imageThumbnail);
+            msgMap.Add(convMessage.MessageId, chatBubble);
+
+            addNewAttachmentMessageToUI(chatBubble);
+            object[] vals = new object[3];
+            vals[0] = convMessage;
+            vals[1] = locationBytes;
+            vals[2] = chatBubble;
+            App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+        }
 
         private void AudioFileTransfer()
         {
