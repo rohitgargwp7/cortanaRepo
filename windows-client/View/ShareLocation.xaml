@@ -11,7 +11,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True" Name="shareLocation">
 
     <phone:PhoneApplicationPage.Resources>
         <Style TargetType="my:Pushpin" x:Key="PushpinStyle">
@@ -36,7 +36,7 @@
 
         <TextBlock Grid.Row="0" Text="Madhur Garg" FontFamily="Segoe WP SemiLight" FontSize="50"/>
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <my:Map Tap="map_Tap" MouseLeftButtonDown="map_MouseLeftButtonDown" x:Name="map" ZoomLevel="12" CredentialsProvider="Ao53FUOhv7gU7n_8UyVabCmx9vqwmaF9CrMxbSPB-70ED_DHa7BB6lvBp7iIe-2U"/>
+            <my:Map Tap="map_Tap" x:Name="map" ZoomLevel="12" CredentialsProvider="Ao53FUOhv7gU7n_8UyVabCmx9vqwmaF9CrMxbSPB-70ED_DHa7BB6lvBp7iIe-2U"/>
         </Grid>
     </Grid>
 

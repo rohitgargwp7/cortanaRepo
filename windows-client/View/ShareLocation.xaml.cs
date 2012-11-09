@@ -8,6 +8,8 @@ using System.Device.Location;
 using System.Windows.Input;
 using Microsoft.Phone.Controls.Maps;
 using Microsoft.Phone.Tasks;
+using Microsoft.Phone.Shell;
+using Newtonsoft.Json.Linq;
 
 namespace windows_client.View
 {
@@ -15,11 +17,31 @@ namespace windows_client.View
     {
         private GeoCoordinateWatcher watcher;
         private Pushpin locationPushpin;
+        private ApplicationBar appBar;
+        ApplicationBarIconButton shareIconButton = null;
+
+
         public ShareLocation()
         {
             InitializeComponent();
             locationPushpin = new Pushpin();
             //locationPushpin.Style = this.Resources["PushpinStyle"] as Style;
+
+            appBar = new ApplicationBar();
+            appBar.Mode = ApplicationBarMode.Default;
+            appBar.IsVisible = true;
+            appBar.IsMenuEnabled = true;
+
+            //add icon for send
+            shareIconButton = new ApplicationBarIconButton();
+            shareIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            shareIconButton.Text = "share location";
+            shareIconButton.Click += new EventHandler(shareBtn_Click);
+            shareIconButton.IsEnabled = true;
+            appBar.Buttons.Add(shareIconButton);
+
+            shareLocation.ApplicationBar = appBar;
+
             if (watcher == null)
             {
                 watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default);
@@ -29,16 +51,22 @@ namespace windows_client.View
             }
             watcher.Start();
         }
-        private void startLocationButton_Click(object sender, RoutedEventArgs e)
+
+        private void shareBtn_Click(object sender, EventArgs e)
         {
-            if (watcher == null)
-            {
-                watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default);
-                watcher.MovementThreshold = 20;
-                watcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
-                watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
-            }
-            watcher.Start();
+
+            JObject locationFile = new JObject();
+            locationFile[HikeConstants.LATITUDE] = locationPushpin.Location.Latitude;
+            locationFile[HikeConstants.LONGITUDE] = locationPushpin.Location.Longitude;
+            locationFile[HikeConstants.ZOOM_LEVEL] = map.ZoomLevel;
+            locationFile[HikeConstants.LOCATION_ADDRESS] = "";
+
+            object[] locationDetails = new object[2];
+            locationDetails[0] = locationFile;
+            locationDetails[1] = captureThumbnail();
+            PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
+
+            NavigationService.GoBack();
         }
 
         void watcher_StatusChanged(object sender, GeoPositionStatusChangedEventArgs e)
@@ -74,9 +102,6 @@ namespace windows_client.View
             this.map.SetView(watcher.Position.Location, 18.0);
         }
 
-        private void map_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-        }
 
         private void map_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -91,31 +116,23 @@ namespace windows_client.View
 
             //---add the pushpin to the map---
             map.Children.Add(locationPushpin);
-            
+
         }
 
-        //private void captureIMage_Click(object sender, RoutedEventArgs e)
-        //{
-        //    int Width = (int)map.RenderSize.Width;
-        //    int Height = (int)map.RenderSize.Height;
-
-        //    // Write the map control to a WriteableBitmap 
-        //    WriteableBitmap screenshot = new WriteableBitmap(map, new TranslateTransform());
-        //    using (MemoryStream ms = new MemoryStream())
-        //    {
-        //        // Save it to a memory stream 
-        //        screenshot.SaveJpeg(ms, Width, Height, 0, 100);
-
-        //        // Take saved memory stream and put it back into an BitmapImage 
-        //        BitmapImage img = new BitmapImage();
-        //        img.SetSource(ms);
-
-        //        // Cleanup 
-        //        ms.Close();
-        //    }
-        //    //this.map.Visibility = Visibility.Collapsed;
-
-        //}
-
+        private byte[] captureThumbnail()
+        {
+            byte[] thumbnailBytes = null;
+            WriteableBitmap screenshot = new WriteableBitmap(map, new TranslateTransform());
+            using (MemoryStream ms = new MemoryStream())
+            {
+                screenshot.SaveJpeg(ms, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 
+                    0, 100);
+                thumbnailBytes = ms.ToArray();
+                //img = new BitmapImage();
+                //img.SetSource(ms);
+                //ms.Close();
+            }
+            return thumbnailBytes;
+        }
     }
 }
