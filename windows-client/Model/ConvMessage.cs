@@ -78,7 +78,13 @@ namespace windows_client.Model
         {
             if (obj == null)
                 return ParticipantInfoState.NO_INFO;
-            string type = (string)obj[HikeConstants.TYPE];
+            JToken typeToken = null;
+            string type = null;
+            if(obj.TryGetValue(HikeConstants.TYPE, out typeToken))
+                type = typeToken.ToString();
+            else
+                return ParticipantInfoState.NO_INFO;
+
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
             {
                 return ParticipantInfoState.PARTICIPANT_JOINED;
@@ -454,6 +460,14 @@ namespace windows_client.Model
                 singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
                 if (FileAttachment.Thumbnail != null)
                     singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                if (FileAttachment.ContentType.Contains("location"))
+                {
+                    JObject locationInfo = JObject.Parse(this.MetaDataString);
+                    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
+                    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
+                    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
+                    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
+                }
                 filesData.Add(singleFileInfo.ToObject<JToken>());
 
                 metadata[HikeConstants.FILES_DATA] = filesData;
