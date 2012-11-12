@@ -57,14 +57,12 @@ namespace windows_client.utils
             if (groupCache.ContainsKey(grpId))
             {
                 groupCache[grpId].Add(gp);
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 return gp;
             }
 
             List<GroupParticipant> ll = new List<GroupParticipant>();
             ll.Add(gp);
             groupCache.Add(grpId, ll);
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             return gp;
         }
 

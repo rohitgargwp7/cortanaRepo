@@ -61,6 +61,7 @@ namespace windows_client.Model
             NO_INFO, // This is a normal message
             PARTICIPANT_LEFT, // The participant has left
             PARTICIPANT_JOINED, // The participant has joined
+            MEMBERS_JOINED, // this is used in new scenario
             GROUP_END, // Group chat has ended
             GROUP_NAME_CHANGE,
             USER_OPT_IN,
@@ -79,10 +80,13 @@ namespace windows_client.Model
             if (obj == null)
                 return ParticipantInfoState.NO_INFO;
             string type = (string)obj[HikeConstants.TYPE];
+
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
-            {
                 return ParticipantInfoState.PARTICIPANT_JOINED;
-            }
+
+            else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW == type)
+                return ParticipantInfoState.MEMBERS_JOINED;
+
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE == type)
             {
                 JToken jt = null;
@@ -125,6 +129,10 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type)
             {
                 return ParticipantInfoState.GROUP_NAME_CHANGE;
+            }
+            else if (HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP == type)
+            {
+                return ParticipantInfoState.DND_USER;
             }
             else  // shows type == null
             {
@@ -311,7 +319,6 @@ namespace windows_client.Model
             }
         }
 
-
         public ChatBubbleType MsgType
         {
             get
@@ -324,6 +331,7 @@ namespace windows_client.Model
             }
 
         }
+
         public bool IsInvite
         {
             get
@@ -384,6 +392,7 @@ namespace windows_client.Model
                 }
             }
         }
+
         public Visibility ChatBubbleVisiblity
         {
             get
@@ -790,21 +799,19 @@ namespace windows_client.Model
         {
         }
 
-        public ConvMessage(JObject obj, bool isSelfGenerated)
+        public ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater)
         {
             // If the message is a group message we get a TO field consisting of the Group ID
             string toVal = obj[HikeConstants.TO].ToString();
             this._msisdn = (toVal != null) ? (string)obj[HikeConstants.TO] : (string)obj[HikeConstants.FROM]; /*represents msg is coming from another client*/
             this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.FROM] : null;
-            bool saveCache = false;
             this.participantInfoState = fromJSON(obj);
-
             this.metadataJsonString = obj.ToString(Newtonsoft.Json.Formatting.None);
-            if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED || this.participantInfoState == ParticipantInfoState.GROUP_JOINED_OR_WAITING)
+
+            if (this.participantInfoState == ParticipantInfoState.MEMBERS_JOINED || this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
             {
-                List<GroupParticipant> newUsers = new List<GroupParticipant>();
                 JArray arr = (JArray)obj[HikeConstants.DATA];
-                StringBuilder newParticipants = new StringBuilder();
+                List<GroupParticipant> addedMembers = null;
                 for (int i = 0; i < arr.Count; i++)
                 {
                     JObject nameMsisdn = (JObject)arr[i];
@@ -825,61 +832,43 @@ namespace windows_client.Model
                     catch { }
 
                     GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
+                    gp.HasLeft = false;
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {
-                        saveCache = true;
                         gp.IsOnHike = onhike;
                         gp.IsDND = dnd;
                     }
-                    if (!onhike && this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED) // dont add GC_ falue if its a first logic msg.
-                        PhoneApplicationService.Current.State["GC_" + toVal] = true;
-                    newUsers.Add(gp);
+                    if (addedLater)
+                    {
+                        if (addedMembers == null)
+                            addedMembers = new List<GroupParticipant>(arr.Count);
+                        addedMembers.Add(gp);
+                    }
                 }
-                saveCache = true;
-                Utils.GroupCache[toVal].Sort();
-                newUsers.Sort();
-                for (int k = 0; k < newUsers.Count; k++)
+                if (!isSelfGenerated) // when I am group owner chache is already sorted
+                    Utils.GroupCache[toVal].Sort();
+                if (addedLater)
                 {
-                    int var;
-                    if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_JOINED)
-                    {
-                        if (newUsers[k].IsOnHike)
-                            var = 1; // show joined
-                        else
-                            var = 0; // show invited
-                    }
-                    else
-                    {
-                        if (!newUsers[k].IsDND)
-                            var = 1; // show joined
-                        else
-                            var = 0; // show waiting
-                    }
-                    newParticipants.Append(newUsers[k].Msisdn + ":" + var);
-                    if (newUsers.Count > 1 && k < newUsers.Count - 1)
-                        newParticipants.Append(",");
+                    addedMembers.Sort();
+                    this._message = GetMsgText(addedMembers, false);
                 }
-                this._message = newParticipants.ToString();
-                newUsers = null;
+                else
+                    this._message = GetMsgText(Utils.GroupCache[toVal], true);
             }
-            else
+
+            else if (this.participantInfoState == ParticipantInfoState.GROUP_END)
             {
-                if (this.participantInfoState == ParticipantInfoState.GROUP_END)
-                {
-                    this._message = HikeConstants.GROUP_CHAT_END;
-                }
-                else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
-                {
-                    this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
-                    GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
-                    this._message = gp.FirstName + HikeConstants.USER_LEFT;
-                    gp.HasLeft = true;
-                    gp.IsUsed = false;
-                    saveCache = true;
-                }
+                this._message = HikeConstants.GROUP_CHAT_END;
             }
-            if (saveCache)
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
+            {
+                this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
+                GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
+                this._message = gp.FirstName + HikeConstants.USER_LEFT;
+                gp.HasLeft = true;
+                gp.IsUsed = false;
+            }
+
             this._timestamp = TimeUtils.getCurrentTimeStamp();
             if (isSelfGenerated)
                 this.MessageStatus = State.UNKNOWN;
@@ -887,7 +876,25 @@ namespace windows_client.Model
                 this.MessageStatus = State.RECEIVED_UNREAD;
         }
 
-        public ConvMessage(ParticipantInfoState participantInfoState,JObject jsonObj)
+        private string GetMsgText(List<GroupParticipant> groupList, bool isNewGroup)
+        {
+            string msg = "Group Chat with {0}";
+            if (!isNewGroup)
+                msg = "Added {0} to the group";
+            switch (groupList.Count)
+            {
+                case 1:
+                    return string.Format(msg, groupList[0].FirstName);
+                case 2:
+                    return string.Format(msg, groupList[0].FirstName + " and "
+                    + groupList[1].FirstName);
+                default:
+                    return string.Format(msg, groupList[0].FirstName + " and "
+                    + (groupList.Count - 1) + " others");
+            }
+        }
+
+        public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
         {
             this.MessageId = -1;
             this.participantInfoState = participantInfoState;
@@ -896,7 +903,7 @@ namespace windows_client.Model
             this.Timestamp = TimeUtils.getCurrentTimeStamp();
             switch (this.participantInfoState)
             {
-                case ParticipantInfoState.INTERNATIONAL_USER: 
+                case ParticipantInfoState.INTERNATIONAL_USER:
                     this.Message = HikeConstants.SMS_INDIA;
                     break;
                 default: break;

@@ -220,10 +220,12 @@ namespace windows_client
         {
             public static readonly string BLOCK_INTERNATIONAL_USER = "bis";
             public static readonly string GROUP_CHAT_JOIN = "gcj";
+            public static readonly string GROUP_CHAT_JOIN_NEW = "gcj_new";
             public static readonly string GROUP_CHAT_LEAVE = "gcl";
             public static readonly string GROUP_CHAT_END = "gce";
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
+            public static readonly string DND_USER_IN_GROUP = "dugc";
             public static string ACCOUNT_INFO = "ai";
             public static string GROUP_USER_JOINED_OR_WAITING = "gujow";
             public static string USER_OPT_IN = "uo";
