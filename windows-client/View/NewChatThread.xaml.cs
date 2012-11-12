@@ -74,7 +74,7 @@ namespace windows_client.View
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
-
+        private BingMapsTask bingMapsTask = null;
 
         private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -1227,6 +1227,26 @@ namespace windows_client.View
             if (!isContextMenuTapped)
             {
                 MyChatBubble chatBubble = (sender as MyChatBubble);
+                if (chatBubble.FileAttachment.ContentType.Contains("location"))
+                {
+                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
+                    byte[] filebytes;
+                    MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
+
+                    UTF8Encoding enc = new UTF8Encoding();
+                    string locationInfo = enc.GetString(filebytes, 0, filebytes.Length);
+                    JObject locationJSON = JObject.Parse(locationInfo);
+                    if (this.bingMapsTask == null)
+                        bingMapsTask = new BingMapsTask();
+                    double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
+                    double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
+                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
+                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
+                    bingMapsTask.ZoomLevel = zoomLevel;
+                    bingMapsTask.Show();
+                    return;
+                }
+
                 if (chatBubble.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                     return;
                 if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
@@ -2598,9 +2618,10 @@ namespace windows_client.View
             string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
 
             string locationJSONString = locationJSON.ToString();
-            byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
-            System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
+            //byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
+            //System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
 
+            byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
             ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
@@ -2608,7 +2629,7 @@ namespace windows_client.View
             convMessage.MessageId = TempMessageId;
 
             convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
-            convMessage.FileAttachment.ContentType = "text/location";
+            convMessage.FileAttachment.ContentType = "hikemap/location";
             convMessage.Message = "location";
             convMessage.MetaDataString = locationJSONString;
 
