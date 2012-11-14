@@ -114,7 +114,6 @@
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
-    <Compile Include="Model\GroupCachemanager.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />

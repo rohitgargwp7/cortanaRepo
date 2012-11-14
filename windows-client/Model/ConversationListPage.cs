@@ -31,6 +31,7 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private long _lastMsgId;
+        private int _muteVal = -1; // this is used to track mute 
         #endregion
 
         #region Properties
@@ -163,7 +164,29 @@ namespace windows_client.Model
                 }
             }
         }
-        
+
+        public int MuteVal
+        {
+            get
+            {
+                return _muteVal;
+            }
+            set
+            {
+                if (value != _muteVal)
+                    _muteVal = value;
+            }
+        }
+        public bool IsMute
+        {
+            get
+            {
+                if (_muteVal > -1)
+                    return true;
+                else
+                    return false;
+            }
+        }
         public BitmapImage SDRStatusImage
         {
             get
@@ -381,6 +404,7 @@ namespace windows_client.Model
                 writer.Write((int)_messageStatus);
                 writer.Write(_isFirstMsg);
                 writer.Write(_lastMsgId);
+                writer.Write(_muteVal);
             }
             catch
             {
@@ -409,13 +433,14 @@ namespace windows_client.Model
                 _messageStatus = (ConvMessage.State)reader.ReadInt32();
                 _isFirstMsg = reader.ReadBoolean();
                 _lastMsgId = reader.ReadInt64();
+                _muteVal = reader.ReadInt32();
             }
             catch
             {
                 throw new Exception("Conversation Object corrupt");
             }
         }
-        
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
