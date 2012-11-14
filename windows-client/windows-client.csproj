@@ -114,6 +114,7 @@
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
+    <Compile Include="Model\GroupCachemanager.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
-    <Compile Include="Test\Test.cs" />
+    <Compile Include="utils\Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />

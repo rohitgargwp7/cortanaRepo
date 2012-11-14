@@ -41,7 +41,6 @@ namespace windows_client.View
         private string mContactName = null;
         private string lastText = "";
 
-        private bool isGcFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
         private bool isGroupChat = false;
@@ -95,21 +94,6 @@ namespace windows_client.View
         private Image typingNotificationImage;
         private ApplicationBarMenuItem groupInfoMenuItem;
         #endregion
-
-        #region PROPERTY
-
-        public bool IsFirstMsg
-        {
-            get
-            {
-                return isGcFirstMsg;
-            }
-            set
-            {
-                if (value != isGcFirstMsg)
-                    isGcFirstMsg = value;
-            }
-        }
 
         private BitmapImage[] imagePathsForList0
         {
@@ -277,8 +261,6 @@ namespace windows_client.View
 
         #endregion
 
-        #endregion
-
         #region PAGE BASED FUNCTIONS
 
         public NewChatThread()
@@ -333,10 +315,11 @@ namespace windows_client.View
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
                 if (isGC)
                 {
-                    ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true);
+                    ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true,false);
+                    groupCreateCM.GroupParticipant = groupOwner;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        sendMsg(groupCreateCM, true, false);
+                        sendMsg(groupCreateCM, true);
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
                     });
 
@@ -564,7 +547,6 @@ namespace windows_client.View
                     convObj.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                 }
                 userImage.Source = convObj.AvatarImage;
-                isGcFirstMsg = convObj.IsFirstMsg;
             }
 
             #endregion
@@ -660,29 +642,27 @@ namespace windows_client.View
         private void processGroupJoin(bool isNewgroup)
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
-            List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5);
-            for (int i = 0; i < contactsForGroup.Count; i++)
+            List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5); // this is used to select only those contacts which should be later added.
+
+            if (Utils.GroupCache == null)
+                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
+
+            if (isNewgroup) // if new group add all members to the group
             {
-                if (!contactsForGroup[i].OnHike)
+                List<GroupParticipant> l = new List<GroupParticipant>(contactsForGroup.Count);
+                for (int i = 0; i < contactsForGroup.Count; i++)
                 {
-                    isGcFirstMsg = true;
-                    PhoneApplicationService.Current.State["GC_" + mContactNumber] = true; // this is to track , first msg after GC.
-                    Debug.WriteLine("Phone Application Service : GC_{0} added.", mContactNumber);
-                }
-                GroupParticipant gp = null;
-
-                if (Utils.GroupCache == null)
-                    Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-
-                if (!Utils.GroupCache.ContainsKey(mContactNumber)) // group does not exists
-                {
-                    List<GroupParticipant> l = new List<GroupParticipant>(5);
-                    gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
+                    GroupParticipant gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
                     l.Add(gp);
-                    Utils.GroupCache[mContactNumber] = l;
+                    usersToAdd.Add(gp);
                 }
-                else // group exists
+                Utils.GroupCache[mContactNumber] = l;
+            }
+            else // existing group so just add members
+            {
+                for (int i = 0; i < contactsForGroup.Count; i++)
                 {
+                    GroupParticipant gp = null;
                     bool addNewparticipant = true;
                     List<GroupParticipant> gl = Utils.GroupCache[mContactNumber];
                     if (gl == null)
@@ -705,9 +685,10 @@ namespace windows_client.View
                         gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
                         Utils.GroupCache[mContactNumber].Add(gp);
                     }
+                    usersToAdd.Add(gp);
                 }
-                usersToAdd.Add(gp);
             }
+                
             Utils.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -734,8 +715,8 @@ namespace windows_client.View
             }
             else
             {
-                ConvMessage cm = new ConvMessage(groupCreateJson, true);
-                sendMsg(cm, true, false);
+                ConvMessage cm = new ConvMessage(groupCreateJson, true,true);
+                sendMsg(cm, true);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
             }
         }
@@ -992,7 +973,7 @@ namespace windows_client.View
                 SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
 
                 newChatBubble.SetSentMessageStatusForUploadedAttachments();
-                
+
                 newChatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                 addNewAttachmentMessageToUI(newChatBubble);
                 msgMap.Add(convMessage.MessageId, newChatBubble);
@@ -1017,9 +998,9 @@ namespace windows_client.View
                         bitmap.CreateOptions = BitmapCreateOptions.None;
                         bitmap.SetSource(picture.GetImage());
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Chat Thread :: Exception : "+ex.StackTrace);
+                        Debug.WriteLine("Chat Thread :: Exception : " + ex.StackTrace);
                     }
                     SendImage(bitmap, token);
                     PhoneApplicationService.Current.State.Remove("SharePicker");
@@ -1378,6 +1359,24 @@ namespace windows_client.View
                         chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
                     }
                 }
+                #endregion 
+                #region MEMBERS JOINED GROUP CHAT
+
+                // SHOW Group Chat joined / Added msg along with DND msg 
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
+                {
+                    string[] vals = convMessage.Message.Split(';');
+
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED, vals[0]);
+                    this.MessageList.Children.Add(chatBubble);
+                    if (vals.Length == 2)
+                    {
+                        MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
+                        this.MessageList.Children.Add(dndChatBubble);
+                    }
+                    ScrollToBottom();
+
+                }
                 #endregion
                 #region PARTICIPANT_JOINED
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
@@ -1498,7 +1497,7 @@ namespace windows_client.View
                 #region DND_USER
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
                 {
-                    if (!Utils.isGroupConversation(mContactNumber))
+                    //if (!Utils.isGroupConversation(mContactNumber))
                     {
                         MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, convMessage.Message);
                         this.MessageList.Children.Add(chatBubble);
@@ -1579,7 +1578,7 @@ namespace windows_client.View
             convMessage.MessageId = TempMessageId;
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
-            sendMsg(convMessage, false, false);
+            sendMsg(convMessage, false);
         }
 
         #endregion
@@ -1635,10 +1634,7 @@ namespace windows_client.View
             convMessage.IsSms = !isOnHike;
             convMessage.MessageId = TempMessageId;
 
-            if (isGcFirstMsg)
-                sendMsg(convMessage, false, true);
-            else
-                sendMsg(convMessage, false, false);
+            sendMsg(convMessage, false);
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
@@ -1754,13 +1750,13 @@ namespace windows_client.View
         }
 
 
-        private void sendMsg(ConvMessage convMessage, bool isNewGroup, bool isFirstMsgAfterGC)
+        private void sendMsg(ConvMessage convMessage, bool isNewGroup)
         {
-            if (isNewGroup)
+            if (isNewGroup) // this is used for new group as well as when you add members to existing group
             {
                 PhoneApplicationService.Current.State[mContactNumber] = mContactName;
                 JObject metaData = new JObject();
-                metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN;
+                metaData[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
                 convMessage.MetaDataString = metaData.ToString(Newtonsoft.Json.Formatting.None);
             }
             if (isTypingNotificationActive)
@@ -1775,25 +1771,7 @@ namespace windows_client.View
                 isReshowTypingNotification = false;
             }
 
-            object[] vals = null;
-            if (isFirstMsgAfterGC && Utils.isGroupConversation(mContactNumber)) // extra check if it is GroupChat
-            {
-                JObject jo = ConvMessage.ProcessGCLogic(mContactNumber);
-                if (jo == null)
-                    vals = new object[2];
-                else
-                {
-                    vals = new object[3];
-                    ConvMessage cm = new ConvMessage(jo, true); // This is the msg which should be shown after first msg of creation of group
-                    AddMessageToUI(cm, false);
-                    vals[2] = cm;
-                    isGcFirstMsg = false;
-                }
-            }
-            else
-                vals = new object[2];
-            if (isFirstMsgAfterGC && !Utils.isGroupConversation(mContactNumber))
-                isFirstMsgAfterGC = false;
+            object[] vals = new object[2];
             vals[0] = convMessage;
             vals[1] = isNewGroup;
 
@@ -2212,10 +2190,6 @@ namespace windows_client.View
             {
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
-                if (App.ViewModel.ConvMap.ContainsKey(convMessage.Msisdn) && App.ViewModel.ConvMap[convMessage.Msisdn].IsFirstMsg) // this is for GC first msg logic
-                    isGcFirstMsg = true;
-                else
-                    isGcFirstMsg = false;
 
                 /* Check if this is the same user for which this message is recieved*/
                 if (convMessage.Msisdn == mContactNumber)
@@ -2241,8 +2215,6 @@ namespace windows_client.View
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
                                 AddMessageToUI(cm, false);
-                            if (cm.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING) // do this only if USER JOIN MSG 
-                                isGcFirstMsg = false;
                         }
                     });
                 }

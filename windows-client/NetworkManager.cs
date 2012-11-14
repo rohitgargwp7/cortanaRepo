@@ -9,6 +9,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Phone.Notification;
+using System.Text;
 
 namespace windows_client
 {
@@ -45,7 +46,10 @@ namespace windows_client
 
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
-
+        public enum GroupChatState
+        {
+            ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER,DUPLICATE
+        }
         private NetworkManager()
         {
             pubSub = App.HikePubSubInstance;
@@ -127,37 +131,7 @@ namespace windows_client
                     {
                         MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                     }
-                    object[] vals = null;
-
-                    if (obj.IsFirstMsg) // case when grp is created and you have to show invited etc msg
-                    {
-                        JObject oj = ConvMessage.ProcessGCLogic(obj.Msisdn);
-                        if (oj != null)
-                        {
-                            ConvMessage cm;
-                            try
-                            {
-                                cm = new ConvMessage(oj, true);
-                                vals = new object[3];
-                                vals[2] = cm;
-                                MessagesTableUtils.addChatMessage(cm, false);
-                            }
-                            catch (Exception e)
-                            {
-                                vals = new object[2];
-                                cm = null;
-                                Debug.WriteLine("NETWORK MANAGER :: Problem while parsing json and creating ConvMessage object.");
-                            }
-                        }
-                        else
-                        {
-                            vals = new object[2];
-                        }
-                        obj.IsFirstMsg = false;
-                        ConversationTableUtils.updateConversation(obj);
-                    }
-                    else
-                        vals = new object[2];
+                    object[] vals = new object[2];
 
                     vals[0] = convMessage;
                     vals[1] = obj;
@@ -475,6 +449,7 @@ namespace windows_client
             #region GROUP_CHAT_JOIN
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type) //Group chat join
             {
+                jsonObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN_NEW;
                 JArray arr = null;
                 try
                 {
@@ -496,24 +471,82 @@ namespace windows_client
                 {
                     return;
                 }
-
-                if (!AddGroupmembers(arr, grpId)) // is gcj to add new members or to give DND info
-                    return;
-
                 ConvMessage convMessage = null;
-                try
+                List<GroupParticipant> dndList = new List<GroupParticipant>(1);
+                GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
+                #region NEW GROUP
+                if (gcState == GroupChatState.NEW_GROUP) // this group is created by someone else
                 {
-                    convMessage = new ConvMessage(jsonObj, false);
+                    // 1. create new msg for new GC
+                    // 2. create DND msg also
+                    try
+                    {
+                        convMessage = new ConvMessage(jsonObj, false,false); // this will be normal DND msg
+                        List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
+                        if (dndMembersList != null && dndMembersList.Count > 0)
+                        {
+                            string dndMsg = GetDndMsg(dndMembersList);
+                            convMessage.Message += ";" + dndMsg;
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
-                catch
+                #endregion
+                #region ALREADY ADDED TO GROUP
+                else if (gcState == GroupChatState.ALREADY_ADDED_TO_GROUP)
+                {
+                    // update JSON in the metadata .....
+
+                    if (dndList.Count > 0) // there are people who are in dnd , show their msg
+                    {
+                        JObject o = new JObject();
+                        o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
+                        convMessage = new ConvMessage(); // this will be normal DND msg
+                        convMessage.Msisdn = grpId;
+                        convMessage.MetaDataString = o.ToString(Formatting.None);
+                        convMessage.Message = GetDndMsg(dndList);
+                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
+                        convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
+                    }
+                    else
+                        return;
+                }
+                #endregion
+                #region DUPLICATE GCJ
+                else if (gcState == GroupChatState.DUPLICATE)
                 {
                     return;
                 }
-                // till here Group Cache is already made.
-                convMessage.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                #endregion
+                #region ADD NEW MEMBERS TO EXISTING GROUP
+                else // new members are added to group
+                {
+                    try
+                    {
+                        convMessage = new ConvMessage(jsonObj, false,true); // this will be normal DND msg
+                        List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
+                        if (dndMembersList != null && dndMembersList.Count > 0)
+                        {
+                            string dndMsg = GetDndMsg(dndMembersList);
+                            convMessage.Message += ";" + dndMsg;
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+                #endregion
+
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
                     return;
+
+                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 Debug.WriteLine("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
@@ -581,7 +614,8 @@ namespace windows_client
                     if (gp.HasLeft)
                         return;
 
-                    ConvMessage convMsg = new ConvMessage(jsonObj, false);
+                    ConvMessage convMsg = new ConvMessage(jsonObj, false,false);
+                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                     ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                     if (cObj == null)
                         return;
@@ -609,7 +643,7 @@ namespace windows_client
                     bool goAhead = GroupTableUtils.SetGroupDead(groupId);
                     if (goAhead)
                     {
-                        ConvMessage convMessage = new ConvMessage(jsonObj, false);
+                        ConvMessage convMessage = new ConvMessage(jsonObj, false,false);
                         ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage, false);
                         if (cObj == null)
                             return;
@@ -650,6 +684,45 @@ namespace windows_client
             }
             #endregion
 
+        }
+
+        private List<GroupParticipant> GetDNDMembers(string grpId)
+        {
+            List<GroupParticipant> members = Utils.GroupCache[grpId];
+            List<GroupParticipant> output = null;
+
+            for (int i = 0; i < members.Count; i++)
+            {
+                if (!members[i].IsOnHike && members[i].IsDND && !members[i].IsUsed)
+                {
+                    if (output == null)
+                        output = new List<GroupParticipant>();
+                    output.Add(members[i]);
+                    members[i].IsUsed = true;
+                }
+            }
+            return output;
+        }
+
+        private string GetDndMsg(List<GroupParticipant> dndMembersList)
+        {
+            StringBuilder msgText = new StringBuilder();
+            if (dndMembersList.Count == 1)
+                msgText.Append(dndMembersList[0].FirstName);
+            else if (dndMembersList.Count == 2)
+                msgText.Append(dndMembersList[0].FirstName + " and " + dndMembersList[1].FirstName);
+            else
+            {
+                for (int i = 0; i < dndMembersList.Count; i++)
+                {
+                    msgText.Append(dndMembersList[i].FirstName);
+                    if (i == dndMembersList.Count - 2)
+                        msgText.Append(" and ");
+                    else if (i < dndMembersList.Count - 2)
+                        msgText.Append(",");
+                }
+            }
+            return string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString());
         }
 
         private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList)
@@ -777,80 +850,122 @@ namespace windows_client
         /// <param name="arr"></param>
         /// <param name="grpId"></param>
         /// <returns></returns>
-        private bool AddGroupmembers(JArray arr, string grpId)
+        //private bool AddGroupmembers(JArray arr, string grpId)
+        //{
+        //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
+        //    {
+        //        List<GroupParticipant> l = null;
+        //        Utils.GroupCache.TryGetValue(grpId, out l);
+        //        if (l == null)
+        //            return true;
+
+        //        bool saveCache = false;
+        //        bool output = true;
+        //        for (int i = 0; i < arr.Count; i++)
+        //        {
+        //            JObject o = (JObject)arr[i];
+        //            bool onhike = (bool)o["onhike"];
+        //            bool dnd = (bool)o["dnd"];
+        //            string ms = (string)o["msisdn"];
+        //            for (int k = 0; k < l.Count; k++)
+        //            {
+        //                if (l[k].Msisdn == ms)
+        //                {
+        //                    output = false;
+        //                    if (!l[k].IsOnHike && onhike) // this is the case where client thinks that a given user is not on hike but actually he is on hike
+        //                    {
+        //                        l[k].IsOnHike = onhike;
+        //                        saveCache = true;
+        //                        UsersTableUtils.updateOnHikeStatus(ms, true);
+        //                    }
+
+        //                    if (l[k].IsDND != dnd)
+        //                    {
+        //                        l[k].IsDND = dnd;
+        //                        saveCache = true;
+        //                    }
+
+        //                    if (!onhike) // is any user is not on hike, first msg logic will be there
+        //                    {
+        //                        l[k].IsOnHike = onhike;
+        //                        saveCache = true;
+        //                    }
+
+        //                    if (l[k].HasLeft)
+        //                    {
+        //                        l[k].HasLeft = false;
+        //                        saveCache = true;
+        //                        output = true;
+        //                    }
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //        if (saveCache)
+        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+        //        return output;
+        //    }
+        //    else
+        //        return true;
+
+        //}
+
+        /*
+         * This function performs 3 roles
+         * 1. Same GCJ is received by user who created group
+         * 2. New GCJ is received
+         * 3. User is added to group.
+         */
+        private GroupChatState AddGroupmembers(JArray arr, string grpId, List<GroupParticipant> dndList)
         {
-            if (App.ViewModel.ConvMap.ContainsKey(grpId))
+            if (!App.ViewModel.ConvMap.ContainsKey(grpId)) // if its a new group always return true
+                return GroupChatState.NEW_GROUP;
+            else
             {
+                // now check if its same gcj packet created by owner or its different gcj packet
                 List<GroupParticipant> l = null;
                 Utils.GroupCache.TryGetValue(grpId, out l);
-                if (l == null)
-                    return true;
+                if (l == null || l.Count == 0)
+                    return GroupChatState.NEW_GROUP;
 
-                bool removeFirstMsgLogic = false;
-                bool firstMsgLogic = false;
-                bool saveCache = false;
-                bool output = true;
+                GroupChatState output = GroupChatState.DUPLICATE;
+                Dictionary<string, GroupParticipant> gpMap = GetGroupParticipantMap(l);
                 for (int i = 0; i < arr.Count; i++)
                 {
                     JObject o = (JObject)arr[i];
-                    bool onhike = (bool)o["onhike"];
-                    bool dnd = (bool)o["dnd"];
                     string ms = (string)o["msisdn"];
-                    for (int k = 0; k < l.Count; k++)
+                    GroupParticipant gp = null;
+
+                    if (!gpMap.TryGetValue(ms, out gp) || gp == null || gp.HasLeft)     // this shows this member is not in the list and is added externally
+                        return GroupChatState.ADD_MEMBER;
+
+                    else if (!gp.IsUsed)
                     {
-                        if (l[k].Msisdn == ms)
+                        bool onhike = (bool)o["onhike"];
+                        bool dnd = (bool)o["dnd"];
+                        gp.IsUsed = true;
+                        gp.IsOnHike = onhike;
+                        gp.IsDND = dnd;
+                        if (!onhike && dnd) // this member is in dnd so add to dndList and show notification msg
                         {
-                            output = false;
-                            if (!l[k].IsOnHike && onhike) // this is the case where client thinks that a given user is not on hike but actually he is on hike
-                            {
-                                removeFirstMsgLogic = true;
-                                l[k].IsOnHike = onhike;
-                                saveCache = true;
-                                UsersTableUtils.updateOnHikeStatus(ms, true);
-                            }
-
-                            if (l[k].IsDND != dnd)
-                            {
-                                l[k].IsDND = dnd;
-                                saveCache = true;
-                            }
-
-                            if (!onhike) // is any user is not on hike, first msg logic will be there
-                            {
-                                firstMsgLogic = true;
-                                l[k].IsOnHike = onhike;
-                                saveCache = true;
-                            }
-
-                            if (l[k].HasLeft)
-                            {
-                                l[k].HasLeft = false;
-                                saveCache = true;
-                                output = true;
-                            }
-                            break;
+                            gp.IsDND = true;
+                            dndList.Add(gp);
                         }
+                        output = GroupChatState.ALREADY_ADDED_TO_GROUP;
                     }
+                    else
+                        output = GroupChatState.DUPLICATE;
                 }
-                if (!firstMsgLogic && removeFirstMsgLogic) // this turn off first msg logic
-                {
-                    ConversationListObject co = null;
-                    App.ViewModel.ConvMap.TryGetValue(grpId, out co);
-                    if (co != null)
-                    {
-                        co.IsFirstMsg = false;
-                        ConversationTableUtils.updateConversation(co);
-                        if (App.newChatThreadPage != null && App.newChatThreadPage.mContactNumber == grpId)
-                            App.newChatThreadPage.IsFirstMsg = false;
-                    }
-                }
-                if (saveCache)
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 return output;
-            }
-            else
-                return true;
+            }            
+        }
 
+        private Dictionary<string, GroupParticipant> GetGroupParticipantMap(List<GroupParticipant> groupParticipantList)
+        {
+            Dictionary<string, GroupParticipant> map = new Dictionary<string, GroupParticipant>(groupParticipantList.Count);
+            for (int i = 0; i < groupParticipantList.Count; i++)
+                map[groupParticipantList[i].Msisdn] = groupParticipantList[i];
+            return map;
         }
 
         private void updateDB(string fromUser, long msgID, int status)

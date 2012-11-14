@@ -149,20 +149,6 @@ namespace windows_client.Model
         }
 
         [DataMember]
-        public bool IsFirstMsg
-        {
-            get
-            {
-                return _isFirstMsg;
-            }
-            set
-            {
-                if (value != _isFirstMsg)
-                    _isFirstMsg = value;
-            }
-        }
-
-        [DataMember]
         public long LastMsgId
         {
             get
@@ -177,6 +163,7 @@ namespace windows_client.Model
                 }
             }
         }
+        
         public BitmapImage SDRStatusImage
         {
             get
