@@ -242,6 +242,7 @@ namespace windows_client.View
                 if (eventGroupId != groupId)
                     return;
                 string leaveMsisdn = cm.GroupParticipant;
+                GroupParticipant gp = Utils.getGroupParticipant(null, leaveMsisdn, eventGroupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     for (int i = 0; i < groupMembersOC.Count; i++)
@@ -249,9 +250,15 @@ namespace windows_client.View
                         if (groupMembersOC[i].Msisdn == leaveMsisdn)
                         {
                             groupMembersOC.RemoveAt(i);
-                            groupName = App.ViewModel.ConvMap[groupId].NameToShow;
+                            groupName = App.ViewModel.ConvMap[groupId].NameToShow; // change name of group
                             groupNameTxtBox.Text = groupName;
                             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
+                            if (!gp.IsOnHike)
+                            {
+                                smsUsers--;
+                                if (smsUsers <= 0)
+                                    inviteBtn.IsEnabled = false;
+                            }
                             return;
                         }
                     }
