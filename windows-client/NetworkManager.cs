@@ -763,7 +763,7 @@ namespace windows_client
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    if (obj != null)
+                    if (obj == null)
                     {
                         App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                         return;
@@ -779,7 +779,6 @@ namespace windows_client
                         cmCredits.Message = text;
                         cmCredits.Msisdn = ms;
                         obj = MessagesTableUtils.addChatMessage(cmCredits, false);
-
                         vals = new object[3];
                         vals[2] = cmCredits;
                     }
