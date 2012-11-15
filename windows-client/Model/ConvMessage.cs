@@ -737,8 +737,18 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), base64Decoded,
+                        this.FileAttachment = new Attachment(fileName==null?"":fileName.ToString(), fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                        if (contentType.ToString().Contains("location"))
+                        {
+                            JObject locationFile = new JObject();
+                            locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
+                            locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
+                            locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
+                            locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
+                            this.MetaDataString = locationFile.ToString();
+
+                        }
                     }
                     else
                     {
