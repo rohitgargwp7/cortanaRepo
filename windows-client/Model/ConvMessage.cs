@@ -482,6 +482,12 @@ namespace windows_client.Model
                 metadata[HikeConstants.FILES_DATA] = filesData;
                 data[HikeConstants.METADATA] = metadata;
             }
+            else if (this.MetaDataString.Contains("location"))
+            {
+                metadata = new JObject();
+                metadata["poke"] = 1;
+                data[HikeConstants.METADATA] = metadata;
+            }
 
             obj[HikeConstants.TO] = _msisdn;
             obj[HikeConstants.DATA] = data;
