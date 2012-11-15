@@ -126,16 +126,6 @@ namespace windows_client.DbUtils
                         }
                     });
                 }
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING)
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (App.newChatThreadPage != null)
-                        {
-                            App.newChatThreadPage.IsFirstMsg = false;
-                        }
-                    });
-                }
             }
             return true;
         }
@@ -144,7 +134,6 @@ namespace windows_client.DbUtils
         public static ConversationListObject addGroupChatMessage(ConvMessage convMsg, JObject jsonObj)
         {
             ConversationListObject obj = null;
-            //List<GroupMembers> gmList = Utils.getGroupMemberList(jsonObj);
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn)) // represents group is new
             {
                 bool success = addMessage(convMsg);
@@ -169,28 +158,13 @@ namespace windows_client.DbUtils
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set                
                     obj.ContactName = Utils.defaultGroupName(obj.Msisdn);
 
-                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
+                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
                 {
-                    string[] vals = Utils.splitUserJoinedMessage(convMsg.Message);
-                    if (vals == null || vals.Length == 0)
-                        return null;
-                    string[] vars = vals[vals.Length - 1].Split(':');
-                    GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], obj.Msisdn); // get last element of group in sorted order.
-
-                    string text = HikeConstants.USER_JOINED_GROUP_CHAT;
-                    if (vars[1] == "0")
-                        text = HikeConstants.USER_INVITED;
-                    obj.LastMessage = gp.FirstName + text;
-                    if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMsg.Msisdn))
-                    {
-                        obj.IsFirstMsg = true;
-                        PhoneApplicationService.Current.State.Remove("GC_" + convMsg.Msisdn);
-                    }
-
-                    if (gi == null)
-                        return null;
-                    if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
+                    string[] vals = convMsg.Message.Split(';');
+                    if (vals.Length == 2)
+                        obj.LastMessage = vals[1];
+                    else
+                        obj.LastMessage = convMsg.Message;
                 }
                 else
                     obj.LastMessage = convMsg.Message;
@@ -218,6 +192,7 @@ namespace windows_client.DbUtils
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
 
+
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
                 App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
@@ -227,24 +202,7 @@ namespace windows_client.DbUtils
                 #region PARTICIPANT_JOINED
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
                 {
-                    string[] vals = Utils.splitUserJoinedMessage(convMsg.Message);
-                    if (vals == null || vals.Length == 0)
-                        return null;
-                    string[] vars = vals[vals.Length - 1].Split(':');
-                    GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], obj.Msisdn);
-                    string text = HikeConstants.USER_JOINED_GROUP_CHAT;
-                    if (vars[1] == "0")
-                        text = HikeConstants.USER_INVITED;
-                    obj.LastMessage = gp.FirstName + text;
-
-                    if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMsg.Msisdn)) // this is to store firstMsg logic
-                    {
-                        obj.IsFirstMsg = true;
-                        PhoneApplicationService.Current.State.Remove("GC_" + convMsg.Msisdn);
-                        Debug.WriteLine("Phone Application Service : GC_{0} removed.", convMsg.Msisdn);
-                    }
-                    else
-                        obj.IsFirstMsg = false;
+                    obj.LastMessage = convMsg.Message;
 
                     GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
                     if (gi == null)
@@ -262,29 +220,11 @@ namespace windows_client.DbUtils
                         return null;
                     if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
                         obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
-                    List<GroupParticipant> l = Utils.GroupCache[convMsg.Msisdn];
-                    if (obj.IsFirstMsg) // if first msg logic is on 
-                    {
-                        bool toggleLogic = true;
-                        for (int i = 0; i < l.Count; i++)
-                        {
-                            if (!l[i].HasLeft && !l[i].IsOnHike) 
-                            {
-                                toggleLogic = false;
-                            }
-                        }
-                        if (toggleLogic)
-                            obj.IsFirstMsg = false;
-                    }
                 }
                 #endregion
                 #region GROUP_JOINED_OR_WAITING
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING) // shows invite msg
                 {
-                    if (!obj.IsFirstMsg)
-                        return obj;
-                    obj.IsFirstMsg = false;
-
                     string[] vals = Utils.splitUserJoinedMessage(convMsg.Message);
                     List<string> waitingParticipants = null;
                     for (int i = 0; i < vals.Length; i++)

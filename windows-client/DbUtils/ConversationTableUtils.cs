@@ -19,6 +19,7 @@ namespace windows_client.DbUtils
         public static string CONVERSATIONS_DIRECTORY = "CONVERSATIONS";
         private static object readWriteLock = new object();
         /* This function gets all the conversations shown on the message list page*/
+
         public static List<ConversationListObject> getAllConversations()
         {
             byte[] data = null;
@@ -66,26 +67,15 @@ namespace windows_client.DbUtils
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
                 true, convMessage.Timestamp, null, convMessage.MessageStatus, convMessage.MessageId);
 
-            /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
-            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
+            if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
             {
-                string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
-                if (vals == null || vals.Length == 0)
-                    return null;
-                string[] vars = vals[vals.Length - 1].Split(':');
-                GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], obj.Msisdn); // get last element of group in sorted order.
-                string text = HikeConstants.USER_JOINED_GROUP_CHAT;
-                if (vars[1] == "0")
-                    text = HikeConstants.USER_INVITED;
-                obj.LastMessage = gp.FirstName + text;
-                if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn))
-                {
-                    obj.IsFirstMsg = true;
-                    PhoneApplicationService.Current.State.Remove("GC_" + convMessage.Msisdn);
-                }
-
+                string [] vals = convMessage.Message.Split(';');
+                if (vals.Length == 2)
+                    obj.LastMessage = vals[1];
+                else
+                    obj.LastMessage = convMessage.Message;
             }
-            string msisdn = obj.Msisdn.Replace(":", "_");
+            //string msisdn = obj.Msisdn.Replace(":", "_");
             //saveConvObject(obj, msisdn);
             //saveNewConv(obj);
             return obj;
@@ -115,15 +105,7 @@ namespace windows_client.DbUtils
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
             {
-                string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
-                if (vals == null)
-                    return null;
-                string[] vars = vals[vals.Length - 1].Split(':');
-                GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMessage.Msisdn);
-                string text = HikeConstants.USER_JOINED_GROUP_CHAT;
-                if (vars[1] == "0")
-                    text = HikeConstants.USER_INVITED;
-                obj.LastMessage = gp.FirstName + text;
+                obj.LastMessage = convMessage.Message;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
@@ -144,14 +126,6 @@ namespace windows_client.DbUtils
                 obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
-            if (PhoneApplicationService.Current.State.ContainsKey("GC_" + convMessage.Msisdn)) // this is to store firstMsg logic
-            {
-                obj.IsFirstMsg = true;
-                PhoneApplicationService.Current.State.Remove("GC_" + convMessage.Msisdn);
-                Debug.WriteLine("Phone Application Service : GC_{0} removed.", convMessage.Msisdn);
-            }
-            else
-                obj.IsFirstMsg = false;
 
             Stopwatch st1 = Stopwatch.StartNew();
             bool success = MessagesTableUtils.addMessage(convMessage);
@@ -272,7 +246,7 @@ namespace windows_client.DbUtils
                     catch { }
                     try
                     {
-                        using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write))
+                        using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write,FileShare.ReadWrite))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
@@ -382,7 +356,7 @@ namespace windows_client.DbUtils
                         fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp";
                     else
                         return null;
-                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read))
+                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read,FileShare.ReadWrite))
                     {
                         using (var reader = new BinaryReader(file))
                         {
@@ -397,21 +371,17 @@ namespace windows_client.DbUtils
                                 convList = new List<ConversationListObject>(count);
                                 for (int i = 0; i < count; i++)
                                 {
+                                    ConversationListObject item = new ConversationListObject();
                                     try
                                     {
-                                        ConversationListObject item = new ConversationListObject();
-                                        try
-                                        {
-                                            item.Read(reader);
-                                        }
-                                        catch
-                                        {
-                                            item = null;
-                                        }
-                                        if (IsValidConv(item))
-                                            convList.Add(item);
+                                        item.Read(reader);
                                     }
-                                    catch (Exception e) { Debug.WriteLine(e.StackTrace); }
+                                    catch
+                                    {
+                                        item = null;
+                                    }
+                                    if (IsValidConv(item))
+                                        convList.Add(item);
                                 }
                                 convList.Sort();
                             }
