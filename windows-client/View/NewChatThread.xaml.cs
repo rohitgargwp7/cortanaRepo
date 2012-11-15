@@ -2741,7 +2741,7 @@ namespace windows_client.View
             convMessage.IsSms = !isOnHike;
             convMessage.MessageId = TempMessageId;
             convMessage.HasAttachment = false;
-            convMessage.MetaDataString = "{nudge:1}";
+            convMessage.MetaDataString = "{poke:1}";
             sendMsg(convMessage, false);
         }
     }
