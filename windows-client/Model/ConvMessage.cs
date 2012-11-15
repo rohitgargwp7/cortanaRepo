@@ -482,7 +482,7 @@ namespace windows_client.Model
                 metadata[HikeConstants.FILES_DATA] = filesData;
                 data[HikeConstants.METADATA] = metadata;
             }
-            else if (this.MetaDataString.Contains("nudge"))
+            else if (this.MetaDataString.Contains("poke"))
             {
                 metadata = new JObject();
                 metadata["poke"] = true;
