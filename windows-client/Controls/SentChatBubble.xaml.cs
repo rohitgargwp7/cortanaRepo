@@ -265,7 +265,7 @@ namespace windows_client.Controls
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             string messageString = cm.Message;
             bool isSMS = cm.IsSms;
-            bool isNudge = cm.MetaDataString.Contains("poke");
+            bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
 
             BubbleBg = new Rectangle();

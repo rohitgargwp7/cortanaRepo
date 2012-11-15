@@ -137,7 +137,7 @@ namespace windows_client.Controls
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            bool isNudge = cm.MetaDataString.Contains("poke");
+            bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
             string messageString = cm.Message;
 
             Rectangle BubbleBg = new Rectangle();
@@ -192,7 +192,7 @@ namespace windows_client.Controls
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if (contentType.Contains("video") || contentType.Contains("audio") || showDownload)
+                if ((contentType.Contains("video") || contentType.Contains("audio") || showDownload) && !contentType.Contains("location"))
                 {
 
                     PlayIcon = new Image();
