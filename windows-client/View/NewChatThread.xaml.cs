@@ -316,7 +316,7 @@ namespace windows_client.View
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
                 if (isGC)
                 {
-                    ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true,false);
+                    ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true, false);
                     groupCreateCM.GroupParticipant = groupOwner;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -695,7 +695,7 @@ namespace windows_client.View
                     usersToAdd.Add(gp);
                 }
             }
-                
+
             Utils.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -722,7 +722,7 @@ namespace windows_client.View
             }
             else
             {
-                ConvMessage cm = new ConvMessage(groupCreateJson, true,true);
+                ConvMessage cm = new ConvMessage(groupCreateJson, true, true);
                 sendMsg(cm, true);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
             }
@@ -1386,7 +1386,7 @@ namespace windows_client.View
                         chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
                     }
                 }
-                #endregion 
+                #endregion
                 #region MEMBERS JOINED GROUP CHAT
 
                 // SHOW Group Chat joined / Added msg along with DND msg 
@@ -1996,14 +1996,14 @@ namespace windows_client.View
             BingMapsTask bingMapsTask = new BingMapsTask();
             //Omit the Center property to use the user's current location.
             bingMapsTask.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
-//            bingMapsTask.SearchTerm = "coffee";
+            //            bingMapsTask.SearchTerm = "coffee";
             bingMapsTask.ZoomLevel = 24;
             bingMapsTask.Show();
-            
+
         }
 
 
-        
+
         private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
@@ -2586,7 +2586,7 @@ namespace windows_client.View
             byte[] imageThumbnail = null;
             JObject locationJSON = (JObject)locationInfo[0];
             imageThumbnail = (byte[])locationInfo[1];
-            
+
             string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
 
             string locationJSONString = locationJSON.ToString();
@@ -2742,13 +2742,7 @@ namespace windows_client.View
             convMessage.MessageId = TempMessageId;
             convMessage.HasAttachment = false;
             convMessage.MetaDataString = "{nudge:1}";
-
-            if (isGcFirstMsg)
-                sendMsg(convMessage, false, true);
-            else
-                sendMsg(convMessage, false, false);
-
+            sendMsg(convMessage, false);
         }
-
     }
 }
