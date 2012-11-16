@@ -23,6 +23,7 @@ namespace windows_client.utils
         private SolidColorBrush hikeSentChatBubbleTimestamp;
         private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
+        private SolidColorBrush phoneThemeColor;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -255,6 +256,18 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush PhoneThemeColor
+        {
+            get
+            {
+                if (phoneThemeColor == null)
+                {
+                    phoneThemeColor = new SolidColorBrush((Color)Application.Current.Resources["PhoneAccentColor"]); ;
+                }
+                return phoneThemeColor;
+            }
+        }
+        
         public BitmapImage OnHikeImage
         {
             get
