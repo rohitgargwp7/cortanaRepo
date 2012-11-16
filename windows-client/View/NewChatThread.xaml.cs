@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,6 +22,7 @@ using windows_client.Controls;
 using System.Text;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
+using System.Device.Location;
 
 namespace windows_client.View
 {
@@ -75,7 +76,7 @@ namespace windows_client.View
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
-
+        private BingMapsTask bingMapsTask = null;
 
         private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -318,7 +319,7 @@ namespace windows_client.View
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
                 if (isGC)
                 {
-                    ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true,false);
+                    ConvMessage groupCreateCM = new ConvMessage(groupCreateJson, true, false);
                     groupCreateCM.GroupParticipant = groupOwner;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -464,6 +465,12 @@ namespace windows_client.View
             if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 AudioFileTransfer();
+            }
+            #endregion
+            #region SHARE LOCATION
+            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            {
+                shareLocation();
             }
             #endregion
         }
@@ -692,7 +699,7 @@ namespace windows_client.View
                     usersToAdd.Add(gp);
                 }
             }
-                
+
             Utils.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
@@ -719,7 +726,7 @@ namespace windows_client.View
             }
             else
             {
-                ConvMessage cm = new ConvMessage(groupCreateJson, true,true);
+                ConvMessage cm = new ConvMessage(groupCreateJson, true, true);
                 sendMsg(cm, true);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, groupCreateJson); // inform others about group
             }
@@ -808,10 +815,11 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
 
-                muteGroupMenuItem = new ApplicationBarMenuItem();
-                muteGroupMenuItem.Text = isMute?"unmute group":"mute group";
-                muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
-                appBar.MenuItems.Add(muteGroupMenuItem);
+                //TODO : Uncomment this when mute has to be supported.
+                //muteGroupMenuItem = new ApplicationBarMenuItem();
+                //muteGroupMenuItem.Text = isMute ? "unmute group" : "mute group";
+                //muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
+                //appBar.MenuItems.Add(muteGroupMenuItem);
 
                 if (groupOwner != null)
                 {
@@ -992,7 +1000,7 @@ namespace windows_client.View
                 object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = sourceFilePath;
-                mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+                mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("SharePicker"))
@@ -1019,6 +1027,11 @@ namespace windows_client.View
             }
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
                 AudioFileTransfer();
+            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            {
+                shareLocation();
+            }
+
         }
 
         private void ScrollToBottomFromUI()
@@ -1033,7 +1046,6 @@ namespace windows_client.View
         {
             MessageList.UpdateLayout();
             Scroller.UpdateLayout();
-
             if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
                 Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
         }
@@ -1156,7 +1168,7 @@ namespace windows_client.View
             JObject o = new JObject();
             o["id"] = mContactNumber;
             obj[HikeConstants.DATA] = o;
-            if(isMute) // GC is muted , request to unmute
+            if (isMute) // GC is muted , request to unmute
             {
                 isMute = false;
                 obj[HikeConstants.TYPE] = "unmute";
@@ -1172,7 +1184,7 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = "unmute group";
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
-            
+
         }
 
         private void groupInfo_Click(object sender, EventArgs e)
@@ -1239,6 +1251,26 @@ namespace windows_client.View
             if (!isContextMenuTapped)
             {
                 MyChatBubble chatBubble = (sender as MyChatBubble);
+                if (chatBubble.FileAttachment.ContentType.Contains("location"))
+                {
+                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
+                    byte[] filebytes;
+                    MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
+
+                    UTF8Encoding enc = new UTF8Encoding();
+                    string locationInfo = enc.GetString(filebytes, 0, filebytes.Length);
+                    JObject locationJSON = JObject.Parse(locationInfo);
+                    if (this.bingMapsTask == null)
+                        bingMapsTask = new BingMapsTask();
+                    double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
+                    double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
+                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
+                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
+                    bingMapsTask.ZoomLevel = zoomLevel;
+                    bingMapsTask.Show();
+                    return;
+                }
+
                 if (chatBubble.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                     return;
                 if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
@@ -1388,6 +1420,7 @@ namespace windows_client.View
                     else
                     {
                         chatBubble = new ReceivedChatBubble(convMessage, isGroupChat, Utils.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+
                     }
                     this.MessageList.Children.Add(chatBubble);
                     ScrollToBottom();
@@ -1396,7 +1429,7 @@ namespace windows_client.View
                         chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
                     }
                 }
-                #endregion 
+                #endregion
                 #region MEMBERS JOINED GROUP CHAT
 
                 // SHOW Group Chat joined / Added msg along with DND msg 
@@ -1596,7 +1629,7 @@ namespace windows_client.View
                     this.MessageList.Children.Add(chatBubble);
                     ScrollToBottom();
                 }
-                #endregion              
+                #endregion
 
                 msgBubbleCount++;
             }
@@ -1785,7 +1818,7 @@ namespace windows_client.View
             vals[0] = convMessage;
             vals[1] = fileBytes;
             vals[2] = chatBubble;
-            mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
+            mPubSub.publish(HikePubSub.ATTACHMENT_SENT, vals);
         }
 
 
@@ -1985,6 +2018,36 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/RecordMedia.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
+
+        private void shareLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/ShareLocation.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+
+            //GeoCoordinateWatcher watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
+            //watcher.MovementThreshold = 20;
+            ////watcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
+            //watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
+            //watcher.Start();
+        }
+
+        void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() => MyPositionChanged(e));
+        }
+
+        void MyPositionChanged(GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            BingMapsTask bingMapsTask = new BingMapsTask();
+            //Omit the Center property to use the user's current location.
+            bingMapsTask.Center = new GeoCoordinate(e.Position.Location.Latitude, e.Position.Location.Longitude);
+            //            bingMapsTask.SearchTerm = "coffee";
+            bingMapsTask.ZoomLevel = 24;
+            bingMapsTask.Show();
+
+        }
+
+
 
         private void chatListBox_tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -2563,6 +2626,44 @@ namespace windows_client.View
 
         #endregion
 
+        private void shareLocation()
+        {
+            object[] locationInfo = (object[])PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION];
+            PhoneApplicationService.Current.State.Remove(HikeConstants.SHARED_LOCATION);
+
+            byte[] imageThumbnail = null;
+            JObject locationJSON = (JObject)locationInfo[0];
+            imageThumbnail = (byte[])locationInfo[1];
+
+            string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
+
+            string locationJSONString = locationJSON.ToString();
+            //byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
+            //System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
+
+            byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
+
+            ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = !isOnHike;
+            convMessage.HasAttachment = true;
+            convMessage.MessageId = TempMessageId;
+
+            convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
+            convMessage.FileAttachment.ContentType = "hikemap/location";
+            convMessage.Message = "location";
+            convMessage.MetaDataString = locationJSONString;
+
+            SentChatBubble chatBubble = new SentChatBubble(convMessage, imageThumbnail);
+            msgMap.Add(convMessage.MessageId, chatBubble);
+
+            addNewAttachmentMessageToUI(chatBubble);
+            object[] vals = new object[3];
+            vals[0] = convMessage;
+            vals[1] = locationBytes;
+            vals[2] = chatBubble;
+            App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+        }
+
         private void AudioFileTransfer()
         {
             byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
@@ -2587,7 +2688,7 @@ namespace windows_client.View
             vals[0] = convMessage;
             vals[1] = audioBytes;
             vals[2] = chatBubble;
-            App.HikePubSubInstance.publish(HikePubSub.MESSAGE_SENT, vals);
+            App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
         }
 
         // this should be called when one gets tap here msg.
@@ -2674,5 +2775,21 @@ namespace windows_client.View
             }
         }
 
+        private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (mUserIsBlocked)
+                return;
+
+            emoticonPanel.Visibility = Visibility.Collapsed;
+
+            if ((!isOnHike && mCredits <= 0))
+                return;
+            ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = !isOnHike;
+            convMessage.MessageId = TempMessageId;
+            convMessage.HasAttachment = false;
+            convMessage.MetaDataString = "{poke:1}";
+            sendMsg(convMessage, false);
+        }
     }
 }

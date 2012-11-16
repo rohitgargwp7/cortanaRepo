@@ -48,128 +48,15 @@ namespace windows_client.View
         {
             this.pushNotifications.Content = "On";
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
-
-            try
-            {
-                HttpNotificationChannel pushChannel;
-
-                pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-
-                if (pushChannel != null)
-                {
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                }
-                else
-                {
-                    bool secure_push = false;
-                    if (App.appSettings.TryGetValue(HikeConstants.SECURE_PUSH, out secure_push) && secure_push)
-                    {
-                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
-                        App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, true);
-                    }
-                    else
-                    {
-                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName);
-                        App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
-                    }
-
-                    pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    pushChannel.Open();
-                }
-                if (!pushChannel.IsShellTileBound)
-                    pushChannel.BindToShellTile();
-                if (!pushChannel.IsShellToastBound)
-                    pushChannel.BindToShellToast();
-
-                if (pushChannel.ChannelUri == null)
-                    return;
-
-                System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            catch (Exception)
-            {
-            }
+            App.PushHelperInstance.registerPushnotifications();
         }
 
         private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)
         {
             this.pushNotifications.Content = "Off";
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,false);
+            App.PushHelperInstance.closePushnotifications();
 
-            try
-            {
-                HttpNotificationChannel pushChannel;
-                pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-                if (pushChannel != null)
-                {
-                    if (pushChannel.IsShellTileBound)
-                        pushChannel.UnbindToShellTile();
-                    if (pushChannel.IsShellToastBound)
-                        pushChannel.UnbindToShellToast();
-                    pushChannel.Close();
-                    App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
-                }
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            catch (Exception)
-            {
-            }
-
-        }
-
-        public void postPushNotification_Callback(JObject obj)
-        {
-            string stat = "";
-            if (obj != null)
-            {
-                JToken statusToken;
-                obj.TryGetValue("stat", out statusToken);
-                stat = statusToken.ToString();
-            }
-            if (stat != "ok")
-            {
-                try
-                {
-                    HttpNotificationChannel pushChannel;
-                    pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-                    if (pushChannel != null)
-                    {
-                        if (pushChannel.IsShellTileBound)
-                            pushChannel.UnbindToShellTile();
-                        if (pushChannel.IsShellToastBound)
-                            pushChannel.UnbindToShellToast();
-                        pushChannel.Close();
-                    }
-                }
-                catch (Exception)
-                { }
-            }
-        }
-
-        public void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
-        {
-            if (e.ChannelUri != null)
-            {
-                AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-            }
-        }
-
-        public void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
-        {
-            // Error handling logic
-            //Dispatcher.BeginInvoke(() =>
-            //    MessageBox.Show(String.Format("A push notification {0} error occurred.  {1} ({2}) {3}",
-            //        e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
-            //        );
         }
 
         private void vibrate_Checked(object sender, RoutedEventArgs e)

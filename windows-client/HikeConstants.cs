@@ -45,6 +45,12 @@ namespace windows_client
         public static readonly string FILE_THUMBNAIL = "tn";
         public static readonly string FILE_CONTENT_TYPE = "ct";
         public static readonly string FILES_DATA = "files";
+
+        public static readonly string LATITUDE = "lat";
+        public static readonly string LONGITUDE = "long";
+        public static readonly string ZOOM_LEVEL = "zoom";
+        public static readonly string LOCATION_ADDRESS = "add";
+
         public static readonly string FILE_TRANSFER_LOCATION = "TransferredFiles";
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
@@ -187,6 +193,7 @@ namespace windows_client
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
+        public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
         public static string FB_LOGGED_IN = "FbLoggedIn";

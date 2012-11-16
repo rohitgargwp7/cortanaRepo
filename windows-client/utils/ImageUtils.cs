@@ -23,6 +23,7 @@ namespace windows_client.utils
         private SolidColorBrush hikeSentChatBubbleTimestamp;
         private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
+        private SolidColorBrush phoneThemeColor;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -42,6 +43,9 @@ namespace windows_client.utils
         private BitmapImage waiting;
         private BitmapImage reward;
         private BitmapImage participantLeft;
+        private BitmapImage nudgeSend;
+        private BitmapImage nudgeReceived;
+
         private SolidColorBrush receiveMessageForeground;
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
         private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 300, 15, 0);
@@ -252,6 +256,18 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush PhoneThemeColor
+        {
+            get
+            {
+                if (phoneThemeColor == null)
+                {
+                    phoneThemeColor = new SolidColorBrush((Color)Application.Current.Resources["PhoneAccentColor"]); ;
+                }
+                return phoneThemeColor;
+            }
+        }
+        
         public BitmapImage OnHikeImage
         {
             get
@@ -454,6 +470,26 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage NudgeSent
+        {
+            get
+            {
+                if (nudgeSend == null)
+                    nudgeSend = new BitmapImage(new Uri("/View/images/nudge_sent.png", UriKind.Relative));
+                return nudgeSend;
+            }
+        }
+
+        public BitmapImage NudgeReceived
+        {
+            get
+            {
+                if (nudgeReceived == null)
+                    nudgeReceived = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
+                return nudgeReceived;
+            }
+        }
+        
         public SolidColorBrush ReceiveMessageForeground
         {
             get

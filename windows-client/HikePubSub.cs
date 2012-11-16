@@ -28,6 +28,10 @@ namespace windows_client
         /* broadcast when the sender sends the message (click the send button in chat thread view) */
         public static readonly string MESSAGE_SENT = "messagesent";
 
+        public static readonly string FORWARD_ATTACHMENT = "forwardAttachment";
+
+        public static readonly string ATTACHMENT_SENT = "attachmentSent";
+        
         public static readonly string MESSAGE_DELIVERED = "messageDelivered"; // represents that msg is delivered to receiver but is not read.
 
         public static readonly string MESSAGE_DELIVERED_READ = "messageDeliveredRead"; // represents that msg is delivered to receiver and is read by the same.

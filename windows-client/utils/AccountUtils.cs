@@ -279,7 +279,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
             req.Method = "PUT";
-            req.ContentType = convMessage.FileAttachment.ContentType.Contains("audio") ? convMessage.FileAttachment.ContentType : "";
+            req.ContentType = convMessage.FileAttachment.ContentType.Contains("image") ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";

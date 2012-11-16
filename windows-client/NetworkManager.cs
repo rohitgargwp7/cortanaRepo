@@ -48,7 +48,7 @@ namespace windows_client
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         public enum GroupChatState
         {
-            ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER,DUPLICATE
+            ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE
         }
         private NetworkManager()
         {
@@ -124,6 +124,13 @@ namespace windows_client
                     }
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
+
+                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains("location"))
+                    {
+                        byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(convMessage.MetaDataString);
+                        MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                    Convert.ToString(convMessage.MessageId), locationBytes);
+                    }
 
                     if (obj == null)
                         return;
@@ -481,7 +488,7 @@ namespace windows_client
                     // 2. create DND msg also
                     try
                     {
-                        convMessage = new ConvMessage(jsonObj, false,false); // this will be normal DND msg
+                        convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
                         List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
                         if (dndMembersList != null && dndMembersList.Count > 0)
                         {
@@ -527,7 +534,7 @@ namespace windows_client
                 {
                     try
                     {
-                        convMessage = new ConvMessage(jsonObj, false,true); // this will be normal DND msg
+                        convMessage = new ConvMessage(jsonObj, false, true); // this will be normal DND msg
                         List<GroupParticipant> dndMembersList = GetDNDMembers(grpId);
                         if (dndMembersList != null && dndMembersList.Count > 0)
                         {
@@ -614,7 +621,7 @@ namespace windows_client
                     if (gp.HasLeft)
                         return;
 
-                    ConvMessage convMsg = new ConvMessage(jsonObj, false,false);
+                    ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
                     App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                     ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                     if (cObj == null)
@@ -643,7 +650,7 @@ namespace windows_client
                     bool goAhead = GroupTableUtils.SetGroupDead(groupId);
                     if (goAhead)
                     {
-                        ConvMessage convMessage = new ConvMessage(jsonObj, false,false);
+                        ConvMessage convMessage = new ConvMessage(jsonObj, false, false);
                         ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMessage, false);
                         if (cObj == null)
                             return;
@@ -956,7 +963,7 @@ namespace windows_client
                         output = GroupChatState.DUPLICATE;
                 }
                 return output;
-            }            
+            }
         }
 
         private Dictionary<string, GroupParticipant> GetGroupParticipantMap(List<GroupParticipant> groupParticipantList)

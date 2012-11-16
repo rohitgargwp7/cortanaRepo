@@ -21,10 +21,10 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            string contentType = cm.FileAttachment == null?"": cm.FileAttachment.ContentType;
+            string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            initializeBasedOnState(cm.HasAttachment, contentType, showDownload, cm.Message, isGroupChat, userName);
+            initializeBasedOnState(cm, isGroupChat, userName);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
@@ -42,7 +42,7 @@ namespace windows_client.Controls
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (this.temporaryProgressBar!=null && this.temporaryProgressBar.Visibility == Visibility.Visible)
+                if (this.temporaryProgressBar != null && this.temporaryProgressBar.Visibility == Visibility.Visible)
                 {
                     this.temporaryProgressBar.Visibility = Visibility.Collapsed;
                     this.downloadProgress.Visibility = Visibility.Visible;
@@ -63,7 +63,7 @@ namespace windows_client.Controls
 
         protected override void uploadOrDownloadCompleted()
         {
-            if(this.PlayIcon!=null && this.FileAttachment.ContentType.Contains("image"))
+            if (this.PlayIcon != null && this.FileAttachment.ContentType.Contains("image"))
                 this.PlayIcon.Visibility = Visibility.Collapsed;
         }
 
@@ -122,7 +122,8 @@ namespace windows_client.Controls
         private LinkifiedTextBox MessageText;
         private TextBlock TimeStampBlock;
         private PerformanceProgressBar temporaryProgressBar;
-        
+
+        private static Thickness nudgeMargin = new Thickness(12, 12, 12, 10);
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 12, 0, 0);
@@ -130,13 +131,27 @@ namespace windows_client.Controls
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType, bool showDownload, string messageString,
-            bool isGroupChat, string userName)
+        private void initializeBasedOnState(ConvMessage cm, bool isGroupChat, string userName)
         {
+            bool hasAttachment = cm.HasAttachment;
+            string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
+            bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
+                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+            bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
+            string messageString = cm.Message;
+
             Rectangle BubbleBg = new Rectangle();
-            BubbleBg.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
-            bubblePointer.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
-            Grid.SetRowSpan(BubbleBg, 2 + (isGroupChat?1:0));
+            if (!isNudge)
+            {
+                BubbleBg.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
+                bubblePointer.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
+            }
+            else
+            {
+                BubbleBg.Fill = UI_Utils.Instance.PhoneThemeColor;
+                bubblePointer.Fill = UI_Utils.Instance.PhoneThemeColor;
+            }
+            Grid.SetRowSpan(BubbleBg, 2 + (isGroupChat ? 1 : 0));
             wrapperGrid.Children.Add(BubbleBg);
 
             int rowNumber = 0;
@@ -154,7 +169,7 @@ namespace windows_client.Controls
                 rowNumber = 1;
             }
 
-            if (hasAttachment)
+            if (hasAttachment || isNudge)
             {
                 attachment = new Grid();
                 RowDefinition r1 = new RowDefinition();
@@ -174,11 +189,18 @@ namespace windows_client.Controls
                 MessageImage.Margin = imgMargin;
                 if (contentType.Contains("audio"))
                     this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentReceive;
+                else if (isNudge)
+                {
+                    this.MessageImage.Source = UI_Utils.Instance.NudgeReceived;
+                    this.MessageImage.Height = 24;
+                    this.MessageImage.Width = 31;
+                    this.MessageImage.Margin = nudgeMargin;
+                }
 
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if (contentType.Contains("video") || contentType.Contains("audio") || showDownload)
+                if ((contentType.Contains("video") || contentType.Contains("audio") || showDownload) && !contentType.Contains("location"))
                 {
 
                     PlayIcon = new Image();
@@ -196,47 +218,54 @@ namespace windows_client.Controls
                     attachment.Children.Add(PlayIcon);
 
                 }
-                downloadProgress = new ProgressBar();
-                downloadProgress.Height = 10;
-                downloadProgress.Background = new SolidColorBrush(Color.FromArgb(255, 0x99, 0x99, 0x99));
-                downloadProgress.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;
-                downloadProgress.Minimum = 0;
-                downloadProgress.MaxHeight = 100;
-                downloadProgress.Opacity = 0;
-                if (showDownload)
+                if (!isNudge)
                 {
-                    temporaryProgressBar = new PerformanceProgressBar();
-                    temporaryProgressBar.Height = 10;
-//                    temporaryProgressBar.Background = UI_Utils.Instance.TextBoxBackground;
-                    temporaryProgressBar.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;
-                    temporaryProgressBar.IsEnabled = false;
-                    temporaryProgressBar.Opacity = 1;
-                    downloadProgress.Visibility = Visibility.Collapsed;
-                    downloadProgress.Opacity = 1;
-                    Grid.SetRow(temporaryProgressBar, 1);
-                    attachment.Children.Add(temporaryProgressBar);
+
+                    downloadProgress = new ProgressBar();
+                    downloadProgress.Height = 10;
+                    downloadProgress.Background = new SolidColorBrush(Color.FromArgb(255, 0x99, 0x99, 0x99));
+                    downloadProgress.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;
+                    downloadProgress.Minimum = 0;
+                    downloadProgress.MaxHeight = 100;
+                    downloadProgress.Opacity = 0;
+                    if (showDownload)
+                    {
+                        temporaryProgressBar = new PerformanceProgressBar();
+                        temporaryProgressBar.Height = 10;
+                        //                    temporaryProgressBar.Background = UI_Utils.Instance.TextBoxBackground;
+                        temporaryProgressBar.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;
+                        temporaryProgressBar.IsEnabled = false;
+                        temporaryProgressBar.Opacity = 1;
+                        downloadProgress.Visibility = Visibility.Collapsed;
+                        downloadProgress.Opacity = 1;
+                        Grid.SetRow(temporaryProgressBar, 1);
+                        attachment.Children.Add(temporaryProgressBar);
+                    }
+                    Grid.SetRow(downloadProgress, 1);
+                    attachment.Children.Add(downloadProgress);
                 }
-                Grid.SetRow(downloadProgress, 1);
-                attachment.Children.Add(downloadProgress);
             }
             else
             {
                 MessageText = new LinkifiedTextBox(UI_Utils.Instance.ReceiveMessageForeground, 22, messageString);
                 MessageText.Width = 330;
-                if(!isGroupChat)
+                if (!isGroupChat)
                     MessageText.Margin = messageTextMargin;
                 MessageText.FontFamily = UI_Utils.Instance.MessageText;
                 Grid.SetRow(MessageText, rowNumber);
                 wrapperGrid.Children.Add(MessageText);
             }
-            TimeStampBlock = new TextBlock();
-            TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
-            TimeStampBlock.FontSize = 18;
-            TimeStampBlock.Foreground = UI_Utils.Instance.ReceivedChatBubbleTimestamp;
-            TimeStampBlock.Text = TimeStamp;
-            TimeStampBlock.Margin = timeStampBlockMargin;
-            Grid.SetRow(TimeStampBlock, rowNumber + 1);
-            wrapperGrid.Children.Add(TimeStampBlock);
+            if (!isNudge)
+            {
+                TimeStampBlock = new TextBlock();
+                TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+                TimeStampBlock.FontSize = 18;
+                TimeStampBlock.Foreground = UI_Utils.Instance.ReceivedChatBubbleTimestamp;
+                TimeStampBlock.Text = TimeStamp;
+                TimeStampBlock.Margin = timeStampBlockMargin;
+                Grid.SetRow(TimeStampBlock, rowNumber + 1);
+                wrapperGrid.Children.Add(TimeStampBlock);
+            }
         }
     }
 }
