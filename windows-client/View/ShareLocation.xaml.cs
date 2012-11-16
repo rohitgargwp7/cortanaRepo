@@ -34,7 +34,7 @@ namespace windows_client.View
 
             //add icon for send
             shareIconButton = new ApplicationBarIconButton();
-            shareIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            shareIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             shareIconButton.Text = "share location";
             shareIconButton.Click += new EventHandler(shareBtn_Click);
             shareIconButton.IsEnabled = true;
@@ -65,6 +65,7 @@ namespace windows_client.View
             locationDetails[0] = locationFile;
             locationDetails[1] = captureThumbnail();
             PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
+            map = null;
 
             NavigationService.GoBack();
         }
