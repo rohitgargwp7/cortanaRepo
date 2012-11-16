@@ -53,6 +53,9 @@
     <Reference Include="Coding4Fun.Phone.Controls">
       <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\packages\Facebook.6.0.24\lib\sl4-windowsphone71\Facebook.dll</HintPath>
+    </Reference>
     <Reference Include="finalmqtt">
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
@@ -112,6 +115,7 @@
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
     <Compile Include="Misc\IBinarySerializable.cs" />
+    <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\GroupInfo.cs" />
@@ -127,7 +131,6 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
-    <Compile Include="utils\Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
@@ -157,6 +160,9 @@
     </Compile>
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FacebookPage.xaml.cs">
+      <DependentUpon>FacebookPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FreeSMS.xaml.cs">
       <DependentUpon>FreeSMS.xaml</DependentUpon>
@@ -246,6 +252,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Error.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FacebookPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

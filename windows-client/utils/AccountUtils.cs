@@ -137,7 +137,7 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE,SOCIAL_POST,SOCIAL_DELETE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -201,7 +201,6 @@ namespace windows_client.utils
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.CALL_ME, msisdn, finalCallbackFunction });
         }
-
 
         public static void setName(string name, postResponseFunction finalCallbackFunction)
         {
@@ -289,6 +288,23 @@ namespace windows_client.utils
                 chatbubble });
         }
 
+        public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction,string socialNetowrk,bool isPost)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
+            addToken(req);
+            if (isPost)
+            {
+                req.Method = "POST";
+                req.ContentType = "application/json";
+                req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SOCIAL_POST, obj, finalCallbackFunction });
+            }
+            else
+            {
+                req.Method = "DELETE";
+                req.BeginGetResponse(json_Callback, new object[] { req, RequestType.SOCIAL_DELETE, finalCallbackFunction });
+            }
+        }
+
         private static void setParams_Callback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -300,6 +316,7 @@ namespace windows_client.utils
 
             switch (type)
             {
+                #region REGISTER ACCOUNT
                 case RequestType.REGISTER_ACCOUNT:
                     string pin = vars[2] as string;
                     string unAuthMSISDN = vars[3] as string;
@@ -307,7 +324,7 @@ namespace windows_client.utils
                     data.Add("set_cookie", "0");
                     data.Add("devicetype", "windows");
                     data[HikeConstants.DEVICE_ID] = Utils.getDeviceId();
-//                    data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
+                    //data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
                     data[HikeConstants.DEVICE_VERSION] = Utils.getOSVersion();
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
                     string inviteToken = "";
@@ -319,42 +336,60 @@ namespace windows_client.utils
                         data.Add("pin", pin);
                     }
                     break;
-
+                #endregion
+                #region INVITE
                 case RequestType.INVITE:
                     string phoneNo = vars[2] as string;
                     data.Add("to", phoneNo);
                     break;
-
+                #endregion
+                #region VALIDATE NUMBER
                 case RequestType.VALIDATE_NUMBER:
                     string numberToValidate = vars[2] as string;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("phone_no", numberToValidate);
                     break;
-
+                #endregion
+                #region CALL ME
                 case RequestType.CALL_ME:
                     string msisdn = vars[2] as string;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("msisdn", msisdn);
                     break;
-
+                #endregion
+                #region SET NAME
                 case RequestType.SET_NAME:
                     string nameToSet = vars[2] as string;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("name", nameToSet);
                     break;
-
+                #endregion
+                #region SET PROFILE
                 case RequestType.SET_PROFILE:
                     JObject jo = vars[2] as JObject;
                     data = jo;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     break;
-
+                #endregion
+                #region POST ADDRESSBOOK
                 case RequestType.POST_ADDRESSBOOK:
                     Dictionary<string, List<ContactInfo>> contactListMap = vars[2] as Dictionary<string, List<ContactInfo>>;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
                     break;
-
+                #endregion
+                #region SOCIAL POST
+                case RequestType.SOCIAL_POST:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
+                #region SOCIAL DELETE
+                case RequestType.SOCIAL_DELETE:
+                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    break;
+                #endregion
+                #region UPDATE ADDRESSBOOK
                 case RequestType.UPDATE_ADDRESSBOOK:
                     Dictionary<string, List<ContactInfo>> contacts_to_update = vars[2] as Dictionary<string, List<ContactInfo>>;
                     JArray ids_json = vars[3] as JArray;
@@ -363,10 +398,13 @@ namespace windows_client.utils
                     data.Add("remove", ids_json);
                     data.Add("update", getJsonContactList(contacts_to_update));
                     break;
-
+                #endregion
+                #region DELETE ACCOUNT
                 case RequestType.DELETE_ACCOUNT:
                     finalCallbackFunction = vars[2] as postResponseFunction;
                     break;
+                #endregion
+                #region POST PROFILE ICON
                 case RequestType.POST_PROFILE_ICON:
                     byte[] imageBytes = (byte[])vars[2];
                     finalCallbackFunction = vars[3] as postResponseFunction;
@@ -374,14 +412,16 @@ namespace windows_client.utils
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
                     return;
-
+                #endregion
+                #region POST PUSH NOTIFICATION DATA
                 case RequestType.POST_PUSHNOTIFICATION_DATA:
                     string uri = (string)vars[2];
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data.Add("dev_token", uri);
                     data.Add("dev_type", "windows");
                     break;
-
+                #endregion
+                #region UPLOAD FILE
                 case RequestType.UPLOAD_FILE:
                     byte[] dataBytes = (byte[])vars[2];
                     postUploadPhotoFunction finalCallbackForUploadFile = vars[3] as postUploadPhotoFunction;
@@ -410,9 +450,11 @@ namespace windows_client.utils
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
                     return;
-
+                #endregion
+                #region DEFAULT
                 default:
                     break;
+                #endregion
             }
 
             using (StreamWriter sw = new StreamWriter(postStream))
@@ -526,6 +568,7 @@ namespace windows_client.utils
 
             return ms.ToArray();
         }
+
         public static byte[] Compress(string text)
         {
             // if (text.Length < 300)

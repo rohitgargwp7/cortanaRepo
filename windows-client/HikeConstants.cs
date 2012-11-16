@@ -189,6 +189,7 @@ namespace windows_client
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
+        public static string FB_LOGGED_IN = "FbLoggedIn";
 
         public static class Extras
         {
