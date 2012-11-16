@@ -27,14 +27,6 @@ namespace windows_client.Controls
             InitializeComponent();
             initializeBasedOnState(cm);
             //IsSms is false for group chat
-            if (cm.IsSms)
-            {
-                bubbleColor = UI_Utils.Instance.SmsBackground;
-            }
-            else
-            {
-                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
-            }
             switch (cm.MessageStatus)
             {
                 case ConvMessage.State.SENT_CONFIRMED:
@@ -90,14 +82,6 @@ namespace windows_client.Controls
             // Required to initialize variables
             InitializeComponent();
             initializeBasedOnState(cm);
-            if (!cm.IsSms)
-            {
-                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
-            }
-            else
-            {
-                bubbleColor = UI_Utils.Instance.SmsBackground;
-            }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
             if (thumbnailsBytes != null && thumbnailsBytes.Length > 0)
@@ -373,6 +357,20 @@ namespace windows_client.Controls
                 Grid.SetColumn(TimeStampBlock, 1);
                 wrapperGrid.Children.Add(TimeStampBlock);
             }
+
+            if (isNudge)
+            {
+                bubbleColor = UI_Utils.Instance.PhoneThemeColor;
+            }
+            else if (isSMS)
+            {
+                bubbleColor = UI_Utils.Instance.SmsBackground;
+            }
+            else
+            {
+                bubbleColor = UI_Utils.Instance.HikeMsgBackground;
+            }
+
 
         }
     }

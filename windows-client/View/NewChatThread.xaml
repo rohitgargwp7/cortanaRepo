@@ -172,7 +172,7 @@
                 </Grid>
             </StackPanel>
             
-            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="75" Background="#292929">
+            <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="100" Background="#292929">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -180,19 +180,19 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="25,0,0,0" Tap="sendImage_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_photo_icon.png" Height="26"/>
-                    <TextBlock Text="Send Image" FontSize="22" Foreground="#f6f6f6" Margin="15,0,0,0"></TextBlock>
+                <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,0,0" Tap="shareLocation_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="images\drop_pin_icon.png" Height="30" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Location" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
                 </StackPanel>
                 <Rectangle Width="1" Fill="#080808" Grid.Column="1"/>
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="25,0,0,0" Tap="sendAudio_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_audio_icon.png" Height="30"/>
-                    <TextBlock Text="Send Audio" FontSize="22" Foreground="#f6f6f6" Margin="15,0,0,0"></TextBlock>
+                <StackPanel Grid.Column="2" Orientation="Vertical" Margin="0,0,0,0" Tap="sendImage_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="images\menu_photo_icon.png" Height="26" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Image" FontSize="22" Foreground="#f6f6f6" HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
-                <Rectangle Width="3" Fill="#080808" Grid.Column="1"/>
-                <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="25,0,0,0" Tap="shareLocation_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image Source="images\menu_audio_icon.png" Height="30"/>
-                    <TextBlock Text="Location" FontSize="22" Foreground="#f6f6f6" Margin="15,0,0,0"></TextBlock>
+                <Rectangle Width="1" Fill="#080808" Grid.Column="3"/>
+                <StackPanel Grid.Column="4" Orientation="Vertical" Margin="0,0,0,0" Tap="sendAudio_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Source="images\menu_audio_icon.png" Height="30" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Audio" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
                 </StackPanel>
 
             </Grid>

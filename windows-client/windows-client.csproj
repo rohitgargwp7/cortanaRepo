@@ -327,6 +327,7 @@
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />

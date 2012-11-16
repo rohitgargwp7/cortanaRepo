@@ -141,8 +141,16 @@ namespace windows_client.Controls
             string messageString = cm.Message;
 
             Rectangle BubbleBg = new Rectangle();
-            BubbleBg.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
-            bubblePointer.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
+            if (!isNudge)
+            {
+                BubbleBg.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
+                bubblePointer.Fill = UI_Utils.Instance.ReceivedChatBubbleColor;
+            }
+            else
+            {
+                BubbleBg.Fill = UI_Utils.Instance.PhoneThemeColor;
+                bubblePointer.Fill = UI_Utils.Instance.PhoneThemeColor;
+            }
             Grid.SetRowSpan(BubbleBg, 2 + (isGroupChat ? 1 : 0));
             wrapperGrid.Children.Add(BubbleBg);
 
