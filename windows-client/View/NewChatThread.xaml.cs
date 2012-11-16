@@ -1015,6 +1015,11 @@ namespace windows_client.View
             }
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
                 AudioFileTransfer();
+            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
+            {
+                shareLocation();
+            }
+
         }
 
         private void ScrollToBottomFromUI()
@@ -2604,7 +2609,6 @@ namespace windows_client.View
             convMessage.FileAttachment.ContentType = "hikemap/location";
             convMessage.Message = "location";
             convMessage.MetaDataString = locationJSONString;
-
 
             SentChatBubble chatBubble = new SentChatBubble(convMessage, imageThumbnail);
             msgMap.Add(convMessage.MessageId, chatBubble);
