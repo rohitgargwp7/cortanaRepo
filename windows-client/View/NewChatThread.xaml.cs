@@ -891,6 +891,7 @@ namespace windows_client.View
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
                 });
+                NetworkManager.turnOffNetworkManager = false;
                 return;
             }
 
@@ -948,6 +949,7 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 ScrollToBottom();
                 scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                NetworkManager.turnOffNetworkManager = false;
             });
         }
 
