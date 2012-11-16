@@ -27,7 +27,7 @@ namespace windows_client.Mqtt
             {
                 if (qos > 0)
                 {
-                    MqttDBUtils.removeSentMessage(packet.MessageId);
+                    MqttDBUtils.removeSentMessage(packet.Timestamp);
                 }
                 if (packet.MessageId > 0) // represents ack for message that is recieved by server
                 {

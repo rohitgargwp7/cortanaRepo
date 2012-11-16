@@ -79,7 +79,13 @@ namespace windows_client.Model
         {
             if (obj == null)
                 return ParticipantInfoState.NO_INFO;
-            string type = (string)obj[HikeConstants.TYPE];
+            JToken typeToken = null;
+            string type = null;
+            if(obj.TryGetValue(HikeConstants.TYPE, out typeToken))
+                type = typeToken.ToString();
+            else
+                return ParticipantInfoState.NO_INFO;
+            type = (string)obj[HikeConstants.TYPE];
 
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
                 return ParticipantInfoState.PARTICIPANT_JOINED;
@@ -463,9 +469,23 @@ namespace windows_client.Model
                 singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
                 if (FileAttachment.Thumbnail != null)
                     singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                if (FileAttachment.ContentType.Contains("location"))
+                {
+                    JObject locationInfo = JObject.Parse(this.MetaDataString);
+                    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
+                    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
+                    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
+                    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
+                }
                 filesData.Add(singleFileInfo.ToObject<JToken>());
 
                 metadata[HikeConstants.FILES_DATA] = filesData;
+                data[HikeConstants.METADATA] = metadata;
+            }
+            else if (this.MetaDataString !=null && this.MetaDataString.Contains("poke"))
+            {
+                metadata = new JObject();
+                metadata["poke"] = true;
                 data[HikeConstants.METADATA] = metadata;
             }
 
@@ -717,8 +737,18 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName.ToString(), fileKey.ToString(), base64Decoded,
+                        this.FileAttachment = new Attachment(fileName==null?"":fileName.ToString(), fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                        if (contentType.ToString().Contains("location"))
+                        {
+                            JObject locationFile = new JObject();
+                            locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
+                            locationFile[HikeConstants.LONGITUDE] = fileObject[HikeConstants.LONGITUDE];
+                            locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
+                            locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
+                            this.MetaDataString = locationFile.ToString();
+
+                        }
                     }
                     else
                     {

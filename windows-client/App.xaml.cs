@@ -77,6 +77,7 @@ namespace windows_client
         private static Dictionary<string, GroupParticipant> groupsCache = null;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
+        private static PushHelper _pushHelper;
         private static object lockObj = new object();
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         PageState ps = PageState.WELCOME_SCREEN;
@@ -218,6 +219,21 @@ namespace windows_client
                 if (value != _analytics)
                 {
                     _analytics = value;
+                }
+            }
+        }
+
+        public static PushHelper PushHelperInstance
+        {
+            get
+            {
+                return _pushHelper;
+            }
+            set
+            {
+                if (value != _pushHelper)
+                {
+                    _pushHelper = value;
                 }
             }
         }
@@ -591,6 +607,14 @@ namespace windows_client
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Analytics : {0}", msec);
+            #endregion
+            #region PUSH HELPER
+            st.Reset();
+            st.Start();
+            App.PushHelperInstance = PushHelper.Instance;
+            st.Stop();
+            msec = st.ElapsedMilliseconds;
+            Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
             #endregion
             #region VIEW MODEL
 

@@ -25,8 +25,7 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            initializeBasedOnState(cm.HasAttachment, contentType, cm.Message, cm.IsSms);
+            initializeBasedOnState(cm);
             //IsSms is false for group chat
             if (cm.IsSms)
             {
@@ -90,7 +89,7 @@ namespace windows_client.Controls
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(true, cm.FileAttachment.ContentType, cm.Message, cm.IsSms);
+            initializeBasedOnState(cm);
             if (!cm.IsSms)
             {
                 bubbleColor = UI_Utils.Instance.HikeMsgBackground;
@@ -253,20 +252,28 @@ namespace windows_client.Controls
         private Image SDRImage;
 
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
+        private static Thickness nudgeMargin = new Thickness(12, 12, 12, 10);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 6, 0, 0);
         private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
 
-        private void initializeBasedOnState(bool hasAttachment, string contentType, string messageString, bool isSMS)
+        private void initializeBasedOnState(ConvMessage cm)
         {
+            bool hasAttachment = cm.HasAttachment;
+            string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
+            string messageString = cm.Message;
+            bool isSMS = cm.IsSms;
+            bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
+
+
             BubbleBg = new Rectangle();
             Grid.SetRowSpan(BubbleBg, 2);
             Grid.SetColumn(BubbleBg, 1);
             wrapperGrid.Children.Add(BubbleBg);
 
-            if (hasAttachment)
+            if (hasAttachment || isNudge)
             {
                 attachment = new Grid();
                 RowDefinition r1 = new RowDefinition();
@@ -286,41 +293,48 @@ namespace windows_client.Controls
                 MessageImage.Margin = imgMargin;
                 if (contentType.Contains("audio"))
                     this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentSend;
-
+                else if (isNudge)
+                {
+                    this.MessageImage.Source = UI_Utils.Instance.NudgeSent;
+                    this.MessageImage.Height = 24;
+                    this.MessageImage.Width = 31;
+                    this.MessageImage.Margin = nudgeMargin;
+                }
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
                 if (contentType.Contains("video") || contentType.Contains("audio"))
                 {
-
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;
                     PlayIcon.MaxHeight = 42;
                     PlayIcon.Source = UI_Utils.Instance.PlayIcon;
                     PlayIcon.HorizontalAlignment = HorizontalAlignment.Center;
                     PlayIcon.VerticalAlignment = VerticalAlignment.Center;
-
                     PlayIcon.Margin = imgMargin;
                     Grid.SetRow(PlayIcon, 0);
                     attachment.Children.Add(PlayIcon);
                 }
-                uploadProgress = new ProgressBar();
-                uploadProgress.Height = 10;
-                if (isSMS)
+                if (!isNudge)
                 {
-                    uploadProgress.Background = UI_Utils.Instance.SmsBackground;
+                    uploadProgress = new ProgressBar();
+                    uploadProgress.Height = 10;
+                    if (isSMS)
+                    {
+                        uploadProgress.Background = UI_Utils.Instance.SmsBackground;
+                    }
+                    else
+                    {
+                        uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
+                    }
+                    uploadProgress.Opacity = 0;
+                    uploadProgress.Foreground = progressColor;
+                    uploadProgress.Value = 0;
+                    uploadProgress.Minimum = 0;
+                    uploadProgress.MaxHeight = 100;
+                    Grid.SetRow(uploadProgress, 1);
+                    attachment.Children.Add(uploadProgress);
                 }
-                else
-                {
-                    uploadProgress.Background = UI_Utils.Instance.HikeMsgBackground;
-                }
-                uploadProgress.Opacity = 0;
-                uploadProgress.Foreground = progressColor;
-                uploadProgress.Value = 0;
-                uploadProgress.Minimum = 0;
-                uploadProgress.MaxHeight = 100;
-                Grid.SetRow(uploadProgress, 1);
-                attachment.Children.Add(uploadProgress);
             }
             else
             {
@@ -340,25 +354,25 @@ namespace windows_client.Controls
             Grid.SetRowSpan(SDRImage, 2);
             Grid.SetColumn(SDRImage, 0);
             wrapperGrid.Children.Add(SDRImage);
-
-
-            TimeStampBlock = new TextBlock();
-            TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
-            TimeStampBlock.FontSize = 18;
-            if (isSMS)
+            if (!isNudge)
             {
-                TimeStampBlock.Foreground = UI_Utils.Instance.SMSSentChatBubbleTimestamp;
+                TimeStampBlock = new TextBlock();
+                TimeStampBlock.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+                TimeStampBlock.FontSize = 18;
+                if (isSMS)
+                {
+                    TimeStampBlock.Foreground = UI_Utils.Instance.SMSSentChatBubbleTimestamp;
+                }
+                else
+                {
+                    TimeStampBlock.Foreground = UI_Utils.Instance.HikeSentChatBubbleTimestamp;
+                }
+                TimeStampBlock.Text = TimeStamp;
+                TimeStampBlock.Margin = timeStampBlockMargin;
+                Grid.SetRow(TimeStampBlock, 1);
+                Grid.SetColumn(TimeStampBlock, 1);
+                wrapperGrid.Children.Add(TimeStampBlock);
             }
-            else
-            {
-                TimeStampBlock.Foreground = UI_Utils.Instance.HikeSentChatBubbleTimestamp;
-            }
-
-            TimeStampBlock.Text = TimeStamp;
-            TimeStampBlock.Margin = timeStampBlockMargin;
-            Grid.SetRow(TimeStampBlock, 1);
-            Grid.SetColumn(TimeStampBlock, 1);
-            wrapperGrid.Children.Add(TimeStampBlock);
 
         }
     }

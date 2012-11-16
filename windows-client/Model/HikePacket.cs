@@ -4,29 +4,9 @@ using System.ComponentModel;
 namespace windows_client.Model
 {
     [Table(Name = "mqtt_messages")]
-    public class HikePacket : INotifyPropertyChanged, INotifyPropertyChanging
+    public class HikePacket
     {
-        private long _mqttId;
-        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
-        public long MqttId
-        {
-            get
-            {
-                return _mqttId;
-            }
-            set
-            {
-                if (_mqttId != value)
-                {
-                    NotifyPropertyChanging("MqttId");
-                    _mqttId = value;
-                    NotifyPropertyChanged("MqttId");
-                }
-            }
-        }
-
         private long _messageId;
-        [Column]
         public long MessageId
         {
             get
@@ -37,12 +17,28 @@ namespace windows_client.Model
             {
                 if (_messageId != value)
                 {
-                    NotifyPropertyChanging("MessageId");
                     _messageId = value;
-                    NotifyPropertyChanged("MessageId");
                 }
             }
         }
+
+        private long _timestamp;
+        [Column(IsPrimaryKey = true)]
+        public long Timestamp
+        {
+            get
+            {
+                return _timestamp;
+            }
+            set
+            {
+                if (_timestamp != value)
+                {
+                    _timestamp = value;
+                }
+            }
+        }
+
 
         private byte[] _message;
         [Column]
@@ -56,72 +52,50 @@ namespace windows_client.Model
             {
                 if (_message != value)
                 {
-                    NotifyPropertyChanging("Message");
                     _message = value;
-                    NotifyPropertyChanged("Message");
-                }
-            }
-        }
-
-        private long _timestamp;
-
-        [Column]
-        public long Timestamp
-        {
-            get
-            {
-                return _timestamp;
-            }
-            set
-            {
-                if (_timestamp != value)
-                {
-                    NotifyPropertyChanging("Timestamp");
-                    _timestamp = value;
-                    NotifyPropertyChanged("Timestamp");
                 }
             }
         }
 
         public HikePacket(long messageId, byte[] message, long timestamp)
         {
-            this._messageId = messageId;
-            this._message = message;
-            this._timestamp = timestamp;
+            this.MessageId = messageId;
+            this.Timestamp = timestamp;
+            this.Message = message;
         }
 
         public HikePacket()
         { 
         }
 
-        #region INotifyPropertyChanged Members
+        //#region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
-        // Used to notify that a property changed
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        //// Used to notify that a property changed
+        //private void NotifyPropertyChanged(string propertyName)
+        //{
+        //    if (PropertyChanged != null)
+        //    {
+        //        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region INotifyPropertyChanging Members
+        //#region INotifyPropertyChanging Members
 
-        public event PropertyChangingEventHandler PropertyChanging;
+        //public event PropertyChangingEventHandler PropertyChanging;
 
-        // Used to notify that a property is about to change
-        private void NotifyPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-            {
-                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-            }
-        }
-        #endregion
+        //// Used to notify that a property is about to change
+        //private void NotifyPropertyChanging(string propertyName)
+        //{
+        //    if (PropertyChanging != null)
+        //    {
+        //        PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+        //    }
+        //}
+        //#endregion
 
 
 

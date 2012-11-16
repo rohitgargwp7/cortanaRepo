@@ -241,21 +241,21 @@ namespace windows_client.DbUtils
                     CompiledQuery.Compile<HikeMqttPersistenceDb, IQueryable<HikePacket>>
                     ((HikeMqttPersistenceDb hdc) =>
                         from o in hdc.mqttMessages
-                        orderby o.MqttId
+                        orderby o.Timestamp
                         select o);
                 return q;
             }
         }
 
-        public static Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> GetMqttMsgForMsgId
+        public static Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> GetMqttMsgForTimestamp
         {
             get
             {
                 Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> q =
                    CompiledQuery.Compile<HikeMqttPersistenceDb, long, IQueryable<HikePacket>>
-                   ((HikeMqttPersistenceDb hdc, long id) =>
+                   ((HikeMqttPersistenceDb hdc, long ts) =>
                        from o in hdc.mqttMessages
-                       where o.MessageId == id
+                       where o.Timestamp == ts
                        select o);
                 return q;
             }

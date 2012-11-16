@@ -84,7 +84,6 @@ namespace windows_client.Mqtt
 
         private IScheduler scheduler = Scheduler.NewThread;
 
-
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
         private volatile bool disconnectCalled = false;
@@ -401,14 +400,14 @@ namespace windows_client.Mqtt
             string objType = data.ToString();
             json.TryGetValue("d", out data);
             JObject dataObj;
-            int msgId;
+            long msgId;
 
             if (objType == NetworkManager.MESSAGE || objType == NetworkManager.INVITE)
             {
                 dataObj = JObject.FromObject(data);
                 JToken messageIdToken;
                 dataObj.TryGetValue("i", out messageIdToken);
-                msgId = Convert.ToInt32(messageIdToken.ToString());
+                msgId = Convert.ToInt64(messageIdToken.ToString());
             }
             else
             {
