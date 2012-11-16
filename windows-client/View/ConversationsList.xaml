@@ -148,6 +148,81 @@
                     </StackPanel>
                 </Grid>
             </controls:PivotItem>
+            <controls:PivotItem Header="favourites">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="Your favourites" Foreground="LightGray"/>
+
+                            <toolkit:LongListSelector x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" IsFlatList="False">
+                                <toolkit:LongListSelector.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Source="{Binding avatar}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
+                                            <TextBlock TextWrapping="Wrap" Grid.Column="1" Grid.Row="0">
+                                                <TextBlock.Inlines>
+                                                    <Run FontWeight="Bold" Text="{Binding userName}"/>
+                                                    <Run FontWeight="Light" Text=" added you as favourite. Would you like to do the same?"/>
+                                                </TextBlock.Inlines>
+                                            </TextBlock>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                                                <Button Background="Blue" Content="Yes"></Button>
+                                                <Button Background="LightGray" Content="Not Now"></Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </toolkit:LongListSelector.ItemTemplate>
+                            </toolkit:LongListSelector>
+
+                            <toolkit:LongListSelector x:Name="favourites" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" IsFlatList="False">
+                                <toolkit:LongListSelector.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding}" Height="40"></Image>
+                                            <TextBlock Text="{Binding}"></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkit:LongListSelector.ItemTemplate>
+                            </toolkit:LongListSelector>
+
+                            <Rectangle Height="1" Fill="#080808" Grid.Row="3"/>
+                            
+                            <TextBlock Text="Friends on hike" Grid.Row="4" Foreground="LightGray"></TextBlock>
+                            <toolkit:LongListSelector x:Name="hikeFriends" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="5" IsFlatList="False">
+                                <toolkit:LongListSelector.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding}" Height="40"></Image>
+                                            <TextBlock Text="{Binding}"></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkit:LongListSelector.ItemTemplate>
+                            </toolkit:LongListSelector>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </controls:PivotItem>
         </controls:Pivot>
     </Grid>
 
