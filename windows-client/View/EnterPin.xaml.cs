@@ -163,7 +163,7 @@ namespace windows_client
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
             
-            timer.Opacity = 1;
+            timer.Visibility = Visibility.Visible;
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromSeconds(1);
             progressTimer.Tick += new EventHandler(enableCallMeOption);
