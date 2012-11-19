@@ -177,7 +177,6 @@ namespace windows_client
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
 
-
         public static string DND_USER = "{0} is on DND. Waiting for {0} to reply.";
         public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
         public static string USER_OPTED_IN_MSG = " just opted in to hike!";
@@ -197,6 +196,7 @@ namespace windows_client
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
+        public static string FB_LOGGED_IN = "FbLoggedIn";
 
         public static class Extras
         {

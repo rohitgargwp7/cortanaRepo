@@ -549,6 +549,9 @@ namespace windows_client
 
         private static void instantiateClasses()
         {
+            PageState ps = PageState.WELCOME_SCREEN;
+            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
+            
             #region GROUP CACHE
             if (!App.appSettings.Contains(App.GROUPS_CACHE))
             {
@@ -588,6 +591,11 @@ namespace windows_client
             st.Start();
             if (App.MqttManagerInstance == null)
                 App.MqttManagerInstance = new HikeMqttManager();
+            if (ps == PageState.CONVLIST_SCREEN)
+            {
+                NetworkManager.turnOffNetworkManager = true;
+                App.MqttManagerInstance.connect();                
+            }
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate MqttManager : {0}", msec);
@@ -669,8 +677,6 @@ namespace windows_client
             IS_VIEWMODEL_LOADED = true;
             #endregion
             #region SMILEY
-            PageState ps = PageState.WELCOME_SCREEN;
-            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
             if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
             {
                 SmileyParser.Instance.initializeSmileyParser();

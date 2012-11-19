@@ -20,6 +20,7 @@ namespace windows_client.View
 {
     public partial class EditProfile : PhoneApplicationPage
     {
+        bool isClicked = false;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
         List<string> genderList = new List<string>(3);
@@ -76,6 +77,9 @@ namespace windows_client.View
 
         private void doneBtn_Click(object sender, EventArgs e)
         {
+            if (isClicked)
+                return;
+            isClicked = true;
             shouldSendProfile = false;
             nameErrorTxt.Opacity = 0;
             emailErrorTxt.Opacity = 0;
@@ -83,6 +87,7 @@ namespace windows_client.View
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                isClicked = false;
                 return;
             }
             this.Focus(); // this will hide keyboard
@@ -94,7 +99,8 @@ namespace windows_client.View
             {
                 nameErrorTxt.Opacity = 1;
                 //progressBar.IsEnabled = false;
-                shellProgress.IsVisible = false; ;
+                shellProgress.IsVisible = false;
+                isClicked = false;
                 return;
             }
 
@@ -111,6 +117,7 @@ namespace windows_client.View
                     emailErrorTxt.Opacity = 1;
                     //progressBar.IsEnabled = false;
                     shellProgress.IsVisible = false;
+                    isClicked = false;
                     return;
                 }
             }
@@ -140,6 +147,7 @@ namespace windows_client.View
                 }
                 //progressBar.IsEnabled = false;
                 shellProgress.IsVisible = false;
+                isClicked = false;
             }
         }
 
@@ -180,7 +188,11 @@ namespace windows_client.View
                         MakeFieldsReadOnly(false);
                         //progressBar.IsEnabled = false;
                         shellProgress.IsVisible = false;
-                        MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                        try
+                        {
+                            MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                        }
+                        catch { }
                     }
                 }
                 else
@@ -188,8 +200,13 @@ namespace windows_client.View
                     MakeFieldsReadOnly(false);
                     //progressBar.IsEnabled = false;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Unable to change name. Try again.", "Something went wrong", MessageBoxButton.OK);
+                    try
+                    {
+                        MessageBox.Show("Unable to change name. Try again.", "Something went wrong", MessageBoxButton.OK);
+                    }
+                    catch { }
                 }
+                isClicked = false;
             });
         }
 
@@ -215,19 +232,28 @@ namespace windows_client.View
                     //progressBar.IsEnabled = false;
                     //progressBar.Opacity = 0;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                    try
+                    {
+                        MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                    }
+                    catch { }
                 }
                 else // failure from server
                 {
                     MakeFieldsReadOnly(false);
-                    if(App.appSettings.Contains(App.EMAIL))
+                    if (App.appSettings.Contains(App.EMAIL))
                         email.Text = (string)App.appSettings[App.EMAIL];
                     //progressBar.IsEnabled = false;
                     //progressBar.Opacity = 0;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Unable to change email or gender. Try again.", "Something went wrong", MessageBoxButton.OK);
-                    
+                    try
+                    {
+                        MessageBox.Show("Unable to change email or gender. Try again.", "Something went wrong", MessageBoxButton.OK);
+                    }
+                    catch { }
+
                 }
+                isClicked = false;
             });
         }
 
@@ -267,7 +293,7 @@ namespace windows_client.View
 
         private void textbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            ContentPanel.Margin = new Thickness(15, 0, 15,  0);
+            ContentPanel.Margin = new Thickness(15, 0, 15, 0);
 
         }
 

@@ -276,12 +276,14 @@ namespace windows_client.utils
 
         }
 
-        /***
-         * returns 
-         * -1 if v1 < v2
-         * 1 is v1>v2
-         * 0 if v1=v2
-         * */
+        /// <summary>
+        /// -1 if v1 < v2
+        /// 0 if v1=v2
+        /// 1 is v1>v2
+        /// </summary>
+        /// <param name="version1"></param>
+        /// <param name="version2"></param>
+        /// <returns></returns>
         public static int compareVersion(string version1, string version2)
         {
             string[] version1_parts = version1.Split('.');
