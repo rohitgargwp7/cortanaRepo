@@ -17,7 +17,8 @@ namespace windows_client
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
         private DispatcherTimer progressTimer;
-        private int timerValue = 60; 
+        private int timerValue = 60;
+        private readonly string CallMeTimer = "CallMeTimer";
 
         public EnterPin()
         {
@@ -162,6 +163,7 @@ namespace windows_client
             base.OnNavigatedFrom(e);
             progressTimer.Stop();
             progressTimer = null;
+            PhoneApplicationService.Current.State[CallMeTimer] = timerValue;
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -175,6 +177,11 @@ namespace windows_client
             progressTimer.Interval = TimeSpan.FromSeconds(1);
             progressTimer.Tick += new EventHandler(enableCallMeOption);
             progressTimer.Start();
+            if (PhoneApplicationService.Current.State.ContainsKey(CallMeTimer))
+            {
+                timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
+                PhoneApplicationService.Current.State.Remove(CallMeTimer);
+            }
            
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
