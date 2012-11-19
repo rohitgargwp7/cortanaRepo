@@ -108,6 +108,12 @@ namespace windows_client.Controls
             this.MessageState = messageState;
         }
 
+        public ConversationBox(ConversationListObject c)
+        {
+            InitializeComponent();
+            update(c);
+        }
+
         public void update(ConversationListObject c)
         {
             this.AvatarImage = c.AvatarImage;
