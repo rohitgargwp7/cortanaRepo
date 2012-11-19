@@ -238,17 +238,17 @@ namespace windows_client
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (timerValue == 0)
-                {
-                    timer.Visibility = Visibility.Collapsed;
-                    callMeButton.IsEnabled = true;
-                    callMeButton.Focus();   
-                    return;
-                }
                 if (timerValue > 0)
                 {
                     timerValue--;
                     timer.Text = "0:" + timerValue.ToString("00");
+                }
+                if (timerValue == 0)
+                {
+                    timer.Visibility = Visibility.Collapsed;
+                    callMeButton.IsEnabled = true;
+                    callMeButton.Focus();
+                    return;
                 }
             });
         }
