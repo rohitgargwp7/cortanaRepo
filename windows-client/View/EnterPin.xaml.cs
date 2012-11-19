@@ -181,8 +181,13 @@ namespace windows_client
             {
                 timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
                 PhoneApplicationService.Current.State.Remove(CallMeTimer);
+                if(timerValue < 60)
+                    timer.Text = "0:" + timerValue.ToString("00");
             }
-           
+
+            if (timerValue == 0)
+                timer.Visibility = Visibility.Collapsed;
+
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
