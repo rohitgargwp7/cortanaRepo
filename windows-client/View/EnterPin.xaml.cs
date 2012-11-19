@@ -157,6 +157,13 @@ namespace windows_client
                 nextIconButton.IsEnabled = false;
         }
 
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            progressTimer.Stop();
+            progressTimer = null;
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -243,7 +250,7 @@ namespace windows_client
                     timerValue--;
                     timer.Text = "0:" + timerValue.ToString("00");
                 }
-                if (timerValue == 0)
+                if (timerValue == 0 && callMeButton.IsEnabled == false)
                 {
                     timer.Visibility = Visibility.Collapsed;
                     callMeButton.IsEnabled = true;
