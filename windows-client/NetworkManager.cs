@@ -153,16 +153,40 @@ namespace windows_client
             #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, msisdn);
+                    this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
             #region END_TYPING
             else if (END_TYPING == type) /* End Typing event received */
             {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, msisdn);
+                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
