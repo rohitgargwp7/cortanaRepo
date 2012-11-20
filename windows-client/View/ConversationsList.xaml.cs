@@ -21,6 +21,7 @@ using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
+using windows_client.Misc;
 
 namespace windows_client.View
 {
@@ -469,16 +470,14 @@ namespace windows_client.View
             {
                 if (Utils.isGroupConversation(convMsisdn))
                 {
-                    Utils.GroupCache.Clear();
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                     JObject jObj = new JObject();
                     jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
                     jObj[HikeConstants.TO] = convMsisdn;
                     App.MqttManagerInstance.mqttPublishToServer(jObj);
                 }
             }
-            Utils.GroupCache.Clear();
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            GroupManager.Instance.GroupCache.Clear();
+            GroupManager.Instance.DeleteAllGroups();
             GroupTableUtils.deleteAllGroups();
         }
 

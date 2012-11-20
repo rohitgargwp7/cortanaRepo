@@ -13,6 +13,7 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
 using System.Windows.Controls;
+using windows_client.Misc;
 
 namespace windows_client.View
 {
@@ -106,7 +107,7 @@ namespace windows_client.View
                 return;
             this.groupNameTxtBox.Text = groupName;
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
-            List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(Utils.GroupCache[groupId], hikeUsersList);
+            List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
             GroupParticipant self = new GroupParticipant(groupId, (string)App.appSettings[App.ACCOUNT_NAME], App.MSISDN, true);
             hikeUsersList.Add(self);
             hikeUsersList.Sort();
@@ -217,9 +218,9 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     groupMembersOC.Clear();
-                    for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
+                    for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
                     {
-                        GroupParticipant gp = Utils.GroupCache[groupId][i];
+                        GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
                         if (!gp.HasLeft)
                             groupMembersOC.Add(gp);
                         if (!gp.IsOnHike && !EnableInviteBtn)
@@ -242,7 +243,7 @@ namespace windows_client.View
                 if (eventGroupId != groupId)
                     return;
                 string leaveMsisdn = cm.GroupParticipant;
-                GroupParticipant gp = Utils.getGroupParticipant(null, leaveMsisdn, eventGroupId);
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, leaveMsisdn, eventGroupId);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     for (int i = 0; i < groupMembersOC.Count; i++)
@@ -431,9 +432,9 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SMS_PARTICIPANTS);
             //TODO start this loop from end, after sorting is done on onHike status
-            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
+            for (int i = 0; i < GroupManager.Instance.GroupCache[groupId].Count; i++)
             {
-                GroupParticipant gp = Utils.GroupCache[groupId][i];
+                GroupParticipant gp = GroupManager.Instance.GroupCache[groupId][i];
                 if (!gp.IsOnHike)
                 {
                     long time = utils.TimeUtils.getCurrentTimeStamp();
@@ -449,7 +450,7 @@ namespace windows_client.View
 
         private void AddParticipants_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = Utils.GetActiveGroupParticiants(groupId);
+            PhoneApplicationService.Current.State[HikeConstants.EXISTING_GROUP_MEMBERS] = GroupManager.Instance.GetActiveGroupParticiants(groupId);
             PhoneApplicationService.Current.State["Group_GroupId"] = groupId;
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }

@@ -17,6 +17,7 @@ using Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
+using windows_client.Misc;
 
 
 namespace windows_client.View
@@ -282,7 +283,7 @@ namespace windows_client.View
                 smsUserCount = 0;
                 for (int i = 0; i < activeExistingGroupMembers.Count; i++)
                 {
-                    if (!Utils.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
+                    if (!GroupManager.Instance.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
                     {
                         smsUserCount++;
                     }
