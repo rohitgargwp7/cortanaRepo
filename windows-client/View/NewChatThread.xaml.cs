@@ -2485,7 +2485,17 @@ namespace windows_client.View
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
             {
-                if (mContactNumber == (obj as string))
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+                if (mContactNumber == typingNotSenderOrSendee)
                 {
                     ShowTypingNotification();
                 }
@@ -2497,7 +2507,17 @@ namespace windows_client.View
 
             else if (HikePubSub.END_TYPING_CONVERSATION == type)
             {
-                if (mContactNumber == (obj as string))
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+                if (mContactNumber == typingNotSenderOrSendee)
                 {
                     HideTypingNotification();
                 }
