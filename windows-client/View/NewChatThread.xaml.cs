@@ -2797,19 +2797,22 @@ namespace windows_client.View
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (mUserIsBlocked)
-                return;
+            if (!isGroupChat)
+            {
+                if (mUserIsBlocked)
+                    return;
 
-            emoticonPanel.Visibility = Visibility.Collapsed;
+                emoticonPanel.Visibility = Visibility.Collapsed;
 
-            if ((!isOnHike && mCredits <= 0))
-                return;
-            ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = !isOnHike;
-            convMessage.MessageId = TempMessageId;
-            convMessage.HasAttachment = false;
-            convMessage.MetaDataString = "{poke:1}";
-            sendMsg(convMessage, false);
+                if ((!isOnHike && mCredits <= 0))
+                    return;
+                ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.MessageId = TempMessageId;
+                convMessage.HasAttachment = false;
+                convMessage.MetaDataString = "{poke:1}";
+                sendMsg(convMessage, false);
+            }
         }
     }
 }
