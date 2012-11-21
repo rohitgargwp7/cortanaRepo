@@ -42,6 +42,13 @@ namespace windows_client.View
             else
                 this.vibrate.Content = "Off";
 
+            bool showFreeSMS = true;
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            this.showFreeSMSToggle.IsChecked = showFreeSMS;
+            if (showFreeSMS)
+                this.showFreeSMSToggle.Content = "On";
+            else
+                this.showFreeSMSToggle.Content = "Off";
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
@@ -69,6 +76,18 @@ namespace windows_client.View
         {
             this.vibrate.Content = "Off";
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
+        }
+
+        private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.showFreeSMSToggle.Content = "On";
+            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+        }
+
+        private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.showFreeSMSToggle.Content = "Off";
+            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
         }
     }
 }
