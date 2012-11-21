@@ -13,6 +13,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
@@ -34,6 +35,11 @@ namespace windows_client.View
                 socialFb.Text = "FB (connected)";
             else
                 socialFb.Text = "FB (not connected)";
+
+            if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
+                socialTw.Text = "TW (connected)";
+            else
+                socialTw.Text = "TW (not connected)";
         }
 
         private void Social_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -91,9 +97,9 @@ namespace windows_client.View
 
         private void SocialFb_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/View/FacebookPage.xaml", UriKind.Relative));
+            PhoneApplicationService.Current.State["Social_Request"] = false;
+            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
         }
-
 
         public static void SocialPostFB(JObject obj)
         {
@@ -116,5 +122,34 @@ namespace windows_client.View
                 });
             }
         }
+
+        private void SocialTw_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State["Social_Request"] = true;
+            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+        }
+
+        public static void SocialPostTW(JObject obj)
+        {
+            if (obj != null && "ok" == (string)obj["stat"])
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show("Successfully posted to twitter.", "Twitter Post", MessageBoxButton.OK);
+                });
+            }
+        }
+
+        public static void SocialDeleteTW(JObject obj)
+        {
+            if (obj != null && "ok" == (string)obj["stat"])
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show("Successfully Logged out.", "Twitter Logout", MessageBoxButton.OK);
+                });
+            }
+        }
+
     }
 }
