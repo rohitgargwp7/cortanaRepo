@@ -38,7 +38,7 @@
 
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480">
+        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480" DoubleTap="MessageList_DoubleTap">
             <StackPanel Orientation="Vertical" Margin="24,0,20,0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                         <Image Name="userImage" Height="50"></Image>

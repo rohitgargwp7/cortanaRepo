@@ -36,47 +36,44 @@ namespace windows_client.View
         {
             int creditsRemaining = 0;
             App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
+
+            int max = 100;
             if (App.appSettings.Contains(HikeConstants.TOTAL_CREDITS_PER_MONTH))
             {
-                int max = 0;
                 try
                 {
                     max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
                 }
                 catch { }
-                MaxCredits.Text = Convert.ToString(max > 0 ? max : 0);
-                if (max > 0)
-                {
-                    maxCreditCount.Opacity = 1;
-                }
-                else
-                {
-                    maxCreditCount.Opacity = 0;
-                }
+
             }
+            creditsRemainingBar.Width = (creditsRemaining * 435)/max;
+            maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
+            maxCreditsTxtBlck.Text = max.ToString() + "+";
             TextBlock t3 = null;
             Rectangle r3 = null;
-            if (creditsRemaining > 999)
-            {
-                ColumnDefinition c4 = new ColumnDefinition();
-                c4.Width = GridLength.Auto;
-                SMSCounterGrid.ColumnDefinitions.Add(c4);
+            //if (creditsRemaining > 999)
+            //{
+            //    ColumnDefinition c4 = new ColumnDefinition();
+            //    c4.Width = GridLength.Auto;
+            //    SMSCounterGrid.ColumnDefinitions.Add(c4);
 
-                r3 = new Rectangle();
-                r3.Fill = rectangleColor;
-                r3.Margin = box4Margin;
-                r3.Width = 47;
-                r3.Height = 76;
-                Grid.SetColumn(r3, 3);
-                SMSCounterGrid.Children.Add(r3);
+            //    r3 = new Rectangle();
+            //    r3.Fill = rectangleColor;
+            //    r3.Margin = box4Margin;
+            //    r3.Width = 47;
+            //    r3.Height = 76;
+            //    Grid.SetColumn(r3, 3);
+            //    SMSCounterGrid.Children.Add(r3);
 
-                t3 = new TextBlock();
-                t3.FontSize = 45;
-                t3.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-                t3.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                Grid.SetColumn(t3, 3);
-                SMSCounterGrid.Children.Add(t3);
-            }
+            //    t3 = new TextBlock();
+            //    t3.FontSize = 45;
+            //    t3.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            //    t3.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            //    Grid.SetColumn(t3, 3);
+            //    SMSCounterGrid.Children.Add(t3);
+            //}
 
             creditsRemaining %= 10000;
             string strCreditsWithZeroes;
@@ -85,50 +82,38 @@ namespace windows_client.View
             else
                 strCreditsWithZeroes = creditsRemaining.ToString("000");
 
-            t0.Text = strCreditsWithZeroes[0].ToString();
-            t1.Text = strCreditsWithZeroes[1].ToString();
-            t2.Text = strCreditsWithZeroes[2].ToString();
+            //t0.Text = strCreditsWithZeroes[0].ToString();
+            //t1.Text = strCreditsWithZeroes[1].ToString();
+            //t2.Text = strCreditsWithZeroes[2].ToString();
             if (t3 != null)
                 t3.Text = strCreditsWithZeroes[3].ToString();
 
             if (Utils.isDarkTheme())
             {
-                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
-                unlimitedTxtBlck.Foreground = t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
-                unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
-                topUpper.Fill = UI_Utils.Instance.Black;
-                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0x37, 0x37, 0x37));
+                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
+                facebookBtn.Background = twitterBtn.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
+                //t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
+                //r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
                 bottomLine.Fill = UI_Utils.Instance.Black;
-                forEveryFriendTxtBlck.Foreground = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
             }
             else
             {
-                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xf6, 0xf6, 0xf6));
-                unlimitedTxtBlck.Foreground = t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.White;
-                unlimitedRectangle.Fill = r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
-                topUpper.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
-                topLower.Fill = new SolidColorBrush(Color.FromArgb(255, 0xee, 0xee, 0xee));
+                upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xfa, 0xfa, 0xfa));
+                facebookBtn.Background = twitterBtn.Background = new SolidColorBrush(Color.FromArgb(255, 0xf1, 0xf1, 0xf1));
+                //t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.White;
+                //r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
                 bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
-                forEveryFriendTxtBlck.Foreground = new SolidColorBrush(Color.FromArgb(255, 0x6e, 0x6e, 0x6e));
             }
-            if (t3 != null)
-                t3.Foreground = t0.Foreground;
-            if (r3 != null)
-                r3.Fill = r0.Fill;
+            //if (t3 != null)
+            //    t3.Foreground = t0.Foreground;
+            //if (r3 != null)
+            //    r3.Fill = r0.Fill;
 
 
         }
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("FREE SMS SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
-            }
         }
 
         public void onEventReceived(string type, object obj)
@@ -140,16 +125,28 @@ namespace windows_client.View
                     string credits = (string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH];
                     int creditCount = -1;
                     int.TryParse(credits, out creditCount);
-                    if (creditCount > 0)
-                    {
-                        MaxCredits.Text = credits;
-                        maxCreditCount.Opacity = 1;
-                    }
-                    else
-                    {
-                        maxCreditCount.Opacity = 0;
-                    }
+                    //if (creditCount > 0)
+                    //{
+                    //    MaxCredits.Text = credits;
+                    //    maxCreditCount.Opacity = 1;
+                    //}
+                    //else
+                    //{
+                    //    maxCreditCount.Opacity = 0;
+                    //}
                 });
+            }
+        }
+
+        private void InviteBtn_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            try
+            {
+                NavigationService.Navigate(new Uri("/View/InviteUsers.xaml", UriKind.Relative));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("FREE SMS SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
             }
         }
     }
