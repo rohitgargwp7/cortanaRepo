@@ -113,7 +113,6 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
-
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
