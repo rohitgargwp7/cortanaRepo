@@ -119,7 +119,7 @@
                     </Grid>
 
                     <StackPanel Margin="0, 15, 0,10" Orientation="Vertical" Grid.Row="1">
-                        <StackPanel  Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,15,0,5">
+                        <StackPanel x:Name="freeSMSPanel" Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,15,0,5">
                             <Image Name ="freeSmsImage" VerticalAlignment="Top" Margin="0,10,0,0" Source="images\free_sms.png" Height="35">
                             </Image>
                             <StackPanel Orientation="Vertical">
