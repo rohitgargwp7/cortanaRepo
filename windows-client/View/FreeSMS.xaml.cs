@@ -48,8 +48,8 @@ namespace windows_client.View
                 catch { }
 
             }
-            creditsRemainingBar.Width = (creditsRemaining * 430)/max;
-            maxCreditsBar.Width = 430 - creditsRemainingBar.Width;
+            creditsRemainingBar.Width = (creditsRemaining * 435)/max;
+            maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
             maxCreditsTxtBlck.Text = max.ToString() + "+";
             TextBlock t3 = null;
             Rectangle r3 = null;
