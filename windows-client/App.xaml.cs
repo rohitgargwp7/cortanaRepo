@@ -32,11 +32,7 @@ namespace windows_client
         public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
-<<<<<<< HEAD
         public static readonly string SMS_SETTING = "smscredits";
-=======
-        public static readonly string SMS_SETTING = "smscredits";
->>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
         public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
