@@ -17,6 +17,7 @@ using Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
+using windows_client.Misc;
 
 
 namespace windows_client.View
@@ -282,7 +283,7 @@ namespace windows_client.View
                 smsUserCount = 0;
                 for (int i = 0; i < activeExistingGroupMembers.Count; i++)
                 {
-                    if (!Utils.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
+                    if (!GroupManager.Instance.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
                     {
                         smsUserCount++;
                     }
@@ -410,7 +411,7 @@ namespace windows_client.View
                 if (gl[26].Items.Count > 0 && gl[26].Items[0].Msisdn != null)
                 {
                     gl[26].Items[0].Name = charsEntered;
-                    if (charsEntered.Length >= 10 && charsEntered.Length <= 15)
+                    if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
                         gl[26].Items[0].Msisdn = TAP_MSG;
                     }
@@ -531,15 +532,15 @@ namespace windows_client.View
 
             if (charsEntered.StartsWith("+"))
             {
-                if (charsEntered.Length < 9 || charsEntered.Length > 15)
+                if (charsEntered.Length < 2 || charsEntered.Length > 15)
                     return false;
             }
             else
             {
-                if (charsEntered.Length < 8 || charsEntered.Length > 15)
+                if (charsEntered.Length < 1 || charsEntered.Length > 15)
                     return false;
             }
-            return true; ;
+            return true;
         }
 
         #region GROUP CHAT RELATED

@@ -21,6 +21,7 @@ using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
+using windows_client.Misc;
 
 namespace windows_client.View
 {
@@ -38,7 +39,12 @@ namespace windows_client.View
         bool isProfilePicTapped = false;
         byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
+<<<<<<< HEAD
         private bool firstLoad = true;
+=======
+        private bool firstLoad = true;
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+        private bool showFreeSMS = true;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private PhotoChooserTask photoChooserTask;
@@ -102,7 +108,30 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
+<<<<<<< HEAD
             }
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            showFreeSMS = true;
+            if (showFreeSMS)
+            {
+                freeSMSPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                freeSMSPanel.Visibility = Visibility.Collapsed;
+            }
+=======
+            }
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            if (showFreeSMS)
+            {
+                freeSMSPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                freeSMSPanel.Visibility = Visibility.Collapsed;
+            }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -469,16 +498,14 @@ namespace windows_client.View
             {
                 if (Utils.isGroupConversation(convMsisdn))
                 {
-                    Utils.GroupCache.Clear();
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                     JObject jObj = new JObject();
                     jObj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_LEAVE;
                     jObj[HikeConstants.TO] = convMsisdn;
                     App.MqttManagerInstance.mqttPublishToServer(jObj);
                 }
             }
-            Utils.GroupCache.Clear();
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            GroupManager.Instance.GroupCache.Clear();
+            GroupManager.Instance.DeleteAllGroups();
             GroupTableUtils.deleteAllGroups();
         }
 

@@ -12,6 +12,8 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using windows_client.Model;
+using Newtonsoft.Json.Linq;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
@@ -77,5 +79,6 @@ namespace windows_client.View
             {
             }
         }
+
     }
 }

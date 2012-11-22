@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.Phone.Shell;
 using System.Text;
+using windows_client.Misc;
 
 namespace windows_client.DbUtils
 {
@@ -139,7 +140,7 @@ namespace windows_client.DbUtils
                 bool success = addMessage(convMsg);
                 if (!success)
                     return null;
-                string groupName = Utils.defaultGroupName(convMsg.Msisdn);
+                string groupName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
@@ -148,7 +149,7 @@ namespace windows_client.DbUtils
             else // add a member to a group
             {
                 List<GroupParticipant> existingMembers = null;
-                Utils.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
+                GroupManager.Instance.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
                 if (existingMembers == null)
                     return null;
 
@@ -156,7 +157,7 @@ namespace windows_client.DbUtils
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
 
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set                
-                    obj.ContactName = Utils.defaultGroupName(obj.Msisdn);
+                    obj.ContactName = GroupManager.Instance.defaultGroupName(obj.Msisdn);
 
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
                 {
@@ -208,7 +209,7 @@ namespace windows_client.DbUtils
                     if (gi == null)
                         return null;
                     if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
+                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region PARTICIPANT_LEFT
@@ -219,7 +220,7 @@ namespace windows_client.DbUtils
                     if (gi == null)
                         return null;
                     if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
+                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region GROUP_JOINED_OR_WAITING
@@ -232,7 +233,7 @@ namespace windows_client.DbUtils
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
 
                         // every participant is either on DND or not on DND
-                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
                         if (vars[1] == "0") // DND USER and not OPTED IN
                         {
                             if (waitingParticipants == null)
@@ -263,7 +264,7 @@ namespace windows_client.DbUtils
                     else
                     {
                         string[] vars = vals[vals.Length - 1].Split(':');
-                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
                         string text = HikeConstants.USER_JOINED_GROUP_CHAT;
                         obj.LastMessage = gp.FirstName + text;
                     }
@@ -274,7 +275,7 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = gp.FirstName + HikeConstants.USER_JOINED_GROUP_CHAT;
                     }
                     else
@@ -302,7 +303,7 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
                         obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, gp.FirstName);
                     }
                     else // 1-1 chat
@@ -315,12 +316,12 @@ namespace windows_client.DbUtils
                 #region GROUP NAME CHANGED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
-                    GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
                     //convMsg.Message = gp.FirstName + " changed the group name.";
                     convMsg.Message = "Group Name changed by a group member.";
                 }
                 #endregion
-                #region NO_INFO Or OTHER MSGS
+                #region NO_INFO or OTHER MSGS
                 else
                     obj.LastMessage = convMsg.Message;
                 #endregion

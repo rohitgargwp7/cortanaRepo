@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Phone.Notification;
 using System.Text;
+using windows_client.Misc;
 
 namespace windows_client
 {
@@ -116,6 +117,8 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
+                        if (Utils.isGroupConversation(convMessage.Msisdn))
+                            GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
                     catch (Exception e)
                     {
@@ -151,18 +154,77 @@ namespace windows_client
             }
             #endregion
             #region START_TYPING
+<<<<<<< HEAD
             else if (START_TYPING == type) /* Start Typing event received*/
             {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, msisdn);
+=======
+            else if (START_TYPING == type) /* Start Typing event received*/
+            {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
+                if (msisdn != null)
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+                    this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
             #region END_TYPING
             else if (END_TYPING == type) /* End Typing event received */
+<<<<<<< HEAD
             {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, msisdn);
+=======
+            {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
+                if (msisdn != null)
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
@@ -284,19 +346,19 @@ namespace windows_client
                     return;
                 }
                 bool joined = USER_JOINED == type;
-
+                GroupManager.Instance.LoadGroupCache();
                 if (joined)
                 {
                     // if user is in contact list then only show the joined msg
                     bool isUserInContactList = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn) != null ? true : false;
                     ProcessUoUjMsgs(jsonObj, false, isUserInContactList);
                 }
-                else if (Utils.GroupCache != null)
+                else if (GroupManager.Instance.GroupCache != null)
                 {
-                    bool shouldSave = false;
-                    foreach (string key in Utils.GroupCache.Keys)
+                    foreach (string key in GroupManager.Instance.GroupCache.Keys)
                     {
-                        List<GroupParticipant> l = Utils.GroupCache[key];
+                        bool shouldSave = false;
+                        List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
                         for (int i = 0; i < l.Count; i++)
                         {
                             if (l[i].Msisdn == uMsisdn)
@@ -305,9 +367,9 @@ namespace windows_client
                                 shouldSave = true;
                             }
                         }
+                        if (shouldSave)
+                            GroupManager.Instance.SaveGroupCache(key);
                     }
-                    if (shouldSave)
-                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
@@ -552,8 +614,8 @@ namespace windows_client
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
                     return;
-
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                GroupManager.Instance.SaveGroupCache(grpId);
+                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
                 Debug.WriteLine("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
@@ -581,21 +643,8 @@ namespace windows_client
 
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)
-                    {
-                        //ConvMessage cm = new ConvMessage();
-                        //cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
-                        //cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
-                        //cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                        //cm.Timestamp = TimeUtils.getCurrentTimeStamp();
-                        //cm.Msisdn = groupId;
-                        //ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                        //if (obj == null)
-                        //    return;
-                        //object[] values = new object[2];
-                        //vals[0] = cm;
-                        //vals[1] = obj;                       
+                    {                       
                         this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
-                        //this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
                     }
                 }
                 catch (Exception e)
@@ -617,12 +666,13 @@ namespace windows_client
                 {
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
-                    GroupParticipant gp = Utils.getGroupParticipant(null, fromMsisdn, groupId);
+                    GroupManager.Instance.LoadGroupParticipants(groupId);
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
                     if (gp.HasLeft)
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                    GroupManager.Instance.SaveGroupCache(groupId);
                     ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
                     if (cObj == null)
                         return;
@@ -695,7 +745,7 @@ namespace windows_client
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
         {
-            List<GroupParticipant> members = Utils.GroupCache[grpId];
+            List<GroupParticipant> members = GroupManager.Instance.GetParticipantList(grpId);
             List<GroupParticipant> output = null;
 
             for (int i = 0; i < members.Count; i++)
@@ -770,9 +820,10 @@ namespace windows_client
                         cm = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                     cm.Msisdn = ms;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    if (obj != null)
+                    if (obj == null)
                     {
-                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                        GroupManager.Instance.SaveGroupCache(cm.Msisdn);
+                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
                         return;
                     }
                     if (credits <= 0)
@@ -786,7 +837,6 @@ namespace windows_client
                         cmCredits.Message = text;
                         cmCredits.Msisdn = ms;
                         obj = MessagesTableUtils.addChatMessage(cmCredits, false);
-
                         vals = new object[3];
                         vals[2] = cmCredits;
                     }
@@ -798,9 +848,9 @@ namespace windows_client
                 }
             }
             // UPDATE group cache
-            foreach (string key in Utils.GroupCache.Keys)
+            foreach (string key in GroupManager.Instance.GroupCache.Keys)
             {
-                List<GroupParticipant> l = Utils.GroupCache[key];
+                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
                 for (int i = 0; i < l.Count; i++)
                 {
                     if (l[i].Msisdn == ms) // if this msisdn exists in group
@@ -814,7 +864,7 @@ namespace windows_client
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
                         if (co == null)
                         {
-                            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                            GroupManager.Instance.SaveGroupCache();
                             return;
                         }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
@@ -828,7 +878,7 @@ namespace windows_client
                             co = MessagesTableUtils.addChatMessage(cmCredits, false);
                             if (co == null)
                             {
-                                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                                GroupManager.Instance.SaveGroupCache();
                                 return;
                             }
                             values = new object[3];
@@ -846,8 +896,9 @@ namespace windows_client
                     }
                 }
             }
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            GroupManager.Instance.SaveGroupCache();
         }
+
         /// <summary>
         /// This function will return 
         ///  -- > true , if new users are added to GC
@@ -862,7 +913,7 @@ namespace windows_client
         //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
         //    {
         //        List<GroupParticipant> l = null;
-        //        Utils.GroupCache.TryGetValue(grpId, out l);
+        //        GroupManager.Instance.GroupCache.TryGetValue(grpId, out l);
         //        if (l == null)
         //            return true;
 
@@ -909,7 +960,7 @@ namespace windows_client
         //            }
         //        }
         //        if (saveCache)
-        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
         //        return output;
         //    }
         //    else
@@ -930,8 +981,7 @@ namespace windows_client
             else
             {
                 // now check if its same gcj packet created by owner or its different gcj packet
-                List<GroupParticipant> l = null;
-                Utils.GroupCache.TryGetValue(grpId, out l);
+                List<GroupParticipant> l = GroupManager.Instance.GetParticipantList(grpId);
                 if (l == null || l.Count == 0)
                     return GroupChatState.NEW_GROUP;
 

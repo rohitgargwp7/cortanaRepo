@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -23,6 +23,7 @@ using System.Text;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
 using System.Device.Location;
+using windows_client.Misc;
 
 namespace windows_client.View
 {
@@ -42,6 +43,7 @@ namespace windows_client.View
         private string mContactName = null;
         private string lastText = "";
 
+        private bool isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
         private bool isGroupChat = false;
@@ -59,6 +61,7 @@ namespace windows_client.View
 
         private static long tempMsgId = -2;
 
+        private int msgBubbleCount = 0;
         private int mCredits;
         private long lastTextChangedTime;
         private long lastTypingNotificationShownTime;
@@ -67,7 +70,8 @@ namespace windows_client.View
         private IScheduler scheduler = Scheduler.NewThread;
 
         private ApplicationBar appBar;
-        ApplicationBarMenuItem menuItem1;
+        ApplicationBarMenuItem blockUnblockMenuItem;
+        ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -531,6 +535,7 @@ namespace windows_client.View
 
                 if (Utils.isGroupConversation(mContactNumber)) // represents group chat
                 {
+                    GroupManager.Instance.LoadGroupParticipants(mContactNumber);
                     isGroupChat = true;
                     BlockTxtBlk.Text = "You have blocked this group. Unblock to continue hiking";
                     gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
@@ -538,6 +543,7 @@ namespace windows_client.View
                         groupOwner = gi.GroupOwner;
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
+                    isMute = convObj.IsMute;
                 }
 
                 if (convObj.ContactName != null)
@@ -650,10 +656,7 @@ namespace windows_client.View
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
             List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5); // this is used to select only those contacts which should be later added.
-
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-
+            
             if (isNewgroup) // if new group add all members to the group
             {
                 List<GroupParticipant> l = new List<GroupParticipant>(contactsForGroup.Count);
@@ -663,7 +666,7 @@ namespace windows_client.View
                     l.Add(gp);
                     usersToAdd.Add(gp);
                 }
-                Utils.GroupCache[mContactNumber] = l;
+                GroupManager.Instance.GroupCache[mContactNumber] = l;
             }
             else // existing group so just add members
             {
@@ -671,7 +674,7 @@ namespace windows_client.View
                 {
                     GroupParticipant gp = null;
                     bool addNewparticipant = true;
-                    List<GroupParticipant> gl = Utils.GroupCache[mContactNumber];
+                    List<GroupParticipant> gl = GroupManager.Instance.GroupCache[mContactNumber];
                     if (gl == null)
                         gl = new List<GroupParticipant>();
 
@@ -690,23 +693,24 @@ namespace windows_client.View
                     if (addNewparticipant)
                     {
                         gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
-                        Utils.GroupCache[mContactNumber].Add(gp);
+                        GroupManager.Instance.GroupCache[mContactNumber].Add(gp);
                     }
                     usersToAdd.Add(gp);
                 }
             }
 
-            Utils.GroupCache[mContactNumber].Sort();
+            GroupManager.Instance.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            GroupManager.Instance.SaveGroupCache(mContactNumber);
+            //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
             groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd);
             if (isNewgroup)
-                mContactName = Utils.defaultGroupName(mContactNumber);
+                mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
             else
             {
                 GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
                 if (gif != null && string.IsNullOrEmpty(gif.GroupName))
-                    mContactName = Utils.defaultGroupName(mContactNumber);
+                    mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
             }
             userName.Text = mContactName;
             if (isNewgroup)
@@ -811,39 +815,45 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
 
+                //TODO : Uncomment this when mute has to be supported.
+                //muteGroupMenuItem = new ApplicationBarMenuItem();
+                //muteGroupMenuItem.Text = isMute ? "unmute group" : "mute group";
+                //muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
+                //appBar.MenuItems.Add(muteGroupMenuItem);
+
                 if (groupOwner != null)
                 {
                     if (groupOwner != App.MSISDN) // represents current user is not group owner
                     {
-                        menuItem1 = new ApplicationBarMenuItem();
+                        blockUnblockMenuItem = new ApplicationBarMenuItem();
                         if (mUserIsBlocked)
                         {
                             groupInfoMenuItem.IsEnabled = false;
-                            menuItem1.Text = UNBLOCK_USER + " group owner";
+                            blockUnblockMenuItem.Text = UNBLOCK_USER + " group owner";
                         }
                         else
                         {
-                            menuItem1.Text = BLOCK_USER + " group owner";
+                            blockUnblockMenuItem.Text = BLOCK_USER + " group owner";
                         }
-                        menuItem1.Click += new EventHandler(blockUnblock_Click);
-                        appBar.MenuItems.Add(menuItem1);
+                        blockUnblockMenuItem.Click += new EventHandler(blockUnblock_Click);
+                        appBar.MenuItems.Add(blockUnblockMenuItem);
                     }
                 }
             }
             else
             {
 
-                menuItem1 = new ApplicationBarMenuItem();
+                blockUnblockMenuItem = new ApplicationBarMenuItem();
                 if (mUserIsBlocked)
                 {
-                    menuItem1.Text = UNBLOCK_USER;
+                    blockUnblockMenuItem.Text = UNBLOCK_USER;
                 }
                 else
                 {
-                    menuItem1.Text = BLOCK_USER;
+                    blockUnblockMenuItem.Text = BLOCK_USER;
                 }
-                menuItem1.Click += new EventHandler(blockUnblock_Click);
-                appBar.MenuItems.Add(menuItem1);
+                blockUnblockMenuItem.Click += new EventHandler(blockUnblock_Click);
+                appBar.MenuItems.Add(blockUnblockMenuItem);
 
                 if (isAddUser)
                 {
@@ -889,6 +899,7 @@ namespace windows_client.View
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
                 });
+                NetworkManager.turnOffNetworkManager = false;
                 return;
             }
 
@@ -946,6 +957,7 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 ScrollToBottom();
                 scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                NetworkManager.turnOffNetworkManager = false;
             });
         }
 
@@ -1034,7 +1046,8 @@ namespace windows_client.View
         {
             MessageList.UpdateLayout();
             Scroller.UpdateLayout();
-            Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+            if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+                Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
         }
 
         private void updateLastMsgColor(string msisdn)
@@ -1149,6 +1162,31 @@ namespace windows_client.View
             NavigationService.GoBack();
         }
 
+        private void muteUnmuteGroup_Click(object sender, EventArgs e)
+        {
+            JObject obj = new JObject();
+            JObject o = new JObject();
+            o["id"] = mContactNumber;
+            obj[HikeConstants.DATA] = o;
+            if (isMute) // GC is muted , request to unmute
+            {
+                isMute = false;
+                obj[HikeConstants.TYPE] = "unmute";
+                App.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
+                muteGroupMenuItem.Text = "mute group";
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+            else // GC is unmute , request to mute
+            {
+                isMute = true;
+                obj[HikeConstants.TYPE] = "mute";
+                App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
+                muteGroupMenuItem.Text = "unmute group";
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            }
+
+        }
+
         private void groupInfo_Click(object sender, EventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
@@ -1167,7 +1205,7 @@ namespace windows_client.View
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
-                    menuItem1.Text = BLOCK_USER + " group owner";
+                    blockUnblockMenuItem.Text = BLOCK_USER + " group owner";
                     groupInfoMenuItem.IsEnabled = true;
                 }
                 else
@@ -1176,7 +1214,7 @@ namespace windows_client.View
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
                     isTypingNotificationEnabled = true;
-                    menuItem1.Text = BLOCK_USER;
+                    blockUnblockMenuItem.Text = BLOCK_USER;
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = true;
                 }
@@ -1189,7 +1227,7 @@ namespace windows_client.View
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
-                    menuItem1.Text = UNBLOCK_USER + " group owner";
+                    blockUnblockMenuItem.Text = UNBLOCK_USER + " group owner";
                     groupInfoMenuItem.IsEnabled = false;
                 }
                 else
@@ -1198,7 +1236,7 @@ namespace windows_client.View
                     emoticonsIconButton.IsEnabled = false;
                     sendIconButton.IsEnabled = false;
                     isTypingNotificationEnabled = false;
-                    menuItem1.Text = UNBLOCK_USER;
+                    blockUnblockMenuItem.Text = UNBLOCK_USER;
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = false;
                 }
@@ -1381,7 +1419,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, isGroupChat, Utils.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                        chatBubble = new ReceivedChatBubble(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
 
                     }
                     this.MessageList.Children.Add(chatBubble);
@@ -1420,7 +1458,7 @@ namespace windows_client.View
                     {
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
 
-                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMessage.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMessage.Msisdn);
                         string text = HikeConstants.USER_JOINED_GROUP_CHAT;
                         NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED;
                         if (vars[1] == "0" && !gp.IsOnHike)
@@ -1449,7 +1487,7 @@ namespace windows_client.View
                         string msisdn = vars[0];
                         string showIcon = vars[1];
                         // every participant is either on DND or not on DND
-                        GroupParticipant gp = Utils.getGroupParticipant(null, msisdn, convMessage.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, msisdn, convMessage.Msisdn);
 
                         string text = gp.FirstName + HikeConstants.USER_JOINED_GROUP_CHAT;
                         NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
@@ -1592,6 +1630,8 @@ namespace windows_client.View
                     ScrollToBottom();
                 }
                 #endregion
+
+                msgBubbleCount++;
             }
             catch (Exception e)
             {
@@ -2282,6 +2322,9 @@ namespace windows_client.View
                 }
                 else // this is to show toast notification
                 {
+                    ConversationListObject val;
+                    if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted conv, ignore msg
+                        return;
                     ConversationListObject cObj = vals[1] as ConversationListObject;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -2441,11 +2484,39 @@ namespace windows_client.View
             #region TYPING_CONVERSATION
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
+<<<<<<< HEAD
             {
-                if (mContactNumber == (obj as string))
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+                if (mContactNumber == typingNotSenderOrSendee)
                 {
                     ShowTypingNotification();
                 }
+=======
+            {
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+                if (mContactNumber == typingNotSenderOrSendee)
+                {
+                    ShowTypingNotification();
+                }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
             }
 
             #endregion
@@ -2453,8 +2524,32 @@ namespace windows_client.View
             #region END_TYPING_CONVERSATION
 
             else if (HikePubSub.END_TYPING_CONVERSATION == type)
+<<<<<<< HEAD
             {
-                if (mContactNumber == (obj as string))
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+=======
+            {
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+                if (mContactNumber == typingNotSenderOrSendee)
                 {
                     HideTypingNotification();
                 }
@@ -2733,20 +2828,42 @@ namespace windows_client.View
         }
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
+<<<<<<< HEAD
         {
-            if (mUserIsBlocked)
-                return;
+            if (!isGroupChat)
+            {
+                if (mUserIsBlocked)
+                    return;
 
-            emoticonPanel.Visibility = Visibility.Collapsed;
+                emoticonPanel.Visibility = Visibility.Collapsed;
 
-            if ((!isOnHike && mCredits <= 0))
-                return;
-            ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = !isOnHike;
-            convMessage.MessageId = TempMessageId;
-            convMessage.HasAttachment = false;
-            convMessage.MetaDataString = "{poke:1}";
-            sendMsg(convMessage, false);
+                if ((!isOnHike && mCredits <= 0))
+                    return;
+                ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.MessageId = TempMessageId;
+                convMessage.HasAttachment = false;
+                convMessage.MetaDataString = "{poke:1}";
+                sendMsg(convMessage, false);
+=======
+        {
+            if (!isGroupChat)
+            {
+                if (mUserIsBlocked)
+                    return;
+
+                emoticonPanel.Visibility = Visibility.Collapsed;
+
+                if ((!isOnHike && mCredits <= 0))
+                    return;
+                ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.MessageId = TempMessageId;
+                convMessage.HasAttachment = false;
+                convMessage.MetaDataString = "{poke:1}";
+                sendMsg(convMessage, false);
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+            }
         }
     }
 }

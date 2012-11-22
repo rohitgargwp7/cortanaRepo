@@ -31,6 +31,7 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private long _lastMsgId;
+        private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         #endregion
 
         #region Properties
@@ -163,13 +164,35 @@ namespace windows_client.Model
                 }
             }
         }
-        
+
+        public int MuteVal
+        {
+            get
+            {
+                return _muteVal;
+            }
+            set
+            {
+                if (value != _muteVal)
+                    _muteVal = value;
+            }
+        }
+        public bool IsMute
+        {
+            get
+            {
+                if (_muteVal > -1)
+                    return true;
+                else
+                    return false;
+            }
+        }
         public BitmapImage SDRStatusImage
         {
             get
             {
                 switch (_messageStatus)
-                { 
+                {
                     case ConvMessage.State.SENT_CONFIRMED:
                         return UI_Utils.Instance.Sent;
                     case ConvMessage.State.SENT_DELIVERED:
@@ -191,7 +214,7 @@ namespace windows_client.Model
             get
             {
                 switch (_messageStatus)
-                { 
+                {
                     case ConvMessage.State.SENT_CONFIRMED:
                     case ConvMessage.State.SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED_READ:
@@ -308,7 +331,7 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus,long lastMsgId)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
@@ -320,7 +343,7 @@ namespace windows_client.Model
             this._lastMsgId = lastMsgId;
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus,long lastMsgId)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus, long lastMsgId)
             : this(msisdn, contactName, lastMessage, false, timestamp, null, msgStatus, lastMsgId)
         {
 
@@ -381,6 +404,7 @@ namespace windows_client.Model
                 writer.Write((int)_messageStatus);
                 writer.Write(_isFirstMsg);
                 writer.Write(_lastMsgId);
+                writer.Write(_muteVal);
             }
             catch
             {
@@ -389,6 +413,21 @@ namespace windows_client.Model
         }
 
         public void Read(BinaryReader reader)
+        {
+            string current_ver = "1.5.0.0";
+            App.appSettings.TryGetValue<string>("File_System_Version", out current_ver);
+            int val = Utils.compareVersion(current_ver, "1.4.5.5");
+            if (val != 1) // current_ver <= 1.4.5.5
+            {
+                ReadVer_1_4_0_0(reader);
+            }
+            else  //current_ver > 1.4.5.5 
+            {
+                ReadVer_1_5_0_0(reader);
+            }           
+        }
+
+        private void ReadVer_1_4_0_0(BinaryReader reader)
         {
             try
             {
@@ -415,7 +454,50 @@ namespace windows_client.Model
                 throw new Exception("Conversation Object corrupt");
             }
         }
-        
+
+        private void ReadVer_1_5_0_0(BinaryReader reader)
+        {
+            try
+            {
+                int count = reader.ReadInt32();
+                _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_msisdn == "*@N@*")
+                    _msisdn = null;
+                count = reader.ReadInt32();
+                _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
+                    _contactName = null;
+                count = reader.ReadInt32();
+                _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_lastMessage == "*@N@*")
+                    _lastMessage = null;
+                _timeStamp = reader.ReadInt64();
+                _isOnhike = reader.ReadBoolean();
+                _messageStatus = (ConvMessage.State)reader.ReadInt32();
+                _isFirstMsg = reader.ReadBoolean();
+                _lastMsgId = reader.ReadInt64();
+                _muteVal = reader.ReadInt32();
+            }
+            catch
+            {
+                throw new Exception("Conversation Object corrupt");
+            }
+        }
+
+        public void ReadVer_1_0_0_0(BinaryReader reader)
+        {
+            _msisdn = reader.ReadString();
+            _contactName = reader.ReadString();
+            if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
+                _contactName = null;
+            _lastMessage = reader.ReadString();
+            _timeStamp = reader.ReadInt64();
+            _isOnhike = reader.ReadBoolean();
+            _messageStatus = (ConvMessage.State)reader.ReadInt32();
+            _isFirstMsg = reader.ReadBoolean();
+            _lastMsgId = reader.ReadInt64();
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

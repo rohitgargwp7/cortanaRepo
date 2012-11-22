@@ -15,56 +15,8 @@ namespace windows_client.utils
     public class Utils
     {
 
-        private static Dictionary<string, List<GroupParticipant>> groupCache = null;
 
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
-
-        public static Dictionary<string, List<GroupParticipant>> GroupCache
-        {
-            get
-            {
-                return groupCache;
-            }
-            set
-            {
-                if (value != groupCache)
-                    groupCache = value;
-            }
-        }
-
-        public static GroupParticipant getGroupParticipant(string defaultName, string msisdn, string grpId)
-        {
-            if (grpId == null)
-                return null;
-
-            if (groupCache == null)
-            {
-                groupCache = new Dictionary<string, List<GroupParticipant>>();
-            }
-            if (groupCache.ContainsKey(grpId))
-            {
-                List<GroupParticipant> l = groupCache[grpId];
-                for (int i = 0; i < l.Count; i++)
-                {
-                    if (l[i].Msisdn == msisdn)
-                    {
-                        return l[i];
-                    }
-                }
-            }
-            ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
-            if (groupCache.ContainsKey(grpId))
-            {
-                groupCache[grpId].Add(gp);
-                return gp;
-            }
-
-            List<GroupParticipant> ll = new List<GroupParticipant>();
-            ll.Add(gp);
-            groupCache.Add(grpId, ll);
-            return gp;
-        }
 
         public static void savedAccountCredentials(JObject obj)
         {
@@ -89,42 +41,6 @@ namespace windows_client.utils
         public static bool isGroupConversation(string msisdn)
         {
             return !msisdn.StartsWith("+");
-        }
-
-        public static string defaultGroupName(string grpId)
-        {
-
-            List<GroupParticipant> groupParticipants = null;
-            Utils.GroupCache.TryGetValue(grpId, out groupParticipants);
-            if (groupParticipants == null || groupParticipants.Count == 0) // this should not happen as at this point cache should be populated
-                return "GROUP";
-            List<GroupParticipant> activeMembers = GetActiveGroupParticiants(grpId);
-            if (activeMembers == null || groupParticipants.Count == 0)
-                return "GROUP";
-            switch (activeMembers.Count)
-            {
-                case 1:
-                    return activeMembers[0].FirstName;
-                case 2:
-                    return activeMembers[0].FirstName + " and "
-                    + activeMembers[1].FirstName;
-                default:
-                    return activeMembers[0].FirstName + " and "
-                    + (activeMembers.Count - 1) + " others";
-            }
-        }
-
-        public static List<GroupParticipant> GetActiveGroupParticiants(string groupId)
-        {
-            if (!Utils.GroupCache.ContainsKey(groupId) || Utils.GroupCache[groupId] == null)
-                return null;
-            List<GroupParticipant> activeGroupMembers = new List<GroupParticipant>(Utils.GroupCache[groupId].Count);
-            for (int i = 0; i < Utils.GroupCache[groupId].Count; i++)
-            {
-                if (!Utils.GroupCache[groupId][i].HasLeft)
-                    activeGroupMembers.Add(Utils.GroupCache[groupId][i]);
-            }
-            return activeGroupMembers;
         }
 
         public static int CompareByName<T>(T a, T b)
@@ -221,48 +137,6 @@ namespace windows_client.utils
             return ((Visibility)Application.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
         }
 
-        public void SerializeGroupCache()
-        {
-            string fileName = "GroupCacheFile";
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-            {
-                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
-                {
-                    using (var writer = new BinaryWriter(file))
-                    {
-                        int count = groupCache != null ? groupCache.Count : 0;
-                        writer.Write(count);
-                        if (count != 0)
-                        {
-                            foreach (string key in groupCache.Keys)
-                            {
-                                writer.Write(key);
-                                List<GroupParticipant> l = groupCache[key];
-                                int lcount = l != null ? l.Count : 0;
-                                writer.Write(lcount);
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-
-        public void DeSerializeGroupCache()
-        {
-            string fileName = "GroupCacheFile";
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
-            {
-                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
-                {
-                    using (var reader = new BinaryReader(file))
-                    {
-                        int count = reader.ReadInt32();
-                    }
-                }
-            }
-        }
-
         public static string[] splitUserJoinedMessage(string msg)
         {
             if (string.IsNullOrWhiteSpace(msg))
@@ -276,12 +150,14 @@ namespace windows_client.utils
 
         }
 
-        /***
-         * returns 
-         * -1 if v1 < v2
-         * 1 is v1>v2
-         * 0 if v1=v2
-         * */
+        /// <summary>
+        /// -1 if v1 < v2
+        /// 0 if v1=v2
+        /// 1 is v1>v2
+        /// </summary>
+        /// <param name="version1"></param>
+        /// <param name="version2"></param>
+        /// <returns></returns>
         public static int compareVersion(string version1, string version2)
         {
             string[] version1_parts = version1.Split('.');

@@ -39,7 +39,7 @@ namespace windows_client.DbUtils
                         using (var reader = new BinaryReader(file))
                         {
                             ConversationListObject co = new ConversationListObject();
-                            co.Read(reader);
+                            co.ReadVer_1_0_0_0(reader);
                             if (IsValidConv(co))
                                 convList.Add(co);
                         }

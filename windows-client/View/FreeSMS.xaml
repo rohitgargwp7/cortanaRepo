@@ -11,22 +11,30 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
+<<<<<<< HEAD
+    shell:SystemTray.IsVisible="True">
+
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
+    </shell:SystemTray.ProgressIndicator>
+=======
     shell:SystemTray.IsVisible="False">
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="260"/>
+            <RowDefinition Height="390"/>
         </Grid.RowDefinitions>
 
         <Grid x:Name="upperGrid" Grid.Row="0" Margin="0,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="220"/>
+                <RowDefinition Height="160"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="270"/>
+                <RowDefinition Height="200"/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="Free SMS" Margin="25,24,0,0"/>
@@ -43,15 +51,19 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="hike to hike" FontSize="28" HorizontalAlignment="Center" Grid.Column="1" Margin="0,0,0,10" Grid.Row="0"/>
-                <Rectangle x:Name="unlimitedRectangle" Height="72" Grid.Column="1" Fill="#2f2f2f" Margin="5" Grid.Row="1"></Rectangle>
-                <TextBlock x:Name="unlimitedTxtBlck" Grid.Column="1" FontSize="30" Foreground="White" Grid.Row="1" Text="Unlimited"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="hike to hike" FontSize="28" HorizontalAlignment="Center" Grid.Column="1" Margin="0,0,0,0" Grid.Row="0"/>
+                <TextBlock Text="Free Worldwide" HorizontalAlignment="Center" FontSize="16" Grid.Column="1" Grid.Row="1" Margin="0,0,0,10" Foreground="#9b9b9b" />
 
-                <TextBlock Text="Free Worldwide" HorizontalAlignment="Center" FontSize="22" Grid.Column="1" Grid.Row="2" Margin="0,10,0,0" Foreground="#9b9b9b" />
+                <Border BorderThickness="4" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" BorderBrush="Black" Margin="20,0,20,0">
+                    <Rectangle x:Name="unlimitedRectangle" Height="40" Fill="#2e91d3" ></Rectangle>
+                </Border>
+                <TextBlock x:Name="unlimitedTxtBlck" Grid.Column="1" FontSize="20" Foreground="White" Grid.Row="2" Text="Unlimited"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
             </Grid>
+
             <StackPanel Grid.Row="2">
-                <Rectangle x:Name="topUpper" Height="1" ></Rectangle>
-                <Rectangle x:Name="topLower" Height="1" ></Rectangle>
+                <Rectangle Height="1" Fill="#1a1a1a"></Rectangle>
+                <Rectangle Height="1" Fill="#252525"></Rectangle>
             </StackPanel>
 
             <Grid x:Name="hikeToSMSGrid" Grid.Row="3" VerticalAlignment="Center">
@@ -67,53 +79,88 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="hike to SMS" FontSize="28" HorizontalAlignment="Center" Grid.Column="1" Margin="0,0,0,10" Grid.Row="0"/>
-                
+                <TextBlock Text="hike to SMS" FontSize="28" HorizontalAlignment="Center" Grid.Column="1" Margin="0,0,0,0" Grid.Row="0"/>
+                <TextBlock Grid.Column="0" FontSize="16" Grid.ColumnSpan="3" HorizontalAlignment="Center" Foreground="#9b9b9b" Margin="0,0,0,10" Grid.Row="1" Text="Your free SMS refill on the 1st of every month"/>
+                <Border BorderBrush="#111111" BorderThickness="4" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="20,0,20,5">
+                    <Grid Height="40">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle x:Name="creditsRemainingBar" Grid.Column="0" Fill="#8bc53f" Width="250"></Rectangle>
+                        <Rectangle x:Name="maxCreditsBar" Grid.Column="1" Fill="#111111" Width="183"></Rectangle>
+                        <TextBlock x:Name="creditsRemainingTxtBlck" Text="147" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+                    </Grid>
+                </Border>
 
-                <Grid x:Name="SMSCounterGrid" Grid.Row="1" Grid.Column="1">
+                <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Width="440" HorizontalAlignment="Center" Margin="5,0,0,0">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
-                    <Rectangle Height="76" x:Name="r0" Grid.Column="0" Margin="5"></Rectangle>
-                    <TextBlock x:Name="t0" Text="2"  Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="45"></TextBlock>
-                    <Rectangle Height="76" x:Name="r1" Grid.Column="1"  Margin="5"></Rectangle>
-                    <TextBlock x:Name="t1" Text="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="45"></TextBlock>
-                    <Rectangle Height="76" x:Name="r2" Grid.Column="2" Margin="5"></Rectangle>
-                    <TextBlock  x:Name="t2" Text="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="45"></TextBlock>
+                    <TextBlock Text="0" FontSize="16" VerticalAlignment="Center" Grid.Column="0"></TextBlock>
+                    <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="1" Fill="#565656"></Rectangle>
+                    <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="2" Fill="#565656"></Rectangle>
+                    <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="3" Fill="#565656"></Rectangle>
+                    <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="4" Fill="#565656"></Rectangle>
+                    <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="5" Fill="#565656"></Rectangle>
+                    <Rectangle Width="1" Height="10" Margin="0,3,0,0" VerticalAlignment="Center" Grid.Column="6" Fill="#565656"></Rectangle>
+                    <TextBlock x:Name="maxCreditsTxtBlck" Text="250+" Margin="0,0,0,0" FontSize="16" VerticalAlignment="Center" Grid.Column="7"></TextBlock>
                 </Grid>
-                <StackPanel x:Name="maxCreditCount" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2" Margin="0,10,0,0">
-                    <TextBlock Text="Max per month: " FontSize="22" Foreground="#9b9b9b" />
-                    <TextBlock x:Name="MaxCredits" FontSize="22" Text="300"></TextBlock>
-                </StackPanel>
-                <TextBlock Grid.Column="0" FontSize="18" Grid.ColumnSpan="3" HorizontalAlignment="Center" Foreground="#9f9f9f" Margin="0,25,0,0" Grid.Row="3" Text="Your free SMS refill on the 1st of every month"/>
-
             </Grid>
-
-            <!--<StackPanel Grid.Row="4">
-                <Rectangle x:Name="bottomUpper" Height="1" ></Rectangle>
-                <Rectangle x:Name="bottomLower" Height="1" ></Rectangle>
-            </StackPanel>-->
-
         </Grid>
-        
+
         <Rectangle Grid.Row="1" Margin="0,0,0,0" x:Name="bottomLine" Height="1"/>
 
         <Grid x:Name="InviteFriendsGrid" Grid.Row="2" VerticalAlignment="Center" >
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Vertical" HorizontalAlignment="Center">
-                <TextBlock Text="Earn an extra 50 free SMS per month" FontWeight="Light" FontSize="24" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="forEveryFriendTxtBlck" Text="for every friend who joins hike through you" Foreground="#6e6e6e" Margin="0,5,0,0" FontSize="20" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Row="0" FontSize="22" Margin="0,15,0,0" HorizontalAlignment="Center">
+                <TextBlock.Inlines>
+                    <Run Text="Connect and get a"/>
+                    <Run FontFamily="Segoe WP Semibold" Text=" 100 Free SMS"/>
+                    <Run Text=" instantly"/>
+                </TextBlock.Inlines>
+            </TextBlock>
+
+            <StackPanel Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Center" Grid.Row="1">
+<<<<<<< HEAD
+                <Button x:Name="facebookBtn" Width="190" BorderThickness="0" Height="72" Content="facebook" Click="facebookBtn_Click"></Button>
+                <Button x:Name="twitterBtn" Width="190" BorderThickness="0" Height="72" Content="twitter" Click="twitterBtn_Click"></Button>
+=======
+                <Button x:Name="facebookBtn" Width="190" BorderThickness="0" Height="72" Content="facebook"></Button>
+                <Button x:Name="twitterBtn" Width="190" BorderThickness="0" Height="72" Content="twitter"></Button>
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
             </StackPanel>
-            <Button Grid.Row="1" VerticalAlignment="Top" Margin="0,15,0,15" Width="166" FontFamily="Segoe WP Semibold" FontSize="22" Content="Invite Now" BorderThickness="2" Height="70" Name="inviteBtn" Click="inviteBtn_Click"></Button>
-            <TextBlock Grid.Row="2" Foreground="#828282" FontSize="18" Margin="0,15,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="*Free SMS can only be sent to India at the moment"/>
+            <StackPanel Grid.Row="2" Margin="0,15,0,0">
+                <TextBlock FontSize="22" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center" Text="Invite via SMS"/>
+                <TextBlock FontSize="18" TextWrapping="Wrap" Margin="0,5,0,0" HorizontalAlignment="Center" TextAlignment="Center" Width="400">
+                    <TextBlock.Inlines>
+                        <Run Text="Earn an extra "/>
+                        <Run FontFamily="Segoe WP Semibold" Text="50 free SMS "/>
+                        <Run Text="per month for every friend that joins through you."/>
+                    </TextBlock.Inlines>
+                </TextBlock>
+
+            </StackPanel>
+<<<<<<< HEAD
+            <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="Invite Now" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
+=======
+            <Button Grid.Row="3" Margin="0,15,0,0" Content="Invite Now" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+            <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,35,0,0" FontSize="16" VerticalAlignment="Bottom" Text="*Free SMS can only be sent to India at the moment"></TextBlock>
         </Grid>
     </Grid>
 

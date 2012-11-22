@@ -51,7 +51,7 @@
                     <TextBlock Text="Legal" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                     <TextBlock Text="Read Terms of service and privacy policy" FontSize="20"/>
                 </StackPanel>
-                <StackPanel Grid.Row="3" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
+                <StackPanel x:Name="walkthroughPanel" Grid.Row="3" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
                     <TextBlock Text="Walkthrough" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                     <TextBlock Text="View the meet hike walkthrough" FontSize="20"/>
                 </StackPanel>

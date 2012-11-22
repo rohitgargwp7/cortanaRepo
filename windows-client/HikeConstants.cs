@@ -177,7 +177,6 @@ namespace windows_client
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
 
-
         public static string DND_USER = "{0} is on DND. Waiting for {0} to reply.";
         public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
         public static string USER_OPTED_IN_MSG = " just opted in to hike!";
@@ -188,6 +187,7 @@ namespace windows_client
         public static readonly string GROUP_CHAT_END = "This group chat has ended.";
         public static string USER_JOINED_HIKE = "{0} just joined hike!";
         public static string SMS_INDIA = "SMS can only be sent to India.";
+        public static string SOCIAL = "Social_Request";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
@@ -197,6 +197,8 @@ namespace windows_client
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
+        public static string FB_LOGGED_IN = "FbLoggedIn";
+        public static string TW_LOGGED_IN = "TwLoggedIn";
 
         public static class Extras
         {
