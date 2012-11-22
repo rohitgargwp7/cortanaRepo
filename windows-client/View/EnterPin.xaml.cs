@@ -2,13 +2,11 @@
 using System.Windows;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
-using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
-using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
-using Microsoft.Phone.Reactive;
+using System.Windows.Threading;
 
 namespace windows_client
 {
@@ -18,8 +16,9 @@ namespace windows_client
         string pinEntered;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
-        private IScheduler scheduler = Scheduler.NewThread;
-        private readonly int callMeTimeout = 15;
+        private DispatcherTimer progressTimer;
+        private int timerValue = 60;
+        private readonly string CallMeTimer = "CallMeTimer";
 
         public EnterPin()
         {
@@ -159,15 +158,36 @@ namespace windows_client
                 nextIconButton.IsEnabled = false;
         }
 
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            progressTimer.Stop();
+            progressTimer = null;
+            PhoneApplicationService.Current.State[CallMeTimer] = timerValue;
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            if (callMe.Opacity == 0)
+            
+            timer.Visibility = Visibility.Visible;
+            progressTimer = new DispatcherTimer();
+            progressTimer.Interval = TimeSpan.FromSeconds(1);
+            progressTimer.Tick += new EventHandler(enableCallMeOption);
+            progressTimer.Start();
+            if (PhoneApplicationService.Current.State.ContainsKey(CallMeTimer))
             {
-                scheduler.Schedule(showCallMeOption, TimeSpan.FromSeconds(callMeTimeout));
+                timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
+                PhoneApplicationService.Current.State.Remove(CallMeTimer);
+                if(timerValue < 60)
+                    timer.Text = "0:" + timerValue.ToString("00");
             }
+
+            if (timerValue == 0)
+                timer.Visibility = Visibility.Collapsed;
+
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
@@ -233,12 +253,22 @@ namespace windows_client
             catch { }
         }
 
-        private void showCallMeOption()
+        private void enableCallMeOption(object sender, EventArgs e)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                callMe.Opacity = 1;
-                callMeButton.Focus();   
+                if (timerValue > 0)
+                {
+                    timerValue--;
+                    timer.Text = "0:" + timerValue.ToString("00");
+                }
+                if (timerValue == 0 && callMeButton.IsEnabled == false)
+                {
+                    timer.Visibility = Visibility.Collapsed;
+                    callMeButton.IsEnabled = true;
+                    callMeButton.Focus();
+                    return;
+                }
             });
         }
 

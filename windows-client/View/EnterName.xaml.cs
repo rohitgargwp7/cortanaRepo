@@ -75,6 +75,16 @@ namespace windows_client
             msgTxtBlk.Opacity = 1;
             msgTxtBlk.Text = SCANNING_CONTACTS;
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
+            string country_code = null;
+            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+            {
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+            }
         }
 
         private void setName_Callback(JObject obj)

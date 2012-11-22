@@ -33,6 +33,16 @@ namespace windows_client.View
                 this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love.png", UriKind.Relative));
             }
             applicationVersion.Text = utils.Utils.getAppVersion();
+            string country_code = null;
+            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+            {
+                walkthroughPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                walkthroughPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)

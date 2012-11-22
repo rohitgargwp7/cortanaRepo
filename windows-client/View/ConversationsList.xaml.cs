@@ -40,6 +40,7 @@ namespace windows_client.View
         byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
         private bool firstLoad = true;
+        private bool showFreeSMS = true;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private PhotoChooserTask photoChooserTask;
@@ -103,6 +104,16 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
+            }
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            showFreeSMS = true;
+            if (showFreeSMS)
+            {
+                freeSMSPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                freeSMSPanel.Visibility = Visibility.Collapsed;
             }
         }
 
