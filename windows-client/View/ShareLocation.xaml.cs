@@ -140,6 +140,10 @@ namespace windows_client.View
         {
             shareIconButton.IsEnabled = true;
             map.MapResolved -= map_MapResolved;
+            watcher.StatusChanged -= watcher_StatusChanged;
+            watcher.PositionChanged -= watcher_PositionChanged;
+            watcher.Stop();
+            watcher.Dispose();
         }
     }
 }
