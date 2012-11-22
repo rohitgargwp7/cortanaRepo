@@ -789,6 +789,8 @@ namespace windows_client.Model
                             messageText = "audio";
                         else if (this.FileAttachment.ContentType.Contains("video"))
                             messageText = "video";
+                        else if (this.FileAttachment.ContentType.Contains("location"))
+                            messageText = "location";
                         this._message = messageText;
                     }
                     else
