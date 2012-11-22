@@ -54,6 +54,7 @@ namespace windows_client.utils
                     if (pushChannel.IsShellToastBound)
                         pushChannel.UnbindToShellToast();
                     pushChannel.Close();
+                    pushChannel.Dispose();
                     App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
                 }
             }
@@ -106,22 +107,28 @@ namespace windows_client.utils
                     App.appSettings.TryGetValue(HikeConstants.IS_SECURE_CHANNEL, out isChannelSecure);
                     if (!isChannelSecure && App.appSettings.TryGetValue(HikeConstants.SECURE_PUSH, out secure_push) && secure_push)
                     {
+                        //if channel was not secure and we are ready for secured push. close this channel and new channel 
+                        //would be created on next app launch
                         if (pushChannel.IsShellTileBound)
                             pushChannel.UnbindToShellTile();
                         if (pushChannel.IsShellToastBound)
                             pushChannel.UnbindToShellToast();
                         pushChannel.Close();
+                        pushChannel.Dispose();
                     }
-                    // The channel was already open, so just register for all the events.
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    // Register for this notification only if you need to receive the notifications while your application is running.
-                    //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
-
-                    if (pushChannel.ChannelUri != null)
+                    else
                     {
-                        Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                        AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                        // The channel was already open, so just register for all the events.
+                        pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                        pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+                        // Register for this notification only if you need to receive the notifications while your application is running.
+                        //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+
+                        if (pushChannel.ChannelUri != null)
+                        {
+                            Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                            AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                        }
                     }
                 }
             }
