@@ -200,7 +200,7 @@
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                      MinHeight="68" Margin="0,-4,-8,0" Height="Auto" MaxLength="500" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
+                                      MinHeight="68" Margin="0,-4,-8,0" Height="Auto" MaxLength="1800" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
             </StackPanel>
         </StackPanel>
         <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
