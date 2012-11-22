@@ -81,7 +81,7 @@
                         </Grid.ColumnDefinitions>
                         <Rectangle x:Name="creditsRemainingBar" Grid.Column="0" Fill="#8bc53f" Width="250"></Rectangle>
                         <Rectangle x:Name="maxCreditsBar" Grid.Column="1" Fill="#111111" Width="183"></Rectangle>
-                        <TextBlock x:Name="creditsRemainingTxtBlck" Text="147" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="creditsRemainingTxtBlck" Text="147" Foreground="White" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
                     </Grid>
                 </Border>
 
