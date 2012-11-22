@@ -154,7 +154,6 @@ namespace windows_client
             }
             #endregion
             #region START_TYPING
-<<<<<<< HEAD
             else if (START_TYPING == type) /* Start Typing event received*/
             {
                 string sentTo = "";
@@ -170,30 +169,12 @@ namespace windows_client
                 vals[0] = msisdn;
                 vals[1] = sentTo;
                 if (msisdn != null)
-=======
-            else if (START_TYPING == type) /* Start Typing event received*/
-            {
-                string sentTo = "";
-                try
-                {
-                    sentTo = (string)jsonObj[HikeConstants.TO];
-                }
-                catch (Exception e)
-                {
-                }
-
-                object[] vals = new object[2];
-                vals[0] = msisdn;
-                vals[1] = sentTo;
-                if (msisdn != null)
->>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
                     this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
             #region END_TYPING
             else if (END_TYPING == type) /* End Typing event received */
-<<<<<<< HEAD
             {
                 string sentTo = "";
                 try
@@ -208,22 +189,6 @@ namespace windows_client
                 vals[0] = msisdn;
                 vals[1] = sentTo;
                 if (msisdn != null)
-=======
-            {
-                string sentTo = "";
-                try
-                {
-                    sentTo = (string)jsonObj[HikeConstants.TO];
-                }
-                catch (Exception e)
-                {
-                }
-
-                object[] vals = new object[2];
-                vals[0] = msisdn;
-                vals[1] = sentTo;
-                if (msisdn != null)
->>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
                     this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
                 return;
             }

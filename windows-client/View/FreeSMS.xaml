@@ -11,15 +11,12 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-<<<<<<< HEAD
     shell:SystemTray.IsVisible="True">
 
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
     </shell:SystemTray.ProgressIndicator>
-=======
-    shell:SystemTray.IsVisible="False">
->>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -136,13 +133,9 @@
             </TextBlock>
 
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Center" Grid.Row="1">
-<<<<<<< HEAD
+
                 <Button x:Name="facebookBtn" Width="190" BorderThickness="0" Height="72" Content="facebook" Click="facebookBtn_Click"></Button>
                 <Button x:Name="twitterBtn" Width="190" BorderThickness="0" Height="72" Content="twitter" Click="twitterBtn_Click"></Button>
-=======
-                <Button x:Name="facebookBtn" Width="190" BorderThickness="0" Height="72" Content="facebook"></Button>
-                <Button x:Name="twitterBtn" Width="190" BorderThickness="0" Height="72" Content="twitter"></Button>
->>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="0,15,0,0">
                 <TextBlock FontSize="22" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center" Text="Invite via SMS"/>
@@ -155,11 +148,7 @@
                 </TextBlock>
 
             </StackPanel>
-<<<<<<< HEAD
             <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="Invite Now" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
-=======
-            <Button Grid.Row="3" Margin="0,15,0,0" Content="Invite Now" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
->>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
             <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,35,0,0" FontSize="16" VerticalAlignment="Bottom" Text="*Free SMS can only be sent to India at the moment"></TextBlock>
         </Grid>
     </Grid>
