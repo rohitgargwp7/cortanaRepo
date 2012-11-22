@@ -39,7 +39,11 @@ namespace windows_client.View
         bool isProfilePicTapped = false;
         byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
+<<<<<<< HEAD
         private bool firstLoad = true;
+=======
+        private bool firstLoad = true;
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
         private bool showFreeSMS = true;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
@@ -104,6 +108,7 @@ namespace windows_client.View
             {
                 emptyScreenImage.Opacity = 0;
                 emptyScreenTip.Opacity = 0;
+<<<<<<< HEAD
             }
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
             showFreeSMS = true;
@@ -115,6 +120,18 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
+=======
+            }
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            if (showFreeSMS)
+            {
+                freeSMSPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                freeSMSPanel.Visibility = Visibility.Collapsed;
+            }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

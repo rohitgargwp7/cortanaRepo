@@ -2484,6 +2484,7 @@ namespace windows_client.View
             #region TYPING_CONVERSATION
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
+<<<<<<< HEAD
             {
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
@@ -2499,13 +2500,7 @@ namespace windows_client.View
                 {
                     ShowTypingNotification();
                 }
-            }
-
-            #endregion
-
-            #region END_TYPING_CONVERSATION
-
-            else if (HikePubSub.END_TYPING_CONVERSATION == type)
+=======
             {
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
@@ -2517,6 +2512,43 @@ namespace windows_client.View
                 {
                     typingNotSenderOrSendee = (string)vals[0];
                 }
+                if (mContactNumber == typingNotSenderOrSendee)
+                {
+                    ShowTypingNotification();
+                }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+            }
+
+            #endregion
+
+            #region END_TYPING_CONVERSATION
+
+            else if (HikePubSub.END_TYPING_CONVERSATION == type)
+<<<<<<< HEAD
+            {
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+=======
+            {
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
                 if (mContactNumber == typingNotSenderOrSendee)
                 {
                     HideTypingNotification();
@@ -2796,6 +2828,7 @@ namespace windows_client.View
         }
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
+<<<<<<< HEAD
         {
             if (!isGroupChat)
             {
@@ -2812,6 +2845,24 @@ namespace windows_client.View
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
+=======
+        {
+            if (!isGroupChat)
+            {
+                if (mUserIsBlocked)
+                    return;
+
+                emoticonPanel.Visibility = Visibility.Collapsed;
+
+                if ((!isOnHike && mCredits <= 0))
+                    return;
+                ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.MessageId = TempMessageId;
+                convMessage.HasAttachment = false;
+                convMessage.MetaDataString = "{poke:1}";
+                sendMsg(convMessage, false);
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
             }
         }
     }
