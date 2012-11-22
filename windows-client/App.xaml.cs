@@ -13,6 +13,7 @@ using windows_client.View;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
+using windows_client.Misc;
 
 namespace windows_client
 {
@@ -31,7 +32,11 @@ namespace windows_client
         public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
+<<<<<<< HEAD
         public static readonly string SMS_SETTING = "smscredits";
+=======
+        public static readonly string SMS_SETTING = "smscredits";
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
         public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
@@ -365,9 +370,6 @@ namespace windows_client
             NetworkManager.turnOffNetworkManager = true;
             if (IS_VIEWMODEL_LOADED)
                 ConversationTableUtils.saveConvObjectList();
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
         }
@@ -376,9 +378,6 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
         }
 
@@ -442,7 +441,7 @@ namespace windows_client
         {
             if(IS_VIEWMODEL_LOADED)
                 ConversationTableUtils.saveConvObjectList();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+
             //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
             if (System.Diagnostics.Debugger.IsAttached)
@@ -458,7 +457,7 @@ namespace windows_client
         {
             if(IS_VIEWMODEL_LOADED)
                 ConversationTableUtils.saveConvObjectList();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+
             App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -554,13 +553,14 @@ namespace windows_client
             appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
             
             #region GROUP CACHE
-            if (!App.appSettings.Contains(App.GROUPS_CACHE))
+          
+            if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version
             {
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
+                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupCache();
+                RemoveKeyFromAppSettings(App.GROUPS_CACHE);
             }
 
-            else if (Utils.GroupCache == null)
-                Utils.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
             #endregion
             #region PUBSUB
             Stopwatch st = Stopwatch.StartNew();

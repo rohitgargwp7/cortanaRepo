@@ -117,6 +117,7 @@
     <Compile Include="FileTransfer.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
+    <Compile Include="Misc\GroupManager.cs" />
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
@@ -165,8 +166,8 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FacebookPage.xaml.cs">
-      <DependentUpon>FacebookPage.xaml</DependentUpon>
+    <Compile Include="View\SocialPages.xaml.cs">
+      <DependentUpon>SocialPages.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FreeSMS.xaml.cs">
       <DependentUpon>FreeSMS.xaml</DependentUpon>
@@ -262,7 +263,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FacebookPage.xaml">
+    <Page Include="View\SocialPages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

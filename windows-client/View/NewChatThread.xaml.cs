@@ -23,6 +23,7 @@ using System.Text;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
 using System.Device.Location;
+using windows_client.Misc;
 
 namespace windows_client.View
 {
@@ -534,6 +535,7 @@ namespace windows_client.View
 
                 if (Utils.isGroupConversation(mContactNumber)) // represents group chat
                 {
+                    GroupManager.Instance.LoadGroupParticipants(mContactNumber);
                     isGroupChat = true;
                     BlockTxtBlk.Text = "You have blocked this group. Unblock to continue hiking";
                     gi = GroupTableUtils.getGroupInfoForId(mContactNumber);
@@ -654,10 +656,7 @@ namespace windows_client.View
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
             List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5); // this is used to select only those contacts which should be later added.
-
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-
+            
             if (isNewgroup) // if new group add all members to the group
             {
                 List<GroupParticipant> l = new List<GroupParticipant>(contactsForGroup.Count);
@@ -667,7 +666,7 @@ namespace windows_client.View
                     l.Add(gp);
                     usersToAdd.Add(gp);
                 }
-                Utils.GroupCache[mContactNumber] = l;
+                GroupManager.Instance.GroupCache[mContactNumber] = l;
             }
             else // existing group so just add members
             {
@@ -675,7 +674,7 @@ namespace windows_client.View
                 {
                     GroupParticipant gp = null;
                     bool addNewparticipant = true;
-                    List<GroupParticipant> gl = Utils.GroupCache[mContactNumber];
+                    List<GroupParticipant> gl = GroupManager.Instance.GroupCache[mContactNumber];
                     if (gl == null)
                         gl = new List<GroupParticipant>();
 
@@ -694,23 +693,24 @@ namespace windows_client.View
                     if (addNewparticipant)
                     {
                         gp = new GroupParticipant(mContactNumber, contactsForGroup[i].Name, contactsForGroup[i].Msisdn, contactsForGroup[i].OnHike);
-                        Utils.GroupCache[mContactNumber].Add(gp);
+                        GroupManager.Instance.GroupCache[mContactNumber].Add(gp);
                     }
                     usersToAdd.Add(gp);
                 }
             }
 
-            Utils.GroupCache[mContactNumber].Sort();
+            GroupManager.Instance.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            GroupManager.Instance.SaveGroupCache(mContactNumber);
+            //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
             groupCreateJson = createGroupJsonPacket(HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN, usersToAdd);
             if (isNewgroup)
-                mContactName = Utils.defaultGroupName(mContactNumber);
+                mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
             else
             {
                 GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
                 if (gif != null && string.IsNullOrEmpty(gif.GroupName))
-                    mContactName = Utils.defaultGroupName(mContactNumber);
+                    mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
             }
             userName.Text = mContactName;
             if (isNewgroup)
@@ -1419,7 +1419,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, isGroupChat, Utils.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                        chatBubble = new ReceivedChatBubble(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
 
                     }
                     this.MessageList.Children.Add(chatBubble);
@@ -1458,7 +1458,7 @@ namespace windows_client.View
                     {
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
 
-                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMessage.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMessage.Msisdn);
                         string text = HikeConstants.USER_JOINED_GROUP_CHAT;
                         NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED;
                         if (vars[1] == "0" && !gp.IsOnHike)
@@ -1487,7 +1487,7 @@ namespace windows_client.View
                         string msisdn = vars[0];
                         string showIcon = vars[1];
                         // every participant is either on DND or not on DND
-                        GroupParticipant gp = Utils.getGroupParticipant(null, msisdn, convMessage.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, msisdn, convMessage.Msisdn);
 
                         string text = gp.FirstName + HikeConstants.USER_JOINED_GROUP_CHAT;
                         NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
@@ -2484,6 +2484,7 @@ namespace windows_client.View
             #region TYPING_CONVERSATION
 
             else if (HikePubSub.TYPING_CONVERSATION == type)
+<<<<<<< HEAD
             {
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
@@ -2499,13 +2500,7 @@ namespace windows_client.View
                 {
                     ShowTypingNotification();
                 }
-            }
-
-            #endregion
-
-            #region END_TYPING_CONVERSATION
-
-            else if (HikePubSub.END_TYPING_CONVERSATION == type)
+=======
             {
                 object[] vals = (object[])obj;
                 string typingNotSenderOrSendee = "";
@@ -2517,6 +2512,43 @@ namespace windows_client.View
                 {
                     typingNotSenderOrSendee = (string)vals[0];
                 }
+                if (mContactNumber == typingNotSenderOrSendee)
+                {
+                    ShowTypingNotification();
+                }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
+            }
+
+            #endregion
+
+            #region END_TYPING_CONVERSATION
+
+            else if (HikePubSub.END_TYPING_CONVERSATION == type)
+<<<<<<< HEAD
+            {
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+=======
+            {
+                object[] vals = (object[])obj;
+                string typingNotSenderOrSendee = "";
+                if (isGroupChat)
+                {
+                    typingNotSenderOrSendee = (string)vals[1];
+                }
+                else
+                {
+                    typingNotSenderOrSendee = (string)vals[0];
+                }
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
                 if (mContactNumber == typingNotSenderOrSendee)
                 {
                     HideTypingNotification();
@@ -2796,6 +2828,7 @@ namespace windows_client.View
         }
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
+<<<<<<< HEAD
         {
             if (!isGroupChat)
             {
@@ -2812,6 +2845,24 @@ namespace windows_client.View
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
+=======
+        {
+            if (!isGroupChat)
+            {
+                if (mUserIsBlocked)
+                    return;
+
+                emoticonPanel.Visibility = Visibility.Collapsed;
+
+                if ((!isOnHike && mCredits <= 0))
+                    return;
+                ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.MessageId = TempMessageId;
+                convMessage.HasAttachment = false;
+                convMessage.MetaDataString = "{poke:1}";
+                sendMsg(convMessage, false);
+>>>>>>> d80e823a782a4e9e5175787b90f95a265d91a2a3
             }
         }
     }
