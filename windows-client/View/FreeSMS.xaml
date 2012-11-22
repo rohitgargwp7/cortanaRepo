@@ -54,8 +54,8 @@
             </Grid>
 
             <StackPanel Grid.Row="2">
-                <Rectangle Height="1" Fill="#1a1a1a"></Rectangle>
-                <Rectangle Height="1" Fill="#252525"></Rectangle>
+                <Rectangle x:Name="upperBar" Height="1"></Rectangle>
+                <Rectangle x:Name="lowerBar" Height="1"></Rectangle>
             </StackPanel>
 
             <Grid x:Name="hikeToSMSGrid" Grid.Row="3" VerticalAlignment="Center">

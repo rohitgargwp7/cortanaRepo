@@ -1251,26 +1251,6 @@ namespace windows_client.View
             if (!isContextMenuTapped)
             {
                 MyChatBubble chatBubble = (sender as MyChatBubble);
-                if (chatBubble.FileAttachment.ContentType.Contains("location"))
-                {
-                    string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
-                    byte[] filebytes;
-                    MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-
-                    UTF8Encoding enc = new UTF8Encoding();
-                    string locationInfo = enc.GetString(filebytes, 0, filebytes.Length);
-                    JObject locationJSON = JObject.Parse(locationInfo);
-                    if (this.bingMapsTask == null)
-                        bingMapsTask = new BingMapsTask();
-                    double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
-                    double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
-                    double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
-                    bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
-                    bingMapsTask.ZoomLevel = zoomLevel;
-                    bingMapsTask.Show();
-                    return;
-                }
-
                 if (chatBubble.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                     return;
                 if (chatBubble.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED && chatBubble.FileAttachment.FileState != Attachment.AttachmentState.STARTED)
@@ -1291,6 +1271,12 @@ namespace windows_client.View
                         convMessage.MessageId = chatBubble.MessageId;
                         convMessage.FileAttachment = chatBubble.FileAttachment;
                         convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + convMessage.FileAttachment.FileKey;
+                        
+                        byte[] locationInfoBytes = null;
+                        MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                            convMessage.MessageId, out locationInfoBytes);
+                        string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfoBytes, 0, locationInfoBytes.Length);
+                        convMessage.MetaDataString = locationInfoString;
                         object[] values = new object[2];
                         values[0] = convMessage;
                         values[1] = chatBubble;
@@ -1335,6 +1321,25 @@ namespace windows_client.View
                 catch
                 {
                 }
+            }
+            else if (chatBubble.FileAttachment.ContentType.Contains("location"))
+            {
+                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
+                byte[] filebytes;
+                MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
+
+                UTF8Encoding enc = new UTF8Encoding();
+                string locationInfo = enc.GetString(filebytes, 0, filebytes.Length);
+                JObject locationJSON = JObject.Parse(locationInfo);
+                if (this.bingMapsTask == null)
+                    bingMapsTask = new BingMapsTask();
+                double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
+                double longitude = Convert.ToDouble(locationJSON[HikeConstants.LONGITUDE].ToString());
+                double zoomLevel = Convert.ToDouble(locationJSON[HikeConstants.ZOOM_LEVEL].ToString());
+                bingMapsTask.Center = new GeoCoordinate(latitude, longitude);
+                bingMapsTask.ZoomLevel = zoomLevel;
+                bingMapsTask.Show();
+                return;
             }
         }
 

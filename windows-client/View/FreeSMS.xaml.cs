@@ -46,35 +46,10 @@ namespace windows_client.View
                     max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
                 }
                 catch { }
-
             }
             creditsRemainingBar.Width = (creditsRemaining * 435)/max;
             maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
             maxCreditsTxtBlck.Text = max.ToString() + "+";
-            TextBlock t3 = null;
-            Rectangle r3 = null;
-            //if (creditsRemaining > 999)
-            //{
-            //    ColumnDefinition c4 = new ColumnDefinition();
-            //    c4.Width = GridLength.Auto;
-            //    SMSCounterGrid.ColumnDefinitions.Add(c4);
-
-            //    r3 = new Rectangle();
-            //    r3.Fill = rectangleColor;
-            //    r3.Margin = box4Margin;
-            //    r3.Width = 47;
-            //    r3.Height = 76;
-            //    Grid.SetColumn(r3, 3);
-            //    SMSCounterGrid.Children.Add(r3);
-
-            //    t3 = new TextBlock();
-            //    t3.FontSize = 45;
-            //    t3.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            //    t3.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            //    Grid.SetColumn(t3, 3);
-            //    SMSCounterGrid.Children.Add(t3);
-            //}
-
             creditsRemaining %= 10000;
             string strCreditsWithZeroes;
             if (creditsRemaining > 999)
@@ -82,34 +57,22 @@ namespace windows_client.View
             else
                 strCreditsWithZeroes = creditsRemaining.ToString("000");
 
-            //t0.Text = strCreditsWithZeroes[0].ToString();
-            //t1.Text = strCreditsWithZeroes[1].ToString();
-            //t2.Text = strCreditsWithZeroes[2].ToString();
-            if (t3 != null)
-                t3.Text = strCreditsWithZeroes[3].ToString();
-
             if (Utils.isDarkTheme())
             {
                 upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
                 facebookBtn.Background = twitterBtn.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
-                //t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
-                //r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
                 bottomLine.Fill = UI_Utils.Instance.Black;
+                upperBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x1a, 0x1a, 0x1a));
+                lowerBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
             }
             else
             {
                 upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xfa, 0xfa, 0xfa));
                 facebookBtn.Background = twitterBtn.Background = new SolidColorBrush(Color.FromArgb(255, 0xf1, 0xf1, 0xf1));
-                //t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.White;
-                //r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
-                bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
+                bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
+                upperBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
+                lowerBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
             }
-            //if (t3 != null)
-            //    t3.Foreground = t0.Foreground;
-            //if (r3 != null)
-            //    r3.Fill = r0.Fill;
-
-
         }
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
@@ -125,15 +88,6 @@ namespace windows_client.View
                     string credits = (string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH];
                     int creditCount = -1;
                     int.TryParse(credits, out creditCount);
-                    //if (creditCount > 0)
-                    //{
-                    //    MaxCredits.Text = credits;
-                    //    maxCreditCount.Opacity = 1;
-                    //}
-                    //else
-                    //{
-                    //    maxCreditCount.Opacity = 0;
-                    //}
                 });
             }
         }
