@@ -27,21 +27,6 @@ namespace windows_client.View
             InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                socialFb.Text = "FB (connected)";
-            else
-                socialFb.Text = "FB (not connected)";
-
-            if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
-                socialTw.Text = "TW (connected)";
-            else
-                socialTw.Text = "TW (not connected)";
-        }
-
         private void Social_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SOCIAL);
@@ -92,62 +77,6 @@ namespace windows_client.View
             }
             catch
             {
-            }
-        }
-
-        private void SocialFb_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            PhoneApplicationService.Current.State["Social_Request"] = false;
-            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-        }
-
-        public static void SocialPostFB(JObject obj)
-        {
-            if (obj != null && "ok" == (string)obj["stat"])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show("Successfully posted to facebook.", "Facebook Post", MessageBoxButton.OK);
-                });
-            }
-        }
-
-        public static void SocialDeleteFB(JObject obj)
-        {
-            if (obj != null && "ok" == (string)obj["stat"])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show("Successfully Logged out.", "Facebook Logout", MessageBoxButton.OK);
-                });
-            }
-        }
-
-        private void SocialTw_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            PhoneApplicationService.Current.State["Social_Request"] = true;
-            NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
-        }
-
-        public static void SocialPostTW(JObject obj)
-        {
-            if (obj != null && "ok" == (string)obj["stat"])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show("Successfully posted to twitter.", "Twitter Post", MessageBoxButton.OK);
-                });
-            }
-        }
-
-        public static void SocialDeleteTW(JObject obj)
-        {
-            if (obj != null && "ok" == (string)obj["stat"])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show("Successfully Logged out.", "Twitter Logout", MessageBoxButton.OK);
-                });
             }
         }
 

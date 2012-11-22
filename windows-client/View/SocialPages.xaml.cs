@@ -32,35 +32,26 @@ namespace windows_client.View
         public SocialPages()
         {
             InitializeComponent();
-            isTwitter = (bool)PhoneApplicationService.Current.State["Social_Request"];
+            PhoneApplicationService.Current.State["FromSocialPage"] = true;
+            isTwitter = (bool)PhoneApplicationService.Current.State[HikeConstants.SOCIAL];
             if (isTwitter)
             {
-                //if (App.appSettings.Contains("TwLoggedIn"))
-                    //LogoutTw();
-                //else
-                    AuthenticateTwitter();
+                BrowserControl.IsScriptEnabled = false;
+                AuthenticateTwitter();
             }
             else
             {
-                if (App.appSettings.Contains("FbLoggedIn"))
+                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                     LogoutFb();
                 else
                     LogInFb();
             }
         }
 
-        private void LogoutTw()
-        {
-            App.RemoveKeyFromAppSettings("TwToken");
-            App.RemoveKeyFromAppSettings("TwTokenSecret");
-            App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
-            AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(Invite.SocialDeleteTW), "twitter", false);
-        }
-
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove("Social_Request");
+            PhoneApplicationService.Current.State.Remove(HikeConstants.SOCIAL);
         }
 
         private void LogInFb()
@@ -89,40 +80,40 @@ namespace windows_client.View
             #region TWITTER
             if (isTwitter)
             {
-                if (BrowserControl.Visibility == Visibility.Collapsed)
+                try
                 {
-                    BrowserControl.Visibility = Visibility.Visible;
+                    if (e.Uri.AbsoluteUri.ToLower().Replace("https://", "http://") == Misc.Social.TwitterSettings.AuthorizeUrl)
+                    {
+                        RetrieveAccessToken();
+                        //var htmlString = BrowserControl.SaveToString();
+                        //var pinFinder = new Regex(@"<DIV id=oauth_pin>(?<pin>[A-Za-z0-9_]+)</DIV>", RegexOptions.IgnoreCase);
+                        //var match = pinFinder.Match(htmlString);
+                        //if (match.Length > 0)
+                        //{
+                        //    var group = match.Groups["pin"];
+                        //    if (group.Length > 0)
+                        //    {
+                        //        pin = group.Captures[0].Value;
+                        //        if (!string.IsNullOrEmpty(pin))
+                        //        {
+                        //            RetrieveAccessToken();
+                        //        }
+                        //    }
+                        //}
+                        //if (string.IsNullOrEmpty(pin))
+                        //{
+                        //    Dispatcher.BeginInvoke(() =>
+                        //        {
+                        //            MessageBox.Show("Authorization denied by user");
+                        //            NavigationService.GoBack();
+                        //        });
+                        //}
+                        //// Make sure pin is reset to null
+                        //pin = null;
+                        //BrowserControl.Visibility = Visibility.Collapsed;
+                    }
                 }
-                if (e.Uri.AbsoluteUri.ToLower().Replace("https://", "http://") == Misc.Social.TwitterSettings.AuthorizeUrl)
-                {
-                    RetrieveAccessToken();
-                    //var htmlString = BrowserControl.SaveToString();
-                    //var pinFinder = new Regex(@"<DIV id=oauth_pin>(?<pin>[A-Za-z0-9_]+)</DIV>", RegexOptions.IgnoreCase);
-                    //var match = pinFinder.Match(htmlString);
-                    //if (match.Length > 0)
-                    //{
-                    //    var group = match.Groups["pin"];
-                    //    if (group.Length > 0)
-                    //    {
-                    //        pin = group.Captures[0].Value;
-                    //        if (!string.IsNullOrEmpty(pin))
-                    //        {
-                    //            RetrieveAccessToken();
-                    //        }
-                    //    }
-                    //}
-                    //if (string.IsNullOrEmpty(pin))
-                    //{
-                    //    Dispatcher.BeginInvoke(() =>
-                    //        {
-                    //            MessageBox.Show("Authorization denied by user");
-                    //            NavigationService.GoBack();
-                    //        });
-                    //}
-                    //// Make sure pin is reset to null
-                    //pin = null;
-                    //BrowserControl.Visibility = Visibility.Collapsed;
-                }
+                catch { }
             }
             #endregion
             #region FACEBOOK
@@ -136,8 +127,8 @@ namespace windows_client.View
                     App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGOUT;
                         NavigationService.GoBack();
-                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(Invite.SocialDeleteFB), "fb", false);
                     });
                 }
                 if (!_fb.TryParseOAuthCallbackUrl(e.Uri, out oauthResult))
@@ -182,11 +173,8 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    JObject oj = new JObject();
-                    oj["id"] = id;
-                    oj["token"] = accessToken;
+                    PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGIN;
                     NavigationService.GoBack();
-                    AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(Invite.SocialPostFB), "fb", true);
                 });
             };
             fb.GetAsync("me?fields=id");
@@ -217,7 +205,7 @@ namespace windows_client.View
                 catch
                 {
                     Dispatcher.BeginInvoke(() =>
-                        { 
+                        {
                             MessageBox.Show("Unable to retrieve request token");
                             NavigationService.GoBack();
                         });
@@ -225,6 +213,7 @@ namespace windows_client.View
             }, request);
         }
 
+        #region TWITTER HELPER FUNCTIONS
         private WebRequest CreateRequest(string httpMethod, string requestUrl)
         {
             var requestParameters = new Dictionary<string, string>();
@@ -415,6 +404,8 @@ namespace windows_client.View
             return responsePairs;
         }
 
+        #endregion
+
         public void RetrieveAccessToken()
         {
             var request = CreateRequest("POST", Misc.Social.TwitterSettings.AccessUrl);
@@ -435,23 +426,36 @@ namespace windows_client.View
                         App.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
                         Dispatcher.BeginInvoke(() =>
                         {
-                            JObject oj = new JObject();
-                            oj["id"] = token;
-                            oj["token"] = tokenSecret;
+                            PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.TW_LOGIN;
                             NavigationService.GoBack();
-                            AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(Invite.SocialPostTW), "twitter", true);
                         });
                     }
                 }
                 catch
                 {
                     Dispatcher.BeginInvoke(() =>
-                        { 
-                            MessageBox.Show("Unable to retrieve Access Token");
-                            NavigationService.GoBack();
+                        {
+                            
+                            //MessageBox.Show("Unable to retrieve Access Token");
+                            //NavigationService.GoBack();
                         });
                 }
             }, request);
+        }
+
+        private void Browser_Navigating(object sender, NavigatingEventArgs e)
+        {
+
+            string uri = e.Uri.AbsoluteUri.ToString();
+            if (uri.Contains("get.hike.in") || uri.Contains("windowsphone"))
+            {
+                e.Cancel = true;
+                Dispatcher.BeginInvoke(() =>
+                    {
+                        if (uri.Contains("denied") && NavigationService.CanGoBack)
+                            NavigationService.GoBack();
+                    });
+            }
         }
 
     }

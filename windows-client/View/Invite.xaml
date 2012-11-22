@@ -30,14 +30,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Width="430" HorizontalAlignment="Left" Tap="Social_Tap" Grid.Row="0" Text="Social" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,50,0,0"/>
             <TextBlock Width="430" HorizontalAlignment="Left" Tap="Email_Tap" Grid.Row="1" Text="Email" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
             <TextBlock Width="430" HorizontalAlignment="Left" Tap="Messaging_Tap"  Grid.Row="2" Text="Messaging" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
-            <TextBlock Width="430" Name="socialFb" HorizontalAlignment="Left" Tap="SocialFb_Tap"  Grid.Row="3" Text="FB" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
-            <TextBlock Width="430" Name="socialTw" HorizontalAlignment="Left" Tap="SocialTw_Tap"  Grid.Row="4" Text="TW" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

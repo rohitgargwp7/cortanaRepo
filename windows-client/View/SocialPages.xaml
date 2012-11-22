@@ -15,7 +15,7 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <phone:WebBrowser Name="BrowserControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsScriptEnabled="True" Navigated="Browser_Navigated"/>
+        <phone:WebBrowser Name="BrowserControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsScriptEnabled="True" Navigated="Browser_Navigated" Navigating="Browser_Navigating"/>
     </Grid>
 
 </phone:PhoneApplicationPage>
