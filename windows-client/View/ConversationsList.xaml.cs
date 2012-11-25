@@ -106,7 +106,6 @@ namespace windows_client.View
                 emptyScreenTip.Opacity = 0;
             }
             App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
-            showFreeSMS = true;
             if (showFreeSMS)
             {
                 freeSMSPanel.Visibility = Visibility.Visible;

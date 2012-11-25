@@ -23,7 +23,7 @@ namespace windows_client
         public EnterPin()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
+//            this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
 
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -210,6 +210,7 @@ namespace windows_client
                     obj = null;
                 }
             }
+            txtBxEnterPin.Focus();
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
