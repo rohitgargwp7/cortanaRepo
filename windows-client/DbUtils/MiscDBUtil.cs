@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using System.IO.IsolatedStorage;
 using System;
+using windows_client.Misc;
 
 namespace windows_client.DbUtils
 {
@@ -22,9 +23,9 @@ namespace windows_client.DbUtils
             //ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
+            GroupManager.Instance.DeleteAllGroups();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {                
-                App.RemoveKeyFromAppSettings(App.GROUPS_CACHE);
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
                 try

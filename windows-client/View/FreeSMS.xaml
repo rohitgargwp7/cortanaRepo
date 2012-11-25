@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage 
+<phone:PhoneApplicationPage 
     x:Class="windows_client.View.FreeSMS"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,7 +11,12 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="True">
+
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
+    </shell:SystemTray.ProgressIndicator>
+
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -54,8 +59,8 @@
             </Grid>
 
             <StackPanel Grid.Row="2">
-                <Rectangle x:Name="upperBar" Height="1"></Rectangle>
-                <Rectangle x:Name="lowerBar" Height="1"></Rectangle>
+                <Rectangle Height="1" Fill="#1a1a1a"></Rectangle>
+                <Rectangle Height="1" Fill="#252525"></Rectangle>
             </StackPanel>
 
             <Grid x:Name="hikeToSMSGrid" Grid.Row="3" VerticalAlignment="Center">
@@ -81,7 +86,7 @@
                         </Grid.ColumnDefinitions>
                         <Rectangle x:Name="creditsRemainingBar" Grid.Column="0" Fill="#8bc53f" Width="250"></Rectangle>
                         <Rectangle x:Name="maxCreditsBar" Grid.Column="1" Fill="#111111" Width="183"></Rectangle>
-                        <TextBlock x:Name="creditsRemainingTxtBlck" Text="147" Foreground="White" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="creditsRemainingTxtBlck" Text="147" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
                     </Grid>
                 </Border>
 
@@ -128,8 +133,9 @@
             </TextBlock>
 
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Center" Grid.Row="1">
-                <Button x:Name="facebookBtn" Width="190" BorderThickness="0" Height="72" Content="facebook"></Button>
-                <Button x:Name="twitterBtn" Width="190" BorderThickness="0" Height="72" Content="twitter"></Button>
+
+                <Button x:Name="facebookBtn" Width="190" BorderThickness="0" Height="72" Content="facebook" Click="facebookBtn_Click"></Button>
+                <Button x:Name="twitterBtn" Width="190" BorderThickness="0" Height="72" Content="twitter" Click="twitterBtn_Click"></Button>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="0,15,0,0">
                 <TextBlock FontSize="22" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center" Text="Invite via SMS"/>
@@ -142,7 +148,7 @@
                 </TextBlock>
 
             </StackPanel>
-            <Button Grid.Row="3" Margin="0,15,0,0" Content="Invite Now" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
+            <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="Invite Now" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
             <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,35,0,0" FontSize="16" VerticalAlignment="Bottom" Text="*Free SMS can only be sent to India at the moment"></TextBlock>
         </Grid>
     </Grid>

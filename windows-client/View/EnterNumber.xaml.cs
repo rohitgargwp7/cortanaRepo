@@ -354,7 +354,7 @@ namespace windows_client
             phoneNumber = countryCode.Substring(countryCode.IndexOf('+')) + txtEnterPhone.Text.Trim();
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
-            if (phoneNumber.Length < 10 || phoneNumber.Length > 15)
+            if (phoneNumber.Length < 1 || phoneNumber.Length > 15)
             {
                 MessageBox.Show("Enter valid phone number.", "Incorrect Phone Number", MessageBoxButton.OK);
                 txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
@@ -572,7 +572,7 @@ namespace windows_client
             {
                 nextIconButton.IsEnabled = false;
             }
-            if (txtEnterPhone.Text.Length > 7)
+            if (txtEnterPhone.Text.Length >= 1 && txtEnterPhone.Text.Length <= 15)
                 nextIconButton.IsEnabled = true;
             else
                 nextIconButton.IsEnabled = false;

@@ -13,6 +13,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
+using Microsoft.Phone.Shell;
 
 namespace windows_client.View
 {
@@ -24,16 +25,6 @@ namespace windows_client.View
         public Invite()
         {
             InitializeComponent();
-        }
-
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
-            if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                socialFb.Text = "FB (connected)";
-            else
-                socialFb.Text = "FB (not connected)";
         }
 
         private void Social_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -89,32 +80,5 @@ namespace windows_client.View
             }
         }
 
-        private void SocialFb_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/View/FacebookPage.xaml", UriKind.Relative));
-        }
-
-
-        public static void SocialPostFB(JObject obj)
-        {
-            if (obj != null && "ok" == (string)obj["stat"])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show("Successfully posted to facebook.", "Facebook Post", MessageBoxButton.OK);
-                });
-            }
-        }
-
-        public static void SocialDeleteFB(JObject obj)
-        {
-            if (obj != null && "ok" == (string)obj["stat"])
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBox.Show("Successfully Logged out.", "Facebook Logout", MessageBoxButton.OK);
-                });
-            }
-        }
     }
 }

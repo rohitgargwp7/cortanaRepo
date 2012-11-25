@@ -10,6 +10,7 @@ using windows_client.utils;
 using windows_client.View;
 using windows_client.Controls;
 using System.Threading;
+using windows_client.Misc;
 
 namespace windows_client.DbUtils
 {
@@ -282,8 +283,8 @@ namespace windows_client.DbUtils
                 //ConversationTableUtils.saveConvObjectList();
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
-                Utils.GroupCache.Remove(groupId);
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                GroupManager.Instance.GroupCache.Remove(groupId);
+                GroupManager.Instance.DeleteGroup(groupId);
             }
             #endregion
             #region BLOCK GROUP OWNER
@@ -310,10 +311,9 @@ namespace windows_client.DbUtils
                 string convMsisdn = (string)obj;
                 if (Utils.isGroupConversation(convMsisdn)) // if Group Conversation delete groups too
                 {
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                     GroupTableUtils.deleteGroupWithId(convMsisdn);
-                    Utils.GroupCache.Remove(convMsisdn);
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                    GroupManager.Instance.GroupCache.Remove(convMsisdn);
+                    GroupManager.Instance.DeleteGroup(convMsisdn);
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
                 //ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table

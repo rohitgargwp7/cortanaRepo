@@ -13,6 +13,7 @@ using windows_client.View;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
+using windows_client.Misc;
 
 namespace windows_client
 {
@@ -365,9 +366,6 @@ namespace windows_client
             NetworkManager.turnOffNetworkManager = true;
             if (IS_VIEWMODEL_LOADED)
                 ConversationTableUtils.saveConvObjectList();
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
         }
@@ -376,9 +374,6 @@ namespace windows_client
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
         }
 
@@ -442,7 +437,7 @@ namespace windows_client
         {
             if(IS_VIEWMODEL_LOADED)
                 ConversationTableUtils.saveConvObjectList();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+
             //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
             if (System.Diagnostics.Debugger.IsAttached)
@@ -458,7 +453,7 @@ namespace windows_client
         {
             if(IS_VIEWMODEL_LOADED)
                 ConversationTableUtils.saveConvObjectList();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+
             App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -554,13 +549,14 @@ namespace windows_client
             appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
             
             #region GROUP CACHE
-            if (!App.appSettings.Contains(App.GROUPS_CACHE))
+          
+            if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version
             {
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
+                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupCache();
+                RemoveKeyFromAppSettings(App.GROUPS_CACHE);
             }
 
-            else if (Utils.GroupCache == null)
-                Utils.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
             #endregion
             #region PUBSUB
             Stopwatch st = Stopwatch.StartNew();

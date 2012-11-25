@@ -187,6 +187,7 @@ namespace windows_client
         public static readonly string GROUP_CHAT_END = "This group chat has ended.";
         public static string USER_JOINED_HIKE = "{0} just joined hike!";
         public static string SMS_INDIA = "SMS can only be sent to India.";
+        public static string SOCIAL = "Social_Request";
 
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
@@ -197,6 +198,7 @@ namespace windows_client
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
         public static string FB_LOGGED_IN = "FbLoggedIn";
+        public static string TW_LOGGED_IN = "TwLoggedIn";
 
         public static class Extras
         {

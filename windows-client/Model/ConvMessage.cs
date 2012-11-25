@@ -11,6 +11,7 @@ using System.Text;
 using windows_client.DbUtils;
 using System.Collections.Generic;
 using Microsoft.Phone.Shell;
+using windows_client.Misc;
 
 namespace windows_client.Model
 {
@@ -804,7 +805,7 @@ namespace windows_client.Model
                 }
                 //if (_groupParticipant != null) // reprsents group chat
                 //{
-                //    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
+                //    _message = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
                 //}
                 JToken ts = null;
                 if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
@@ -863,7 +864,7 @@ namespace windows_client.Model
                     }
                     catch { }
 
-                    GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
                     gp.HasLeft = false;
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {
@@ -878,14 +879,14 @@ namespace windows_client.Model
                     }
                 }
                 if (!isSelfGenerated) // when I am group owner chache is already sorted
-                    Utils.GroupCache[toVal].Sort();
+                    GroupManager.Instance.GroupCache[toVal].Sort();
                 if (addedLater)
                 {
                     addedMembers.Sort();
                     this._message = GetMsgText(addedMembers, false);
                 }
                 else
-                    this._message = GetMsgText(Utils.GroupCache[toVal], true);
+                    this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
             }
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)
@@ -895,7 +896,7 @@ namespace windows_client.Model
             else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
             {
                 this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
-                GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
                 this._message = gp.FirstName + HikeConstants.USER_LEFT;
                 gp.HasLeft = true;
                 gp.IsUsed = false;
@@ -941,44 +942,5 @@ namespace windows_client.Model
                 default: break;
             }
         }
-
-        public static JObject ProcessGCLogic(string grpId)
-        {
-            List<GroupParticipant> l = Utils.GroupCache[grpId];
-            JObject obj = new JObject();
-            bool isValid = false;
-            bool saveCache = false;
-            try
-            {
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING;
-                obj[HikeConstants.TO] = grpId;
-                JArray array = new JArray();
-                for (int i = 0; i < l.Count; i++)
-                {
-                    if (!l[i].IsOnHike && !l[i].IsUsed && !l[i].HasLeft) // used is to track if we have shown joined for a user already
-                    {
-                        JObject nameMsisdn = new JObject();
-                        nameMsisdn[HikeConstants.NAME] = l[i].Name;
-                        nameMsisdn[HikeConstants.MSISDN] = l[i].Msisdn;
-                        nameMsisdn["onhike"] = l[i].IsOnHike;
-                        nameMsisdn["dnd"] = l[i].IsDND;
-                        array.Add(nameMsisdn);
-                        l[i].IsUsed = true;
-                        isValid = true;
-                        saveCache = true;
-                    }
-                }
-                obj[HikeConstants.DATA] = array;
-            }
-            catch
-            {
-            }
-            if (saveCache)
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            if (isValid)
-                return obj;
-            return null;
-        }
-
     }
 }
