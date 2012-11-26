@@ -36,6 +36,9 @@ namespace windows_client.View
 
         #region Instances
 
+        bool _isFavListBound = false;
+        bool _isPendingListBound = false;
+        bool _isHikeListBound = false;
         bool isProfilePicTapped = false;
         byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
@@ -49,6 +52,7 @@ namespace windows_client.View
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
+
         #endregion
 
         #region Page Based Functions
@@ -565,6 +569,96 @@ namespace windows_client.View
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
             }
+            else if (selectedIndex == 2) // favourite
+            {
+
+                // there will be three background workers that will independently load three sections
+
+                #region Favourites
+
+                if (!_isFavListBound)
+                {
+                    _isFavListBound = true;
+                    BackgroundWorker favBw = new BackgroundWorker();
+                    favBw.DoWork += (sf, ef) =>
+                    {
+                        for (int i = 0; i < App.ViewModel.FavList.Count; i++)
+                        {
+                            if (App.ViewModel.ConvMap.ContainsKey(App.ViewModel.FavList[i].Msisdn))
+                                App.ViewModel.FavList[i].Image = App.ViewModel.ConvMap[App.ViewModel.FavList[i].Msisdn].Avatar;
+                            else
+                            {
+                                App.ViewModel.FavList[i].Image = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
+                            }
+                        }
+                    };
+                    favBw.RunWorkerAsync();
+                    favBw.RunWorkerCompleted += (sf, ef) =>
+                    {
+                        favourites.ItemsSource = App.ViewModel.FavList;
+                    };
+                }
+
+                #endregion
+
+                #region Pending Requests
+
+                if (!_isPendingListBound)
+                {
+                    _isPendingListBound = true;
+                    BackgroundWorker pendingBw = new BackgroundWorker();
+                    pendingBw.DoWork += (sf, ef) =>
+                    {
+                        if(!App.ViewModel.IsPendingListLoaded) // if list is not loaded
+                            MiscDBUtil.LoadPendingRequests();
+                        App.ViewModel.IsPendingListLoaded = true;
+
+                        for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
+                        {
+                            if (App.ViewModel.ConvMap.ContainsKey(App.ViewModel.PendingRequests[i].Msisdn))
+                                App.ViewModel.PendingRequests[i].Image = App.ViewModel.ConvMap[App.ViewModel.PendingRequests[i].Msisdn].Avatar;
+                            else
+                            {
+                                App.ViewModel.PendingRequests[i].Image = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
+                            }
+                        }
+                    };
+                    pendingBw.RunWorkerAsync();
+                    pendingBw.RunWorkerCompleted += (sf, ef) =>
+                    {
+                        pendingRequests.ItemsSource = App.ViewModel.PendingRequests;
+                    };
+                }
+                #endregion
+
+                #region On Hike Friends
+
+                if (!_isHikeListBound)
+                {
+                    _isHikeListBound = true;
+                    List<ContactInfo> contactList = null;
+                    BackgroundWorker onHikeBw = new BackgroundWorker();
+                    onHikeBw.DoWork += (sf, ef) =>
+                    {
+                        contactList = UsersTableUtils.GetAllHikeContacts();
+                        if (contactList == null)
+                            return;
+                        for (int i = 0; i < contactList.Count; i++)
+                        {
+                            if (App.ViewModel.ConvMap.ContainsKey(contactList[i].Msisdn))
+                                contactList[i].Avatar = App.ViewModel.ConvMap[contactList[i].Msisdn].Avatar;
+                            else
+                                contactList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(contactList[i].Msisdn);
+                        }
+                    };
+                    onHikeBw.RunWorkerAsync();
+                    onHikeBw.RunWorkerCompleted += (sf, ef) =>
+                    {
+                        hikeFriends.ItemsSource = contactList;
+                    };
+                }
+                #endregion
+            }
         }
 
         #endregion
@@ -718,7 +812,6 @@ namespace windows_client.View
 
         #endregion
 
-
         #region IN APP UPDATE
 
         //private bool isAppEnabled = true;
@@ -860,5 +953,9 @@ namespace windows_client.View
 
         #endregion
 
+        #region FAVOURITE ZONE
+
+
+        #endregion
     }
 }

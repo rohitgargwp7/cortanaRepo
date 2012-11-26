@@ -96,7 +96,6 @@
                 </Grid>
             </controls:PivotItem>
 
-
             <controls:PivotItem Header="profile">
                 <Grid x:Name="ProfileGrid">
                     <Grid.RowDefinitions>
@@ -148,6 +147,7 @@
                     </StackPanel>
                 </Grid>
             </controls:PivotItem>
+            
             <controls:PivotItem Header="favourites">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -167,7 +167,7 @@
                             
                             <TextBlock Grid.Row="0" Text="Your favourites" Foreground="LightGray"/>
 
-                            <toolkit:LongListSelector x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" IsFlatList="False">
+                            <toolkit:LongListSelector x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" IsFlatList="True">
                                 <toolkit:LongListSelector.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -179,10 +179,10 @@
                                                 <ColumnDefinition Width="50"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding avatar}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
+                                            <Image Source="{Binding AvatarImage}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
                                             <TextBlock TextWrapping="Wrap" Grid.Column="1" Grid.Row="0">
                                                 <TextBlock.Inlines>
-                                                    <Run FontWeight="Bold" Text="{Binding userName}"/>
+                                                    <Run FontWeight="Bold" Text="{Binding ContactName}"/>
                                                     <Run FontWeight="Light" Text=" added you as favourite. Would you like to do the same?"/>
                                                 </TextBlock.Inlines>
                                             </TextBlock>
@@ -195,12 +195,12 @@
                                 </toolkit:LongListSelector.ItemTemplate>
                             </toolkit:LongListSelector>
 
-                            <toolkit:LongListSelector x:Name="favourites" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" IsFlatList="False">
+                            <toolkit:LongListSelector x:Name="favourites" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" IsFlatList="True">
                                 <toolkit:LongListSelector.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Source="{Binding}" Height="40"></Image>
-                                            <TextBlock Text="{Binding}"></TextBlock>
+                                            <Image Source="{Binding AvatarImage}" Height="40"></Image>
+                                            <TextBlock Text="{Binding ContactName}"></TextBlock>
                                         </StackPanel>
                                     </DataTemplate>
                                 </toolkit:LongListSelector.ItemTemplate>
@@ -209,12 +209,12 @@
                             <Rectangle Height="1" Fill="#080808" Grid.Row="3"/>
                             
                             <TextBlock Text="Friends on hike" Grid.Row="4" Foreground="LightGray"></TextBlock>
-                            <toolkit:LongListSelector x:Name="hikeFriends" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="5" IsFlatList="False">
+                            <toolkit:LongListSelector x:Name="hikeFriends" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="5" IsFlatList="True">
                                 <toolkit:LongListSelector.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Image Source="{Binding}" Height="40"></Image>
-                                            <TextBlock Text="{Binding}"></TextBlock>
+                                            <Image Source="{Binding AvatarImage}" Height="40"></Image>
+                                            <TextBlock Text="{Binding Name}"></TextBlock>
                                         </StackPanel>
                                     </DataTemplate>
                                 </toolkit:LongListSelector.ItemTemplate>

@@ -699,6 +699,22 @@ namespace windows_client
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
+            else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
+            {
+                JObject oj = (JObject)jsonObj[HikeConstants.DATA];
+                string ms = (string)oj[HikeConstants.Extras.ID];
+                if (App.ViewModel.Isfavourite(ms)) // already favourite
+                    return;
+                if (App.ViewModel.IsPending(ms))
+                    return;
+                ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                if (contactInfo == null)
+                    return;
+                byte[] _av = MiscDBUtil.getThumbNailForMsisdn(ms);
+                Favourites f = new Favourites(ms, contactInfo.Name, contactInfo.OnHike,_av);
+                App.ViewModel.PendingRequests.Add(f);
+                MiscDBUtil.SavePendingRequests();
+            }
             #region OTHER
             else
             {

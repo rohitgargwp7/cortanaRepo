@@ -177,6 +177,7 @@ namespace windows_client.Model
                     _muteVal = value;
             }
         }
+
         public bool IsMute
         {
             get
@@ -187,6 +188,7 @@ namespace windows_client.Model
                     return false;
             }
         }
+
         public BitmapImage SDRStatusImage
         {
             get

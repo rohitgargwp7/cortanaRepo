@@ -241,6 +241,7 @@ namespace windows_client
             public static string USER_JOIN = "uj";
             public static string SMS_USER = "sms_user";
             public static string HIKE_USER = "hike_user";
+            public static string ADD_FAVOURITE = "af";
         }
     }
 }

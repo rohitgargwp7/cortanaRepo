@@ -699,7 +699,10 @@ namespace windows_client
                         {
                             store.CreateDirectory(MiscDBUtil.THUMBNAILS);
                         }
-
+                        if (!string.IsNullOrEmpty(MiscDBUtil.MISC_DIR) && !store.DirectoryExists(MiscDBUtil.MISC_DIR))
+                        {
+                            store.CreateDirectory(MiscDBUtil.MISC_DIR);
+                        }
                         if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
                         {
                             store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);

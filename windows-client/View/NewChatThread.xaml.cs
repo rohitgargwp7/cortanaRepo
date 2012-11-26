@@ -69,10 +69,12 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IScheduler scheduler = Scheduler.NewThread;
 
+        private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem blockUnblockMenuItem;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
+        ApplicationBarMenuItem addToFavMenuItem = null;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -154,6 +156,7 @@ namespace windows_client.View
         }
 
         #region CONTEXT MENU DICTIONARY
+
         public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> NonAttachmentMenu
         {
             get
@@ -172,7 +175,6 @@ namespace windows_client.View
                 _nonAttachmentMenu = value;
             }
         }
-
 
         public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploading
         {
@@ -559,6 +561,7 @@ namespace windows_client.View
                 {
                     convObj.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                 }
+                avatarImage = convObj.AvatarImage;
                 userImage.Source = convObj.AvatarImage;
             }
 
@@ -615,6 +618,7 @@ namespace windows_client.View
 
                 if (avatar == null)
                 {
+                    avatarImage = UI_Utils.Instance.DefaultAvatarBitmapImage;
                     userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
                 }
                 else
@@ -624,6 +628,7 @@ namespace windows_client.View
                     BitmapImage empImage = new BitmapImage();
                     empImage.SetSource(memStream);
                     userImage.Source = empImage;
+                    avatarImage = empImage;
                 }
                 //}
                 //else
@@ -842,7 +847,6 @@ namespace windows_client.View
             }
             else
             {
-
                 blockUnblockMenuItem = new ApplicationBarMenuItem();
                 if (mUserIsBlocked)
                 {
@@ -866,6 +870,14 @@ namespace windows_client.View
                 callMenuItem.Text = "call";
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
+
+                // Add to fav is shown only in case of GC
+                addToFavMenuItem = new ApplicationBarMenuItem();
+                addToFavMenuItem.Text = "add to favourites";
+                addToFavMenuItem.Click += new EventHandler(addToFavMenuItem_Click);
+                appBar.MenuItems.Add(addToFavMenuItem);
+                if (App.ViewModel.Isfavourite(mContactNumber))
+                    addToFavMenuItem.IsEnabled = false;
             }
             chatThreadMainPage.ApplicationBar = appBar;
         }
@@ -1123,6 +1135,13 @@ namespace windows_client.View
 
         #region APPBAR CLICK EVENTS
 
+        private void addToFavMenuItem_Click(object sender, EventArgs e)
+        {
+            Favourites favObj = new Favourites(mContactNumber,mContactName,isOnHike,avatarImage);
+            MiscDBUtil.SaveFavourites(favObj);
+            addToFavMenuItem.IsEnabled = false;
+        }
+        
         private void callUser_Click(object sender, EventArgs e)
         {
             PhoneCallTask phoneCallTask = new PhoneCallTask();
