@@ -344,6 +344,7 @@
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
+    <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_play.png" />
     <Content Include="View\images\icon_play_stop.png" />
@@ -362,6 +363,8 @@
     <Content Include="View\images\new_message.png" />
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
+    <Content Include="View\images\tick.png" />
+    <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
     <Resource Include="hi.png" />

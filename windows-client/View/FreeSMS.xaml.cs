@@ -17,6 +17,40 @@ namespace windows_client.View
         private readonly SolidColorBrush rectangleColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private readonly Thickness box4Margin = new Thickness(5, 5, 5, 5);
 
+        private bool _isFacebookConnected = false;
+        private bool IsFacebookConnected
+        {
+            get
+            {
+                return _isFacebookConnected;
+            }
+            set 
+            {
+                if (value != _isFacebookConnected)
+                {
+                    _isFacebookConnected = value;
+                    showFacebook(_isFacebookConnected);
+                }
+            }
+        }
+
+        private bool _isTwitterConnected = false;
+        private bool IsTwitterConnected
+        {
+            get
+            {
+                return _isTwitterConnected;
+            }
+            set
+            {
+                if (value != _isTwitterConnected)
+                {
+                    _isTwitterConnected = value;
+                    showTwitter(_isTwitterConnected);
+                }
+            }
+        }
+
         public enum SocialState
         {
             FB_LOGIN, FB_LOGOUT, TW_LOGIN, TW_LOGOUT, DEFAULT
@@ -70,14 +104,21 @@ namespace windows_client.View
             else
             {
                 if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
-                    facebookBtn.Content = "facebook(c)";
+                {
+                    IsFacebookConnected = true;
+                }
                 else
-                    facebookBtn.Content = "facebook(nc)";
-
+                {
+                    IsFacebookConnected = false;
+                }
                 if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN))
-                    twitterBtn.Content = "twitter(c)";
+                {
+                    IsTwitterConnected = true;
+                }
                 else
-                    twitterBtn.Content = "twitter(nc)";
+                {
+                    IsTwitterConnected = false;
+                }
             }
         }
 
@@ -108,16 +149,12 @@ namespace windows_client.View
             if (enable)
             {
                 shellProgress.IsVisible = false;
-                twitterBtn.IsEnabled = true;
-                facebookBtn.IsEnabled = true;
                 inviteNow.IsEnabled = true;
                 canGoBack = true;
             }
             else
             {
                 shellProgress.IsVisible = true;
-                twitterBtn.IsEnabled = false;
-                facebookBtn.IsEnabled = false;
                 inviteNow.IsEnabled = false;
                 canGoBack = false;
             }
@@ -125,62 +162,17 @@ namespace windows_client.View
 
         private void initpageBasedOnState()
         {
-            int creditsRemaining = 0;
-            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
-            creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
-
-            int max = 100;
-            if (App.appSettings.Contains(HikeConstants.TOTAL_CREDITS_PER_MONTH))
-            {
-                try
-                {
-                    max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
-                }
-                catch { }
-
-            }
-
-            creditsRemainingBar.Width = (creditsRemaining * 435) / max;
-            maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
-            maxCreditsTxtBlck.Text = max.ToString() + "+";
-            TextBlock t3 = null;
-            Rectangle r3 = null;
-
-            creditsRemaining %= 10000;
-            string strCreditsWithZeroes;
-            if (creditsRemaining > 999)
-                strCreditsWithZeroes = creditsRemaining.ToString("0000");
-            else
-                strCreditsWithZeroes = creditsRemaining.ToString("000");
-
-            //t0.Text = strCreditsWithZeroes[0].ToString();
-            //t1.Text = strCreditsWithZeroes[1].ToString();
-            //t2.Text = strCreditsWithZeroes[2].ToString();
-            if (t3 != null)
-                t3.Text = strCreditsWithZeroes[3].ToString();
-
+            initializeCredits();
             if (Utils.isDarkTheme())
             {
                 upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
-                facebookBtn.Background = twitterBtn.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
-                //t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.Black;
-                //r0.Fill = r1.Fill = r2.Fill = UI_Utils.Instance.White;
                 bottomLine.Fill = UI_Utils.Instance.Black;
             }
             else
             {
                 upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xfa, 0xfa, 0xfa));
-                facebookBtn.Background = twitterBtn.Background = new SolidColorBrush(Color.FromArgb(255, 0xf1, 0xf1, 0xf1));
-                //t0.Foreground = t1.Foreground = t2.Foreground = UI_Utils.Instance.White;
-                //r0.Fill = r1.Fill = r2.Fill = new SolidColorBrush(Color.FromArgb(255, 0x2f, 0x2f, 0x2f));
                 bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
             }
-            //if (t3 != null)
-            //    t3.Foreground = t0.Foreground;
-            //if (r3 != null)
-            //    r3.Fill = r0.Fill;
-
-
         }
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
@@ -193,18 +185,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    string credits = (string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH];
-                    int creditCount = -1;
-                    int.TryParse(credits, out creditCount);
-                    //if (creditCount > 0)
-                    //{
-                    //    MaxCredits.Text = credits;
-                    //    maxCreditCount.Opacity = 1;
-                    //}
-                    //else
-                    //{
-                    //    maxCreditCount.Opacity = 0;
-                    //}
+                    initializeCredits();
                 });
             }
         }
@@ -239,7 +220,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    facebookBtn.Content = "facebook(c)";
+                    IsFacebookConnected = true;
                     ChangeElementsState(true);
                     MessageBox.Show("Successfully posted to facebook.", "Facebook Post", MessageBoxButton.OK);
                 });
@@ -255,8 +236,8 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    IsFacebookConnected = false;
                     ChangeElementsState(true);
-                    facebookBtn.Content = "facebook(nc)";
                     MessageBox.Show("Successfully Unlinked Account.", "Facebook Unlink", MessageBoxButton.OK);
                 });
             }
@@ -291,8 +272,8 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    IsTwitterConnected = true;
                     ChangeElementsState(true);
-                    twitterBtn.Content = "twitter(c)";
                     MessageBox.Show("Successfully posted to twitter.", "Twitter Post", MessageBoxButton.OK);
                 });
             }
@@ -304,12 +285,95 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    IsTwitterConnected = false;
                     ChangeElementsState(true);
-                    twitterBtn.Content = "twitter(nc)";
                     MessageBox.Show("Successfully Unlinked Account.", "Twitter Logout", MessageBoxButton.OK);
                 });
             }
         }
 
+        private void initializeCredits()
+        {
+            int creditsRemaining = 0;
+            App.appSettings.TryGetValue(App.SMS_SETTING, out creditsRemaining);
+            creditsRemainingTxtBlck.Text = creditsRemaining.ToString();
+            int max = 100;
+            if (App.appSettings.Contains(HikeConstants.TOTAL_CREDITS_PER_MONTH))
+            {
+                try
+                {
+                    max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
+                }
+                catch { }
+            }
+            creditsRemainingBar.Width = (creditsRemaining * 435) / max;
+            maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
+            maxCreditsTxtBlck.Text = max.ToString() + "+";
+        }
+
+        private void showFacebook(bool isConnected)
+        {
+            if (isConnected)
+            {
+                fbConnStatus.Text = "Connected";
+                fbConnImage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                fbConnStatus.Text = "facebook";
+                fbConnImage.Visibility = Visibility.Collapsed;
+            }
+        }
+        private void showTwitter(bool isConnected)
+        {
+            if (isConnected)
+            {
+                twConnStatus.Text = "Connected";
+                twConnImage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                twConnStatus.Text = "facebook";
+                twConnImage.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void twitter_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (canGoBack)
+            {
+                if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
+                {
+                    MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Twitter", MessageBoxButton.OKCancel);
+                    if (res == MessageBoxResult.Cancel)
+                        return;
+                    else
+                    {
+                        App.RemoveKeyFromAppSettings("TwToken");
+                        App.RemoveKeyFromAppSettings("TwTokenSecret");
+                        App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
+                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), "twitter", false);
+                        return;
+                    }
+                }
+                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = true;
+                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+            }
+        }
+
+        private void facebook_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (canGoBack)
+            {
+                if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
+                {
+                    MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Facebook", MessageBoxButton.OKCancel);
+                    if (res == MessageBoxResult.Cancel)
+                        return;
+                }
+                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = false;
+                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+            }
+        }
     }
 }
