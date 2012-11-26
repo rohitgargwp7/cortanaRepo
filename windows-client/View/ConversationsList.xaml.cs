@@ -40,7 +40,7 @@ namespace windows_client.View
         byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
         private bool firstLoad = true;
-        private bool showFreeSMS = true;
+        private bool showFreeSMS = false;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private PhotoChooserTask photoChooserTask;
