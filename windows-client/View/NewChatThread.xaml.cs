@@ -989,7 +989,8 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
+                //SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
+                SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
 
                 newChatBubble.SetSentMessageStatusForUploadedAttachments();
 
@@ -1270,7 +1271,26 @@ namespace windows_client.View
                         convMessage.HasAttachment = true;
                         convMessage.MessageId = chatBubble.MessageId;
                         convMessage.FileAttachment = chatBubble.FileAttachment;
-                        convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + convMessage.FileAttachment.FileKey;
+                        if (convMessage.FileAttachment.ContentType.Contains("image"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "photo") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
+                        else if (convMessage.FileAttachment.ContentType.Contains("audio"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "voice message") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
+                        else if (convMessage.FileAttachment.ContentType.Contains("location"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "location") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
+                        else if (convMessage.FileAttachment.ContentType.Contains("video"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "video") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
 
                         byte[] locationInfoBytes = null;
                         MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
@@ -1416,7 +1436,8 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        chatBubble = new SentChatBubble(convMessage, readFromDB);
+                        //chatBubble = new SentChatBubble(convMessage, readFromDB);
+                        chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
                         if (convMessage.MessageId < -1 || convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else if (convMessage.MessageId == -1)
@@ -1428,6 +1449,13 @@ namespace windows_client.View
 
                     }
                     this.MessageList.Children.Add(chatBubble);
+                    if (chatBubble.splitChatBubbles != null && chatBubble.splitChatBubbles.Count > 0)
+                    {
+                        for (int i = 0; i < chatBubble.splitChatBubbles.Count; i++)
+                        {
+                            this.MessageList.Children.Add(chatBubble.splitChatBubbles[i]);
+                        }
+                    }
                     ScrollToBottom();
                     if (convMessage.FileAttachment != null)
                     {
@@ -2811,12 +2839,14 @@ namespace windows_client.View
 
                 if ((!isOnHike && mCredits <= 0))
                     return;
-                ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageId = TempMessageId;
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
+                VibrateController vibrate = VibrateController.Default;
+                vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
             }
         }
     }
