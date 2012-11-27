@@ -75,6 +75,7 @@ namespace windows_client
                 // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    pinErrorTxt.Text = "PIN not valid. Please try again.";
                     pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
