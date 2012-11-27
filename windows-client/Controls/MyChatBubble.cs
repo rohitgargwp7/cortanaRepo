@@ -28,6 +28,8 @@ namespace windows_client.Controls
 
         public string Text;
         public string TimeStamp;
+        public List<MyChatBubble> splitChatBubbles = null;
+        
 
         //TODO: Try to use a single property for timestamp.
         //either dispose off the convmessage or else keep a reference to it in this class
