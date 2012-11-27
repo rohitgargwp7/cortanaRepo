@@ -1159,7 +1159,13 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(mContactNumber);
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
-            NavigationService.GoBack();
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            else // case when this page is opened through push notification or share picker
+            {
+                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                NavigationService.Navigate(nUri);
+            }
         }
 
         private void muteUnmuteGroup_Click(object sender, EventArgs e)
