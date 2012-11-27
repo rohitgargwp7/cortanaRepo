@@ -369,6 +369,10 @@ namespace windows_client.Misc
             }
         }
 
+        /// <summary>
+        /// Deletes group cache file
+        /// </summary>
+        /// <param name="grpId"></param>
         public void DeleteGroup(string grpId)
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
