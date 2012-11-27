@@ -29,7 +29,7 @@ namespace windows_client
             if (!App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED) && !App.isABScanning)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
 
-            this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
+            //this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -75,16 +75,6 @@ namespace windows_client
             msgTxtBlk.Opacity = 1;
             msgTxtBlk.Text = SCANNING_CONTACTS;
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
-            string country_code = null;
-            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
-            {
-                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
-            }
-            else
-            {
-                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
-            }
         }
 
         private void setName_Callback(JObject obj)
@@ -123,9 +113,29 @@ namespace windows_client
                 return;
             isCalled = true;
             txtBxEnterName.IsReadOnly = false;
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
-            Uri nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
-            PhoneApplicationService.Current.State["FromNameScreen"] = true;
+            Uri nextPage;
+            string country_code = null;
+            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+            {
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
+            }
+            if ("+91" != country_code)
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
+                nextPage = nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
+                nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
+                PhoneApplicationService.Current.State["FromNameScreen"] = true;
+            }
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = "Getting you in";
             Thread.Sleep(2 * 1000);
@@ -162,6 +172,12 @@ namespace windows_client
                     nameErrorTxt.Text = (string)this.State["nameErrorTxt.Text"];
                 }
             }
+            string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+            msisdn = msisdn.Substring(msisdn.Length - 10);
+            StringBuilder userMsisdn = new StringBuilder();
+            userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
+            txtBlckPhoneNumber.Text = userMsisdn.ToString();
+            txtBxEnterName.Focus();
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)

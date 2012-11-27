@@ -91,7 +91,7 @@ namespace windows_client
         public EnterNumber()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
+            //this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
 
             initializeCountryCodes();
 
@@ -497,6 +497,9 @@ namespace windows_client
                 txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
                 PhoneApplicationService.Current.State.Remove("EnteredPhone");
             }
+
+            txtEnterPhone.Hint = "Phone Number";
+            txtEnterCountry.Foreground = UI_Utils.Instance.Black;
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

@@ -34,12 +34,15 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <toolkit:ToggleSwitch Grid.Row="0" x:Name="pushNotifications" Content="On" IsChecked="True"  
                                   Header="Use push notifications" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
             <toolkit:ToggleSwitch Grid.Row="1" x:Name="vibrate" Content="On" IsChecked="True"  
                                   Header="Vibrate" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
+            <toolkit:ToggleSwitch Grid.Row="2" x:Name="showFreeSMSToggle" Content="On" IsChecked="True"  
+                                  Header="Show Free SMS" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
         </Grid>
     </Grid>
 

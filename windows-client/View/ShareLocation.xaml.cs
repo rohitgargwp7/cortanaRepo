@@ -37,7 +37,7 @@ namespace windows_client.View
             shareIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             shareIconButton.Text = "share location";
             shareIconButton.Click += new EventHandler(shareBtn_Click);
-            shareIconButton.IsEnabled = true;
+            shareIconButton.IsEnabled = false;
             appBar.Buttons.Add(shareIconButton);
 
             shareLocation.ApplicationBar = appBar;
@@ -134,6 +134,16 @@ namespace windows_client.View
                 //ms.Close();
             }
             return thumbnailBytes;
+        }
+
+        private void map_MapResolved(object sender, EventArgs e)
+        {
+            shareIconButton.IsEnabled = true;
+            map.MapResolved -= map_MapResolved;
+            watcher.StatusChanged -= watcher_StatusChanged;
+            watcher.PositionChanged -= watcher_PositionChanged;
+            watcher.Stop();
+            watcher.Dispose();
         }
     }
 }

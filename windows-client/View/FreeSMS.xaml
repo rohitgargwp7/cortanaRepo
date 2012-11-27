@@ -1,4 +1,4 @@
-﻿<phone:PhoneApplicationPage 
+<phone:PhoneApplicationPage 
     x:Class="windows_client.View.FreeSMS"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -86,7 +86,7 @@
                         </Grid.ColumnDefinitions>
                         <Rectangle x:Name="creditsRemainingBar" Grid.Column="0" Fill="#8bc53f" Width="250"></Rectangle>
                         <Rectangle x:Name="maxCreditsBar" Grid.Column="1" Fill="#111111" Width="183"></Rectangle>
-                        <TextBlock x:Name="creditsRemainingTxtBlck" Text="147" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="creditsRemainingTxtBlck" Text="147" Foreground="White" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
                     </Grid>
                 </Border>
 
@@ -132,11 +132,35 @@
                 </TextBlock.Inlines>
             </TextBlock>
 
-            <StackPanel Orientation="Horizontal" Margin="0,15,0,0" HorizontalAlignment="Center" Grid.Row="1">
+            <Grid Margin="0,15,0,0" HorizontalAlignment="Center" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <Button x:Name="facebookBtn" Width="190" BorderThickness="0" Height="72" Content="facebook" Click="facebookBtn_Click"></Button>
-                <Button x:Name="twitterBtn" Width="190" BorderThickness="0" Height="72" Content="twitter" Click="twitterBtn_Click"></Button>
-            </StackPanel>
+                <Grid x:Name="facebook" Background="#f4f4f4" Grid.Column="0" Width="175" Height="50" Tap="facebook_Tap" Margin="0,0,15,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="images\fb_icon.png" Margin="20,0,0,0" Width="14" VerticalAlignment="Center" Grid.Column="0"></Image>
+                    <TextBlock x:Name="fbConnStatus" FontFamily="Segoe WP Semibold" FontSize="18"  Text="facebook" Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center"></TextBlock>
+                    <Image x:Name="fbConnImage" Visibility="Collapsed" Source="images\tick.png" Width="20" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
+                </Grid>
+
+                <Grid x:Name="twitter" Background="#f4f4f4" Grid.Column="1" Width="175" Height="50" Tap="twitter_Tap" Margin="15,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="images\tw_icon.png" Margin="20,0,0,0" Width="29" VerticalAlignment="Center" Grid.Column="0"></Image>
+                    <TextBlock x:Name="twConnStatus" FontFamily="Segoe WP Semibold" FontSize="18" Text="twitter" Margin="11,0,0,0" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
+                    <Image x:Name="twConnImage" Visibility="Collapsed" Source="images\tick.png" Width="20" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
+                </Grid>
+            </Grid>
+
             <StackPanel Grid.Row="2" Margin="0,15,0,0">
                 <TextBlock FontSize="22" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center" Text="Invite via SMS"/>
                 <TextBlock FontSize="18" TextWrapping="Wrap" Margin="0,5,0,0" HorizontalAlignment="Center" TextAlignment="Center" Width="400">
@@ -152,5 +176,4 @@
             <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,35,0,0" FontSize="16" VerticalAlignment="Bottom" Text="*Free SMS can only be sent to India at the moment"></TextBlock>
         </Grid>
     </Grid>
-
 </phone:PhoneApplicationPage>
