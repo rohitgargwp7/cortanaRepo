@@ -608,7 +608,11 @@ namespace windows_client
 
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)
-                    {                       
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            App.ViewModel.ConvMap[groupId].ContactName = groupName;
+                        });
                         this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                     }
                 }

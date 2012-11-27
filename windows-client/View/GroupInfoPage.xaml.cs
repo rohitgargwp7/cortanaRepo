@@ -88,7 +88,6 @@ namespace windows_client.View
             TiltEffect.TiltableItems.Add(typeof(TextBlock));
         }
 
-
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             removeListeners();
@@ -501,6 +500,9 @@ namespace windows_client.View
                 mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    App.ViewModel.ConvMap[groupId].ContactName = groupName;
+                    if(App.newChatThreadPage != null)
+                        App.newChatThreadPage.userName.Text = groupName; // set the name here only to fix bug# 1666
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
                     shellProgress.IsVisible = false;
