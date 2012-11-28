@@ -10,13 +10,41 @@ using System.Windows.Data;
 using Microsoft.Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.View;
+using System.Collections.Generic;
 
 namespace windows_client.Controls
 {
     public partial class ReceivedChatBubble : MyChatBubble
     {
+        public static ReceivedChatBubble getSplitChatBubbles(ConvMessage cm, bool isGroupChat, string userName)
+        {
+            ReceivedChatBubble receivedChatBubble;
+            if (cm.Message.Length < HikeConstants.MAX_CHATBUBBLE_SIZE)
+            {
+                receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message);
+                return receivedChatBubble;
+            }
+            receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE));
+            receivedChatBubble.splitChatBubbles = new List<MyChatBubble>();
+            int lengthOfNextBubble = 1800;
+            for (int i = 1; i <= (cm.Message.Length / HikeConstants.MAX_CHATBUBBLE_SIZE); i++)
+            {
+                if ((cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) / HikeConstants.MAX_CHATBUBBLE_SIZE > 0)
+                {
+                    lengthOfNextBubble = HikeConstants.MAX_CHATBUBBLE_SIZE;
+                }
+                else
+                {
+                    lengthOfNextBubble = (cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) % HikeConstants.MAX_CHATBUBBLE_SIZE;
+                }
+                ReceivedChatBubble splitBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring
+                    (i * HikeConstants.MAX_CHATBUBBLE_SIZE, lengthOfNextBubble));
+                receivedChatBubble.splitChatBubbles.Add(splitBubble);
+            }
+            return receivedChatBubble;
+        }
 
-        public ReceivedChatBubble(ConvMessage cm, bool isGroupChat, string userName)
+        public ReceivedChatBubble(ConvMessage cm, bool isGroupChat, string userName, string messageString)
             : base(cm)
         {
             // Required to initialize variables
@@ -24,7 +52,7 @@ namespace windows_client.Controls
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            initializeBasedOnState(cm, isGroupChat, userName);
+            initializeBasedOnState(cm, isGroupChat, userName, messageString);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
@@ -131,14 +159,13 @@ namespace windows_client.Controls
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
 
-        private void initializeBasedOnState(ConvMessage cm, bool isGroupChat, string userName)
+        private void initializeBasedOnState(ConvMessage cm, bool isGroupChat, string userName, string messageString)
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
-            string messageString = cm.Message;
 
             Rectangle BubbleBg = new Rectangle();
             if (!isNudge)

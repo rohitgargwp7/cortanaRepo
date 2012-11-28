@@ -29,7 +29,7 @@ namespace windows_client
             if (!App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED) && !App.isABScanning)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
 
-            //this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
+            this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -177,7 +177,6 @@ namespace windows_client
             StringBuilder userMsisdn = new StringBuilder();
             userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
             txtBlckPhoneNumber.Text = userMsisdn.ToString();
-            txtBxEnterName.Focus();
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -218,12 +217,8 @@ namespace windows_client
 
         void EnterNamePage_Loaded(object sender, RoutedEventArgs e)
         {
-            string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
-            msisdn = msisdn.Substring(msisdn.Length - 10);
-            StringBuilder userMsisdn = new StringBuilder();
-            userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
-            txtBlckPhoneNumber.Text = userMsisdn.ToString();
             txtBxEnterName.Focus();
+            this.Loaded -= EnterNamePage_Loaded;
         }
 
         private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
