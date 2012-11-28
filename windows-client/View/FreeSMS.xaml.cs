@@ -14,8 +14,10 @@ namespace windows_client.View
     public partial class FreeSMS : PhoneApplicationPage, HikePubSub.Listener
     {
         bool canGoBack = true;
-        private readonly SolidColorBrush rectangleColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
-        private readonly Thickness box4Margin = new Thickness(5, 5, 5, 5);
+        private readonly SolidColorBrush connStatusNotConnectedBlack = new SolidColorBrush(Color.FromArgb(255, 0xa5, 0xa5, 0xa5));
+        private readonly SolidColorBrush connStatusConnectedBlack = new SolidColorBrush(Color.FromArgb(255, 0x63, 0x63, 0x63));
+        private readonly SolidColorBrush connStatusNotConnectedWhite = new SolidColorBrush(Color.FromArgb(255, 0xb4, 0xb4, 0xb4));
+        private readonly SolidColorBrush connStatusConnectedWhite = new SolidColorBrush(Color.FromArgb(255, 0x48, 0x48, 0x48));
 
         private bool _isFacebookConnected = false;
         private bool IsFacebookConnected
@@ -24,7 +26,7 @@ namespace windows_client.View
             {
                 return _isFacebookConnected;
             }
-            set 
+            set
             {
                 if (value != _isFacebookConnected)
                 {
@@ -167,11 +169,17 @@ namespace windows_client.View
             {
                 upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0x1f, 0x1f, 0x1f));
                 bottomLine.Fill = UI_Utils.Instance.Black;
+                fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedBlack;
+                upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x1a, 0x1a, 0x1a));
+                lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x25, 0x25, 0x25));
             }
             else
             {
                 upperGrid.Background = new SolidColorBrush(Color.FromArgb(255, 0xfa, 0xfa, 0xfa));
                 bottomLine.Fill = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
+                fbConnStatus.Foreground = twConnStatus.Foreground = connStatusNotConnectedWhite;
+                upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
+                lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
             }
         }
 
@@ -307,7 +315,10 @@ namespace windows_client.View
                 catch { }
             }
             creditsRemainingBar.Width = (creditsRemaining * 435) / max;
-            maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
+            if (435 - creditsRemainingBar.Width > 0)
+                maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
+            else
+                maxCreditsBar.Width = 0;
             maxCreditsTxtBlck.Text = max.ToString() + "+";
         }
 
@@ -317,11 +328,27 @@ namespace windows_client.View
             {
                 fbConnStatus.Text = "Connected";
                 fbConnImage.Visibility = Visibility.Visible;
+                if (Utils.isDarkTheme())
+                {
+                    fbConnStatus.Foreground = connStatusConnectedBlack;
+                }
+                else
+                {
+                    fbConnStatus.Foreground = connStatusConnectedWhite;
+                }
             }
             else
             {
                 fbConnStatus.Text = "facebook";
                 fbConnImage.Visibility = Visibility.Collapsed;
+                if (Utils.isDarkTheme())
+                {
+                    fbConnStatus.Foreground = connStatusNotConnectedBlack;
+                }
+                else
+                {
+                    fbConnStatus.Foreground = connStatusNotConnectedWhite;
+                }
             }
         }
         private void showTwitter(bool isConnected)
@@ -330,11 +357,28 @@ namespace windows_client.View
             {
                 twConnStatus.Text = "Connected";
                 twConnImage.Visibility = Visibility.Visible;
+                if (Utils.isDarkTheme())
+                {
+                    twConnStatus.Foreground = connStatusConnectedBlack;
+                }
+                else
+                {
+                    twConnStatus.Foreground = connStatusConnectedWhite;
+                }
+
             }
             else
             {
                 twConnStatus.Text = "facebook";
                 twConnImage.Visibility = Visibility.Collapsed;
+                if (Utils.isDarkTheme())
+                {
+                    twConnStatus.Foreground = connStatusNotConnectedBlack;
+                }
+                else
+                {
+                    twConnStatus.Foreground = connStatusNotConnectedWhite;
+                }
             }
         }
 
