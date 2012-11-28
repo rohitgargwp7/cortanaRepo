@@ -2665,6 +2665,7 @@ namespace windows_client.View
 
         private void groupChatEnd()
         {
+            isGroupAlive = false;
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = false;
