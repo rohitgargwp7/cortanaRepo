@@ -1249,6 +1249,7 @@ namespace windows_client.View
                         inviteMenuItem.IsEnabled = false;
                 }
                 emoticonPanel.Visibility = Visibility.Collapsed;
+                attachmentMenu.Visibility = Visibility.Collapsed;
                 mUserIsBlocked = true;
                 showOverlay(true); //true means show block animation
             }
@@ -1734,6 +1735,7 @@ namespace windows_client.View
                 return;
 
             emoticonPanel.Visibility = Visibility.Collapsed;
+            attachmentMenu.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0) || message == "")
                 return;
@@ -1899,6 +1901,8 @@ namespace windows_client.View
             ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
+            if (this.attachmentMenu.Visibility == Visibility.Visible)
+                this.attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
@@ -2032,6 +2036,7 @@ namespace windows_client.View
                 emoticonPanel.Visibility = Visibility.Visible;
             else
                 emoticonPanel.Visibility = Visibility.Collapsed;
+            attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
         }
 
@@ -2041,6 +2046,7 @@ namespace windows_client.View
                 attachmentMenu.Visibility = Visibility.Visible;
             else
                 attachmentMenu.Visibility = Visibility.Collapsed;
+            emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void sendImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2810,6 +2816,7 @@ namespace windows_client.View
         private void MessageList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
+            attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
