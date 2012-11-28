@@ -1225,6 +1225,7 @@ namespace windows_client.View
             else     // BLOCK REQUEST
             {
                 this.Focus();
+                sendMsgTxtbox.Text = "";
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
