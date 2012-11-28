@@ -367,25 +367,23 @@ namespace windows_client.View
                 Uri uri = new Uri(e.OriginalFileName);
                 grpImage = new BitmapImage(uri);
                 grpImage.CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                //grpImage.UriSource = uri;
                 grpImage.ImageOpened += imageOpenedHandler;
             }
-            //else if (e.TaskResult == TaskResult.Cancel)
-            //{
-            //    isProfilePicTapped = false;
-            //    //progressBar.IsEnabled = false;
-            //    shellProgress.IsVisible = false;
-            //    if (e.Error != null)
-            //        MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
-            //}
-            else
+            else if (e.TaskResult == TaskResult.Cancel)
             {
-                Uri uri = new Uri("/View/images/tick.png", UriKind.Relative);
-                grpImage = new BitmapImage(uri);
-                grpImage.CreateOptions = BitmapCreateOptions.None;
-                grpImage.UriSource = uri;
-                grpImage.ImageOpened += imageOpenedHandler;
+                isProfilePicTapped = false;
+                shellProgress.IsVisible = false;
+                if (e.Error != null)
+                    MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
             }
+            //else
+            //{
+            //    Uri uri = new Uri("/View/images/tick.png", UriKind.Relative);
+            //    grpImage = new BitmapImage(uri);
+            //    grpImage.CreateOptions = BitmapCreateOptions.None;
+            //    grpImage.UriSource = uri;
+            //    grpImage.ImageOpened += imageOpenedHandler;
+            //}
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
