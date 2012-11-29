@@ -82,11 +82,10 @@ namespace windows_client.Model
                 return ParticipantInfoState.NO_INFO;
             JToken typeToken = null;
             string type = null;
-            if(obj.TryGetValue(HikeConstants.TYPE, out typeToken))
+            if (obj.TryGetValue(HikeConstants.TYPE, out typeToken))
                 type = typeToken.ToString();
             else
-                return ParticipantInfoState.NO_INFO;
-            type = (string)obj[HikeConstants.TYPE];
+                type = null;
 
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
                 return ParticipantInfoState.PARTICIPANT_JOINED;
