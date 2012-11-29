@@ -64,8 +64,9 @@ namespace windows_client.DbUtils
             * Msisdn : GroupId
             * Contactname : GroupOwner
             */
+            byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
             ConversationListObject obj = new ConversationListObject(convMessage.Msisdn, groupName, convMessage.Message,
-                true, convMessage.Timestamp, null, convMessage.MessageStatus, convMessage.MessageId);
+                true, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
 
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
             {

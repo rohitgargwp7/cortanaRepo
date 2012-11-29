@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.utils;
 using System.Net.NetworkInformation;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace windows_client.View
 {
@@ -83,7 +84,6 @@ namespace windows_client.View
             shouldSendProfile = false;
             nameErrorTxt.Opacity = 0;
             emailErrorTxt.Opacity = 0;
-
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
@@ -107,7 +107,7 @@ namespace windows_client.View
             JObject obj = new JObject();
             if (userEmail != email.Text) // if email is changed
             {
-                if (true) // check if email is valid
+                if (ValidateEmail(email.Text)) // check if email is valid
                 {
                     obj[App.EMAIL] = email.Text;
                     shouldSendProfile = true;
@@ -312,6 +312,12 @@ namespace windows_client.View
                 genderListPicker.Focus();
             }
 
+        }
+
+        public static bool ValidateEmail(string str)
+        {
+            // Return true if strIn is in valid e-mail format.
+            return Regex.IsMatch(str, @"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*");
         }
     }
 }

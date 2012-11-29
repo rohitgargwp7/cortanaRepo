@@ -59,8 +59,8 @@
             </Grid>
 
             <StackPanel Grid.Row="2">
-                <Rectangle Height="1" Fill="#1a1a1a"></Rectangle>
-                <Rectangle Height="1" Fill="#252525"></Rectangle>
+                <Rectangle x:Name="upperbar" Height="1"></Rectangle>
+                <Rectangle x:Name="lowerbar" Height="1"></Rectangle>
             </StackPanel>
 
             <Grid x:Name="hikeToSMSGrid" Grid.Row="3" VerticalAlignment="Center">
@@ -124,7 +124,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" FontSize="22" Margin="0,15,0,0" HorizontalAlignment="Center">
+            <TextBlock Grid.Row="0" FontSize="22" Margin="0,5,0,0" HorizontalAlignment="Center">
                 <TextBlock.Inlines>
                     <Run Text="Connect and get a"/>
                     <Run FontFamily="Segoe WP Semibold" Text=" 100 Free SMS"/>
@@ -162,7 +162,10 @@
             </Grid>
 
             <StackPanel Grid.Row="2" Margin="0,15,0,0">
-                <TextBlock FontSize="22" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center" Text="Invite via SMS"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Image Source="images\chat_invited_green.png" Margin="0,4,10,0" Width="16" VerticalAlignment="Center" ></Image>
+                    <TextBlock FontSize="22" FontFamily="Segoe WP Semibold" HorizontalAlignment="Center" Text="Invite via SMS"/>
+                </StackPanel>
                 <TextBlock FontSize="18" TextWrapping="Wrap" Margin="0,5,0,0" HorizontalAlignment="Center" TextAlignment="Center" Width="400">
                     <TextBlock.Inlines>
                         <Run Text="Earn an extra "/>
@@ -173,7 +176,7 @@
 
             </StackPanel>
             <Button Name="inviteNow" Grid.Row="3" Margin="0,15,0,0" Content="Invite Now" Width="150" Height="68" FontSize="18" FontFamily="Segoe WP Semibold" Tap="InviteBtn_Tap"/>
-            <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,35,0,0" FontSize="16" VerticalAlignment="Bottom" Text="*Free SMS can only be sent to India at the moment"></TextBlock>
+            <TextBlock Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,5" FontSize="16" VerticalAlignment="Bottom" Text="*Free SMS can only be sent to India at the moment"></TextBlock>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

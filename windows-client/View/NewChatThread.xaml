@@ -41,7 +41,7 @@
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480" DoubleTap="MessageList_DoubleTap">
             <StackPanel Orientation="Vertical" Margin="24,0,20,0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                        <Image Name="userImage" Height="50"></Image>
+                    <Image Name="userImage" Height="50"></Image>
                     <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>
             </StackPanel>
@@ -54,6 +54,17 @@
             </StackPanel>
         </ScrollViewer>
 
+        <!--<ListBox x:Name="tempList" Height="400" Grid.Row="1" Margin="24,0,0,0">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>-->
+
+        <!--<toolkit:LongListSelector x:Name="tempList" IsFlatList="True" VerticalAlignment="Bottom" Height="500" Grid.Row="1" Margin="24,0,24,0" >
+
+        </toolkit:LongListSelector>-->
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
             <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
@@ -171,7 +182,7 @@
 
                 </Grid>
             </StackPanel>
-            
+
             <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="100" Background="#292929">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -196,11 +207,11 @@
                 </StackPanel>
 
             </Grid>
-            
+
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
                 <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                      MinHeight="68" Margin="0,-4,-8,0" Height="Auto" MaxLength="1800" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
+                                      MinHeight="68" Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
             </StackPanel>
         </StackPanel>
         <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 

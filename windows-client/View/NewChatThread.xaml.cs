@@ -577,8 +577,7 @@ namespace windows_client.View
                 processGroupJoin(true);
                 isOnHike = true;
                 isGroupChat = true;
-                userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage; //TODO show new group default image
-
+                userImage.Source = UI_Utils.Instance.DefaultGroupImage;
                 /* This is done so that after Tombstone when this page is launched, no group is created again and again */
                 ConversationListObject convObj = new ConversationListObject();
                 convObj.Msisdn = mContactNumber;
@@ -661,7 +660,7 @@ namespace windows_client.View
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
             List<GroupParticipant> usersToAdd = new List<GroupParticipant>(5); // this is used to select only those contacts which should be later added.
-            
+
             if (isNewgroup) // if new group add all members to the group
             {
                 List<GroupParticipant> l = new List<GroupParticipant>(contactsForGroup.Count);
@@ -1001,7 +1000,8 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
+                //SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
+                SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
 
                 newChatBubble.SetSentMessageStatusForUploadedAttachments();
 
@@ -1178,7 +1178,13 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(mContactNumber);
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
-            NavigationService.GoBack();
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            else // case when this page is opened through push notification or share picker
+            {
+                Uri nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                NavigationService.Navigate(nUri);
+            }
         }
 
         private void muteUnmuteGroup_Click(object sender, EventArgs e)
@@ -1211,10 +1217,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
             PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
-            Dispatcher.BeginInvoke(() =>
-            {
-                NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
-            });
+            NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -1243,6 +1246,7 @@ namespace windows_client.View
             else     // BLOCK REQUEST
             {
                 this.Focus();
+                sendMsgTxtbox.Text = "";
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
@@ -1289,7 +1293,26 @@ namespace windows_client.View
                         convMessage.HasAttachment = true;
                         convMessage.MessageId = chatBubble.MessageId;
                         convMessage.FileAttachment = chatBubble.FileAttachment;
-                        convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + convMessage.FileAttachment.FileKey;
+                        if (convMessage.FileAttachment.ContentType.Contains("image"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "photo") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
+                        else if (convMessage.FileAttachment.ContentType.Contains("audio"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "voice message") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
+                        else if (convMessage.FileAttachment.ContentType.Contains("location"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "location") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
+                        else if (convMessage.FileAttachment.ContentType.Contains("video"))
+                        {
+                            convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "video") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                                "/" + convMessage.FileAttachment.FileKey;
+                        }
 
                         byte[] locationInfoBytes = null;
                         MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
@@ -1435,7 +1458,8 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        chatBubble = new SentChatBubble(convMessage, readFromDB);
+                        //chatBubble = new SentChatBubble(convMessage, readFromDB);
+                        chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
                         if (convMessage.MessageId < -1 || convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         else if (convMessage.MessageId == -1)
@@ -1443,10 +1467,16 @@ namespace windows_client.View
                     }
                     else
                     {
-                        chatBubble = new ReceivedChatBubble(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
-
+                        chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
                     }
                     this.MessageList.Children.Add(chatBubble);
+                    if (chatBubble.splitChatBubbles != null && chatBubble.splitChatBubbles.Count > 0)
+                    {
+                        for (int i = 0; i < chatBubble.splitChatBubbles.Count; i++)
+                        {
+                            this.MessageList.Children.Add(chatBubble.splitChatBubbles[i]);
+                        }
+                    }
                     ScrollToBottom();
                     if (convMessage.FileAttachment != null)
                     {
@@ -1799,50 +1829,53 @@ namespace windows_client.View
 
         private void SendImage(BitmapImage image, string fileName)
         {
-            byte[] thumbnailBytes;
-            byte[] fileBytes;
-
-            ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = !isOnHike;
-            convMessage.HasAttachment = true;
-            convMessage.MessageId = TempMessageId;
-
-            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
-            adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
-            adjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
-
-            using (var msSmallImage = new MemoryStream())
+            if (!isGroupChat || isGroupAlive)
             {
-                writeableBitmap.SaveJpeg(msSmallImage, thumbnailWidth, thumbnailHeight, 0, 50);
-                thumbnailBytes = msSmallImage.ToArray();
+                byte[] thumbnailBytes;
+                byte[] fileBytes;
+
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
+                convMessage.MessageId = TempMessageId;
+
+                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+                int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
+                adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
+                adjustAspectRatio(image.PixelWidth, image.PixelHeight, false, out imageWidth, out imageHeight);
+
+                using (var msSmallImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msSmallImage, thumbnailWidth, thumbnailHeight, 0, 50);
+                    thumbnailBytes = msSmallImage.ToArray();
+                }
+                if (fileName.StartsWith("{")) // this is from share picker
+                {
+                    fileName = "PhotoChooser-" + fileName.Substring(1, fileName.Length - 2) + ".jpg";
+                }
+                else
+                    fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
+
+                convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment.ContentType = "image";
+                convMessage.Message = "image";
+
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnailBytes);
+                msgMap.Add(convMessage.MessageId, chatBubble);
+
+                addNewAttachmentMessageToUI(chatBubble);
+
+                using (var msLargeImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msLargeImage, imageWidth, imageHeight, 0, 65);
+                    fileBytes = msLargeImage.ToArray();
+                }
+                object[] vals = new object[3];
+                vals[0] = convMessage;
+                vals[1] = fileBytes;
+                vals[2] = chatBubble;
+                mPubSub.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
-            if (fileName.StartsWith("{")) // this is from share picker
-            {
-                fileName = "PhotoChooser-" + fileName.Substring(1, fileName.Length - 2) + ".jpg";
-            }
-            else
-                fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
-
-            convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
-            convMessage.FileAttachment.ContentType = "image";
-            convMessage.Message = "image";
-
-            SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnailBytes);
-            msgMap.Add(convMessage.MessageId, chatBubble);
-
-            addNewAttachmentMessageToUI(chatBubble);
-
-            using (var msLargeImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msLargeImage, imageWidth, imageHeight, 0, 65);
-                fileBytes = msLargeImage.ToArray();
-            }
-            object[] vals = new object[3];
-            vals[0] = convMessage;
-            vals[1] = fileBytes;
-            vals[2] = chatBubble;
-            mPubSub.publish(HikePubSub.ATTACHMENT_SENT, vals);
         }
 
 
@@ -2553,22 +2586,12 @@ namespace windows_client.View
 
             else if (HikePubSub.UPDATE_UI == type)
             {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
+                string msisdn = (string)obj;
                 if (msisdn != mContactNumber)
-                    return;
-                byte[] _avatar = (byte[])vals[1];
-                if (_avatar == null)
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    using (var memStream = new MemoryStream(_avatar))
-                    {
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage(); // here we can resuse existing image (how ??)
-                        empImage.SetSource(memStream);
-                        userImage.Source = empImage;
-                    }
+                    userImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
                 });
             }
 
@@ -2661,6 +2684,7 @@ namespace windows_client.View
 
         private void groupChatEnd()
         {
+            isGroupAlive = false;
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = false;
@@ -2672,67 +2696,73 @@ namespace windows_client.View
 
         private void shareLocation()
         {
-            object[] locationInfo = (object[])PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION];
-            PhoneApplicationService.Current.State.Remove(HikeConstants.SHARED_LOCATION);
+            if (!isGroupChat || isGroupAlive)
+            {
+                object[] locationInfo = (object[])PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.SHARED_LOCATION);
 
-            byte[] imageThumbnail = null;
-            JObject locationJSON = (JObject)locationInfo[0];
-            imageThumbnail = (byte[])locationInfo[1];
+                byte[] imageThumbnail = null;
+                JObject locationJSON = (JObject)locationInfo[0];
+                imageThumbnail = (byte[])locationInfo[1];
 
-            string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
+                string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
 
-            string locationJSONString = locationJSON.ToString();
-            //byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
-            //System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
+                string locationJSONString = locationJSON.ToString();
+                //byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
+                //System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
 
-            byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
+                byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
-            ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = !isOnHike;
-            convMessage.HasAttachment = true;
-            convMessage.MessageId = TempMessageId;
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
+                convMessage.MessageId = TempMessageId;
 
-            convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
-            convMessage.FileAttachment.ContentType = "hikemap/location";
-            convMessage.Message = "location";
-            convMessage.MetaDataString = locationJSONString;
+                convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment.ContentType = "hikemap/location";
+                convMessage.Message = "location";
+                convMessage.MetaDataString = locationJSONString;
 
-            SentChatBubble chatBubble = new SentChatBubble(convMessage, imageThumbnail);
-            msgMap.Add(convMessage.MessageId, chatBubble);
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, imageThumbnail);
+                msgMap.Add(convMessage.MessageId, chatBubble);
 
-            addNewAttachmentMessageToUI(chatBubble);
-            object[] vals = new object[3];
-            vals[0] = convMessage;
-            vals[1] = locationBytes;
-            vals[2] = chatBubble;
-            App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+                addNewAttachmentMessageToUI(chatBubble);
+                object[] vals = new object[3];
+                vals[0] = convMessage;
+                vals[1] = locationBytes;
+                vals[2] = chatBubble;
+                App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+            }
         }
 
         private void AudioFileTransfer()
         {
-            byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
-            PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+            if (!isGroupChat || isGroupAlive)
+            {
+                byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
 
-            string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
+                string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
 
-            ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = !isOnHike;
-            convMessage.HasAttachment = true;
-            convMessage.MessageId = TempMessageId;
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
+                convMessage.MessageId = TempMessageId;
 
-            convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
-            convMessage.FileAttachment.ContentType = "audio/voice";
-            convMessage.Message = "audio";
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment.ContentType = "audio/voice";
+                convMessage.Message = "audio";
 
-            SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
-            msgMap.Add(convMessage.MessageId, chatBubble);
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+                msgMap.Add(convMessage.MessageId, chatBubble);
 
-            addNewAttachmentMessageToUI(chatBubble);
-            object[] vals = new object[3];
-            vals[0] = convMessage;
-            vals[1] = audioBytes;
-            vals[2] = chatBubble;
-            App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+                addNewAttachmentMessageToUI(chatBubble);
+                object[] vals = new object[3];
+                vals[0] = convMessage;
+                vals[1] = audioBytes;
+                vals[2] = chatBubble;
+                App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+            }
         }
 
         // this should be called when one gets tap here msg.
@@ -2830,12 +2860,14 @@ namespace windows_client.View
 
                 if ((!isOnHike && mCredits <= 0))
                     return;
-                ConvMessage convMessage = new ConvMessage("Buzz!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageId = TempMessageId;
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
+                VibrateController vibrate = VibrateController.Default;
+                vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
             }
         }
     }

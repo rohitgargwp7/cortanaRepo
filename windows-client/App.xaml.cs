@@ -461,14 +461,15 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
             if (!IS_MARKETPLACE)
-            {
+            {   
                 //Running on a device / emulator without debugging
                 e.Handled = true;
                 Error.Exception = e.ExceptionObject;
                 Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                        (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+                    MessageBox.Show(e.ExceptionObject.ToString(), "Exception", MessageBoxButton.OK);
+                        //(RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
                 });
             }
         }

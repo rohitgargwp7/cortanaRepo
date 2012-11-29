@@ -23,7 +23,7 @@ namespace windows_client
         public EnterPin()
         {
             InitializeComponent();
-//            this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
+            this.Loaded += new RoutedEventHandler(EnterPinPage_Loaded);
 
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -75,6 +75,7 @@ namespace windows_client
                 // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    pinErrorTxt.Text = "PIN not valid. Please try again.";
                     pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
@@ -106,6 +107,7 @@ namespace windows_client
         void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Focus();
+            this.Loaded -= EnterPinPage_Loaded;
         }
 
         private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
@@ -210,7 +212,6 @@ namespace windows_client
                     obj = null;
                 }
             }
-            txtBxEnterPin.Focus();
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

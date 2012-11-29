@@ -75,8 +75,29 @@ namespace windows_client.DbUtils
 
                 chatBubble.updateProgress(110);
                 //DO NOT Update message text in db. We sent the below line, but we save content type as message.
-                convMessage.Message = HikeConstants.FILES_MESSAGE_PREFIX + HikeConstants.FILE_TRANSFER_BASE_URL + "/" + fileKey;
                 //here message status should be updated in db, as on event listener message state should be unknown
+
+                if (contentType.Contains("image"))
+                {
+                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "photo") + HikeConstants.FILE_TRANSFER_BASE_URL + 
+                        "/" + fileKey;
+                }
+                else if (contentType.Contains("audio"))
+                {
+                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "voice message") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        "/" + fileKey;
+                }
+                else if (contentType.Contains("location"))
+                {
+                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "location") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        "/" + fileKey;
+                }
+                else if (contentType.Contains("video"))
+                {
+                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "video") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        "/" + fileKey;
+                }
+
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 chatBubble.scheduleTryingImage();
                 convMessage.FileAttachment.FileKey = fileKey;
