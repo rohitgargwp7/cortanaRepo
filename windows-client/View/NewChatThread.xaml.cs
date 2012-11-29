@@ -1140,6 +1140,13 @@ namespace windows_client.View
             Favourites favObj = new Favourites(mContactNumber,mContactName,isOnHike,avatarImage);
             MiscDBUtil.SaveFavourites(favObj);
             addToFavMenuItem.IsEnabled = false;
+            JObject data = new JObject();
+            data["id"] = mContactNumber;
+            JObject obj = new JObject();
+            obj[HikeConstants.TO] = mContactNumber;
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
         }
         
         private void callUser_Click(object sender, EventArgs e)
