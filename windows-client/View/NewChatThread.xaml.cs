@@ -1062,10 +1062,11 @@ namespace windows_client.View
             {
                 //Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
                 messagesCollection.Add(null);
+                messageListBox.UpdateLayout();
                 messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 messageListBox.UpdateLayout();
                 messageListBox.ScrollIntoView(messageListBox.SelectedItem);
-                messagesCollection.RemoveAt(messagesCollection.Count - 1);
+                messagesCollection.RemoveAt(messageListBox.SelectedIndex);
             }
         }
 
