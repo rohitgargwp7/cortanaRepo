@@ -48,19 +48,19 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
+        <!--<ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
             <StackPanel Name="MessageList" Margin="0,0,26,0" VerticalAlignment="Bottom">
 
             </StackPanel>
-        </ScrollViewer>
+        </ScrollViewer>-->
 
-        <!--<ListBox x:Name="tempList" Height="400" Grid.Row="1" Margin="24,0,0,0">
+        <ListBox x:Name="messageListBox" Height="500" Width="450" Grid.Row="1" Margin="0,0,0,0" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel VerticalAlignment="Bottom"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-        </ListBox>-->
+        </ListBox>
 
         <!--<toolkit:LongListSelector x:Name="tempList" IsFlatList="True" VerticalAlignment="Bottom" Height="500" Grid.Row="1" Margin="24,0,24,0" >
 

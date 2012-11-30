@@ -24,6 +24,7 @@ using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
 using System.Device.Location;
 using windows_client.Misc;
+using System.Runtime.CompilerServices;
 
 namespace windows_client.View
 {
@@ -268,9 +269,12 @@ namespace windows_client.View
 
         #region PAGE BASED FUNCTIONS
 
+        private ObservableCollection<UIElement> messagesCollection;
         public NewChatThread()
         {
             InitializeComponent();
+            messagesCollection = new ObservableCollection<UIElement>();
+            messageListBox.ItemsSource = messagesCollection;
         }
 
         private void ManagePageStateObjects()
@@ -893,7 +897,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    Scroller.Opacity = 1;
+                    //Scroller.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -951,11 +955,11 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 forwardAttachmentMessage();
-                Scroller.Opacity = 1;
+                //Scroller.Opacity = 1;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 ScrollToBottom();
-                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                //scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
                 NetworkManager.turnOffNetworkManager = false;
             });
         }
@@ -1048,12 +1052,21 @@ namespace windows_client.View
             });
         }
 
+//        [MethodImpl(MethodImplOptions.Synchronized)]
+        //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
-            MessageList.UpdateLayout();
-            Scroller.UpdateLayout();
+            //MessageList.UpdateLayout();
+            //Scroller.UpdateLayout();
             if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
-                Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+            {
+                //Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+                messagesCollection.Add(null);
+                messageListBox.SelectedIndex = messagesCollection.Count - 1;
+                messageListBox.UpdateLayout();
+                messageListBox.ScrollIntoView(messageListBox.SelectedItem);
+                messagesCollection.RemoveAt(messagesCollection.Count - 1);
+            }
         }
 
         private void updateLastMsgColor(string msisdn)
@@ -1388,7 +1401,7 @@ namespace windows_client.View
                 HideTypingNotification();
                 isReshowTypingNotification = true;
             }
-            this.MessageList.Children.Add(chatBubble);
+            this.messagesCollection.Add(chatBubble);
             chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
             if (isReshowTypingNotification)
             {
@@ -1457,12 +1470,14 @@ namespace windows_client.View
                     {
                         chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
                     }
-                    this.MessageList.Children.Add(chatBubble);
+                    //this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     if (chatBubble.splitChatBubbles != null && chatBubble.splitChatBubbles.Count > 0)
                     {
                         for (int i = 0; i < chatBubble.splitChatBubbles.Count; i++)
                         {
-                            this.MessageList.Children.Add(chatBubble.splitChatBubbles[i]);
+                            //this.MessageList.Children.Add(chatBubble.splitChatBubbles[i]);
+                            this.messagesCollection.Add(chatBubble.splitChatBubbles[i]);
                         }
                     }
                     ScrollToBottom();
@@ -1480,11 +1495,11 @@ namespace windows_client.View
                     string[] vals = convMessage.Message.Split(';');
 
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED, vals[0]);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     if (vals.Length == 2)
                     {
                         MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
-                        this.MessageList.Children.Add(dndChatBubble);
+                        this.messagesCollection.Add(dndChatBubble);
                     }
                     ScrollToBottom();
 
@@ -1509,7 +1524,7 @@ namespace windows_client.View
                             type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED;
                         }
                         MyChatBubble chatBubble = new NotificationChatBubble(type, gp.FirstName + text);
-                        this.MessageList.Children.Add(chatBubble);
+                        this.messagesCollection.Add(chatBubble);
                         ScrollToBottom();
                     }
                 }
@@ -1542,7 +1557,7 @@ namespace windows_client.View
                         else // if not DND show joined 
                         {
                             MyChatBubble chatBubble = new NotificationChatBubble(type, text);
-                            this.MessageList.Children.Add(chatBubble);
+                            this.messagesCollection.Add(chatBubble);
                             ScrollToBottom();
                         }
                     }
@@ -1565,7 +1580,7 @@ namespace windows_client.View
                         }
                     }
                     MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString()));
-                    this.MessageList.Children.Add(wchatBubble);
+                    this.messagesCollection.Add(wchatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1573,7 +1588,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1581,7 +1596,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.HIKE_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1589,7 +1604,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.SMS_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1602,7 +1617,7 @@ namespace windows_client.View
                         type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
                     }
                     MyChatBubble chatBubble = new NotificationChatBubble(type, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1612,7 +1627,7 @@ namespace windows_client.View
                     //if (!Utils.isGroupConversation(mContactNumber))
                     {
                         MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, convMessage.Message);
-                        this.MessageList.Children.Add(chatBubble);
+                        this.messagesCollection.Add(chatBubble);
                         ScrollToBottom();
                     }
                 }
@@ -1622,7 +1637,7 @@ namespace windows_client.View
                 {
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + HikeConstants.USER_LEFT);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1630,7 +1645,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_END)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.GROUP_END, HikeConstants.GROUP_CHAT_END);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
 
                 }
@@ -1639,7 +1654,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1647,7 +1662,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1655,11 +1670,11 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_GROUP_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, HikeConstants.SMS_INDIA);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
 
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     MyChatBubble chatBubbleLeft = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + HikeConstants.USER_LEFT);
-                    this.MessageList.Children.Add(chatBubbleLeft);
+                    this.messagesCollection.Add(chatBubbleLeft);
 
                     ScrollToBottom();
                 }
@@ -1668,7 +1683,7 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
+                    this.messagesCollection.Add(chatBubble);
                     ScrollToBottom();
                 }
                 #endregion
@@ -1899,7 +1914,7 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
-            this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
+            //this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
@@ -1909,7 +1924,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
+            //this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
         }
 
 
@@ -1948,6 +1963,7 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
+            /*
             isContextMenuTapped = true;
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
             if (msg == null)
@@ -1957,7 +1973,7 @@ namespace windows_client.View
             if (msg.FileAttachment != null && msg.FileAttachment.FileState == Attachment.AttachmentState.STARTED)
                 msg.FileAttachment.FileState = Attachment.AttachmentState.CANCELED;
             bool delConv = false;
-            this.MessageList.Children.Remove(msg);
+            this.messagesCollection.Remove(msg);
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             MyChatBubble lastMessageBubble = null;
@@ -2011,6 +2027,7 @@ namespace windows_client.View
             o[1] = obj;
             o[2] = delConv;
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
+             * */
         }
 
         private void MenuItem_Click_Cancel(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
@@ -2214,7 +2231,7 @@ namespace windows_client.View
                 overlayRectangle.Visibility = System.Windows.Visibility.Visible;
                 overlayRectangle.Opacity = 0.85;
                 HikeTitle.IsHitTestVisible = false;
-                MessageList.IsHitTestVisible = false;
+                messageListBox.IsHitTestVisible = false;
                 bottomPanel.IsHitTestVisible = false;
                 OverlayMessagePanel.Visibility = Visibility.Visible;
                 emoticonsIconButton.IsEnabled = false;
@@ -2225,7 +2242,7 @@ namespace windows_client.View
             {
                 overlayRectangle.Visibility = System.Windows.Visibility.Collapsed;
                 HikeTitle.IsHitTestVisible = true;
-                MessageList.IsHitTestVisible = true;
+                messageListBox.IsHitTestVisible = true;
                 bottomPanel.IsHitTestVisible = true;
                 OverlayMessagePanel.Visibility = Visibility.Collapsed;
                 if (isGroupChat && !isGroupAlive)
@@ -2289,7 +2306,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (isTypingNotificationEnabled && !isTypingNotificationActive)
-                    this.MessageList.Children.Add(typingNotificationImage);
+                    this.messagesCollection.Add(typingNotificationImage);
                 isTypingNotificationActive = true;
                 ScrollToBottom();
             });
@@ -2308,8 +2325,8 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if ((!isTypingNotificationEnabled || isTypingNotificationActive) && this.MessageList.Children.Contains(typingNotificationImage))
-                    this.MessageList.Children.Remove(typingNotificationImage);
+                if ((!isTypingNotificationEnabled || isTypingNotificationActive) && this.messagesCollection.Contains(typingNotificationImage))
+                    this.messagesCollection.Remove(typingNotificationImage);
                 if (isTypingNotificationActive)
                     isTypingNotificationActive = false;
             });
