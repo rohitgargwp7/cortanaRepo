@@ -954,7 +954,9 @@ namespace windows_client.View
 
         #region FAVOURITE ZONE
 
-
+        private void addRecentToFav_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        { 
+        }
         #endregion
     }
 }
