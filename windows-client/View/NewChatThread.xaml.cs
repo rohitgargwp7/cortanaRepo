@@ -24,6 +24,7 @@ using Microsoft.Devices;
 using Microsoft.Xna.Framework.Media;
 using System.Device.Location;
 using windows_client.Misc;
+using System.Runtime.CompilerServices;
 
 namespace windows_client.View
 {
@@ -958,7 +959,7 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 ScrollToBottom();
-                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                //scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
                 NetworkManager.turnOffNetworkManager = false;
             });
         }
@@ -1051,12 +1052,21 @@ namespace windows_client.View
             });
         }
 
+//        [MethodImpl(MethodImplOptions.Synchronized)]
+        //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
             //MessageList.UpdateLayout();
             //Scroller.UpdateLayout();
-            //if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
-            //    Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+            if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+            {
+                //Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+                messagesCollection.Add(null);
+                messageListBox.SelectedIndex = messagesCollection.Count - 1;
+                messageListBox.UpdateLayout();
+                messageListBox.ScrollIntoView(messageListBox.SelectedItem);
+                messagesCollection.RemoveAt(messagesCollection.Count - 1);
+            }
         }
 
         private void updateLastMsgColor(string msisdn)
