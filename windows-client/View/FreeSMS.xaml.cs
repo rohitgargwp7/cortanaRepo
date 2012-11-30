@@ -317,9 +317,14 @@ namespace windows_client.View
             long val = ((long)creditsRemaining * 435) / max;
             creditsRemainingBar.Width = val;
             if (435 - creditsRemainingBar.Width > 0)
+            {
                 maxCreditsBar.Width = 435 - creditsRemainingBar.Width;
+            }
             else
+            {
                 maxCreditsBar.Width = 0;
+                creditsRemainingBar.Width = 435;
+            }
             maxCreditsTxtBlck.Text = max.ToString() + "+";
         }
 

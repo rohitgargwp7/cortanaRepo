@@ -970,16 +970,8 @@ namespace windows_client.View
                 string sourceMsisdn = (string)attachmentData[1];
 
                 string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + chatBubble.MessageId;
-
-                string messageText = "";
-                if (chatBubble.FileAttachment.ContentType.Contains("image"))
-                    messageText = "image";
-                else if (chatBubble.FileAttachment.ContentType.Contains("audio"))
-                    messageText = "audio";
-                else if (chatBubble.FileAttachment.ContentType.Contains("video"))
-                    messageText = "video";
-
-                ConvMessage convMessage = new ConvMessage(messageText, mContactNumber,
+                
+                ConvMessage convMessage = new ConvMessage("", mContactNumber,
                     TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
@@ -988,7 +980,21 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                //SentChatBubble newChatBubble = new SentChatBubble(convMessage, false);
+                if (chatBubble.FileAttachment.ContentType.Contains("image"))
+                    convMessage.Message = "image";
+                else if (chatBubble.FileAttachment.ContentType.Contains("audio"))
+                    convMessage.Message = "audio";
+                else if (chatBubble.FileAttachment.ContentType.Contains("video"))
+                    convMessage.Message = "video";
+                else if (chatBubble.FileAttachment.ContentType.Contains("location"))
+                {
+                    convMessage.Message = "location";
+                    byte[] locationInfo = null;
+                    MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out locationInfo);
+                    string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfo, 0, locationInfo.Length);
+                    convMessage.MetaDataString = locationInfoString;
+                }
+
                 SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
 
                 newChatBubble.SetSentMessageStatusForUploadedAttachments();
@@ -1245,6 +1251,7 @@ namespace windows_client.View
                         inviteMenuItem.IsEnabled = false;
                 }
                 emoticonPanel.Visibility = Visibility.Collapsed;
+                attachmentMenu.Visibility = Visibility.Collapsed;
                 mUserIsBlocked = true;
                 showOverlay(true); //true means show block animation
             }
@@ -1730,6 +1737,7 @@ namespace windows_client.View
                 return;
 
             emoticonPanel.Visibility = Visibility.Collapsed;
+            attachmentMenu.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0) || message == "")
                 return;
@@ -1895,6 +1903,8 @@ namespace windows_client.View
             ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
+            if (this.attachmentMenu.Visibility == Visibility.Visible)
+                this.attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
@@ -2028,6 +2038,7 @@ namespace windows_client.View
                 emoticonPanel.Visibility = Visibility.Visible;
             else
                 emoticonPanel.Visibility = Visibility.Collapsed;
+            attachmentMenu.Visibility = Visibility.Collapsed;
             this.Focus();
         }
 
@@ -2037,6 +2048,7 @@ namespace windows_client.View
                 attachmentMenu.Visibility = Visibility.Visible;
             else
                 attachmentMenu.Visibility = Visibility.Collapsed;
+            emoticonPanel.Visibility = Visibility.Collapsed;
         }
 
         private void sendImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2797,6 +2809,7 @@ namespace windows_client.View
         private void MessageList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             emoticonPanel.Visibility = Visibility.Collapsed;
+            attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
         private void emoticonPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
