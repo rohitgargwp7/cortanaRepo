@@ -350,11 +350,7 @@ namespace windows_client
                     return;
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                object[] vals = new object[2];
-                vals[0] = msisdn;
-                vals[1] = imageBytes;
 
-                this.pubSub.publish(HikePubSub.UPDATE_UI, vals);
                 Stopwatch st = Stopwatch.StartNew();
                 if (Utils.isGroupConversation(msisdn))
                 {
@@ -365,6 +361,14 @@ namespace windows_client
                 else
                     MiscDBUtil.saveAvatarImage(msisdn, imageBytes);
                 st.Stop();
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                        this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                    });
+                }              
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }

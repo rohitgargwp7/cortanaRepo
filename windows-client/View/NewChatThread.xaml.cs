@@ -575,7 +575,6 @@ namespace windows_client.View
                 isOnHike = true;
                 isGroupChat = true;
                 userImage.Source = UI_Utils.Instance.DefaultGroupImage;
-
                 /* This is done so that after Tombstone when this page is launched, no group is created again and again */
                 ConversationListObject convObj = new ConversationListObject();
                 convObj.Msisdn = mContactNumber;
@@ -1205,10 +1204,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
             PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
-            Dispatcher.BeginInvoke(() =>
-            {
-                NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
-            });
+            NavigationService.Navigate(new Uri("/View/GroupInfoPage.xaml", UriKind.Relative));
         }
 
         private void blockUnblock_Click(object sender, EventArgs e)
@@ -2583,22 +2579,12 @@ namespace windows_client.View
 
             else if (HikePubSub.UPDATE_UI == type)
             {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
+                string msisdn = (string)obj;
                 if (msisdn != mContactNumber)
-                    return;
-                byte[] _avatar = (byte[])vals[1];
-                if (_avatar == null)
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    using (var memStream = new MemoryStream(_avatar))
-                    {
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage(); // here we can resuse existing image (how ??)
-                        empImage.SetSource(memStream);
-                        userImage.Source = empImage;
-                    }
+                    userImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
                 });
             }
 
@@ -2691,6 +2677,7 @@ namespace windows_client.View
 
         private void groupChatEnd()
         {
+            isGroupAlive = false;
             sendMsgTxtbox.IsHitTestVisible = false;
             appBar.IsMenuEnabled = false;
             sendIconButton.IsEnabled = false;

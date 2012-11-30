@@ -31,6 +31,7 @@ namespace windows_client.View
         byte[] buffer = null;
         BitmapImage grpImage = null;
         private int smsUsers = 0;
+        private bool imageHandlerCalled = false;
 
         public bool EnableInviteBtn
         {
@@ -68,23 +69,6 @@ namespace windows_client.View
             photoChooserTask.PixelHeight = 83;
             photoChooserTask.PixelWidth = 83;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
-
-            string grpId = groupId.Replace(":", "_");
-            byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(grpId);
-            if (avatar == null)
-                groupImage.Source = UI_Utils.Instance.DefaultGroupImage;
-            else
-            {
-                MemoryStream memStream = new MemoryStream(avatar);
-                memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage empImage = new BitmapImage();
-                empImage.SetSource(memStream);
-                groupImage.Source = empImage;
-            }
-            if (Utils.isDarkTheme())
-            {
-                addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
-            }
             TiltEffect.TiltableItems.Add(typeof(TextBlock));
         }
 
@@ -104,6 +88,28 @@ namespace windows_client.View
             GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
                 return;
+            if (!App.IS_TOMBSTONED)
+                groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
+            else
+            {
+                string grpId = groupId.Replace(":", "_");
+                byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(grpId);
+                if (avatar == null)
+                    groupImage.Source = UI_Utils.Instance.DefaultGroupImage;
+                else
+                {
+                    MemoryStream memStream = new MemoryStream(avatar);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage empImage = new BitmapImage();
+                    empImage.SetSource(memStream);
+                    groupImage.Source = empImage;
+                }
+                if (Utils.isDarkTheme())
+                {
+                    addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
+                }
+                GroupManager.Instance.LoadGroupParticipants(groupId);
+            }
             this.groupNameTxtBox.Text = groupName;
             List<GroupParticipant> hikeUsersList = new List<GroupParticipant>();
             List<GroupParticipant> smsUsersList = GetHikeAndSmsUsers(GroupManager.Instance.GroupCache[groupId], hikeUsersList);
@@ -184,26 +190,12 @@ namespace windows_client.View
             #region UPDATE_UI
             if (HikePubSub.UPDATE_UI == type)
             {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
+                string msisdn = (string)obj;
                 if (msisdn != groupId)
                     return;
-                byte[] _avatar = (byte[])vals[1];
-                if (_avatar == null)
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        groupImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
-                        return;
-                    });
-                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MemoryStream memStream = new MemoryStream(_avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage();
-                    empImage.SetSource(memStream);
-                    groupImage.Source = empImage;
+                    groupImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
                 });
             }
             #endregion
@@ -368,27 +360,37 @@ namespace windows_client.View
                 isProfilePicTapped = false;
                 return;
             }
-            shellProgress.IsVisible = true; ;
+            shellProgress.IsVisible = true;
+            imageHandlerCalled = true;
             if (e.TaskResult == TaskResult.OK)
             {
                 Uri uri = new Uri(e.OriginalFileName);
                 grpImage = new BitmapImage(uri);
-                grpImage.CreateOptions = BitmapCreateOptions.None;
-                grpImage.UriSource = uri;
+                grpImage.CreateOptions = BitmapCreateOptions.BackgroundCreation;
                 grpImage.ImageOpened += imageOpenedHandler;
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
                 isProfilePicTapped = false;
-                //progressBar.IsEnabled = false;
                 shellProgress.IsVisible = false;
                 if (e.Error != null)
                     MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
             }
+            //else
+            //{
+            //    Uri uri = new Uri("/View/images/tick.png", UriKind.Relative);
+            //    grpImage = new BitmapImage(uri);
+            //    grpImage.CreateOptions = BitmapCreateOptions.None;
+            //    grpImage.UriSource = uri;
+            //    grpImage.ImageOpened += imageOpenedHandler;
+            //}
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
+            if (!imageHandlerCalled)
+                return;
+            imageHandlerCalled = false;
             BitmapImage image = (BitmapImage)sender;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
 
@@ -407,6 +409,7 @@ namespace windows_client.View
             {
                 if (obj != null && "ok" == (string)obj["stat"])
                 {
+                    App.ViewModel.ConvMap[groupId].Avatar = buffer;
                     groupImage.Source = grpImage;
                     groupImage.Height = 83;
                     groupImage.Width = 83;
@@ -415,6 +418,8 @@ namespace windows_client.View
                     vals[1] = buffer;
                     vals[2] = null;
                     mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+                    if (App.newChatThreadPage != null)
+                        App.newChatThreadPage.userImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
                 }
                 else
                 {

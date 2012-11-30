@@ -15,7 +15,7 @@
           <FullDeploy>False</FullDeploy>
           <DebuggerType>Managed</DebuggerType>
           <DebuggerAgentType>Managed</DebuggerAgentType>
-          <Tombstone>True</Tombstone>
+          <Tombstone>False</Tombstone>
         </SilverlightMobileCSProjectFlavor>
       </FlavorProperties>
     </VisualStudio>

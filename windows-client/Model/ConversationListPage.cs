@@ -32,6 +32,7 @@ namespace windows_client.Model
         private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private long _lastMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
+        BitmapImage empImage = null;
         #endregion
 
         #region Properties
@@ -227,23 +228,6 @@ namespace windows_client.Model
             }
         }
 
-        public byte[] Avatar
-        {
-            get
-            {
-                return _avatar;
-            }
-            set
-            {
-                if (_avatar != value)
-                {
-                    _avatar = value;
-                    NotifyPropertyChanged("Avatar");
-                    NotifyPropertyChanged("AvatarImage");
-                }
-            }
-        }
-
         public string NameToShow
         {
             get
@@ -263,13 +247,34 @@ namespace windows_client.Model
             }
         }
 
+
+        public byte[] Avatar
+        {
+            get
+            {
+                return _avatar;
+            }
+            set
+            {
+                if (_avatar != value)
+                {
+                    _avatar = value;
+                    empImage = null; // reset to null whenever avatar changes
+                    NotifyPropertyChanged("Avatar");
+                    NotifyPropertyChanged("AvatarImage");
+                }
+            }
+        }
+
         public BitmapImage AvatarImage
         {
             get
             {
                 try
                 {
-                    if (_avatar == null)
+                    if (empImage != null) // if image is already set return that
+                        return empImage;
+                    else if (_avatar == null)
                     {
                         if (Utils.isGroupConversation(_msisdn))
                             return UI_Utils.Instance.DefaultGroupImage;
@@ -279,7 +284,7 @@ namespace windows_client.Model
                     {
                         MemoryStream memStream = new MemoryStream(_avatar);
                         memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
+                        empImage = new BitmapImage();
                         empImage.SetSource(memStream);
                         return empImage;
                     }

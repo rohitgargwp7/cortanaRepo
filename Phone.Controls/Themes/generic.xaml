@@ -4,9 +4,8 @@
     xmlns:local="clr-namespace:Phone.Controls;assembly=Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"   
-     xmlns:unsupported="clr-namespace:Microsoft.Phone.Controls.Unsupported" 
-    mc:Ignorable="d"
-    >
+    xmlns:unsupported="clr-namespace:Microsoft.Phone.Controls.Unsupported" 
+    mc:Ignorable="d">
 
     <Style TargetType="local:MyProgressIndicator">
         <Setter Property="Background" Value="{StaticResource PhoneChromeBrush}"/>

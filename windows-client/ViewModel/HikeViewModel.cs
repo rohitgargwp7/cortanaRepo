@@ -83,7 +83,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
-            App.HikePubSubInstance.addListener(HikePubSub.UPDATE_UI, this);
         }
 
         private void RemoveListeners()
@@ -91,7 +90,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.UPDATE_UI, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -126,28 +124,6 @@ namespace windows_client.ViewModel
                 {
                     ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
                     convObj.IsOnhike = HikePubSub.USER_JOINED == type;
-                }
-                catch (KeyNotFoundException)
-                {
-                }
-            }
-            #endregion
-            #region UPDATE_UI
-            else if (HikePubSub.UPDATE_UI == type)
-            {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
-                if (!App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    return;
-
-                ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
-                byte[] _avatar = (byte[])vals[1];
-                try
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        convObj.Avatar = _avatar;
-                    });
                 }
                 catch (KeyNotFoundException)
                 {

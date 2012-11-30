@@ -108,12 +108,21 @@ namespace windows_client.DbUtils
             string FileName = THUMBNAILS + "\\" + msisdn;
             lock (lockObj)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                try
                 {
-                    using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, store))
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        stream.Write(imageBytes, 0, imageBytes.Length);
+                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
+                        {
+                            stream.Write(imageBytes, 0, imageBytes.Length);
+                            stream.Flush();
+                            stream.Close();
+                        }
                     }
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine(e);
                 }
             }
         }
