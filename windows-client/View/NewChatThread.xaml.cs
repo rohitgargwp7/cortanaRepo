@@ -898,6 +898,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     //Scroller.Opacity = 1;
+                    messageListBox.Opacity = 1;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
                     forwardAttachmentMessage();
@@ -956,6 +957,7 @@ namespace windows_client.View
             {
                 forwardAttachmentMessage();
                 //Scroller.Opacity = 1;
+                messageListBox.Opacity = 1;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 ScrollToBottom();

@@ -54,7 +54,7 @@
             </StackPanel>
         </ScrollViewer>-->
 
-        <ListBox x:Name="messageListBox" Height="500" Width="450" Grid.Row="1" Margin="0,0,0,0" VirtualizingStackPanel.VirtualizationMode="Recycling">
+        <ListBox x:Name="messageListBox" Opacity="0" Height="500" Width="450" Grid.Row="1" Margin="0,0,0,0" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel VerticalAlignment="Bottom"/>
