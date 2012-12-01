@@ -718,9 +718,15 @@ namespace windows_client
                 ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                 if (contactInfo == null)
                     return;
-                byte[] _av = MiscDBUtil.getThumbNailForMsisdn(ms);
-                ConversationListObject f = new ConversationListObject(ms, contactInfo.Name, contactInfo.OnHike, _av);
-                App.ViewModel.PendingRequests.Add(f);
+                ConversationListObject favObj;
+                if (App.ViewModel.ConvMap.ContainsKey(ms))
+                    favObj = App.ViewModel.ConvMap[ms];
+                else
+                {
+                    byte[] _av = MiscDBUtil.getThumbNailForMsisdn(ms);
+                    favObj = new ConversationListObject(ms, contactInfo.Name, contactInfo.OnHike, _av);
+                }
+                App.ViewModel.PendingRequests.Add(favObj);
                 MiscDBUtil.SavePendingRequests();
             }
             #region OTHER
