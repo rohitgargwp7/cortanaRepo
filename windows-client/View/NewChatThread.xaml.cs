@@ -69,6 +69,7 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IScheduler scheduler = Scheduler.NewThread;
 
+        private byte [] avatar;
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem blockUnblockMenuItem;
@@ -613,25 +614,27 @@ namespace windows_client.View
                         PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     }
                 }
-                byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
-
-                if (avatar == null)
-                {
-                    avatarImage = UI_Utils.Instance.DefaultAvatarBitmapImage;
-                    userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
-                }
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                    avatarImage = App.ViewModel.ConvMap[mContactNumber].AvatarImage;
                 else
                 {
-                    MemoryStream memStream = new MemoryStream(avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage();
-                    empImage.SetSource(memStream);
-                    userImage.Source = empImage;
-                    avatarImage = empImage;
+                    avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
+
+                    if (avatar == null)
+                    {
+                        avatarImage = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                        userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                    }
+                    else
+                    {
+                        MemoryStream memStream = new MemoryStream(avatar);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage();
+                        empImage.SetSource(memStream);
+                        userImage.Source = empImage;
+                        avatarImage = empImage;
+                    }
                 }
-                //}
-                //else
-                //    userImage.Source = UI_Utils.Instance.Instance.DefaultAvatarBitmapImage;
             }
             #endregion
 
@@ -1137,8 +1140,13 @@ namespace windows_client.View
 
         private void addToFavMenuItem_Click(object sender, EventArgs e)
         {
-            Favourites favObj = new Favourites(mContactNumber,mContactName,isOnHike,avatarImage);
-            MiscDBUtil.SaveFavourites(favObj);
+            ConversationListObject favObj = null;
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                favObj = App.ViewModel.ConvMap[mContactNumber];
+            else
+                favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
+            App.ViewModel.FavList.Add(favObj);
+            MiscDBUtil.SaveFavourites();
             addToFavMenuItem.IsEnabled = false;
             JObject data = new JObject();
             data["id"] = mContactNumber;

@@ -35,6 +35,7 @@
             </StackPanel>
 
         </StackPanel>
+
         <controls:Pivot Grid.Row="1"  Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <!--Pivot item one-->
             <controls:PivotItem Header="chats">
@@ -147,7 +148,7 @@
                     </StackPanel>
                 </Grid>
             </controls:PivotItem>
-            
+
             <controls:PivotItem Header="favourites">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -164,11 +165,11 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            
+
                             <TextBlock Grid.Row="0" FontSize="24" Foreground="#3c3c3c" Text="Your favourites"/>
 
-                            <toolkit:LongListSelector x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" IsFlatList="True">
-                                <toolkit:LongListSelector.ItemTemplate>
+                            <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1">
+                                <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.RowDefinitions>
@@ -187,27 +188,32 @@
                                                 </TextBlock.Inlines>
                                             </TextBlock>
                                             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
-                                                <Button Background="Blue" Content="Yes"></Button>
-                                                <Button Background="LightGray" Content="Not Now"></Button>
+                                                <Button Background="Blue" Content="Yes" Tap="yes_Click"></Button>
+                                                <Button Background="LightGray" Content="Not Now" Tap="no_Click"></Button>
                                             </StackPanel>
                                         </Grid>
                                     </DataTemplate>
-                                </toolkit:LongListSelector.ItemTemplate>
-                            </toolkit:LongListSelector>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
-                            <toolkit:LongListSelector x:Name="favourites" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" IsFlatList="True">
-                                <toolkit:LongListSelector.ItemTemplate>
+                            <ListBox x:Name="favourites" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Tap="favourites_Tap">
+                                <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="{Binding AvatarImage}" Height="50" Margin="0,10,0,0"></Image>
                                             <TextBlock Text="{Binding ContactName}" FontSize="22" VerticalAlignment="Center" Foreground="#2d2d2d"></TextBlock>
+                                            <toolkit:ContextMenuService.ContextMenu>
+                                                <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <toolkit:MenuItem Header="Remove From Favourites" Tap="RemoveFavourite_Tap"/>
+                                                </toolkit:ContextMenu>
+                                            </toolkit:ContextMenuService.ContextMenu>
                                         </StackPanel>
                                     </DataTemplate>
-                                </toolkit:LongListSelector.ItemTemplate>
-                            </toolkit:LongListSelector>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
                             <Rectangle Height="1" Fill="#080808" Grid.Row="3"/>
-                            
+
                             <TextBlock Text="Friends on hike" Grid.Row="4" Foreground="#3c3c3c" FontSize="24"></TextBlock>
                             <ListBox x:Name="hikeFriends" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="5">
                                 <ListBox.ItemTemplate>

@@ -11,9 +11,9 @@ namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged, HikePubSub.Listener
     {
-        private ObservableCollection<Favourites> _pendingReq = null;
+        private ObservableCollection<ConversationListObject> _pendingReq = null;
 
-        private ObservableCollection<Favourites> _favList = null;
+        private ObservableCollection<ConversationListObject> _favList = null;
 
         private IScheduler scheduler = Scheduler.NewThread;
 
@@ -52,7 +52,7 @@ namespace windows_client.ViewModel
             get;
             set;
         }
-        public ObservableCollection<Favourites> PendingRequests
+        public ObservableCollection<ConversationListObject> PendingRequests
         {
             get
             {
@@ -65,7 +65,7 @@ namespace windows_client.ViewModel
             }
         }
 
-        public ObservableCollection<Favourites> FavList
+        public ObservableCollection<ConversationListObject> FavList
         {
             get
             {
@@ -77,8 +77,8 @@ namespace windows_client.ViewModel
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(convList);
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
-            _pendingReq = new ObservableCollection<Favourites>();
-            _favList = new ObservableCollection<Favourites>();
+            _pendingReq = new ObservableCollection<ConversationListObject>();
+            _favList = new ObservableCollection<ConversationListObject>();
             MiscDBUtil.LoadFavourites(_favList);
             for (int i = 0; i < convList.Count; i++)
                 _convMap[convList[i].Msisdn] = convList[i];
@@ -89,8 +89,8 @@ namespace windows_client.ViewModel
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
-            _favList = new ObservableCollection<Favourites>();
-            _pendingReq = new ObservableCollection<Favourites>();
+            _favList = new ObservableCollection<ConversationListObject>();
+            _pendingReq = new ObservableCollection<ConversationListObject>();
             RegisterListeners();
         }
 

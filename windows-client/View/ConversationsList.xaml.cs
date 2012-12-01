@@ -584,10 +584,10 @@ namespace windows_client.View
                         for (int i = 0; i < App.ViewModel.FavList.Count; i++)
                         {
                             if (App.ViewModel.ConvMap.ContainsKey(App.ViewModel.FavList[i].Msisdn))
-                                App.ViewModel.FavList[i].Image = App.ViewModel.ConvMap[App.ViewModel.FavList[i].Msisdn].Avatar;
+                                App.ViewModel.FavList[i].Avatar = App.ViewModel.ConvMap[App.ViewModel.FavList[i].Msisdn].Avatar;
                             else
                             {
-                                App.ViewModel.FavList[i].Image = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
+                                App.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
                             }
                         }
                     };
@@ -608,17 +608,17 @@ namespace windows_client.View
                     BackgroundWorker pendingBw = new BackgroundWorker();
                     pendingBw.DoWork += (sf, ef) =>
                     {
-                        if(!App.ViewModel.IsPendingListLoaded) // if list is not loaded
+                        if (!App.ViewModel.IsPendingListLoaded) // if list is not loaded
                             MiscDBUtil.LoadPendingRequests();
                         App.ViewModel.IsPendingListLoaded = true;
 
                         for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
                         {
                             if (App.ViewModel.ConvMap.ContainsKey(App.ViewModel.PendingRequests[i].Msisdn))
-                                App.ViewModel.PendingRequests[i].Image = App.ViewModel.ConvMap[App.ViewModel.PendingRequests[i].Msisdn].Avatar;
+                                App.ViewModel.PendingRequests[i].Avatar = App.ViewModel.ConvMap[App.ViewModel.PendingRequests[i].Msisdn].Avatar;
                             else
                             {
-                                App.ViewModel.PendingRequests[i].Image = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
+                                App.ViewModel.PendingRequests[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
                             }
                         }
                     };
@@ -955,8 +955,60 @@ namespace windows_client.View
         #region FAVOURITE ZONE
 
         private void addRecentToFav_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        { 
+        {
+            ContactInfo fObj = (sender as Image).DataContext as ContactInfo;
+            if (!App.ViewModel.Isfavourite(fObj.Msisdn)) // if not favourite then only add to fav
+            {
+                if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
+                    App.ViewModel.FavList.Add(App.ViewModel.ConvMap[fObj.Msisdn]);
+                else
+                {
+                    ConversationListObject favObj = new ConversationListObject(fObj.Msisdn, fObj.Name, fObj.OnHike, fObj.Avatar);
+                    App.ViewModel.FavList.Add(favObj);
+                }
+                MiscDBUtil.SaveFavourites();
+            }
         }
+
+        private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+            App.ViewModel.PendingRequests.Remove(fObj);
+            App.ViewModel.FavList.Add(fObj);
+            MiscDBUtil.SaveFavourites();
+            MiscDBUtil.SavePendingRequests();
+        }
+
+        private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+            App.ViewModel.PendingRequests.Remove(fObj);
+            MiscDBUtil.SavePendingRequests();
+        }
+
+        private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
+            if (obj == null)
+                return;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
+            string uri = "/View/NewChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure about removing this contact from favourites?", "Remove from Favourites", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+            ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
+            if (convObj != null)
+            {
+                App.ViewModel.FavList.Remove(convObj);
+                MiscDBUtil.SaveFavourites();
+            }
+        }
+
         #endregion
     }
 }

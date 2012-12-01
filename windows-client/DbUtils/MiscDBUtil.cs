@@ -378,7 +378,7 @@ namespace windows_client.DbUtils
 
         #region FAVOURITES
 
-        public static void LoadFavourites(ObservableCollection<Favourites> favList)
+        public static void LoadFavourites(ObservableCollection<ConversationListObject> favList)
         {
             lock (favReadWriteLock)
             {
@@ -406,10 +406,10 @@ namespace windows_client.DbUtils
                             {
                                 for (int i = 0; i < count; i++)
                                 {
-                                    Favourites item = new Favourites();
+                                    ConversationListObject item = new ConversationListObject();
                                     try
                                     {
-                                        item.Read(reader);
+                                        item.ReadFavOrPending(reader);
                                         favList.Add(item);
                                     }
                                     catch(Exception ex)
@@ -431,7 +431,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void SaveFavourites(Favourites favObj)
+        public static void SaveFavourites()
         {
             lock (favReadWriteLock)
             {
@@ -439,7 +439,6 @@ namespace windows_client.DbUtils
                 {
                     string fName = MISC_DIR + "\\" + FAVOURITES_FILE;
 
-                    App.ViewModel.FavList.Add(favObj);
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
                         using (BinaryWriter writer = new BinaryWriter(file))
@@ -448,8 +447,8 @@ namespace windows_client.DbUtils
                             writer.Write(App.ViewModel.FavList.Count);
                             for (int i = 0; i < App.ViewModel.FavList.Count; i++)
                             {
-                                Favourites item = App.ViewModel.FavList[i];
-                                item.Write(writer);
+                                ConversationListObject item = App.ViewModel.FavList[i];
+                                item.WriteFavOrPending(writer);
                             }
                             writer.Flush();
                             writer.Close();
@@ -493,10 +492,10 @@ namespace windows_client.DbUtils
                             {
                                 for (int i = 0; i < count; i++)
                                 {
-                                    Favourites item = new Favourites();
+                                    ConversationListObject item = new ConversationListObject();
                                     try
                                     {
-                                        item.Read(reader);
+                                        item.ReadFavOrPending(reader);
                                         App.ViewModel.PendingRequests.Add(item);
                                     }
                                     catch
@@ -533,8 +532,8 @@ namespace windows_client.DbUtils
                             writer.Write(App.ViewModel.PendingRequests.Count);
                             for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
                             {
-                                Favourites item = App.ViewModel.PendingRequests[i];
-                                item.Write(writer);
+                                ConversationListObject item = App.ViewModel.PendingRequests[i];
+                                item.WriteFavOrPending(writer);
                             }
                             writer.Flush();
                             writer.Close();

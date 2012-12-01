@@ -707,7 +707,7 @@ namespace windows_client
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
-            else if (HikeConstants.MqttMessageTypes.BLOCK_INTERNATIONAL_USER == type)
+            else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
                 JObject oj = (JObject)jsonObj[HikeConstants.DATA];
                 string ms = (string)oj[HikeConstants.Extras.ID];
@@ -719,7 +719,7 @@ namespace windows_client
                 if (contactInfo == null)
                     return;
                 byte[] _av = MiscDBUtil.getThumbNailForMsisdn(ms);
-                Favourites f = new Favourites(ms, contactInfo.Name, contactInfo.OnHike,_av);
+                ConversationListObject f = new ConversationListObject(ms, contactInfo.Name, contactInfo.OnHike, _av);
                 App.ViewModel.PendingRequests.Add(f);
                 MiscDBUtil.SavePendingRequests();
             }

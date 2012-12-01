@@ -361,6 +361,14 @@ namespace windows_client.Model
 
         }
 
+        public ConversationListObject(string msisdn, string contactName, bool onHike, byte[] avatar)
+        {
+            this._msisdn = msisdn;
+            this._contactName = contactName;
+            this._isOnhike = onHike;
+            this._avatar = avatar;
+        }
+
         public int CompareTo(ConversationListObject rhs)
         {
             if (this.Equals(rhs))
@@ -505,6 +513,43 @@ namespace windows_client.Model
             _lastMsgId = reader.ReadInt64();
         }
 
+        #region FAVOURITES AND PENDING SECTION
+
+        public void WriteFavOrPending(BinaryWriter writer)
+        {
+            try
+            {
+                if (_msisdn == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_msisdn);
+
+                if (_contactName == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_contactName);
+                writer.Write(_isOnhike);
+            }
+            catch
+            {
+                throw new Exception("Unable to write to a file...");
+            }
+        }
+
+        public void ReadFavOrPending(BinaryReader reader)
+        {
+            int count = reader.ReadInt32();
+            _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (_msisdn == "*@N@*")
+                _msisdn = null;
+            count = reader.ReadInt32();
+            _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (_contactName == "*@N@*")
+                _contactName = null;
+            _isOnhike = reader.ReadBoolean();
+        }
+        #endregion
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -531,6 +576,10 @@ namespace windows_client.Model
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
+        private string ms;
+        private string p1;
+        private bool p2;
+        private byte[] _av;
 
         // Used to notify that a property is about to change
         private void NotifyPropertyChanging(string propertyName)
