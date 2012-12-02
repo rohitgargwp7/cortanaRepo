@@ -196,7 +196,12 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <ListBox x:Name="favourites" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Tap="favourites_Tap">
+                            <StackPanel x:Name="emptyListPlaceholder" Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Center">
+                                <Image Source="images/favorites_heart.png" Height="90"></Image>
+                                <TextBlock Text="Tap on '+' next to a friend to add them as a favourite" Width="270" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#909090"></TextBlock>
+                            </StackPanel>
+
+                            <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Tap="favourites_Tap" >
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -212,10 +217,17 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Rectangle Height="1" Fill="#080808" Grid.Row="3"/>
-
+                            <Rectangle Height="1" Fill="#080808" Grid.Row="3" Margin="0,10,0,0"/>
+                            
                             <TextBlock Text="Friends on hike" Grid.Row="4" Foreground="#3c3c3c" FontSize="24"></TextBlock>
-                            <ListBox x:Name="hikeFriends" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="5">
+
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Grid.Row="5">
+                                <Image Source="images/hike_users.png" Height="90"></Image>
+                                <TextBlock Text="Bummer! None of your friends are on hike." Width="270" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#909090"></TextBlock>
+                                <Button Content="Invite Now" FontSize="18" Height="66" Width="150"  FontFamily="Segoe WP Semibold" BorderThickness="0" Background="#e9ecec" Foreground="Black"></Button>
+                            </StackPanel>
+    
+                            <ListBox x:Name="hikeFriends" ScrollViewer.VerticalScrollBarVisibility="Disabled" Visibility="Collapsed" Grid.Row="5">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
