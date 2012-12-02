@@ -165,6 +165,12 @@ namespace windows_client.Model
             }
         }
 
+        public int IsFav
+        {
+            get;
+            set;
+        }
+
         public Visibility InvitedStringVisible
         {
             get

@@ -296,6 +296,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
+            mPubSub.addListener(HikePubSub.ADD_TO_FAV_OR_PENDING, this);
         }
 
         private void removeListeners()
@@ -306,6 +307,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
+                mPubSub.removeListener(HikePubSub.ADD_TO_FAV_OR_PENDING, this);
             }
             catch { }
         }
@@ -626,6 +628,11 @@ namespace windows_client.View
                     pendingBw.RunWorkerCompleted += (sf, ef) =>
                     {
                         pendingRequests.ItemsSource = App.ViewModel.PendingRequests;
+                        if (App.ViewModel.FavList.Count > 0 || App.ViewModel.PendingRequests.Count > 0)
+                        {
+                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            favourites.Visibility = System.Windows.Visibility.Visible;
+                        }
                     };
                 }
                 #endregion
@@ -639,7 +646,7 @@ namespace windows_client.View
                     BackgroundWorker onHikeBw = new BackgroundWorker();
                     onHikeBw.DoWork += (sf, ef) =>
                     {
-                        contactList = UsersTableUtils.GetAllHikeContacts();
+                        contactList = UsersTableUtils.GetAllHikeContactsOrdered();
                         if (contactList == null)
                             return;
                         for (int i = 0; i < contactList.Count; i++)
@@ -648,12 +655,19 @@ namespace windows_client.View
                                 contactList[i].Avatar = App.ViewModel.ConvMap[contactList[i].Msisdn].Avatar;
                             else
                                 contactList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(contactList[i].Msisdn);
+                            if (!App.ViewModel.Isfavourite(contactList[i].Msisdn))
+                                contactList[i].IsFav = 1;
                         }
                     };
                     onHikeBw.RunWorkerAsync();
                     onHikeBw.RunWorkerCompleted += (sf, ef) =>
                     {
                         hikeFriends.ItemsSource = contactList;
+                        if (contactList.Count > 0)
+                        {
+                            onHikeEmptyPlaceHolder.Visibility = System.Windows.Visibility.Collapsed;
+                            hikeFriends.Visibility = System.Windows.Visibility.Visible;
+                        }
                     };
                 }
                 #endregion
@@ -710,6 +724,19 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     accountName.Text = (string)obj;
+                });
+            }
+            #endregion
+            #region ADD TO FAV OR PENDING
+            else if (HikePubSub.ADD_TO_FAV_OR_PENDING == type)
+            {   
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                        favourites.Visibility = System.Windows.Visibility.Visible;
+                    }
                 });
             }
             #endregion
@@ -957,7 +984,7 @@ namespace windows_client.View
         private void addRecentToFav_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ContactInfo fObj = (sender as Image).DataContext as ContactInfo;
-            if (!App.ViewModel.Isfavourite(fObj.Msisdn)) // if not favourite then only add to fav
+            if (!App.ViewModel.Isfavourite(fObj.Msisdn)) // if not already favourite then only add to fav
             {
                 if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
                     App.ViewModel.FavList.Add(App.ViewModel.ConvMap[fObj.Msisdn]);
@@ -967,6 +994,19 @@ namespace windows_client.View
                     App.ViewModel.FavList.Add(favObj);
                 }
                 MiscDBUtil.SaveFavourites();
+                if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                {
+                    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                    favourites.Visibility = System.Windows.Visibility.Visible;
+                }
+
+                JObject data = new JObject();
+                data["id"] = fObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TO] = fObj.Msisdn;
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
         }
 
@@ -977,6 +1017,11 @@ namespace windows_client.View
             App.ViewModel.FavList.Add(fObj);
             MiscDBUtil.SaveFavourites();
             MiscDBUtil.SavePendingRequests();
+            if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+            {
+                emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                favourites.Visibility = System.Windows.Visibility.Visible;
+            }
         }
 
         private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -984,6 +1029,11 @@ namespace windows_client.View
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             App.ViewModel.PendingRequests.Remove(fObj);
             MiscDBUtil.SavePendingRequests();
+            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+            {
+                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                favourites.Visibility = System.Windows.Visibility.Collapsed;
+            }
         }
 
         private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1006,6 +1056,11 @@ namespace windows_client.View
             {
                 App.ViewModel.FavList.Remove(convObj);
                 MiscDBUtil.SaveFavourites();
+            }
+            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+            {
+                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                favourites.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 
