@@ -22,6 +22,7 @@ using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
 using windows_client.Misc;
+using System.Collections.ObjectModel;
 
 namespace windows_client.View
 {
@@ -44,6 +45,7 @@ namespace windows_client.View
         byte[] largeImageBytes = null;
         private bool firstLoad = true;
         private bool showFreeSMS = false;
+        private ObservableCollection<ContactInfo> onHikeContactList = null;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private PhotoChooserTask photoChooserTask;
@@ -642,28 +644,29 @@ namespace windows_client.View
                 if (!_isHikeListBound)
                 {
                     _isHikeListBound = true;
-                    List<ContactInfo> contactList = null;
                     BackgroundWorker onHikeBw = new BackgroundWorker();
                     onHikeBw.DoWork += (sf, ef) =>
                     {
-                        contactList = UsersTableUtils.GetAllHikeContactsOrdered();
-                        if (contactList == null)
+                        List<ContactInfo> onHikePeople = UsersTableUtils.GetAllHikeContactsOrdered();
+                        if(onHikePeople == null)
                             return;
-                        for (int i = 0; i < contactList.Count; i++)
+                        onHikeContactList = new ObservableCollection<ContactInfo>(onHikePeople);
+
+                        for (int i = 0; i < onHikeContactList.Count; i++)
                         {
-                            if (App.ViewModel.ConvMap.ContainsKey(contactList[i].Msisdn))
-                                contactList[i].Avatar = App.ViewModel.ConvMap[contactList[i].Msisdn].Avatar;
+                            if (App.ViewModel.ConvMap.ContainsKey(onHikeContactList[i].Msisdn))
+                                onHikeContactList[i].Avatar = App.ViewModel.ConvMap[onHikeContactList[i].Msisdn].Avatar;
                             else
-                                contactList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(contactList[i].Msisdn);
-                            if (!App.ViewModel.Isfavourite(contactList[i].Msisdn))
-                                contactList[i].IsFav = 1;
+                                onHikeContactList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(onHikeContactList[i].Msisdn);
+                            if (!App.ViewModel.Isfavourite(onHikeContactList[i].Msisdn))
+                                onHikeContactList[i].IsFav = 1;
                         }
                     };
                     onHikeBw.RunWorkerAsync();
                     onHikeBw.RunWorkerCompleted += (sf, ef) =>
                     {
-                        hikeFriends.ItemsSource = contactList;
-                        if (contactList.Count > 0)
+                        hikeFriends.ItemsSource = onHikeContactList;
+                        if (onHikeContactList.Count > 0)
                         {
                             onHikeEmptyPlaceHolder.Visibility = System.Windows.Visibility.Collapsed;
                             hikeFriends.Visibility = System.Windows.Visibility.Visible;
@@ -729,9 +732,15 @@ namespace windows_client.View
             #endregion
             #region ADD TO FAV OR PENDING
             else if (HikePubSub.ADD_TO_FAV_OR_PENDING == type)
-            {   
+            {
+                string msisdn = (string)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
+                    {
+                        if (onHikeContactList[i].Msisdn == msisdn)
+                            onHikeContactList[i].IsFav = 0;
+                    }
                     if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
@@ -1007,6 +1016,11 @@ namespace windows_client.View
                 obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
+                {
+                    if (onHikeContactList[i].Msisdn == fObj.Msisdn)
+                        onHikeContactList[i].IsFav = 0;
+                }
             }
         }
 
@@ -1021,6 +1035,11 @@ namespace windows_client.View
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
+            }
+            for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
+            {
+                if (onHikeContactList[i].Msisdn == fObj.Msisdn)
+                    onHikeContactList[i].IsFav = 0;
             }
         }
 
@@ -1056,6 +1075,11 @@ namespace windows_client.View
             {
                 App.ViewModel.FavList.Remove(convObj);
                 MiscDBUtil.SaveFavourites();
+                for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
+                {
+                    if (onHikeContactList[i].Msisdn == convObj.Msisdn)
+                        onHikeContactList[i].IsFav = 1;
+                }
             }
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
             {
