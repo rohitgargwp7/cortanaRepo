@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Microsoft.Phone.Notification;
 using System.Text;
 using windows_client.Misc;
+using windows_client.View;
 
 namespace windows_client
 {
@@ -368,7 +369,7 @@ namespace windows_client
                         App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
                         this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
                     });
-                }              
+                }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
@@ -707,6 +708,33 @@ namespace windows_client
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
+            else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
+            {
+                JObject oj = (JObject)jsonObj[HikeConstants.DATA];
+                string ms = (string)oj[HikeConstants.Extras.ID];
+                if (App.ViewModel.Isfavourite(ms)) // already favourite
+                    return;
+                if (App.ViewModel.IsPending(ms))
+                    return;
+                ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                if (contactInfo == null)
+                    return;
+                ConversationListObject favObj;
+                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
+                    favObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
+                else
+                {
+                    byte[] _av = MiscDBUtil.getThumbNailForMsisdn(contactInfo.Msisdn);
+                    favObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, _av);
+                }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    App.ViewModel.PendingRequests.Add(favObj);
+                    MiscDBUtil.SavePendingRequests();
+                    this.pubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, favObj.Msisdn);
+                });
+
+            }
             #region OTHER
             else
             {

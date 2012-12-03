@@ -5,11 +5,16 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Microsoft.Phone.Reactive;
 using System;
+using windows_client.DbUtils;
 
 namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged, HikePubSub.Listener
     {
+        private ObservableCollection<ConversationListObject> _pendingReq = null;
+
+        private ObservableCollection<ConversationListObject> _favList = null;
+
         private IScheduler scheduler = Scheduler.NewThread;
 
         private Dictionary<string, ConversationListObject> _convMap;
@@ -42,10 +47,39 @@ namespace windows_client.ViewModel
             }
         }
 
+        public bool IsPendingListLoaded
+        {
+            get;
+            set;
+        }
+        public ObservableCollection<ConversationListObject> PendingRequests
+        {
+            get
+            {
+                return _pendingReq;
+            }
+            set
+            {
+                if (value != _pendingReq)
+                    _pendingReq = value;
+            }
+        }
+
+        public ObservableCollection<ConversationListObject> FavList
+        {
+            get
+            {
+                return _favList;
+            }
+        }
+
         public HikeViewModel(List<ConversationListObject> convList)
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(convList);
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
+            _pendingReq = new ObservableCollection<ConversationListObject>();
+            _favList = new ObservableCollection<ConversationListObject>();
+            MiscDBUtil.LoadFavourites(_favList);
             for (int i = 0; i < convList.Count; i++)
                 _convMap[convList[i].Msisdn] = convList[i];
             RegisterListeners();
@@ -55,7 +89,21 @@ namespace windows_client.ViewModel
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
+            _favList = new ObservableCollection<ConversationListObject>();
+            _pendingReq = new ObservableCollection<ConversationListObject>();
             RegisterListeners();
+        }
+
+        public bool Isfavourite(string mContactNumber)
+        {
+            if (_favList.Count == 0)
+                return false;
+            for (int i = 0; i < _favList.Count; i++)
+            {
+                if (_favList[i].Msisdn == mContactNumber)
+                    return true;
+            }
+            return false;
         }
 
         private void RefreshNewConversationObject()
@@ -146,5 +194,22 @@ namespace windows_client.ViewModel
         }
         #endregion
 
+
+        public bool IsPending(string ms)
+        {
+            if (!IsPendingListLoaded)
+            {
+               MiscDBUtil.LoadPendingRequests();
+               IsPendingListLoaded = true;
+            }
+            if (_pendingReq == null)
+                return false;
+            for (int i = 0; i < _pendingReq.Count; i++)
+            {
+                if (_pendingReq[i].Msisdn == ms)
+                    return true;
+            }
+            return false;
+        }
     }
 }

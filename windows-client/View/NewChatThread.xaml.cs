@@ -70,10 +70,13 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IScheduler scheduler = Scheduler.NewThread;
 
+        private byte [] avatar;
+        private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem blockUnblockMenuItem;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
+        ApplicationBarMenuItem addToFavMenuItem = null;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -155,6 +158,7 @@ namespace windows_client.View
         }
 
         #region CONTEXT MENU DICTIONARY
+
         public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> NonAttachmentMenu
         {
             get
@@ -173,7 +177,6 @@ namespace windows_client.View
                 _nonAttachmentMenu = value;
             }
         }
-
 
         public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploading
         {
@@ -563,6 +566,7 @@ namespace windows_client.View
                 {
                     convObj.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
                 }
+                avatarImage = convObj.AvatarImage;
                 userImage.Source = convObj.AvatarImage;
             }
 
@@ -614,23 +618,27 @@ namespace windows_client.View
                         PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
                     }
                 }
-                byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
-
-                if (avatar == null)
-                {
-                    userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
-                }
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                    avatarImage = App.ViewModel.ConvMap[mContactNumber].AvatarImage;
                 else
                 {
-                    MemoryStream memStream = new MemoryStream(avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage();
-                    empImage.SetSource(memStream);
-                    userImage.Source = empImage;
+                    avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
+
+                    if (avatar == null)
+                    {
+                        avatarImage = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                        userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                    }
+                    else
+                    {
+                        MemoryStream memStream = new MemoryStream(avatar);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage();
+                        empImage.SetSource(memStream);
+                        userImage.Source = empImage;
+                        avatarImage = empImage;
+                    }
                 }
-                //}
-                //else
-                //    userImage.Source = UI_Utils.Instance.Instance.DefaultAvatarBitmapImage;
             }
             #endregion
 
@@ -845,7 +853,6 @@ namespace windows_client.View
             }
             else
             {
-
                 blockUnblockMenuItem = new ApplicationBarMenuItem();
                 if (mUserIsBlocked)
                 {
@@ -869,6 +876,14 @@ namespace windows_client.View
                 callMenuItem.Text = "call";
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
+
+                // Add to fav is shown only in case of GC
+                addToFavMenuItem = new ApplicationBarMenuItem();
+                addToFavMenuItem.Text = "add to favourites";
+                addToFavMenuItem.Click += new EventHandler(addToFavMenuItem_Click);
+                appBar.MenuItems.Add(addToFavMenuItem);
+                if (App.ViewModel.Isfavourite(mContactNumber))
+                    addToFavMenuItem.IsEnabled = false;
             }
             chatThreadMainPage.ApplicationBar = appBar;
         }
@@ -1145,6 +1160,26 @@ namespace windows_client.View
 
         #region APPBAR CLICK EVENTS
 
+        private void addToFavMenuItem_Click(object sender, EventArgs e)
+        {
+            ConversationListObject favObj = null;
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                favObj = App.ViewModel.ConvMap[mContactNumber];
+            else
+                favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
+            App.ViewModel.FavList.Add(favObj);
+            MiscDBUtil.SaveFavourites();
+            addToFavMenuItem.IsEnabled = false;
+            mPubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, favObj.Msisdn);
+            JObject data = new JObject();
+            data["id"] = mContactNumber;
+            JObject obj = new JObject();
+            obj[HikeConstants.TO] = mContactNumber;
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+        }
+        
         private void callUser_Click(object sender, EventArgs e)
         {
             PhoneCallTask phoneCallTask = new PhoneCallTask();

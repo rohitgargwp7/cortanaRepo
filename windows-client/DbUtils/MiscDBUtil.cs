@@ -8,13 +8,20 @@ using System.Windows.Media.Imaging;
 using System.IO.IsolatedStorage;
 using System;
 using windows_client.Misc;
+using System.Collections.ObjectModel;
 
 namespace windows_client.DbUtils
 {
     public class MiscDBUtil
     {
         private static object lockObj = new object();
-        public static readonly string THUMBNAILS = "THUMBNAILS";
+        private static object favReadWriteLock = new object();
+        private static object pendingReadWriteLock = new object();
+
+        public static string FAVOURITES_FILE = "favFile";
+        public static string MISC_DIR = "Misc_Dir";
+        public static string THUMBNAILS = "THUMBNAILS";
+        public static string PENDING_REQ_FILE = "pendingReqFile";
 
         public static void clearDatabase()
         {
@@ -25,7 +32,7 @@ namespace windows_client.DbUtils
             DeleteAllAttachmentData();
             GroupManager.Instance.DeleteAllGroups();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
-            {                
+            {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
                 context.groupInfo.DeleteAllOnSubmit<GroupInfo>(context.GetTable<GroupInfo>());
                 try
@@ -129,7 +136,7 @@ namespace windows_client.DbUtils
 
         public static byte[] getThumbNailForMsisdn(string msisdn)
         {
-            msisdn = msisdn.Replace(":","_");
+            msisdn = msisdn.Replace(":", "_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -327,7 +334,7 @@ namespace windows_client.DbUtils
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                foreach(string attachmentPath in attachmentPaths)
+                foreach (string attachmentPath in attachmentPaths)
                 {
                     if (store.DirectoryExists(attachmentPath))
                     {
@@ -348,7 +355,7 @@ namespace windows_client.DbUtils
             attachmentPaths[1] = HikeConstants.FILES_BYTE_LOCATION;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
-                foreach(string attachmentPath in attachmentPaths)
+                foreach (string attachmentPath in attachmentPaths)
                 {
                     if (store.DirectoryExists(attachmentPath))
                     {
@@ -362,6 +369,177 @@ namespace windows_client.DbUtils
                                 store.DeleteFile(attachmentPath + "/" + escapedDirectoryName + "/" + fileName);
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region FAVOURITES
+
+        public static void LoadFavourites(ObservableCollection<ConversationListObject> favList)
+        {
+            lock (favReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(MISC_DIR))
+                    {
+                        store.CreateDirectory(MISC_DIR);
+                        return;
+                    }
+                    string fname = MISC_DIR + "\\" + FAVOURITES_FILE;
+                    if (!store.FileExists(fname))
+                        return;
+                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (var reader = new BinaryReader(file))
+                        {
+                            int count = 0;
+                            try
+                            {
+                                count = reader.ReadInt32();
+                            }
+                            catch { }
+                            if (count > 0)
+                            {
+                                for (int i = 0; i < count; i++)
+                                {
+                                    ConversationListObject item = new ConversationListObject();
+                                    try
+                                    {
+                                        item.ReadFavOrPending(reader);
+                                        favList.Add(item);
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                    }
+                                }
+                            }
+                            reader.Close();
+                        }
+                        try
+                        {
+                            file.Close();
+                            file.Dispose();
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
+        public static void SaveFavourites()
+        {
+            lock (favReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    string fName = MISC_DIR + "\\" + FAVOURITES_FILE;
+
+                    using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(file))
+                        {
+                            writer.Seek(0, SeekOrigin.Begin);
+                            writer.Write(App.ViewModel.FavList.Count);
+                            for (int i = 0; i < App.ViewModel.FavList.Count; i++)
+                            {
+                                ConversationListObject item = App.ViewModel.FavList[i];
+                                item.WriteFavOrPending(writer);
+                            }
+                            writer.Flush();
+                            writer.Close();
+                        }
+                        file.Close();
+                        file.Dispose();
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region PENDING REQUESTS
+
+        public static void LoadPendingRequests()
+        {
+            lock (pendingReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(MISC_DIR))
+                    {
+                        store.CreateDirectory(MISC_DIR);
+                        return;
+                    }
+                    string fname = MISC_DIR + "\\" + PENDING_REQ_FILE;
+                    if (!store.FileExists(fname))
+                        return;
+                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (var reader = new BinaryReader(file))
+                        {
+                            int count = 0;
+                            try
+                            {
+                                count = reader.ReadInt32();
+                            }
+                            catch { }
+                            if (count > 0)
+                            {
+                                for (int i = 0; i < count; i++)
+                                {
+                                    ConversationListObject item = new ConversationListObject();
+                                    try
+                                    {
+                                        item.ReadFavOrPending(reader);
+                                        App.ViewModel.PendingRequests.Add(item);
+                                    }
+                                    catch
+                                    {
+                                        item = null;
+                                    }
+                                }
+                            }
+                            reader.Close();
+                        }
+                        try
+                        {
+                            file.Close();
+                            file.Dispose();
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
+        public static void SavePendingRequests()
+        {
+            lock (pendingReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    string fName = MISC_DIR + "\\" + PENDING_REQ_FILE;
+                    using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(file))
+                        {
+                            writer.Seek(0, SeekOrigin.Begin);
+                            writer.Write(App.ViewModel.PendingRequests.Count);
+                            for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
+                            {
+                                ConversationListObject item = App.ViewModel.PendingRequests[i];
+                                item.WriteFavOrPending(writer);
+                            }
+                            writer.Flush();
+                            writer.Close();
+                        }
+                        file.Close();
+                        file.Dispose();
                     }
                 }
             }
