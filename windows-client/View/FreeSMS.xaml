@@ -144,9 +144,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="images\fb_icon.png" Margin="20,0,0,0" Width="14" VerticalAlignment="Center" Grid.Column="0"></Image>
+                    <Image Source="images\fb_icon.png" Margin="15,0,0,0" Width="14" VerticalAlignment="Center" Grid.Column="0"></Image>
                     <TextBlock x:Name="fbConnStatus" FontFamily="Segoe WP Semibold" FontSize="18"  Text="facebook" Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center"></TextBlock>
-                    <Image x:Name="fbConnImage" Visibility="Collapsed" Source="images\tick.png" Width="20" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
+                    <Image x:Name="fbConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
                 </Grid>
 
                 <Grid x:Name="twitter" Background="#f4f4f4" Grid.Column="1" Width="175" Height="50" Tap="twitter_Tap" Margin="15,0,0,0">
@@ -155,9 +155,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="images\tw_icon.png" Margin="20,0,0,0" Width="29" VerticalAlignment="Center" Grid.Column="0"></Image>
+                    <Image Source="images\tw_icon.png" Margin="15,0,0,0" Width="29" VerticalAlignment="Center" Grid.Column="0"></Image>
                     <TextBlock x:Name="twConnStatus" FontFamily="Segoe WP Semibold" FontSize="18" Text="twitter" Margin="11,0,0,0" Grid.Column="1" VerticalAlignment="Center"></TextBlock>
-                    <Image x:Name="twConnImage" Visibility="Collapsed" Source="images\tick.png" Width="20" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
+                    <Image x:Name="twConnImage" Visibility="Collapsed" Source="images\connected_tick.png" Width="16" Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="2"></Image>
                 </Grid>
             </Grid>
 
