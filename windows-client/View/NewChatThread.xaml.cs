@@ -1148,7 +1148,7 @@ namespace windows_client.View
             App.ViewModel.FavList.Add(favObj);
             MiscDBUtil.SaveFavourites();
             addToFavMenuItem.IsEnabled = false;
-            mPubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, null);
+            mPubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, favObj.Msisdn);
             JObject data = new JObject();
             data["id"] = mContactNumber;
             JObject obj = new JObject();

@@ -731,7 +731,7 @@ namespace windows_client
                 {
                     App.ViewModel.PendingRequests.Add(favObj);
                     MiscDBUtil.SavePendingRequests();
-                    this.pubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, null);
+                    this.pubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, favObj.Msisdn);
                 });
 
             }
