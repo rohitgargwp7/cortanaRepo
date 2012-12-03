@@ -25,6 +25,7 @@ namespace windows_client.Model
         private bool _hasCustomPhoto;
         private bool _isInvited;
         private byte[] _avatar;
+        private int _isFav;
 
         //it significantly improves update performance
 
@@ -167,8 +168,18 @@ namespace windows_client.Model
 
         public int IsFav
         {
-            get;
-            set;
+            get
+            {
+                return _isFav;
+            }
+            set
+            {
+                if (value != _isFav)
+                {
+                    _isFav = value;
+                    NotifyPropertyChanged("IsFav");
+                }
+            }
         }
 
         public Visibility InvitedStringVisible
