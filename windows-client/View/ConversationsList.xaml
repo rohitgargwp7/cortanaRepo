@@ -35,6 +35,7 @@
             </StackPanel>
 
         </StackPanel>
+
         <controls:Pivot Grid.Row="1"  Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <!--Pivot item one-->
             <controls:PivotItem Header="chats">
@@ -96,7 +97,6 @@
                 </Grid>
             </controls:PivotItem>
 
-
             <controls:PivotItem Header="profile">
                 <Grid x:Name="ProfileGrid">
                     <Grid.RowDefinitions>
@@ -146,6 +146,104 @@
                             <TextBlock Text="Help" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                         </StackPanel>
                     </StackPanel>
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem Header="favourites">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <ScrollViewer Grid.Row="0" >
+                        <Grid Margin="16,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" FontSize="24" Foreground="#3c3c3c" Text="Your favourites"/>
+
+                            <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Source="{Binding AvatarImage}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
+                                            <TextBlock TextWrapping="Wrap" Grid.Column="1" Grid.Row="0">
+                                                <TextBlock.Inlines>
+                                                    <Run FontWeight="Bold" Text="{Binding ContactName}"/>
+                                                    <Run FontWeight="Light" Text=" added you as favourite. Would you like to do the same?"/>
+                                                </TextBlock.Inlines>
+                                            </TextBlock>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                                                <Button Background="Blue" Content="Yes" Tap="yes_Click"></Button>
+                                                <Button Background="LightGray" Content="Not Now" Tap="no_Click"></Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <StackPanel x:Name="emptyListPlaceholder" Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Center">
+                                <Image Source="images/favorites_heart.png" Height="90"></Image>
+                                <TextBlock Text="Tap on '+' next to a friend to add them as a favourite" Width="270" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#909090"></TextBlock>
+                            </StackPanel>
+
+                            <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Tap="favourites_Tap" >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding AvatarImage}" Height="50" Margin="0,10,0,0"></Image>
+                                            <TextBlock Text="{Binding ContactName}" FontSize="22" VerticalAlignment="Center" Foreground="#2d2d2d"></TextBlock>
+                                            <toolkit:ContextMenuService.ContextMenu>
+                                                <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <toolkit:MenuItem Header="Remove From Favourites" Tap="RemoveFavourite_Tap"/>
+                                                </toolkit:ContextMenu>
+                                            </toolkit:ContextMenuService.ContextMenu>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Rectangle Height="1" Fill="#080808" Grid.Row="3" Margin="0,10,0,0"/>
+                            
+                            <TextBlock Text="Friends on hike" Grid.Row="4" Foreground="#3c3c3c" FontSize="24"></TextBlock>
+
+                            <StackPanel Name="onHikeEmptyPlaceHolder" Orientation="Vertical" HorizontalAlignment="Center" Grid.Row="5">
+                                <Image Source="images/hike_users.png" Height="90"></Image>
+                                <TextBlock Text="Bummer! None of your friends are on hike." Width="270" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#909090"></TextBlock>
+                                <Button Content="Invite Now" FontSize="18" Height="66" Width="150"  FontFamily="Segoe WP Semibold" BorderThickness="0" Background="#e9ecec" Foreground="Black"></Button>
+                            </StackPanel>
+    
+                            <ListBox x:Name="hikeFriends" ScrollViewer.VerticalScrollBarVisibility="Disabled" Visibility="Collapsed" Grid.Row="5">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding AvatarImage}" Height="50" Margin="0,10,0,0"></Image>
+                                            <TextBlock Text="{Binding Name}" FontSize="22" Foreground="#2d2d2d" VerticalAlignment="Center" Margin="10,0,0,0" Width="320"></TextBlock>
+                                            <Image Source="images\add_user_icon.png" Opacity="{Binding IsFav}" Height="40" Margin="0,10,0,0" Tap="addRecentToFav_Tap"></Image>
+                                            <!--<Button Content="+"  FontSize="28" Height="70" Tap="addRecentToFav_Tap"></Button>-->
+                                            <!--<Border Height="40" Width="40" VerticalAlignment="Center" Margin="0,8,0,0" BorderThickness="2" BorderBrush="Black" Tap="addRecentToFav_Tap">
+                                                <TextBlock Text="+" Margin="0,0,0,3"  FontSize="28" VerticalAlignment="Center" HorizontalAlignment="Center" Tap="addRecentToFav_Tap"></TextBlock>
+                                            </Border>-->
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
