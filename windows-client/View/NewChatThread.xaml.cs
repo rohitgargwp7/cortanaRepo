@@ -1077,15 +1077,16 @@ namespace windows_client.View
             //Scroller.UpdateLayout();
             if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
             {
-                //Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
-                messagesCollection.Add(null);
+//                messagesCollection.Add(null);
                 messageListBox.UpdateLayout();
                 messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 messageListBox.UpdateLayout();
-                messageListBox.ScrollIntoView(messageListBox.SelectedItem);
+                messageListBox.ScrollIntoView(messagesCollection[messagesCollection.Count - 1]);
                 messageListBox.UpdateLayout();
-                messagesCollection.RemoveAt(messageListBox.SelectedIndex);
-                messageListBox.UpdateLayout();
+                
+                //messageListBox.UpdateLayout();
+                //messagesCollection.RemoveAt(messagesCollection.Count - 1);
+                //messageListBox.UpdateLayout();
             }
         }
 
@@ -1956,7 +1957,7 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
-            //this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
+            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
@@ -1966,7 +1967,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            //this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
+            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
         }
 
 
