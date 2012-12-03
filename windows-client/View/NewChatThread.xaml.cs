@@ -1077,13 +1077,16 @@ namespace windows_client.View
             //Scroller.UpdateLayout();
             if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
             {
-                //Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
-                messagesCollection.Add(null);
+//                messagesCollection.Add(null);
                 messageListBox.UpdateLayout();
                 messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 messageListBox.UpdateLayout();
-                messageListBox.ScrollIntoView(messageListBox.SelectedItem);
-                messagesCollection.RemoveAt(messageListBox.SelectedIndex);
+                messageListBox.ScrollIntoView(messagesCollection[messagesCollection.Count - 1]);
+                messageListBox.UpdateLayout();
+                
+                //messageListBox.UpdateLayout();
+                //messagesCollection.RemoveAt(messagesCollection.Count - 1);
+                //messageListBox.UpdateLayout();
             }
         }
 
@@ -1628,7 +1631,8 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
+                    if(!readFromDB)
+                        ScrollToBottom();
                 }
                 #endregion
                 #region HIKE_USER
@@ -1953,8 +1957,8 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
-            //this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
-            ScrollToBottom();
+            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
+            //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
             if (this.attachmentMenu.Visibility == Visibility.Visible)
@@ -1963,7 +1967,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            //this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
+            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
         }
 
 

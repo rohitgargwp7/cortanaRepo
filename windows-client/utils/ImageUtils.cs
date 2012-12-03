@@ -48,7 +48,7 @@ namespace windows_client.utils
 
         private SolidColorBrush receiveMessageForeground;
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
-        private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 300, 15, 0);
+        private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
