@@ -1483,7 +1483,8 @@ namespace windows_client.View
                             this.messagesCollection.Add(chatBubble.splitChatBubbles[i]);
                         }
                     }
-                    ScrollToBottom();
+                    if(!readFromDB)
+                        ScrollToBottom();
                     if (convMessage.FileAttachment != null)
                     {
                         chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
@@ -2883,6 +2884,64 @@ namespace windows_client.View
                 VibrateController vibrate = VibrateController.Default;
                 vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
             }
+        }
+
+        public void createContextMenu(MyChatBubble.ChatBubbleType chatBubbleType, Attachment.AttachmentState attachmentState)
+        {
+            ContextMenu menu = new ContextMenu();
+            menu.IsZoomEnabled = true;
+//            ContextMenuService.SetContextMenu(this, menu);
+
+            if (chatBubbleType == MyChatBubble.ChatBubbleType.TEXT)
+            {
+                MenuItem menuItemCopy = new MenuItem();
+                menuItemCopy.Header = "copy";
+                var glCopy = GestureService.GetGestureListener(menuItemCopy);
+                glCopy.Tap += MenuItem_Click_Copy;
+                menu.Items.Add(menuItemCopy);
+
+                MenuItem menuItemForward = new MenuItem();
+                menuItemForward.Header = "forward";
+                var glFwd = GestureService.GetGestureListener(menuItemForward);
+                glFwd.Tap += MenuItem_Click_Copy;
+                menu.Items.Add(menuItemForward);
+
+                MenuItem menuItemDelete = new MenuItem();
+                menuItemDelete.Header = "delete";
+                var glDelete = GestureService.GetGestureListener(menuItemDelete);
+                glDelete.Tap += MenuItem_Click_Delete;
+                menu.Items.Add(menuItemDelete);
+            }
+            else if (chatBubbleType == MyChatBubble.ChatBubbleType.NUDGE)
+            {
+                MenuItem menuItemDelete = new MenuItem();
+                menuItemDelete.Header = "delete";
+                var glDelete = GestureService.GetGestureListener(menuItemDelete);
+                glDelete.Tap += MenuItem_Click_Delete;
+                menu.Items.Add(menuItemDelete);
+            }
+            else
+            {
+                if (attachmentState == Attachment.AttachmentState.CANCELED)
+                {
+                }
+                else if (attachmentState == Attachment.AttachmentState.COMPLETED)
+                { 
+                }
+                else if (attachmentState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+                {
+                }
+                else //Started
+                {
+                }
+            
+            }
+        
+        }
+
+        private void messageListBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.Focus();
         }
     }
 }
