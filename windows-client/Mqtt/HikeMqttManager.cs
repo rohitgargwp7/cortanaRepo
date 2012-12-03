@@ -123,7 +123,7 @@ namespace windows_client.Mqtt
             {
                 if (mqttConnection != null)
                 {
-                    disconnectCalled = true;
+                    disconnectCalled = !reconnect;
                     mqttConnection.disconnect(new DisconnectCB(reconnect, this));
                     mqttConnection = null;
                 }
@@ -359,7 +359,7 @@ namespace windows_client.Mqtt
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             mqttConnection = null;
             if (!disconnectCalled)
-                connect();
+                disconnectFromBroker(true);
         }
 
         public void onPublish(String topic, byte[] body)
