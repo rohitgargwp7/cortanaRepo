@@ -1083,7 +1083,9 @@ namespace windows_client.View
                 messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 messageListBox.UpdateLayout();
                 messageListBox.ScrollIntoView(messageListBox.SelectedItem);
+                messageListBox.UpdateLayout();
                 messagesCollection.RemoveAt(messageListBox.SelectedIndex);
+                messageListBox.UpdateLayout();
             }
         }
 
@@ -1628,7 +1630,8 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
+                    if(!readFromDB)
+                        ScrollToBottom();
                 }
                 #endregion
                 #region HIKE_USER
@@ -1954,7 +1957,7 @@ namespace windows_client.View
         {
             sendMsgTxtbox.Background = textBoxBackground;
             //this.MessageList.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
-            ScrollToBottom();
+            //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
             if (this.attachmentMenu.Visibility == Visibility.Visible)
