@@ -2051,8 +2051,8 @@ namespace windows_client.View
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;
-                    obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
-                    obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
+                    obj.MessageStatus = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).MessageStatus;
+                    obj.TimeStamp = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
