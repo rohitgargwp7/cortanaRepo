@@ -337,7 +337,7 @@ namespace windows_client.Mqtt
 
         void recursivePingSchedule(Action<TimeSpan> action)
         {
-            action(TimeSpan.FromSeconds(270));
+            action(TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
             ping();
         }
 
@@ -345,7 +345,7 @@ namespace windows_client.Mqtt
         {
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
             subscribeToTopics(getTopics());
-            scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(270));
+            scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
             /* Accesses the persistence object from the main handler thread */
 
