@@ -1957,7 +1957,7 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
-            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
+            //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
@@ -1967,7 +1967,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
+            //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
         }
 
 
@@ -2006,7 +2006,7 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            /*
+            
             isContextMenuTapped = true;
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
             if (msg == null)
@@ -2020,13 +2020,13 @@ namespace windows_client.View
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             MyChatBubble lastMessageBubble = null;
-            if (isTypingNotificationActive && this.MessageList.Children.Count > 1)
+            if (isTypingNotificationActive && this.messagesCollection.Count > 1)
             {
-                lastMessageBubble = this.MessageList.Children[this.MessageList.Children.Count - 2] as MyChatBubble;
+                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 2] as MyChatBubble;
             }
-            else if (!isTypingNotificationActive && this.MessageList.Children.Count > 0)
+            else if (!isTypingNotificationActive && this.messagesCollection.Count > 0)
             {
-                lastMessageBubble = this.MessageList.Children[this.MessageList.Children.Count - 1] as MyChatBubble;
+                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 1] as MyChatBubble;
             }
 
             if (lastMessageBubble != null)
@@ -2051,8 +2051,8 @@ namespace windows_client.View
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;
-                    //obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
-                    //obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
+                    obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
+                    obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
@@ -2060,7 +2060,7 @@ namespace windows_client.View
             }
             else
             {
-                // no message is left, simply remove the object from Conversation list 
+                 //no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
                 App.ViewModel.ConvMap.Remove(mContactNumber);
                 delConv = true;
@@ -2070,7 +2070,7 @@ namespace windows_client.View
             o[1] = obj;
             o[2] = delConv;
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
-             * */
+             
         }
 
         private void MenuItem_Click_Cancel(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
