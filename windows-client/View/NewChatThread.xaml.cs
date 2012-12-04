@@ -1349,18 +1349,18 @@ namespace windows_client.View
                         {
                             convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "location") + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
+                        
+                            byte[] locationInfoBytes = null;
+                            MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                                convMessage.MessageId, out locationInfoBytes);
+                            string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfoBytes, 0, locationInfoBytes.Length);
+                            convMessage.MetaDataString = locationInfoString;
                         }
                         else if (convMessage.FileAttachment.ContentType.Contains("video"))
                         {
                             convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "video") + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
-
-                        byte[] locationInfoBytes = null;
-                        MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                            convMessage.MessageId, out locationInfoBytes);
-                        string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfoBytes, 0, locationInfoBytes.Length);
-                        convMessage.MetaDataString = locationInfoString;
                         object[] values = new object[2];
                         values[0] = convMessage;
                         values[1] = chatBubble;
