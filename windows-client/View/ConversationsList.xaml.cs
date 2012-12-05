@@ -554,7 +554,7 @@ namespace windows_client.View
                 else // add to fav
                 {
                     convObj.IsFav = true;
-                    App.ViewModel.FavList.Add(convObj);
+                    App.ViewModel.FavList.Insert(0,convObj);
                     MiscDBUtil.SaveFavourites();
 
                     JObject data = new JObject();
@@ -1002,7 +1002,7 @@ namespace windows_client.View
         {
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             App.ViewModel.PendingRequests.Remove(fObj);
-            App.ViewModel.FavList.Add(fObj);
+            App.ViewModel.FavList.Insert(0,fObj);
             MiscDBUtil.SaveFavourites();
             MiscDBUtil.SavePendingRequests();
             if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)

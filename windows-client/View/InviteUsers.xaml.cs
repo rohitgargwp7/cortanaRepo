@@ -212,11 +212,11 @@ namespace windows_client.View
                     if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn)) // if not already favourite then only add to fav
                     {
                         if (App.ViewModel.ConvMap.ContainsKey(hikeFavList[i].Msisdn))
-                            App.ViewModel.FavList.Add(App.ViewModel.ConvMap[hikeFavList[i].Msisdn]);
+                            App.ViewModel.FavList.Insert(0,App.ViewModel.ConvMap[hikeFavList[i].Msisdn]);
                         else
                         {
                             ConversationListObject favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
-                            App.ViewModel.FavList.Add(favObj);
+                            App.ViewModel.FavList.Insert(0,favObj);
                         }
 
 

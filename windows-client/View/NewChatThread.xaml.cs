@@ -1179,7 +1179,7 @@ namespace windows_client.View
                 }
                 else
                     favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
-                App.ViewModel.FavList.Add(favObj);
+                App.ViewModel.FavList.Insert(0,favObj);
                 MiscDBUtil.SaveFavourites();
                 addToFavMenuItem.Text = "remove from favourites";
 
