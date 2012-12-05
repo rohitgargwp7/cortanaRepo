@@ -370,6 +370,17 @@ namespace windows_client
                         this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
                     });
                 }
+                else
+                {
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null)
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            c.Avatar = imageBytes;
+                        });
+                    }
+                }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
@@ -708,6 +719,7 @@ namespace windows_client
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
+            #region ADD FAVOURITES
             else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
                 JObject oj = (JObject)jsonObj[HikeConstants.DATA];
@@ -735,6 +747,7 @@ namespace windows_client
                 });
 
             }
+            #endregion
             #region OTHER
             else
             {

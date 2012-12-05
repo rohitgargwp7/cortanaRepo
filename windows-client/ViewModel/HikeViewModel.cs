@@ -110,6 +110,36 @@ namespace windows_client.ViewModel
             return false;
         }
 
+        public ConversationListObject GetFav(string mContactNumber)
+        {
+            if (_favList.Count == 0)
+                return null;
+            for (int i = 0; i < _favList.Count; i++)
+            {
+                if (_favList[i].Msisdn == mContactNumber)
+                    return _favList[i];
+            }
+            return null;
+        }
+
+
+        public bool IsPending(string ms)
+        {
+            if (!IsPendingListLoaded)
+            {
+                MiscDBUtil.LoadPendingRequests();
+                IsPendingListLoaded = true;
+            }
+            if (_pendingReq == null)
+                return false;
+            for (int i = 0; i < _pendingReq.Count; i++)
+            {
+                if (_pendingReq[i].Msisdn == ms)
+                    return true;
+            }
+            return false;
+        }
+
         private void RefreshNewConversationObject()
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -198,22 +228,5 @@ namespace windows_client.ViewModel
         }
         #endregion
 
-
-        public bool IsPending(string ms)
-        {
-            if (!IsPendingListLoaded)
-            {
-               MiscDBUtil.LoadPendingRequests();
-               IsPendingListLoaded = true;
-            }
-            if (_pendingReq == null)
-                return false;
-            for (int i = 0; i < _pendingReq.Count; i++)
-            {
-                if (_pendingReq[i].Msisdn == ms)
-                    return true;
-            }
-            return false;
-        }
     }
 }
