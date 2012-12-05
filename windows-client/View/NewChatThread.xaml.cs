@@ -2109,6 +2109,7 @@ namespace windows_client.View
             else
                 attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
+            this.Focus();
         }
 
         private void sendImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
