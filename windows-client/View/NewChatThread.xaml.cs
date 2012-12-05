@@ -2790,13 +2790,15 @@ namespace windows_client.View
 
         private void AudioFileTransfer()
         {
+            byte[] audioBytes = null;
+            if(PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            {
+                audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+            }
             if (!isGroupChat || isGroupAlive)
             {
-                byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
-                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
-
                 string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
-
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
