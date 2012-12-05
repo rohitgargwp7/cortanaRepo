@@ -732,7 +732,7 @@ namespace windows_client
             else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
                 JObject oj = (JObject)jsonObj[HikeConstants.DATA];
-                string ms = (string)oj[HikeConstants.Extras.ID];
+                string ms = (string)oj[HikeConstants.FROM];
                 if (App.ViewModel.Isfavourite(ms)) // already favourite
                     return;
                 if (App.ViewModel.IsPending(ms))
