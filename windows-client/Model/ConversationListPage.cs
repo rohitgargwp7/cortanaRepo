@@ -33,6 +33,7 @@ namespace windows_client.Model
         private long _lastMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
+        private bool _isFav;
 
         #endregion
 
@@ -340,8 +341,19 @@ namespace windows_client.Model
 
         public bool IsFav
         {
-            get;
-            set;
+            get
+            {
+                return _isFav;
+            }
+            set
+            {
+                if (value != _isFav)
+                {
+                    _isFav = value;
+                    NotifyPropertyChanged("IsFav");
+                    NotifyPropertyChanged("FavMsg");
+                }
+            }
         }
 
         public string FavMsg

@@ -1171,9 +1171,12 @@ namespace windows_client.View
         {
             if (!_isFav)
             {
-                ConversationListObject favObj = null;      
+                ConversationListObject favObj = null;
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                {
                     favObj = App.ViewModel.ConvMap[mContactNumber];
+                    favObj.IsFav = true;
+                }
                 else
                     favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
                 App.ViewModel.FavList.Add(favObj);
@@ -1201,6 +1204,8 @@ namespace windows_client.View
                         break;
                     }
                 }
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                    App.ViewModel.ConvMap[mContactNumber].IsFav = false;
                 MiscDBUtil.SaveFavourites();
                 mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING,null);
             }

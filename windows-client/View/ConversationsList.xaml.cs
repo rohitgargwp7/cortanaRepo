@@ -542,6 +542,7 @@ namespace windows_client.View
                     MessageBoxResult result = MessageBox.Show("Are you sure about removing this contact from favourites?", "Remove from Favourites", MessageBoxButton.OKCancel);
                     if (result == MessageBoxResult.Cancel)
                         return;
+                    convObj.IsFav = false;
                     App.ViewModel.FavList.Remove(convObj);
                     MiscDBUtil.SaveFavourites();
                     if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
@@ -1041,6 +1042,7 @@ namespace windows_client.View
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
             {
+                convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
                 MiscDBUtil.SaveFavourites();
             }

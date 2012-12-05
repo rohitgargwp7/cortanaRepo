@@ -300,5 +300,6 @@ namespace windows_client.View
                     doneIconButton.IsEnabled = false;
             }
         }
+
     }
 }
