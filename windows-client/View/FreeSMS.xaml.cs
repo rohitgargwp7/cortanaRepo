@@ -376,7 +376,7 @@ namespace windows_client.View
             }
             else
             {
-                twConnStatus.Text = "facebook";
+                twConnStatus.Text = "twitter";
                 twConnImage.Visibility = Visibility.Collapsed;
                 if (Utils.isDarkTheme())
                 {
