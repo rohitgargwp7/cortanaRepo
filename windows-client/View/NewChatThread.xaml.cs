@@ -44,6 +44,7 @@ namespace windows_client.View
         private string mContactName = null;
         private string lastText = "";
 
+        private bool _isFav;
         private bool isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -880,10 +881,13 @@ namespace windows_client.View
                 // Add to fav is shown only in case of GC
                 addToFavMenuItem = new ApplicationBarMenuItem();
                 addToFavMenuItem.Text = "add to favourites";
-                addToFavMenuItem.Click += new EventHandler(addToFavMenuItem_Click);
+                addToFavMenuItem.Click += new EventHandler(AddRemoveFavMenuItem_Click);
                 appBar.MenuItems.Add(addToFavMenuItem);
                 if (App.ViewModel.Isfavourite(mContactNumber))
-                    addToFavMenuItem.IsEnabled = false;
+                {
+                    addToFavMenuItem.Text = "remove from favourites";
+                    _isFav = true;
+                }
             }
             chatThreadMainPage.ApplicationBar = appBar;
         }
@@ -1163,24 +1167,48 @@ namespace windows_client.View
 
         #region APPBAR CLICK EVENTS
 
-        private void addToFavMenuItem_Click(object sender, EventArgs e)
+        private void AddRemoveFavMenuItem_Click(object sender, EventArgs e)
         {
-            ConversationListObject favObj = null;
-            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                favObj = App.ViewModel.ConvMap[mContactNumber];
+            if (!_isFav)
+            {
+                ConversationListObject favObj = null;
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                {
+                    favObj = App.ViewModel.ConvMap[mContactNumber];
+                    favObj.IsFav = true;
+                }
+                else
+                    favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
+                App.ViewModel.FavList.Insert(0,favObj);
+                MiscDBUtil.SaveFavourites();
+                addToFavMenuItem.Text = "remove from favourites";
+
+                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                JObject data = new JObject();
+                data["id"] = mContactNumber;
+                JObject obj = new JObject();
+                obj[HikeConstants.TO] = mContactNumber;
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                _isFav = true;
+            }
             else
-                favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
-            App.ViewModel.FavList.Add(favObj);
-            MiscDBUtil.SaveFavourites();
-            addToFavMenuItem.IsEnabled = false;
-            mPubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, favObj.Msisdn);
-            JObject data = new JObject();
-            data["id"] = mContactNumber;
-            JObject obj = new JObject();
-            obj[HikeConstants.TO] = mContactNumber;
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            {
+                addToFavMenuItem.Text = "add to favourites";
+                foreach (ConversationListObject cObj in App.ViewModel.FavList)
+                {
+                    if (cObj.Msisdn == mContactNumber)
+                    {
+                        App.ViewModel.FavList.Remove(cObj);
+                        break;
+                    }
+                }
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                    App.ViewModel.ConvMap[mContactNumber].IsFav = false;
+                MiscDBUtil.SaveFavourites();
+                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING,null);
+            }
         }
         
         private void callUser_Click(object sender, EventArgs e)

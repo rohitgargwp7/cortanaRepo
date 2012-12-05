@@ -101,6 +101,8 @@ namespace windows_client.DbUtils
                 byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
                 obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                     contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
+                if (App.ViewModel.Isfavourite(convMessage.Msisdn))
+                    obj.IsFav = true;
             }
 
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/

@@ -370,6 +370,26 @@ namespace windows_client
                         this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
                     });
                 }
+                else
+                {
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null) // for favourites
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            c.Avatar = imageBytes;
+                        });
+                    }
+                    c = App.ViewModel.GetPending(msisdn);
+                    if (c != null) // for pending requests
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            c.Avatar = imageBytes;
+                        });
+                    }
+
+                }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
@@ -708,10 +728,11 @@ namespace windows_client
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
+            #region ADD FAVOURITES
             else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
                 JObject oj = (JObject)jsonObj[HikeConstants.DATA];
-                string ms = (string)oj[HikeConstants.Extras.ID];
+                string ms = (string)oj[HikeConstants.FROM];
                 if (App.ViewModel.Isfavourite(ms)) // already favourite
                     return;
                 if (App.ViewModel.IsPending(ms))
@@ -731,10 +752,11 @@ namespace windows_client
                 {
                     App.ViewModel.PendingRequests.Add(favObj);
                     MiscDBUtil.SavePendingRequests();
-                    this.pubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, favObj.Msisdn);
+                    this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING,null);
                 });
 
             }
+            #endregion
             #region OTHER
             else
             {

@@ -32,7 +32,9 @@ namespace windows_client.Model
         private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private long _lastMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
-        BitmapImage empImage = null;
+        private BitmapImage empImage = null;
+        private bool _isFav;
+
         #endregion
 
         #region Properties
@@ -249,7 +251,6 @@ namespace windows_client.Model
             }
         }
 
-
         public byte[] Avatar
         {
             get
@@ -335,6 +336,34 @@ namespace windows_client.Model
                     case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
                     default: return "";
                 }
+            }
+        }
+
+        public bool IsFav
+        {
+            get
+            {
+                return _isFav;
+            }
+            set
+            {
+                if (value != _isFav)
+                {
+                    _isFav = value;
+                    NotifyPropertyChanged("IsFav");
+                    NotifyPropertyChanged("FavMsg");
+                }
+            }
+        }
+
+        public string FavMsg
+        {
+            get
+            {
+                if (IsFav) // if already favourite
+                    return "Remove from Favourites";
+                else
+                    return "Add to Favourites";
             }
         }
 

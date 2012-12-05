@@ -28,10 +28,12 @@ namespace windows_client.View
 {
     public partial class InviteUsers : PhoneApplicationPage
     {
+        private bool _isAddToFavPage;
         private bool isClicked = false;
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
-        List<ContactInfo> allContactsList = null; // contacts list
-        Dictionary<string, bool> inviteeList = new Dictionary<string, bool>(); // this will work as a hashset
+        private List<ContactInfo> allContactsList = null; // contacts list
+        private Dictionary<string, bool> contactsList = new Dictionary<string, bool>(); // this will work as a hashset and will be used in invite
+        private List<ContactInfo> hikeFavList = null;
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
 
@@ -104,11 +106,21 @@ namespace windows_client.View
         public InviteUsers()
         {
             InitializeComponent();
+            object hikeFriends;
+            if (PhoneApplicationService.Current.State.TryGetValue("HIKE_FRIENDS", out hikeFriends))
+            {
+                topHeader.Text = "Add To Favourites";
+                title.Text = "hike friends";
+                _isAddToFavPage = true;
+            }
             shellProgress.IsVisible = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
-                allContactsList = UsersTableUtils.getAllContactsToInvite();
+                if (_isAddToFavPage)
+                    allContactsList = UsersTableUtils.GetAllHikeContactsOrdered();
+                else
+                    allContactsList = UsersTableUtils.getAllContactsToInvite();
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
@@ -118,6 +130,12 @@ namespace windows_client.View
                 shellProgress.IsVisible = false;
             };
             initPage();
+        }
+
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove("HIKE_FRIENDS");
         }
 
         private void initPage()
@@ -134,7 +152,7 @@ namespace windows_client.View
             doneIconButton = new ApplicationBarIconButton();
             doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             doneIconButton.Text = "Done";
-            doneIconButton.Click += new EventHandler(sendInvite_Click);
+            doneIconButton.Click += new EventHandler(Invite_Or_Fav_Click);
             doneIconButton.IsEnabled = false;
             appBar.Buttons.Add(doneIconButton);
             inviteUsersPage.ApplicationBar = appBar;
@@ -150,6 +168,8 @@ namespace windows_client.View
                 ContactInfo c = allContactsList[i];
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
+                if (_isAddToFavPage && App.ViewModel.Isfavourite(c.Msisdn))
+                    c.IsFav = true;
                 string ch = GetCaptionGroup(c);
                 // calculate the index into the list
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
@@ -183,26 +203,56 @@ namespace windows_client.View
 
         #endregion
 
-        private void sendInvite_Click(object sender, EventArgs e)
+        private void Invite_Or_Fav_Click(object sender, EventArgs e)
         {
-            string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            int count = 0;
-            foreach (string key in inviteeList.Keys)
+            if (_isAddToFavPage)
             {
-                JObject obj = new JObject();
-                JObject data = new JObject();               
-                data[HikeConstants.SMS_MESSAGE] = string.Format(App.sms_invite_message, inviteToken);
-                data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
-                data[HikeConstants.MESSAGE_ID] = -1;
-                obj[HikeConstants.TO] = key;
-                obj[HikeConstants.DATA] = data;
-                obj[HikeConstants.TYPE] = NetworkManager.INVITE;
-                App.MqttManagerInstance.mqttPublishToServer(obj);
-                count++;
+                for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count);i++ )
+                {
+                    if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn)) // if not already favourite then only add to fav
+                    {
+                        if (App.ViewModel.ConvMap.ContainsKey(hikeFavList[i].Msisdn))
+                            App.ViewModel.FavList.Insert(0,App.ViewModel.ConvMap[hikeFavList[i].Msisdn]);
+                        else
+                        {
+                            ConversationListObject favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
+                            App.ViewModel.FavList.Insert(0,favObj);
+                        }
+
+
+                        JObject data = new JObject();
+                        data["id"] = hikeFavList[i].Msisdn;
+                        JObject obj = new JObject();
+                        obj[HikeConstants.TO] = hikeFavList[i].Msisdn;
+                        obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                        obj[HikeConstants.DATA] = data;
+                        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+                    }
+                }
+                MiscDBUtil.SaveFavourites();
+                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
             }
-            if(count > 0)
-                MessageBox.Show("Total invites sent : "+count,"Friends Invited",MessageBoxButton.OK);
+            else
+            {
+                string inviteToken = "";
+                App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                int count = 0;
+                foreach (string key in contactsList.Keys)
+                {
+                    JObject obj = new JObject();
+                    JObject data = new JObject();
+                    data[HikeConstants.SMS_MESSAGE] = string.Format(App.sms_invite_message, inviteToken);
+                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                    data[HikeConstants.MESSAGE_ID] = -1;
+                    obj[HikeConstants.TO] = key;
+                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    count++;
+                }
+                if (count > 0)
+                    MessageBox.Show("Total invites sent : " + count, "Friends Invited", MessageBoxButton.OK);
+            }
             NavigationService.GoBack();
         }
 
@@ -211,45 +261,45 @@ namespace windows_client.View
             contactsListBox.Focus();
         }
 
-        private void ItemStackPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void CheckBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StackPanel sp = (StackPanel)sender;
-            CheckBox c = sp.Children[0] as CheckBox;
-            StackPanel spc1 = sp.Children[1] as StackPanel;
-            TextBlock tb = ((StackPanel)spc1.Children[1]).Children[1] as TextBlock;
-            string msisdn = tb.Text;
-            if (c.IsFocused) // in this case do the reverse thing as checkbox in this case thinks 
+            CheckBox c = sender as CheckBox;
+            ContactInfo cn = c.DataContext as ContactInfo;
+            string msisdn = cn.Msisdn;
+            if ((bool)c.IsChecked) // this will be true when checkbox is not checked initially and u clicked it
             {
-                if (!(bool)c.IsChecked)
+                if(_isAddToFavPage)
                 {
-                    c.IsChecked = false;
-                    inviteeList.Remove(msisdn);
+                    if (hikeFavList == null)
+                        hikeFavList = new List<ContactInfo>();
+                    hikeFavList.Add(cn);
                 }
                 else
-                {
-                    c.IsChecked = true;
-                    inviteeList[msisdn] = true;
-                }
+                    contactsList[msisdn] = true;
             }
-            else
+            else // this will be true when checkbox is checked initially and u clicked it to make it uncheck
             {
-                if ((bool)c.IsChecked)
-                {
-                    c.IsChecked = false;
-                    inviteeList.Remove(msisdn);
-                }
+                if (_isAddToFavPage)
+                    hikeFavList.Remove(cn);
                 else
-                {
-                    c.IsChecked = true;
-                    inviteeList[msisdn] = true;
-                }
+                    contactsList.Remove(msisdn);
             }
-            if (inviteeList.Count > 0)
-                doneIconButton.IsEnabled = true;
-            else
-                doneIconButton.IsEnabled = false;
 
-            contactsListBox.Focus();
+            if (_isAddToFavPage)
+            {
+                if(hikeFavList.Count > 0)
+                    doneIconButton.IsEnabled = true;
+                else
+                    doneIconButton.IsEnabled = false;
+            }
+            else
+            {
+                if (contactsList.Count > 0)
+                    doneIconButton.IsEnabled = true;
+                else
+                    doneIconButton.IsEnabled = false;
+            }
         }
+
     }
 }

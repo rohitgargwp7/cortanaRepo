@@ -378,7 +378,7 @@ namespace windows_client.DbUtils
 
         #region FAVOURITES
 
-        public static void LoadFavourites(ObservableCollection<ConversationListObject> favList)
+        public static void LoadFavourites(ObservableCollection<ConversationListObject> favList,Dictionary<string, ConversationListObject> _convmap)
         {
             lock (favReadWriteLock)
             {
@@ -411,6 +411,8 @@ namespace windows_client.DbUtils
                                     {
                                         item.ReadFavOrPending(reader);
                                         favList.Add(item);
+                                        if (_convmap.ContainsKey(item.Msisdn)) // if this item is in convList, just mark IsFav to true
+                                            _convmap[item.Msisdn].IsFav = true;
                                     }
                                     catch(Exception ex)
                                     {
