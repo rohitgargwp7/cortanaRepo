@@ -140,6 +140,18 @@ namespace windows_client.ViewModel
             return false;
         }
 
+        public ConversationListObject GetPending(string mContactNumber)
+        {
+            if (_pendingReq.Count == 0)
+                return null;
+            for (int i = 0; i < _pendingReq.Count; i++)
+            {
+                if (_pendingReq[i].Msisdn == mContactNumber)
+                    return _pendingReq[i];
+            }
+            return null;
+
+        }
         private void RefreshNewConversationObject()
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>

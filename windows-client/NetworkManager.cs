@@ -373,13 +373,22 @@ namespace windows_client
                 else
                 {
                     ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                    if (c != null)
+                    if (c != null) // for favourites
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             c.Avatar = imageBytes;
                         });
                     }
+                    c = App.ViewModel.GetPending(msisdn);
+                    if (c != null) // for pending requests
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            c.Avatar = imageBytes;
+                        });
+                    }
+
                 }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
