@@ -28,7 +28,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
-            <TextBlock Text="INVITE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="24,0,0,5" />
+            <TextBlock Name="topHeader"  Text="INVITE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="24,0,0,5" />
             <TextBlock Name="title" Text="friends" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="24,-10,0,0" />
         </StackPanel>
 
@@ -79,8 +79,8 @@
                 </toolkit:LongListSelector.GroupHeaderTemplate>
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel" Tap="ItemStackPanel_Tap">
-                            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel">
+                            <CheckBox IsChecked="{Binding IsFav}" IsEnabled="{Binding IsEnabled}" Tap="CheckBox_Tap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2">
                                 <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
                                 <StackPanel Orientation="Horizontal">

@@ -25,7 +25,7 @@ namespace windows_client.Model
         private bool _hasCustomPhoto;
         private bool _isInvited;
         private byte[] _avatar;
-        private int _isFav;
+        private bool _isFav;
 
         //it significantly improves update performance
 
@@ -166,7 +166,7 @@ namespace windows_client.Model
             }
         }
 
-        public int IsFav
+        public bool IsFav
         {
             get
             {
@@ -177,8 +177,17 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
-                    NotifyPropertyChanged("IsFav");
                 }
+            }
+        }   // this is used in inviteUsers page , when you show hike users
+
+        public bool IsEnabled
+        {
+            get
+            {
+                if (_isFav)
+                    return false;
+                return true;
             }
         }
 

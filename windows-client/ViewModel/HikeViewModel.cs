@@ -79,9 +79,13 @@ namespace windows_client.ViewModel
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
             _pendingReq = new ObservableCollection<ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
-            MiscDBUtil.LoadFavourites(_favList);
+
+            // this order should be maintained as _convMap should be populated before loading fav list
             for (int i = 0; i < convList.Count; i++)
+            {
                 _convMap[convList[i].Msisdn] = convList[i];
+            }
+            MiscDBUtil.LoadFavourites(_favList,_convMap);
             RegisterListeners();
         }
 
