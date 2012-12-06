@@ -61,7 +61,7 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.CONTACT_US);
             EmailComposeTask contactUsMail = new EmailComposeTask();
-            contactUsMail.To = "support@bsb.in";
+            contactUsMail.To = "support@hike.in";
             contactUsMail.Subject = "Feedback on WP7";
 
             string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
