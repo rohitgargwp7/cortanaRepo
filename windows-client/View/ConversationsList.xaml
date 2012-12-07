@@ -167,7 +167,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" FontSize="24" Foreground="#3c3c3c" Text="Your favourites"/>
+                            <TextBlock Grid.Row="0" FontSize="24" Text="Your favourites"/>
 
                             <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1">
                                 <ListBox.ItemTemplate>
@@ -208,7 +208,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <Image Source="{Binding AvatarImage}" Height="50" Margin="0,10,0,0"></Image>
                                             <Image Source="images/hike_favorite.png" Height="30" Margin="10,10,0,0" VerticalAlignment="Center" Visibility="{Binding ShowOnHikeImage}"></Image>
-                                            <TextBlock Text="{Binding ContactName}" FontSize="22" VerticalAlignment="Center" Margin="10,2,0,0" Foreground="#2d2d2d"></TextBlock>
+                                            <TextBlock Text="{Binding ContactName}" FontSize="22" VerticalAlignment="Center" Margin="10,2,0,0"></TextBlock>
                                             <toolkit:ContextMenuService.ContextMenu>
                                                 <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                     <toolkit:MenuItem Header="Remove From Favourites" Tap="RemoveFavourite_Tap"/>
@@ -219,7 +219,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Rectangle Height="1" Fill="#080808" Grid.Row="3" Margin="0,10,0,0"/>
+                            <Rectangle x:Name="favsBar" Height="1" Grid.Row="3" Margin="0,10,0,0"/>
                             <Button Content="Hike Contacts" BorderThickness="2" HorizontalAlignment="Center" Grid.Row="4" Tap="Button_Tap_1"/>
                         </Grid>
                     </ScrollViewer>
