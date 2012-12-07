@@ -348,6 +348,7 @@
     <Content Include="View\images\empty_screen_tip_white.png" />
     <Content Include="View\images\favorites_heart.png" />
     <Content Include="View\images\fb_icon.png" />
+    <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_play.png" />
