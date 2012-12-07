@@ -795,12 +795,21 @@ namespace windows_client.utils
                             {
                                 try
                                 {
-                                    App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name; 
+                                    App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
                                 }
                                 catch (Exception e)
                                 {
-                                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception "+e.StackTrace);
+                                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
                                 }
+                            }
+                            else // fav and pending case
+                            {
+                                ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
+                                if (c != null)
+                                    c.ContactName = cn.Name;
+                                c = App.ViewModel.GetPending(cn.Msisdn);
+                                if (c != null)
+                                    c.ContactName = cn.Name;
                             }
                         }
                         server_contacts.Add(cn);

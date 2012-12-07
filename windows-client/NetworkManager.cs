@@ -12,6 +12,7 @@ using Microsoft.Phone.Notification;
 using System.Text;
 using windows_client.Misc;
 using windows_client.View;
+using System.Collections.ObjectModel;
 
 namespace windows_client
 {
@@ -460,22 +461,40 @@ namespace windows_client
                                     App.WriteToIsoStorageSettings(HikeConstants.SECURE_PUSH, vall);
                                 }
                             }
-
-                            string val = null;
-                            if (oj is JObject)
+                            else if (kv.Key == HikeConstants.FAVORITES || kv.Key == HikeConstants.PENDING)
                             {
-                                JObject jj = (JObject)oj;
-                                val = jj.ToString(Newtonsoft.Json.Formatting.None);
-                            }
-                            else if (oj is JArray)
-                            {
-                                JArray jarr = (JArray)oj;
-                                val = jarr.ToString(Newtonsoft.Json.Formatting.None);
+                                bool isFav = kv.Key == HikeConstants.FAVORITES;
+                                if (oj is JObject)
+                                {
+                                    JObject valObj = (JObject)oj;
+                                    KeyValuePair<string, JToken> kkvv;
+                                    IEnumerator<KeyValuePair<string, JToken>> kVals = data.GetEnumerator();
+                                    while (kVals.MoveNext())
+                                    {
+                                        kkvv = kVals.Current; // kkvv contains favourites MSISDN
+                                        LoadFavAndPending(isFav, kkvv.Key); // true for favs
+                                    }
+                                    App.WriteToIsoStorageSettings(kv.Key, valObj.ToString(Newtonsoft.Json.Formatting.None));
+                                }
                             }
                             else
-                                val = oj.ToString();
-                            Debug.WriteLine("AI :: Value : " + val);
-                            App.WriteToIsoStorageSettings(kv.Key, val);
+                            {
+                                string val = null;
+                                if (oj is JObject)
+                                {
+                                    JObject jj = (JObject)oj;
+                                    val = jj.ToString(Newtonsoft.Json.Formatting.None);
+                                }
+                                else if (oj is JArray)
+                                {
+                                    JArray jarr = (JArray)oj;
+                                    val = jarr.ToString(Newtonsoft.Json.Formatting.None);
+                                }
+                                else
+                                    val = oj.ToString();
+                                Debug.WriteLine("AI :: Value : " + val);
+                                App.WriteToIsoStorageSettings(kv.Key, val);
+                            }
                         }
                         catch { }
                     }
@@ -752,7 +771,7 @@ namespace windows_client
                 {
                     App.ViewModel.PendingRequests.Add(favObj);
                     MiscDBUtil.SavePendingRequests();
-                    this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING,null);
+                    this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
                 });
 
             }
@@ -764,6 +783,37 @@ namespace windows_client
             }
             #endregion
 
+        }
+
+        private void LoadFavAndPending(bool isFav, string msisdn)
+        {
+            ObservableCollection<ConversationListObject> l;
+            if (isFav)
+                l = App.ViewModel.FavList;
+            else
+                l = App.ViewModel.PendingRequests;
+
+            if (isFav)
+                if (App.ViewModel.Isfavourite(msisdn))
+                    return;
+                else
+                    if (App.ViewModel.IsPending(msisdn))
+                        return;
+
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                l.Add(App.ViewModel.ConvMap[msisdn]);
+            else
+            {
+                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                if (ci == null)
+                    return;
+                ConversationListObject favObj = new ConversationListObject(msisdn, ci.Name, ci.OnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
+                l.Add(favObj);
+            }
+            if (isFav)
+                MiscDBUtil.SaveFavourites();
+            else
+                MiscDBUtil.SavePendingRequests();
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)

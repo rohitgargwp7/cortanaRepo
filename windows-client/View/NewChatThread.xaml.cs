@@ -1208,6 +1208,14 @@ namespace windows_client.View
                     App.ViewModel.ConvMap[mContactNumber].IsFav = false;
                 MiscDBUtil.SaveFavourites();
                 mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING,null);
+
+                JObject data = new JObject();
+                data["id"] = mContactNumber;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                _isFav = false;
             }
         }
         

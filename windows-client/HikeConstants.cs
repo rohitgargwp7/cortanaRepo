@@ -101,6 +101,8 @@ namespace windows_client
         public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
         public static readonly string PUSH_CHANNEL_CN = "*.hike.in";//The PUSH CN
         public static readonly string SECURE_PUSH = "w_secure_push";
+        public static readonly string FAVORITES = "favorites";
+        public static readonly string PENDING = "pending"; // TODO : Change to exact constant
         public static readonly string IS_SECURE_CHANNEL = "is_secure_channel";
 
         public static string FAQS_LINK
@@ -244,6 +246,7 @@ namespace windows_client
             public static string SMS_USER = "sms_user";
             public static string HIKE_USER = "hike_user";
             public static string ADD_FAVOURITE = "af";
+            public static string REMOVE_FAVOURITE = "rf";
         }
     }
 }

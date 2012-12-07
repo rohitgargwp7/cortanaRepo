@@ -544,6 +544,12 @@ namespace windows_client.View
                         return;
                     convObj.IsFav = false;
                     App.ViewModel.FavList.Remove(convObj);
+                    JObject data = new JObject();
+                    data["id"] = convObj.Msisdn;
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                    obj[HikeConstants.DATA] = data;
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     MiscDBUtil.SaveFavourites();
                     if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
                     {
@@ -659,16 +665,6 @@ namespace windows_client.View
                         if (!App.ViewModel.IsPendingListLoaded) // if list is not loaded
                             MiscDBUtil.LoadPendingRequests();
                         App.ViewModel.IsPendingListLoaded = true;
-
-                        for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
-                        {
-                            if (App.ViewModel.ConvMap.ContainsKey(App.ViewModel.PendingRequests[i].Msisdn))
-                                App.ViewModel.PendingRequests[i].Avatar = App.ViewModel.ConvMap[App.ViewModel.PendingRequests[i].Msisdn].Avatar;
-                            else
-                            {
-                                App.ViewModel.PendingRequests[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
-                            }
-                        }
                     };
                     pendingBw.RunWorkerAsync();
                     pendingBw.RunWorkerCompleted += (sf, ef) =>
@@ -1003,8 +999,18 @@ namespace windows_client.View
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             App.ViewModel.PendingRequests.Remove(fObj);
             App.ViewModel.FavList.Insert(0,fObj);
+
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TO] = fObj.Msisdn;
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+
             MiscDBUtil.SaveFavourites();
             MiscDBUtil.SavePendingRequests();
+            
             if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
@@ -1044,6 +1050,12 @@ namespace windows_client.View
             {
                 convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
+                JObject data = new JObject();
+                data["id"] = convObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
             }
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
