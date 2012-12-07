@@ -127,6 +127,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
                     NotifyPropertyChanged("IsOnhike");
+                    NotifyPropertyChanged("ShowOnHikeImage");
                 }
             }
         }
@@ -165,6 +166,16 @@ namespace windows_client.Model
                 {
                     _lastMsgId = value;
                 }
+            }
+        }
+
+        public Visibility ShowOnHikeImage
+        {
+            get
+            {
+                if (_isOnhike)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
             }
         }
 

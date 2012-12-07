@@ -443,6 +443,7 @@ namespace finalmqtt.Client
             if (msg.getStatus() != ConnAckMessage.ConnectionStatus.ACCEPTED)
             {
                 connectCallback.onFailure(new ConnectionException("Unable to connect to server", msg.getStatus()));
+                return;
             }
             if (mqttListener != null)
                 mqttListener.onConnected();

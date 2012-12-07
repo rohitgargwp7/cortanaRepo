@@ -1385,18 +1385,18 @@ namespace windows_client.View
                         {
                             convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "location") + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
+                        
+                            byte[] locationInfoBytes = null;
+                            MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                                convMessage.MessageId, out locationInfoBytes);
+                            string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfoBytes, 0, locationInfoBytes.Length);
+                            convMessage.MetaDataString = locationInfoString;
                         }
                         else if (convMessage.FileAttachment.ContentType.Contains("video"))
                         {
                             convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "video") + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
-
-                        byte[] locationInfoBytes = null;
-                        MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                            convMessage.MessageId, out locationInfoBytes);
-                        string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfoBytes, 0, locationInfoBytes.Length);
-                        convMessage.MetaDataString = locationInfoString;
                         object[] values = new object[2];
                         values[0] = convMessage;
                         values[1] = chatBubble;
@@ -1993,7 +1993,7 @@ namespace windows_client.View
         private void sendMsgTxtbox_GotFocus(object sender, RoutedEventArgs e)
         {
             sendMsgTxtbox.Background = textBoxBackground;
-            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
+            //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadUpMargin;
             //ScrollToBottom();
             if (this.emoticonPanel.Visibility == Visibility.Visible)
                 this.emoticonPanel.Visibility = Visibility.Collapsed;
@@ -2003,7 +2003,7 @@ namespace windows_client.View
 
         private void sendMsgTxtbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
+            //this.messageListBox.Margin = UI_Utils.Instance.ChatThreadKeyPadDownMargin;
         }
 
 
@@ -2042,7 +2042,7 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            /*
+            
             isContextMenuTapped = true;
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
             if (msg == null)
@@ -2056,13 +2056,13 @@ namespace windows_client.View
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             MyChatBubble lastMessageBubble = null;
-            if (isTypingNotificationActive && this.MessageList.Children.Count > 1)
+            if (isTypingNotificationActive && this.messagesCollection.Count > 1)
             {
-                lastMessageBubble = this.MessageList.Children[this.MessageList.Children.Count - 2] as MyChatBubble;
+                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 2] as MyChatBubble;
             }
-            else if (!isTypingNotificationActive && this.MessageList.Children.Count > 0)
+            else if (!isTypingNotificationActive && this.messagesCollection.Count > 0)
             {
-                lastMessageBubble = this.MessageList.Children[this.MessageList.Children.Count - 1] as MyChatBubble;
+                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 1] as MyChatBubble;
             }
 
             if (lastMessageBubble != null)
@@ -2087,8 +2087,8 @@ namespace windows_client.View
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;
-                    //obj.MessageStatus = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].MessageStatus;
-                    //obj.TimeStamp = this.ChatThreadPageCollection[ChatThreadPageCollection.Count - 1].TimeStampLong;
+                    obj.MessageStatus = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).MessageStatus;
+                    obj.TimeStamp = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
@@ -2096,7 +2096,7 @@ namespace windows_client.View
             }
             else
             {
-                // no message is left, simply remove the object from Conversation list 
+                 //no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
                 App.ViewModel.ConvMap.Remove(mContactNumber);
                 delConv = true;
@@ -2106,7 +2106,7 @@ namespace windows_client.View
             o[1] = obj;
             o[2] = delConv;
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
-             * */
+             
         }
 
         private void MenuItem_Click_Cancel(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
@@ -2145,6 +2145,7 @@ namespace windows_client.View
             else
                 attachmentMenu.Visibility = Visibility.Collapsed;
             emoticonPanel.Visibility = Visibility.Collapsed;
+            this.Focus();
         }
 
         private void sendImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2826,13 +2827,15 @@ namespace windows_client.View
 
         private void AudioFileTransfer()
         {
+            byte[] audioBytes = null;
+            if(PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            {
+                audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+            }
             if (!isGroupChat || isGroupAlive)
             {
-                byte[] audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
-                PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
-
                 string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
-
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
