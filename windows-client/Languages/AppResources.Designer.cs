@@ -439,6 +439,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Facebook Post.
+        /// </summary>
+        public static string FreeSMS_FbPost_MsgBxCaption {
+            get {
+                return ResourceManager.GetString("FreeSMS_FbPost_MsgBxCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully posted to facebook..
+        /// </summary>
+        public static string FreeSMS_FbPostSuccess_MsgBx {
+            get {
+                return ResourceManager.GetString("FreeSMS_FbPostSuccess_MsgBx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string FreeSMS_FbPostSuccess_MsgBxCaptn {
+            get {
+                return ResourceManager.GetString("FreeSMS_FbPostSuccess_MsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hike to hike.
         /// </summary>
         public static string FreeSMS_H2HHeader_TxtBlk {
@@ -516,6 +543,87 @@ namespace windows_client.Languages {
         public static string FreeSMS_twConnStatus_TxtBlk {
             get {
                 return ResourceManager.GetString("FreeSMS_twConnStatus_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter Post.
+        /// </summary>
+        public static string FreeSMS_TwPost_MsgBxCaption {
+            get {
+                return ResourceManager.GetString("FreeSMS_TwPost_MsgBxCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully posted to twitter..
+        /// </summary>
+        public static string FreeSMS_TwPostSuccess_MsgBx {
+            get {
+                return ResourceManager.GetString("FreeSMS_TwPostSuccess_MsgBx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to unlink your account?.
+        /// </summary>
+        public static string FreeSMS_UnlinkAccount_MsgBx {
+            get {
+                return ResourceManager.GetString("FreeSMS_UnlinkAccount_MsgBx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlink Facebook.
+        /// </summary>
+        public static string FreeSMS_UnlinkFacebook_MsgBxCaptn {
+            get {
+                return ResourceManager.GetString("FreeSMS_UnlinkFacebook_MsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to unlink your account?.
+        /// </summary>
+        public static string FreeSMS_UnlinkFbOrTwConfirm_MsgBx {
+            get {
+                return ResourceManager.GetString("FreeSMS_UnlinkFbOrTwConfirm_MsgBx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully Unlinked Account..
+        /// </summary>
+        public static string FreeSMS_UnlinkFbOrTwSuccess_MsgBx {
+            get {
+                return ResourceManager.GetString("FreeSMS_UnlinkFbOrTwSuccess_MsgBx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook Unlink.
+        /// </summary>
+        public static string FreeSMS_UnlinkFBSuccess_MsgBxCaptn {
+            get {
+                return ResourceManager.GetString("FreeSMS_UnlinkFBSuccess_MsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlink Twitter.
+        /// </summary>
+        public static string FreeSMS_UnlinkTwitter_MsgBxCaptn {
+            get {
+                return ResourceManager.GetString("FreeSMS_UnlinkTwitter_MsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter Logout.
+        /// </summary>
+        public static string FreeSMS_UnlinkTwSuccess_MsgBxCaptn {
+            get {
+                return ResourceManager.GetString("FreeSMS_UnlinkTwSuccess_MsgBxCaptn", resourceCulture);
             }
         }
         

@@ -215,7 +215,7 @@ namespace windows_client.View
         {
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
             {
-                MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Facebook", MessageBoxButton.OKCancel);
+                MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
                 if (res == MessageBoxResult.Cancel)
                     return;
             }
@@ -231,7 +231,7 @@ namespace windows_client.View
                 {
                     IsFacebookConnected = true;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully posted to facebook.", "Facebook Post", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_FbPostSuccess_MsgBx, AppResources.FreeSMS_FbPost_MsgBxCaption, MessageBoxButton.OK);
                 });
             }
             else
@@ -247,7 +247,7 @@ namespace windows_client.View
                 {
                     IsFacebookConnected = false;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully Unlinked Account.", "Facebook Unlink", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFBSuccess_MsgBxCaptn, MessageBoxButton.OK);
                 });
             }
             else
@@ -259,7 +259,7 @@ namespace windows_client.View
         {
             if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
             {
-                MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Twitter", MessageBoxButton.OKCancel);
+                MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
                 if (res == MessageBoxResult.Cancel)
                     return;
                 else
@@ -283,7 +283,7 @@ namespace windows_client.View
                 {
                     IsTwitterConnected = true;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully posted to twitter.", "Twitter Post", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_TwPostSuccess_MsgBx, AppResources.FreeSMS_TwPost_MsgBxCaption, MessageBoxButton.OK);
                 });
             }
         }
@@ -296,7 +296,7 @@ namespace windows_client.View
                 {
                     IsTwitterConnected = false;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully Unlinked Account.", "Twitter Logout", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
                 });
             }
         }
@@ -396,7 +396,7 @@ namespace windows_client.View
             {
                 if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
                 {
-                    MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Twitter", MessageBoxButton.OKCancel);
+                    MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
                     if (res == MessageBoxResult.Cancel)
                         return;
                     else
@@ -419,7 +419,7 @@ namespace windows_client.View
             {
                 if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
                 {
-                    MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Facebook", MessageBoxButton.OKCancel);
+                    MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
                     if (res == MessageBoxResult.Cancel)
                         return;
                 }
