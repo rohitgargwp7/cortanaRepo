@@ -233,6 +233,9 @@
     <value>Invite Friends Earn Rewards.</value>
     <comment>Pivot 3 (xaml)</comment>
   </data>
+  <data name="Walkthrough_LetsHike_Txt" xml:space="preserve">
+    <value>let's hike</value>
+  </data>
   <data name="Walkthrough_TitleMsg_1" xml:space="preserve">
     <value>Free, always, worldwide</value>
     <comment>Pivot 1 (xaml)</comment>
