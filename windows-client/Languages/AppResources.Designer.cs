@@ -322,6 +322,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to let&apos;s hike.
+        /// </summary>
+        public static string Walkthrough_LetsHike_Txt {
+            get {
+                return ResourceManager.GetString("Walkthrough_LetsHike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Free, always, worldwide.
         /// </summary>
         public static string Walkthrough_TitleMsg_1 {
