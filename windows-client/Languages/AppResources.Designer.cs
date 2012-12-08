@@ -79,6 +79,87 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string EditProfile_Email {
+            get {
+                return ResourceManager.GetString("EditProfile_Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Name.
+        /// </summary>
+        public static string EditProfile_FullName {
+            get {
+                return ResourceManager.GetString("EditProfile_FullName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gender.
+        /// </summary>
+        public static string EditProfile_Gender {
+            get {
+                return ResourceManager.GetString("EditProfile_Gender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Female.
+        /// </summary>
+        public static string EditProfile_GenderFemale {
+            get {
+                return ResourceManager.GetString("EditProfile_GenderFemale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Male.
+        /// </summary>
+        public static string EditProfile_GenderMale {
+            get {
+                return ResourceManager.GetString("EditProfile_GenderMale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        public static string EditProfile_GenderSelect {
+            get {
+                return ResourceManager.GetString("EditProfile_GenderSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string EditProfile_Phone {
+            get {
+                return ResourceManager.GetString("EditProfile_Phone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to save.
+        /// </summary>
+        public static string EditProfile_SaveAppBar {
+            get {
+                return ResourceManager.GetString("EditProfile_SaveAppBar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Profile.
+        /// </summary>
+        public static string EditProfile_Title {
+            get {
+                return ResourceManager.GetString("EditProfile_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to done.
         /// </summary>
         public static string EnterName_Done_AppBarBtnTxt {
