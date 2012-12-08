@@ -56,8 +56,8 @@
             <StackPanel Orientation="Vertical" Grid.Row="0">
                 <Image Source="images\signup_logo.png" Margin="0,150,0,20" Height="104"></Image>
                 <!--<Image Source="images\splash_text.png" Height="30"></Image>-->
-                <TextBlock Text="Fun, free messaging for life" FontSize="25" HorizontalAlignment="Center"></TextBlock>
-                <TextBlock Height="30" Name="NetworkErrorTxtBlk" Text="Connectivity issue." 
+                <TextBlock Text="{Binding Path= LocalizedResources.WelcomePage_HikeMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="25" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Height="30" Name="NetworkErrorTxtBlk" Text="{Binding Path= LocalizedResources.Connectivity_Issue, Source={StaticResource LocalizedStrings}}" 
                            FontSize="18" HorizontalAlignment="Center" 
                            Foreground="Red" Opacity="0"/>
             </StackPanel>
@@ -65,9 +65,9 @@
                 <!--<Image Source="images\terms_link.png" Height="43"></Image>
                 <Button x:Name="GetStarted" Content="Accept and Continue" Click="getStarted_click" Height="120" Margin="-14,20,-14,-57" Width="Auto" BorderThickness="0" Background="#2e91d3" VerticalAlignment="Bottom" >
                 </Button>-->
-                <HyperlinkButton Name="termsLink" Height="70" Margin="0,0,0,55" Content="Terms and Privacy" Width="280" HorizontalAlignment="Center" FontSize="24" FontStyle="Normal" Tap="Privacy_Tap"/>
-                <TextBlock Text="Push Notifications are turned on by default" Margin="0,0,0,4" HorizontalAlignment="Center" Foreground="#909090"/>
-                <TextBlock Text="Tap next to confirm that you are 13+ years of age" Margin="24,0,24,5" HorizontalAlignment="Center" Foreground="#909090" TextWrapping="Wrap" />
+                <HyperlinkButton Name="termsLink" Height="70" Margin="0,0,0,55" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" Width="280" HorizontalAlignment="Center" FontSize="24" FontStyle="Normal" Tap="Privacy_Tap"/>
+                <TextBlock Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="0,0,0,4" HorizontalAlignment="Center" Foreground="#909090"/>
+                <TextBlock Text="{Binding Path= LocalizedResources.WelcomePage_13YrsMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="24,0,24,5" HorizontalAlignment="Center" Foreground="#909090" TextWrapping="Wrap" />
                 <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,20" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0"/>
             </StackPanel>
         </Grid>

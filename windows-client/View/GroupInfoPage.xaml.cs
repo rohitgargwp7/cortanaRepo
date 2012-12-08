@@ -14,6 +14,8 @@ using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
 using System.Windows.Controls;
 using windows_client.Misc;
+using System.Diagnostics;
+using Microsoft.Phone.UserData;
 
 namespace windows_client.View
 {
@@ -32,6 +34,8 @@ namespace windows_client.View
         BitmapImage grpImage = null;
         private int smsUsers = 0;
         private bool imageHandlerCalled = false;
+        private ContactInfo contactInfo = null;
+        private GroupParticipant gp_obj; // this will be used for adding unknown number to add book
 
         public bool EnableInviteBtn
         {
@@ -537,7 +541,174 @@ namespace windows_client.View
         private void groupNameTxtBox_LostFocus(object sender, RoutedEventArgs e)
         {
             groupInfoPage.ApplicationBar = null;
+        }
 
+        private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            gp_obj = (sender as ListBox).SelectedItem as GroupParticipant;
+            if (gp_obj == null)
+                return;
+            if (!gp_obj.Msisdn.Contains(gp_obj.Name)) // shows name is already stored so return
+                return;
+            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(gp_obj.Msisdn);
+            if (ci != null)
+                return;
+            ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
+        }
+
+        private void saveContactTask_Completed(object sender, SaveContactResult e)
+        {
+            switch (e.TaskResult)
+            {
+                case TaskResult.OK:
+                    ContactUtils.getContact(gp_obj.Msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
+                    break;
+                case TaskResult.Cancel:
+                    MessageBox.Show("The user canceled the task.");
+                    break;
+                case TaskResult.None:
+                    MessageBox.Show("NO information regarding the task result is available.");
+                    break;
+            }
+        }
+
+        public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
+        {
+            try
+            {
+                Dictionary<string, List<ContactInfo>> contactListMap = GetContactListMap(e.Results);
+                if (contactListMap == null)
+                {
+                    MessageBox.Show("No Contact is saved.");
+                    return;
+                }
+                AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+            }
+            catch (System.Exception)
+            {
+                //That's okay, no results//
+            }
+        }
+
+        private Dictionary<string, List<ContactInfo>> GetContactListMap(IEnumerable<Contact> contacts)
+        {
+            int count = 0;
+            int duplicates = 0;
+            Dictionary<string, List<ContactInfo>> contactListMap = null;
+            if (contacts == null)
+                return null;
+            contactListMap = new Dictionary<string, List<ContactInfo>>();
+            foreach (Contact cn in contacts)
+            {
+                CompleteName cName = cn.CompleteName;
+
+                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+                {
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    {
+                        count++;
+                        continue;
+                    }
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    int idd = cInfo.GetHashCode();
+                    cInfo.Id = Convert.ToString(Math.Abs(idd));
+                    contactInfo = cInfo;
+                    if (contactListMap.ContainsKey(cInfo.Id))
+                    {
+                        if (!contactListMap[cInfo.Id].Contains(cInfo))
+                            contactListMap[cInfo.Id].Add(cInfo);
+                        else
+                        {
+                            duplicates++;
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                        }
+                    }
+                    else
+                    {
+                        List<ContactInfo> contactList = new List<ContactInfo>();
+                        contactList.Add(cInfo);
+                        contactListMap.Add(cInfo.Id, contactList);
+                    }
+                }
+            }
+            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
+            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            return contactListMap;
+        }
+
+        public void updateAddressBook_Callback(JObject obj)
+        {
+            if ((obj == null) || "fail" == (string)obj["stat"])
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show("Contact not saved on server, kindly refresh later.");
+                });
+                return;
+            }
+            JObject addressbook = (JObject)obj["addressbook"];
+            if (addressbook == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show("Contact not saved on server, kindly refresh later.");
+                });
+                return;
+            }
+            IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
+            KeyValuePair<string, JToken> kv;
+            int count = 0;
+            while (keyVals.MoveNext())
+            {
+                kv = keyVals.Current;
+                JArray entries = (JArray)addressbook[kv.Key];
+                for (int i = 0; i < entries.Count; ++i)
+                {
+                    JObject entry = (JObject)entries[i];
+                    string msisdn = (string)entry["msisdn"];
+                    if (string.IsNullOrWhiteSpace(msisdn))
+                        continue;
+
+                    bool onhike = (bool)entry["onhike"];
+                    contactInfo.Msisdn = msisdn;
+                    contactInfo.OnHike = onhike;
+                    count++;
+                }
+            }
+            UsersTableUtils.addContact(contactInfo);
+            Dispatcher.BeginInvoke(() =>
+            {
+                gp_obj.Name = contactInfo.Name;
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(gp_obj.Name, gp_obj.Msisdn, groupId);
+                gp.Name = gp_obj.Name;
+                GroupManager.Instance.GetParticipantList(groupId).Sort();
+                GroupManager.Instance.SaveGroupCache(groupId);
+                string gpName = GroupManager.Instance.defaultGroupName(groupId);
+                groupNameTxtBox.Text = gpName;
+                if (App.newChatThreadPage != null)
+                    App.newChatThreadPage.userName.Text = gpName;
+                if (App.ViewModel.ConvMap.ContainsKey(groupId))
+                    App.ViewModel.ConvMap[groupId].ContactName = gpName;
+       
+                if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
+                {
+                    App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
+                }
+                else
+                {
+                    ConversationListObject co = App.ViewModel.GetFav(gp_obj.Msisdn);
+                    if (co != null)
+                        co.ContactName = contactInfo.Name;
+                }
+                if (count > 1)
+                {
+                    MessageBox.Show("More than 1 contacts found for number : {0}" + gp_obj.Msisdn);
+                }
+                else
+                {
+                    MessageBox.Show("Contact saved successfully");
+                }
+            });
         }
     }
 }

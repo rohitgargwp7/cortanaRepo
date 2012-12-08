@@ -81,7 +81,10 @@ namespace windows_client.Model
             set
             {
                 if (value != _name)
+                {
                     _name = value;
+                    NotifyPropertyChanged("Name");
+                }
             }
         }
 

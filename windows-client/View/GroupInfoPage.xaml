@@ -78,7 +78,7 @@
                 <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="40" Height="40"></Image>
                 <TextBlock Text="Participants" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
-            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="24,5,0,0">
+            <ListBox x:Name="groupChatParticipants" Tap="btnGetSelected_Tap" Grid.Row="2" Margin="24,5,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">

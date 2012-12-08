@@ -21,6 +21,7 @@ namespace windows_client.utils
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
         public delegate void contacts_Callback(object sender, ContactsSearchEventArgs e);
+        public delegate void contactSearch_Callback(object sender, SaveContactResult e);
 
         public static void getContacts(contacts_Callback callback)
         {
@@ -37,6 +38,13 @@ namespace windows_client.utils
                 cons.SearchAsync(string.Empty, FilterKind.None, "State string 1");
             };
             bw.RunWorkerAsync();
+        }
+
+        public static void getContact(string number, contacts_Callback callback)
+        {
+            Contacts cons = new Contacts();
+            cons.SearchCompleted += new EventHandler<ContactsSearchEventArgs>(callback);
+            cons.SearchAsync(number, FilterKind.PhoneNumber, "State string 1");
         }
 
         /* This is called when addressbook scanning on phone gets completed.*/
@@ -152,7 +160,7 @@ namespace windows_client.utils
                 return null;
             contactListMap = new Dictionary<string, List<ContactInfo>>();
             foreach (Contact cn in contacts)
-            {
+            { 
                 CompleteName cName = cn.CompleteName;
 
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
@@ -277,32 +285,16 @@ namespace windows_client.utils
             });
         }
 
-        public static void saveContact(string phone)
+        public static void saveContact(string phone, contactSearch_Callback callback)
         {
             SaveContactTask saveContactTask = new SaveContactTask();
-            saveContactTask.Completed += new EventHandler<SaveContactResult>(saveContactTask_Completed);
+            saveContactTask.Completed += new EventHandler<SaveContactResult>(callback);
             saveContactTask.MobilePhone = phone;
             try
             {
                 saveContactTask.Show();
             }
             catch { }
-        }
-
-        private static void saveContactTask_Completed(object sender, SaveContactResult e)
-        {
-            switch (e.TaskResult)
-            {
-                case TaskResult.OK:
-                    MessageBox.Show("Contact is successfully saved.");
-                    break;
-                case TaskResult.Cancel:
-                    MessageBox.Show("The user canceled the task.");
-                    break;
-                case TaskResult.None:
-                    MessageBox.Show("NO information regarding the task result is available.");
-                    break;
-            }
         }
     }
 }

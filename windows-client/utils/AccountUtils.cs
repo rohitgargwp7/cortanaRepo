@@ -394,9 +394,11 @@ namespace windows_client.utils
                     Dictionary<string, List<ContactInfo>> contacts_to_update = vars[2] as Dictionary<string, List<ContactInfo>>;
                     JArray ids_json = vars[3] as JArray;
                     finalCallbackFunction = vars[4] as postResponseFunction;
-
-                    data.Add("remove", ids_json);
-                    data.Add("update", getJsonContactList(contacts_to_update));
+                    if(ids_json != null)
+                        data.Add("remove", ids_json);
+                    JObject ids_to_update = getJsonContactList(contacts_to_update);
+                    if(ids_to_update != null)
+                        data.Add("update", ids_to_update);
                     break;
                 #endregion
                 #region DELETE ACCOUNT
