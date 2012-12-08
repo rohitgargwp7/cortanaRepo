@@ -36,9 +36,9 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            genderList.Add(AppResources.EditProfile_GenderSelect);
-            genderList.Add(AppResources.EditProfile_GenderMale);
-            genderList.Add(AppResources.EditProfile_GenderFemale);
+            genderList.Add(AppResources.EditProfile_GenderSelect_LstPckr);
+            genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
+            genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
             genderListPicker.ItemsSource = genderList;
             TiltEffect.TiltableItems.Add(typeof(ListPickerItem));
             prepopulate();
@@ -50,7 +50,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            nextIconButton.Text = AppResources.EditProfile_SaveAppBar;
+            nextIconButton.Text = AppResources.EditProfile_Save_AppBarBtnTxt;
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;
             appBar.Buttons.Add(nextIconButton);
@@ -144,7 +144,7 @@ namespace windows_client.View
             {
                 if (userName == name.Text)
                 {
-                    MessageBox.Show("Nothing is changed!!", "Profile Not Updated!", MessageBoxButton.OK);
+                    MessageBox.Show("Nothing has changed!!", "Profile Not Updated!", MessageBoxButton.OK);
                 }
                 //progressBar.IsEnabled = false;
                 shellProgress.IsVisible = false;
