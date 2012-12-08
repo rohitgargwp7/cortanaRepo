@@ -29,7 +29,7 @@
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
             <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-            <TextBlock Text="edit profile" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,0" />
+            <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Title, Source={StaticResource LocalizedStrings}}" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,0" />
         </StackPanel>
 
         <ScrollViewer Grid.Row="1">
@@ -45,7 +45,8 @@
 
                 <StackPanel Orientation="Vertical" Grid.Row="0">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Full Name" Margin="13,0,0,0"/>
+                        <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_FullName, Source={StaticResource LocalizedStrings}}" 
+                                   Margin="13,0,0,0"/>
                         <TextBlock Name="nameErrorTxt" Opacity="0" 
                                Text="Please enter your name" 
                                VerticalAlignment="Center"
@@ -56,12 +57,14 @@
                     <TextBox x:Name="name" KeyDown="name_KeyDown" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Grid.Row="1">
-                    <TextBlock Text="Phone" Margin="13,0,0,0"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Phone, Source={StaticResource LocalizedStrings}}"
+                               Margin="13,0,0,0"/>
                     <TextBox x:Name="phone" InputScope="TelephoneCountryCode" LostFocus="textbox_LostFocus" GotFocus="textbox_GotFocus" IsReadOnly="True"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Grid.Row="2">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Email" Margin="13,0,0,0"/>
+                        <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Email, Source={StaticResource LocalizedStrings}}" 
+                                   Margin="13,0,0,0"/>
                         <TextBlock Name="emailErrorTxt" Opacity="0" 
                                VerticalAlignment="Center" 
                                Text="Enter Correct Email" 
@@ -70,7 +73,8 @@
                     <TextBox x:Name="email" KeyDown="email_KeyDown" InputScope="EmailUserName" LostFocus="textbox_LostFocus" GotFocus="textbox_GotFocus"/>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Grid.Row="3">
-                    <TextBlock Text="Gender" Margin="13,0,0,0"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Gender, Source={StaticResource LocalizedStrings}}" 
+                               Margin="13,0,0,0"/>
                     <toolkit:ListPicker x:Name="genderListPicker"/>
                 </StackPanel>
             </Grid>
