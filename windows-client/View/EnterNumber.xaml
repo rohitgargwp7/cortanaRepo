@@ -58,7 +58,7 @@
 
                 <TextBlock Height="25" TextAlignment="Left" 
                            Margin="24,0,0,0" Name="msisdnErrorTxt" 
-                           Text="{Binding Path= LocalizedResources.EnterNumber_NE_TxtBlk, Source={StaticResource LocalizedStrings}}" 
+                           Text="{Binding Path= LocalizedResources.NetworkError_TryAgain, Source={StaticResource LocalizedStrings}}" 
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center" 
                            Visibility="Collapsed" FontSize="18" Foreground="Red" />

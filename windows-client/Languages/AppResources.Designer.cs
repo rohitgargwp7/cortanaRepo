@@ -79,6 +79,69 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to done.
+        /// </summary>
+        public static string EnterName_Done_AppBarBtnTxt {
+            get {
+                return ResourceManager.GetString("EnterName_Done_AppBarBtnTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting you in.
+        /// </summary>
+        public static string EnterName_Msg_TxtBlk {
+            get {
+                return ResourceManager.GetString("EnterName_Msg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string EnterName_Name_Hint {
+            get {
+                return ResourceManager.GetString("EnterName_Name_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter your name below :.
+        /// </summary>
+        public static string EnterName_Name_TxtBlk {
+            get {
+                return ResourceManager.GetString("EnterName_Name_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error!! Name not set. Try Again!!.
+        /// </summary>
+        public static string EnterName_NameErrorTxt {
+            get {
+                return ResourceManager.GetString("EnterName_NameErrorTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanning Contacts ....
+        /// </summary>
+        public static string EnterName_ScanningContacts_Txt {
+            get {
+                return ResourceManager.GetString("EnterName_ScanningContacts_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;re all set on .
+        /// </summary>
+        public static string EnterName_YourMsisdn_TxtBlk {
+            get {
+                return ResourceManager.GetString("EnterName_YourMsisdn_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter your phone number below to get started :.
         /// </summary>
         public static string EnterNumber_EnterNum_TxtBlk {
@@ -111,15 +174,6 @@ namespace windows_client.Languages {
         public static string EnterNumber_MsgBoxText_Msg {
             get {
                 return ResourceManager.GetString("EnterNumber_MsgBoxText_Msg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Network Error. Try Again!!.
-        /// </summary>
-        public static string EnterNumber_NE_TxtBlk {
-            get {
-                return ResourceManager.GetString("EnterNumber_NE_TxtBlk", resourceCulture);
             }
         }
         
@@ -178,20 +232,20 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pin.
-        /// </summary>
-        public static string EnterPin_Pin {
-            get {
-                return ResourceManager.GetString("EnterPin_Pin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to PIN not valid. Please try again..
         /// </summary>
         public static string EnterPin_PinError_TxtBlk {
             get {
                 return ResourceManager.GetString("EnterPin_PinError_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pin.
+        /// </summary>
+        public static string EnterPin_PinHint {
+            get {
+                return ResourceManager.GetString("EnterPin_PinHint", resourceCulture);
             }
         }
         
@@ -228,6 +282,60 @@ namespace windows_client.Languages {
         public static string EnterPin_WrongNumMsg_TxtBlk {
             get {
                 return ResourceManager.GetString("EnterPin_WrongNumMsg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network Error. Try Again!!.
+        /// </summary>
+        public static string NetworkError_TryAgain {
+            get {
+                return ResourceManager.GetString("NetworkError_TryAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Free SMS can only be sent to India.
+        /// </summary>
+        public static string Walkthrough_FreeMsgToIndia_Txt {
+            get {
+                return ResourceManager.GetString("Walkthrough_FreeMsgToIndia_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For every friend who joins, you get 50 Free hike SMS every month.
+        /// </summary>
+        public static string Walkthrough_FreeSmsReward_Txt {
+            get {
+                return ResourceManager.GetString("Walkthrough_FreeSmsReward_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite Friends Earn Rewards..
+        /// </summary>
+        public static string Walkthrough_InviteFriends_Txt {
+            get {
+                return ResourceManager.GetString("Walkthrough_InviteFriends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free, always, worldwide.
+        /// </summary>
+        public static string Walkthrough_TitleMsg_1 {
+            get {
+                return ResourceManager.GetString("Walkthrough_TitleMsg_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Also message friends not on hike for free with Free hike SMS.
+        /// </summary>
+        public static string Walkthrough_TitleMsg_2 {
+            get {
+                return ResourceManager.GetString("Walkthrough_TitleMsg_2", resourceCulture);
             }
         }
         
