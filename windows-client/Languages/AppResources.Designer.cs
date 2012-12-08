@@ -104,6 +104,13 @@ namespace windows_client.Languages {
                 return ResourceManager.GetString("Conversations_AddedYouToFav_Txt", resourceCulture);
             }
         }
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string EditProfile_Email {
+            get {
+                return ResourceManager.GetString("EditProfile_Email", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Remove From Favourites.
@@ -111,6 +118,13 @@ namespace windows_client.Languages {
         public static string Conversations_ContextMenu_RemoveFromFav_Txt {
             get {
                 return ResourceManager.GetString("Conversations_ContextMenu_RemoveFromFav_Txt", resourceCulture);
+            }
+        }
+        ///   Looks up a localized string similar to Full Name.
+        /// </summary>
+        public static string EditProfile_FullName {
+            get {
+                return ResourceManager.GetString("EditProfile_FullName", resourceCulture);
             }
         }
         
@@ -122,6 +136,13 @@ namespace windows_client.Languages {
                 return ResourceManager.GetString("Conversations_DelAllChats_Txt", resourceCulture);
             }
         }
+        ///   Looks up a localized string similar to Gender.
+        /// </summary>
+        public static string EditProfile_Gender {
+            get {
+                return ResourceManager.GetString("EditProfile_Gender", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Delete Chat.
@@ -129,6 +150,13 @@ namespace windows_client.Languages {
         public static string Conversations_DelChat_Txt {
             get {
                 return ResourceManager.GetString("Conversations_DelChat_Txt", resourceCulture);
+            }
+        }
+        ///   Looks up a localized string similar to Female.
+        /// </summary>
+        public static string EditProfile_GenderFemale {
+            get {
+                return ResourceManager.GetString("EditProfile_GenderFemale", resourceCulture);
             }
         }
         
@@ -140,6 +168,13 @@ namespace windows_client.Languages {
                 return ResourceManager.GetString("Conversations_Delete_Chat_Confirmation", resourceCulture);
             }
         }
+        ///   Looks up a localized string similar to Male.
+        /// </summary>
+        public static string EditProfile_GenderMale {
+            get {
+                return ResourceManager.GetString("EditProfile_GenderMale", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Are you sure about deleting all chats?.
@@ -147,6 +182,13 @@ namespace windows_client.Languages {
         public static string Conversations_Delete_Chats_Confirmation {
             get {
                 return ResourceManager.GetString("Conversations_Delete_Chats_Confirmation", resourceCulture);
+            }
+        }
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        public static string EditProfile_GenderSelect {
+            get {
+                return ResourceManager.GetString("EditProfile_GenderSelect", resourceCulture);
             }
         }
         
@@ -275,6 +317,13 @@ namespace windows_client.Languages {
                 return ResourceManager.GetString("Conversations_RemFromFav_Txt", resourceCulture);
             }
         }
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string EditProfile_Phone {
+            get {
+                return ResourceManager.GetString("EditProfile_Phone", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Tap on &apos;+&apos; next to a friend to add them as a favourite.
@@ -282,6 +331,13 @@ namespace windows_client.Languages {
         public static string Conversations_TapYesToAdd_Txt {
             get {
                 return ResourceManager.GetString("Conversations_TapYesToAdd_Txt", resourceCulture);
+            }
+        }
+        ///   Looks up a localized string similar to save.
+        /// </summary>
+        public static string EditProfile_SaveAppBar {
+            get {
+                return ResourceManager.GetString("EditProfile_SaveAppBar", resourceCulture);
             }
         }
         
@@ -306,9 +362,18 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        public static string Delete_Txt {
-            get {
+        public static string Delete_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Delete_Txt", resourceCulture);
+            }
+        }
+        ///   Looks up a localized string similar to Edit Profile.
+        /// </summary>
+        public static string EditProfile_Title {
+            get {
+                return ResourceManager.GetString("EditProfile_Title", resourceCulture);
             }
         }
         

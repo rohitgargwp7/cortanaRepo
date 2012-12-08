@@ -16,6 +16,7 @@ using windows_client.utils;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Text.RegularExpressions;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -35,9 +36,9 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            genderList.Add("Select");
-            genderList.Add("Male");
-            genderList.Add("Female");
+            genderList.Add(AppResources.EditProfile_GenderSelect);
+            genderList.Add(AppResources.EditProfile_GenderMale);
+            genderList.Add(AppResources.EditProfile_GenderFemale);
             genderListPicker.ItemsSource = genderList;
             TiltEffect.TiltableItems.Add(typeof(ListPickerItem));
             prepopulate();
@@ -49,7 +50,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            nextIconButton.Text = "save";
+            nextIconButton.Text = AppResources.EditProfile_SaveAppBar;
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;
             appBar.Buttons.Add(nextIconButton);
