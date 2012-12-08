@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.utils;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -25,7 +26,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = "let's hike";
+            nextIconButton.Text = AppResources.Walkthrough_LetsHike_Txt;
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
