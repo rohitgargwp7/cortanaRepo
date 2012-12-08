@@ -115,7 +115,7 @@ namespace windows_client
         {
             try
             {
-                txtBxEnterPin.Hint = AppResources.EnterPin_Pin;
+                txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
             }
             catch { }

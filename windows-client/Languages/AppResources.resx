@@ -125,6 +125,34 @@
     <value>Connectivity issue.</value>
     <comment>Network issue msg (used in all pages)</comment>
   </data>
+  <data name="EnterName_Done_AppBarBtnTxt" xml:space="preserve">
+    <value>done</value>
+    <comment>CS</comment>
+  </data>
+  <data name="EnterName_Msg_TxtBlk" xml:space="preserve">
+    <value>Getting you in</value>
+    <comment>General msg shown (CS)</comment>
+  </data>
+  <data name="EnterName_NameErrorTxt" xml:space="preserve">
+    <value>Error!! Name not set. Try Again!!</value>
+    <comment>error text (CS)</comment>
+  </data>
+  <data name="EnterName_Name_Hint" xml:space="preserve">
+    <value>Name</value>
+    <comment>Name Text in hint (CS)</comment>
+  </data>
+  <data name="EnterName_Name_TxtBlk" xml:space="preserve">
+    <value>Enter your name below :</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="EnterName_ScanningContacts_Txt" xml:space="preserve">
+    <value>Scanning Contacts ...</value>
+    <comment>CS</comment>
+  </data>
+  <data name="EnterName_YourMsisdn_TxtBlk" xml:space="preserve">
+    <value>You're all set on </value>
+    <comment>This is the text shown at top (xaml)</comment>
+  </data>
   <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
     <value>Enter your phone number below to get started :</value>
     <comment>Enter phone msg.</comment>
@@ -140,10 +168,6 @@
   <data name="EnterNumber_MsgBoxText_Msg" xml:space="preserve">
     <value>Enter valid phone number.</value>
     <comment>MsgBox msg</comment>
-  </data>
-  <data name="EnterNumber_NE_TxtBlk" xml:space="preserve">
-    <value>Network Error. Try Again!!</value>
-    <comment>Network error msg</comment>
   </data>
   <data name="EnterNumber_Ph_Hint_TxtBox" xml:space="preserve">
     <value>Phone Number</value>
@@ -169,13 +193,13 @@
     <value>Call me for PIN</value>
     <comment>Call me button (xaml)</comment>
   </data>
-  <data name="EnterPin_Pin" xml:space="preserve">
-    <value>Pin</value>
-    <comment>Pin Text (CS)</comment>
-  </data>
   <data name="EnterPin_PinError_TxtBlk" xml:space="preserve">
     <value>PIN not valid. Please try again.</value>
     <comment>Pin Error Msg (xaml) </comment>
+  </data>
+  <data name="EnterPin_PinHint" xml:space="preserve">
+    <value>Pin</value>
+    <comment>Pin Text in hint (CS)</comment>
   </data>
   <data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
     <value>Thanks! Did you get an SMS pin? Enter it below :</value>
@@ -192,6 +216,30 @@
   <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
     <value>Entered a wrong number?</value>
     <comment>xaml</comment>
+  </data>
+  <data name="NetworkError_TryAgain" xml:space="preserve">
+    <value>Network Error. Try Again!!</value>
+    <comment>Network error msg</comment>
+  </data>
+  <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
+    <value>*Free SMS can only be sent to India</value>
+    <comment>Pivot 2 (xaml)</comment>
+  </data>
+  <data name="Walkthrough_FreeSmsReward_Txt" xml:space="preserve">
+    <value>For every friend who joins, you get 50 Free hike SMS every month</value>
+    <comment>Pivot 3 (xaml)</comment>
+  </data>
+  <data name="Walkthrough_InviteFriends_Txt" xml:space="preserve">
+    <value>Invite Friends Earn Rewards.</value>
+    <comment>Pivot 3 (xaml)</comment>
+  </data>
+  <data name="Walkthrough_TitleMsg_1" xml:space="preserve">
+    <value>Free, always, worldwide</value>
+    <comment>Pivot 1 (xaml)</comment>
+  </data>
+  <data name="Walkthrough_TitleMsg_2" xml:space="preserve">
+    <value>Also message friends not on hike for free with Free hike SMS</value>
+    <comment>Pivot 2 (xaml)</comment>
   </data>
   <data name="WelcomePage_13YrsMsg_TxtBlk" xml:space="preserve">
     <value>Tap next to confirm that you are 13+ years of age</value>
