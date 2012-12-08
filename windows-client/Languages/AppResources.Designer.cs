@@ -22,7 +22,7 @@ namespace windows_client.Languages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AppResources {
+    public class AppResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace windows_client.Languages {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("windows_client.Languages.AppResources", typeof(AppResources).Assembly);
@@ -51,12 +51,66 @@ namespace windows_client.Languages {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap next to confirm that you are 13+ years of age.
+        /// </summary>
+        public static string WelcomePage_13YrsMsg_TxtBlk {
+            get {
+                return ResourceManager.GetString("WelcomePage_13YrsMsg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to accept.
+        /// </summary>
+        public static string WelcomePage_Accept_AppBar {
+            get {
+                return ResourceManager.GetString("WelcomePage_Accept_AppBar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connectivity issue..
+        /// </summary>
+        public static string WelcomePage_Connectivity_TxtBlk {
+            get {
+                return ResourceManager.GetString("WelcomePage_Connectivity_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fun, free messaging for life.
+        /// </summary>
+        public static string WelcomePage_HikeMsg_TxtBlk {
+            get {
+                return ResourceManager.GetString("WelcomePage_HikeMsg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push Notifications are turned on by default.
+        /// </summary>
+        public static string WelcomePage_PushMsg_TxtBlk {
+            get {
+                return ResourceManager.GetString("WelcomePage_PushMsg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terms and Privacy.
+        /// </summary>
+        public static string WelcomePage_TnP_HlBtn {
+            get {
+                return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
             }
         }
     }
