@@ -50,7 +50,7 @@
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
                 <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,10"></Image>
 
-                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" HorizontalAlignment="Left" MaxWidth="400" Text="We couldn't pull your phone #. Enter it below :" FontSize="24"  TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
+                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" HorizontalAlignment="Left" MaxWidth="400" Text="Enter your phone number below to get started :" FontSize="24"  TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
 
                 <toolkit:PhoneTextBox x:Name="txtEnterCountry" BorderThickness="2" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Left" Margin="12,-2,0,0" Width="454" Height="78"/>
 
