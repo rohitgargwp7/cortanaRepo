@@ -25,6 +25,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Device.Location;
 using windows_client.Misc;
 using System.Runtime.CompilerServices;
+using Microsoft.Phone.UserData;
 
 namespace windows_client.View
 {
@@ -71,7 +72,8 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IScheduler scheduler = Scheduler.NewThread;
 
-        private byte [] avatar;
+        ContactInfo contactInfo = null; // this will be used if someone adds an unknown number to addressbook
+        private byte[] avatar;
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
         ApplicationBarMenuItem blockUnblockMenuItem;
@@ -995,7 +997,7 @@ namespace windows_client.View
                 string sourceMsisdn = (string)attachmentData[1];
 
                 string sourceFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + sourceMsisdn + "/" + chatBubble.MessageId;
-                
+
                 ConvMessage convMessage = new ConvMessage("", mContactNumber,
                     TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
@@ -1073,7 +1075,7 @@ namespace windows_client.View
             });
         }
 
-//        [MethodImpl(MethodImplOptions.Synchronized)]
+        //        [MethodImpl(MethodImplOptions.Synchronized)]
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
@@ -1081,13 +1083,13 @@ namespace windows_client.View
             //Scroller.UpdateLayout();
             if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
             {
-//                messagesCollection.Add(null);
+                //                messagesCollection.Add(null);
                 messageListBox.UpdateLayout();
                 messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 messageListBox.UpdateLayout();
                 messageListBox.ScrollIntoView(messagesCollection[messagesCollection.Count - 1]);
                 messageListBox.UpdateLayout();
-                
+
                 //messageListBox.UpdateLayout();
                 //messagesCollection.RemoveAt(messagesCollection.Count - 1);
                 //messageListBox.UpdateLayout();
@@ -1179,7 +1181,7 @@ namespace windows_client.View
                 }
                 else
                     favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
-                App.ViewModel.FavList.Insert(0,favObj);
+                App.ViewModel.FavList.Insert(0, favObj);
                 MiscDBUtil.SaveFavourites();
                 addToFavMenuItem.Text = "remove from favourites";
 
@@ -1207,7 +1209,7 @@ namespace windows_client.View
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                     App.ViewModel.ConvMap[mContactNumber].IsFav = false;
                 MiscDBUtil.SaveFavourites();
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING,null);
+                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
 
                 JObject data = new JObject();
                 data["id"] = mContactNumber;
@@ -1218,7 +1220,7 @@ namespace windows_client.View
                 _isFav = false;
             }
         }
-        
+
         private void callUser_Click(object sender, EventArgs e)
         {
             PhoneCallTask phoneCallTask = new PhoneCallTask();
@@ -1233,7 +1235,7 @@ namespace windows_client.View
 
         private void addUser_Click(object sender, EventArgs e)
         {
-            ContactUtils.saveContact(mContactNumber);
+            ContactUtils.saveContact(mContactNumber, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
 
         private void leaveGroup_Click(object sender, EventArgs e)
@@ -1557,7 +1559,7 @@ namespace windows_client.View
                             this.messagesCollection.Add(chatBubble.splitChatBubbles[i]);
                         }
                     }
-                    if(!readFromDB)
+                    if (!readFromDB)
                         ScrollToBottom();
                     if (convMessage.FileAttachment != null)
                     {
@@ -1667,7 +1669,7 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    if(!readFromDB)
+                    if (!readFromDB)
                         ScrollToBottom();
                 }
                 #endregion
@@ -2965,7 +2967,7 @@ namespace windows_client.View
         {
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = true;
-//            ContextMenuService.SetContextMenu(this, menu);
+            //            ContextMenuService.SetContextMenu(this, menu);
 
             if (chatBubbleType == MyChatBubble.ChatBubbleType.TEXT)
             {
@@ -3001,7 +3003,7 @@ namespace windows_client.View
                 {
                 }
                 else if (attachmentState == Attachment.AttachmentState.COMPLETED)
-                { 
+                {
                 }
                 else if (attachmentState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
                 {
@@ -3009,14 +3011,159 @@ namespace windows_client.View
                 else //Started
                 {
                 }
-            
+
             }
-        
+
         }
 
         private void messageListBox_GotFocus(object sender, RoutedEventArgs e)
         {
             this.Focus();
+        }
+
+        private void saveContactTask_Completed(object sender, SaveContactResult e)
+        {
+            switch (e.TaskResult)
+            {
+                case TaskResult.OK:
+                    ContactUtils.getContact(mContactNumber, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
+                    break;
+                case TaskResult.Cancel:
+                    MessageBox.Show("The user canceled the task.");
+                    break;
+                case TaskResult.None:
+                    MessageBox.Show("NO information regarding the task result is available.");
+                    break;
+            }
+        }
+
+        public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
+        {
+            try
+            {
+                Dictionary<string, List<ContactInfo>> contactListMap = GetContactListMap(e.Results);
+                if (contactListMap == null)
+                {
+                    MessageBox.Show("No Contact is saved.");
+                    return;
+                }
+                AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+            }
+            catch (System.Exception)
+            {
+                //That's okay, no results//
+            }
+        }
+
+        private Dictionary<string, List<ContactInfo>> GetContactListMap(IEnumerable<Contact> contacts)
+        {
+            int count = 0;
+            int duplicates = 0;
+            Dictionary<string, List<ContactInfo>> contactListMap = null;
+            if (contacts == null)
+                return null;
+            contactListMap = new Dictionary<string, List<ContactInfo>>();
+            foreach (Contact cn in contacts)
+            {
+                CompleteName cName = cn.CompleteName;
+
+                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+                {
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    {
+                        count++;
+                        continue;
+                    }
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    int idd = cInfo.GetHashCode();
+                    cInfo.Id = Convert.ToString(Math.Abs(idd));
+                    contactInfo = cInfo;
+                    if (contactListMap.ContainsKey(cInfo.Id))
+                    {
+                        if (!contactListMap[cInfo.Id].Contains(cInfo))
+                            contactListMap[cInfo.Id].Add(cInfo);
+                        else
+                        {
+                            duplicates++;
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                        }
+                    }
+                    else
+                    {
+                        List<ContactInfo> contactList = new List<ContactInfo>();
+                        contactList.Add(cInfo);
+                        contactListMap.Add(cInfo.Id, contactList);
+                    }
+                }
+            }
+            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
+            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            return contactListMap;
+        }
+
+        public void updateAddressBook_Callback(JObject obj)
+        {
+            if ((obj == null) || "fail" == (string)obj["stat"])
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show("Contact not saved on server, kindly refresh later.");
+                });
+                return;
+            }
+            JObject addressbook = (JObject)obj["addressbook"];
+            if (addressbook == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show("Contact not saved on server, kindly refresh later.");
+                });
+                return;
+            }
+            IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
+            KeyValuePair<string, JToken> kv;
+            int count = 0;
+            while (keyVals.MoveNext())
+            {
+                kv = keyVals.Current;
+                JArray entries = (JArray)addressbook[kv.Key];
+                for (int i = 0; i < entries.Count; ++i)
+                {
+                    JObject entry = (JObject)entries[i];
+                    string msisdn = (string)entry["msisdn"];
+                    if (string.IsNullOrWhiteSpace(msisdn))
+                        continue;
+
+                    bool onhike = (bool)entry["onhike"];
+                    contactInfo.Msisdn = msisdn;
+                    contactInfo.OnHike = onhike;
+                    count++;
+                }
+            }
+            UsersTableUtils.addContact(contactInfo);
+            Dispatcher.BeginInvoke(() =>
+            {
+                userName.Text = contactInfo.Name;
+                mContactName = contactInfo.Name;
+                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
+                {
+                    App.ViewModel.ConvMap[mContactNumber].ContactName = contactInfo.Name;
+                }
+                else
+                {
+                    ConversationListObject co = App.ViewModel.GetFav(mContactNumber);
+                    if (co != null)
+                        co.ContactName = contactInfo.Name;
+                }
+                if (count > 1)
+                {
+                    MessageBox.Show("More than 1 contacts found for number : {0}" + mContactNumber);
+                }
+                else
+                {
+                    MessageBox.Show("Contact saved successfully");
+                }
+            });
         }
     }
 }
