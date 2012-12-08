@@ -121,9 +121,113 @@
     <value>Next</value>
     <comment>AppBar Next Button</comment>
   </data>
+  <data name="Cannot_Change_Img_Error_Txt" xml:space="preserve">
+    <value>Cannot change Profile Image. Try Later!!</value>
+    <comment>General text used in different files</comment>
+  </data>
+  <data name="Cannot_Select_Pic_Phone_Connected_to_PC" xml:space="preserve">
+    <value>You cannot select photo while phone is connected to computer.</value>
+    <comment>General text used in different files</comment>
+  </data>
   <data name="Connectivity_Issue" xml:space="preserve">
     <value>Connectivity issue.</value>
     <comment>Network issue msg (used in all pages)</comment>
+  </data>
+  <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
+    <value> added you as favourite. Would you like to do the same?</value>
+    <comment>Fav (xaml)</comment>
+  </data>
+  <data name="Conversations_ContextMenu_RemoveFromFav_Txt" xml:space="preserve">
+    <value>Remove From Favourites</value>
+    <comment>Fav ContextMenu (xaml)</comment>
+  </data>
+  <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
+    <value>Delete All Chats</value>
+    <comment>cs</comment>
+  </data>
+  <data name="Conversations_DelChat_Txt" xml:space="preserve">
+    <value>Delete Chat</value>
+    <comment>cs</comment>
+  </data>
+  <data name="Conversations_Delete_Chats_Confirmation" xml:space="preserve">
+    <value>Are you sure about deleting all chats?</value>
+    <comment>cs</comment>
+  </data>
+  <data name="Conversations_Delete_Chat_Confirmation" xml:space="preserve">
+    <value>Are you sure about deleting this chat?</value>
+    <comment>cs</comment>
+  </data>
+  <data name="Conversations_EditProfile_Txt" xml:space="preserve">
+    <value>Edit Profile</value>
+    <comment>Edit profile text (xaml)</comment>
+  </data>
+  <data name="Conversations_FreeSms_Txt" xml:space="preserve">
+    <value>Free SMS</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="Conversations_HikeContacts_Btn" xml:space="preserve">
+    <value>Hike Contacts</value>
+    <comment>Fav (xaml)</comment>
+  </data>
+  <data name="Conversations_NewChat_AppBar_Btn" xml:space="preserve">
+    <value>new chat</value>
+    <comment>AppBar Btn (cs)</comment>
+  </data>
+  <data name="Conversations_OnHike_Txt" xml:space="preserve">
+    <value>{0} is on hike.</value>
+    <comment>Here {0} will get replaced by user name. (cs)</comment>
+  </data>
+  <data name="Conversations_OnSMS_Txt" xml:space="preserve">
+    <value>Send {0} free sms.</value>
+    <comment>Here {0} will get replaced by user name. (cs)</comment>
+  </data>
+  <data name="Conversations_Pending_NotNow_Btn" xml:space="preserve">
+    <value>Not Now</value>
+    <comment>Fav (xaml)</comment>
+  </data>
+  <data name="Conversations_Pending_Yes_Btn" xml:space="preserve">
+    <value>Yes</value>
+    <comment>Fav (xaml)</comment>
+  </data>
+  <data name="Conversations_Pivot_Chats_Header_Txt" xml:space="preserve">
+    <value>chats</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
+    <value>favourites</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
+    <value>profile</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="Conversations_ProfileName_Default_Txt" xml:space="preserve">
+    <value>Default Name</value>
+    <comment>Default name shown if no name (xaml)</comment>
+  </data>
+  <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
+    <value>Are you sure about removing this contact from favourites?</value>
+    <comment>cs</comment>
+  </data>
+  <data name="Conversations_RemFromFav_Txt" xml:space="preserve">
+    <value>Remove from Favourites</value>
+    <comment>cs</comment>
+  </data>
+  <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
+    <value>Tap on '+' next to a friend to add them as a favourite</value>
+    <comment>Fav (xaml)</comment>
+  </data>
+  <data name="Conversations_TellFriend_Txt" xml:space="preserve">
+    <value>Tell a friend</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="Conversations_YourFav_Txt" xml:space="preserve">
+    <value>Your favourites</value>
+    <comment>Fav (xaml)</comment>
+  </data>
+  <data name="Delete_Txt" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Chats ContextMenu (xaml)</comment>
   </data>
   <data name="EnterName_Done_AppBarBtnTxt" xml:space="preserve">
     <value>done</value>
@@ -217,9 +321,49 @@
     <value>Entered a wrong number?</value>
     <comment>xaml</comment>
   </data>
+  <data name="GrpChat_Txt" xml:space="preserve">
+    <value>Group Chat</value>
+    <comment>Text Group Chat </comment>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="Ignore_Txt" xml:space="preserve">
+    <value>Ignore</value>
+    <comment>General text used in different files</comment>
+  </data>
   <data name="NetworkError_TryAgain" xml:space="preserve">
     <value>Network Error. Try Again!!</value>
     <comment>Network error msg</comment>
+  </data>
+  <data name="No_Network_Txt" xml:space="preserve">
+    <value>No network connectivity</value>
+    <comment>General text used in different files</comment>
+  </data>
+  <data name="Please_Try_Again_Txt" xml:space="preserve">
+    <value>Please try again</value>
+    <comment>General text used in different files</comment>
+  </data>
+  <data name="Privacy" xml:space="preserve">
+    <value>Privacy</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="SMS_Left_Txt" xml:space="preserve">
+    <value>{0} Left</value>
+    <comment>This text is used to show how many SMS left</comment>
+  </data>
+  <data name="Something_Wrong_Txt" xml:space="preserve">
+    <value>Oops, something went wrong!</value>
+    <comment>General text used in different files</comment>
+  </data>
+  <data name="Update_Txt" xml:space="preserve">
+    <value>Update</value>
+    <comment>General text used in different files</comment>
   </data>
   <data name="Walkthrough_FreeMsgToIndia_Txt" xml:space="preserve">
     <value>*Free SMS can only be sent to India</value>
@@ -235,6 +379,7 @@
   </data>
   <data name="Walkthrough_LetsHike_Txt" xml:space="preserve">
     <value>let's hike</value>
+    <comment>cs</comment>
   </data>
   <data name="Walkthrough_TitleMsg_1" xml:space="preserve">
     <value>Free, always, worldwide</value>

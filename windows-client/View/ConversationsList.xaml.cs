@@ -15,26 +15,18 @@ using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows.Documents;
-using Microsoft.Phone.Notification;
 using System.Net.NetworkInformation;
-using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
 using windows_client.Misc;
-using System.Collections.ObjectModel;
 using System.Windows.Media;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
-        #region CONSTANTS
-
-        private readonly string DELETE_ALL_CONVERSATIONS = "Delete All Chats";
-        private readonly string INVITE_USERS = "Invite Users";
-
-        #endregion
 
         #region Instances
 
@@ -216,13 +208,13 @@ namespace windows_client.View
                 {
                     j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
                     c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER, j);
-                    c.Message = cl[i].Name + " is on hike.";
+                    c.Message = string.Format(AppResources.Conversations_OnHike_Txt, cl[i].Name);
                 }
                 else
                 {
                     j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.SMS_USER;
                     c = new ConvMessage(ConvMessage.ParticipantInfoState.SMS_USER, j);
-                    c.Message = "Send " + cl[i].Name + " free sms.";
+                    c.Message = string.Format(AppResources.Conversations_OnSMS_Txt, cl[i].Name);
                 }
                 c.Msisdn = cl[i].Msisdn;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
@@ -243,7 +235,7 @@ namespace windows_client.View
             /* Add icons */
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
-            composeIconButton.Text = "new chat";
+            composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
@@ -252,13 +244,13 @@ namespace windows_client.View
             convListPagePivot.ApplicationBar = appBar;
 
             ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
-            groupChatIconButton.Text = "Group Chat";
+            groupChatIconButton.Text = AppResources.GrpChat_Txt;
             groupChatIconButton.Click += new EventHandler(createGroup_Click);
             groupChatIconButton.IsEnabled = true;
             appBar.MenuItems.Add(groupChatIconButton);
 
             delConvsMenu = new ApplicationBarMenuItem();
-            delConvsMenu.Text = DELETE_ALL_CONVERSATIONS;
+            delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
             delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
             appBar.MenuItems.Add(delConvsMenu);
         }
@@ -386,7 +378,7 @@ namespace windows_client.View
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 isProfilePicTapped = false;
                 return;
             }
@@ -406,7 +398,7 @@ namespace windows_client.View
                 //progressBarTop.IsEnabled = false;
                 shellProgress.IsVisible = false;
                 if (e.Error != null)
-                    MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
         }
 
@@ -449,7 +441,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    MessageBox.Show("Cannot change Profile Image. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 }
                 //progressBarTop.IsEnabled = false;
                 shellProgress.IsVisible = false;
@@ -463,7 +455,7 @@ namespace windows_client.View
 
         private void deleteAllConvs_Click(object sender, EventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats?", "Delete All Chats", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             shellProgress.IsVisible = true;
@@ -517,7 +509,7 @@ namespace windows_client.View
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting this chat?", "Delete Chat", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
@@ -542,7 +534,7 @@ namespace windows_client.View
             {
                 if (convObj.IsFav) // already fav , remove request
                 {
-                    MessageBoxResult result = MessageBox.Show("Are you sure about removing this contact from favourites?", "Remove from Favourites", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.Conversations_RemFromFav_Txt, MessageBoxButton.OKCancel);
                     if (result == MessageBoxResult.Cancel)
                         return;
                     convObj.IsFav = false;
@@ -725,7 +717,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    creditsTxtBlck.Text = Convert.ToString((int)obj) + " Left";
+                    creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, Convert.ToString((int)obj));
                 });
             }
             #endregion
@@ -913,7 +905,7 @@ namespace windows_client.View
             if (!Guide.IsVisible)
             {
                 Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
-                     new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                     new List<string> { AppResources.Update_Txt }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -935,7 +927,7 @@ namespace windows_client.View
             if (!Guide.IsVisible)
             {
                 Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
-                     new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
+                     new List<string> { AppResources.Update_Txt, AppResources.Ignore_Txt }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -1045,7 +1037,7 @@ namespace windows_client.View
 
         private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about removing this contact from favourites?", "Remove from Favourites", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.Conversations_RemFromFav_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
