@@ -518,32 +518,38 @@
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
     <value>Twitter</value>
+    <comment>Connect to twitter button (unconnected state) </comment>
   </data>
   <data name="FreeSMS_TwPostSuccess_MsgBx" xml:space="preserve">
     <value>Successfully posted to twitter.</value>
+    <comment>Caption of Msg Bx after successfully posting to fb</comment>
   </data>
   <data name="FreeSMS_TwPost_MsgBxCaption" xml:space="preserve">
     <value>Twitter Post</value>
-  </data>
-  <data name="FreeSMS_UnlinkAccount_MsgBx" xml:space="preserve">
-    <value>Are you sure you want to unlink your account?</value>
+    <comment>Caption of Msg Bx while posting to fb</comment>
   </data>
   <data name="FreeSMS_UnlinkFacebook_MsgBxCaptn" xml:space="preserve">
     <value>Unlink Facebook</value>
+    <comment>Caption of Msg Bx while unlinking fb account</comment>
   </data>
   <data name="FreeSMS_UnlinkFbOrTwConfirm_MsgBx" xml:space="preserve">
     <value>Are you sure you want to unlink your account?</value>
+    <comment>Text of Msg Bx while confirming to unlink</comment>
   </data>
   <data name="FreeSMS_UnlinkFbOrTwSuccess_MsgBx" xml:space="preserve">
     <value>Successfully Unlinked Account.</value>
-  </data>
-  <data name="FreeSMS_UnlinkFBSuccess_MsgBxCaptn" xml:space="preserve">
-    <value />
+    <comment>Text of Msg Bx after successfull unlinking</comment>
   </data>
   <data name="FreeSMS_UnlinkTwitter_MsgBxCaptn" xml:space="preserve">
     <value>Unlink Twitter</value>
+    <comment>Caption of Msg Bx while unlinking twitter account</comment>
   </data>
   <data name="FreeSMS_UnlinkTwSuccess_MsgBxCaptn" xml:space="preserve">
     <value>Twitter Logout</value>
+    <comment>Caption of Msg Bx after successfully unlinkig from fb</comment>
+  </data>
+  <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
+    <value>Unlimited</value>
+    <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
 </root>

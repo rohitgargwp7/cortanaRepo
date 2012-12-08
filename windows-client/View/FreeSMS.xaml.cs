@@ -247,7 +247,7 @@ namespace windows_client.View
                 {
                     IsFacebookConnected = false;
                     ChangeElementsState(true);
-                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFBSuccess_MsgBxCaptn, MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
                 });
             }
             else

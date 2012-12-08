@@ -54,7 +54,7 @@
                 <Border BorderThickness="4" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" BorderBrush="Black" Margin="20,0,20,0">
                     <Rectangle x:Name="unlimitedRectangle" Height="40" Fill="#2e91d3" ></Rectangle>
                 </Border>
-                <TextBlock x:Name="unlimitedTxtBlck" Grid.Column="1" FontSize="20" Foreground="White" Grid.Row="2" Text="Unlimited"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock x:Name="unlimitedTxtBlck" Grid.Column="1" FontSize="20" Foreground="White" Grid.Row="2" Text="{Binding Path= LocalizedResources.FreeSMS_unlimitedTxtBlck_TxtBlk, Source={StaticResource LocalizedStrings}}"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
             </Grid>
 
