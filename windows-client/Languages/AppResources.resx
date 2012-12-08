@@ -117,6 +117,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppBar_Next_Btn" xml:space="preserve">
+    <value>Next</value>
+    <comment>AppBar Next Button</comment>
+  </data>
+  <data name="Connectivity_Issue" xml:space="preserve">
+    <value>Connectivity issue.</value>
+    <comment>Network issue msg (used in all pages)</comment>
+  </data>
+  <data name="EnterNumber_EnterNum_TxtBlk" xml:space="preserve">
+    <value>Enter your phone number below to get started :</value>
+    <comment>Enter phone msg.</comment>
+  </data>
+  <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
+    <value>Incorrect phone number.</value>
+    <comment>CS file</comment>
+  </data>
+  <data name="EnterNumber_MsgBoxHeader_Msg" xml:space="preserve">
+    <value>Incorrect Phone Number</value>
+    <comment>MsgBox header</comment>
+  </data>
+  <data name="EnterNumber_MsgBoxText_Msg" xml:space="preserve">
+    <value>Enter valid phone number.</value>
+    <comment>MsgBox msg</comment>
+  </data>
+  <data name="EnterNumber_NE_TxtBlk" xml:space="preserve">
+    <value>Network Error. Try Again!!</value>
+    <comment>Network error msg</comment>
+  </data>
+  <data name="EnterNumber_Ph_Hint_TxtBox" xml:space="preserve">
+    <value>Phone Number</value>
+    <comment>CS file</comment>
+  </data>
+  <data name="EnterNumber_SelectCountry_TxtBlk" xml:space="preserve">
+    <value>SELECT COUNTRY</value>
+    <comment>In longlist selector select country</comment>
+  </data>
+  <data name="EnterNumber_VerifyNumberMsg_TxtBlk" xml:space="preserve">
+    <value>Verifying your number.</value>
+    <comment>CS file</comment>
+  </data>
+  <data name="EnterPin_CallErrorMsg_MsgBox" xml:space="preserve">
+    <value>Couldn't call you. Try again later.</value>
+    <comment>Call Error MsgBox (CS)</comment>
+  </data>
+  <data name="EnterPin_CallingMsg_MsgBox" xml:space="preserve">
+    <value>Calling you for PIN.</value>
+    <comment>Calling MsgBox (CS) </comment>
+  </data>
+  <data name="EnterPin_CallMe_Btn" xml:space="preserve">
+    <value>Call me for PIN</value>
+    <comment>Call me button (xaml)</comment>
+  </data>
+  <data name="EnterPin_Pin" xml:space="preserve">
+    <value>Pin</value>
+    <comment>Pin Text (CS)</comment>
+  </data>
+  <data name="EnterPin_PinError_TxtBlk" xml:space="preserve">
+    <value>PIN not valid. Please try again.</value>
+    <comment>Pin Error Msg (xaml) </comment>
+  </data>
+  <data name="EnterPin_PinMsg_TxtBlk" xml:space="preserve">
+    <value>Thanks! Did you get an SMS pin? Enter it below :</value>
+    <comment>Page title msg (xaml file)</comment>
+  </data>
+  <data name="EnterPin_SMSError_TxtBlk" xml:space="preserve">
+    <value>Didn't receive an SMS?</value>
+    <comment>Did not receive sms (xaml)</comment>
+  </data>
+  <data name="EnterPin_Taphere_TxtBlk" xml:space="preserve">
+    <value>Tap Here</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="EnterPin_WrongNumMsg_TxtBlk" xml:space="preserve">
+    <value>Entered a wrong number?</value>
+    <comment>xaml</comment>
+  </data>
   <data name="WelcomePage_13YrsMsg_TxtBlk" xml:space="preserve">
     <value>Tap next to confirm that you are 13+ years of age</value>
     <comment>13 yrs confirm</comment>
@@ -124,10 +200,6 @@
   <data name="WelcomePage_Accept_AppBar" xml:space="preserve">
     <value>accept</value>
     <comment>accept button in appbar</comment>
-  </data>
-  <data name="WelcomePage_Connectivity_TxtBlk" xml:space="preserve">
-    <value>Connectivity issue.</value>
-    <comment>Network issue msg</comment>
   </data>
   <data name="WelcomePage_HikeMsg_TxtBlk" xml:space="preserve">
     <value>Fun, free messaging for life</value>
