@@ -8,6 +8,7 @@ using windows_client.utils;
 using System.Diagnostics;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -332,7 +333,7 @@ namespace windows_client.View
         {
             if (isConnected)
             {
-                fbConnStatus.Text = "Connected";
+                fbConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
                 fbConnImage.Visibility = Visibility.Visible;
                 if (Utils.isDarkTheme())
                 {
@@ -345,7 +346,7 @@ namespace windows_client.View
             }
             else
             {
-                fbConnStatus.Text = "facebook";
+                fbConnStatus.Text = AppResources.FreeSMS_fbConnStatus_TxtBlk;
                 fbConnImage.Visibility = Visibility.Collapsed;
                 if (Utils.isDarkTheme())
                 {
@@ -362,7 +363,7 @@ namespace windows_client.View
         {
             if (isConnected)
             {
-                twConnStatus.Text = "Connected";
+                twConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
                 twConnImage.Visibility = Visibility.Visible;
                 if (Utils.isDarkTheme())
                 {
@@ -376,7 +377,7 @@ namespace windows_client.View
             }
             else
             {
-                twConnStatus.Text = "twitter";
+                twConnStatus.Text = AppResources.FreeSMS_twConnStatus_TxtBlk;
                 twConnImage.Visibility = Visibility.Collapsed;
                 if (Utils.isDarkTheme())
                 {

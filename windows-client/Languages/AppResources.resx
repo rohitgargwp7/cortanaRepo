@@ -264,37 +264,105 @@
     <value>Terms and Privacy</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
-  <data name="EditProfile_Email" xml:space="preserve">
+  <data name="EditProfile_Email_TxtBlk" xml:space="preserve">
     <value>Email</value>
     <comment>xaml</comment>
   </data>
-  <data name="EditProfile_FullName" xml:space="preserve">
+  <data name="EditProfile_FullName_TxtBlk" xml:space="preserve">
     <value>Full Name</value>
     <comment>xaml</comment>
   </data>
-  <data name="EditProfile_Gender" xml:space="preserve">
+  <data name="EditProfile_GenderFemale_lstPckr" xml:space="preserve">
+    <value>Female</value>
+    <comment>gender dropdown (cs)</comment>
+  </data>
+  <data name="EditProfile_GenderMale_LstPckr" xml:space="preserve">
+    <value>Male</value>
+    <comment>gender dropdown (cs)</comment>
+  </data>
+  <data name="EditProfile_GenderSelect_LstPckr" xml:space="preserve">
+    <value>Select</value>
+    <comment>gender dropdown (cs)</comment>
+  </data>
+  <data name="EditProfile_Gender_TxtBlk" xml:space="preserve">
     <value>Gender</value>
     <comment>xaml</comment>
   </data>
-  <data name="EditProfile_GenderFemale" xml:space="preserve">
-    <value>Female</value>
-  </data>
-  <data name="EditProfile_GenderMale" xml:space="preserve">
-    <value>Male</value>
-  </data>
-  <data name="EditProfile_GenderSelect" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="EditProfile_Phone" xml:space="preserve">
+  <data name="EditProfile_Phone_TxtBlk" xml:space="preserve">
     <value>Phone</value>
     <comment>xaml</comment>
   </data>
-  <data name="EditProfile_SaveAppBar" xml:space="preserve">
+  <data name="EditProfile_Save_AppBarBtnTxt" xml:space="preserve">
     <value>save</value>
     <comment>cs</comment>
   </data>
-  <data name="EditProfile_Title" xml:space="preserve">
+  <data name="EditProfile_Title_TxtBlk" xml:space="preserve">
     <value>Edit Profile</value>
     <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
+    <value>Connect and get a</value>
+    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
+  </data>
+  <data name="FreeSMS_Cnnct_TxtBlk2" xml:space="preserve">
+    <value>100 Free SMS</value>
+    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
+  </data>
+  <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
+    <value>instantly</value>
+    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
+  </data>
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
+    <value>Earn an extra</value>
+    <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
+  </data>
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
+    <value>50 free SMS</value>
+    <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
+  </data>
+  <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
+    <value>per month for every friend that joins through you.</value>
+    <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
+  </data>
+  <data name="FreeSMS_fbConnStatus_TxtBlk" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="FreeSMS_fbOrTwitter_Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="FreeSMS_H2HHeader_TxtBlk" xml:space="preserve">
+    <value>hike to hike</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_H2HText_TxtBlk" xml:space="preserve">
+    <value>Free Worldwide</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_H2SHeader_TxtBlk" xml:space="preserve">
+    <value>hike to SMS</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_H2SText_TxtBlk" xml:space="preserve">
+    <value>Your free SMS refill on the 1st of every month</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_IndiaOnly_TxtBlk" xml:space="preserve">
+    <value>*Free SMS can only be sent to India at the moment</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_InviteNow_Btn" xml:space="preserve">
+    <value>Invite Now</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
+    <value>Invite via SMS</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_Title_TxtBlk" xml:space="preserve">
+    <value>Free SMS</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
+    <value>Twitter</value>
   </data>
 </root>

@@ -81,81 +81,81 @@ namespace windows_client.Languages {
         /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
-        public static string EditProfile_Email {
+        public static string EditProfile_Email_TxtBlk {
             get {
-                return ResourceManager.GetString("EditProfile_Email", resourceCulture);
+                return ResourceManager.GetString("EditProfile_Email_TxtBlk", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
-        public static string EditProfile_FullName {
+        public static string EditProfile_FullName_TxtBlk {
             get {
-                return ResourceManager.GetString("EditProfile_FullName", resourceCulture);
+                return ResourceManager.GetString("EditProfile_FullName_TxtBlk", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Gender.
         /// </summary>
-        public static string EditProfile_Gender {
+        public static string EditProfile_Gender_TxtBlk {
             get {
-                return ResourceManager.GetString("EditProfile_Gender", resourceCulture);
+                return ResourceManager.GetString("EditProfile_Gender_TxtBlk", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Female.
         /// </summary>
-        public static string EditProfile_GenderFemale {
+        public static string EditProfile_GenderFemale_lstPckr {
             get {
-                return ResourceManager.GetString("EditProfile_GenderFemale", resourceCulture);
+                return ResourceManager.GetString("EditProfile_GenderFemale_lstPckr", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Male.
         /// </summary>
-        public static string EditProfile_GenderMale {
+        public static string EditProfile_GenderMale_LstPckr {
             get {
-                return ResourceManager.GetString("EditProfile_GenderMale", resourceCulture);
+                return ResourceManager.GetString("EditProfile_GenderMale_LstPckr", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Select.
         /// </summary>
-        public static string EditProfile_GenderSelect {
+        public static string EditProfile_GenderSelect_LstPckr {
             get {
-                return ResourceManager.GetString("EditProfile_GenderSelect", resourceCulture);
+                return ResourceManager.GetString("EditProfile_GenderSelect_LstPckr", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Phone.
         /// </summary>
-        public static string EditProfile_Phone {
+        public static string EditProfile_Phone_TxtBlk {
             get {
-                return ResourceManager.GetString("EditProfile_Phone", resourceCulture);
+                return ResourceManager.GetString("EditProfile_Phone_TxtBlk", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
-        public static string EditProfile_SaveAppBar {
+        public static string EditProfile_Save_AppBarBtnTxt {
             get {
-                return ResourceManager.GetString("EditProfile_SaveAppBar", resourceCulture);
+                return ResourceManager.GetString("EditProfile_Save_AppBarBtnTxt", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Edit Profile.
         /// </summary>
-        public static string EditProfile_Title {
+        public static string EditProfile_Title_TxtBlk {
             get {
-                return ResourceManager.GetString("EditProfile_Title", resourceCulture);
+                return ResourceManager.GetString("EditProfile_Title_TxtBlk", resourceCulture);
             }
         }
         
@@ -363,6 +363,159 @@ namespace windows_client.Languages {
         public static string EnterPin_WrongNumMsg_TxtBlk {
             get {
                 return ResourceManager.GetString("EnterPin_WrongNumMsg_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect and get a.
+        /// </summary>
+        public static string FreeSMS_Cnnct_TxtBlk1 {
+            get {
+                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100 Free SMS.
+        /// </summary>
+        public static string FreeSMS_Cnnct_TxtBlk2 {
+            get {
+                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to instantly.
+        /// </summary>
+        public static string FreeSMS_Cnnct_TxtBlk3 {
+            get {
+                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Earn an extra.
+        /// </summary>
+        public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
+            get {
+                return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 50 free SMS.
+        /// </summary>
+        public static string FreeSMS_EarnFreeSMS_TxtBlk2 {
+            get {
+                return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to per month for every friend that joins through you..
+        /// </summary>
+        public static string FreeSMS_EarnFreeSMS_TxtBlk3 {
+            get {
+                return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Facebook.
+        /// </summary>
+        public static string FreeSMS_fbConnStatus_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_fbConnStatus_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected.
+        /// </summary>
+        public static string FreeSMS_fbOrTwitter_Connected {
+            get {
+                return ResourceManager.GetString("FreeSMS_fbOrTwitter_Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hike to hike.
+        /// </summary>
+        public static string FreeSMS_H2HHeader_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_H2HHeader_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free Worldwide.
+        /// </summary>
+        public static string FreeSMS_H2HText_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_H2HText_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hike to SMS.
+        /// </summary>
+        public static string FreeSMS_H2SHeader_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_H2SHeader_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your free SMS refill on the 1st of every month.
+        /// </summary>
+        public static string FreeSMS_H2SText_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_H2SText_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *Free SMS can only be sent to India at the moment.
+        /// </summary>
+        public static string FreeSMS_IndiaOnly_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_IndiaOnly_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite Now.
+        /// </summary>
+        public static string FreeSMS_InviteNow_Btn {
+            get {
+                return ResourceManager.GetString("FreeSMS_InviteNow_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite via SMS.
+        /// </summary>
+        public static string FreeSMS_InviteSMS_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_InviteSMS_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free SMS.
+        /// </summary>
+        public static string FreeSMS_Title_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_Title_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitter.
+        /// </summary>
+        public static string FreeSMS_twConnStatus_TxtBlk {
+            get {
+                return ResourceManager.GetString("FreeSMS_twConnStatus_TxtBlk", resourceCulture);
             }
         }
         
