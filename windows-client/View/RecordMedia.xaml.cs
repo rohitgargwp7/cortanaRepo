@@ -8,6 +8,7 @@ using Microsoft.Phone.Shell;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using windows_client.utils;
+using windows_client.Languages;
 
 
 namespace windows_client.View
@@ -94,7 +95,7 @@ namespace windows_client.View
             //add icon for cancel
             cancelIconButton = new ApplicationBarIconButton();
             cancelIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
-            cancelIconButton.Text = "re-record";
+            cancelIconButton.Text = AppResources.RecordAudio_AppBarCancelBtnTxt;
             cancelIconButton.Click += new EventHandler(refresh_Click);
             cancelIconButton.IsEnabled = false;
             appBar.Buttons.Add(cancelIconButton);
@@ -102,7 +103,7 @@ namespace windows_client.View
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
             sendIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            sendIconButton.Text = "send";
+            sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(send_Click);
             sendIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendIconButton);
@@ -151,7 +152,7 @@ namespace windows_client.View
             microphone.Start();
             timeBar.Opacity = 1;
             statusImage.Source = recordIcon;
-            message.Text = "RECORDING";
+            message.Text = AppResources.RecordAudio_Recording;
             maxPlayingTime.Text = " / " + formatTime(HikeConstants.MAX_AUDIO_RECORDTIME_SUPPORTED);
             cancelIconButton.IsEnabled = true;
             sendIconButton.IsEnabled = false;
@@ -191,7 +192,7 @@ namespace windows_client.View
                 runningTime.Text = formatTime(0);
             }
             runningSeconds = 0;
-            message.Text = "TAP TO PLAY";
+            message.Text = AppResources.RecordAudio_Play;
             statusImage.Source = playIcon;
             sendIconButton.IsEnabled = true;
             myState = RecorderState.RECORDED;
@@ -225,7 +226,7 @@ namespace windows_client.View
                 Thread soundThread = new Thread(new ThreadStart(playSound));
                 soundThread.Start();
             }
-            message.Text = "PLAYING";
+            message.Text = AppResources.RecordAudio_Playing;
             statusImage.Source = playStopIcon;
             maxPlayingTime.Text = " / " + formatTime(recordedDuration);
             timeBar.Opacity = 1;
@@ -270,7 +271,7 @@ namespace windows_client.View
         {
             if (myState == RecorderState.RECORDING || myState == RecorderState.PLAYING)
                 stop();
-            message.Text = "TAP ICON TO RECORD";
+            message.Text = AppResources.RecordAudio_Record;
             statusImage.Source = recordIcon;
             myState = RecorderState.NOTHING_RECORDED;
         }

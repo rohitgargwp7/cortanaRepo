@@ -1690,6 +1690,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to re-record.
+        /// </summary>
+        public static string RecordAudio_AppBarCancelBtnTxt {
+            get {
+                return ResourceManager.GetString("RecordAudio_AppBarCancelBtnTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TAP TO PLAY.
+        /// </summary>
+        public static string RecordAudio_Play {
+            get {
+                return ResourceManager.GetString("RecordAudio_Play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PLAYING.
+        /// </summary>
+        public static string RecordAudio_Playing {
+            get {
+                return ResourceManager.GetString("RecordAudio_Playing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TAP ICON TO RECORD.
+        /// </summary>
+        public static string RecordAudio_Record {
+            get {
+                return ResourceManager.GetString("RecordAudio_Record", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RECORDING.
+        /// </summary>
+        public static string RecordAudio_Recording {
+            get {
+                return ResourceManager.GetString("RecordAudio_Recording", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to record audio.
+        /// </summary>
+        public static string RecordMedia_Title {
+            get {
+                return ResourceManager.GetString("RecordMedia_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove From Favourites.
         /// </summary>
         public static string RemFromFav_Txt {

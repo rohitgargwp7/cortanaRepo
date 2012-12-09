@@ -1056,4 +1056,22 @@
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
     <value>swipe left to continue</value>
   </data>
+  <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
+    <value>re-record</value>
+  </data>
+  <data name="RecordAudio_Play" xml:space="preserve">
+    <value>TAP TO PLAY</value>
+  </data>
+  <data name="RecordAudio_Playing" xml:space="preserve">
+    <value>PLAYING</value>
+  </data>
+  <data name="RecordAudio_Record" xml:space="preserve">
+    <value>TAP ICON TO RECORD</value>
+  </data>
+  <data name="RecordAudio_Recording" xml:space="preserve">
+    <value>RECORDING</value>
+  </data>
+  <data name="RecordMedia_Title" xml:space="preserve">
+    <value>record audio</value>
+  </data>
 </root>
