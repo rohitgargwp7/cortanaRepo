@@ -871,6 +871,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to download file. .
+        /// </summary>
+        public static string FileTransfer_ErrorMsgBoxText {
+            get {
+                return ResourceManager.GetString("FileTransfer_ErrorMsgBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Forward.
         /// </summary>
         public static string Forward_Txt {

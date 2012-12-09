@@ -997,6 +997,7 @@
   </data>
   <data name="EditProfile_emailErrorTxt_TxtBlk" xml:space="preserve">
     <value>Enter Correct Email</value>
+    <comment>xaml</comment>
   </data>
   <data name="EditProfile_EmailUpdateErr_MsgBxTxt" xml:space="preserve">
     <value>Unable to change email or gender. Try again.</value>
@@ -1186,5 +1187,9 @@
   <data name="Yesterday_Txt" xml:space="preserve">
     <value>yesterday</value>
     <comment>General Text</comment>
+  </data>
+  <data name="FileTransfer_ErrorMsgBoxText" xml:space="preserve">
+    <value>Unable to download file. </value>
+    <comment>cs. Text in message box followed by exception message</comment>
   </data>
 </root>
