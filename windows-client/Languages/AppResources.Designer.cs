@@ -1600,11 +1600,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete your Hike account permanently?.
+        /// </summary>
+        public static string Privacy_DeleteAccounConfirmMsgBxText {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccounConfirmMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Account.
         /// </summary>
         public static string Privacy_DeleteAccountHeader {
             get {
                 return ResourceManager.GetString("Privacy_DeleteAccountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting Account....
+        /// </summary>
+        public static string Privacy_DeleteAccountProgress {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccountProgress", resourceCulture);
             }
         }
         
@@ -1627,11 +1645,47 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unlinking Account....
+        /// </summary>
+        public static string Privacy_UnlinkAccountProgress {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkAccountProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logout your account from this device.
         /// </summary>
         public static string Privacy_UnlinkAccountText {
             get {
                 return ResourceManager.GetString("Privacy_UnlinkAccountText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to unlink your Hike account from this device?.
+        /// </summary>
+        public static string Privacy_UnlinkConfirmMsgBxText {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkConfirmMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account not unlinked.
+        /// </summary>
+        public static string Privacy_UnlinkErrMsgBxCaptn {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkErrMsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hike couldn&apos;t unlink your account. Please try again..
+        /// </summary>
+        public static string Privacy_UnlinkErrMsgBxText {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkErrMsgBxText", resourceCulture);
             }
         }
         
@@ -2154,6 +2208,15 @@ namespace windows_client.Languages {
         public static string Walkthrough_FreeSmsReward_Txt {
             get {
                 return ResourceManager.GetString("Walkthrough_FreeSmsReward_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to swipe left to continue.
+        /// </summary>
+        public static string Walkthrough_H2H_SwipeLeft {
+            get {
+                return ResourceManager.GetString("Walkthrough_H2H_SwipeLeft", resourceCulture);
             }
         }
         
