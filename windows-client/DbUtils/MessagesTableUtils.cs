@@ -248,14 +248,14 @@ namespace windows_client.DbUtils
                         if (waitingParticipants.Count == 1)
                             msgText.Append(waitingParticipants[0]);
                         else if (waitingParticipants.Count == 2)
-                            msgText.Append(waitingParticipants[0] + " and " + waitingParticipants[1]);
+                            msgText.Append(waitingParticipants[0] + AppResources.And_txt + waitingParticipants[1]);
                         else
                         {
                             for (int i = 0; i < waitingParticipants.Count; i++)
                             {
                                 msgText.Append(waitingParticipants[0]);
                                 if (i == waitingParticipants.Count - 2)
-                                    msgText.Append(" and ");
+                                    msgText.Append(AppResources.And_txt);
                                 else if (i < waitingParticipants.Count - 2)
                                     msgText.Append(",");
                             }
@@ -319,7 +319,7 @@ namespace windows_client.DbUtils
                 {
                     GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
                     //convMsg.Message = gp.FirstName + " changed the group name.";
-                    convMsg.Message = "Group Name changed by a group member.";
+                    convMsg.Message = AppResources.GroupNameChangedByGrpMember_Txt;
                 }
                 #endregion
                 #region NO_INFO or OTHER MSGS

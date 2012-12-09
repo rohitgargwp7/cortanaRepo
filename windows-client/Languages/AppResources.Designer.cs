@@ -70,6 +70,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added {0} to the group.
+        /// </summary>
+        public static string Added_X_To_GC {
+            get {
+                return ResourceManager.GetString("Added_X_To_GC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  and .
         /// </summary>
         public static string And_txt {
@@ -1033,6 +1042,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Chat with {0}.
+        /// </summary>
+        public static string GroupChatWith_Txt {
+            get {
+                return ResourceManager.GetString("GroupChatWith_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Group Name.
         /// </summary>
         public static string GroupInfo_ChangeGrpName_Txt {
@@ -1092,6 +1110,15 @@ namespace windows_client.Languages {
         public static string GroupInfo_Txt {
             get {
                 return ResourceManager.GetString("GroupInfo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Name changed by a group member..
+        /// </summary>
+        public static string GroupNameChangedByGrpMember_Txt {
+            get {
+                return ResourceManager.GetString("GroupNameChangedByGrpMember_Txt", resourceCulture);
             }
         }
         
@@ -1218,6 +1245,15 @@ namespace windows_client.Languages {
         public static string Mute_Txt {
             get {
                 return ResourceManager.GetString("Mute_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} and {1} others.
+        /// </summary>
+        public static string NamingConvention_Txt {
+            get {
+                return ResourceManager.GetString("NamingConvention_Txt", resourceCulture);
             }
         }
         
@@ -1659,6 +1695,15 @@ namespace windows_client.Languages {
         public static string SMS_Left_Txt {
             get {
                 return ResourceManager.GetString("SMS_Left_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMS works only to India at the moment..
+        /// </summary>
+        public static string SMS_Works_Only_In_India_Txt {
+            get {
+                return ResourceManager.GetString("SMS_Works_Only_In_India_Txt", resourceCulture);
             }
         }
         

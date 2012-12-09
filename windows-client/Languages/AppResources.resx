@@ -797,6 +797,10 @@
     <value>Waiting for {0} to join in</value>
     <comment>General Text</comment>
   </data>
+  <data name="Added_X_To_GC" xml:space="preserve">
+    <value>Added {0} to the group</value>
+    <comment>ConvMessage (cs)</comment>
+  </data>
   <data name="CannotChangeGrpImg_Txt" xml:space="preserve">
     <value>Cannot change Group Image. Try Later!!</value>
     <comment>General text</comment>
@@ -823,6 +827,10 @@
     <value>friends</value>
     <comment>General text</comment>
   </data>
+  <data name="GroupChatWith_Txt" xml:space="preserve">
+    <value>Group Chat with {0}</value>
+    <comment>ConvMessage (cs)</comment>
+  </data>
   <data name="GroupInfo_ChangeGrpName_Txt" xml:space="preserve">
     <value>Change Group Name</value>
     <comment>cs</comment>
@@ -846,6 +854,10 @@
   <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
     <value>Invite SMS participants to hike</value>
     <comment>xaml</comment>
+  </data>
+  <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
+    <value>Group Name changed by a group member.</value>
+    <comment>MessagesTableUtils</comment>
   </data>
   <data name="GROUP_NAME_TXT" xml:space="preserve">
     <value>GROUP NAME</value>
@@ -879,6 +891,10 @@
     <value>Messaging</value>
     <comment>General Text</comment>
   </data>
+  <data name="NamingConvention_Txt" xml:space="preserve">
+    <value>{0} and {1} others</value>
+    <comment>Used at many places like GroupManager</comment>
+  </data>
   <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
     <value>Update available</value>
   </data>
@@ -907,6 +923,10 @@
   <data name="ShareLocation_Txt" xml:space="preserve">
     <value>share location</value>
     <comment>cs</comment>
+  </data>
+  <data name="SMS_Works_Only_In_India_Txt" xml:space="preserve">
+    <value>SMS works only to India at the moment.</value>
+    <comment>ConvMessage (cs)</comment>
   </data>
   <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
     <value>Unable to retrieve request token.</value>

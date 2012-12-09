@@ -785,19 +785,19 @@ namespace windows_client.Model
                     {
                         string messageText = "";
                         if (this.FileAttachment.ContentType.Contains("image"))
-                            messageText = "image";
+                            messageText = AppResources.Image_Txt;
                         else if (this.FileAttachment.ContentType.Contains("audio"))
-                            messageText = "audio";
+                            messageText = AppResources.Audio_Txt;
                         else if (this.FileAttachment.ContentType.Contains("video"))
-                            messageText = "video";
+                            messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains("location"))
-                            messageText = "location";
+                            messageText = AppResources.Location_Txt;
                         this._message = messageText;
                     }
                     else
                     {
                         if (participantInfoState == ParticipantInfoState.INTERNATIONAL_USER)
-                            _message = "SMS works only to India at the moment.";
+                            _message = AppResources.SMS_Works_Only_In_India_Txt;
                         else
                             _message = (string)data[HikeConstants.HIKE_MESSAGE];
                     }
@@ -911,19 +911,18 @@ namespace windows_client.Model
 
         private string GetMsgText(List<GroupParticipant> groupList, bool isNewGroup)
         {
-            string msg = "Group Chat with {0}";
+            string msg = AppResources.GroupChatWith_Txt;
             if (!isNewGroup)
-                msg = "Added {0} to the group";
+                msg = AppResources.Added_X_To_GC;
             switch (groupList.Count)
             {
                 case 1:
                     return string.Format(msg, groupList[0].FirstName);
                 case 2:
-                    return string.Format(msg, groupList[0].FirstName + " and "
+                    return string.Format(msg, groupList[0].FirstName + AppResources.And_txt
                     + groupList[1].FirstName);
                 default:
-                    return string.Format(msg, groupList[0].FirstName + " and "
-                    + (groupList.Count - 1) + " others");
+                    return string.Format(msg, string.Format(AppResources.NamingConvention_Txt,groupList[0].FirstName ,groupList.Count - 1));
             }
         }
 

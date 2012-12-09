@@ -5,6 +5,7 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using windows_client.DbUtils;
+using windows_client.Languages;
 using windows_client.Model;
 
 namespace windows_client.Misc
@@ -338,11 +339,10 @@ namespace windows_client.Misc
                 case 1:
                     return activeMembers[0].FirstName;
                 case 2:
-                    return activeMembers[0].FirstName + " and "
+                    return activeMembers[0].FirstName + AppResources.And_txt
                     + activeMembers[1].FirstName;
                 default:
-                    return activeMembers[0].FirstName + " and "
-                    + (activeMembers.Count - 1) + " others";
+                    return string.Format(AppResources.NamingConvention_Txt,activeMembers[0].FirstName,activeMembers.Count - 1);
             }
         }
 
