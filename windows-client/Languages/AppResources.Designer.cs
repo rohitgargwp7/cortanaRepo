@@ -1537,6 +1537,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string Off {
+            get {
+                return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string On {
+            get {
+                return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  (owner).
         /// </summary>
         public static string Owner_Txt {
@@ -1839,6 +1857,33 @@ namespace windows_client.Languages {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Free SMS.
+        /// </summary>
+        public static string Settings_FreeSMSToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_FreeSMSToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use push notifications.
+        /// </summary>
+        public static string Settings_PushToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_PushToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vibrate.
+        /// </summary>
+        public static string Settings_VibrateToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
             }
         }
         

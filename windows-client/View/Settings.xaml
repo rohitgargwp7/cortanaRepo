@@ -25,7 +25,7 @@
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
             <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-            <TextBlock Text="settings" FontFamily="Segoe WP SemiLight" FontSize="68"  Margin="25,0,0,0"/>
+            <TextBlock Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68"  Margin="25,0,0,0"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -37,12 +37,12 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <toolkit:ToggleSwitch Grid.Row="0" x:Name="pushNotifications" Content="On" IsChecked="True"  
-                                  Header="Use push notifications" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
-            <toolkit:ToggleSwitch Grid.Row="1" x:Name="vibrate" Content="On" IsChecked="True"  
-                                  Header="Vibrate" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
-            <toolkit:ToggleSwitch Grid.Row="2" x:Name="showFreeSMSToggle" Content="On" IsChecked="True"  
-                                  Header="Show Free SMS" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
+            <toolkit:ToggleSwitch Grid.Row="0" x:Name="pushNotifications" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                  Header="{Binding Path= LocalizedResources.Settings_PushToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="pushNotifications_Checked" Unchecked="pushNotifications_Unchecked"/>
+            <toolkit:ToggleSwitch Grid.Row="1" x:Name="vibrate" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                  Header="{Binding Path= LocalizedResources.Settings_VibrateToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="vibrate_Checked" Unchecked="vibrate_Unchecked"/>
+            <toolkit:ToggleSwitch Grid.Row="2" x:Name="showFreeSMSToggle" Content="{Binding Path= LocalizedResources.On, Source={StaticResource LocalizedStrings}}" IsChecked="True"  
+                                  Header="{Binding Path= LocalizedResources.Settings_FreeSMSToggleSwitchHeader, Source={StaticResource LocalizedStrings}}" Checked="showFreeSMSToggle_Checked" Unchecked="showFreeSMSToggle_Unchecked"/>
         </Grid>
     </Grid>
 
