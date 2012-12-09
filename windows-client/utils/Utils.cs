@@ -99,39 +99,6 @@ namespace windows_client.utils
             }
         }
 
-        public static ConvMessage[] splitUserJoinedMessage(ConvMessage convMessage)
-        {
-            string[] names = null;
-            ConvMessage[] c = null;
-
-            if (convMessage.Message.IndexOf(',') == -1) // only one name in message ex "abc joined the group chat"
-            {
-                int spaceIndex = convMessage.Message.IndexOf(" ");
-
-                ConvMessage cm = new ConvMessage(convMessage.Message.Substring(0, spaceIndex) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
-                cm.GrpParticipantState = convMessage.GrpParticipantState;
-                c = new ConvMessage[1];
-                c[0] = cm;
-                return c;
-            }
-
-            else
-                names = convMessage.Message.Split(','); // ex : "a,b joined the group chat"
-
-            c = new ConvMessage[names.Length];
-            int i = 0;
-            for (; i < names.Length - 1; i++)
-            {
-                c[i] = new ConvMessage(names[i] + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
-                c[i].GrpParticipantState = convMessage.GrpParticipantState;
-            }
-            names[i] = names[i].Trim();
-            int idx = names[i].IndexOf(" ");
-            c[i] = new ConvMessage(names[i].Substring(0, idx) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
-            c[i].GrpParticipantState = convMessage.GrpParticipantState;
-            return c;
-        }
-
         public static bool isDarkTheme()
         {
             return ((Visibility)Application.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
