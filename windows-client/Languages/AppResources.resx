@@ -1030,120 +1030,158 @@
   </data>
   <data name="Help_AppVersionTitle" xml:space="preserve">
     <value>Version</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsText" xml:space="preserve">
     <value>Contact our support team for help</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_ContactUsTitle" xml:space="preserve">
     <value>Contact Us</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_EmailCarrier" xml:space="preserve">
     <value>Carrier:</value>
+    <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailDeviceModel" xml:space="preserve">
     <value>Device Model:</value>
+    <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailHikeVersion" xml:space="preserve">
     <value>Hike Version:</value>
+    <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailOSVersion" xml:space="preserve">
     <value>Win OS Version:</value>
+    <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailPhoneNo" xml:space="preserve">
     <value>Phone Number:</value>
+    <comment>email compose task (cs)</comment>
   </data>
   <data name="Help_EmailSubject" xml:space="preserve">
     <value>Feedback on WP7</value>
+    <comment>email compose task subject (cs)</comment>
   </data>
   <data name="Help_FAQsTitle" xml:space="preserve">
     <value>FAQs</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_FAQsTxt" xml:space="preserve">
     <value>Frequently asked questions</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_LegalText" xml:space="preserve">
     <value>Read Terms of service and privacy policy</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_LegalTitle" xml:space="preserve">
     <value>Legal</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughText" xml:space="preserve">
     <value>View the meet hike walkthrough</value>
+    <comment>xaml</comment>
   </data>
   <data name="Help_WalkthroughTitle" xml:space="preserve">
     <value>Walkthrough</value>
+    <comment>xaml</comment>
   </data>
-  <data name="Hike_RateAppText" xml:space="preserve">
+  <data name="Help_RateAppText" xml:space="preserve">
     <value>Rate and review hike on the marketplace</value>
+    <comment>xaml</comment>
   </data>
-  <data name="Hike_RateAppTitle" xml:space="preserve">
+  <data name="Help_RateAppTitle" xml:space="preserve">
     <value>Rate the App</value>
+    <comment>xaml</comment>
   </data>
   <data name="Off" xml:space="preserve">
     <value>Off</value>
+    <comment>used on settings page</comment>
   </data>
   <data name="On" xml:space="preserve">
     <value>On</value>
+    <comment>used on settings page</comment>
   </data>
   <data name="Privacy_DeleteAccounConfirmMsgBxText" xml:space="preserve">
     <value>Are you sure you want to delete your Hike account permanently?</value>
+    <comment>cs. Message box while deleting account</comment>
   </data>
   <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
     <value>Delete Account</value>
+    <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_DeleteAccountProgress" xml:space="preserve">
     <value>Deleting Account...</value>
+    <comment>cs. delete account progress</comment>
   </data>
   <data name="Privacy_DeleteAccountText" xml:space="preserve">
     <value>Permanently delete your hike account</value>
+    <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
     <value>Unlink Account</value>
+    <comment>xaml + cs (mesg box caption)</comment>
   </data>
   <data name="Privacy_UnlinkAccountProgress" xml:space="preserve">
     <value>Unlinking Account...</value>
+    <comment>cs. unlink account progress</comment>
   </data>
   <data name="Privacy_UnlinkAccountText" xml:space="preserve">
     <value>Logout your account from this device</value>
+    <comment>xaml</comment>
   </data>
   <data name="Privacy_UnlinkConfirmMsgBxText" xml:space="preserve">
     <value>Are you sure you want to unlink your Hike account from this device?</value>
+    <comment>cs. Message box while unlinking account</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxCaptn" xml:space="preserve">
     <value>Account not unlinked</value>
+    <comment>cs. Message box Caption error while unlinking</comment>
   </data>
   <data name="Privacy_UnlinkErrMsgBxText" xml:space="preserve">
     <value>hike couldn't unlink your account. Please try again.</value>
+    <comment>cs. Message box error while unlinking</comment>
   </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
     <value>Show Free SMS</value>
+    <comment>xaml. </comment>
   </data>
   <data name="Settings_PushToggleSwitchHeader" xml:space="preserve">
     <value>Use push notifications</value>
+    <comment>xaml. push toggle</comment>
   </data>
   <data name="Settings_VibrateToggleSwitchHeader" xml:space="preserve">
     <value>Vibrate</value>
+    <comment>xaml</comment>
   </data>
   <data name="Walkthrough_H2H_SwipeLeft" xml:space="preserve">
     <value>swipe left to continue</value>
   </data>
   <data name="RecordAudio_AppBarCancelBtnTxt" xml:space="preserve">
     <value>re-record</value>
+    <comment>app bar button</comment>
   </data>
   <data name="RecordAudio_Play" xml:space="preserve">
     <value>TAP TO PLAY</value>
+    <comment>cs</comment>
   </data>
   <data name="RecordAudio_Playing" xml:space="preserve">
     <value>PLAYING</value>
+    <comment>cs</comment>
   </data>
   <data name="RecordAudio_Record" xml:space="preserve">
     <value>TAP ICON TO RECORD</value>
+    <comment>cs + xaml</comment>
   </data>
   <data name="RecordAudio_Recording" xml:space="preserve">
     <value>RECORDING</value>
+    <comment>cs</comment>
   </data>
   <data name="RecordMedia_Title" xml:space="preserve">
     <value>record audio</value>
+    <comment>xaml</comment>
   </data>
   <data name="Yesterday_Txt" xml:space="preserve">
     <value>yesterday</value>

@@ -1384,6 +1384,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rate and review hike on the marketplace.
+        /// </summary>
+        public static string Help_RateAppText {
+            get {
+                return ResourceManager.GetString("Help_RateAppText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rate the App.
+        /// </summary>
+        public static string Help_RateAppTitle {
+            get {
+                return ResourceManager.GetString("Help_RateAppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View the meet hike walkthrough.
         /// </summary>
         public static string Help_WalkthroughText {
@@ -1407,24 +1425,6 @@ namespace windows_client.Languages {
         public static string Hike_Friends_Text {
             get {
                 return ResourceManager.GetString("Hike_Friends_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rate and review hike on the marketplace.
-        /// </summary>
-        public static string Hike_RateAppText {
-            get {
-                return ResourceManager.GetString("Hike_RateAppText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rate the App.
-        /// </summary>
-        public static string Hike_RateAppTitle {
-            get {
-                return ResourceManager.GetString("Hike_RateAppTitle", resourceCulture);
             }
         }
         

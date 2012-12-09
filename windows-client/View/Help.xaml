@@ -56,8 +56,8 @@
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_WalkthroughText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
                 <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,30,0,0" Tap="rateAndReview_Tap">
-                    <TextBlock Text="{Binding Path= LocalizedResources.Hike_RateAppTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Hike_RateAppText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="1" Margin="20,30,0,0">
