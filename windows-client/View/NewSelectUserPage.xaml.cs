@@ -18,6 +18,7 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using windows_client.Misc;
+using windows_client.Languages;
 
 
 namespace windows_client.View
@@ -26,7 +27,7 @@ namespace windows_client.View
     {
         bool canGoBack = true;
         private bool isClicked = false;
-        private string TAP_MSG = "Tap here to message this person";
+        private string TAP_MSG = AppResources.SelectUser_TapMsg_Txt;
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
         private bool isGroupChat = false;
@@ -241,7 +242,7 @@ namespace windows_client.View
 
             refreshIconButton = new ApplicationBarIconButton();
             refreshIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
-            refreshIconButton.Text = "Refresh Contacts";
+            refreshIconButton.Text = AppResources.SelectUser_RefreshContacts_Txt;
             refreshIconButton.Click += new EventHandler(refreshContacts_Click);
             refreshIconButton.IsEnabled = true;
             appBar.Buttons.Add(refreshIconButton);
@@ -254,7 +255,7 @@ namespace windows_client.View
                     return;
                 doneIconButton = new ApplicationBarIconButton();
                 doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-                doneIconButton.Text = "Done";
+                doneIconButton.Text = AppResources.AppBar_Done_Btn;
                 doneIconButton.Click += new EventHandler(startGroup_Click);
                 doneIconButton.IsEnabled = false;
                 appBar.Buttons.Add(doneIconButton);
@@ -351,7 +352,7 @@ namespace windows_client.View
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null)
                 return;
-            if (contact.Msisdn == "Enter Valid Number")
+            if (contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt)
                 return;
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
@@ -417,7 +418,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        gl[26].Items[0].Msisdn = "Enter Valid Number";
+                        gl[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                     }
                 }
                 contactsListBox.ItemsSource = gl;
@@ -511,7 +512,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    list[26].Items[0].Msisdn = "Enter Valid Number";
+                    list[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                 }
 
             }
@@ -595,7 +596,7 @@ namespace windows_client.View
         {
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
 
-            if (contact == null || contact.Msisdn == "Enter Valid Number")
+            if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt)
                 return;
 
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
@@ -604,20 +605,20 @@ namespace windows_client.View
                 contact = GetContactIfExists(contact);
             }
 
-            if (!contact.OnHike && smsUserCount == MAX_SMS_USRES_ALLOWED)
-            {
-                MessageBoxResult result = MessageBox.Show("5 SMS users already selected", "Cannot add user !!", MessageBoxButton.OK);
-                return;
-            }
+            //if (!contact.OnHike && smsUserCount == MAX_SMS_USRES_ALLOWED)
+            //{
+            //    MessageBoxResult result = MessageBox.Show("5 SMS users already selected", AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
+            //    return;
+            //}
             if (existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP)
             {
-                MessageBoxResult result = MessageBox.Show("10 users already selected", "Cannot add user !!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_MaxUsersSelected_Txt, MAX_USERS_ALLOWED_IN_GROUP), AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
                 return;
             }
 
             if (isNumberAlreadySelected(contact.Msisdn, contactsForgroup))
             {
-                MessageBoxResult result = MessageBox.Show(contact.Msisdn + " is already added to group.", "User already added !!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_UserAlreadyAdded_Txt,contact.Msisdn), AppResources.SelectUser_AlreadyAdded_Txt, MessageBoxButton.OK);
                 return;
             }
 
@@ -667,11 +668,11 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 return;
             }
             if (progress == null)
-                progress = new MyProgressIndicator("This may take a minute or two...");
+                progress = new MyProgressIndicator(AppResources.SelectUser_RefreshWaitMsg_Txt);
 
             disableAppBar();
             progress.Show();
@@ -916,7 +917,7 @@ namespace windows_client.View
                 nameLength += contactsForgroup[k].Name.Length + 2; // length of name + "; " i.e 2
                 if (cursorPosition < nameLength)
                 {
-                    MessageBoxResult result = MessageBox.Show(contactsForgroup[k].Name + "[" + contactsForgroup[k].Msisdn + "]" + " will be removed from group.", "Remove Contact ?", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_ContactRemoved_Txt,contactsForgroup[k].Name,contactsForgroup[k].Msisdn), AppResources.SelectUser_RemoveContact_Txt, MessageBoxButton.OKCancel);
                     if (result == MessageBoxResult.Cancel)
                     {
                         enterNameTxt.Select(enterNameTxt.Text.Length, 0);

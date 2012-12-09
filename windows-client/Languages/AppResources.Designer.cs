@@ -61,6 +61,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to done.
+        /// </summary>
+        public static string AppBar_Done_Btn {
+            get {
+                return ResourceManager.GetString("AppBar_Done_Btn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string AppBar_Next_Btn {
@@ -390,15 +399,6 @@ namespace windows_client.Languages {
         public static string EditProfile_Title_TxtBlk {
             get {
                 return ResourceManager.GetString("EditProfile_Title_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to done.
-        /// </summary>
-        public static string EnterName_Done_AppBarBtnTxt {
-            get {
-                return ResourceManager.GetString("EnterName_Done_AppBarBtnTxt", resourceCulture);
             }
         }
         
@@ -912,6 +912,123 @@ namespace windows_client.Languages {
         public static string Privacy {
             get {
                 return ResourceManager.GetString("Privacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User already added !!.
+        /// </summary>
+        public static string SelectUser_AlreadyAdded_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_AlreadyAdded_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add user !!.
+        /// </summary>
+        public static string SelectUser_CantAddUser_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_CantAddUser_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}[{1}] will be removed from group..
+        /// </summary>
+        public static string SelectUser_ContactRemoved_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_ContactRemoved_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter Valid Number.
+        /// </summary>
+        public static string SelectUser_EnterValidNo_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_EnterValidNo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CHAT.
+        /// </summary>
+        public static string SelectUser_Header_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} users already selected.
+        /// </summary>
+        public static string SelectUser_MaxUsersSelected_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_MaxUsersSelected_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh Contacts.
+        /// </summary>
+        public static string SelectUser_RefreshContacts_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_RefreshContacts_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This may take a minute or two....
+        /// </summary>
+        public static string SelectUser_RefreshWaitMsg_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_RefreshWaitMsg_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove Contact?.
+        /// </summary>
+        public static string SelectUser_RemoveContact_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_RemoveContact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to message this person.
+        /// </summary>
+        public static string SelectUser_TapMsg_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_TapMsg_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to with.
+        /// </summary>
+        public static string SelectUser_Title_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_Title_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Search or Enter Phone Number....
+        /// </summary>
+        public static string SelectUser_TxtBoxHint_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_TxtBoxHint_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is already added to group..
+        /// </summary>
+        public static string SelectUser_UserAlreadyAdded_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_UserAlreadyAdded_Txt", resourceCulture);
             }
         }
         

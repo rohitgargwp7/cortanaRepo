@@ -229,7 +229,7 @@
     <value>Delete</value>
     <comment>Chats ContextMenu (xaml)</comment>
   </data>
-  <data name="EnterName_Done_AppBarBtnTxt" xml:space="preserve">
+  <data name="AppBar_Done_Btn" xml:space="preserve">
     <value>done</value>
     <comment>CS</comment>
   </data>
@@ -551,5 +551,57 @@
   <data name="FreeSMS_unlimitedTxtBlck_TxtBlk" xml:space="preserve">
     <value>Unlimited</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
+  </data>
+  <data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
+    <value>User already added !!</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_CantAddUser_Txt" xml:space="preserve">
+    <value>Cannot add user !!</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_ContactRemoved_Txt" xml:space="preserve">
+    <value>{0}[{1}] will be removed from group.</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_EnterValidNo_Txt" xml:space="preserve">
+    <value>Enter Valid Number</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_Header_Txt" xml:space="preserve">
+    <value>CHAT</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="SelectUser_MaxUsersSelected_Txt" xml:space="preserve">
+    <value>{0} users already selected</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
+    <value>Refresh Contacts</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_RefreshWaitMsg_Txt" xml:space="preserve">
+    <value>This may take a minute or two...</value>
+    <comment>This text is shown when user clicks refresh (cs)</comment>
+  </data>
+  <data name="SelectUser_RemoveContact_Txt" xml:space="preserve">
+    <value>Remove Contact?</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
+    <value>Tap here to message this person</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_Title_Txt" xml:space="preserve">
+    <value>with</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
+    <value> Search or Enter Phone Number...</value>
+    <comment>textbox hint (xaml)</comment>
+  </data>
+  <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
+    <value>{0} is already added to group.</value>
+    <comment>cs</comment>
   </data>
 </root>
