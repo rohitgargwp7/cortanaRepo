@@ -1222,11 +1222,164 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string Help_AppVersionTitle {
+            get {
+                return ResourceManager.GetString("Help_AppVersionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact our support team for help.
+        /// </summary>
+        public static string Help_ContactUsText {
+            get {
+                return ResourceManager.GetString("Help_ContactUsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Us.
+        /// </summary>
+        public static string Help_ContactUsTitle {
+            get {
+                return ResourceManager.GetString("Help_ContactUsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Carrier:.
+        /// </summary>
+        public static string Help_EmailCarrier {
+            get {
+                return ResourceManager.GetString("Help_EmailCarrier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Model:.
+        /// </summary>
+        public static string Help_EmailDeviceModel {
+            get {
+                return ResourceManager.GetString("Help_EmailDeviceModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hike Version:.
+        /// </summary>
+        public static string Help_EmailHikeVersion {
+            get {
+                return ResourceManager.GetString("Help_EmailHikeVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Win OS Version:.
+        /// </summary>
+        public static string Help_EmailOSVersion {
+            get {
+                return ResourceManager.GetString("Help_EmailOSVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone Number:.
+        /// </summary>
+        public static string Help_EmailPhoneNo {
+            get {
+                return ResourceManager.GetString("Help_EmailPhoneNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feedback on WP7.
+        /// </summary>
+        public static string Help_EmailSubject {
+            get {
+                return ResourceManager.GetString("Help_EmailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAQs.
+        /// </summary>
+        public static string Help_FAQsTitle {
+            get {
+                return ResourceManager.GetString("Help_FAQsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frequently asked questions.
+        /// </summary>
+        public static string Help_FAQsTxt {
+            get {
+                return ResourceManager.GetString("Help_FAQsTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read Terms of service and privacy policy.
+        /// </summary>
+        public static string Help_LegalText {
+            get {
+                return ResourceManager.GetString("Help_LegalText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Legal.
+        /// </summary>
+        public static string Help_LegalTitle {
+            get {
+                return ResourceManager.GetString("Help_LegalTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View the meet hike walkthrough.
+        /// </summary>
+        public static string Help_WalkthroughText {
+            get {
+                return ResourceManager.GetString("Help_WalkthroughText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Walkthrough.
+        /// </summary>
+        public static string Help_WalkthroughTitle {
+            get {
+                return ResourceManager.GetString("Help_WalkthroughTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hike friends.
         /// </summary>
         public static string Hike_Friends_Text {
             get {
                 return ResourceManager.GetString("Hike_Friends_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rate and review hike on the marketplace.
+        /// </summary>
+        public static string Hike_RateAppText {
+            get {
+                return ResourceManager.GetString("Hike_RateAppText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rate the App.
+        /// </summary>
+        public static string Hike_RateAppTitle {
+            get {
+                return ResourceManager.GetString("Hike_RateAppTitle", resourceCulture);
             }
         }
         

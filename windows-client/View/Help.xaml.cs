@@ -16,6 +16,8 @@ using Microsoft.Phone.Shell;
 using windows_client.Model;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils;
+using windows_client.Languages;
+using System.Text;
 
 namespace windows_client.View
 {
@@ -69,9 +71,15 @@ namespace windows_client.View
             //string country_code = "";
             //App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
 
-            contactUsMail.Body = "\n\n\n\n\nHike Version: " + Utils.getAppVersion() +
-                "\nWin OS Version: " + Utils.getOSVersion() + "\nPhone Number: " + msisdn + "\nDevice Model: " + Utils.getDeviceModel() +
-                "\nCarrier: " + DeviceNetworkInformation.CellularMobileOperator;
+            StringBuilder emailBodyText = new StringBuilder();
+
+            emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(
+                "\n").Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").Append(AppResources.Help_EmailPhoneNo).
+                Append(msisdn).Append("\n").Append(
+                AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(
+                "\n").Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator);
+
+            contactUsMail.Body = emailBodyText.ToString();
             try
             {
                 contactUsMail.Show();
