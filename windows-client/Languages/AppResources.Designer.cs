@@ -70,6 +70,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added {0} to the group.
+        /// </summary>
+        public static string Added_X_To_GC {
+            get {
+                return ResourceManager.GetString("Added_X_To_GC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  and .
         /// </summary>
         public static string And_txt {
@@ -201,6 +210,15 @@ namespace windows_client.Languages {
         public static string CONTACT_SAVED_SUCCESSFULLY {
             get {
                 return ResourceManager.GetString("CONTACT_SAVED_SUCCESSFULLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Scanning failed. Try Later!!.
+        /// </summary>
+        public static string Contact_Scanning_Failed_Txt {
+            get {
+                return ResourceManager.GetString("Contact_Scanning_Failed_Txt", resourceCulture);
             }
         }
         
@@ -624,6 +642,15 @@ namespace windows_client.Languages {
         public static string Email_Txt {
             get {
                 return ResourceManager.GetString("Email_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed. Close App and try again !!.
+        /// </summary>
+        public static string EnterName_Failed_Txt {
+            get {
+                return ResourceManager.GetString("EnterName_Failed_Txt", resourceCulture);
             }
         }
         
@@ -1132,6 +1159,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Chat with {0}.
+        /// </summary>
+        public static string GroupChatWith_Txt {
+            get {
+                return ResourceManager.GetString("GroupChatWith_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Group Name.
         /// </summary>
         public static string GroupInfo_ChangeGrpName_Txt {
@@ -1191,6 +1227,15 @@ namespace windows_client.Languages {
         public static string GroupInfo_Txt {
             get {
                 return ResourceManager.GetString("GroupInfo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Name changed by a group member..
+        /// </summary>
+        public static string GroupNameChangedByGrpMember_Txt {
+            get {
+                return ResourceManager.GetString("GroupNameChangedByGrpMember_Txt", resourceCulture);
             }
         }
         
@@ -1474,6 +1519,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} and {1} others.
+        /// </summary>
+        public static string NamingConvention_Txt {
+            get {
+                return ResourceManager.GetString("NamingConvention_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Network Error. Try Again!!.
         /// </summary>
         public static string NetworkError_TryAgain {
@@ -1501,7 +1555,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No network connectivity.
+        ///   Looks up a localized string similar to No network connectivity..
         /// </summary>
         public static string No_Network_Txt {
             get {
@@ -1582,7 +1636,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please try again.
+        ///   Looks up a localized string similar to Please try again..
         /// </summary>
         public static string Please_Try_Again_Txt {
             get {
@@ -2104,6 +2158,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SMS works only to India at the moment..
+        /// </summary>
+        public static string SMS_Works_Only_In_India_Txt {
+            get {
+                return ResourceManager.GetString("SMS_Works_Only_In_India_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
         /// </summary>
         public static string Social_Invite_Txt {
@@ -2136,6 +2199,105 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to a minute ago.
+        /// </summary>
+        public static string TimeUtils_A_Min_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_A_Min_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to an hour ago.
+        /// </summary>
+        public static string TimeUtils_An_hour_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_An_hour_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to one month ago.
+        /// </summary>
+        public static string TimeUtils_One_Month_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_One_Month_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to one second ago.
+        /// </summary>
+        public static string TimeUtils_One_Sec_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_One_Sec_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to one year ago.
+        /// </summary>
+        public static string TimeUtils_One_Year_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_One_Year_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days ago.
+        /// </summary>
+        public static string TimeUtils_X_Days_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Days_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hours ago.
+        /// </summary>
+        public static string TimeUtils_X_hours_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_hours_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} minutes ago.
+        /// </summary>
+        public static string TimeUtils_X_Mins_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Mins_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} months ago.
+        /// </summary>
+        public static string TimeUtils_X_Month_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Month_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} seconds ago.
+        /// </summary>
+        public static string TimeUtils_X_Secs_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Secs_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} years ago.
+        /// </summary>
+        public static string TimeUtils_X_Years_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Years_Ago_Txt", resourceCulture);
             }
         }
         
@@ -2343,6 +2505,15 @@ namespace windows_client.Languages {
         public static string WelcomePage_TnP_HlBtn {
             get {
                 return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to yesterday.
+        /// </summary>
+        public static string Yesterday_Txt {
+            get {
+                return ResourceManager.GetString("Yesterday_Txt", resourceCulture);
             }
         }
     }

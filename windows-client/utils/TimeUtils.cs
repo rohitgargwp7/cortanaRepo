@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using windows_client.Languages;
 
 namespace windows_client.utils
 {
@@ -109,39 +110,39 @@ namespace windows_client.utils
 
             if (delta < 60)
             {
-                return ts.Seconds == 1 ? "one second ago" : ts.Seconds + " seconds ago";
+                return ts.Seconds == 1 ? AppResources.TimeUtils_One_Sec_Ago_Txt : string.Format(AppResources.TimeUtils_X_Secs_Ago_Txt,ts.Seconds);
             }
             if (delta < 120)
             {
-                return "a minute ago";
+                return AppResources.TimeUtils_A_Min_Ago_Txt;
             }
             if (delta < 2700) // 45 * 60
             {
-                return ts.Minutes + " minutes ago";
+                return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt,ts.Minutes);
             }
             if (delta < 5400) // 90 * 60
             {
-                return "an hour ago";
+                return AppResources.TimeUtils_An_hour_Ago_Txt;
             }
             if (delta < 86400) // 24 * 60 * 60
             {
-                return ts.Hours + " hours ago";
+                return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt,ts.Hours);
             }
             if (delta < 172800) // 48 * 60 * 60
             {
-                return "yesterday";
+                return AppResources.Yesterday_Txt;
             }
             if (delta < 2592000) // 30 * 24 * 60 * 60
             {
-                return ts.Days + " days ago";
+                return string.Format(AppResources.TimeUtils_X_Days_Ago_Txt, ts.Days);
             }
             if (delta < 31104000) // 12 * 30 * 24 * 60 * 60
             {
                 int months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
-                return months <= 1 ? "one month ago" : months + " months ago";
+                return months <= 1 ? AppResources.TimeUtils_One_Month_Ago_Txt : string.Format(AppResources.TimeUtils_X_Month_Ago_Txt, months);
             }
             int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
-            return years <= 1 ? "one year ago" : years + " years ago";
+            return years <= 1 ? AppResources.TimeUtils_One_Year_Ago_Txt :string.Format(AppResources.TimeUtils_X_Years_Ago_Txt,years);
         }
 
         public static long getCurrentTimeStamp()

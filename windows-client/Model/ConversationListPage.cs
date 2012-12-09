@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.Text;
+using windows_client.Languages;
 
 namespace windows_client.Model
 {
@@ -372,9 +373,9 @@ namespace windows_client.Model
             get
             {
                 if (IsFav) // if already favourite
-                    return "Remove from Favourites";
+                    return AppResources.RemFromFav_Txt;
                 else
-                    return "Add to Favourites";
+                    return AppResources.Add_To_Fav_Txt;
             }
         }
 
