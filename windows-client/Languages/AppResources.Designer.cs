@@ -457,6 +457,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to change email or gender. Try again..
+        /// </summary>
+        public static string EditProfile_EmailUpdateErr_MsgBxTxt {
+            get {
+                return ResourceManager.GetString("EditProfile_EmailUpdateErr_MsgBxTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
         public static string EditProfile_FullName_TxtBlk {
@@ -511,6 +520,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Something went wrong.
+        /// </summary>
+        public static string EditProfile_NameUpdateErr_MsgBxCaptn {
+            get {
+                return ResourceManager.GetString("EditProfile_NameUpdateErr_MsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to change name. Try again..
+        /// </summary>
+        public static string EditProfile_NameUpdateErr_MsgBxTxt {
+            get {
+                return ResourceManager.GetString("EditProfile_NameUpdateErr_MsgBxTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No network connectivity.
+        /// </summary>
+        public static string EditProfile_NtwrkErrMsgBx_Captn {
+            get {
+                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Captn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please try again.
+        /// </summary>
+        public static string EditProfile_NtwrkErrMsgBx_Text {
+            get {
+                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Phone.
         /// </summary>
         public static string EditProfile_Phone_TxtBlk {
@@ -525,6 +570,42 @@ namespace windows_client.Languages {
         public static string EditProfile_Title_TxtBlk {
             get {
                 return ResourceManager.GetString("EditProfile_Title_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile Not Updated!.
+        /// </summary>
+        public static string EditProfile_UpdatErrMsgBx_Captn {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatErrMsgBx_Captn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing has changed!!.
+        /// </summary>
+        public static string EditProfile_UpdatErrMsgBx_Text {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatErrMsgBx_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile Updated.
+        /// </summary>
+        public static string EditProfile_UpdatMsgBx_Captn {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatMsgBx_Captn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your profile has been updated..
+        /// </summary>
+        public static string EditProfile_UpdatMsgBx_Txt {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatMsgBx_Txt", resourceCulture);
             }
         }
         

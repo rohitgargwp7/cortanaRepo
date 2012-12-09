@@ -927,7 +927,34 @@
   <data name="EditProfile_emailErrorTxt_TxtBlk" xml:space="preserve">
     <value>Enter Correct Email</value>
   </data>
+  <data name="EditProfile_EmailUpdateErr_MsgBxTxt" xml:space="preserve">
+    <value>Unable to change email or gender. Try again.</value>
+  </data>
   <data name="EditProfile_nameErrorTxt_TxtBlk" xml:space="preserve">
     <value>Please enter your name</value>
+  </data>
+  <data name="EditProfile_NameUpdateErr_MsgBxCaptn" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="EditProfile_NameUpdateErr_MsgBxTxt" xml:space="preserve">
+    <value>Unable to change name. Try again.</value>
+  </data>
+  <data name="EditProfile_NtwrkErrMsgBx_Captn" xml:space="preserve">
+    <value>No network connectivity</value>
+  </data>
+  <data name="EditProfile_NtwrkErrMsgBx_Text" xml:space="preserve">
+    <value>Please try again</value>
+  </data>
+  <data name="EditProfile_UpdatErrMsgBx_Captn" xml:space="preserve">
+    <value>Profile Not Updated!</value>
+  </data>
+  <data name="EditProfile_UpdatErrMsgBx_Text" xml:space="preserve">
+    <value>Nothing has changed!!</value>
+  </data>
+  <data name="EditProfile_UpdatMsgBx_Captn" xml:space="preserve">
+    <value>Profile Updated</value>
+  </data>
+  <data name="EditProfile_UpdatMsgBx_Txt" xml:space="preserve">
+    <value>Your profile has been updated.</value>
   </data>
 </root>
