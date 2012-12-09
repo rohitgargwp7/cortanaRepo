@@ -466,6 +466,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter Correct Email.
+        /// </summary>
+        public static string EditProfile_emailErrorTxt_TxtBlk {
+            get {
+                return ResourceManager.GetString("EditProfile_emailErrorTxt_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to change email or gender. Try again..
+        /// </summary>
+        public static string EditProfile_EmailUpdateErr_MsgBxTxt {
+            get {
+                return ResourceManager.GetString("EditProfile_EmailUpdateErr_MsgBxTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
         public static string EditProfile_FullName_TxtBlk {
@@ -511,6 +529,51 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter your name.
+        /// </summary>
+        public static string EditProfile_nameErrorTxt_TxtBlk {
+            get {
+                return ResourceManager.GetString("EditProfile_nameErrorTxt_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong.
+        /// </summary>
+        public static string EditProfile_NameUpdateErr_MsgBxCaptn {
+            get {
+                return ResourceManager.GetString("EditProfile_NameUpdateErr_MsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to change name. Try again..
+        /// </summary>
+        public static string EditProfile_NameUpdateErr_MsgBxTxt {
+            get {
+                return ResourceManager.GetString("EditProfile_NameUpdateErr_MsgBxTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No network connectivity.
+        /// </summary>
+        public static string EditProfile_NtwrkErrMsgBx_Captn {
+            get {
+                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Captn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please try again.
+        /// </summary>
+        public static string EditProfile_NtwrkErrMsgBx_Text {
+            get {
+                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Phone.
         /// </summary>
         public static string EditProfile_Phone_TxtBlk {
@@ -525,6 +588,42 @@ namespace windows_client.Languages {
         public static string EditProfile_Title_TxtBlk {
             get {
                 return ResourceManager.GetString("EditProfile_Title_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile Not Updated!.
+        /// </summary>
+        public static string EditProfile_UpdatErrMsgBx_Captn {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatErrMsgBx_Captn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing has changed!!.
+        /// </summary>
+        public static string EditProfile_UpdatErrMsgBx_Text {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatErrMsgBx_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile Updated.
+        /// </summary>
+        public static string EditProfile_UpdatMsgBx_Captn {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatMsgBx_Captn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your profile has been updated..
+        /// </summary>
+        public static string EditProfile_UpdatMsgBx_Txt {
+            get {
+                return ResourceManager.GetString("EditProfile_UpdatMsgBx_Txt", resourceCulture);
             }
         }
         
@@ -768,6 +867,15 @@ namespace windows_client.Languages {
         public static string FILES_MESSAGE_PREFIX {
             get {
                 return ResourceManager.GetString("FILES_MESSAGE_PREFIX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to download file. .
+        /// </summary>
+        public static string FileTransfer_ErrorMsgBoxText {
+            get {
+                return ResourceManager.GetString("FileTransfer_ErrorMsgBoxText", resourceCulture);
             }
         }
         
@@ -1168,6 +1276,159 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string Help_AppVersionTitle {
+            get {
+                return ResourceManager.GetString("Help_AppVersionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact our support team for help.
+        /// </summary>
+        public static string Help_ContactUsText {
+            get {
+                return ResourceManager.GetString("Help_ContactUsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Us.
+        /// </summary>
+        public static string Help_ContactUsTitle {
+            get {
+                return ResourceManager.GetString("Help_ContactUsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Carrier:.
+        /// </summary>
+        public static string Help_EmailCarrier {
+            get {
+                return ResourceManager.GetString("Help_EmailCarrier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Model:.
+        /// </summary>
+        public static string Help_EmailDeviceModel {
+            get {
+                return ResourceManager.GetString("Help_EmailDeviceModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hike Version:.
+        /// </summary>
+        public static string Help_EmailHikeVersion {
+            get {
+                return ResourceManager.GetString("Help_EmailHikeVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Win OS Version:.
+        /// </summary>
+        public static string Help_EmailOSVersion {
+            get {
+                return ResourceManager.GetString("Help_EmailOSVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone Number:.
+        /// </summary>
+        public static string Help_EmailPhoneNo {
+            get {
+                return ResourceManager.GetString("Help_EmailPhoneNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feedback on WP7.
+        /// </summary>
+        public static string Help_EmailSubject {
+            get {
+                return ResourceManager.GetString("Help_EmailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAQs.
+        /// </summary>
+        public static string Help_FAQsTitle {
+            get {
+                return ResourceManager.GetString("Help_FAQsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frequently asked questions.
+        /// </summary>
+        public static string Help_FAQsTxt {
+            get {
+                return ResourceManager.GetString("Help_FAQsTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read Terms of service and privacy policy.
+        /// </summary>
+        public static string Help_LegalText {
+            get {
+                return ResourceManager.GetString("Help_LegalText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Legal.
+        /// </summary>
+        public static string Help_LegalTitle {
+            get {
+                return ResourceManager.GetString("Help_LegalTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rate and review hike on the marketplace.
+        /// </summary>
+        public static string Help_RateAppText {
+            get {
+                return ResourceManager.GetString("Help_RateAppText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rate the App.
+        /// </summary>
+        public static string Help_RateAppTitle {
+            get {
+                return ResourceManager.GetString("Help_RateAppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View the meet hike walkthrough.
+        /// </summary>
+        public static string Help_WalkthroughText {
+            get {
+                return ResourceManager.GetString("Help_WalkthroughText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Walkthrough.
+        /// </summary>
+        public static string Help_WalkthroughTitle {
+            get {
+                return ResourceManager.GetString("Help_WalkthroughTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hike friends.
         /// </summary>
         public static string Hike_Friends_Text {
@@ -1339,6 +1600,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string Off {
+            get {
+                return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string On {
+            get {
+                return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  (owner).
         /// </summary>
         public static string Owner_Txt {
@@ -1380,6 +1659,150 @@ namespace windows_client.Languages {
         public static string Privacy {
             get {
                 return ResourceManager.GetString("Privacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete your Hike account permanently?.
+        /// </summary>
+        public static string Privacy_DeleteAccounConfirmMsgBxText {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccounConfirmMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Account.
+        /// </summary>
+        public static string Privacy_DeleteAccountHeader {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting Account....
+        /// </summary>
+        public static string Privacy_DeleteAccountProgress {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccountProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permanently delete your hike account.
+        /// </summary>
+        public static string Privacy_DeleteAccountText {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccountText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlink Account.
+        /// </summary>
+        public static string Privacy_UnlinkAccountHeader {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkAccountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlinking Account....
+        /// </summary>
+        public static string Privacy_UnlinkAccountProgress {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkAccountProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout your account from this device.
+        /// </summary>
+        public static string Privacy_UnlinkAccountText {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkAccountText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to unlink your Hike account from this device?.
+        /// </summary>
+        public static string Privacy_UnlinkConfirmMsgBxText {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkConfirmMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account not unlinked.
+        /// </summary>
+        public static string Privacy_UnlinkErrMsgBxCaptn {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkErrMsgBxCaptn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hike couldn&apos;t unlink your account. Please try again..
+        /// </summary>
+        public static string Privacy_UnlinkErrMsgBxText {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkErrMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to re-record.
+        /// </summary>
+        public static string RecordAudio_AppBarCancelBtnTxt {
+            get {
+                return ResourceManager.GetString("RecordAudio_AppBarCancelBtnTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TAP TO PLAY.
+        /// </summary>
+        public static string RecordAudio_Play {
+            get {
+                return ResourceManager.GetString("RecordAudio_Play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PLAYING.
+        /// </summary>
+        public static string RecordAudio_Playing {
+            get {
+                return ResourceManager.GetString("RecordAudio_Playing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TAP ICON TO RECORD.
+        /// </summary>
+        public static string RecordAudio_Record {
+            get {
+                return ResourceManager.GetString("RecordAudio_Record", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RECORDING.
+        /// </summary>
+        public static string RecordAudio_Recording {
+            get {
+                return ResourceManager.GetString("RecordAudio_Recording", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to record audio.
+        /// </summary>
+        public static string RecordMedia_Title {
+            get {
+                return ResourceManager.GetString("RecordMedia_Title", resourceCulture);
             }
         }
         
@@ -1641,6 +2064,33 @@ namespace windows_client.Languages {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Free SMS.
+        /// </summary>
+        public static string Settings_FreeSMSToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_FreeSMSToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use push notifications.
+        /// </summary>
+        public static string Settings_PushToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_PushToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vibrate.
+        /// </summary>
+        public static string Settings_VibrateToggleSwitchHeader {
+            get {
+                return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
             }
         }
         
@@ -1983,6 +2433,15 @@ namespace windows_client.Languages {
         public static string Walkthrough_FreeSmsReward_Txt {
             get {
                 return ResourceManager.GetString("Walkthrough_FreeSmsReward_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to swipe left to continue.
+        /// </summary>
+        public static string Walkthrough_H2H_SwipeLeft {
+            get {
+                return ResourceManager.GetString("Walkthrough_H2H_SwipeLeft", resourceCulture);
             }
         }
         

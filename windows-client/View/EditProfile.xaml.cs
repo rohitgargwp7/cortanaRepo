@@ -87,7 +87,7 @@ namespace windows_client.View
             emailErrorTxt.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.EditProfile_NtwrkErrMsgBx_Text, AppResources.EditProfile_NtwrkErrMsgBx_Captn, MessageBoxButton.OK);
                 isClicked = false;
                 return;
             }
@@ -144,7 +144,7 @@ namespace windows_client.View
             {
                 if (userName == name.Text)
                 {
-                    MessageBox.Show("Nothing has changed!!", "Profile Not Updated!", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.EditProfile_UpdatErrMsgBx_Text, AppResources.EditProfile_UpdatErrMsgBx_Captn, MessageBoxButton.OK);
                 }
                 //progressBar.IsEnabled = false;
                 shellProgress.IsVisible = false;
@@ -191,7 +191,7 @@ namespace windows_client.View
                         shellProgress.IsVisible = false;
                         try
                         {
-                            MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                            MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
                         }
                         catch { }
                     }
@@ -203,7 +203,7 @@ namespace windows_client.View
                     shellProgress.IsVisible = false;
                     try
                     {
-                        MessageBox.Show("Unable to change name. Try again.", "Something went wrong", MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.EditProfile_NameUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
                     }
                     catch { }
                 }
@@ -235,7 +235,7 @@ namespace windows_client.View
                     shellProgress.IsVisible = false;
                     try
                     {
-                        MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
                     }
                     catch { }
                 }
@@ -249,7 +249,7 @@ namespace windows_client.View
                     shellProgress.IsVisible = false;
                     try
                     {
-                        MessageBox.Show("Unable to change email or gender. Try again.", "Something went wrong", MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.EditProfile_EmailUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
                     }
                     catch { }
 
