@@ -882,7 +882,7 @@ namespace windows_client.View
 
                 // Add to fav is shown only in case of GC
                 addToFavMenuItem = new ApplicationBarMenuItem();
-                addToFavMenuItem.Text = AppResources.SelectUser_AddToFav_Txt;
+                addToFavMenuItem.Text = AppResources.Add_To_Fav_Txt;
                 addToFavMenuItem.Click += new EventHandler(AddRemoveFavMenuItem_Click);
                 appBar.MenuItems.Add(addToFavMenuItem);
                 if (App.ViewModel.Isfavourite(mContactNumber))
@@ -1197,7 +1197,7 @@ namespace windows_client.View
             }
             else
             {
-                addToFavMenuItem.Text = AppResources.SelectUser_AddToFav_Txt;
+                addToFavMenuItem.Text = AppResources.Add_To_Fav_Txt;
                 foreach (ConversationListObject cObj in App.ViewModel.FavList)
                 {
                     if (cObj.Msisdn == mContactNumber)

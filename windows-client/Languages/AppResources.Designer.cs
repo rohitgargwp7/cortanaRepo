@@ -61,6 +61,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add to Favourites.
+        /// </summary>
+        public static string Add_To_Fav_Txt {
+            get {
+                return ResourceManager.GetString("Add_To_Fav_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  and .
         /// </summary>
         public static string And_txt {
@@ -988,6 +997,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to friends.
+        /// </summary>
+        public static string Friends_Txt {
+            get {
+                return ResourceManager.GetString("Friends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fun, free messaging for life.
         /// </summary>
         public static string Fun_Free_Messaging_Txt {
@@ -1105,6 +1123,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hike friends.
+        /// </summary>
+        public static string Hike_Friends_Text {
+            get {
+                return ResourceManager.GetString("Hike_Friends_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hike. .
         /// </summary>
         public static string Hike_txt {
@@ -1137,6 +1164,24 @@ namespace windows_client.Languages {
         public static string Invite_Txt {
             get {
                 return ResourceManager.GetString("Invite_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends Invited.
+        /// </summary>
+        public static string InviteUsers_FriendsInvited_Txt {
+            get {
+                return ResourceManager.GetString("InviteUsers_FriendsInvited_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total invites sent : {0}.
+        /// </summary>
+        public static string InviteUsers_TotalInvitesSent_Txt {
+            get {
+                return ResourceManager.GetString("InviteUsers_TotalInvitesSent_Txt", resourceCulture);
             }
         }
         
@@ -1299,15 +1344,6 @@ namespace windows_client.Languages {
         public static string Save_AppBar_Btn {
             get {
                 return ResourceManager.GetString("Save_AppBar_Btn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add to Favourites.
-        /// </summary>
-        public static string SelectUser_AddToFav_Txt {
-            get {
-                return ResourceManager.GetString("SelectUser_AddToFav_Txt", resourceCulture);
             }
         }
         
@@ -1551,6 +1587,42 @@ namespace windows_client.Languages {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location Service is not enabled on the device..
+        /// </summary>
+        public static string ShareLocation_LocationServiceNotEnabled_Txt {
+            get {
+                return ResourceManager.GetString("ShareLocation_LocationServiceNotEnabled_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Location Service is working, but it cannot get location data..
+        /// </summary>
+        public static string ShareLocation_LocationServiceWorking_Txt {
+            get {
+                return ResourceManager.GetString("ShareLocation_LocationServiceWorking_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait while your position is determined.....
+        /// </summary>
+        public static string ShareLocation_PlsWaitForPosition_Txt {
+            get {
+                return ResourceManager.GetString("ShareLocation_PlsWaitForPosition_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to share location.
+        /// </summary>
+        public static string ShareLocation_Txt {
+            get {
+                return ResourceManager.GetString("ShareLocation_Txt", resourceCulture);
             }
         }
         

@@ -633,7 +633,7 @@
     <value>photo</value>
     <comment>General Text</comment>
   </data>
-  <data name="SelectUser_AddToFav_Txt" xml:space="preserve">
+  <data name="Add_To_Fav_Txt" xml:space="preserve">
     <value>Add to Favourites</value>
     <comment>cs</comment>
   </data>
@@ -819,6 +819,10 @@
     <value>Error !!</value>
     <comment>General text</comment>
   </data>
+  <data name="Friends_Txt" xml:space="preserve">
+    <value>friends</value>
+    <comment>General text</comment>
+  </data>
   <data name="GroupInfo_ChangeGrpName_Txt" xml:space="preserve">
     <value>Change Group Name</value>
     <comment>cs</comment>
@@ -851,9 +855,21 @@
     <value>Group Name</value>
     <comment>General Text</comment>
   </data>
+  <data name="Hike_Friends_Text" xml:space="preserve">
+    <value>hike friends</value>
+    <comment>General text</comment>
+  </data>
   <data name="Hike_txt" xml:space="preserve">
     <value>hike. </value>
     <comment>General text</comment>
+  </data>
+  <data name="InviteUsers_FriendsInvited_Txt" xml:space="preserve">
+    <value>Friends Invited</value>
+    <comment>cs</comment>
+  </data>
+  <data name="InviteUsers_TotalInvitesSent_Txt" xml:space="preserve">
+    <value>Total invites sent : {0}</value>
+    <comment>cs</comment>
   </data>
   <data name="Invite_Txt" xml:space="preserve">
     <value>INVITE</value>
@@ -875,6 +891,22 @@
   <data name="Participants_Txt" xml:space="preserve">
     <value>Participants</value>
     <comment>General Text</comment>
+  </data>
+  <data name="ShareLocation_LocationServiceNotEnabled_Txt" xml:space="preserve">
+    <value>Location Service is not enabled on the device.</value>
+    <comment>cs</comment>
+  </data>
+  <data name="ShareLocation_LocationServiceWorking_Txt" xml:space="preserve">
+    <value>The Location Service is working, but it cannot get location data.</value>
+    <comment>cs</comment>
+  </data>
+  <data name="ShareLocation_PlsWaitForPosition_Txt" xml:space="preserve">
+    <value>Please wait while your position is determined....</value>
+    <comment>cs</comment>
+  </data>
+  <data name="ShareLocation_Txt" xml:space="preserve">
+    <value>share location</value>
+    <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
     <value>I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>

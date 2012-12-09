@@ -10,6 +10,7 @@ using Microsoft.Phone.Controls.Maps;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -35,7 +36,7 @@ namespace windows_client.View
             //add icon for send
             shareIconButton = new ApplicationBarIconButton();
             shareIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            shareIconButton.Text = "share location";
+            shareIconButton.Text = AppResources.ShareLocation_Txt;
             shareIconButton.Click += new EventHandler(shareBtn_Click);
             shareIconButton.IsEnabled = false;
             appBar.Buttons.Add(shareIconButton);
@@ -75,11 +76,11 @@ namespace windows_client.View
             switch (e.Status)
             {
                 case GeoPositionStatus.Disabled:
-                    MessageBox.Show("Location Service is not enabled on the device");
+                    MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
                     break;
 
                 case GeoPositionStatus.NoData:
-                    MessageBox.Show(" The Location Service is working, but it cannot get location data.");
+                    MessageBox.Show(AppResources.ShareLocation_LocationServiceWorking_Txt);
                     break;
             }
         }
@@ -88,7 +89,7 @@ namespace windows_client.View
         {
             if (e.Position.Location.IsUnknown)
             {
-                MessageBox.Show("Please wait while your prosition is determined....");
+                MessageBox.Show(AppResources.ShareLocation_PlsWaitForPosition_Txt);
                 return;
             }
 

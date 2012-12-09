@@ -97,8 +97,8 @@ namespace windows_client.View
             object hikeFriends;
             if (PhoneApplicationService.Current.State.TryGetValue("HIKE_FRIENDS", out hikeFriends))
             {
-                topHeader.Text = "Add To Favourites";
-                title.Text = "hike friends";
+                topHeader.Text = AppResources.Add_To_Fav_Txt;
+                title.Text = AppResources.Hike_Friends_Text;
                 _isAddToFavPage = true;
             }
             shellProgress.IsVisible = true;
@@ -139,7 +139,7 @@ namespace windows_client.View
                 return;
             doneIconButton = new ApplicationBarIconButton();
             doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            doneIconButton.Text = "Done";
+            doneIconButton.Text = AppResources.AppBar_Done_Btn;
             doneIconButton.Click += new EventHandler(Invite_Or_Fav_Click);
             doneIconButton.IsEnabled = false;
             appBar.Buttons.Add(doneIconButton);
@@ -239,7 +239,7 @@ namespace windows_client.View
                     count++;
                 }
                 if (count > 0)
-                    MessageBox.Show("Total invites sent : " + count, "Friends Invited", MessageBoxButton.OK);
+                    MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
             NavigationService.GoBack();
         }
