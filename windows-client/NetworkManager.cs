@@ -841,14 +841,14 @@ namespace windows_client
             if (dndMembersList.Count == 1)
                 msgText.Append(dndMembersList[0].FirstName);
             else if (dndMembersList.Count == 2)
-                msgText.Append(dndMembersList[0].FirstName + " and " + dndMembersList[1].FirstName);
+                msgText.Append(dndMembersList[0].FirstName + AppResources.And_txt + dndMembersList[1].FirstName);
             else
             {
                 for (int i = 0; i < dndMembersList.Count; i++)
                 {
                     msgText.Append(dndMembersList[i].FirstName);
                     if (i == dndMembersList.Count - 2)
-                        msgText.Append(" and ");
+                        msgText.Append(AppResources.And_txt);
                     else if (i < dndMembersList.Count - 2)
                         msgText.Append(",");
                 }
