@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using Microsoft.Phone.Controls;
 using System.Net.NetworkInformation;
+using windows_client.Languages;
 
 namespace windows_client.utils
 {
@@ -72,7 +73,7 @@ namespace windows_client.utils
                             if (enterNamePage.isClicked)
                             {
                                 enterNamePage.msgTxtBlk.Opacity = 0;
-                                enterNamePage.nameErrorTxt.Text = "No network connectivity. Please try again.";
+                                enterNamePage.nameErrorTxt.Text = AppResources.No_Network_Txt+" "+AppResources.Please_Try_Again_Txt;
                                 enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
                                 enterNamePage.progressBar.IsEnabled = false;
                                 enterNamePage.progressBar.Opacity = 0;
@@ -215,7 +216,7 @@ namespace windows_client.utils
                         if (enterNamePage.isClicked)
                         {
                             enterNamePage.msgTxtBlk.Opacity = 0;
-                            enterNamePage.nameErrorTxt.Text = "Contact Scanning failed!! Try Later!!";
+                            enterNamePage.nameErrorTxt.Text = AppResources.Contact_Scanning_Failed_Txt;
                             enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
                             enterNamePage.progressBar.IsEnabled = false;
                             enterNamePage.progressBar.Opacity = 0;
@@ -244,7 +245,7 @@ namespace windows_client.utils
                     if (currentPage != null)
                     {
                         EnterName enterNamePage = (EnterName)currentPage;
-                        enterNamePage.msgTxtBlk.Text = "Failed. Close App and try again !!";
+                        enterNamePage.msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
                     }
                 });
             }

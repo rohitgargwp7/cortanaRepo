@@ -214,6 +214,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact Scanning failed. Try Later!!.
+        /// </summary>
+        public static string Contact_Scanning_Failed_Txt {
+            get {
+                return ResourceManager.GetString("Contact_Scanning_Failed_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  added you as favourite. Would you like to do the same?.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt {
@@ -534,6 +543,15 @@ namespace windows_client.Languages {
         public static string Email_Txt {
             get {
                 return ResourceManager.GetString("Email_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed. Close App and try again !!.
+        /// </summary>
+        public static string EnterName_Failed_Txt {
+            get {
+                return ResourceManager.GetString("EnterName_Failed_Txt", resourceCulture);
             }
         }
         
@@ -1285,7 +1303,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No network connectivity.
+        ///   Looks up a localized string similar to No network connectivity..
         /// </summary>
         public static string No_Network_Txt {
             get {
@@ -1348,7 +1366,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please try again.
+        ///   Looks up a localized string similar to Please try again..
         /// </summary>
         public static string Please_Try_Again_Txt {
             get {
@@ -1744,6 +1762,105 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to a minute ago.
+        /// </summary>
+        public static string TimeUtils_A_Min_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_A_Min_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to an hour ago.
+        /// </summary>
+        public static string TimeUtils_An_hour_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_An_hour_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to one month ago.
+        /// </summary>
+        public static string TimeUtils_One_Month_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_One_Month_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to one second ago.
+        /// </summary>
+        public static string TimeUtils_One_Sec_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_One_Sec_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to one year ago.
+        /// </summary>
+        public static string TimeUtils_One_Year_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_One_Year_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days ago.
+        /// </summary>
+        public static string TimeUtils_X_Days_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Days_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hours ago.
+        /// </summary>
+        public static string TimeUtils_X_hours_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_hours_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} minutes ago.
+        /// </summary>
+        public static string TimeUtils_X_Mins_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Mins_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} months ago.
+        /// </summary>
+        public static string TimeUtils_X_Month_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Month_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} seconds ago.
+        /// </summary>
+        public static string TimeUtils_X_Secs_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Secs_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} years ago.
+        /// </summary>
+        public static string TimeUtils_X_Years_Ago_Txt {
+            get {
+                return ResourceManager.GetString("TimeUtils_X_Years_Ago_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unblock.
         /// </summary>
         public static string UnBlock_Txt {
@@ -1938,6 +2055,15 @@ namespace windows_client.Languages {
         public static string WelcomePage_TnP_HlBtn {
             get {
                 return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to yesterday.
+        /// </summary>
+        public static string Yesterday_Txt {
+            get {
+                return ResourceManager.GetString("Yesterday_Txt", resourceCulture);
             }
         }
     }
