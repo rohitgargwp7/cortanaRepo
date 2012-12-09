@@ -23,7 +23,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="INVITE" FontFamily="Segoe WP Semibold" FontSize="23" FontStretch="Expanded"  Margin="25,25,0,0"/>
+        <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Invite_txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" FontSize="23" FontStretch="Expanded"  Margin="25,25,0,0"/>
     
         <Grid Grid.Row="1" >
             <Grid.RowDefinitions>
@@ -31,9 +31,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Social_Tap" Grid.Row="0" Text="Social" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,50,0,0"/>
-            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Email_Tap" Grid.Row="1" Text="Email" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
-            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Messaging_Tap"  Grid.Row="2" Text="Messaging" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Social_Tap" Grid.Row="0" Text="{Binding Path= LocalizedResources.Social_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,50,0,0"/>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Email_Tap" Grid.Row="1" Text="{Binding Path= LocalizedResources.Email_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
+            <TextBlock Width="430" HorizontalAlignment="Left" Tap="Messaging_Tap"  Grid.Row="2" Text="{Binding Path= LocalizedResources.Messaging_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="43" FontStretch="Expanded"  Margin="25,55,0,0"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

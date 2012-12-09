@@ -393,7 +393,7 @@
     <value>accept</value>
     <comment>accept button in appbar</comment>
   </data>
-  <data name="WelcomePage_HikeMsg_TxtBlk" xml:space="preserve">
+  <data name="Fun_Free_Messaging_Txt" xml:space="preserve">
     <value>Fun, free messaging for life</value>
     <comment>This is text below hike logo on welcome screen.</comment>
   </data>
@@ -405,7 +405,7 @@
     <value>Terms and Privacy</value>
     <comment>Terms and Privacy, hyperlink button</comment>
   </data>
-  <data name="EditProfile_Email_TxtBlk" xml:space="preserve">
+  <data name="Email_Txt" xml:space="preserve">
     <value>Email</value>
     <comment>xaml</comment>
   </data>
@@ -811,6 +811,10 @@
   <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
     <value>To continue using hike, an update is required.</value>
   </data>
+  <data name="Email_Invite_Txt" xml:space="preserve">
+    <value>Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <comment>Email Invite Text</comment>
+  </data>
   <data name="Error_Txt" xml:space="preserve">
     <value>Error !!</value>
     <comment>General text</comment>
@@ -847,6 +851,18 @@
     <value>Group Name</value>
     <comment>General Text</comment>
   </data>
+  <data name="Hike_txt" xml:space="preserve">
+    <value>hike. </value>
+    <comment>General text</comment>
+  </data>
+  <data name="Invite_Txt" xml:space="preserve">
+    <value>INVITE</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Messaging_Txt" xml:space="preserve">
+    <value>Messaging</value>
+    <comment>General Text</comment>
+  </data>
   <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
     <value>Update available</value>
   </data>
@@ -858,6 +874,14 @@
   </data>
   <data name="Participants_Txt" xml:space="preserve">
     <value>Participants</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Social_Invite_Txt" xml:space="preserve">
+    <value>I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
+    <comment>This is used in case of Facebook and Twitter</comment>
+  </data>
+  <data name="Social_Txt" xml:space="preserve">
+    <value>Social</value>
     <comment>General Text</comment>
   </data>
   <data name="User_Cancelled_Task_Txt" xml:space="preserve">
