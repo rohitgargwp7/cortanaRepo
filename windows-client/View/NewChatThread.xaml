@@ -68,7 +68,7 @@
 
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
             <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
-                <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0" Text="75 sms left"></TextBlock>
+                <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0"></TextBlock>
             </StackPanel>
             <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
 
@@ -193,17 +193,17 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,0,0" Tap="shareLocation_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\drop_pin_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Location" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
                 </StackPanel>
                 <Rectangle Width="1" Fill="#080808" Grid.Column="1"/>
                 <StackPanel Grid.Column="2" Orientation="Vertical" Margin="0,0,0,0" Tap="sendImage_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\menu_photo_icon.png" Height="26" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Image" FontSize="22" Foreground="#f6f6f6" HorizontalAlignment="Center"></TextBlock>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Image_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#f6f6f6" HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
                 <Rectangle Width="1" Fill="#080808" Grid.Column="3"/>
                 <StackPanel Grid.Column="4" Orientation="Vertical" Margin="0,0,0,0" Tap="sendAudio_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\menu_audio_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Audio" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
                 </StackPanel>
 
             </Grid>
@@ -225,8 +225,8 @@
         <Rectangle x:Name="overlayRectangle" Grid.Row="0" Opacity="0.85" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
         <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
-            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="You have blocked this user. Unblock to continue hiking" Foreground="#FFFFFF" FontSize="30"></TextBlock>
-            <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="Unblock" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
+            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
+            <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
     </Grid>
 </phone:PhoneApplicationPage>

@@ -137,10 +137,6 @@
     <value> added you as favourite. Would you like to do the same?</value>
     <comment>Fav (xaml)</comment>
   </data>
-  <data name="Conversations_ContextMenu_RemoveFromFav_Txt" xml:space="preserve">
-    <value>Remove From Favourites</value>
-    <comment>Fav ContextMenu (xaml)</comment>
-  </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
     <value>Delete All Chats</value>
     <comment>cs</comment>
@@ -209,8 +205,8 @@
     <value>Are you sure about removing this contact from favourites?</value>
     <comment>cs</comment>
   </data>
-  <data name="Conversations_RemFromFav_Txt" xml:space="preserve">
-    <value>Remove from Favourites</value>
+  <data name="RemFromFav_Txt" xml:space="preserve">
+    <value>Remove From Favourites</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
@@ -354,7 +350,7 @@
     <comment>Profile (xaml)</comment>
   </data>
   <data name="SMS_Left_Txt" xml:space="preserve">
-    <value>{0} Left</value>
+    <value>{0} SMS Left</value>
     <comment>This text is used to show how many SMS left</comment>
   </data>
   <data name="Something_Wrong_Txt" xml:space="preserve">
@@ -552,9 +548,104 @@
     <value>Unlimited</value>
     <comment>Unlimited text in hike to hike bar (xaml)</comment>
   </data>
+  <data name="And_txt" xml:space="preserve">
+    <value> and </value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Attach_Txt" xml:space="preserve">
+    <value>attach</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Audio_Txt" xml:space="preserve">
+    <value>Audio</value>
+    <comment>NewSelectUserPage (xaml)</comment>
+  </data>
+  <data name="Block_Txt" xml:space="preserve">
+    <value>Block</value>
+    <comment>this will be used as text</comment>
+  </data>
+  <data name="Call_Txt" xml:space="preserve">
+    <value>call</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Cancel_Txt" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="CONTACT_NOT_SAVED_ON_SERVER" xml:space="preserve">
+    <value>Contact not saved on server, kindly refresh.</value>
+    <comment>This is called when a new contact is added and server error occured</comment>
+  </data>
+  <data name="CONTACT_SAVED_SUCCESSFULLY" xml:space="preserve">
+    <value>Contact saved successfully</value>
+  </data>
+  <data name="Copy_txt" xml:space="preserve">
+    <value>Copy</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="FILES_MESSAGE_PREFIX" xml:space="preserve">
+    <value>Sent you a {0}. To view go to </value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Forward_Txt" xml:space="preserve">
+    <value>Forward</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="GROUP_CHAT_END" xml:space="preserve">
+    <value>This group chat has ended.</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="Image_Txt" xml:space="preserve">
+    <value>Image</value>
+    <comment>NewSelectUserPage (xaml)</comment>
+  </data>
+  <data name="Location_Txt" xml:space="preserve">
+    <value>Location</value>
+    <comment>NewSelectUserPage (xaml)</comment>
+  </data>
+  <data name="MORE_THAN_1_CONTACT_FOUND" xml:space="preserve">
+    <value>More than 1 contacts found for number : {0}</value>
+    <comment>This is called when an unknown number is added and same num already exists in phone</comment>
+  </data>
+  <data name="Mute_Txt" xml:space="preserve">
+    <value>mute</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="NewChatThread_NoInfoForTask_Txt" xml:space="preserve">
+    <value>No information regarding the task result is available.</value>
+    <comment>cs</comment>
+  </data>
+  <data name="NewChatThread_UserCancelledTask_Txt" xml:space="preserve">
+    <value>Cannot_Select_Pic_Phone_Connected_to_PC</value>
+    <comment>cs</comment>
+  </data>
+  <data name="NO_CONTACT_SAVED" xml:space="preserve">
+    <value>No Contact is saved.</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Photo_Txt" xml:space="preserve">
+    <value>photo</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="SelectUser_AddToFav_Txt" xml:space="preserve">
+    <value>Add to Favourites</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_AddUser_Txt" xml:space="preserve">
+    <value>add user</value>
+    <comment>cs</comment>
+  </data>
   <data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
     <value>User already added !!</value>
     <comment>cs</comment>
+  </data>
+  <data name="SelectUser_BlockedGroupMsg_Txt" xml:space="preserve">
+    <value>You have blocked this group. Unblock to continue hiking.</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_BlockMsg_Txt" xml:space="preserve">
+    <value>You have blocked this user. Unblock to continue hiking.</value>
+    <comment>xaml</comment>
   </data>
   <data name="SelectUser_CantAddUser_Txt" xml:space="preserve">
     <value>Cannot add user !!</value>
@@ -568,12 +659,40 @@
     <value>Enter Valid Number</value>
     <comment>cs</comment>
   </data>
+  <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
+    <value>Free Message...</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_GrpInfo_Txt" xml:space="preserve">
+    <value>group info</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_GrpOwner_Txt" xml:space="preserve">
+    <value>group owner</value>
+    <comment>cs</comment>
+  </data>
   <data name="SelectUser_Header_Txt" xml:space="preserve">
     <value>CHAT</value>
     <comment>xaml</comment>
   </data>
+  <data name="SelectUser_InviteUsr_Txt" xml:space="preserve">
+    <value>invite user</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_LeaveGrp_Txt" xml:space="preserve">
+    <value>leave group</value>
+    <comment>cs</comment>
+  </data>
   <data name="SelectUser_MaxUsersSelected_Txt" xml:space="preserve">
     <value>{0} users already selected</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_MuteGrp_Txt" xml:space="preserve">
+    <value>mute group</value>
+    <comment>cs</comment>
+  </data>
+  <data name="SelectUser_NewGroup_Text" xml:space="preserve">
+    <value>New Group</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_RefreshContacts_Txt" xml:space="preserve">
@@ -588,6 +707,10 @@
     <value>Remove Contact?</value>
     <comment>cs</comment>
   </data>
+  <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
+    <value>SMS Message...</value>
+    <comment>cs</comment>
+  </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
     <value>Tap here to message this person</value>
     <comment>cs</comment>
@@ -600,8 +723,60 @@
     <value> Search or Enter Phone Number...</value>
     <comment>textbox hint (xaml)</comment>
   </data>
+  <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
+    <value>unmute group</value>
+    <comment>cs</comment>
+  </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
     <value>{0} is already added to group.</value>
     <comment>cs</comment>
+  </data>
+  <data name="SelectUser_ZeroCredits_Txt" xml:space="preserve">
+    <value>0 Free SMS left...</value>
+    <comment>cs</comment>
+  </data>
+  <data name="Send_Txt" xml:space="preserve">
+    <value>send</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Smiley_Txt" xml:space="preserve">
+    <value>smiley</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="SMS_INDIA" xml:space="preserve">
+    <value>SMS can only be sent to India.</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="sms_invite_message" xml:space="preserve">
+    <value>Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="UnBlock_Txt" xml:space="preserve">
+    <value>Unblock</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="Unmute_Txt" xml:space="preserve">
+    <value>unmute</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="USER_INVITED" xml:space="preserve">
+    <value> has been invited</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="USER_JOINED_GROUP_CHAT" xml:space="preserve">
+    <value> joined the group chat!</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="USER_LEFT" xml:space="preserve">
+    <value> left the group chat</value>
+    <comment>Constants General Text</comment>
+  </data>
+  <data name="Video_Txt" xml:space="preserve">
+    <value>Video</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="Voice_msg_Txt" xml:space="preserve">
+    <value>voice message</value>
+    <comment>General Text</comment>
   </data>
 </root>

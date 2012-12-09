@@ -55,7 +55,6 @@ namespace windows_client
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
-        public static readonly string FILES_MESSAGE_PREFIX = "Sent you a %s. To view go to ";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
@@ -185,12 +184,8 @@ namespace windows_client
         public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
         public static string USER_OPTED_IN_MSG = " just opted in to hike!";
         public static string WAITING_TO_JOIN = "Waiting for {0} to join in";
-        public static string USER_INVITED = " has been invited";
-        public static string USER_JOINED_GROUP_CHAT = " joined the group chat!";
-        public static string USER_LEFT = " left the group chat";
-        public static readonly string GROUP_CHAT_END = "This group chat has ended.";
+
         public static string USER_JOINED_HIKE = "{0} just joined hike!";
-        public static string SMS_INDIA = "SMS can only be sent to India.";
         public static string SOCIAL = "Social_Request";
 
         /* NAVIGATION CONSTANTS*/

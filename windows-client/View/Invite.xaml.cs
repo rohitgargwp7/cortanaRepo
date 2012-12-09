@@ -14,6 +14,7 @@ using Microsoft.Phone.Tasks;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Shell;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -68,7 +69,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.INVITE_MESSAGE);
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(App.sms_invite_message, inviteToken);
+            string inviteMsg = string.Format(AppResources.sms_invite_message, inviteToken);
             SmsComposeTask sms = new Microsoft.Phone.Tasks.SmsComposeTask();
             sms.Body = inviteMsg;
             try

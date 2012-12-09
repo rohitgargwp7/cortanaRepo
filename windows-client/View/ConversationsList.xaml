@@ -211,7 +211,7 @@
                                             <TextBlock Text="{Binding ContactName}" FontSize="22" VerticalAlignment="Center" Margin="10,2,0,0"></TextBlock>
                                             <toolkit:ContextMenuService.ContextMenu>
                                                 <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                    <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Conversations_ContextMenu_RemoveFromFav_Txt, Source={StaticResource LocalizedStrings}}" Tap="RemoveFavourite_Tap"/>
+                                                    <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Tap="RemoveFavourite_Tap"/>
                                                 </toolkit:ContextMenu>
                                             </toolkit:ContextMenuService.ContextMenu>
                                         </StackPanel>

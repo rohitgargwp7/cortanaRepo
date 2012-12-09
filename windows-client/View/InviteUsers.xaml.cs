@@ -23,6 +23,7 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.UserData;
 using Newtonsoft.Json.Linq;
 using windows_client.Mqtt;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -241,7 +242,7 @@ namespace windows_client.View
                 {
                     JObject obj = new JObject();
                     JObject data = new JObject();
-                    data[HikeConstants.SMS_MESSAGE] = string.Format(App.sms_invite_message, inviteToken);
+                    data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
                     data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
                     data[HikeConstants.MESSAGE_ID] = -1;
                     obj[HikeConstants.TO] = key;

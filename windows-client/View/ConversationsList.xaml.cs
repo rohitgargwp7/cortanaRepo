@@ -534,7 +534,7 @@ namespace windows_client.View
             {
                 if (convObj.IsFav) // already fav , remove request
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.Conversations_RemFromFav_Txt, MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
                     if (result == MessageBoxResult.Cancel)
                         return;
                     convObj.IsFav = false;
@@ -1037,7 +1037,7 @@ namespace windows_client.View
 
         private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.Conversations_RemFromFav_Txt, MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;

@@ -13,6 +13,7 @@ using System.Threading;
 using Microsoft.Phone.Shell;
 using System.Text;
 using windows_client.Misc;
+using windows_client.Languages;
 
 namespace windows_client.DbUtils
 {
@@ -265,7 +266,7 @@ namespace windows_client.DbUtils
                     {
                         string[] vars = vals[vals.Length - 1].Split(':');
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
-                        string text = HikeConstants.USER_JOINED_GROUP_CHAT;
+                        string text = AppResources.USER_JOINED_GROUP_CHAT;
                         obj.LastMessage = gp.FirstName + text;
                     }
                 }
@@ -276,7 +277,7 @@ namespace windows_client.DbUtils
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = gp.FirstName + HikeConstants.USER_JOINED_GROUP_CHAT;
+                        obj.LastMessage = gp.FirstName + AppResources.USER_JOINED_GROUP_CHAT;
                     }
                     else
                     {

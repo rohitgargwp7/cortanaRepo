@@ -11,6 +11,7 @@ using windows_client.View;
 using windows_client.Controls;
 using System.Threading;
 using windows_client.Misc;
+using windows_client.Languages;
 
 namespace windows_client.DbUtils
 {
@@ -79,22 +80,22 @@ namespace windows_client.DbUtils
 
                 if (contentType.Contains("image"))
                 {
-                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "photo") + HikeConstants.FILE_TRANSFER_BASE_URL + 
+                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL + 
                         "/" + fileKey;
                 }
                 else if (contentType.Contains("audio"))
                 {
-                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "voice message") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
                 else if (contentType.Contains("location"))
                 {
-                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "location") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
                 else if (contentType.Contains("video"))
                 {
-                    convMessage.Message = String.Format(HikeConstants.FILES_MESSAGE_PREFIX, "video") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
 
