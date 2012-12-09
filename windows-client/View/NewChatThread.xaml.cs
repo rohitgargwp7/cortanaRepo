@@ -820,7 +820,7 @@ namespace windows_client.View
             if (isGroupChat)
             {
                 groupInfoMenuItem = new ApplicationBarMenuItem();
-                groupInfoMenuItem.Text = AppResources.SelectUser_GrpInfo_Txt;
+                groupInfoMenuItem.Text = AppResources.GroupInfo_Txt;
                 groupInfoMenuItem.Click += new EventHandler(groupInfo_Click);
                 appBar.MenuItems.Add(groupInfoMenuItem);
 
@@ -3035,7 +3035,7 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.NewChatThread_UserCancelledTask_Txt);
                     break;
                 case TaskResult.None:
-                    MessageBox.Show(AppResources.NewChatThread_NoInfoForTask_Txt);
+                    MessageBox.Show(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }

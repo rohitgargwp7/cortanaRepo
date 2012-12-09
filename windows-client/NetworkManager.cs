@@ -13,6 +13,7 @@ using System.Text;
 using windows_client.Misc;
 using windows_client.View;
 using System.Collections.ObjectModel;
+using windows_client.Languages;
 
 namespace windows_client
 {

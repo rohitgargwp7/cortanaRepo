@@ -50,7 +50,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            nextIconButton.Text = AppResources.EditProfile_Save_AppBarBtnTxt;
+            nextIconButton.Text = AppResources.Save_AppBar_Btn;
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;
             appBar.Buttons.Add(nextIconButton);

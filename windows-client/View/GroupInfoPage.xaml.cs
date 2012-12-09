@@ -62,7 +62,7 @@ namespace windows_client.View
 
             saveIconButton = new ApplicationBarIconButton();
             saveIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            saveIconButton.Text = "save";
+            saveIconButton.Text = AppResources.Save_AppBar_Btn;
             saveIconButton.Click += new EventHandler(doneBtn_Click);
             saveIconButton.IsEnabled = true;
             appBar.Buttons.Add(saveIconButton);
@@ -361,7 +361,7 @@ namespace windows_client.View
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 isProfilePicTapped = false;
                 return;
             }
@@ -379,7 +379,7 @@ namespace windows_client.View
                 isProfilePicTapped = false;
                 shellProgress.IsVisible = false;
                 if (e.Error != null)
-                    MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
             //else
             //{
@@ -428,7 +428,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    MessageBox.Show("Cannot change Group Image. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.CannotChangeGrpImg_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 }
                 //progressBar.IsEnabled = false;
                 shellProgress.IsVisible = false;
@@ -452,7 +452,7 @@ namespace windows_client.View
                     App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                 }
             }
-            MessageBoxResult result = MessageBox.Show("Your friends have been invited", "Invite Sent", MessageBoxButton.OK);
+            MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_InviteSent_MsgBoxText_Txt, AppResources.GroupInfo_InviteSent_MsgBoxHeader_Txt, MessageBoxButton.OK);
 
 
         }
@@ -470,7 +470,7 @@ namespace windows_client.View
 
             if (string.IsNullOrWhiteSpace(this.groupNameTxtBox.Text))
             {
-                MessageBoxResult result = MessageBox.Show("Group name cannot be empty!", "Error !!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.GroupInfo_GrpNameCannotBeEmpty_Txt, AppResources.Error_Txt, MessageBoxButton.OK);
                 groupNameTxtBox.Focus();
                 return;
             }
@@ -478,12 +478,12 @@ namespace windows_client.View
             // if group name is changed
             if (groupName != (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD])
             {
-                MessageBoxResult result = MessageBox.Show(string.Format("Group name will be changed to '{0}'", this.groupNameTxtBox.Text), "Change Group Name", MessageBoxButton.OKCancel);
+                MessageBoxResult result = MessageBox.Show(string.Format(AppResources.GroupInfo_GrpNameChangedTo_Txt, this.groupNameTxtBox.Text), AppResources.GroupInfo_ChangeGrpName_Txt, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.OK)
                 {
                     if (!NetworkInterface.GetIsNetworkAvailable())
                     {
-                        result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                        result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                         return;
                     }
                     shellProgress.IsVisible = true;
@@ -528,7 +528,7 @@ namespace windows_client.View
                     shellProgress.IsVisible = false;
                     //progressBar.IsEnabled = false;
                     this.groupNameTxtBox.Text = (string)PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD];
-                    MessageBox.Show("Cannot change GroupName. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.CannotChangeGrpName_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 });
             }
         }
@@ -565,10 +565,10 @@ namespace windows_client.View
                     ContactUtils.getContact(gp_obj.Msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
                     break;
                 case TaskResult.Cancel:
-                    MessageBox.Show("The user canceled the task.");
+                    MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
-                    MessageBox.Show("NO information regarding the task result is available.");
+                    MessageBox.Show(AppResources.NoInfoForTask_Txt);
                     break;
             }
         }
@@ -580,7 +580,7 @@ namespace windows_client.View
                 Dictionary<string, List<ContactInfo>> contactListMap = GetContactListMap(e.Results);
                 if (contactListMap == null)
                 {
-                    MessageBox.Show("No Contact is saved.");
+                    MessageBox.Show(AppResources.NO_CONTACT_SAVED);
                     return;
                 }
                 AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
@@ -643,7 +643,7 @@ namespace windows_client.View
             {
                 Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBox.Show("Contact not saved on server, kindly refresh later.");
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
                 });
                 return;
             }
@@ -652,7 +652,7 @@ namespace windows_client.View
             {
                 Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBox.Show("Contact not saved on server, kindly refresh later.");
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
                 });
                 return;
             }
@@ -703,11 +703,11 @@ namespace windows_client.View
                 }
                 if (count > 1)
                 {
-                    MessageBox.Show("More than 1 contacts found for number : {0}" + gp_obj.Msisdn);
+                    MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND,gp_obj.Msisdn));
                 }
                 else
                 {
-                    MessageBox.Show("Contact saved successfully");
+                    MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
                 }
             });
         }

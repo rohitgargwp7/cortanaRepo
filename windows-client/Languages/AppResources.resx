@@ -433,7 +433,7 @@
     <value>Phone</value>
     <comment>xaml</comment>
   </data>
-  <data name="EditProfile_Save_AppBarBtnTxt" xml:space="preserve">
+  <data name="Save_AppBar_Btn" xml:space="preserve">
     <value>save</value>
     <comment>cs</comment>
   </data>
@@ -473,9 +473,6 @@
   </data>
   <data name="FreeSMS_FbPostSuccess_MsgBx" xml:space="preserve">
     <value>Successfully posted to facebook.</value>
-  </data>
-  <data name="FreeSMS_FbPostSuccess_MsgBxCaptn" xml:space="preserve">
-    <value />
   </data>
   <data name="FreeSMS_FbPost_MsgBxCaption" xml:space="preserve">
     <value>Facebook Post</value>
@@ -620,7 +617,7 @@
     <value>mute</value>
     <comment>General Text</comment>
   </data>
-  <data name="NewChatThread_NoInfoForTask_Txt" xml:space="preserve">
+  <data name="NoInfoForTask_Txt" xml:space="preserve">
     <value>No information regarding the task result is available.</value>
     <comment>cs</comment>
   </data>
@@ -672,7 +669,7 @@
     <value>Free Message...</value>
     <comment>cs</comment>
   </data>
-  <data name="SelectUser_GrpInfo_Txt" xml:space="preserve">
+  <data name="GroupInfo_Txt" xml:space="preserve">
     <value>group info</value>
     <comment>cs</comment>
   </data>
@@ -800,16 +797,71 @@
     <value>Waiting for {0} to join in</value>
     <comment>General Text</comment>
   </data>
+  <data name="CannotChangeGrpImg_Txt" xml:space="preserve">
+    <value>Cannot change Group Image. Try Later!!</value>
+    <comment>General text</comment>
+  </data>
+  <data name="CannotChangeGrpName_Txt" xml:space="preserve">
+    <value>Cannot change GroupName. Try Later!!</value>
+    <comment>cs</comment>
+  </data>
   <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
     <value>Important update</value>
   </data>
   <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
     <value>To continue using hike, an update is required.</value>
   </data>
+  <data name="Error_Txt" xml:space="preserve">
+    <value>Error !!</value>
+    <comment>General text</comment>
+  </data>
+  <data name="GroupInfo_ChangeGrpName_Txt" xml:space="preserve">
+    <value>Change Group Name</value>
+    <comment>cs</comment>
+  </data>
+  <data name="GroupInfo_GrpNameCannotBeEmpty_Txt" xml:space="preserve">
+    <value>Group name cannot be empty"</value>
+    <comment>cs</comment>
+  </data>
+  <data name="GroupInfo_GrpNameChangedTo_Txt" xml:space="preserve">
+    <value>Group name will be changed to '{0}'</value>
+    <comment>cs</comment>
+  </data>
+  <data name="GroupInfo_InviteSent_MsgBoxHeader_Txt" xml:space="preserve">
+    <value>Invite Sent</value>
+    <comment>cs</comment>
+  </data>
+  <data name="GroupInfo_InviteSent_MsgBoxText_Txt" xml:space="preserve">
+    <value>Your friends have been invited</value>
+    <comment>cs</comment>
+  </data>
+  <data name="GroupInfo_InviteSMSUsers_Btn_Txt" xml:space="preserve">
+    <value>Invite SMS participants to hike</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="GROUP_NAME_TXT" xml:space="preserve">
+    <value>GROUP NAME</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="GrpName_Txt" xml:space="preserve">
+    <value>Group Name</value>
+    <comment>General Text</comment>
+  </data>
   <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
     <value>Update available</value>
   </data>
   <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
     <value>A new version of hike is out. Would you like to update the app?</value>
+  </data>
+  <data name="Owner_Txt" xml:space="preserve">
+    <value> (owner)</value>
+  </data>
+  <data name="Participants_Txt" xml:space="preserve">
+    <value>Participants</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="User_Cancelled_Task_Txt" xml:space="preserve">
+    <value>User cancelled the task.</value>
+    <comment>General text</comment>
   </data>
 </root>

@@ -904,7 +904,7 @@ namespace windows_client.View
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
+                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, AppResources.CRITICAL_UPDATE_TEXT,
                      new List<string> { AppResources.Update_Txt }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
@@ -926,7 +926,7 @@ namespace windows_client.View
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
+                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, AppResources.NORMAL_UPDATE_TEXT,
                      new List<string> { AppResources.Update_Txt, AppResources.Ignore_Txt }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
