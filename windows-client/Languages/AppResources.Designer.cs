@@ -1681,6 +1681,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to retrieve request token..
+        /// </summary>
+        public static string SocialPages_UnableToRetrieveToken_Txt {
+            get {
+                return ResourceManager.GetString("SocialPages_UnableToRetrieveToken_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oops, something went wrong!.
         /// </summary>
         public static string Something_Wrong_Txt {

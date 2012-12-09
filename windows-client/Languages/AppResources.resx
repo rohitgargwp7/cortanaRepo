@@ -908,6 +908,10 @@
     <value>share location</value>
     <comment>cs</comment>
   </data>
+  <data name="SocialPages_UnableToRetrieveToken_Txt" xml:space="preserve">
+    <value>Unable to retrieve request token.</value>
+    <comment>cs</comment>
+  </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
     <value>I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
     <comment>This is used in case of Facebook and Twitter</comment>
