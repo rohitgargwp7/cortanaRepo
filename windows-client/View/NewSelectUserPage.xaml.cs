@@ -39,7 +39,7 @@ namespace windows_client.View
         private string charsEntered;
 
         private readonly int MAX_SMS_USRES_ALLOWED = 5;
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 10;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 20;
         private int defaultGroupmembers = 0;
 
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
