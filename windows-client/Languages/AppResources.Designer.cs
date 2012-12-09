@@ -376,11 +376,47 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You\&apos;ve just earned {0} free SMS.
+        /// </summary>
+        public static string CREDITS_EARNED {
+            get {
+                return ResourceManager.GetString("CREDITS_EARNED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Important update.
+        /// </summary>
+        public static string CRITICAL_UPDATE_HEADING {
+            get {
+                return ResourceManager.GetString("CRITICAL_UPDATE_HEADING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To continue using hike, an update is required..
+        /// </summary>
+        public static string CRITICAL_UPDATE_TEXT {
+            get {
+                return ResourceManager.GetString("CRITICAL_UPDATE_TEXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete_Txt {
             get {
                 return ResourceManager.GetString("Delete_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is on DND. Waiting for {0} to reply..
+        /// </summary>
+        public static string DND_USER {
+            get {
+                return ResourceManager.GetString("DND_USER", resourceCulture);
             }
         }
         
@@ -1051,6 +1087,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update available.
+        /// </summary>
+        public static string NORMAL_UPDATE_HEADING {
+            get {
+                return ResourceManager.GetString("NORMAL_UPDATE_HEADING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new version of hike is out. Would you like to update the app?.
+        /// </summary>
+        public static string NORMAL_UPDATE_TEXT {
+            get {
+                return ResourceManager.GetString("NORMAL_UPDATE_TEXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to photo.
         /// </summary>
         public static string Photo_Txt {
@@ -1438,11 +1492,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} just joined hike!.
+        /// </summary>
+        public static string USER_JOINED_HIKE {
+            get {
+                return ResourceManager.GetString("USER_JOINED_HIKE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  left the group chat.
         /// </summary>
         public static string USER_LEFT {
             get {
                 return ResourceManager.GetString("USER_LEFT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  just opted in to hike!.
+        /// </summary>
+        public static string USER_OPTED_IN_MSG {
+            get {
+                return ResourceManager.GetString("USER_OPTED_IN_MSG", resourceCulture);
             }
         }
         
@@ -1461,6 +1533,15 @@ namespace windows_client.Languages {
         public static string Voice_msg_Txt {
             get {
                 return ResourceManager.GetString("Voice_msg_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for {0} to join in.
+        /// </summary>
+        public static string WAITING_TO_JOIN {
+            get {
+                return ResourceManager.GetString("WAITING_TO_JOIN", resourceCulture);
             }
         }
         

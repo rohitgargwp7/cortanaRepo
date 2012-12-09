@@ -578,9 +578,18 @@
   </data>
   <data name="CONTACT_SAVED_SUCCESSFULLY" xml:space="preserve">
     <value>Contact saved successfully</value>
+    <comment>General Text</comment>
   </data>
   <data name="Copy_txt" xml:space="preserve">
     <value>Copy</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="CREDITS_EARNED" xml:space="preserve">
+    <value>You\'ve just earned {0} free SMS</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="DND_USER" xml:space="preserve">
+    <value>{0} is on DND. Waiting for {0} to reply.</value>
     <comment>General Text</comment>
   </data>
   <data name="FILES_MESSAGE_PREFIX" xml:space="preserve">
@@ -767,9 +776,17 @@
     <value> joined the group chat!</value>
     <comment>Constants General Text</comment>
   </data>
+  <data name="USER_JOINED_HIKE" xml:space="preserve">
+    <value>{0} just joined hike!</value>
+    <comment>General Text</comment>
+  </data>
   <data name="USER_LEFT" xml:space="preserve">
     <value> left the group chat</value>
     <comment>Constants General Text</comment>
+  </data>
+  <data name="USER_OPTED_IN_MSG" xml:space="preserve">
+    <value> just opted in to hike!</value>
+    <comment>General Text</comment>
   </data>
   <data name="Video_Txt" xml:space="preserve">
     <value>Video</value>
@@ -778,5 +795,21 @@
   <data name="Voice_msg_Txt" xml:space="preserve">
     <value>voice message</value>
     <comment>General Text</comment>
+  </data>
+  <data name="WAITING_TO_JOIN" xml:space="preserve">
+    <value>Waiting for {0} to join in</value>
+    <comment>General Text</comment>
+  </data>
+  <data name="CRITICAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Important update</value>
+  </data>
+  <data name="CRITICAL_UPDATE_TEXT" xml:space="preserve">
+    <value>To continue using hike, an update is required.</value>
+  </data>
+  <data name="NORMAL_UPDATE_HEADING" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="NORMAL_UPDATE_TEXT" xml:space="preserve">
+    <value>A new version of hike is out. Would you like to update the app?</value>
   </data>
 </root>

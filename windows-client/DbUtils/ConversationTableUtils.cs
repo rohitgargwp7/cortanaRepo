@@ -11,6 +11,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using windows_client.Languages;
 
 namespace windows_client.DbUtils
 {
@@ -112,7 +113,7 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
-                obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
                 convMessage.Message = obj.LastMessage;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
@@ -121,12 +122,12 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
             {
-                obj.LastMessage = string.Format(HikeConstants.DND_USER, obj.NameToShow);
+                obj.LastMessage = string.Format(AppResources.DND_USER, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
             {
-                obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
+                obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
 

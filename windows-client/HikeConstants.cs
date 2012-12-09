@@ -128,11 +128,6 @@ namespace windows_client
             }
         }
 
-        public static readonly string NORMAL_UPDATE_TEXT = "A new version of hike is out. Would you like to update the app?";
-        public static readonly string CRITICAL_UPDATE_TEXT = "To continue using hike, an update is required.";
-        public static readonly string NORMAL_UPDATE_HEADING = "Update available";
-        public static readonly string CRITICAL_UPDATE_HEADING = "Important update";
-
         /* how long to wait between sending publish and receiving an acknowledgement */
 
         public static readonly long MESSAGE_DELIVERY_TIMEOUT = 5 * 1000;
@@ -180,12 +175,6 @@ namespace windows_client
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
 
-        public static string DND_USER = "{0} is on DND. Waiting for {0} to reply.";
-        public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
-        public static string USER_OPTED_IN_MSG = " just opted in to hike!";
-        public static string WAITING_TO_JOIN = "Waiting for {0} to join in";
-
-        public static string USER_JOINED_HIKE = "{0} just joined hike!";
         public static string SOCIAL = "Social_Request";
 
         /* NAVIGATION CONSTANTS*/

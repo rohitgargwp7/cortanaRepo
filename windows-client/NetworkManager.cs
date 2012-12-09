@@ -852,7 +852,7 @@ namespace windows_client
                         msgText.Append(",");
                 }
             }
-            return string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString());
+            return string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
         }
 
         private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList)
@@ -903,7 +903,7 @@ namespace windows_client
                         vals = new object[2];
                     else                    // this shows that we have to show credits msg as this user got credits.
                     {
-                        string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                        string text = string.Format(AppResources.CREDITS_EARNED, credits);
                         JObject o = new JObject();
                         o.Add("t", "credits_gained");
                         ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
@@ -942,7 +942,7 @@ namespace windows_client
                         }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
                         {
-                            string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                            string text = string.Format(AppResources.CREDITS_EARNED, credits);
                             JObject o = new JObject();
                             o.Add("t", "credits_gained");
                             ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);

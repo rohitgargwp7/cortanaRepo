@@ -260,7 +260,7 @@ namespace windows_client.DbUtils
                                     msgText.Append(",");
                             }
                         }
-                        obj.LastMessage = string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString());
+                        obj.LastMessage = string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
                     }
                     else
                     {
@@ -281,7 +281,7 @@ namespace windows_client.DbUtils
                     }
                     else
                     {
-                        obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                        obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
                     }
                     convMsg.Message = obj.LastMessage;
                 }
@@ -295,7 +295,7 @@ namespace windows_client.DbUtils
                 #region DND_USER
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
                 {
-                    obj.LastMessage = string.Format(HikeConstants.DND_USER, obj.NameToShow);
+                    obj.LastMessage = string.Format(AppResources.DND_USER, obj.NameToShow);
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion
@@ -305,11 +305,11 @@ namespace windows_client.DbUtils
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
                         GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, gp.FirstName);
+                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, gp.FirstName);
                     }
                     else // 1-1 chat
                     {
-                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
+                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
                 }

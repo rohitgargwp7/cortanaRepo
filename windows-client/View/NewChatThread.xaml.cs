@@ -1659,7 +1659,7 @@ namespace windows_client.View
                                 msgText.Append(",");
                         }
                     }
-                    MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString()));
+                    MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString()));
                     this.messagesCollection.Add(wchatBubble);
                     ScrollToBottom();
                 }
