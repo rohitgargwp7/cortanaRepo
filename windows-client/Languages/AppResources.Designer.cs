@@ -1600,6 +1600,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Account.
+        /// </summary>
+        public static string Privacy_DeleteAccountHeader {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permanently delete your hike account.
+        /// </summary>
+        public static string Privacy_DeleteAccountText {
+            get {
+                return ResourceManager.GetString("Privacy_DeleteAccountText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlink Account.
+        /// </summary>
+        public static string Privacy_UnlinkAccountHeader {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkAccountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout your account from this device.
+        /// </summary>
+        public static string Privacy_UnlinkAccountText {
+            get {
+                return ResourceManager.GetString("Privacy_UnlinkAccountText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove From Favourites.
         /// </summary>
         public static string RemFromFav_Txt {

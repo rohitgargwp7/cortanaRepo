@@ -1014,6 +1014,18 @@
   <data name="On" xml:space="preserve">
     <value>On</value>
   </data>
+  <data name="Privacy_DeleteAccountHeader" xml:space="preserve">
+    <value>Delete Account</value>
+  </data>
+  <data name="Privacy_DeleteAccountText" xml:space="preserve">
+    <value>Permanently delete your hike account</value>
+  </data>
+  <data name="Privacy_UnlinkAccountHeader" xml:space="preserve">
+    <value>Unlink Account</value>
+  </data>
+  <data name="Privacy_UnlinkAccountText" xml:space="preserve">
+    <value>Logout your account from this device</value>
+  </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
     <value>Show Free SMS</value>
   </data>
