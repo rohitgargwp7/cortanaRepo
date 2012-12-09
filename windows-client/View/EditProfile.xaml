@@ -48,7 +48,7 @@
                         <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_FullName_TxtBlk, Source={StaticResource LocalizedStrings}}" 
                                    Margin="13,0,0,0"/>
                         <TextBlock Name="nameErrorTxt" Opacity="0" 
-                               Text="Please enter your name" 
+                               Text="{Binding Path= LocalizedResources.EditProfile_nameErrorTxt_TxtBlk, Source={StaticResource LocalizedStrings}}" 
                                VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                Margin="178,0,0,0" Foreground="Red" 
@@ -67,7 +67,7 @@
                                    Margin="13,0,0,0"/>
                         <TextBlock Name="emailErrorTxt" Opacity="0" 
                                VerticalAlignment="Center" 
-                               Text="Enter Correct Email" 
+                               Text="{Binding Path= LocalizedResources.EditProfile_emailErrorTxt_TxtBlk, Source={StaticResource LocalizedStrings}}" 
                                Margin="245,0,0,0" Foreground="Red" FontSize="15" />
                     </StackPanel>
                     <TextBox x:Name="email" KeyDown="email_KeyDown" InputScope="EmailUserName" LostFocus="textbox_LostFocus" GotFocus="textbox_GotFocus"/>

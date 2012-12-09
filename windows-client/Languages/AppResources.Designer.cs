@@ -448,6 +448,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter Correct Email.
+        /// </summary>
+        public static string EditProfile_emailErrorTxt_TxtBlk {
+            get {
+                return ResourceManager.GetString("EditProfile_emailErrorTxt_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
         public static string EditProfile_FullName_TxtBlk {
@@ -489,6 +498,15 @@ namespace windows_client.Languages {
         public static string EditProfile_GenderSelect_LstPckr {
             get {
                 return ResourceManager.GetString("EditProfile_GenderSelect_LstPckr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter your name.
+        /// </summary>
+        public static string EditProfile_nameErrorTxt_TxtBlk {
+            get {
+                return ResourceManager.GetString("EditProfile_nameErrorTxt_TxtBlk", resourceCulture);
             }
         }
         

@@ -924,4 +924,10 @@
     <value>User cancelled the task.</value>
     <comment>General text</comment>
   </data>
+  <data name="EditProfile_emailErrorTxt_TxtBlk" xml:space="preserve">
+    <value>Enter Correct Email</value>
+  </data>
+  <data name="EditProfile_nameErrorTxt_TxtBlk" xml:space="preserve">
+    <value>Please enter your name</value>
+  </data>
 </root>
