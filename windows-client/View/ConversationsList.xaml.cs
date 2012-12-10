@@ -22,6 +22,7 @@ using Phone.Controls;
 using windows_client.Misc;
 using System.Windows.Media;
 using windows_client.Languages;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -55,7 +56,21 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
+            DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
         }
+
+        private static void OnNetworkChange(object sender, EventArgs e)
+        {
+            if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                App.MqttManagerInstance.connect();
+            }
+            //else
+            //{
+            //    App.MqttManagerInstance.connectionStatus = Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
+            //}
+        }
+
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -117,6 +132,8 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
+            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
+
         }
 
         #endregion
@@ -375,7 +392,7 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            if (!Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 isProfilePicTapped = false;
