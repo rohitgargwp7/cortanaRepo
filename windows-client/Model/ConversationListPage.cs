@@ -627,12 +627,15 @@ namespace windows_client.Model
         {
             if (PropertyChanging != null)
             {
-                try
-                {
-                    PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-                }
-                catch (Exception)
-                { }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                        }
+                        catch (Exception)
+                        { }
+                    });
             }
         }
         #endregion
