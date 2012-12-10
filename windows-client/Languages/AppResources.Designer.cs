@@ -268,7 +268,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit Profile.
+        ///   Looks up a localized string similar to edit profile.
         /// </summary>
         public static string Conversations_EditProfile_Txt {
             get {
@@ -277,7 +277,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free SMS.
+        ///   Looks up a localized string similar to free SMS.
         /// </summary>
         public static string Conversations_FreeSms_Txt {
             get {
@@ -394,7 +394,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tell a friend.
+        ///   Looks up a localized string similar to tell a friend.
         /// </summary>
         public static string Conversations_TellFriend_Txt {
             get {
@@ -556,38 +556,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No network connectivity.
-        /// </summary>
-        public static string EditProfile_NtwrkErrMsgBx_Captn {
-            get {
-                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Captn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please try again.
-        /// </summary>
-        public static string EditProfile_NtwrkErrMsgBx_Text {
-            get {
-                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Phone.
         /// </summary>
         public static string EditProfile_Phone_TxtBlk {
             get {
                 return ResourceManager.GetString("EditProfile_Phone_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit Profile.
-        /// </summary>
-        public static string EditProfile_Title_TxtBlk {
-            get {
-                return ResourceManager.GetString("EditProfile_Title_TxtBlk", resourceCulture);
             }
         }
         
@@ -723,15 +696,6 @@ namespace windows_client.Languages {
         public static string EnterNumber_IncorrectPh_TxtBlk {
             get {
                 return ResourceManager.GetString("EnterNumber_IncorrectPh_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Incorrect Phone Number.
-        /// </summary>
-        public static string EnterNumber_MsgBoxHeader_Msg {
-            get {
-                return ResourceManager.GetString("EnterNumber_MsgBoxHeader_Msg", resourceCulture);
             }
         }
         
@@ -889,20 +853,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect and get a.
+        ///   Looks up a localized string similar to Connect and get a .
         /// </summary>
         public static string FreeSMS_Cnnct_TxtBlk1 {
             get {
                 return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 100 Free SMS.
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk2 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk2", resourceCulture);
             }
         }
         
@@ -916,7 +871,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earn an extra.
+        ///   Looks up a localized string similar to Earn an extra .
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
             get {
@@ -925,7 +880,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 50 free SMS.
+        ///   Looks up a localized string similar to {0} free SMS .
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk2 {
             get {
@@ -1038,15 +993,6 @@ namespace windows_client.Languages {
         public static string FreeSMS_InviteSMS_TxtBlk {
             get {
                 return ResourceManager.GetString("FreeSMS_InviteSMS_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Free SMS.
-        /// </summary>
-        public static string FreeSMS_Title_TxtBlk {
-            get {
-                return ResourceManager.GetString("FreeSMS_Title_TxtBlk", resourceCulture);
             }
         }
         
@@ -1267,7 +1213,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help.
+        ///   Looks up a localized string similar to help.
         /// </summary>
         public static string Help {
             get {
@@ -1654,7 +1600,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Privacy.
+        ///   Looks up a localized string similar to privacy.
         /// </summary>
         public static string Privacy {
             get {
@@ -2059,7 +2005,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings.
+        ///   Looks up a localized string similar to settings.
         /// </summary>
         public static string Settings {
             get {

@@ -87,7 +87,7 @@ namespace windows_client.View
             emailErrorTxt.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show(AppResources.EditProfile_NtwrkErrMsgBx_Text, AppResources.EditProfile_NtwrkErrMsgBx_Captn, MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 isClicked = false;
                 return;
             }

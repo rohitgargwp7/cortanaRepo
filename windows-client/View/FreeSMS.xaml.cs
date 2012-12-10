@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
+using System.Windows.Documents;
 
 namespace windows_client.View
 {
@@ -182,6 +183,8 @@ namespace windows_client.View
                 upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
                 lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
             }
+            fbFreeSMS.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 100);
+            earnSMSRun.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 50);
         }
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
