@@ -427,7 +427,7 @@ namespace windows_client
             }
             catch
             {
-                return null;
+                return "";
             }
         }
 
