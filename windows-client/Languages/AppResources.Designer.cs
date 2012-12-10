@@ -889,7 +889,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect and get a.
+        ///   Looks up a localized string similar to Connect and get a .
         /// </summary>
         public static string FreeSMS_Cnnct_TxtBlk1 {
             get {
@@ -898,7 +898,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 100 Free SMS.
+        ///   Looks up a localized string similar to 100 Free SMS .
         /// </summary>
         public static string FreeSMS_Cnnct_TxtBlk2 {
             get {
@@ -916,7 +916,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earn an extra.
+        ///   Looks up a localized string similar to Earn an extra .
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
             get {
@@ -925,7 +925,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 50 free SMS.
+        ///   Looks up a localized string similar to 50 free SMS .
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk2 {
             get {

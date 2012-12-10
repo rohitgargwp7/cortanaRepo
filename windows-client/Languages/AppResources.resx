@@ -442,11 +442,11 @@
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Connect and get a</value>
+    <value>Connect and get a </value>
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk2" xml:space="preserve">
-    <value>100 Free SMS</value>
+    <value>100 Free SMS </value>
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
@@ -454,11 +454,11 @@
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
-    <value>Earn an extra</value>
+    <value>Earn an extra </value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
-    <value>50 free SMS</value>
+    <value>50 free SMS </value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
