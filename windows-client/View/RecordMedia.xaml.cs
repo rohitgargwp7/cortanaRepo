@@ -122,7 +122,7 @@ namespace windows_client.View
                 {
                     // Audio has finished playing
                     soundIsPlaying = false;
-                    stop();
+                    //stop();
                 }
             }
         }
