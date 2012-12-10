@@ -15,7 +15,6 @@ using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows.Documents;
-using System.Net.NetworkInformation;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
@@ -61,7 +60,9 @@ namespace windows_client.View
 
         private static void OnNetworkChange(object sender, EventArgs e)
         {
-            if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            //Microsoft.Phone.Net.NetworkInformation.NetworkInterface inherits from System.Net.NetworkInformation.NetworkInterface 
+            //and adds the GetNetworkInterface static method and the NetworkInterfaceType static property
+            if (NetworkInterface.GetIsNetworkAvailable())
             {
                 App.MqttManagerInstance.connect();
             }
@@ -392,7 +393,7 @@ namespace windows_client.View
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            if (!Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 isProfilePicTapped = false;
