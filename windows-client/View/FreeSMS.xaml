@@ -34,7 +34,7 @@
                 <RowDefinition Height="200"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.FreeSMS_Title_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="25,24,0,0"/>
+            <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.Conversations_FreeSms_Txt, Source={StaticResource LocalizedStrings}}" Margin="25,24,0,0"/>
 
             <Grid x:Name="hikeToHikeGrid" Grid.Row="1" VerticalAlignment="Center">
                 <Grid.RowDefinitions>

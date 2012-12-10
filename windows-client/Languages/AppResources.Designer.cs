@@ -277,7 +277,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free SMS.
+        ///   Looks up a localized string similar to free SMS.
         /// </summary>
         public static string Conversations_FreeSms_Txt {
             get {
@@ -394,7 +394,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tell a friend.
+        ///   Looks up a localized string similar to tell a friend.
         /// </summary>
         public static string Conversations_TellFriend_Txt {
             get {
@@ -1042,15 +1042,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Free SMS.
-        /// </summary>
-        public static string FreeSMS_Title_TxtBlk {
-            get {
-                return ResourceManager.GetString("FreeSMS_Title_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Twitter.
         /// </summary>
         public static string FreeSMS_twConnStatus_TxtBlk {
@@ -1267,7 +1258,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help.
+        ///   Looks up a localized string similar to help.
         /// </summary>
         public static string Help {
             get {
@@ -1654,7 +1645,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Privacy.
+        ///   Looks up a localized string similar to privacy.
         /// </summary>
         public static string Privacy {
             get {
@@ -2059,7 +2050,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings.
+        ///   Looks up a localized string similar to settings.
         /// </summary>
         public static string Settings {
             get {

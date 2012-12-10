@@ -158,7 +158,7 @@
     <comment>Edit profile text (xaml)</comment>
   </data>
   <data name="Conversations_FreeSms_Txt" xml:space="preserve">
-    <value>Free SMS</value>
+    <value>free SMS</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_HikeContacts_Btn" xml:space="preserve">
@@ -214,7 +214,7 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
-    <value>Tell a friend</value>
+    <value>tell a friend</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
@@ -322,7 +322,7 @@
     <comment>Text Group Chat </comment>
   </data>
   <data name="Help" xml:space="preserve">
-    <value>Help</value>
+    <value>help</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Ignore_Txt" xml:space="preserve">
@@ -342,11 +342,11 @@
     <comment>General text used in different files</comment>
   </data>
   <data name="Privacy" xml:space="preserve">
-    <value>Privacy</value>
+    <value>privacy</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>settings</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="SMS_Left_Txt" xml:space="preserve">
@@ -503,10 +503,6 @@
   </data>
   <data name="FreeSMS_InviteSMS_TxtBlk" xml:space="preserve">
     <value>Invite via SMS</value>
-    <comment>xaml</comment>
-  </data>
-  <data name="FreeSMS_Title_TxtBlk" xml:space="preserve">
-    <value>Free SMS</value>
     <comment>xaml</comment>
   </data>
   <data name="FreeSMS_twConnStatus_TxtBlk" xml:space="preserve">
