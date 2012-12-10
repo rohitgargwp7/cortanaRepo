@@ -1368,7 +1368,7 @@ namespace windows_client.View
                     {
                         //resend message
                         chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
-                        ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.UNKNOWN);
+                        ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsSms = !isOnHike;
                         convMessage.HasAttachment = true;
                         convMessage.MessageId = chatBubble.MessageId;
