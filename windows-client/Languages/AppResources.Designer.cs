@@ -862,15 +862,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 100 Free SMS .
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk2 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to instantly.
         /// </summary>
         public static string FreeSMS_Cnnct_TxtBlk3 {
@@ -889,7 +880,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 50 free SMS .
+        ///   Looks up a localized string similar to {0} free SMS .
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk2 {
             get {

@@ -128,7 +128,7 @@
             <TextBlock x:Name="connectTxtBlk" Grid.Row="0" FontSize="22" Margin="0,5,0,0" HorizontalAlignment="Center">
                 <TextBlock.Inlines>
                     <Run Text="{Binding Path= LocalizedResources.FreeSMS_Cnnct_TxtBlk1, Source={StaticResource LocalizedStrings}}"/>
-                    <Run Text="{Binding Path= LocalizedResources.FreeSMS_Cnnct_TxtBlk2, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold"/>
+                    <Run x:Name="fbFreeSMS" FontFamily="Segoe WP Semibold"/>
                     <Run Text="{Binding Path= LocalizedResources.FreeSMS_Cnnct_TxtBlk3, Source={StaticResource LocalizedStrings}}"/>
                 </TextBlock.Inlines>
             </TextBlock>
@@ -171,7 +171,7 @@
                 <TextBlock FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" TextAlignment="Center" Width="400">
                     <TextBlock.Inlines>
                         <Run Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk1, Source={StaticResource LocalizedStrings}}"/>
-                        <Run Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk2, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold"/>
+                        <Run x:Name="earnSMSRun" Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk2, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold"/>
                         <Run Text="{Binding Path= LocalizedResources.FreeSMS_EarnFreeSMS_TxtBlk3, Source={StaticResource LocalizedStrings}}"/>
                     </TextBlock.Inlines>
                 </TextBlock>
