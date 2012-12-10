@@ -3034,7 +3034,7 @@ namespace windows_client.View
                     ContactUtils.getContact(mContactNumber, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
                     break;
                 case TaskResult.Cancel:
-                    MessageBox.Show(AppResources.NewChatThread_UserCancelledTask_Txt);
+                    MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
                     break;
                 case TaskResult.None:
                     MessageBox.Show(AppResources.NoInfoForTask_Txt);

@@ -1492,15 +1492,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot_Select_Pic_Phone_Connected_to_PC.
-        /// </summary>
-        public static string NewChatThread_UserCancelledTask_Txt {
-            get {
-                return ResourceManager.GetString("NewChatThread_UserCancelledTask_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No Contact is saved..
         /// </summary>
         public static string NO_CONTACT_SAVED {
