@@ -84,7 +84,10 @@ namespace windows_client.Controls
                 case ConvMessage.State.SENT_UNCONFIRMED:
                     if (this.FileAttachment != null)
                     {
-                        this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                        if (string.IsNullOrEmpty(this.FileAttachment.FileKey))
+                            this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                        else
+                            this.SDRImage.Source = UI_Utils.Instance.Trying;
                     }
                     else if (readFromDB)
                     {
@@ -222,7 +225,10 @@ namespace windows_client.Controls
                         case ConvMessage.State.SENT_UNCONFIRMED:
                             if (this.FileAttachment != null)
                             {
-                                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                                if (string.IsNullOrEmpty(this.FileAttachment.FileKey))
+                                    this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                                else
+                                    this.SDRImage.Source = UI_Utils.Instance.Trying;
                             }
                             else
                             {
