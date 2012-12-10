@@ -355,6 +355,11 @@ namespace windows_client
             {
                 instantiateClasses();
             }
+            else
+            {
+                if (ps == PageState.CONVLIST_SCREEN)
+                    MqttManagerInstance.connect();
+            }
             NetworkManager.turnOffNetworkManager = false;
         }
 

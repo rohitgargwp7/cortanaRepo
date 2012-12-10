@@ -1494,7 +1494,7 @@ namespace windows_client.View
          * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
          * it is scheduled
          */
-        private void AddMessageToUI(ConvMessage convMessage, bool readFromDB)
+        private MyChatBubble AddMessageToUI(ConvMessage convMessage, bool readFromDB)
         {
             try
             {
@@ -1515,7 +1515,7 @@ namespace windows_client.View
                         {
                             //Done to avoid crash. Code should never reach here
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
-                            return;
+                            return null;
                         }
                         switch (convMessage.FileAttachment.FileState)
                         {
@@ -1565,6 +1565,7 @@ namespace windows_client.View
                     {
                         chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
                     }
+                    return chatBubble;
                 }
                 #endregion
                 #region MEMBERS JOINED GROUP CHAT
@@ -1590,7 +1591,7 @@ namespace windows_client.View
                 {
                     string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
                     if (vals == null || vals.Length == 0)
-                        return;
+                         return null;
                     for (int i = 0; i < vals.Length; i++)
                     {
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
@@ -1616,7 +1617,7 @@ namespace windows_client.View
                 {
                     string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
                     if (vals == null || vals.Length == 0)
-                        return;
+                        return null;
                     List<string> waitingParticipants = null;
                     for (int i = 0; i < vals.Length; i++)
                     {
@@ -1642,7 +1643,7 @@ namespace windows_client.View
                         }
                     }
                     if (waitingParticipants == null)
-                        return;
+                        return null;
                     StringBuilder msgText = new StringBuilder();
                     if (waitingParticipants.Count == 1)
                         msgText.Append(waitingParticipants[0]);
@@ -1775,6 +1776,7 @@ namespace windows_client.View
             {
                 Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
             }
+            return null;
         }
 
         private void inviteUserBtn_Click(object sender, EventArgs e)
