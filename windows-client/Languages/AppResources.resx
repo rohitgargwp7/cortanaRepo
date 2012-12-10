@@ -154,7 +154,7 @@
     <comment>cs</comment>
   </data>
   <data name="Conversations_EditProfile_Txt" xml:space="preserve">
-    <value>Edit Profile</value>
+    <value>edit profile</value>
     <comment>Edit profile text (xaml)</comment>
   </data>
   <data name="Conversations_FreeSms_Txt" xml:space="preserve">
@@ -260,10 +260,6 @@
   <data name="EnterNumber_IncorrectPh_TxtBlk" xml:space="preserve">
     <value>Incorrect phone number.</value>
     <comment>CS file</comment>
-  </data>
-  <data name="EnterNumber_MsgBoxHeader_Msg" xml:space="preserve">
-    <value>Incorrect Phone Number</value>
-    <comment>MsgBox header</comment>
   </data>
   <data name="EnterNumber_MsgBoxText_Msg" xml:space="preserve">
     <value>Enter valid phone number.</value>
@@ -436,10 +432,6 @@
   <data name="Save_AppBar_Btn" xml:space="preserve">
     <value>save</value>
     <comment>cs</comment>
-  </data>
-  <data name="EditProfile_Title_TxtBlk" xml:space="preserve">
-    <value>Edit Profile</value>
-    <comment>xaml</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
     <value>Connect and get a </value>
@@ -1006,12 +998,6 @@
   </data>
   <data name="EditProfile_NameUpdateErr_MsgBxTxt" xml:space="preserve">
     <value>Unable to change name. Try again.</value>
-  </data>
-  <data name="EditProfile_NtwrkErrMsgBx_Captn" xml:space="preserve">
-    <value>No network connectivity</value>
-  </data>
-  <data name="EditProfile_NtwrkErrMsgBx_Text" xml:space="preserve">
-    <value>Please try again</value>
   </data>
   <data name="EditProfile_UpdatErrMsgBx_Captn" xml:space="preserve">
     <value>Profile Not Updated!</value>

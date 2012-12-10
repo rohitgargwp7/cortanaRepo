@@ -125,7 +125,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" FontSize="22" Margin="0,5,0,0" HorizontalAlignment="Center">
+            <TextBlock x:Name="connectTxtBlk" Grid.Row="0" FontSize="22" Margin="0,5,0,0" HorizontalAlignment="Center">
                 <TextBlock.Inlines>
                     <Run Text="{Binding Path= LocalizedResources.FreeSMS_Cnnct_TxtBlk1, Source={StaticResource LocalizedStrings}}"/>
                     <Run Text="{Binding Path= LocalizedResources.FreeSMS_Cnnct_TxtBlk2, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold"/>

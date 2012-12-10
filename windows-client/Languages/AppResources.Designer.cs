@@ -268,7 +268,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit Profile.
+        ///   Looks up a localized string similar to edit profile.
         /// </summary>
         public static string Conversations_EditProfile_Txt {
             get {
@@ -556,38 +556,11 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No network connectivity.
-        /// </summary>
-        public static string EditProfile_NtwrkErrMsgBx_Captn {
-            get {
-                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Captn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please try again.
-        /// </summary>
-        public static string EditProfile_NtwrkErrMsgBx_Text {
-            get {
-                return ResourceManager.GetString("EditProfile_NtwrkErrMsgBx_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Phone.
         /// </summary>
         public static string EditProfile_Phone_TxtBlk {
             get {
                 return ResourceManager.GetString("EditProfile_Phone_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit Profile.
-        /// </summary>
-        public static string EditProfile_Title_TxtBlk {
-            get {
-                return ResourceManager.GetString("EditProfile_Title_TxtBlk", resourceCulture);
             }
         }
         
@@ -723,15 +696,6 @@ namespace windows_client.Languages {
         public static string EnterNumber_IncorrectPh_TxtBlk {
             get {
                 return ResourceManager.GetString("EnterNumber_IncorrectPh_TxtBlk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Incorrect Phone Number.
-        /// </summary>
-        public static string EnterNumber_MsgBoxHeader_Msg {
-            get {
-                return ResourceManager.GetString("EnterNumber_MsgBoxHeader_Msg", resourceCulture);
             }
         }
         

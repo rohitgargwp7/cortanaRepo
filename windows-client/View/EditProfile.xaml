@@ -29,7 +29,7 @@
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
             <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-            <TextBlock Text="{Binding Path= LocalizedResources.EditProfile_Title_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,0" />
+            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_EditProfile_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="23,0,0,0" />
         </StackPanel>
 
         <ScrollViewer Grid.Row="1">

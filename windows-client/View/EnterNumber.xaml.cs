@@ -357,7 +357,7 @@ namespace windows_client
                 return;
             if (phoneNumber.Length < 1 || phoneNumber.Length > 15)
             {
-                MessageBox.Show(AppResources.EnterNumber_MsgBoxText_Msg, AppResources.EnterNumber_MsgBoxHeader_Msg, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.EnterNumber_MsgBoxText_Msg, AppResources.EnterNumber_IncorrectPh_TxtBlk, MessageBoxButton.OK);
                 txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
                 return;
             }
