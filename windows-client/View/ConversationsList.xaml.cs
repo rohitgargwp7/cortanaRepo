@@ -1014,6 +1014,12 @@ namespace windows_client.View
         private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             App.ViewModel.PendingRequests.Remove(fObj);
             MiscDBUtil.SavePendingRequests();
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
