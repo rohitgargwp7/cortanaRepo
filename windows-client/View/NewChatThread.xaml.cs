@@ -1529,7 +1529,7 @@ namespace windows_client.View
                     {
                         //chatBubble = new SentChatBubble(convMessage, readFromDB);
                         chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                        if (convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                        if (convMessage.MessageId > 0 && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
                         //else if (convMessage.MessageId == -1)
                         //    msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
