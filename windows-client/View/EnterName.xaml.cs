@@ -176,7 +176,12 @@ namespace windows_client
             msisdn = msisdn.Substring(msisdn.Length - 10);
             StringBuilder userMsisdn = new StringBuilder();
             userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
-            txtBlckPhoneNumber.Text = " "+userMsisdn.ToString();
+
+            string country_code = null;
+            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+
+
+            txtBlckPhoneNumber.Text = " " + (country_code == null ? "+91" : country_code) + "-" + userMsisdn.ToString();
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
