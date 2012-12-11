@@ -1028,11 +1028,12 @@ namespace windows_client.View
 
                 newChatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                 addNewAttachmentMessageToUI(newChatBubble);
-                msgMap.Add(convMessage.MessageId, newChatBubble);
+                //msgMap.Add(convMessage.MessageId, newChatBubble);
 
                 object[] vals = new object[2];
                 vals[0] = convMessage;
                 vals[1] = sourceFilePath;
+                vals[2] = newChatBubble;
                 mPubSub.publish(HikePubSub.FORWARD_ATTACHMENT, vals);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
             }
@@ -1539,10 +1540,10 @@ namespace windows_client.View
                     {
                         //chatBubble = new SentChatBubble(convMessage, readFromDB);
                         chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                        if (convMessage.MessageId < -1 || convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                        if (convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                        else if (convMessage.MessageId == -1)
-                            msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
+                        //else if (convMessage.MessageId == -1)
+                        //    msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
                     }
                     else
                     {
@@ -1947,7 +1948,7 @@ namespace windows_client.View
                 convMessage.Message = AppResources.Image_Txt;
 
                 SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnailBytes);
-                msgMap.Add(convMessage.MessageId, chatBubble);
+                //msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
 
@@ -1979,17 +1980,17 @@ namespace windows_client.View
                 HideTypingNotification();
                 isReshowTypingNotification = true;
             }
-            AddMessageToUI(convMessage, false);
+            MyChatBubble chatBubble = AddMessageToUI(convMessage, false);
             if (isReshowTypingNotification)
             {
                 ShowTypingNotification();
                 isReshowTypingNotification = false;
             }
 
-            object[] vals = new object[2];
+            object[] vals = new object[3];
             vals[0] = convMessage;
             vals[1] = isNewGroup;
-
+            vals[2] = chatBubble;
             mPubSub.publish(HikePubSub.MESSAGE_SENT, vals);
         }
 
@@ -2806,7 +2807,8 @@ namespace windows_client.View
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), 
+                    ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
                 convMessage.MessageId = TempMessageId;
@@ -2817,7 +2819,7 @@ namespace windows_client.View
                 convMessage.MetaDataString = locationJSONString;
 
                 SentChatBubble chatBubble = new SentChatBubble(convMessage, imageThumbnail);
-                msgMap.Add(convMessage.MessageId, chatBubble);
+                //msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
                 object[] vals = new object[3];
@@ -2849,7 +2851,7 @@ namespace windows_client.View
                 convMessage.Message = AppResources.Audio_Txt;
 
                 SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
-                msgMap.Add(convMessage.MessageId, chatBubble);
+                //msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
                 object[] vals = new object[3];

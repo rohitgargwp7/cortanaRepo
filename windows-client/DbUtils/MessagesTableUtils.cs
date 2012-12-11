@@ -104,30 +104,30 @@ namespace windows_client.DbUtils
                 {
                     return false;
                 }
-                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                {
-                    long msgId = convMessage.MessageId;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
+                //if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                //{
+                //    long msgId = convMessage.MessageId;
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
 
-                        NewChatThread currentPage = App.newChatThreadPage;
+                //        NewChatThread currentPage = App.newChatThreadPage;
 
-                        if (currentPage != null)
-                        {
-                            if (convMessage.IsSent)
-                            {
-                                SentChatBubble sentChatBubble;
-                                currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
-                                if (sentChatBubble != null)
-                                {
-                                    currentPage.OutgoingMsgsMap.Remove(currentMessageId);
-                                    currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
-                                    sentChatBubble.MessageId = convMessage.MessageId;
-                                }
-                            }
-                        }
-                    });
-                }
+                //        if (currentPage != null)
+                //        {
+                //            if (convMessage.IsSent)
+                //            {
+                //                SentChatBubble sentChatBubble;
+                //                currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
+                //                if (sentChatBubble != null)
+                //                {
+                //                    currentPage.OutgoingMsgsMap.Remove(currentMessageId);
+                //                    currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                //                    sentChatBubble.MessageId = convMessage.MessageId;
+                //                }
+                //            }
+                //        }
+                //    });
+                //}
             }
             return true;
         }
