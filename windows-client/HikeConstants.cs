@@ -187,6 +187,7 @@ namespace windows_client
         public static string INVITE_TOKEN = "invite_token";
         public static string FB_LOGGED_IN = "FbLoggedIn";
         public static string TW_LOGGED_IN = "TwLoggedIn";
+        public static string ACCOUNT = "account";
 
         public static class Extras
         {

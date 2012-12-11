@@ -14,6 +14,7 @@ using windows_client.Misc;
 using windows_client.View;
 using System.Collections.ObjectModel;
 using windows_client.Languages;
+using System.Windows.Threading;
 
 namespace windows_client
 {
@@ -462,21 +463,43 @@ namespace windows_client
                                     App.WriteToIsoStorageSettings(HikeConstants.SECURE_PUSH, vall);
                                 }
                             }
-                            else if (kv.Key == HikeConstants.FAVORITES || kv.Key == HikeConstants.PENDING)
+                            else if (kv.Key == HikeConstants.ACCOUNT)
                             {
-                                bool isFav = kv.Key == HikeConstants.FAVORITES;
-                                if (oj is JObject)
+                                JObject acntValObj = (JObject)oj;
+                                KeyValuePair<string, JToken> kkvv;
+                                IEnumerator<KeyValuePair<string, JToken>> kkeyVvals = acntValObj.GetEnumerator();
+                                while (kkeyVvals.MoveNext())
                                 {
-                                    JObject valObj = (JObject)oj;
-                                    KeyValuePair<string, JToken> kkvv;
-                                    IEnumerator<KeyValuePair<string, JToken>> kVals = data.GetEnumerator();
-                                    while (kVals.MoveNext())
+                                    try
                                     {
-                                        kkvv = kVals.Current; // kkvv contains favourites MSISDN
-                                        LoadFavAndPending(isFav, kkvv.Key); // true for favs
+                                        kkvv = kkeyVvals.Current;
+                                        Debug.WriteLine("AI :: Key : " + kkvv.Key);
+                                        if (kkvv.Key == HikeConstants.FAVORITES)
+                                        {
+                                            JObject favJSON = kkvv.Value.ToObject<JObject>();
+                                            if (favJSON != null)
+                                            {
+                                                KeyValuePair<string, JToken> fkkvv;
+                                                IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
+                                                while (kVals.MoveNext())
+                                                {
+                                                    bool isFav = true; // true for fav , false for pending
+                                                    fkkvv = kVals.Current; // kkvv contains favourites MSISDN
+                                                    JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
+                                                    JToken pToken;
+                                                    if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
+                                                        isFav = false;
+                                                    LoadFavAndPending(isFav, fkkvv.Key); // true for favs
+                                                }
+                                            }
+                                        }
                                     }
-                                    App.WriteToIsoStorageSettings(kv.Key, valObj.ToString(Newtonsoft.Json.Formatting.None));
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                    }
                                 }
+                                App.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
                             }
                             else
                             {
@@ -751,22 +774,20 @@ namespace windows_client
             #region ADD FAVOURITES
             else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
-                JObject oj = (JObject)jsonObj[HikeConstants.DATA];
-                string ms = (string)oj[HikeConstants.FROM];
+                string ms = (string)jsonObj[HikeConstants.FROM];
+                if (ms == null)
+                    return;
                 if (App.ViewModel.Isfavourite(ms)) // already favourite
                     return;
                 if (App.ViewModel.IsPending(ms))
                     return;
-                ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                if (contactInfo == null)
-                    return;
                 ConversationListObject favObj;
-                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
-                    favObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
-                else
+                if (App.ViewModel.ConvMap.ContainsKey(ms))
+                    favObj = App.ViewModel.ConvMap[ms];
+                else // user not saved in address book
                 {
-                    byte[] _av = MiscDBUtil.getThumbNailForMsisdn(contactInfo.Msisdn);
-                    favObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, _av);
+                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    favObj = new ConversationListObject(ms,ci!=null?ci.Name:null,ci!=null? ci.OnHike:true,ci!=null?MiscDBUtil.getThumbNailForMsisdn(ms):null);
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -800,17 +821,17 @@ namespace windows_client
                 else
                     if (App.ViewModel.IsPending(msisdn))
                         return;
-
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                l.Add(App.ViewModel.ConvMap[msisdn]);
-            else
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                if (ci == null)
-                    return;
-                ConversationListObject favObj = new ConversationListObject(msisdn, ci.Name, ci.OnHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
-                l.Add(favObj);
-            }
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    l.Add(App.ViewModel.ConvMap[msisdn]);
+                else
+                {
+                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    ConversationListObject favObj = new ConversationListObject(msisdn,ci!=null? ci.Name:null,ci!=null?ci.OnHike:true,ci!=null?MiscDBUtil.getThumbNailForMsisdn(msisdn):null);
+                    l.Add(favObj);
+                }
+            });
             if (isFav)
                 MiscDBUtil.SaveFavourites();
             else
