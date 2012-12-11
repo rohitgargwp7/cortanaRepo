@@ -89,12 +89,6 @@ namespace windows_client.View
         //private Dictionary<ConvMessage, SentChatBubble> _convMessageSentBubbleMap = new Dictionary<ConvMessage, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
 
         private List<ConvMessage> incomingMessages = new List<ConvMessage>();
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _nonAttachmentMenu;
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploading;
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploadedorDownloaded;
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentUploadCanceledOrFailed = null;
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentDownloading;
-        private Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> _attachmentDownloadCanceledOrFailed = null;
         #endregion
 
         #region UI VALUES
@@ -159,119 +153,6 @@ namespace windows_client.View
                 NotifyPropertyChanged("ChatThreadPageCollection");
             }
         }
-
-        #region CONTEXT MENU DICTIONARY
-
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> NonAttachmentMenu
-        {
-            get
-            {
-                if (_nonAttachmentMenu == null)
-                {
-                    _nonAttachmentMenu = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _nonAttachmentMenu.Add(AppResources.Copy_txt, MenuItem_Click_Copy);
-                    _nonAttachmentMenu.Add(AppResources.Forward_Txt, MenuItem_Click_Forward);
-                    _nonAttachmentMenu.Add(AppResources.Delete_Txt, MenuItem_Click_Delete);
-                }
-                return _nonAttachmentMenu;
-            }
-            set
-            {
-                _nonAttachmentMenu = value;
-            }
-        }
-
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploading
-        {
-            get
-            {
-                if (_attachmentUploading == null)
-                {
-                    _attachmentUploading = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _attachmentUploading.Add(AppResources.Cancel_Txt, MenuItem_Click_Cancel);
-                    //_attachmentUploading.Add("delete", MenuItem_Click_Delete);
-                }
-                return _attachmentUploading;
-            }
-            set
-            {
-                _attachmentUploading = value;
-            }
-        }
-
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploadedOrDownloaded
-        {
-            get
-            {
-                if (_attachmentUploadedorDownloaded == null)
-                {
-                    _attachmentUploadedorDownloaded = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _attachmentUploadedorDownloaded.Add(AppResources.Copy_txt, MenuItem_Click_Copy);
-                    _attachmentUploadedorDownloaded.Add(AppResources.Forward_Txt, MenuItem_Click_Forward);
-                    _attachmentUploadedorDownloaded.Add(AppResources.Delete_Txt, MenuItem_Click_Delete);
-                }
-                return _attachmentUploadedorDownloaded;
-            }
-            set
-            {
-                _attachmentUploadedorDownloaded = value;
-            }
-        }
-
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentUploadCanceledOrFailed
-        {
-            get
-            {
-                if (_attachmentUploadCanceledOrFailed == null)
-                {
-                    _attachmentUploadCanceledOrFailed = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _attachmentUploadCanceledOrFailed.Add(AppResources.Delete_Txt, MenuItem_Click_Delete);
-                }
-                return _attachmentUploadCanceledOrFailed;
-            }
-            set
-            {
-                _attachmentUploadCanceledOrFailed = value;
-            }
-        }
-
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentDownloading
-        {
-            get
-            {
-                if (_attachmentDownloading == null)
-                {
-                    _attachmentDownloading = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _attachmentDownloading.Add(AppResources.Copy_txt, MenuItem_Click_Copy);
-                    _attachmentDownloading.Add(AppResources.Cancel_Txt, MenuItem_Click_Cancel);
-                }
-                return _attachmentDownloading;
-            }
-            set
-            {
-                _attachmentDownloading = value;
-            }
-        }
-
-        public Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> AttachmentDownloadCanceledOrFailed
-        {
-            get
-            {
-                if (_attachmentDownloadCanceledOrFailed == null)
-                {
-                    _attachmentDownloadCanceledOrFailed = new Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>>();
-                    _attachmentDownloadCanceledOrFailed.Add(AppResources.Copy_txt, MenuItem_Click_Copy);
-                    _attachmentDownloadCanceledOrFailed.Add(AppResources.Delete_Txt, MenuItem_Click_Delete);
-                }
-                return _attachmentDownloadCanceledOrFailed;
-            }
-            set
-            {
-                _attachmentDownloadCanceledOrFailed = value;
-            }
-        }
-
-        #endregion
 
         #region PAGE BASED FUNCTIONS
 
@@ -1515,7 +1396,6 @@ namespace windows_client.View
                 //TODO : Create attachment object if it requires one
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
-                    Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1530,22 +1410,6 @@ namespace windows_client.View
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return null;
                         }
-                        switch (convMessage.FileAttachment.FileState)
-                        {
-                            case Attachment.AttachmentState.CANCELED:
-                                contextMenuDictionary = AttachmentUploadCanceledOrFailed;
-                                break;
-                            case Attachment.AttachmentState.COMPLETED:
-                                contextMenuDictionary = AttachmentUploadedOrDownloaded;
-                                break;
-                            default:
-                                contextMenuDictionary = AttachmentUploading;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        contextMenuDictionary = NonAttachmentMenu;
                     }
 
                     MyChatBubble chatBubble;
@@ -2975,58 +2839,6 @@ namespace windows_client.View
             }
         }
 
-        public void createContextMenu(MyChatBubble.ChatBubbleType chatBubbleType, Attachment.AttachmentState attachmentState)
-        {
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = true;
-            //            ContextMenuService.SetContextMenu(this, menu);
-
-            if (chatBubbleType == MyChatBubble.ChatBubbleType.TEXT)
-            {
-                MenuItem menuItemCopy = new MenuItem();
-                menuItemCopy.Header = AppResources.Copy_txt;
-                var glCopy = GestureService.GetGestureListener(menuItemCopy);
-                glCopy.Tap += MenuItem_Click_Copy;
-                menu.Items.Add(menuItemCopy);
-
-                MenuItem menuItemForward = new MenuItem();
-                menuItemForward.Header = AppResources.Forward_Txt;
-                var glFwd = GestureService.GetGestureListener(menuItemForward);
-                glFwd.Tap += MenuItem_Click_Copy;
-                menu.Items.Add(menuItemForward);
-
-                MenuItem menuItemDelete = new MenuItem();
-                menuItemDelete.Header = AppResources.Delete_Txt;
-                var glDelete = GestureService.GetGestureListener(menuItemDelete);
-                glDelete.Tap += MenuItem_Click_Delete;
-                menu.Items.Add(menuItemDelete);
-            }
-            else if (chatBubbleType == MyChatBubble.ChatBubbleType.NUDGE)
-            {
-                MenuItem menuItemDelete = new MenuItem();
-                menuItemDelete.Header = AppResources.Delete_Txt;
-                var glDelete = GestureService.GetGestureListener(menuItemDelete);
-                glDelete.Tap += MenuItem_Click_Delete;
-                menu.Items.Add(menuItemDelete);
-            }
-            else
-            {
-                if (attachmentState == Attachment.AttachmentState.CANCELED)
-                {
-                }
-                else if (attachmentState == Attachment.AttachmentState.COMPLETED)
-                {
-                }
-                else if (attachmentState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
-                {
-                }
-                else //Started
-                {
-                }
-
-            }
-
-        }
 
         private void messageListBox_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -3177,5 +2989,68 @@ namespace windows_client.View
                 }
             });
         }
+
+        #region CONTEXT MENUS
+        public ContextMenu createAttachmentContextMenu(Attachment.AttachmentState attachmentState, bool isSent)
+        {
+            ContextMenu menu = new ContextMenu();
+            menu.IsZoomEnabled = true;
+
+            if (attachmentState == Attachment.AttachmentState.STARTED)
+            {
+                if (!isSent) //if attachment is downloading, then allow user to copy link
+                {
+                    MenuItem menuItemCopy = new MenuItem();
+                    menuItemCopy.Header = AppResources.Copy_txt;
+                    var glCopy = GestureService.GetGestureListener(menuItemCopy);
+                    glCopy.Tap += MenuItem_Click_Copy;
+                    menu.Items.Add(menuItemCopy);
+                }
+                MenuItem menuItemCancel = new MenuItem();
+                menuItemCancel.Header = AppResources.Cancel_Txt;
+                var glCancel = GestureService.GetGestureListener(menuItemCancel);
+                glCancel.Tap += MenuItem_Click_Cancel;
+                menu.Items.Add(menuItemCancel);
+            }
+            else if (attachmentState == Attachment.AttachmentState.COMPLETED)
+            {
+                MenuItem menuItemCopy = new MenuItem();
+                menuItemCopy.Header = AppResources.Copy_txt;
+                var glCopy = GestureService.GetGestureListener(menuItemCopy);
+                glCopy.Tap += MenuItem_Click_Copy;
+                menu.Items.Add(menuItemCopy);
+
+                MenuItem menuItemForward = new MenuItem();
+                menuItemForward.Header = AppResources.Forward_Txt;
+                var glFwd = GestureService.GetGestureListener(menuItemForward);
+                glFwd.Tap += MenuItem_Click_Copy;
+                menu.Items.Add(menuItemForward);
+
+                MenuItem menuItemDelete = new MenuItem();
+                menuItemDelete.Header = AppResources.Delete_Txt;
+                var glDelete = GestureService.GetGestureListener(menuItemDelete);
+                glDelete.Tap += MenuItem_Click_Delete;
+                menu.Items.Add(menuItemDelete);
+            }
+            else if (attachmentState == Attachment.AttachmentState.CANCELED || attachmentState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
+            {
+                if (!isSent) //if attachment is downloading, then allow user to copy link
+                {
+                    MenuItem menuItemCopy = new MenuItem();
+                    menuItemCopy.Header = AppResources.Copy_txt;
+                    var glCopy = GestureService.GetGestureListener(menuItemCopy);
+                    glCopy.Tap += MenuItem_Click_Copy;
+                    menu.Items.Add(menuItemCopy);
+                }
+                MenuItem menuItemDelete = new MenuItem();
+                menuItemDelete.Header = AppResources.Delete_Txt;
+                var glDelete = GestureService.GetGestureListener(menuItemDelete);
+                glDelete.Tap += MenuItem_Click_Delete;
+                menu.Items.Add(menuItemDelete);
+            }
+            return menu;
+        }
+
+        #endregion
     }
 }

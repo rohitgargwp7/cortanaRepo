@@ -13,6 +13,7 @@ using windows_client.View;
 using windows_client.DbUtils;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.Controls
 {
@@ -307,24 +308,22 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true);
+                    ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
                         case Attachment.AttachmentState.CANCELED:
                             uploadOrDownloadCanceled();
-                            setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
                             uploadOrDownloadCanceled();
-                            setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.COMPLETED:
-                            setContextMenu(currentPage.AttachmentUploadedOrDownloaded);
                             uploadOrDownloadCompleted();
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.STARTED:
-                            setContextMenu(currentPage.AttachmentUploading);
                             uploadOrDownloadStarted();
                             MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
                             break;
