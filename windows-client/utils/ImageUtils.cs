@@ -33,6 +33,7 @@ namespace windows_client.utils
         private BitmapImage audioAttachmentSend;
         private BitmapImage httpFailed;
         private BitmapImage typingNotificationBitmap;
+        private BitmapImage emptyImage;
         private BitmapImage sent;
         private BitmapImage delivered;
         private BitmapImage read;
@@ -359,6 +360,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage EmptyImage
+        {
+            get
+            {
+                if (emptyImage == null)
+                    emptyImage = new BitmapImage(new Uri("/View/images/emptyImage.png", UriKind.Relative));
+                return emptyImage;
+            }
+        }
+        
         public BitmapImage Sent
         {
             get
