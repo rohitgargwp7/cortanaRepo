@@ -102,6 +102,8 @@ namespace windows_client.View
         private readonly SolidColorBrush textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
         private Thickness imgMargin = new Thickness(0, 5, 0, 15);
         private Image typingNotificationImage;
+        private Image emptyImage;
+        
         private ApplicationBarMenuItem groupInfoMenuItem;
         #endregion
 
@@ -355,6 +357,10 @@ namespace windows_client.View
                 typingNotificationImage.Visibility = Visibility.Visible;
                 typingNotificationImage.Margin = imgMargin;
             }
+            emptyImage = new Image();
+            emptyImage.Source = UI_Utils.Instance.EmptyImage;
+            emptyImage.Height = 4;
+
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
@@ -1073,21 +1079,39 @@ namespace windows_client.View
             });
         }
 
-        //        [MethodImpl(MethodImplOptions.Synchronized)]
-        //this function is called from UI thread only. No need to synch.
-        private void ScrollToBottom()
+        private void scheduledScrolling()
         {
-            //MessageList.UpdateLayout();
-            //Scroller.UpdateLayout();
-            if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                //                messagesCollection.Add(null);
+                if (messagesCollection.Contains(emptyImage))
+                    messagesCollection.Remove(emptyImage);
+                messagesCollection.Add(emptyImage);
                 messageListBox.UpdateLayout();
                 messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 messageListBox.UpdateLayout();
                 messageListBox.ScrollIntoView(messagesCollection[messagesCollection.Count - 1]);
                 messageListBox.UpdateLayout();
+            });
+        }
 
+
+        //this function is called from UI thread only. No need to synch.
+        private void ScrollToBottom()
+        {
+            if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+            {
+
+                scheduler.Schedule(scheduledScrolling, TimeSpan.FromMilliseconds(5));
+                //if(messagesCollection.Contains(emptyImage))
+                //    messagesCollection.Remove(emptyImage);
+    
+                //messagesCollection.Add(emptyImage);
+                //messageListBox.UpdateLayout();
+                //messageListBox.SelectedIndex = messagesCollection.Count - 1;
+                //messageListBox.UpdateLayout();
+                //messageListBox.ScrollIntoView(messagesCollection[messagesCollection.Count - 1]);
+                //messageListBox.UpdateLayout();
+                
                 //messageListBox.UpdateLayout();
                 //messagesCollection.RemoveAt(messagesCollection.Count - 1);
                 //messageListBox.UpdateLayout();
