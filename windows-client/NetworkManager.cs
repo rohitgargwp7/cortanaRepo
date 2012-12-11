@@ -482,7 +482,7 @@ namespace windows_client
                                             {
                                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
-                                                    lock (lockObj)
+                                                    lock (lockObj)      // this has to be done here as we need to ensure , that fav or pending should be added once
                                                     {
                                                         KeyValuePair<string, JToken> fkkvv;
                                                         IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
