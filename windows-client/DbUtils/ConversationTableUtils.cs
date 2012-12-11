@@ -428,8 +428,9 @@ namespace windows_client.DbUtils
                 }
                 return false;
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.WriteLine("Exception while reading Conversations : {0}",ex.StackTrace);
                 return false;
             }
         }
