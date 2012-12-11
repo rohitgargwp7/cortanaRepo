@@ -76,8 +76,8 @@ namespace windows_client.DbUtils
                 else
                     obj.LastMessage = convMessage.Message;
             }
-            //string msisdn = obj.Msisdn.Replace(":", "_");
-            //saveConvObject(obj, msisdn);
+            string msisdn = obj.Msisdn.Replace(":", "_");
+            saveConvObject(obj, msisdn);
             //saveNewConv(obj);
             return obj;
         }
@@ -139,7 +139,7 @@ namespace windows_client.DbUtils
 
             Stopwatch st = Stopwatch.StartNew();
             //saveNewConv(obj);
-            //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+            saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
@@ -164,14 +164,14 @@ namespace windows_client.DbUtils
             {
                 ConversationListObject obj = App.ViewModel.ConvMap[msisdn];
                 obj.IsOnhike = joined;
-                //saveConvObject(obj, msisdn);
+                saveConvObject(obj, msisdn);
                 //saveConvObjectList();
             }
         }
 
         public static void updateConversation(ConversationListObject obj)
         {
-            //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+            saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
             //saveConvObjectList();
         }
 
@@ -181,8 +181,8 @@ namespace windows_client.DbUtils
                 return false;
             ConversationListObject obj = App.ViewModel.ConvMap[grpId];
             obj.ContactName = groupName;
-            //string msisdn = grpId.Replace(":", "_");
-            //saveConvObject(obj, msisdn);
+            string msisdn = grpId.Replace(":", "_");
+            saveConvObject(obj, msisdn);
             //saveConvObjectList();
             return true;
         }
@@ -190,7 +190,7 @@ namespace windows_client.DbUtils
         internal static void updateConversation(List<ContactInfo> cn)
         {
             //saveConvObjectList();
-            return;
+            
             for (int i = 0; i < cn.Count; i++)
             {
                 if (App.ViewModel.ConvMap.ContainsKey(cn[i].Msisdn))
@@ -198,7 +198,7 @@ namespace windows_client.DbUtils
                     ConversationListObject obj = App.ViewModel.ConvMap[cn[i].Msisdn]; //update UI
                     obj.ContactName = cn[i].Name;
                     obj.IsOnhike = cn[i].OnHike;
-                    //saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+                    saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace windows_client.DbUtils
                 if (obj.MessageStatus != ConvMessage.State.UNKNOWN) // no D,R for notification msg so dont update
                 {
                     obj.MessageStatus = (ConvMessage.State)status;
-                    //saveConvObject(obj, msisdn.Replace(":", "_"));
+                    saveConvObject(obj, msisdn.Replace(":", "_"));
                     //saveConvObjectList();
                 }
             }
@@ -338,6 +338,28 @@ namespace windows_client.DbUtils
             st.Stop();
             long mSec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to save {0} conversations : {1}", convs, mSec);
+        }
+
+        /// <summary>
+        /// Single conv object is serialized to file
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void saveConvObject(ConversationListObject obj, string msisdn)
+        {
+            lock (readWriteLock)
+            {
+                string FileName = CONVERSATIONS_DIRECTORY + "\\" + msisdn;
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
+                    {
+                        using (var writer = new BinaryWriter(file))
+                        {
+                            obj.Write(writer);
+                        }
+                    }
+                }
+            }
         }
 
         public static List<ConversationListObject> getAllConvs()
