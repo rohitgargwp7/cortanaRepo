@@ -605,10 +605,6 @@
     <value>No information regarding the task result is available.</value>
     <comment>cs</comment>
   </data>
-  <data name="NewChatThread_UserCancelledTask_Txt" xml:space="preserve">
-    <value>Cannot_Select_Pic_Phone_Connected_to_PC</value>
-    <comment>cs</comment>
-  </data>
   <data name="NO_CONTACT_SAVED" xml:space="preserve">
     <value>No Contact is saved.</value>
     <comment>General Text</comment>

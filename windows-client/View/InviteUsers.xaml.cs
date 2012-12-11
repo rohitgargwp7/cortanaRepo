@@ -211,7 +211,6 @@ namespace windows_client.View
                         JObject data = new JObject();
                         data["id"] = hikeFavList[i].Msisdn;
                         JObject obj = new JObject();
-                        obj[HikeConstants.TO] = hikeFavList[i].Msisdn;
                         obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                         obj[HikeConstants.DATA] = data;
                         App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);

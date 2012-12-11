@@ -578,7 +578,6 @@ namespace windows_client.View
                     JObject data = new JObject();
                     data["id"] = convObj.Msisdn;
                     JObject obj = new JObject();
-                    obj[HikeConstants.TO] = convObj.Msisdn;
                     obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.DATA] = data;
 
@@ -1015,7 +1014,6 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TO] = fObj.Msisdn;
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
             obj[HikeConstants.DATA] = data;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);

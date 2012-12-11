@@ -36,9 +36,27 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            genderList.Add(AppResources.EditProfile_GenderSelect_LstPckr);
-            genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
-            genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
+            App.appSettings.TryGetValue(App.GENDER, out userGender);
+
+            if (userGender == "m")
+            {
+                genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
+                //genderListPicker.SelectedIndex = 0;
+            }
+            else if (userGender == "f")
+            {
+                genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
+                //genderListPicker.SelectedIndex = 1;
+            }
+            else // nothing is selected
+            {
+                genderList.Add(AppResources.EditProfile_GenderSelect_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
+            }
+
             genderListPicker.ItemsSource = genderList;
             TiltEffect.TiltableItems.Add(typeof(ListPickerItem));
             prepopulate();
@@ -68,12 +86,10 @@ namespace windows_client.View
                 userEmail = (string)App.appSettings[App.EMAIL];
             email.Text = userEmail;
 
-            App.appSettings.TryGetValue(App.GENDER, out userGender);
-
             if (userGender == "m")
-                genderListPicker.SelectedIndex = 1;
+                genderListPicker.SelectedIndex = 0;
             else if (userGender == "f")
-                genderListPicker.SelectedIndex = 2;
+                genderListPicker.SelectedIndex = 1;
             genderIndex = genderListPicker.SelectedIndex;
         }
 
