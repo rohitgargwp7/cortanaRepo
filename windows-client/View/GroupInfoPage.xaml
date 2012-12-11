@@ -27,7 +27,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="group info" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="21,0,0,0" Height="90"/>
+        <TextBlock Text="{Binding Path= LocalizedResources.GroupInfo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="21,0,0,0" Height="90"/>
 
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
             <Grid.RowDefinitions>
@@ -66,8 +66,8 @@
                 <Image Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,12" Source="images\change_pic.png" />
 
                 <!--<StackPanel Grid.Column="1" Orientation="Vertical" Margin="0, 0,0,0">-->
-                    <TextBlock Grid.Column="1" Grid.Row="0" FontSize="24" Opacity="0.6" Text="Group Name" Margin="20,15,0,0" />
-                <TextBox Margin="-15,0,0,0" Grid.Column="1" Grid.Row="1" Name="groupNameTxtBox" Text="GROUP NAME" Height="72" 
+                <TextBlock Grid.Column="1" Grid.Row="0" FontSize="24" Opacity="0.6" Text="{Binding Path= LocalizedResources.GrpName_Txt, Source={StaticResource LocalizedStrings}}" Margin="20,15,0,0" />
+                <TextBox Margin="-15,0,0,0" Grid.Column="1" Grid.Row="1" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
                              VerticalAlignment="Center" Width="330" GotFocus="groupNameTxtBox_GotFocus"
                              FontSize="24" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
                 
@@ -76,21 +76,21 @@
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="24,30,0,0">
                 <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="40" Height="40"></Image>
-                <TextBlock Text="Participants" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
+                <TextBlock Text="{Binding Path= LocalizedResources.Participants_Txt, Source={StaticResource LocalizedStrings}}" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
-            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="24,5,0,0">
+            <ListBox x:Name="groupChatParticipants" Tap="btnGetSelected_Tap" Grid.Row="2" Margin="24,5,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <Rectangle Height="25" Width="25" Fill="{Binding SquareColor}"></Rectangle>
                             <TextBlock Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
-                            <TextBlock Text=" (owner)" VerticalAlignment="Center" Foreground="Gray" FontSize="20" Opacity="{Binding IsOwner}"></TextBlock>
+                            <TextBlock Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="Gray" FontSize="20" Opacity="{Binding IsOwner}"></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Row="3">
-                <Button x:Name="inviteBtn" Content="Invite SMS participants to hike" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" Width="380"></Button>
+                <Button x:Name="inviteBtn" Content="{Binding Path= LocalizedResources.GroupInfo_InviteSMSUsers_Btn_Txt, Source={StaticResource LocalizedStrings}}" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" Width="380"></Button>
             </StackPanel>
 
         </Grid>

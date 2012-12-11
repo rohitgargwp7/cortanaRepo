@@ -79,9 +79,13 @@ namespace windows_client.ViewModel
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
             _pendingReq = new ObservableCollection<ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
-            MiscDBUtil.LoadFavourites(_favList);
+
+            // this order should be maintained as _convMap should be populated before loading fav list
             for (int i = 0; i < convList.Count; i++)
+            {
                 _convMap[convList[i].Msisdn] = convList[i];
+            }
+            MiscDBUtil.LoadFavourites(_favList,_convMap);
             RegisterListeners();
         }
 
@@ -106,6 +110,48 @@ namespace windows_client.ViewModel
             return false;
         }
 
+        public ConversationListObject GetFav(string mContactNumber)
+        {
+            if (_favList.Count == 0)
+                return null;
+            for (int i = 0; i < _favList.Count; i++)
+            {
+                if (_favList[i].Msisdn == mContactNumber)
+                    return _favList[i];
+            }
+            return null;
+        }
+
+
+        public bool IsPending(string ms)
+        {
+            if (!IsPendingListLoaded)
+            {
+                MiscDBUtil.LoadPendingRequests();
+                IsPendingListLoaded = true;
+            }
+            if (_pendingReq == null)
+                return false;
+            for (int i = 0; i < _pendingReq.Count; i++)
+            {
+                if (_pendingReq[i].Msisdn == ms)
+                    return true;
+            }
+            return false;
+        }
+
+        public ConversationListObject GetPending(string mContactNumber)
+        {
+            if (_pendingReq.Count == 0)
+                return null;
+            for (int i = 0; i < _pendingReq.Count; i++)
+            {
+                if (_pendingReq[i].Msisdn == mContactNumber)
+                    return _pendingReq[i];
+            }
+            return null;
+
+        }
         private void RefreshNewConversationObject()
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -194,22 +240,5 @@ namespace windows_client.ViewModel
         }
         #endregion
 
-
-        public bool IsPending(string ms)
-        {
-            if (!IsPendingListLoaded)
-            {
-               MiscDBUtil.LoadPendingRequests();
-               IsPendingListLoaded = true;
-            }
-            if (_pendingReq == null)
-                return false;
-            for (int i = 0; i < _pendingReq.Count; i++)
-            {
-                if (_pendingReq[i].Msisdn == ms)
-                    return true;
-            }
-            return false;
-        }
     }
 }

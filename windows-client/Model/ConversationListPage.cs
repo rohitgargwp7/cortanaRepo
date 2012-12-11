@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.Text;
+using windows_client.Languages;
 
 namespace windows_client.Model
 {
@@ -32,7 +33,9 @@ namespace windows_client.Model
         private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private long _lastMsgId;
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
-        BitmapImage empImage = null;
+        private BitmapImage empImage = null;
+        private bool _isFav;
+
         #endregion
 
         #region Properties
@@ -125,6 +128,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
                     NotifyPropertyChanged("IsOnhike");
+                    NotifyPropertyChanged("ShowOnHikeImage");
                 }
             }
         }
@@ -163,6 +167,16 @@ namespace windows_client.Model
                 {
                     _lastMsgId = value;
                 }
+            }
+        }
+
+        public Visibility ShowOnHikeImage
+        {
+            get
+            {
+                if (_isOnhike)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
             }
         }
 
@@ -249,7 +263,6 @@ namespace windows_client.Model
             }
         }
 
-
         public byte[] Avatar
         {
             get
@@ -335,6 +348,34 @@ namespace windows_client.Model
                     case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
                     default: return "";
                 }
+            }
+        }
+
+        public bool IsFav
+        {
+            get
+            {
+                return _isFav;
+            }
+            set
+            {
+                if (value != _isFav)
+                {
+                    _isFav = value;
+                    NotifyPropertyChanged("IsFav");
+                    NotifyPropertyChanged("FavMsg");
+                }
+            }
+        }
+
+        public string FavMsg
+        {
+            get
+            {
+                if (IsFav) // if already favourite
+                    return AppResources.RemFromFav_Txt;
+                else
+                    return AppResources.Add_To_Fav_Txt;
             }
         }
 
@@ -586,12 +627,15 @@ namespace windows_client.Model
         {
             if (PropertyChanging != null)
             {
-                try
-                {
-                    PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-                }
-                catch (Exception)
-                { }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                        }
+                        catch (Exception)
+                        { }
+                    });
             }
         }
         #endregion

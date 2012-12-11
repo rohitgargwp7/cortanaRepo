@@ -12,6 +12,9 @@ using Microsoft.Phone.Notification;
 using System.Text;
 using windows_client.Misc;
 using windows_client.View;
+using System.Collections.ObjectModel;
+using windows_client.Languages;
+using System.Windows.Threading;
 
 namespace windows_client
 {
@@ -48,6 +51,7 @@ namespace windows_client
 
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+        private object lockObj = new object();
         public enum GroupChatState
         {
             ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE
@@ -370,6 +374,26 @@ namespace windows_client
                         this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
                     });
                 }
+                else
+                {
+                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                    if (c != null) // for favourites
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            c.Avatar = imageBytes;
+                        });
+                    }
+                    c = App.ViewModel.GetPending(msisdn);
+                    if (c != null) // for pending requests
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            c.Avatar = imageBytes;
+                        });
+                    }
+
+                }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
@@ -440,22 +464,70 @@ namespace windows_client
                                     App.WriteToIsoStorageSettings(HikeConstants.SECURE_PUSH, vall);
                                 }
                             }
+                            else if (kv.Key == HikeConstants.ACCOUNT)
+                            {
+                                JObject acntValObj = (JObject)oj;
+                                KeyValuePair<string, JToken> kkvv;
+                                IEnumerator<KeyValuePair<string, JToken>> kkeyVvals = acntValObj.GetEnumerator();
+                                while (kkeyVvals.MoveNext())
+                                {
+                                    try
+                                    {
+                                        kkvv = kkeyVvals.Current;
+                                        Debug.WriteLine("AI :: Key : " + kkvv.Key);
+                                        if (kkvv.Key == HikeConstants.FAVORITES)
+                                        {
+                                            JObject favJSON = kkvv.Value.ToObject<JObject>();
+                                            if (favJSON != null)
+                                            {
+                                                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                                {
+                                                    lock (lockObj)      // this has to be done here as we need to ensure , that fav or pending should be added once
+                                                    {
+                                                        KeyValuePair<string, JToken> fkkvv;
+                                                        IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
+                                                        while (kVals.MoveNext())
+                                                        {
+                                                            bool isFav = true; // true for fav , false for pending
+                                                            fkkvv = kVals.Current; // kkvv contains favourites MSISDN
+                                                            JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
+                                                            JToken pToken;
+                                                            if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
+                                                                isFav = false;
+                                                            Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                            LoadFavAndPending(isFav, fkkvv.Key); // true for favs
 
-                            string val = null;
-                            if (oj is JObject)
-                            {
-                                JObject jj = (JObject)oj;
-                                val = jj.ToString(Newtonsoft.Json.Formatting.None);
-                            }
-                            else if (oj is JArray)
-                            {
-                                JArray jarr = (JArray)oj;
-                                val = jarr.ToString(Newtonsoft.Json.Formatting.None);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                    }
+                                }
+                                App.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
                             }
                             else
-                                val = oj.ToString();
-                            Debug.WriteLine("AI :: Value : " + val);
-                            App.WriteToIsoStorageSettings(kv.Key, val);
+                            {
+                                string val = null;
+                                if (oj is JObject)
+                                {
+                                    JObject jj = (JObject)oj;
+                                    val = jj.ToString(Newtonsoft.Json.Formatting.None);
+                                }
+                                else if (oj is JArray)
+                                {
+                                    JArray jarr = (JArray)oj;
+                                    val = jarr.ToString(Newtonsoft.Json.Formatting.None);
+                                }
+                                else
+                                    val = oj.ToString();
+                                Debug.WriteLine("AI :: Value : " + val);
+                                App.WriteToIsoStorageSettings(kv.Key, val);
+                            }
                         }
                         catch { }
                     }
@@ -708,33 +780,33 @@ namespace windows_client
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
+            #region ADD FAVOURITES
             else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
-                JObject oj = (JObject)jsonObj[HikeConstants.DATA];
-                string ms = (string)oj[HikeConstants.Extras.ID];
+                string ms = (string)jsonObj[HikeConstants.FROM];
+                if (ms == null)
+                    return;
                 if (App.ViewModel.Isfavourite(ms)) // already favourite
                     return;
                 if (App.ViewModel.IsPending(ms))
                     return;
-                ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                if (contactInfo == null)
-                    return;
                 ConversationListObject favObj;
-                if (App.ViewModel.ConvMap.ContainsKey(contactInfo.Msisdn))
-                    favObj = App.ViewModel.ConvMap[contactInfo.Msisdn];
-                else
+                if (App.ViewModel.ConvMap.ContainsKey(ms))
+                    favObj = App.ViewModel.ConvMap[ms];
+                else // user not saved in address book
                 {
-                    byte[] _av = MiscDBUtil.getThumbNailForMsisdn(contactInfo.Msisdn);
-                    favObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, _av);
+                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.ViewModel.PendingRequests.Add(favObj);
                     MiscDBUtil.SavePendingRequests();
-                    this.pubSub.publish(HikePubSub.ADD_TO_FAV_OR_PENDING, favObj.Msisdn);
+                    this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
                 });
 
             }
+            #endregion
             #region OTHER
             else
             {
@@ -742,6 +814,37 @@ namespace windows_client
             }
             #endregion
 
+        }
+        private void LoadFavAndPending(bool isFav, string msisdn)
+        {
+                ObservableCollection<ConversationListObject> l;
+                if (isFav)
+                    l = App.ViewModel.FavList;
+                else
+                    l = App.ViewModel.PendingRequests;
+
+                if (isFav)
+                {
+                    if (App.ViewModel.Isfavourite(msisdn))
+                        return;
+                }
+                else
+                {
+                    if (App.ViewModel.IsPending(msisdn))
+                        return;
+                }
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                    l.Add(App.ViewModel.ConvMap[msisdn]);
+                else
+                {
+                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    ConversationListObject favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
+                    l.Add(favObj);
+                }
+                if (isFav)
+                    MiscDBUtil.SaveFavourites();
+                else
+                    MiscDBUtil.SavePendingRequests();
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
@@ -768,19 +871,19 @@ namespace windows_client
             if (dndMembersList.Count == 1)
                 msgText.Append(dndMembersList[0].FirstName);
             else if (dndMembersList.Count == 2)
-                msgText.Append(dndMembersList[0].FirstName + " and " + dndMembersList[1].FirstName);
+                msgText.Append(dndMembersList[0].FirstName + AppResources.And_txt + dndMembersList[1].FirstName);
             else
             {
                 for (int i = 0; i < dndMembersList.Count; i++)
                 {
                     msgText.Append(dndMembersList[i].FirstName);
                     if (i == dndMembersList.Count - 2)
-                        msgText.Append(" and ");
+                        msgText.Append(AppResources.And_txt);
                     else if (i < dndMembersList.Count - 2)
                         msgText.Append(",");
                 }
             }
-            return string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString());
+            return string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
         }
 
         private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList)
@@ -831,7 +934,7 @@ namespace windows_client
                         vals = new object[2];
                     else                    // this shows that we have to show credits msg as this user got credits.
                     {
-                        string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                        string text = string.Format(AppResources.CREDITS_EARNED, credits);
                         JObject o = new JObject();
                         o.Add("t", "credits_gained");
                         ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
@@ -870,7 +973,7 @@ namespace windows_client
                         }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
                         {
-                            string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                            string text = string.Format(AppResources.CREDITS_EARNED, credits);
                             JObject o = new JObject();
                             o.Add("t", "credits_gained");
                             ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);

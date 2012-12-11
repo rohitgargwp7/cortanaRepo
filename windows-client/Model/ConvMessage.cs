@@ -12,6 +12,7 @@ using windows_client.DbUtils;
 using System.Collections.Generic;
 using Microsoft.Phone.Shell;
 using windows_client.Misc;
+using windows_client.Languages;
 
 namespace windows_client.Model
 {
@@ -784,19 +785,19 @@ namespace windows_client.Model
                     {
                         string messageText = "";
                         if (this.FileAttachment.ContentType.Contains("image"))
-                            messageText = "image";
+                            messageText = AppResources.Image_Txt;
                         else if (this.FileAttachment.ContentType.Contains("audio"))
-                            messageText = "audio";
+                            messageText = AppResources.Audio_Txt;
                         else if (this.FileAttachment.ContentType.Contains("video"))
-                            messageText = "video";
+                            messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains("location"))
-                            messageText = "location";
+                            messageText = AppResources.Location_Txt;
                         this._message = messageText;
                     }
                     else
                     {
                         if (participantInfoState == ParticipantInfoState.INTERNATIONAL_USER)
-                            _message = "SMS works only to India at the moment.";
+                            _message = AppResources.SMS_Works_Only_In_India_Txt;
                         else
                             _message = (string)data[HikeConstants.HIKE_MESSAGE];
                     }
@@ -890,13 +891,13 @@ namespace windows_client.Model
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)
             {
-                this._message = HikeConstants.GROUP_CHAT_END;
+                this._message = AppResources.GROUP_CHAT_END;
             }
             else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
             {
                 this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
                 GroupParticipant gp = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
-                this._message = gp.FirstName + HikeConstants.USER_LEFT;
+                this._message = gp.FirstName + AppResources.USER_LEFT;
                 gp.HasLeft = true;
                 gp.IsUsed = false;
             }
@@ -910,19 +911,18 @@ namespace windows_client.Model
 
         private string GetMsgText(List<GroupParticipant> groupList, bool isNewGroup)
         {
-            string msg = "Group Chat with {0}";
+            string msg = AppResources.GroupChatWith_Txt;
             if (!isNewGroup)
-                msg = "Added {0} to the group";
+                msg = AppResources.Added_X_To_GC;
             switch (groupList.Count)
             {
                 case 1:
                     return string.Format(msg, groupList[0].FirstName);
                 case 2:
-                    return string.Format(msg, groupList[0].FirstName + " and "
+                    return string.Format(msg, groupList[0].FirstName + AppResources.And_txt
                     + groupList[1].FirstName);
                 default:
-                    return string.Format(msg, groupList[0].FirstName + " and "
-                    + (groupList.Count - 1) + " others");
+                    return string.Format(msg, string.Format(AppResources.NamingConvention_Txt,groupList[0].FirstName ,groupList.Count - 1));
             }
         }
 
@@ -936,7 +936,7 @@ namespace windows_client.Model
             switch (this.participantInfoState)
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
-                    this.Message = HikeConstants.SMS_INDIA;
+                    this.Message = AppResources.SMS_INDIA;
                     break;
                 default: break;
             }

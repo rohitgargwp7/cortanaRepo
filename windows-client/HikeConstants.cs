@@ -55,7 +55,6 @@ namespace windows_client
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
-        public static readonly string FILES_MESSAGE_PREFIX = "Sent you a %s. To view go to ";
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
@@ -70,6 +69,7 @@ namespace windows_client
         public static readonly int MAX_EMOTICON_SUPPORTED = 10;
         public static readonly int VIBRATE_DURATION = 1000;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 120;
+        public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
@@ -100,6 +100,8 @@ namespace windows_client
         public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
         public static readonly string PUSH_CHANNEL_CN = "*.hike.in";//The PUSH CN
         public static readonly string SECURE_PUSH = "w_secure_push";
+        public static readonly string FAVORITES = "favorites";
+        public static readonly string PENDING = "pending"; // TODO : Change to exact constant
         public static readonly string IS_SECURE_CHANNEL = "is_secure_channel";
 
         public static string FAQS_LINK
@@ -125,11 +127,6 @@ namespace windows_client
                 return TERMS_AND_CONDITIONS_WHITE;
             }
         }
-
-        public static readonly string NORMAL_UPDATE_TEXT = "A new version of hike is out. Would you like to update the app?";
-        public static readonly string CRITICAL_UPDATE_TEXT = "To continue using hike, an update is required.";
-        public static readonly string NORMAL_UPDATE_HEADING = "Update available";
-        public static readonly string CRITICAL_UPDATE_HEADING = "Important update";
 
         /* how long to wait between sending publish and receiving an acknowledgement */
 
@@ -178,16 +175,6 @@ namespace windows_client
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
 
-        public static string DND_USER = "{0} is on DND. Waiting for {0} to reply.";
-        public static string CREDITS_EARNED = "You\'ve just earned {0} free SMS";
-        public static string USER_OPTED_IN_MSG = " just opted in to hike!";
-        public static string WAITING_TO_JOIN = "Waiting for {0} to join in";
-        public static string USER_INVITED = " has been invited";
-        public static string USER_JOINED_GROUP_CHAT = " joined the group chat!";
-        public static string USER_LEFT = " left the group chat";
-        public static readonly string GROUP_CHAT_END = "This group chat has ended.";
-        public static string USER_JOINED_HIKE = "{0} just joined hike!";
-        public static string SMS_INDIA = "SMS can only be sent to India.";
         public static string SOCIAL = "Social_Request";
 
         /* NAVIGATION CONSTANTS*/
@@ -200,6 +187,7 @@ namespace windows_client
         public static string INVITE_TOKEN = "invite_token";
         public static string FB_LOGGED_IN = "FbLoggedIn";
         public static string TW_LOGGED_IN = "TwLoggedIn";
+        public static string ACCOUNT = "account";
 
         public static class Extras
         {
@@ -243,6 +231,7 @@ namespace windows_client
             public static string SMS_USER = "sms_user";
             public static string HIKE_USER = "hike_user";
             public static string ADD_FAVOURITE = "af";
+            public static string REMOVE_FAVOURITE = "rf";
         }
     }
 }

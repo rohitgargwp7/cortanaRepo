@@ -8,6 +8,8 @@ using windows_client.utils;
 using System.Diagnostics;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
+using windows_client.Languages;
+using System.Windows.Documents;
 
 namespace windows_client.View
 {
@@ -181,6 +183,8 @@ namespace windows_client.View
                 upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
                 lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
             }
+            fbFreeSMS.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 100);
+            earnSMSRun.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 50);
         }
 
         private void inviteBtn_Click(object sender, RoutedEventArgs e)
@@ -214,7 +218,7 @@ namespace windows_client.View
         {
             if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
             {
-                MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Facebook", MessageBoxButton.OKCancel);
+                MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
                 if (res == MessageBoxResult.Cancel)
                     return;
             }
@@ -230,7 +234,7 @@ namespace windows_client.View
                 {
                     IsFacebookConnected = true;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully posted to facebook.", "Facebook Post", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_FbPostSuccess_MsgBx, AppResources.FreeSMS_FbPost_MsgBxCaption, MessageBoxButton.OK);
                 });
             }
             else
@@ -246,7 +250,7 @@ namespace windows_client.View
                 {
                     IsFacebookConnected = false;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully Unlinked Account.", "Facebook Unlink", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, MessageBoxButton.OK);
                 });
             }
             else
@@ -258,7 +262,7 @@ namespace windows_client.View
         {
             if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
             {
-                MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Twitter", MessageBoxButton.OKCancel);
+                MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
                 if (res == MessageBoxResult.Cancel)
                     return;
                 else
@@ -282,7 +286,7 @@ namespace windows_client.View
                 {
                     IsTwitterConnected = true;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully posted to twitter.", "Twitter Post", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_TwPostSuccess_MsgBx, AppResources.FreeSMS_TwPost_MsgBxCaption, MessageBoxButton.OK);
                 });
             }
         }
@@ -295,7 +299,7 @@ namespace windows_client.View
                 {
                     IsTwitterConnected = false;
                     ChangeElementsState(true);
-                    MessageBox.Show("Successfully Unlinked Account.", "Twitter Logout", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwSuccess_MsgBx, AppResources.FreeSMS_UnlinkTwSuccess_MsgBxCaptn, MessageBoxButton.OK);
                 });
             }
         }
@@ -332,7 +336,7 @@ namespace windows_client.View
         {
             if (isConnected)
             {
-                fbConnStatus.Text = "Connected";
+                fbConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
                 fbConnImage.Visibility = Visibility.Visible;
                 if (Utils.isDarkTheme())
                 {
@@ -345,7 +349,7 @@ namespace windows_client.View
             }
             else
             {
-                fbConnStatus.Text = "facebook";
+                fbConnStatus.Text = AppResources.FreeSMS_fbConnStatus_TxtBlk;
                 fbConnImage.Visibility = Visibility.Collapsed;
                 if (Utils.isDarkTheme())
                 {
@@ -362,7 +366,7 @@ namespace windows_client.View
         {
             if (isConnected)
             {
-                twConnStatus.Text = "Connected";
+                twConnStatus.Text = AppResources.FreeSMS_fbOrTwitter_Connected;
                 twConnImage.Visibility = Visibility.Visible;
                 if (Utils.isDarkTheme())
                 {
@@ -376,7 +380,7 @@ namespace windows_client.View
             }
             else
             {
-                twConnStatus.Text = "facebook";
+                twConnStatus.Text = AppResources.FreeSMS_twConnStatus_TxtBlk;
                 twConnImage.Visibility = Visibility.Collapsed;
                 if (Utils.isDarkTheme())
                 {
@@ -395,7 +399,7 @@ namespace windows_client.View
             {
                 if (App.appSettings.Contains(HikeConstants.TW_LOGGED_IN)) // already logged in
                 {
-                    MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Twitter", MessageBoxButton.OKCancel);
+                    MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkTwitter_MsgBxCaptn, MessageBoxButton.OKCancel);
                     if (res == MessageBoxResult.Cancel)
                         return;
                     else
@@ -418,7 +422,7 @@ namespace windows_client.View
             {
                 if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN)) // already logged in
                 {
-                    MessageBoxResult res = MessageBox.Show("Are you sure you want to unlink your account?", "Unlink Facebook", MessageBoxButton.OKCancel);
+                    MessageBoxResult res = MessageBox.Show(AppResources.FreeSMS_UnlinkFbOrTwConfirm_MsgBx, AppResources.FreeSMS_UnlinkFacebook_MsgBxCaptn, MessageBoxButton.OKCancel);
                     if (res == MessageBoxResult.Cancel)
                         return;
                 }

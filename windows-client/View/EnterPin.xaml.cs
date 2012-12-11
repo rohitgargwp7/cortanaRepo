@@ -7,6 +7,7 @@ using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
 using System.Windows.Threading;
+using windows_client.Languages;
 
 namespace windows_client
 {
@@ -33,7 +34,7 @@ namespace windows_client
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            nextIconButton.Text = "Next";
+            nextIconButton.Text = AppResources.AppBar_Next_Btn;
             nextIconButton.Click += new EventHandler(btnEnterPin_Click);
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
@@ -52,7 +53,7 @@ namespace windows_client
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                pinErrorTxt.Text = "Connectivity issue.";
+                pinErrorTxt.Text = AppResources.Connectivity_Issue;
                 pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                 isNextClicked = false;
                 return;
@@ -75,7 +76,7 @@ namespace windows_client
                 // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    pinErrorTxt.Text = "PIN not valid. Please try again.";
+                    pinErrorTxt.Text = AppResources.EnterPin_PinError_TxtBlk;
                     pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
@@ -114,7 +115,7 @@ namespace windows_client
         {
             try
             {
-                txtBxEnterPin.Hint = "Pin";
+                txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
             }
             catch { }
@@ -281,7 +282,7 @@ namespace windows_client
                 string msisdn;
                 App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out msisdn);
                 AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
-                MessageBox.Show("Calling you for PIN.", "", MessageBoxButton.OK);
+                MessageBox.Show(AppResources.EnterPin_CallingMsg_MsgBox);
 
             }
         }
@@ -292,7 +293,7 @@ namespace windows_client
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBox.Show("Couldn't call you. Try again later.", "", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.EnterPin_CallErrorMsg_MsgBox);
                 });
 
             }

@@ -117,12 +117,17 @@
     <Compile Include="FileTransfer.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
+    <Compile Include="Languages\AppResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Languages\LocalizedStrings.cs" />
     <Compile Include="Misc\GroupManager.cs" />
     <Compile Include="Misc\IBinarySerializable.cs" />
     <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
-    <Compile Include="Model\Favourites.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
@@ -340,6 +345,7 @@
     <Content Include="View\images\audio_file_icon_white.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
+    <Content Include="View\images\connected_tick.png" />
     <Content Include="View\images\delete_account_white.png" />
     <Content Include="View\images\drop_pin_icon.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
@@ -597,7 +603,13 @@
       <Name>Phone.Controls</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Languages\AppResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

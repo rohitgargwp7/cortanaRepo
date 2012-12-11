@@ -16,6 +16,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -206,7 +207,7 @@ namespace windows_client.View
                 {
                     Dispatcher.BeginInvoke(() =>
                         {
-                            MessageBox.Show("Unable to retrieve request token");
+                            MessageBox.Show(AppResources.SocialPages_UnableToRetrieveToken_Txt);
                             NavigationService.GoBack();
                         });
                 }

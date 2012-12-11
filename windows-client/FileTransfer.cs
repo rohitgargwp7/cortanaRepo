@@ -18,6 +18,7 @@ using windows_client.View;
 using windows_client.DbUtils;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
+using windows_client.Languages;
 
 namespace windows_client
 {
@@ -74,11 +75,11 @@ namespace windows_client
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show("Unable to download file. " + ex.Message);
+                MessageBox.Show(AppResources.FileTransfer_ErrorMsgBoxText + ex.Message);
             }
             catch (Exception e)
             {
-                MessageBox.Show("Unable to download file.");
+                MessageBox.Show(AppResources.FileTransfer_ErrorMsgBoxText);
             }
         }
 

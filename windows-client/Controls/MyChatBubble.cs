@@ -29,7 +29,13 @@ namespace windows_client.Controls
         public string Text;
         public string TimeStamp;
         public List<MyChatBubble> splitChatBubbles = null;
-        
+
+        public enum ChatBubbleType
+        {
+            TEXT, // hike participant has left
+            ATTACHMENT_OR_LOCATION, // sms participant has joined Group Chat
+            NUDGE
+        }
 
         //TODO: Try to use a single property for timestamp.
         //either dispose off the convmessage or else keep a reference to it in this class

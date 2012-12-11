@@ -11,6 +11,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using windows_client.Languages;
 
 namespace windows_client.DbUtils
 {
@@ -101,6 +102,8 @@ namespace windows_client.DbUtils
                 byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(convMessage.Msisdn);
                 obj = new ConversationListObject(convMessage.Msisdn, contactInfo == null ? null : contactInfo.Name, convMessage.Message,
                     contactInfo == null ? !convMessage.IsSms : contactInfo.OnHike, convMessage.Timestamp, avatar, convMessage.MessageStatus, convMessage.MessageId);
+                if (App.ViewModel.Isfavourite(convMessage.Msisdn))
+                    obj.IsFav = true;
             }
 
             /*If ABCD join grp chat convObj should show D joined grp chat as D is last in sorted order*/
@@ -110,7 +113,7 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
             {
-                obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
                 convMessage.Message = obj.LastMessage;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
@@ -119,12 +122,12 @@ namespace windows_client.DbUtils
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
             {
-                obj.LastMessage = string.Format(HikeConstants.DND_USER, obj.NameToShow);
+                obj.LastMessage = string.Format(AppResources.DND_USER, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
             else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
             {
-                obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
+                obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
                 convMessage.Message = obj.LastMessage;
             }
 
@@ -447,8 +450,9 @@ namespace windows_client.DbUtils
                 }
                 return false;
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.WriteLine("Exception while reading Conversations : {0}",ex.StackTrace);
                 return false;
             }
         }

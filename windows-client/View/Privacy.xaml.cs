@@ -16,6 +16,7 @@ using Phone.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Notification;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -69,11 +70,11 @@ namespace windows_client.View
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to unlink your Hike account from this device?", "Unlink Account", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
-                progress = new MyProgressIndicator("Unlinking Account...");
+                progress = new MyProgressIndicator(AppResources.Privacy_UnlinkAccountProgress);
 
             progress.Show();
             canGoBack = false;
@@ -87,7 +88,7 @@ namespace windows_client.View
                 Debug.WriteLine("Unlink Account", "Could not unlink account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show("hike couldn't unlink your account. Please try again.", "Account not unlinked", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkErrMsgBxText, AppResources.Privacy_UnlinkErrMsgBxCaptn, MessageBoxButton.OKCancel);
                     progress.Hide();
                     progress = null;
                     canGoBack = true;
@@ -114,12 +115,12 @@ namespace windows_client.View
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete your Hike account permanently?", "Delete Account", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator("Deleting Account...");
+                progress = new MyProgressIndicator(AppResources.Privacy_DeleteAccountProgress);
             }
             progress.Show();
             canGoBack = false;

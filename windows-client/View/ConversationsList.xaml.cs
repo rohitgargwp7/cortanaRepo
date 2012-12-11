@@ -15,37 +15,28 @@ using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows.Documents;
-using Microsoft.Phone.Notification;
 using System.Net.NetworkInformation;
-using Microsoft.Phone.Reactive;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
 using windows_client.Misc;
-using System.Collections.ObjectModel;
+using System.Windows.Media;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
-        #region CONSTANTS
-
-        private readonly string DELETE_ALL_CONVERSATIONS = "Delete All Chats";
-        private readonly string INVITE_USERS = "Invite Users";
-
-        #endregion
 
         #region Instances
 
         bool _isFavListBound = false;
         bool _isPendingListBound = false;
-        bool _isHikeListBound = false;
         bool isProfilePicTapped = false;
         byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
         private bool firstLoad = true;
         private bool showFreeSMS = false;
-        private ObservableCollection<ContactInfo> onHikeContactList = null;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private PhotoChooserTask photoChooserTask;
@@ -217,13 +208,13 @@ namespace windows_client.View
                 {
                     j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
                     c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER, j);
-                    c.Message = cl[i].Name + " is on hike.";
+                    c.Message = string.Format(AppResources.Conversations_OnHike_Txt, cl[i].Name);
                 }
                 else
                 {
                     j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.SMS_USER;
                     c = new ConvMessage(ConvMessage.ParticipantInfoState.SMS_USER, j);
-                    c.Message = "Send " + cl[i].Name + " free sms.";
+                    c.Message = string.Format(AppResources.Conversations_OnSMS_Txt, cl[i].Name);
                 }
                 c.Msisdn = cl[i].Msisdn;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
@@ -244,7 +235,7 @@ namespace windows_client.View
             /* Add icons */
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
-            composeIconButton.Text = "new chat";
+            composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
@@ -253,13 +244,13 @@ namespace windows_client.View
             convListPagePivot.ApplicationBar = appBar;
 
             ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
-            groupChatIconButton.Text = "Group Chat";
+            groupChatIconButton.Text = AppResources.GrpChat_Txt;
             groupChatIconButton.Click += new EventHandler(createGroup_Click);
             groupChatIconButton.IsEnabled = true;
             appBar.MenuItems.Add(groupChatIconButton);
 
             delConvsMenu = new ApplicationBarMenuItem();
-            delConvsMenu.Text = DELETE_ALL_CONVERSATIONS;
+            delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
             delConvsMenu.Click += new EventHandler(deleteAllConvs_Click);
             appBar.MenuItems.Add(delConvsMenu);
         }
@@ -298,7 +289,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
-            mPubSub.addListener(HikePubSub.ADD_TO_FAV_OR_PENDING, this);
+            mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
         }
 
         private void removeListeners()
@@ -309,7 +300,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
-                mPubSub.removeListener(HikePubSub.ADD_TO_FAV_OR_PENDING, this);
+                mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
             }
             catch { }
         }
@@ -329,12 +320,14 @@ namespace windows_client.View
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
+                favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             else
             {
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
+                favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x1a, 0x1a, 0x1a));
             }
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
@@ -385,7 +378,7 @@ namespace windows_client.View
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 isProfilePicTapped = false;
                 return;
             }
@@ -405,7 +398,7 @@ namespace windows_client.View
                 //progressBarTop.IsEnabled = false;
                 shellProgress.IsVisible = false;
                 if (e.Error != null)
-                    MessageBox.Show("You cannot select photo while phone is connected to computer.", "", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
         }
 
@@ -448,7 +441,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    MessageBox.Show("Cannot change Profile Image. Try Later!!", "Oops, something went wrong!", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 }
                 //progressBarTop.IsEnabled = false;
                 shellProgress.IsVisible = false;
@@ -462,7 +455,7 @@ namespace windows_client.View
 
         private void deleteAllConvs_Click(object sender, EventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting all chats?", "Delete All Chats", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             shellProgress.IsVisible = true;
@@ -516,7 +509,7 @@ namespace windows_client.View
 
         private void MenuItem_Tap_Delete(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about deleting this chat?", "Delete Chat", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chat_Confirmation, AppResources.Conversations_DelChat_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
@@ -527,6 +520,57 @@ namespace windows_client.View
             ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
             if (convObj != null)
                 deleteConversation(convObj);
+        }
+
+        private void MenuItem_Tap_AddRemoveFav(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ListBoxItem selectedListBoxItem = this.myListBox.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            ConversationListObject convObj = selectedListBoxItem.DataContext as ConversationListObject;
+            if (convObj != null)
+            {
+                if (convObj.IsFav) // already fav , remove request
+                {
+                    MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
+                    if (result == MessageBoxResult.Cancel)
+                        return;
+                    convObj.IsFav = false;
+                    App.ViewModel.FavList.Remove(convObj);
+                    JObject data = new JObject();
+                    data["id"] = convObj.Msisdn;
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                    obj[HikeConstants.DATA] = data;
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                    MiscDBUtil.SaveFavourites();
+                    if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+                    {
+                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                        favourites.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                }
+                else // add to fav
+                {
+                    convObj.IsFav = true;
+                    App.ViewModel.FavList.Insert(0,convObj);
+                    MiscDBUtil.SaveFavourites();
+
+                    JObject data = new JObject();
+                    data["id"] = convObj.Msisdn;
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                    obj[HikeConstants.DATA] = data;
+
+                    if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                        favourites.Visibility = System.Windows.Visibility.Visible;
+                    }
+                }
+            }
         }
 
         private void deleteConversation(ConversationListObject convObj)
@@ -615,16 +659,6 @@ namespace windows_client.View
                         if (!App.ViewModel.IsPendingListLoaded) // if list is not loaded
                             MiscDBUtil.LoadPendingRequests();
                         App.ViewModel.IsPendingListLoaded = true;
-
-                        for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
-                        {
-                            if (App.ViewModel.ConvMap.ContainsKey(App.ViewModel.PendingRequests[i].Msisdn))
-                                App.ViewModel.PendingRequests[i].Avatar = App.ViewModel.ConvMap[App.ViewModel.PendingRequests[i].Msisdn].Avatar;
-                            else
-                            {
-                                App.ViewModel.PendingRequests[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
-                            }
-                        }
                     };
                     pendingBw.RunWorkerAsync();
                     pendingBw.RunWorkerCompleted += (sf, ef) =>
@@ -639,41 +673,6 @@ namespace windows_client.View
                 }
                 #endregion
 
-                #region On Hike Friends
-
-                if (!_isHikeListBound)
-                {
-                    _isHikeListBound = true;
-                    BackgroundWorker onHikeBw = new BackgroundWorker();
-                    onHikeBw.DoWork += (sf, ef) =>
-                    {
-                        List<ContactInfo> onHikePeople = UsersTableUtils.GetAllHikeContactsOrdered();
-                        if(onHikePeople == null)
-                            return;
-                        onHikeContactList = new ObservableCollection<ContactInfo>(onHikePeople);
-
-                        for (int i = 0; i < onHikeContactList.Count; i++)
-                        {
-                            if (App.ViewModel.ConvMap.ContainsKey(onHikeContactList[i].Msisdn))
-                                onHikeContactList[i].Avatar = App.ViewModel.ConvMap[onHikeContactList[i].Msisdn].Avatar;
-                            else
-                                onHikeContactList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(onHikeContactList[i].Msisdn);
-                            if (!App.ViewModel.Isfavourite(onHikeContactList[i].Msisdn))
-                                onHikeContactList[i].IsFav = 1;
-                        }
-                    };
-                    onHikeBw.RunWorkerAsync();
-                    onHikeBw.RunWorkerCompleted += (sf, ef) =>
-                    {
-                        hikeFriends.ItemsSource = onHikeContactList;
-                        if (onHikeContactList.Count > 0)
-                        {
-                            onHikeEmptyPlaceHolder.Visibility = System.Windows.Visibility.Collapsed;
-                            hikeFriends.Visibility = System.Windows.Visibility.Visible;
-                        }
-                    };
-                }
-                #endregion
             }
         }
 
@@ -717,7 +716,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    creditsTxtBlck.Text = Convert.ToString((int)obj) + " Left";
+                    creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, Convert.ToString((int)obj));
                 });
             }
             #endregion
@@ -731,20 +730,19 @@ namespace windows_client.View
             }
             #endregion
             #region ADD TO FAV OR PENDING
-            else if (HikePubSub.ADD_TO_FAV_OR_PENDING == type)
+            else if (HikePubSub.ADD_REMOVE_FAV_OR_PENDING == type)
             {
-                string msisdn = (string)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
-                    {
-                        if (onHikeContactList[i].Msisdn == msisdn)
-                            onHikeContactList[i].IsFav = 0;
-                    }
                     if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+                    {
+                        emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                        favourites.Visibility = System.Windows.Visibility.Collapsed;
                     }
                 });
             }
@@ -905,8 +903,8 @@ namespace windows_client.View
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox(HikeConstants.CRITICAL_UPDATE_HEADING, HikeConstants.CRITICAL_UPDATE_TEXT,
-                     new List<string> { "Update" }, 0, MessageBoxIcon.Alert,
+                Guide.BeginShowMessageBox(AppResources.CRITICAL_UPDATE_HEADING, AppResources.CRITICAL_UPDATE_TEXT,
+                     new List<string> { AppResources.Update_Txt }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -927,8 +925,8 @@ namespace windows_client.View
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox(HikeConstants.NORMAL_UPDATE_HEADING, HikeConstants.NORMAL_UPDATE_TEXT,
-                     new List<string> { "Update", "Ignore" }, 0, MessageBoxIcon.Alert,
+                Guide.BeginShowMessageBox(AppResources.NORMAL_UPDATE_HEADING, AppResources.NORMAL_UPDATE_TEXT,
+                     new List<string> { AppResources.Update_Txt, AppResources.Ignore_Txt }, 0, MessageBoxIcon.Alert,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -990,62 +988,38 @@ namespace windows_client.View
 
         #region FAVOURITE ZONE
 
-        private void addRecentToFav_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ContactInfo fObj = (sender as Image).DataContext as ContactInfo;
-            if (!App.ViewModel.Isfavourite(fObj.Msisdn)) // if not already favourite then only add to fav
-            {
-                if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
-                    App.ViewModel.FavList.Add(App.ViewModel.ConvMap[fObj.Msisdn]);
-                else
-                {
-                    ConversationListObject favObj = new ConversationListObject(fObj.Msisdn, fObj.Name, fObj.OnHike, fObj.Avatar);
-                    App.ViewModel.FavList.Add(favObj);
-                }
-                MiscDBUtil.SaveFavourites();
-                if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
-                {
-                    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
-                    favourites.Visibility = System.Windows.Visibility.Visible;
-                }
-
-                JObject data = new JObject();
-                data["id"] = fObj.Msisdn;
-                JObject obj = new JObject();
-                obj[HikeConstants.TO] = fObj.Msisdn;
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
-                {
-                    if (onHikeContactList[i].Msisdn == fObj.Msisdn)
-                        onHikeContactList[i].IsFav = 0;
-                }
-            }
-        }
-
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             App.ViewModel.PendingRequests.Remove(fObj);
-            App.ViewModel.FavList.Add(fObj);
+            App.ViewModel.FavList.Insert(0,fObj);
+
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+
             MiscDBUtil.SaveFavourites();
             MiscDBUtil.SavePendingRequests();
+            
             if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
-            }
-            for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
-            {
-                if (onHikeContactList[i].Msisdn == fObj.Msisdn)
-                    onHikeContactList[i].IsFav = 0;
             }
         }
 
         private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             App.ViewModel.PendingRequests.Remove(fObj);
             MiscDBUtil.SavePendingRequests();
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
@@ -1067,19 +1041,21 @@ namespace windows_client.View
 
         private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure about removing this contact from favourites?", "Remove from Favourites", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
             if (convObj != null)
             {
+                convObj.IsFav = false;
                 App.ViewModel.FavList.Remove(convObj);
+                JObject data = new JObject();
+                data["id"] = convObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
-                for (int i = 0; i < (onHikeContactList != null ? onHikeContactList.Count : 0); i++)
-                {
-                    if (onHikeContactList[i].Msisdn == convObj.Msisdn)
-                        onHikeContactList[i].IsFav = 1;
-                }
             }
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
             {
@@ -1089,5 +1065,12 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void Button_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
+            string uri = "/View/InviteUsers.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
     }
 }

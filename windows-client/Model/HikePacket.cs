@@ -7,6 +7,7 @@ namespace windows_client.Model
     public class HikePacket
     {
         private long _messageId;
+        [Column]
         public long MessageId
         {
             get

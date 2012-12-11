@@ -346,6 +346,10 @@ namespace windows_client.Controls
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
 
+        private static Thickness textBubbleMargin = new Thickness(74, 12, 0, 10);
+        private static Thickness nudgeBubbleMargin = new Thickness(348, 12, 0, 10);
+        private static Thickness attachmentBubbleMargin = new Thickness(200, 12, 0, 10);
+
         private void initializeBasedOnState(ConvMessage cm, string messageString)
         {
             bool hasAttachment = cm.HasAttachment;
@@ -386,6 +390,7 @@ namespace windows_client.Controls
                     this.MessageImage.Height = 24;
                     this.MessageImage.Width = 31;
                     this.MessageImage.Margin = nudgeMargin;
+                    this.Margin = nudgeBubbleMargin;
                 }
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
@@ -421,6 +426,7 @@ namespace windows_client.Controls
                     uploadProgress.MaxHeight = 100;
                     Grid.SetRow(uploadProgress, 1);
                     attachment.Children.Add(uploadProgress);
+                    this.Margin = attachmentBubbleMargin;
                 }
             }
             else
@@ -433,6 +439,7 @@ namespace windows_client.Controls
                 Grid.SetRow(MessageText, 0);
                 Grid.SetColumn(MessageText, 1);
                 wrapperGrid.Children.Add(MessageText);
+                this.Margin = textBubbleMargin;
             }
 
             SDRImage = new Image();

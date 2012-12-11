@@ -106,6 +106,10 @@ namespace windows_client.DbUtils
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
             }
             #endregion
+            #region DELETE FAVOURITES AND PENDING REQUESTS
+            DeleteFavourites();
+            DeletePendingRequests();
+            #endregion
         }
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes)
@@ -127,7 +131,7 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.WriteLine(e);
                 }
@@ -378,7 +382,7 @@ namespace windows_client.DbUtils
 
         #region FAVOURITES
 
-        public static void LoadFavourites(ObservableCollection<ConversationListObject> favList)
+        public static void LoadFavourites(ObservableCollection<ConversationListObject> favList, Dictionary<string, ConversationListObject> _convmap)
         {
             lock (favReadWriteLock)
             {
@@ -410,9 +414,15 @@ namespace windows_client.DbUtils
                                     try
                                     {
                                         item.ReadFavOrPending(reader);
-                                        favList.Add(item);
+                                        if (_convmap.ContainsKey(item.Msisdn)) // if this item is in convList, just mark IsFav to true
+                                        {
+                                            favList.Add(_convmap[item.Msisdn]);
+                                            _convmap[item.Msisdn].IsFav = true;
+                                        }
+                                        else
+                                            favList.Add(item);
                                     }
-                                    catch(Exception ex)
+                                    catch (Exception ex)
                                     {
                                         Debug.WriteLine(ex);
                                     }
@@ -460,6 +470,18 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static void DeleteFavourites()
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                try
+                {
+                    store.DeleteFile(MISC_DIR + "\\" + FAVOURITES_FILE);
+                }
+                catch { }
+            }
+        }
+
         #endregion
 
         #region PENDING REQUESTS
@@ -496,7 +518,14 @@ namespace windows_client.DbUtils
                                     try
                                     {
                                         item.ReadFavOrPending(reader);
-                                        App.ViewModel.PendingRequests.Add(item);
+                                        if (App.ViewModel.ConvMap.ContainsKey(item.Msisdn))
+                                            App.ViewModel.PendingRequests.Add(App.ViewModel.ConvMap[item.Msisdn]);
+                                        else
+                                        {
+                                            item.Avatar = MiscDBUtil.getThumbNailForMsisdn(item.Msisdn);
+                                            App.ViewModel.PendingRequests.Add(item);
+                                        }
+
                                     }
                                     catch
                                     {
@@ -542,6 +571,18 @@ namespace windows_client.DbUtils
                         file.Dispose();
                     }
                 }
+            }
+        }
+
+        public static void DeletePendingRequests()
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                try
+                {
+                    store.DeleteFile(MISC_DIR + "\\" + PENDING_REQ_FILE);
+                }
+                catch { }
             }
         }
 
