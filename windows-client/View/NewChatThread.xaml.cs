@@ -62,8 +62,6 @@ namespace windows_client.View
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
         //messages stored in db, other messages would have their attachment object set
 
-        private static long tempMsgId = -2;
-
         private int msgBubbleCount = 0;
         private int mCredits;
         private long lastTextChangedTime;
@@ -1002,7 +1000,6 @@ namespace windows_client.View
                     TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                convMessage.MessageId = TempMessageId;
                 convMessage.FileAttachment = chatBubble.FileAttachment;
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
@@ -1465,14 +1462,6 @@ namespace windows_client.View
             }
         }
 
-        public static long TempMessageId
-        {
-            get
-            {
-                return tempMsgId--;
-            }
-        }
-
         private void addNewAttachmentMessageToUI(SentChatBubble chatBubble)
         {
             if (isTypingNotificationActive)
@@ -1787,7 +1776,6 @@ namespace windows_client.View
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.MessageId = TempMessageId;
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
             sendMsg(convMessage, false);
@@ -1845,8 +1833,6 @@ namespace windows_client.View
 
             ConvMessage convMessage = new ConvMessage(message, mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = !isOnHike;
-            convMessage.MessageId = TempMessageId;
-
             sendMsg(convMessage, false);
         }
 
@@ -1924,8 +1910,7 @@ namespace windows_client.View
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                convMessage.MessageId = TempMessageId;
-
+                
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
                 adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
@@ -2811,8 +2796,7 @@ namespace windows_client.View
                     ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                convMessage.MessageId = TempMessageId;
-
+                
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "hikemap/location";
                 convMessage.Message = AppResources.Location_Txt;
@@ -2844,8 +2828,7 @@ namespace windows_client.View
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                convMessage.MessageId = TempMessageId;
-
+                
                 convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "audio/voice";
                 convMessage.Message = AppResources.Audio_Txt;
@@ -2960,7 +2943,6 @@ namespace windows_client.View
                     return;
                 ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
-                convMessage.MessageId = TempMessageId;
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
