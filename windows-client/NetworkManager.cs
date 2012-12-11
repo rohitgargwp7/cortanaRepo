@@ -51,6 +51,7 @@ namespace windows_client
 
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+        private object lockObj = new object();
         public enum GroupChatState
         {
             ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE
@@ -479,18 +480,26 @@ namespace windows_client
                                             JObject favJSON = kkvv.Value.ToObject<JObject>();
                                             if (favJSON != null)
                                             {
-                                                KeyValuePair<string, JToken> fkkvv;
-                                                IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
-                                                while (kVals.MoveNext())
+                                                Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
-                                                    bool isFav = true; // true for fav , false for pending
-                                                    fkkvv = kVals.Current; // kkvv contains favourites MSISDN
-                                                    JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
-                                                    JToken pToken;
-                                                    if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
-                                                        isFav = false;
-                                                    LoadFavAndPending(isFav, fkkvv.Key); // true for favs
-                                                }
+                                                    lock (lockObj)
+                                                    {
+                                                        KeyValuePair<string, JToken> fkkvv;
+                                                        IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
+                                                        while (kVals.MoveNext())
+                                                        {
+                                                            bool isFav = true; // true for fav , false for pending
+                                                            fkkvv = kVals.Current; // kkvv contains favourites MSISDN
+                                                            JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
+                                                            JToken pToken;
+                                                            if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
+                                                                isFav = false;
+                                                            Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                            LoadFavAndPending(isFav, fkkvv.Key); // true for favs
+
+                                                        }
+                                                    }
+                                                });
                                             }
                                         }
                                     }
@@ -787,7 +796,7 @@ namespace windows_client
                 else // user not saved in address book
                 {
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(ms,ci!=null?ci.Name:null,ci!=null? ci.OnHike:true,ci!=null?MiscDBUtil.getThumbNailForMsisdn(ms):null);
+                    favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -806,36 +815,36 @@ namespace windows_client
             #endregion
 
         }
-
         private void LoadFavAndPending(bool isFav, string msisdn)
         {
-            ObservableCollection<ConversationListObject> l;
-            if (isFav)
-                l = App.ViewModel.FavList;
-            else
-                l = App.ViewModel.PendingRequests;
-
-            if (isFav)
-                if (App.ViewModel.Isfavourite(msisdn))
-                    return;
+                ObservableCollection<ConversationListObject> l;
+                if (isFav)
+                    l = App.ViewModel.FavList;
                 else
+                    l = App.ViewModel.PendingRequests;
+
+                if (isFav)
+                {
+                    if (App.ViewModel.Isfavourite(msisdn))
+                        return;
+                }
+                else
+                {
                     if (App.ViewModel.IsPending(msisdn))
                         return;
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
+                }
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                     l.Add(App.ViewModel.ConvMap[msisdn]);
                 else
                 {
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    ConversationListObject favObj = new ConversationListObject(msisdn,ci!=null? ci.Name:null,ci!=null?ci.OnHike:true,ci!=null?MiscDBUtil.getThumbNailForMsisdn(msisdn):null);
+                    ConversationListObject favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                     l.Add(favObj);
                 }
-            });
-            if (isFav)
-                MiscDBUtil.SaveFavourites();
-            else
-                MiscDBUtil.SavePendingRequests();
+                if (isFav)
+                    MiscDBUtil.SaveFavourites();
+                else
+                    MiscDBUtil.SavePendingRequests();
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
