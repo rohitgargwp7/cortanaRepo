@@ -136,11 +136,17 @@ namespace windows_client.DbUtils
                 bool isNewGroup = (bool)vals[1];
                 SentChatBubble chatBubble = (SentChatBubble)vals[2];
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
-                chatBubble.MessageId = convMessage.MessageId;
+                if (chatBubble != null)
+                {
+                    chatBubble.MessageId = convMessage.MessageId;
+                }
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    addSentMessageToMsgMap(chatBubble);
+                    if (chatBubble != null)
+                    {
+                        addSentMessageToMsgMap(chatBubble);
+                    }
                     if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
                         App.ViewModel.MessageListPageCollection.Remove(convObj);
