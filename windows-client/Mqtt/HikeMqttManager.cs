@@ -271,23 +271,29 @@ namespace windows_client.Mqtt
             };
             bw.RunWorkerAsync();
         }
+        
+        private static object lockObj = new object();
+
 
         private void connectInBackground()
         {
-            disconnectCalled = false;
-            if (isConnected())
+            lock (lockObj)
             {
-                return;
-            }
+                disconnectCalled = false;
+                if (isConnected())
+                {
+                    return;
+                }
 
-            if (isUserOnline())
-            {
-                connectToBroker();
-            }
-            else
-            {
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-                scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                if (isUserOnline())
+                {
+                    connectToBroker();
+                }
+                else
+                {
+                    setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                    scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                }
             }
         }
 
