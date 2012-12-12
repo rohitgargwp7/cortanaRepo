@@ -90,14 +90,14 @@ namespace windows_client.Controls
                 if (currentPage != null)
                 {
                     ContextMenu contextMenu = null;
-                    if (cm.MetaDataString.Contains("poke"))
-                    {
-                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
-                            false); //since it is not an attachment message this bool won't make difference
-                    }
-                    else
+                    if (String.IsNullOrEmpty(cm.MetaDataString))   
                     {
                         contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.COMPLETED,
+                            false); //since it is not an attachment message this bool won't make difference
+                    }
+                    else if (cm.MetaDataString.Contains("poke"))
+                    {
+                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
                             false); //since it is not an attachment message this bool won't make difference
                     }
                     ContextMenuService.SetContextMenu(this, contextMenu);
