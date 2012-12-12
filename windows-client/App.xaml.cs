@@ -672,7 +672,10 @@ namespace windows_client
                 if (!isNewInstall)// this has to be called for no new install case
                     convList = GetConversations();
                 else
+                {
                     convList = null;
+                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
+                }
 
                 if (convList == null || convList.Count == 0)
                     _viewModel = new HikeViewModel();
