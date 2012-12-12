@@ -15,7 +15,6 @@ using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows.Documents;
-using System.Net.NetworkInformation;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
@@ -23,6 +22,7 @@ using windows_client.Misc;
 using System.Windows.Media;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -56,7 +56,23 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
+            DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
         }
+
+        private static void OnNetworkChange(object sender, EventArgs e)
+        {
+            //Microsoft.Phone.Net.NetworkInformation.NetworkInterface inherits from System.Net.NetworkInformation.NetworkInterface 
+            //and adds the GetNetworkInterface static method and the NetworkInterfaceType static property
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                App.MqttManagerInstance.connect();
+            }
+            else
+            {
+                App.MqttManagerInstance.connectionStatus = Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
+            }
+        }
+
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -118,6 +134,8 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
+            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
+
         }
 
         #endregion
@@ -335,8 +353,7 @@ namespace windows_client.View
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
                 accountName.Text = name;
-            creditsTxtBlck.Text = Convert.ToString(App.appSettings[App.SMS_SETTING]) + " Left";
-
+            creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, (int)App.appSettings[App.SMS_SETTING]);
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = 83;
@@ -356,6 +373,10 @@ namespace windows_client.View
                 BitmapImage empImage = new BitmapImage();
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;
+            }
+            else
+            {
+                avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
             }
         }
 
