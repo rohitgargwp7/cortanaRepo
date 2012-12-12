@@ -30,13 +30,6 @@ namespace windows_client.Controls
         public string TimeStamp;
         public List<MyChatBubble> splitChatBubbles = null;
 
-        public enum ChatBubbleType
-        {
-            TEXT, // hike participant has left
-            ATTACHMENT_OR_LOCATION, // sms participant has joined Group Chat
-            NUDGE
-        }
-
         //TODO: Try to use a single property for timestamp.
         //either dispose off the convmessage or else keep a reference to it in this class
         public long TimeStampLong
@@ -93,7 +86,22 @@ namespace windows_client.Controls
             }
             else if (!cm.HasAttachment)
             {
-                setNonAttachmentContextMenu();  
+                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                if (currentPage != null)
+                {
+                    ContextMenu contextMenu = null;
+                    if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains("poke"))   
+                    {
+                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.COMPLETED,
+                            false); //since it is not an attachment message this bool won't make difference
+                    }
+                    else
+                    {
+                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
+                            false); //since it is not an attachment message this bool won't make difference
+                    }
+                    ContextMenuService.SetContextMenu(this, contextMenu);
+                }
             }
         }
 
@@ -101,31 +109,6 @@ namespace windows_client.Controls
         {
             var gl = GestureService.GetGestureListener(this);
             gl.Tap += tapEventHandler;
-        }
-
-        protected void setContextMenu(Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary)
-        {
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = true;
-            foreach (KeyValuePair<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> entry in contextMenuDictionary)
-            {
-                MenuItem menuItem = new MenuItem();
-                menuItem.Header = entry.Key;
-                var gl = GestureService.GetGestureListener(menuItem);
-                gl.Tap += entry.Value;
-                menu.Items.Add(menuItem);
-            }
-            ContextMenuService.SetContextMenu(this, menu);
-        }
-
-
-        private void setNonAttachmentContextMenu()
-        { 
-            var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
-            if (currentPage != null)
-            {
-                setContextMenu(currentPage.NonAttachmentMenu);
-            }
         }
 
         protected virtual void uploadOrDownloadCanceled()
@@ -136,7 +119,6 @@ namespace windows_client.Controls
 
         protected virtual void uploadOrDownloadCompleted()
         { }
-
 
         public virtual void setAttachmentState(Attachment.AttachmentState attachmentState)
         {

@@ -485,9 +485,9 @@ namespace windows_client.Model
             }
             else if (this.MetaDataString !=null && this.MetaDataString.Contains("poke"))
             {
-                metadata = new JObject();
-                metadata["poke"] = true;
-                data[HikeConstants.METADATA] = metadata;
+                //metadata = new JObject();
+                //metadata["poke"] = true;
+                data["poke"] = true;
             }
 
             obj[HikeConstants.TO] = _msisdn;
@@ -772,7 +772,6 @@ namespace windows_client.Model
                 JObject data = (JObject)obj[HikeConstants.DATA];
                 JToken msg;
 
-
                 if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg)) // if sms 
                 {
                     _message = msg.ToString();
@@ -803,6 +802,11 @@ namespace windows_client.Model
                     }
 
                 }
+                if (data.TryGetValue("poke", out msg)) // if sms 
+                {
+                    metadataJsonString = "{poke: true}";
+                }
+
                 //if (_groupParticipant != null) // reprsents group chat
                 //{
                 //    _message = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;

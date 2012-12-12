@@ -114,6 +114,17 @@ namespace windows_client.DbUtils
             }
         }
 
+        //call this from UI thread
+        private void addSentMessageToMsgMap(SentChatBubble sentChatBubble)
+        {
+            NewChatThread currentPage = App.newChatThreadPage;
+            if (currentPage != null)
+            {
+                currentPage.OutgoingMsgsMap[sentChatBubble.MessageId] = sentChatBubble;
+            }
+        }
+
+
         public void onEventReceived(string type, object obj)
         {
             #region MESSAGE_SENT
@@ -123,20 +134,30 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage = (ConvMessage)vals[0];
 
                 bool isNewGroup = (bool)vals[1];
-                //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
-                //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
+                SentChatBubble chatBubble = (SentChatBubble)vals[2];
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
+                if (chatBubble != null)
+                {
+                    chatBubble.MessageId = convMessage.MessageId;
+                }
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if (chatBubble != null)
+                    {
+                        addSentMessageToMsgMap(chatBubble);
+                    }
                     if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
                         App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+
+                    if (!isNewGroup)
+                        mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
                 });
-                if (!isNewGroup)
-                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
+                //if (!isNewGroup)
+                //    mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
             }
             #endregion
             #region FORWARD_ATTACHMENT
@@ -145,12 +166,14 @@ namespace windows_client.DbUtils
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 string sourceFilePath = (string)vals[1];
-
+                SentChatBubble chatBubble = (SentChatBubble)vals[2];
 
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
+                chatBubble.MessageId = convMessage.MessageId;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    addSentMessageToMsgMap(chatBubble);
                     if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
                         App.ViewModel.MessageListPageCollection.Remove(convObj);
@@ -172,14 +195,16 @@ namespace windows_client.DbUtils
                 object[] vals = (object[])obj;
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 byte[] fileBytes = (byte[])vals[1];
-                SentChatBubble chatbubble = (SentChatBubble)vals[2];
+                SentChatBubble chatBubble = (SentChatBubble)vals[2];
 
                 //In case of sending attachments, here message state should be unknown instead of sent_unconfirmed
                 //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
-
+                chatBubble.MessageId = convMessage.MessageId;
+                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    addSentMessageToMsgMap(chatBubble);
                     if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
                         App.ViewModel.MessageListPageCollection.Remove(convObj);
@@ -198,7 +223,7 @@ namespace windows_client.DbUtils
                 AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
                 MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                         Convert.ToString(convMessage.MessageId), fileBytes);
-                AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatbubble);
+                AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatBubble);
 
             }
             #endregion
