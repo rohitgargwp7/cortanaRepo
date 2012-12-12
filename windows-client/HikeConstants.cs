@@ -24,6 +24,7 @@ namespace windows_client
         public static readonly string METADATA_DND = "dnd";
         public static readonly string ANALYTICS_EVENT = "ae";
         public static readonly string LOG_EVENT = "le";//for analytics
+        public static readonly string FILE_SYSTEM_VERSION = "File_System_Version";
 
         public static readonly string CRITICAL = "critical";
         public static readonly string LATEST = "latest";
