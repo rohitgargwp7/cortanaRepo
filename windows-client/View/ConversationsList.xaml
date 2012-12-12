@@ -169,7 +169,7 @@
 
                             <TextBlock Grid.Row="0" FontSize="24" Text="{Binding Path= LocalizedResources.Conversations_YourFav_Txt, Source={StaticResource LocalizedStrings}}"/>
 
-                            <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1">
+                            <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,20,0,0" Grid.Row="1">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -182,15 +182,15 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <Image Source="{Binding AvatarImage}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
-                                            <TextBlock TextWrapping="Wrap" Grid.Column="1" Grid.Row="0">
+                                            <TextBlock TextWrapping="Wrap" Grid.Column="1" Grid.Row="0" Margin="16,0,0,0">
                                                 <TextBlock.Inlines>
                                                     <Run FontWeight="Bold" Text="{Binding NameToShow}"/>
                                                     <Run FontWeight="Light" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt, Source={StaticResource LocalizedStrings}}"/>
                                                 </TextBlock.Inlines>
                                             </TextBlock>
-                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
-                                                <Button Background="Blue" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="yes_Click"></Button>
-                                                <Button Background="LightGray" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="no_Click"></Button>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Margin="5,0,0,0">
+                                                <Button Background="#2e91d3" Width="102" FontSize="18" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="yes_Click" Foreground="White"></Button>
+                                                <Button Background="#e9ecee" Width="120" FontSize="18" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="no_Click" Foreground="#595959"></Button>
                                             </StackPanel>
                                         </Grid>
                                     </DataTemplate>
