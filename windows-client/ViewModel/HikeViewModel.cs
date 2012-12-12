@@ -11,6 +11,9 @@ namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged, HikePubSub.Listener
     {
+        // this key will track number of conversations in the app. If this does not match the convs at load time , simply move to backup plan.
+        public static string NUMBER_OF_CONVERSATIONS = "NoConvs";
+
         private ObservableCollection<ConversationListObject> _pendingReq = null;
 
         private ObservableCollection<ConversationListObject> _favList = null;
@@ -121,7 +124,6 @@ namespace windows_client.ViewModel
             }
             return null;
         }
-
 
         public bool IsPending(string ms)
         {

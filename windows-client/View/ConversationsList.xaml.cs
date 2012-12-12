@@ -22,6 +22,7 @@ using Phone.Controls;
 using windows_client.Misc;
 using System.Windows.Media;
 using windows_client.Languages;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -475,7 +476,7 @@ namespace windows_client.View
         private void ClearAllDB()
         {
             MessagesTableUtils.deleteAllMessages();
-            //ConversationTableUtils.deleteAllConversations();
+            ConversationTableUtils.deleteAllConversations();
             MiscDBUtil.DeleteAllAttachmentData();
             foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
             {
@@ -576,6 +577,9 @@ namespace windows_client.View
         private void deleteConversation(ConversationListObject convObj)
         {
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
+            int convs = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -960,7 +964,13 @@ namespace windows_client.View
         {
             NetworkManager.turnOffNetworkManager = true;
             if (App.IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
                 ConversationTableUtils.saveConvObjectList();
+            }
             base.OnBackKeyPress(e);
         }
 

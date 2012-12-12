@@ -61,7 +61,9 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        public static bool IS_VIEWMODEL_LOADED = false; 
+        private static string _currentVersion = "1.0.0.0";
+        private static string _latestVersion;
+        public static bool IS_VIEWMODEL_LOADED = false;
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
@@ -239,6 +241,22 @@ namespace windows_client
             }
         }
 
+        public static string CURRENT_VERSION
+        {
+            get
+            {
+                return _currentVersion;
+            }
+        }
+
+        public static string LATEST_VERSION
+        {
+            get
+            {
+                return _latestVersion;
+            }
+        }
+
         #endregion
 
         #endregion
@@ -308,7 +326,7 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-            if(appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
+            if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
                 isNewInstall = false;
 
             /* Load App token if its there*/
@@ -368,10 +386,16 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            if (IS_VIEWMODEL_LOADED)
-                ConversationTableUtils.saveConvObjectList();
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
+            if (IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
+                ConversationTableUtils.saveConvObjectList();
+            }
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -439,9 +463,6 @@ namespace windows_client
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            if(IS_VIEWMODEL_LOADED)
-                ConversationTableUtils.saveConvObjectList();
-
             //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
             if (System.Diagnostics.Debugger.IsAttached)
@@ -450,13 +471,19 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
             App.AnalyticsInstance.saveObject();
+            if (IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
+                ConversationTableUtils.saveConvObjectList();
+            }
         }
 
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            if(IS_VIEWMODEL_LOADED)
-                ConversationTableUtils.saveConvObjectList();
 
             App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
@@ -465,7 +492,7 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
             if (!IS_MARKETPLACE)
-            {   
+            {
                 //Running on a device / emulator without debugging
                 e.Handled = true;
                 Error.Exception = e.ExceptionObject;
@@ -473,8 +500,16 @@ namespace windows_client
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show(e.ExceptionObject.ToString(), "Exception", MessageBoxButton.OK);
-                        //(RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+                    //(RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
                 });
+            }
+            if (IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
+                ConversationTableUtils.saveConvObjectList();
             }
         }
 
@@ -552,10 +587,10 @@ namespace windows_client
         {
             PageState ps = PageState.WELCOME_SCREEN;
             appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
-            
+
             #region GROUP CACHE
-          
-            if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version
+
+            if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
                 GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
                 GroupManager.Instance.SaveGroupCache();
@@ -596,7 +631,7 @@ namespace windows_client
             if (ps == PageState.CONVLIST_SCREEN)
             {
                 NetworkManager.turnOffNetworkManager = true;
-                App.MqttManagerInstance.connect();                
+                App.MqttManagerInstance.connect();
             }
             st.Stop();
             msec = st.ElapsedMilliseconds;
@@ -631,46 +666,25 @@ namespace windows_client
             IS_VIEWMODEL_LOADED = false;
             if (_viewModel == null)
             {
-                string current_ver = "1.0.0.0";
+                _latestVersion = Utils.getAppVersion();
                 List<ConversationListObject> convList = null;
 
-                try
-                {
-                    // If version exists means build is 1.4.0.0 or later else 1.1.0.0
-                    if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
-                        convList = ConversationTableUtils.getAllConversations();
-                    else
-                        convList = ConversationTableUtils.getAllConvs();
-                }
-                catch 
-                {
+                if (!isNewInstall)// this has to be called for no new install case
+                    convList = GetConversations();
+                else
                     convList = null;
-                }
+
                 if (convList == null || convList.Count == 0)
                     _viewModel = new HikeViewModel();
                 else
                     _viewModel = new HikeViewModel(convList);
 
-                if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
-                {
-                    // save the new single file in isolated storage, delete all old files.
-                    //ConversationTableUtils.saveConvObjectList(); // this will save the map
-                    ConversationTableUtils.deleteAllConversationsOld();
-
-                    // instantiate new directories
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                    {
-                        if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
-                        {
-                            store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
-                        }
-                    }
-                }
-                if (current_ver == null)
-                    current_ver = "1.0.0.0";
-                if (!isNewInstall && Utils.compareVersion(Utils.getAppVersion(), current_ver) == 1) // this is update
+                if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
                 {
                     App.WriteToIsoStorageSettings("New_Update", true);
+                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
+                    if (Utils.compareVersion(_currentVersion,"1.5.0.0") !=1) // if current version is less than equal to 1.5.0.0 then upgrade DB
+                        MqttDBUtils.UpdateToVersionOne();
                 }
             }
             st.Stop();
@@ -685,8 +699,6 @@ namespace windows_client
             }
             #endregion
 
-            if (!appSettings.Contains("File_System_Version") || (string)appSettings["File_System_Version"] != Utils.getAppVersion())
-                App.WriteToIsoStorageSettings("File_System_Version", Utils.getAppVersion());
         }
 
         public static void createDatabaseAsync()
@@ -745,9 +757,9 @@ namespace windows_client
                     long msec = st.ElapsedMilliseconds;
                     Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
-                catch 
-                { 
-                    RemoveKeyFromAppSettings(App.IS_DB_CREATED); 
+                catch
+                {
+                    RemoveKeyFromAppSettings(App.IS_DB_CREATED);
                 }
             };
             bw.RunWorkerAsync();
@@ -820,6 +832,48 @@ namespace windows_client
                 {
                     Debug.WriteLine("Problem while removing key from isolated storage.");
                 }
+            }
+        }
+
+        private static List<ConversationListObject> GetConversations()
+        {
+            List<ConversationListObject> convList = null;
+            appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
+            if (_currentVersion == null)
+                _currentVersion = "1.0.0.0";
+            if (_currentVersion == "1.0.0.0")  // user is upgrading from version 1.0.0.0 to latest
+            {
+                /*
+                 * 1. Read from individual files.
+                 * 2. Overite old files as they are written in a wrong format
+                 */
+                convList =  ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
+                ConversationTableUtils.saveConvObjectListIndividual(convList);
+                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
+                return convList;
+            }
+            else if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
+            {
+                /*
+                 * 1. Read from Convs File
+                 * 2. Store each conv in an individual file.
+                 */
+                convList = ConversationTableUtils.getAllConvs();
+                ConversationTableUtils.saveConvObjectListIndividual(convList);
+                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);               
+                return convList;
+            }
+            else // this corresponds to the latest version and is called everytime except update launch
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                convList = ConversationTableUtils.getAllConvs();
+
+                // This shows something failed while reading from Convs , so move to backup plan i.e read from individual files
+                if ((convList == null || convList.Count == 0) && convs > 0)
+                    convList = ConversationTableUtils.GetConvsFromIndividualFiles();
+
+                return convList;
             }
         }
     }
