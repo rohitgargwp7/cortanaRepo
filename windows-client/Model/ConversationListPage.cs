@@ -180,6 +180,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public int MuteVal
         {
             get
