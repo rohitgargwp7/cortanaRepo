@@ -27,7 +27,7 @@ namespace windows_client.DbUtils
         {
             #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS
 
-            //ConversationTableUtils.deleteAllConversations();
+            ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
             GroupManager.Instance.DeleteAllGroups();

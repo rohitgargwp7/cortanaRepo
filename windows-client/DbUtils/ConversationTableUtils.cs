@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using windows_client.Languages;
+using windows_client.ViewModel;
 
 namespace windows_client.DbUtils
 {
@@ -71,7 +72,7 @@ namespace windows_client.DbUtils
 
             if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
             {
-                string [] vals = convMessage.Message.Split(';');
+                string[] vals = convMessage.Message.Split(';');
                 if (vals.Length == 2)
                     obj.LastMessage = vals[1];
                 else
@@ -79,6 +80,9 @@ namespace windows_client.DbUtils
             }
             string msisdn = obj.Msisdn.Replace(":", "_");
             saveConvObject(obj, msisdn);
+            int convs = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             //saveNewConv(obj);
             return obj;
         }
@@ -143,6 +147,9 @@ namespace windows_client.DbUtils
             Stopwatch st = Stopwatch.StartNew();
             //saveNewConv(obj);
             saveConvObject(obj, obj.Msisdn.Replace(":", "_"));
+            int convs = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs + 1);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to write conversation to iso storage {0}", msec);
@@ -156,7 +163,31 @@ namespace windows_client.DbUtils
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
+                    string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                    if (files != null)
+                        foreach (string fileName in files)
+                            store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, 0); // clear total number of convs
+                }
+            }
+        }
+
+        public static void deleteConversation(string msisdn)
+        {
+            msisdn = msisdn.Replace(":", "_");
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                try
+                {
+                    if (store.FileExists(CONVERSATIONS_DIRECTORY + "\\" + msisdn))
+                        store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + msisdn);
+
+                    int convs = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs - 1);
+                }
+                catch
+                {
                 }
             }
         }
@@ -193,7 +224,7 @@ namespace windows_client.DbUtils
         internal static void updateConversation(List<ContactInfo> cn)
         {
             //saveConvObjectList();
-            
+
             for (int i = 0; i < cn.Count; i++)
             {
                 if (App.ViewModel.ConvMap.ContainsKey(cn[i].Msisdn))
@@ -250,7 +281,7 @@ namespace windows_client.DbUtils
                     catch { }
                     try
                     {
-                        using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write,FileShare.ReadWrite))
+                        using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
                         {
                             using (BinaryWriter writer = new BinaryWriter(file))
                             {
@@ -358,12 +389,18 @@ namespace windows_client.DbUtils
                     {
                         using (var writer = new BinaryWriter(file))
                         {
+                            writer.Seek(0, SeekOrigin.Begin);
                             obj.Write(writer);
                         }
                     }
                 }
             }
         }
+
+        /// <summary>
+        /// this function will automatically read which read function version should be used to read file
+        /// </summary>
+        /// <returns></returns>
 
         public static List<ConversationListObject> getAllConvs()
         {
@@ -382,7 +419,8 @@ namespace windows_client.DbUtils
                         fname = CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp";
                     else
                         return null;
-                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read,FileShare.ReadWrite))
+
+                    using (var file = store.OpenFile(fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
                         using (var reader = new BinaryReader(file))
                         {
@@ -391,16 +429,25 @@ namespace windows_client.DbUtils
                             {
                                 count = reader.ReadInt32();
                             }
-                            catch { }
+                            catch
+                            {
+                            }
                             if (count > 0)
                             {
+                                bool isLessThanEqualTo_1500 = false;
+                                if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+                                    isLessThanEqualTo_1500 = true;
+
                                 convList = new List<ConversationListObject>(count);
                                 for (int i = 0; i < count; i++)
                                 {
                                     ConversationListObject item = new ConversationListObject();
                                     try
                                     {
-                                        item.Read(reader);
+                                        if (isLessThanEqualTo_1500)
+                                            item.ReadVer_1_4_0_0(reader);
+                                        else
+                                            item.ReadVer_Latest(reader);
                                     }
                                     catch
                                     {
@@ -450,9 +497,9 @@ namespace windows_client.DbUtils
                 }
                 return false;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Exception while reading Conversations : {0}",ex.StackTrace);
+                Debug.WriteLine("Exception while reading Conversations : {0}", ex.StackTrace);
                 return false;
             }
         }
@@ -491,6 +538,63 @@ namespace windows_client.DbUtils
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// This functions reads convMap and then store each converstaion in an individual file
+        /// </summary>
+        /// <param name="cObjList"></param>
+        public static void saveConvObjectListIndividual(List<ConversationListObject> cObjList)
+        {
+            if (cObjList == null)
+                return;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+            {
+                for (int i = 0; i < cObjList.Count; i++)
+                {
+                    string FileName = CONVERSATIONS_DIRECTORY + "\\" + cObjList[i].Msisdn.Replace(":", "_");
+                    using (var file = store.OpenFile(FileName, FileMode.Create, FileAccess.Write))
+                    {
+                        using (var writer = new BinaryWriter(file))
+                        {
+                            writer.Seek(0, SeekOrigin.Begin);
+                            cObjList[i].Write(writer);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static List<ConversationListObject> GetConvsFromIndividualFiles()
+        {
+            byte[] data = null;
+            List<ConversationListObject> convList = null;
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!store.DirectoryExists(CONVERSATIONS_DIRECTORY))
+                    return null;
+                string[] files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
+                if (files == null || files.Length == 0)
+                    return null;
+                convList = new List<ConversationListObject>(files.Length);
+                foreach (string fileName in files)
+                {
+                    if (fileName == "Convs" || fileName == "Convs_bkp" || fileName == "_Convs")
+                        continue;
+                    using (var file = store.OpenFile(CONVERSATIONS_DIRECTORY + "\\" + fileName, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var reader = new BinaryReader(file))
+                        {
+                            ConversationListObject co = new ConversationListObject();
+                            co.ReadVer_Latest(reader); // we know we have to read from latest file system
+                            if (IsValidConv(co))
+                                convList.Add(co);
+                        }
+                    }
+                }
+            }
+            convList.Sort();
+            return convList;
         }
     }
 }

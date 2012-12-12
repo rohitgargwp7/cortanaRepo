@@ -235,7 +235,7 @@ namespace windows_client.DbUtils
                 if (delConv)
                 {
                     // delete the conversation from DB.
-                    //ConversationTableUtils.deleteConversation(c.Msisdn);
+                    ConversationTableUtils.deleteConversation(c.Msisdn);
                     //ConversationTableUtils.saveConvObjectList();
                 }
                 else
@@ -301,7 +301,7 @@ namespace windows_client.DbUtils
                  * 4. Delete GroupMembers
                  */
                 string groupId = (string)obj;
-                //ConversationTableUtils.deleteConversation(groupId);
+                ConversationTableUtils.deleteConversation(groupId);
                 //ConversationTableUtils.saveConvObjectList();
                 MessagesTableUtils.deleteAllMessagesForMsisdn(groupId);
                 GroupTableUtils.deleteGroupWithId(groupId);
@@ -333,12 +333,12 @@ namespace windows_client.DbUtils
                 string convMsisdn = (string)obj;
                 if (Utils.isGroupConversation(convMsisdn)) // if Group Conversation delete groups too
                 {
-                    GroupTableUtils.deleteGroupWithId(convMsisdn);
+                    GroupTableUtils.deleteGroupWithId(convMsisdn); // remove entry from Group Table
                     GroupManager.Instance.GroupCache.Remove(convMsisdn);
-                    GroupManager.Instance.DeleteGroup(convMsisdn);
+                    GroupManager.Instance.DeleteGroup(convMsisdn); // delete the group file
                 }
                 MessagesTableUtils.deleteAllMessagesForMsisdn(convMsisdn); //removed all chat messages for this msisdn
-                //ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
+                ConversationTableUtils.deleteConversation(convMsisdn); // removed entry from conversation table
                 //ConversationTableUtils.saveConvObjectList();
                 MiscDBUtil.deleteMsisdnData(convMsisdn);
             }
