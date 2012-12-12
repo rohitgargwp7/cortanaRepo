@@ -1187,6 +1187,7 @@ namespace windows_client.View
                 isMute = true;
                 obj[HikeConstants.TYPE] = AppResources.Mute_Txt;
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":","_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
