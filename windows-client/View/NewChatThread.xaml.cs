@@ -470,7 +470,7 @@ namespace windows_client.View
                 processGroupJoin(true);
                 isOnHike = true;
                 isGroupChat = true;
-                userImage.Source = UI_Utils.Instance.DefaultGroupImage;
+                userImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(mContactNumber);
                 /* This is done so that after Tombstone when this page is launched, no group is created again and again */
                 ConversationListObject convObj = new ConversationListObject();
                 convObj.Msisdn = mContactNumber;
@@ -514,8 +514,8 @@ namespace windows_client.View
 
                     if (avatar == null)
                     {
-                        avatarImage = UI_Utils.Instance.DefaultAvatarBitmapImage;
-                        userImage.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
+                        avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
+                        userImage.Source = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
                     }
                     else
                     {

@@ -100,7 +100,7 @@ namespace windows_client.View
                 string grpId = groupId.Replace(":", "_");
                 byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(grpId);
                 if (avatar == null)
-                    groupImage.Source = UI_Utils.Instance.DefaultGroupImage;
+                    groupImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(grpId);
                 else
                 {
                     MemoryStream memStream = new MemoryStream(avatar);

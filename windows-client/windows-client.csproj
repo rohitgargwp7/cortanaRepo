@@ -343,6 +343,20 @@
     </Content>
     <Content Include="View\images\add_user_icon.png" />
     <Content Include="View\images\audio_file_icon_white.png" />
+    <Content Include="View\images\avatars\Beach.png" />
+    <Content Include="View\images\avatars\BluePeople.png" />
+    <Content Include="View\images\avatars\Candy.png" />
+    <Content Include="View\images\avatars\Cocktail.png" />
+    <Content Include="View\images\avatars\Coffee.png" />
+    <Content Include="View\images\avatars\CoffeePeople.png" />
+    <Content Include="View\images\avatars\Digital.png" />
+    <Content Include="View\images\avatars\EarthyPeople.png" />
+    <Content Include="View\images\avatars\GreenPeople.png" />
+    <Content Include="View\images\avatars\PinkPeople.png" />
+    <Content Include="View\images\avatars\RedPeople.png" />
+    <Content Include="View\images\avatars\Sneakers.png" />
+    <Content Include="View\images\avatars\Space.png" />
+    <Content Include="View\images\avatars\TealPeople.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
     <Content Include="View\images\connected_tick.png" />
@@ -355,6 +369,7 @@
     <Content Include="View\images\empty_screen_tip_white.png" />
     <Content Include="View\images\favorites_heart.png" />
     <Content Include="View\images\fb_icon.png" />
+    <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_play.png" />
@@ -397,8 +412,6 @@
     <Content Include="View\images\chat_left.png" />
     <Content Include="View\images\chat_reward.png" />
     <Content Include="View\images\chat_waiting.png" />
-    <Content Include="View\images\default_group.png" />
-    <Content Include="View\images\default_user.png" />
     <Content Include="View\images\delete_account_black.png" />
     <Content Include="View\images\download_icon.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />

@@ -373,6 +373,10 @@ namespace windows_client.View
                 empImage.SetSource(memStream);
                 avatarImage.Source = empImage;
             }
+            else
+            {
+                avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+            }
         }
 
         private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
