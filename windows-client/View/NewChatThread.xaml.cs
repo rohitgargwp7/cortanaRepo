@@ -97,7 +97,7 @@ namespace windows_client.View
         private Thickness imgMargin = new Thickness(0, 5, 0, 15);
         private Image typingNotificationImage;
         private Image emptyImage;
-        
+
         private ApplicationBarMenuItem groupInfoMenuItem;
         #endregion
 
@@ -985,14 +985,14 @@ namespace windows_client.View
                 scheduler.Schedule(scheduledScrolling, TimeSpan.FromMilliseconds(5));
                 //if(messagesCollection.Contains(emptyImage))
                 //    messagesCollection.Remove(emptyImage);
-    
+
                 //messagesCollection.Add(emptyImage);
                 //messageListBox.UpdateLayout();
                 //messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 //messageListBox.UpdateLayout();
                 //messageListBox.ScrollIntoView(messagesCollection[messagesCollection.Count - 1]);
                 //messageListBox.UpdateLayout();
-                
+
                 //messageListBox.UpdateLayout();
                 //messagesCollection.RemoveAt(messagesCollection.Count - 1);
                 //messageListBox.UpdateLayout();
@@ -1289,7 +1289,7 @@ namespace windows_client.View
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
-                        
+
                             byte[] locationInfoBytes = null;
                             MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
                                 convMessage.MessageId, out locationInfoBytes);
@@ -1468,7 +1468,7 @@ namespace windows_client.View
                 {
                     string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
                     if (vals == null || vals.Length == 0)
-                         return null;
+                        return null;
                     for (int i = 0; i < vals.Length; i++)
                     {
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
@@ -1798,7 +1798,7 @@ namespace windows_client.View
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                
+
                 WriteableBitmap writeableBitmap = new WriteableBitmap(image);
                 int thumbnailWidth, thumbnailHeight, imageWidth, imageHeight;
                 adjustAspectRatio(image.PixelWidth, image.PixelHeight, true, out thumbnailWidth, out thumbnailHeight);
@@ -1919,7 +1919,7 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            
+
             isContextMenuTapped = true;
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
             if (msg == null)
@@ -1973,7 +1973,7 @@ namespace windows_client.View
             }
             else
             {
-                 //no message is left, simply remove the object from Conversation list 
+                //no message is left, simply remove the object from Conversation list 
                 App.ViewModel.MessageListPageCollection.Remove(obj);
                 App.ViewModel.ConvMap.Remove(mContactNumber);
                 delConv = true;
@@ -1983,7 +1983,7 @@ namespace windows_client.View
             o[1] = obj;
             o[2] = delConv;
             mPubSub.publish(HikePubSub.MESSAGE_DELETED, o);
-             
+
         }
 
         private void MenuItem_Click_Cancel(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
@@ -2322,9 +2322,8 @@ namespace windows_client.View
                 {
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_READ;
 
-                    // notify only if msg is not a notification msg
-                    if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                        mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
+                    // Update status to received read in db.
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, new long[] { convMessage.MessageId });
 
                     if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO) // do not notify in case of group end , user left , user joined
                     {
@@ -2680,11 +2679,11 @@ namespace windows_client.View
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
-                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), 
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(),
                     ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                
+
                 convMessage.FileAttachment = new Attachment(fileName, imageThumbnail, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "hikemap/location";
                 convMessage.Message = AppResources.Location_Txt;
@@ -2705,7 +2704,7 @@ namespace windows_client.View
         private void AudioFileTransfer()
         {
             byte[] audioBytes = null;
-            if(PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
@@ -2716,7 +2715,7 @@ namespace windows_client.View
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-                
+
                 convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = "audio/voice";
                 convMessage.Message = AppResources.Audio_Txt;
@@ -2981,7 +2980,7 @@ namespace windows_client.View
                 }
                 if (count > 1)
                 {
-                    MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND,mContactNumber));
+                    MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND, mContactNumber));
                 }
                 else
                 {
