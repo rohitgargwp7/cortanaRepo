@@ -66,10 +66,10 @@ namespace windows_client.View
             {
                 App.MqttManagerInstance.connect();
             }
-            //else
-            //{
-            //    App.MqttManagerInstance.connectionStatus = Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
-            //}
+            else
+            {
+                App.MqttManagerInstance.connectionStatus = Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
+            }
         }
 
 
