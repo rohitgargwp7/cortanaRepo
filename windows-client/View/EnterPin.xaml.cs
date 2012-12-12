@@ -289,7 +289,14 @@ namespace windows_client
 
         private void callMePostResponse_Callback(JObject obj)
         {
-            if (obj == null)
+            string stat = "";
+            if (obj != null)
+            {
+                JToken statusToken;
+                obj.TryGetValue("stat", out statusToken);
+                stat = statusToken.ToString();
+            }
+            if (stat != "ok")
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
