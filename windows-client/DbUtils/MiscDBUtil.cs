@@ -9,6 +9,7 @@ using System.IO.IsolatedStorage;
 using System;
 using windows_client.Misc;
 using System.Collections.ObjectModel;
+using windows_client.ViewModel;
 
 namespace windows_client.DbUtils
 {
@@ -27,7 +28,7 @@ namespace windows_client.DbUtils
         {
             #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS
 
-            //ConversationTableUtils.deleteAllConversations();
+            ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
             GroupManager.Instance.DeleteAllGroups();
@@ -382,6 +383,54 @@ namespace windows_client.DbUtils
 
         #region FAVOURITES
 
+        public static void LoadFavouritesFromIndividualFiles(ObservableCollection<ConversationListObject> favList, Dictionary<string, ConversationListObject> _convmap)
+        {
+            lock (favReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists("FAVS"))
+                    {
+                        store.CreateDirectory("FAVS");
+                        return;
+                    }
+                    string[] files = store.GetFileNames("FAVS\\*");
+                    foreach (string fname in files)
+                    {
+                        using (var file = store.OpenFile("FAVS\\"+fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        {
+                            using (var reader = new BinaryReader(file))
+                            {
+                                ConversationListObject item = new ConversationListObject();
+                                try
+                                {
+                                    item.ReadFavOrPending(reader);
+                                    if (_convmap.ContainsKey(item.Msisdn)) // if this item is in convList, just mark IsFav to true
+                                    {
+                                        favList.Add(_convmap[item.Msisdn]);
+                                        _convmap[item.Msisdn].IsFav = true;
+                                    }
+                                    else
+                                        favList.Add(item);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine(ex);
+                                }
+                                reader.Close();
+                            }
+                            try
+                            {
+                                file.Close();
+                                file.Dispose();
+                            }
+                            catch { }
+                        }
+                    }
+                }
+            }
+        }
+
         public static void LoadFavourites(ObservableCollection<ConversationListObject> favList, Dictionary<string, ConversationListObject> _convmap)
         {
             lock (favReadWriteLock)
@@ -451,6 +500,11 @@ namespace windows_client.DbUtils
 
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
+                        if (!store.DirectoryExists(MISC_DIR))
+                        {
+                            store.CreateDirectory(MISC_DIR);
+                        }
+
                         using (BinaryWriter writer = new BinaryWriter(file))
                         {
                             writer.Seek(0, SeekOrigin.Begin);
@@ -470,6 +524,34 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static void SaveFavourites(ConversationListObject obj) // this is to save individual file
+        {
+            if (obj == null)
+                return;
+            lock (favReadWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists("FAVS"))
+                        store.CreateDirectory("FAVS");
+
+                    string fName = "FAVS" + "\\" + obj.Msisdn.Replace(":", "_");
+                    using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(file))
+                        {
+                            writer.Seek(0, SeekOrigin.Begin);
+                            obj.WriteFavOrPending(writer);
+                            writer.Flush();
+                            writer.Close();
+                        }
+                        file.Close();
+                        file.Dispose();
+                    }
+                }
+            }
+        }
+
         public static void DeleteFavourites()
         {
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -477,6 +559,24 @@ namespace windows_client.DbUtils
                 try
                 {
                     store.DeleteFile(MISC_DIR + "\\" + FAVOURITES_FILE);
+                    string[] fileName = store.GetFileNames("FAVS\\*");
+                    foreach (string file in fileName)
+                    {
+                        store.DeleteFile("FAVS\\" + file);
+                    }
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
+                }
+                catch { }
+            }
+        }
+
+        public static void DeleteFavourite(string msisdn)
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                try
+                {
+                    store.DeleteFile("FAVS\\" + msisdn.Replace(":", "_"));
                 }
                 catch { }
             }
@@ -552,6 +652,10 @@ namespace windows_client.DbUtils
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
+                    if (!store.DirectoryExists(MISC_DIR))
+                    {
+                        store.CreateDirectory(MISC_DIR);
+                    }
                     string fName = MISC_DIR + "\\" + PENDING_REQ_FILE;
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {

@@ -21,6 +21,7 @@ using Phone.Controls;
 using windows_client.Misc;
 using System.Windows.Media;
 using windows_client.Languages;
+using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.View
@@ -496,7 +497,7 @@ namespace windows_client.View
         private void ClearAllDB()
         {
             MessagesTableUtils.deleteAllMessages();
-            //ConversationTableUtils.deleteAllConversations();
+            ConversationTableUtils.deleteAllConversations();
             MiscDBUtil.DeleteAllAttachmentData();
             foreach (string convMsisdn in App.ViewModel.ConvMap.Keys)
             {
@@ -567,6 +568,10 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.DeleteFavourite(convObj.Msisdn);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
@@ -578,7 +583,10 @@ namespace windows_client.View
                     convObj.IsFav = true;
                     App.ViewModel.FavList.Insert(0,convObj);
                     MiscDBUtil.SaveFavourites();
-
+                    MiscDBUtil.SaveFavourites(convObj);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                     JObject data = new JObject();
                     data["id"] = convObj.Msisdn;
                     JObject obj = new JObject();
@@ -597,6 +605,9 @@ namespace windows_client.View
         private void deleteConversation(ConversationListObject convObj)
         {
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
+            int convs = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -981,7 +992,13 @@ namespace windows_client.View
         {
             NetworkManager.turnOffNetworkManager = true;
             if (App.IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
                 ConversationTableUtils.saveConvObjectList();
+            }
             base.OnBackKeyPress(e);
         }
 
@@ -1023,8 +1040,11 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             MiscDBUtil.SaveFavourites();
+            MiscDBUtil.SaveFavourites(fObj);
             MiscDBUtil.SavePendingRequests();
-            
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
             if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
@@ -1077,6 +1097,10 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
+                MiscDBUtil.DeleteFavourite(convObj.Msisdn);// remove single file too
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
             }
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
             {

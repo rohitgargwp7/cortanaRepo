@@ -180,6 +180,7 @@ namespace windows_client.Model
             }
         }
 
+        [DataMember]
         public int MuteVal
         {
             get
@@ -470,20 +471,17 @@ namespace windows_client.Model
 
         public void Read(BinaryReader reader)
         {
-            string current_ver = "1.5.0.0";
-            App.appSettings.TryGetValue<string>("File_System_Version", out current_ver);
-            int val = Utils.compareVersion(current_ver, "1.4.5.5");
-            if (val != 1) // current_ver <= 1.4.5.5
+            if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
             {
                 ReadVer_1_4_0_0(reader);
             }
-            else  //current_ver > 1.4.5.5 
+            else  //current_ver >= 1.5.0.0
             {
-                ReadVer_1_5_0_0(reader);
+                ReadVer_Latest(reader);
             }           
         }
 
-        private void ReadVer_1_4_0_0(BinaryReader reader)
+        public void ReadVer_1_4_0_0(BinaryReader reader)
         {
             try
             {
@@ -511,7 +509,7 @@ namespace windows_client.Model
             }
         }
 
-        private void ReadVer_1_5_0_0(BinaryReader reader)
+        public void ReadVer_Latest(BinaryReader reader)
         {
             try
             {

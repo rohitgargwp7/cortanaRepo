@@ -157,6 +157,10 @@ namespace windows_client.Model
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
+                    if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
+                    {
+                        store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
+                    }
                     using (var file = store.OpenFile(filePath, FileMode.Create, FileAccess.Write))
                     {
                         using (var writer = new BinaryWriter(file))
@@ -173,7 +177,7 @@ namespace windows_client.Model
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
             {
-                if (!store.FileExists(filePath))
+                if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY) || !store.FileExists(filePath))
                 {
                     return;
                 }

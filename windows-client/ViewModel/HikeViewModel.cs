@@ -11,6 +11,11 @@ namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged, HikePubSub.Listener
     {
+        // this key will track number of conversations in the app. If this does not match the convs at load time , simply move to backup plan.
+        public static string NUMBER_OF_CONVERSATIONS = "NoConvs";
+
+        public static string NUMBER_OF_FAVS = "NoFavs";
+
         private ObservableCollection<ConversationListObject> _pendingReq = null;
 
         private ObservableCollection<ConversationListObject> _favList = null;
@@ -52,6 +57,7 @@ namespace windows_client.ViewModel
             get;
             set;
         }
+
         public ObservableCollection<ConversationListObject> PendingRequests
         {
             get
@@ -86,6 +92,13 @@ namespace windows_client.ViewModel
                 _convMap[convList[i].Msisdn] = convList[i];
             }
             MiscDBUtil.LoadFavourites(_favList,_convMap);
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            if (count != _favList.Count) // values are not loaded, move to backup plan
+            {
+                _favList.Clear();
+                MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
+            }
             RegisterListeners();
         }
 
@@ -95,6 +108,14 @@ namespace windows_client.ViewModel
             _convMap = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
             _pendingReq = new ObservableCollection<ConversationListObject>();
+            MiscDBUtil.LoadFavourites(_favList, _convMap);
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            if (count != _favList.Count) // values are not loaded, move to backup plan
+            {
+                _favList.Clear();
+                MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
+            }
             RegisterListeners();
         }
 
@@ -121,7 +142,6 @@ namespace windows_client.ViewModel
             }
             return null;
         }
-
 
         public bool IsPending(string ms)
         {
@@ -152,6 +172,7 @@ namespace windows_client.ViewModel
             return null;
 
         }
+
         private void RefreshNewConversationObject()
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>

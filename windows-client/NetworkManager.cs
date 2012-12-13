@@ -15,6 +15,7 @@ using windows_client.View;
 using System.Collections.ObjectModel;
 using windows_client.Languages;
 using System.Windows.Threading;
+using windows_client.ViewModel;
 
 namespace windows_client
 {
@@ -833,16 +834,28 @@ namespace windows_client
                     if (App.ViewModel.IsPending(msisdn))
                         return;
                 }
+
+                ConversationListObject favObj = null;
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    l.Add(App.ViewModel.ConvMap[msisdn]);
+                {
+                    favObj = App.ViewModel.ConvMap[msisdn];
+                    if(favObj != null)
+                        l.Add(favObj);
+                }
                 else
                 {
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    ConversationListObject favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
+                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                     l.Add(favObj);
                 }
                 if (isFav)
+                {
                     MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.SaveFavourites(favObj);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                }
                 else
                     MiscDBUtil.SavePendingRequests();
         }
