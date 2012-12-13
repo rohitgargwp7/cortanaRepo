@@ -9,6 +9,7 @@ using System.IO.IsolatedStorage;
 using System;
 using windows_client.Misc;
 using System.Collections.ObjectModel;
+using windows_client.ViewModel;
 
 namespace windows_client.DbUtils
 {
@@ -563,6 +564,7 @@ namespace windows_client.DbUtils
                     {
                         store.DeleteFile("FAVS\\" + file);
                     }
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
                 }
                 catch { }
             }
