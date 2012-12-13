@@ -11,6 +11,7 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -199,14 +200,21 @@ namespace windows_client.View
                 {
                     if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn)) // if not already favourite then only add to fav
                     {
+                        ConversationListObject favObj = null;
                         if (App.ViewModel.ConvMap.ContainsKey(hikeFavList[i].Msisdn))
-                            App.ViewModel.FavList.Insert(0,App.ViewModel.ConvMap[hikeFavList[i].Msisdn]);
+                        {
+                            favObj = App.ViewModel.ConvMap[hikeFavList[i].Msisdn];
+                            App.ViewModel.FavList.Insert(0, favObj);
+                        }
                         else
                         {
-                            ConversationListObject favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
-                            App.ViewModel.FavList.Insert(0,favObj);
+                            favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
+                            App.ViewModel.FavList.Insert(0, favObj);
                         }
 
+                        int count = 0;
+                        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
                         JObject data = new JObject();
                         data["id"] = hikeFavList[i].Msisdn;
@@ -214,6 +222,7 @@ namespace windows_client.View
                         obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                         obj[HikeConstants.DATA] = data;
                         App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+                        MiscDBUtil.SaveFavourites(favObj);
                     }
                 }
                 MiscDBUtil.SaveFavourites();
