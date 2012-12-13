@@ -127,8 +127,8 @@ namespace windows_client.View
             WriteableBitmap screenshot = new WriteableBitmap(map, new TranslateTransform());
             using (MemoryStream ms = new MemoryStream())
             {
-                screenshot.SaveJpeg(ms, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 
-                    0, 100);
+                screenshot.SaveJpeg(ms, HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH, HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT, 
+                    0, 60);
                 thumbnailBytes = ms.ToArray();
                 //img = new BitmapImage();
                 //img.SetSource(ms);
