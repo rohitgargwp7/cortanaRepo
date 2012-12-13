@@ -67,6 +67,7 @@ namespace windows_client.View
             {
                 overlay.Visibility = Visibility.Visible;
                 TutorialsGrid.Visibility = Visibility.Visible;
+                launchPagePivot.IsHitTestVisible = false;
                 //SystemTray.IsVisible = false;
             }
             else
@@ -80,6 +81,7 @@ namespace windows_client.View
             overlay.Visibility = Visibility.Collapsed;
             TutorialsGrid.Visibility = Visibility.Collapsed;
             convListPagePivot.ApplicationBar = appBar;
+            launchPagePivot.IsHitTestVisible = true;
         }
 
         private static void OnNetworkChange(object sender, EventArgs e)
