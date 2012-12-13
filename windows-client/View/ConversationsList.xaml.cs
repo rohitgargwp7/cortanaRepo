@@ -568,6 +568,10 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.DeleteFavourite(convObj.Msisdn);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
@@ -579,7 +583,10 @@ namespace windows_client.View
                     convObj.IsFav = true;
                     App.ViewModel.FavList.Insert(0,convObj);
                     MiscDBUtil.SaveFavourites();
-
+                    MiscDBUtil.SaveFavourites(convObj);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
                     JObject data = new JObject();
                     data["id"] = convObj.Msisdn;
                     JObject obj = new JObject();
@@ -1033,8 +1040,11 @@ namespace windows_client.View
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
 
             MiscDBUtil.SaveFavourites();
+            MiscDBUtil.SaveFavourites(fObj);
             MiscDBUtil.SavePendingRequests();
-            
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
             if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
@@ -1087,6 +1097,10 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 MiscDBUtil.SaveFavourites();
+                MiscDBUtil.DeleteFavourite(convObj.Msisdn);// remove single file too
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
             }
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
             {
