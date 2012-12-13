@@ -1005,6 +1005,8 @@ namespace windows_client.View
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Button btn = sender as Button;
+            if (!btn.IsEnabled)
+                return;
             ContactInfo ci = btn.DataContext as ContactInfo;
             if (ci == null)
                 return;
