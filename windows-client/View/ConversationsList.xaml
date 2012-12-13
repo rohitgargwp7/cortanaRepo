@@ -33,10 +33,9 @@
             <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,-10,0, 0">
                 <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
             </StackPanel>
-
         </StackPanel>
 
-        <controls:Pivot Grid.Row="1"  Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
+        <controls:Pivot IsHitTestVisible="False" Grid.Row="1"  Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <!--Pivot item one-->
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Chats_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid x:Name="ConversationList">
@@ -226,6 +225,57 @@
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
+
+        <Rectangle Grid.Row="0" Opacity="0.75" Grid.RowSpan="2" Fill="#000000"></Rectangle>
+
+
+        <Grid x:Name="Tutorials" Grid.Row="1" VerticalAlignment="Center" Margin="0,-60,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <Rectangle Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="5,10,5,0"/>
+                <Rectangle Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="15,10,5,0"/>
+            </StackPanel>
+
+            <TextBlock Text="Introducing Favorites" FontFamily="Segoe WP Semibold" FontSize="28" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
+
+            <controls:Pivot x:Name="favTutePvt" Grid.Row="2" Margin="0,-20,0,0">
+                <controls:PivotItem>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Image Source="/View/images/favorites_tour_01.png" Height="269" VerticalAlignment="Top" Margin="0,0,0,20" Grid.Row="0"/>
+                        <TextBlock Text="A permanent place for all your favorite friends." Foreground="#c1c1c1" FontSize="19" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
+                        <TextBlock Text="Chatting with them is just a tap away." Foreground="#c1c1c1" FontSize="19" Grid.Row="2" TextWrapping="Wrap" MaxWidth="380" TextAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+                </controls:PivotItem>
+
+                <controls:PivotItem>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Image Source="/View/images/favorites_tour_02.png" Height="269" VerticalAlignment="Top" Margin="0,0,0,20" Grid.Row="0"/>
+                        <TextBlock Text="A permanent place for all your favorite friends." Foreground="#c1c1c1" FontSize="19" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
+                        <TextBlock Text="Chatting with them is just a tap away." Foreground="#c1c1c1" FontSize="19" Grid.Row="2" TextWrapping="Wrap" MaxWidth="380" TextAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+                </controls:PivotItem>
+
+            </controls:Pivot>
+
+        </Grid>
+
     </Grid>
 
 </phone:PhoneApplicationPage>
