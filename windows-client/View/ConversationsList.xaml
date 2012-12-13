@@ -226,10 +226,9 @@
             </controls:PivotItem>
         </controls:Pivot>
 
-        <Rectangle Grid.Row="0" Opacity="0.75" Grid.RowSpan="2" Fill="#000000"></Rectangle>
+        <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.75" Grid.RowSpan="2" Fill="#000000"></Rectangle>
 
-
-        <Grid x:Name="Tutorials" Grid.Row="1" VerticalAlignment="Center" Margin="0,-60,0,0">
+        <Grid x:Name="TutorialsGrid" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Center" Margin="0,-60,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -264,11 +263,13 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <Image Source="/View/images/favorites_tour_02.png" Height="269" VerticalAlignment="Top" Margin="0,0,0,20" Grid.Row="0"/>
                         <TextBlock Text="A permanent place for all your favorite friends." Foreground="#c1c1c1" FontSize="19" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
                         <TextBlock Text="Chatting with them is just a tap away." Foreground="#c1c1c1" FontSize="19" Grid.Row="2" TextWrapping="Wrap" MaxWidth="380" TextAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Content="OK" FontSize="18" BorderThickness="0" Tap="dismissTutorial_Tap" Grid.Row="3" Foreground="#2b2b2b" Background="#e4e4e4" Width="90" HorizontalAlignment="Center"/>
                     </Grid>
                 </controls:PivotItem>
 

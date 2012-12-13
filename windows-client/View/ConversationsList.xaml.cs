@@ -57,6 +57,29 @@ namespace windows_client.View
             initAppBar();
             initProfilePage();
             DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
+            showTutorial();
+        }
+
+        private void showTutorial()
+        {
+//            if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
+            if(true)
+            {
+                overlay.Visibility = Visibility.Visible;
+                TutorialsGrid.Visibility = Visibility.Visible;
+                //SystemTray.IsVisible = false;
+            }
+            else
+            {
+                convListPagePivot.ApplicationBar = appBar;
+            }
+        }
+
+        private void dismissTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            overlay.Visibility = Visibility.Collapsed;
+            TutorialsGrid.Visibility = Visibility.Collapsed;
+            convListPagePivot.ApplicationBar = appBar;
         }
 
         private static void OnNetworkChange(object sender, EventArgs e)
@@ -260,7 +283,7 @@ namespace windows_client.View
             appBar.Buttons.Add(composeIconButton);
 
             /* Add Menu Items*/
-            convListPagePivot.ApplicationBar = appBar;
+            //convListPagePivot.ApplicationBar = appBar;
 
             ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
             groupChatIconButton.Text = AppResources.GrpChat_Txt;
