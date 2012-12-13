@@ -71,6 +71,8 @@ namespace windows_client
         public static readonly int VIBRATE_DURATION = 1000;
         public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 120;
         public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
+        public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
+        public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
