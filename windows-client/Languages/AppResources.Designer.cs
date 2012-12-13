@@ -61,7 +61,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add to Favourites.
+        ///   Looks up a localized string similar to Add to Favorites.
         /// </summary>
         public static string Add_To_Fav_Txt {
             get {
@@ -349,7 +349,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to favourites.
+        ///   Looks up a localized string similar to favorites.
         /// </summary>
         public static string Conversations_Pivot_Favourites_Header_Txt {
             get {
@@ -376,7 +376,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure about removing this contact from favourites?.
+        ///   Looks up a localized string similar to Are you sure about removing this contact from favorites?.
         /// </summary>
         public static string Conversations_RemFromFav_Confirm_Txt {
             get {
@@ -403,7 +403,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your favourites.
+        ///   Looks up a localized string similar to Your favorites.
         /// </summary>
         public static string Conversations_YourFav_Txt {
             get {
@@ -1744,7 +1744,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove From Favourites.
+        ///   Looks up a localized string similar to Remove From Favorites.
         /// </summary>
         public static string RemFromFav_Txt {
             get {
