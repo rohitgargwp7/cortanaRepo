@@ -128,6 +128,7 @@ namespace windows_client
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
+                App.WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
                 nextPage = nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
             }
             else
