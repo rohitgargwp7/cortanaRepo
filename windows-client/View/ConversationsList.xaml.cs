@@ -621,6 +621,11 @@ namespace windows_client.View
                 {
                     convObj.IsFav = true;
                     App.ViewModel.FavList.Insert(0,convObj);
+                    if (App.ViewModel.IsPending(convObj.Msisdn))
+                    {
+                        App.ViewModel.PendingRequests.Remove(convObj);
+                        MiscDBUtil.SavePendingRequests();
+                    }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
                     int count = 0;

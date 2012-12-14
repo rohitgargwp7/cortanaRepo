@@ -1103,7 +1103,7 @@ namespace windows_client.View
 
         private void AddRemoveFavMenuItem_Click(object sender, EventArgs e)
         {
-            if (!_isFav)
+            if (!_isFav) // add to fav
             {
                 ConversationListObject favObj = null;
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
@@ -1115,6 +1115,12 @@ namespace windows_client.View
                     favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
                 App.ViewModel.FavList.Insert(0, favObj);
                 MiscDBUtil.SaveFavourites();
+
+                if (App.ViewModel.IsPending(favObj.Msisdn))
+                {
+                    App.ViewModel.PendingRequests.Remove(favObj);
+                    MiscDBUtil.SavePendingRequests();
+                }
                 addToFavMenuItem.Text = AppResources.RemFromFav_Txt;
 
                 mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
