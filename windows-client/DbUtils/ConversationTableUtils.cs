@@ -474,7 +474,7 @@ namespace windows_client.DbUtils
         }
 
         // this function will validate the conversation object
-        private static bool IsValidConv(ConversationListObject item)
+        public static bool IsValidConv(ConversationListObject item)
         {
             try
             {
