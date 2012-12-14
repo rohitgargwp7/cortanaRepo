@@ -72,11 +72,11 @@
                 </toolkit:LongListSelector.GroupItemTemplate>
                 <toolkit:LongListSelector.GroupHeaderTemplate>
                     <DataTemplate>
-                        <Border Background="Transparent">
+                        <Border Background="Transparent" Margin="0,5,0,0">
                             <Border Background="{StaticResource PhoneAccentBrush}" 
                         Width="55" Height="55" HorizontalAlignment="Left">
                                 <TextBlock Text="{Binding Title}" 
-                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Foreground="White" 
                                 Style="{StaticResource PhoneTextLargeStyle}"
                                 VerticalAlignment="Bottom"/>
                             </Border>
@@ -85,7 +85,24 @@
                 </toolkit:LongListSelector.GroupHeaderTemplate>
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="-18,0,0,0"> 
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="300"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel x:Name="Sender" Grid.Column="0" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="0,2,0,2">
+                                <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="36" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
+                                    <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                                </StackPanel>
+                            </StackPanel>
+                            <Button Content="Invite" Grid.Column="1" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" Height="60" BorderThickness="0" Tap="Invite_Tap"/>
+
+                        </Grid>
+                        
+                        
+                        <!--<StackPanel Orientation="Horizontal" Margin="-18,0,0,0"> 
                             <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
                                 <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="36" />
                                 <StackPanel Orientation="Horizontal">
@@ -93,8 +110,8 @@
                                     <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
-                            <Button Content="Invite" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" Tap="Invite_Tap"/>
-                        </StackPanel>
+                            <Button Content="Invite" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" Height="60" BorderThickness="0" Tap="Invite_Tap"/>
+                        </StackPanel>-->
                     </DataTemplate>
                 </toolkit:LongListSelector.ItemTemplate>
             </toolkit:LongListSelector>

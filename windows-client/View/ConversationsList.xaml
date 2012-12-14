@@ -154,60 +154,60 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <ScrollViewer Grid.Row="0" >
+                    <ScrollViewer Grid.Row="0" Margin="0,-10,0,0" >
                         <Grid Margin="16,0,0,0">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
+                                <!--<RowDefinition Height="Auto"/>-->
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
 
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <!--<RowDefinition Height="Auto"/>-->
+                                <!--<RowDefinition Height="Auto"/>-->
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" FontSize="24" Text="{Binding Path= LocalizedResources.Conversations_YourFav_Txt, Source={StaticResource LocalizedStrings}}"/>
+                            <!--<TextBlock Grid.Row="0" FontSize="24" Text="{Binding Path= LocalizedResources.Conversations_YourFav_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed"/>-->
 
-                            <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,20,0,0" Grid.Row="1">
+                            <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,0,0,0" Grid.Row="0">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid>
+                                        <Grid Margin="0,0,0,10">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"></RowDefinition>
                                                 <RowDefinition Height="Auto"></RowDefinition>
                                             </Grid.RowDefinitions>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="69"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding AvatarImage}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
-                                            <TextBlock TextWrapping="Wrap" Grid.Column="1" Grid.Row="0" Margin="16,0,0,0">
+                                            <Image Source="{Binding AvatarImage}" Margin="0,10,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
+                                            <TextBlock TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="0" Margin="16,0,5,0">
                                                 <TextBlock.Inlines>
                                                     <Run FontWeight="Bold" Text="{Binding NameToShow}"/>
                                                     <Run FontWeight="Light" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt, Source={StaticResource LocalizedStrings}}"/>
                                                 </TextBlock.Inlines>
                                             </TextBlock>
                                             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Margin="5,0,0,0">
-                                                <Button Background="#2e91d3" Width="102" FontSize="18" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="yes_Click" Foreground="White"></Button>
-                                                <Button Background="#e9ecee" Width="120" FontSize="18" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="no_Click" Foreground="#595959"></Button>
+                                                <Button Background="#2e91d3" Height="65" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="yes_Click" Foreground="White"></Button>
+                                                <Button Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="no_Click" Foreground="#595959"></Button>
                                             </StackPanel>
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <StackPanel x:Name="emptyListPlaceholder" Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Center">
+                            <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
                                 <Image Source="images/favorites_heart.png" Height="90"></Image>
-                                <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,5,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="18" Foreground="#909090"></TextBlock>
+                                <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             </StackPanel>
 
-                            <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="2" Tap="favourites_Tap" >
+                            <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="favourites_Tap" >
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
-                                            <Image Source="{Binding AvatarImage}" Height="50" Margin="0,10,0,0"></Image>
-                                            <Image Source="images/hike_favorite.png" Height="30" Margin="10,10,0,0" VerticalAlignment="Center" Visibility="{Binding ShowOnHikeImage}"></Image>
-                                            <TextBlock Text="{Binding NameToShow}" FontSize="22" VerticalAlignment="Center" Margin="10,2,0,0"></TextBlock>
+                                            <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0"></Image>
+                                            <!--<Image Source="images/hike_favorite.png" Height="30" Margin="10,10,0,0" VerticalAlignment="Center" Visibility="{Binding ShowOnHikeImage}"></Image>-->
+                                            <TextBlock Text="{Binding NameToShow}" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0"></TextBlock>
                                             <toolkit:ContextMenuService.ContextMenu>
                                                 <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                     <toolkit:MenuItem Header="{Binding Path= LocalizedResources.RemFromFav_Txt, Source={StaticResource LocalizedStrings}}" Tap="RemoveFavourite_Tap"/>
@@ -218,8 +218,13 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Rectangle x:Name="favsBar" Height="1" Grid.Row="3" Margin="0,10,0,0"/>
-                            <Button Content="{Binding Path= LocalizedResources.Conversations_HikeContacts_Btn, Source={StaticResource LocalizedStrings}}" BorderThickness="2" HorizontalAlignment="Center" Grid.Row="4" Tap="Button_Tap_1"/>
+                            <!--<Rectangle x:Name="favsBar" Height="1" Grid.Row="3" Margin="0,20,0,0"/>-->
+                            <Button Visibility="Collapsed" Margin="0,30,0,0" FontSize="20" BorderThickness="0" Foreground="#ffffff" Width="220" Height="70" Background="#2e91d3" Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Grid.Row="2" Tap="Button_Tap_1"/>
+                            <!--<TextBlock Margin="0,20,0,0" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="4" Tap="Button_Tap_1"/>-->
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
+                                <Image Source="images/add_favorites.png" Height="69" VerticalAlignment="Center"></Image>
+                                <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="Add More" HorizontalAlignment="Left" Tap="Button_Tap_1"/>
+                            </StackPanel>
                         </Grid>
                     </ScrollViewer>
                 </Grid>
@@ -228,7 +233,7 @@
 
         <Rectangle x:Name="overlay" Visibility="Collapsed" Grid.Row="0" Opacity="0.75" Grid.RowSpan="2" Fill="#000000"></Rectangle>
 
-        <Grid x:Name="TutorialsGrid" Grid.Row="1" Visibility="Collapsed" VerticalAlignment="Center" Margin="0,-60,0,0">
+        <Grid x:Name="TutorialsGrid" Visibility="Collapsed" Grid.Row="1"  VerticalAlignment="Center" Margin="0,-60,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -236,13 +241,13 @@
             </Grid.RowDefinitions>
 
             <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <Rectangle Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="5,10,5,0"/>
-                <Rectangle Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="15,10,5,0"/>
+                <Rectangle x:Name="favBox0" Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="5,10,5,0"/>
+                <Rectangle x:Name="favBox1" Height="15" Width="15" Fill="#767676" Grid.Row="1" Margin="15,10,5,0"/>
             </StackPanel>
 
-            <TextBlock Text="Introducing Favorites" FontFamily="Segoe WP Semibold" FontSize="28" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
+            <TextBlock Text="Introducing Favorites" Foreground="White" FontFamily="Segoe WP Semibold" FontSize="28" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
 
-            <controls:Pivot x:Name="favTutePvt" Grid.Row="2" Margin="0,-20,0,0">
+            <controls:Pivot x:Name="favTutePvt" SelectionChanged="favTutePvt_SelectionChanged" Grid.Row="2" Margin="0,-20,0,0">
                 <controls:PivotItem>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -251,7 +256,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <Image Source="/View/images/favorites_tour_01.png" Height="269" VerticalAlignment="Top" Margin="0,0,0,20" Grid.Row="0"/>
+                        <Image Source="/View/images/favorites_tour_01.png" Height="271" VerticalAlignment="Top" Margin="0,0,0,20" Grid.Row="0"/>
                         <TextBlock Text="A permanent place for all your favorite friends." Foreground="#c1c1c1" FontSize="19" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
                         <TextBlock Text="Chatting with them is just a tap away." Foreground="#c1c1c1" FontSize="19" Grid.Row="2" TextWrapping="Wrap" MaxWidth="380" TextAlignment="Center" HorizontalAlignment="Center"/>
                     </Grid>
@@ -266,10 +271,10 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <Image Source="/View/images/favorites_tour_02.png" Height="269" VerticalAlignment="Top" Margin="0,0,0,20" Grid.Row="0"/>
-                        <TextBlock Text="A permanent place for all your favorite friends." Foreground="#c1c1c1" FontSize="19" Grid.Row="1" TextWrapping="Wrap" Width="390" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
-                        <TextBlock Text="Chatting with them is just a tap away." Foreground="#c1c1c1" FontSize="19" Grid.Row="2" TextWrapping="Wrap" MaxWidth="380" TextAlignment="Center" HorizontalAlignment="Center"/>
-                        <Button Content="OK" FontSize="18" BorderThickness="0" Tap="dismissTutorial_Tap" Grid.Row="3" Foreground="#2b2b2b" Background="#e4e4e4" Width="90" HorizontalAlignment="Center"/>
+                        <Image Source="/View/images/favorites_tour_02.png" Height="270" VerticalAlignment="Top" Margin="0,0,0,20" Grid.Row="0"/>
+                        <TextBlock Text="A permanent place for all your favorite friends." Foreground="#c1c1c1" FontSize="20" Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0" />
+                        <TextBlock Text="Chatting with them is just a tap away." Foreground="#c1c1c1" FontSize="20" MaxWidth="380" Grid.Row="2" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center"/>
+                        <Button Content="OK" FontSize="22" Width="120" BorderThickness="0" Tap="dismissTutorial_Tap" Grid.Row="3" Foreground="#2b2b2b" Background="#e4e4e4" Margin="0,10,0,0" HorizontalAlignment="Center"/>
                     </Grid>
                 </controls:PivotItem>
 
