@@ -86,7 +86,7 @@
                                         <toolkit:ContextMenuService.ContextMenu>
                                             <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
-                                                <toolkit:MenuItem Header="{Binding FavMsg}" Tap="MenuItem_Tap_AddRemoveFav"/>
+                                                <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding IsGroupChat}" Tap="MenuItem_Tap_AddRemoveFav"/>
                                             </toolkit:ContextMenu>
                                         </toolkit:ContextMenuService.ContextMenu>
                                     </StackPanel>
