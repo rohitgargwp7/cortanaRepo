@@ -1852,6 +1852,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hide sms contacts.
+        /// </summary>
+        public static string SelectUser_HideSmsContacts_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_HideSmsContacts_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to invite user.
         /// </summary>
         public static string SelectUser_InviteUsr_Txt {
@@ -1920,6 +1929,15 @@ namespace windows_client.Languages {
         public static string SelectUser_RemoveContact_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_RemoveContact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to show sms contacts.
+        /// </summary>
+        public static string SelectUser_ShowSmsContacts_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_ShowSmsContacts_Txt", resourceCulture);
             }
         }
         

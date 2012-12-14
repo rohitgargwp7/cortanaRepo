@@ -85,7 +85,7 @@ namespace windows_client
         private static PushHelper _pushHelper;
         private static object lockObj = new object();
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
-        PageState ps = PageState.WELCOME_SCREEN;
+        private static PageState ps = PageState.WELCOME_SCREEN;
         #endregion
 
         #region PROPERTIES
@@ -589,8 +589,6 @@ namespace windows_client
 
         private static void instantiateClasses()
         {
-            PageState ps = PageState.WELCOME_SCREEN;
-            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
 
             #region GROUP CACHE
 
