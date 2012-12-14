@@ -554,8 +554,8 @@ namespace windows_client.View
 
         private void showNudgeTute()
         {
-            //if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-            if(true)
+            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
+//            if(true)
             {
                 overlayForNudge.Visibility = Visibility.Visible;
                 overlayForNudge.Opacity = 0.65;
@@ -1383,7 +1383,9 @@ namespace windows_client.View
 
                 UTF8Encoding enc = new UTF8Encoding();
                 string locationInfo = enc.GetString(filebytes, 0, filebytes.Length);
-                JObject locationJSON = JObject.Parse(locationInfo);
+
+                JObject locationJSON = JObject.Parse(locationInfo)[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
+                //JObject locationJSON = JObject.Parse(locationInfo);
                 if (this.bingMapsTask == null)
                     bingMapsTask = new BingMapsTask();
                 double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
@@ -2700,11 +2702,9 @@ namespace windows_client.View
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
 
-                string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
+                string fileName = "Location";
 
                 string locationJSONString = locationJSON.ToString();
-                //byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
-                //System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
