@@ -326,9 +326,6 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-            if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
-                isNewInstall = false;
-
             /* Load App token if its there*/
             if (appSettings.Contains(TOKEN_SETTING))
             {
@@ -350,9 +347,7 @@ namespace windows_client
             Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
             Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
             #endregion
-
             _isAppLaunched = true;
-            instantiateClasses();
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -371,6 +366,8 @@ namespace windows_client
 
             if (_isTombstoneLaunch)
             {
+                if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
+                    isNewInstall = false;
                 instantiateClasses();
             }
             else
@@ -408,6 +405,11 @@ namespace windows_client
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_Navigating;
+
+            if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
+                isNewInstall = false;
+            instantiateClasses();
+
             string targetPage = e.Uri.ToString();
             //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
