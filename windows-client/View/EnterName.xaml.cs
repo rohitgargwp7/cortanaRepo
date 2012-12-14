@@ -113,6 +113,10 @@ namespace windows_client
                 return;
             isCalled = true;
             txtBxEnterName.IsReadOnly = false;
+
+            App.WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
+            App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
+            
             Uri nextPage;
             string country_code = null;
             App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
@@ -128,7 +132,6 @@ namespace windows_client
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
-                App.WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
                 nextPage = nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
             }
             else
