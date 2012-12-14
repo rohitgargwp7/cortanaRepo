@@ -93,7 +93,8 @@
                                     <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
-                            <Button Content="Invite" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" Tap="Invite_Tap"/>
+                            <Button Content="Invite" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" Height="60" BorderThickness="0" Tap="Invite_Tap"/>
+                            <!--<Button Content="Invite" Background="Blue" BorderThickness="0" Foreground="White" HorizontalAlignment="Right" Height="70" Tap="Invite_Tap"/>-->
                         </StackPanel>
                     </DataTemplate>
                 </toolkit:LongListSelector.ItemTemplate>
