@@ -555,7 +555,7 @@ namespace windows_client.View
         private void showNudgeTute()
         {
             if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-//            if(true)
+            //            if(true)
             {
                 overlayForNudge.Visibility = Visibility.Visible;
                 overlayForNudge.Opacity = 0.65;
@@ -804,7 +804,7 @@ namespace windows_client.View
                     _isFav = true;
                 }
             }
-//            chatThreadMainPage.ApplicationBar = appBar;
+            //            chatThreadMainPage.ApplicationBar = appBar;
         }
 
         private void initInviteMenuItem()
@@ -1215,7 +1215,7 @@ namespace windows_client.View
                 isMute = true;
                 obj[HikeConstants.TYPE] = AppResources.Mute_Txt;
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
-                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":","_"));
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
@@ -1950,7 +1950,6 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-
             isContextMenuTapped = true;
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
             if (msg == null)
@@ -1964,13 +1963,14 @@ namespace windows_client.View
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             MyChatBubble lastMessageBubble = null;
-            if (isTypingNotificationActive && this.messagesCollection.Count > 1)
+            //last element is an empty image so take 2nd last element
+            if (isTypingNotificationActive && this.messagesCollection.Count > 2)
             {
-                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 2] as MyChatBubble;
+                lastMessageBubble = (MyChatBubble)this.messagesCollection[this.messagesCollection.Count - 3];
             }
-            else if (!isTypingNotificationActive && this.messagesCollection.Count > 0)
+            else if (!isTypingNotificationActive && this.messagesCollection.Count > 1)
             {
-                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 1] as MyChatBubble;
+                lastMessageBubble = (MyChatBubble)this.messagesCollection[this.messagesCollection.Count - 2];
             }
 
             if (lastMessageBubble != null)
@@ -1995,8 +1995,8 @@ namespace windows_client.View
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;
-                    obj.MessageStatus = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).MessageStatus;
-                    obj.TimeStamp = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).TimeStampLong;
+                    obj.MessageStatus = (this.messagesCollection[messagesCollection.Count - 2] as MyChatBubble).MessageStatus;
+                    obj.TimeStamp = (this.messagesCollection[messagesCollection.Count - 2] as MyChatBubble).TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
@@ -3051,7 +3051,7 @@ namespace windows_client.View
                 MenuItem menuItemForward = new MenuItem();
                 menuItemForward.Header = AppResources.Forward_Txt;
                 var glFwd = GestureService.GetGestureListener(menuItemForward);
-                glFwd.Tap += MenuItem_Click_Copy;
+                glFwd.Tap += MenuItem_Click_Forward;
                 menu.Items.Add(menuItemForward);
 
                 MenuItem menuItemDelete = new MenuItem();
