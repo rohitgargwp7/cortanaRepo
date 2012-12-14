@@ -676,7 +676,8 @@ namespace windows_client.View
             }
             else if (selectedIndex == 2) // favourite
             {
-
+                if (appBar.MenuItems.Contains(delConvsMenu))
+                    appBar.MenuItems.Remove(delConvsMenu);
                 // there will be three background workers that will independently load three sections
 
                 #region Favourites
