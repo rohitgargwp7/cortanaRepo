@@ -266,5 +266,14 @@ namespace windows_client.utils
             infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
             return infoPacket;
         }
+
+        public static bool IsIndianNumber(string msisdn)
+        {
+            if (msisdn == null)
+                return false;
+            if (msisdn.StartsWith("+91"))
+                return true;
+            return false;
+        }
     }
 }
