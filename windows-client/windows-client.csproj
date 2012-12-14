@@ -391,6 +391,7 @@
     <Content Include="View\images\new_message.png" />
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
+    <Content Include="View\images\nudge_tutorial.png" />
     <Content Include="View\images\plus_tap_on.png" />
     <Content Include="View\images\tick.png" />
     <Content Include="View\images\tw_icon.png" />
