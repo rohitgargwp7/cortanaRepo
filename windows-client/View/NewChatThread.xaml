@@ -229,8 +229,8 @@
             <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
 
-        <Rectangle x:Name="overlayForNudge" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
-        <Grid x:Name="nudgeTuteGrid" Grid.Row="1" Width="375" VerticalAlignment="Center" Visibility="Collapsed" Background="Black">
+        <Rectangle x:Name="overlayForNudge" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
+        <Grid x:Name="nudgeTuteGrid" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -238,10 +238,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Image Source="/View/images/nudge_tutorial.png" Margin="0,0,0,20" Grid.Row="0" Height="70"/>
+            <Image Source="/View/images/nudge_tutorial.png" Margin="0,30,0,15" Grid.Row="0" Height="70"/>
             <TextBlock Text="Nudge" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="White" HorizontalAlignment="Center" Grid.Row="1"/>
-            <TextBlock Text="Double tap anywhere on the chat to nudge your friend." Foreground="White" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
-            <Button Content="OK" BorderThickness="0" Margin="-12,0,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
+            <TextBlock Margin="0,5,0,0" Text="Double tap anywhere on the chat to nudge your friend." Foreground="White" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
+            <Button Content="OK" BorderThickness="0" Margin="-12,25,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

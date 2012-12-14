@@ -554,11 +554,12 @@ namespace windows_client.View
 
         private void showNudgeTute()
         {
-            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-            //            if(true)
+//            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
+            if (true)
             {
                 overlayForNudge.Visibility = Visibility.Visible;
-                overlayForNudge.Opacity = 0.65;
+                //overlayForNudge.Opacity = 0.65;
+                overlayForNudge.Opacity = 0.3;
                 nudgeTuteGrid.Visibility = Visibility.Visible;
                 messageListBox.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
                 //SystemTray.IsVisible = false;
