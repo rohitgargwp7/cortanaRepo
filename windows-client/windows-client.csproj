@@ -368,6 +368,8 @@
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
     <Content Include="View\images\favorites_heart.png" />
+    <Content Include="View\images\favorites_tour_01.png" />
+    <Content Include="View\images\favorites_tour_02.png" />
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
@@ -389,6 +391,7 @@
     <Content Include="View\images\new_message.png" />
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
+    <Content Include="View\images\nudge_tutorial.png" />
     <Content Include="View\images\plus_tap_on.png" />
     <Content Include="View\images\tick.png" />
     <Content Include="View\images\tw_icon.png" />
