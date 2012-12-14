@@ -62,8 +62,8 @@ namespace windows_client.View
 
         private void showTutorial()
         {
-//            if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
-            if(true)
+            if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
+//            if(true)
             {
                 overlay.Visibility = Visibility.Visible;
                 TutorialsGrid.Visibility = Visibility.Visible;
@@ -82,6 +82,7 @@ namespace windows_client.View
             TutorialsGrid.Visibility = Visibility.Collapsed;
             convListPagePivot.ApplicationBar = appBar;
             launchPagePivot.IsHitTestVisible = true;
+            App.RemoveKeyFromAppSettings(App.SHOW_FAVORITES_TUTORIAL);
         }
 
         private static void OnNetworkChange(object sender, EventArgs e)
