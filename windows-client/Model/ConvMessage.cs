@@ -464,22 +464,32 @@ namespace windows_client.Model
             {
                 metadata = new JObject();
                 filesData = new JArray();
-                singleFileInfo = new JObject();
-                singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
-                singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                if (FileAttachment.Thumbnail != null)
-                    singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
-                if (FileAttachment.ContentType.Contains("location"))
+                if (!FileAttachment.ContentType.Contains("location"))
                 {
-                    JObject locationInfo = JObject.Parse(this.MetaDataString);
-                    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
-                    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
-                    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
-                    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
+                    singleFileInfo = new JObject();
+                    singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                    singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                    if (FileAttachment.Thumbnail != null)
+                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    //if (FileAttachment.ContentType.Contains("location"))
+                    //{
+                    //    JObject locationInfo = JObject.Parse(this.MetaDataString);
+                    //    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
+                    //    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
+                    //    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
+                    //    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
+                    //}
+                }
+                else
+                {
+                    //add thumbnail here
+                    JObject uploadedJSON = JObject.Parse(this.MetaDataString);
+                    singleFileInfo = uploadedJSON[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
+                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                    singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                 }
                 filesData.Add(singleFileInfo.ToObject<JToken>());
-
                 metadata[HikeConstants.FILES_DATA] = filesData;
                 data[HikeConstants.METADATA] = metadata;
             }

@@ -98,7 +98,7 @@ namespace windows_client.Controls
                     else
                     {
                         contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
-                            false); //since it is not an attachment message this bool won't make difference
+                            true); //set to tru to have only delete option for nudge bubbles
                     }
                     ContextMenuService.SetContextMenu(this, contextMenu);
                 }

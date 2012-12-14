@@ -549,7 +549,35 @@ namespace windows_client.View
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             initBlockUnblockState();
+            showNudgeTute();
         }
+
+        private void showNudgeTute()
+        {
+            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
+            //            if(true)
+            {
+                overlayForNudge.Visibility = Visibility.Visible;
+                overlayForNudge.Opacity = 0.65;
+                nudgeTuteGrid.Visibility = Visibility.Visible;
+                messageListBox.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
+                //SystemTray.IsVisible = false;
+            }
+            else
+            {
+                chatThreadMainPage.ApplicationBar = appBar;
+            }
+        }
+
+        private void dismissNudgeTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            overlayForNudge.Visibility = Visibility.Collapsed;
+            nudgeTuteGrid.Visibility = Visibility.Collapsed;
+            messageListBox.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
+            chatThreadMainPage.ApplicationBar = appBar;
+            App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
+        }
+
 
         private void processGroupJoin(bool isNewgroup)
         {
@@ -776,7 +804,7 @@ namespace windows_client.View
                     _isFav = true;
                 }
             }
-            chatThreadMainPage.ApplicationBar = appBar;
+            //            chatThreadMainPage.ApplicationBar = appBar;
         }
 
         private void initInviteMenuItem()
@@ -1187,7 +1215,7 @@ namespace windows_client.View
                 isMute = true;
                 obj[HikeConstants.TYPE] = AppResources.Mute_Txt;
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
-                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":","_"));
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             }
@@ -1355,7 +1383,9 @@ namespace windows_client.View
 
                 UTF8Encoding enc = new UTF8Encoding();
                 string locationInfo = enc.GetString(filebytes, 0, filebytes.Length);
-                JObject locationJSON = JObject.Parse(locationInfo);
+
+                JObject locationJSON = JObject.Parse(locationInfo)[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
+                //JObject locationJSON = JObject.Parse(locationInfo);
                 if (this.bingMapsTask == null)
                     bingMapsTask = new BingMapsTask();
                 double latitude = Convert.ToDouble(locationJSON[HikeConstants.LATITUDE].ToString());
@@ -1920,7 +1950,6 @@ namespace windows_client.View
 
         private void MenuItem_Click_Delete(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-
             isContextMenuTapped = true;
             MyChatBubble msg = ((sender as MenuItem).DataContext as MyChatBubble);
             if (msg == null)
@@ -1934,13 +1963,14 @@ namespace windows_client.View
             ConversationListObject obj = App.ViewModel.ConvMap[mContactNumber];
 
             MyChatBubble lastMessageBubble = null;
-            if (isTypingNotificationActive && this.messagesCollection.Count > 1)
+            //last element is an empty image so take 2nd last element
+            if (isTypingNotificationActive && this.messagesCollection.Count > 2)
             {
-                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 2] as MyChatBubble;
+                lastMessageBubble = (MyChatBubble)this.messagesCollection[this.messagesCollection.Count - 3];
             }
-            else if (!isTypingNotificationActive && this.messagesCollection.Count > 0)
+            else if (!isTypingNotificationActive && this.messagesCollection.Count > 1)
             {
-                lastMessageBubble = this.messagesCollection[this.messagesCollection.Count - 1] as MyChatBubble;
+                lastMessageBubble = (MyChatBubble)this.messagesCollection[this.messagesCollection.Count - 2];
             }
 
             if (lastMessageBubble != null)
@@ -1965,8 +1995,8 @@ namespace windows_client.View
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;
-                    obj.MessageStatus = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).MessageStatus;
-                    obj.TimeStamp = (this.messagesCollection[messagesCollection.Count - 1] as MyChatBubble).TimeStampLong;
+                    obj.MessageStatus = (this.messagesCollection[messagesCollection.Count - 2] as MyChatBubble).MessageStatus;
+                    obj.TimeStamp = (this.messagesCollection[messagesCollection.Count - 2] as MyChatBubble).TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
@@ -2672,11 +2702,9 @@ namespace windows_client.View
                 JObject locationJSON = (JObject)locationInfo[0];
                 imageThumbnail = (byte[])locationInfo[1];
 
-                string fileName = "location_" + TimeUtils.getCurrentTimeStamp().ToString();
+                string fileName = "Location";
 
                 string locationJSONString = locationJSON.ToString();
-                //byte[] locationBytes = new byte[locationJSONString.Length * sizeof(char)];
-                //System.Buffer.BlockCopy(locationJSONString.ToCharArray(), 0, locationBytes, 0, locationBytes.Length);
 
                 byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(locationJSONString);
 
@@ -3023,7 +3051,7 @@ namespace windows_client.View
                 MenuItem menuItemForward = new MenuItem();
                 menuItemForward.Header = AppResources.Forward_Txt;
                 var glFwd = GestureService.GetGestureListener(menuItemForward);
-                glFwd.Tap += MenuItem_Click_Copy;
+                glFwd.Tap += MenuItem_Click_Forward;
                 menu.Items.Add(menuItemForward);
 
                 MenuItem menuItemDelete = new MenuItem();
