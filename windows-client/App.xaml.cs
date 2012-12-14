@@ -855,6 +855,9 @@ namespace windows_client
                 convList =  ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
+                // there was no country code in first version, and as first version was released in India , we are setting value to +91 
+                WriteToIsoStorageSettings(COUNTRY_CODE_SETTING, "+91");
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
             else if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
@@ -865,7 +868,14 @@ namespace windows_client
                  */
                 convList = ConversationTableUtils.getAllConvs();
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);               
+                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);
+
+                string country_code = null;
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+                if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+                    App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+                else
+                    App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
             else // this corresponds to the latest version and is called everytime except update launch
