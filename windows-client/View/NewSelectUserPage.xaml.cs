@@ -199,7 +199,14 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, e) =>
             {
                 jumpList = getGroupedList(allContactsList);
-                contactsListBox.ItemsSource = jumpList;
+                if(!hideSmsContacts)
+                {
+                    if(filteredJumpList == null)
+                        MakeFilteredJumpList();
+                    contactsListBox.ItemsSource = filteredJumpList;
+                }
+                else
+                    contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
             };
             initPage();
