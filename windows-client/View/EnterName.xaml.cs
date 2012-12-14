@@ -127,7 +127,6 @@ namespace windows_client
             if ("+91" != country_code)
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
                 nextPage = nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
             }
             else
@@ -136,6 +135,7 @@ namespace windows_client
                 nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
                 PhoneApplicationService.Current.State["FromNameScreen"] = true;
             }
+            App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
             Thread.Sleep(2 * 1000);
