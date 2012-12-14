@@ -179,7 +179,7 @@ namespace windows_client.DbUtils
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
                 ((HikeChatsDb hdc, string myMsisdn) =>
                     from o in hdc.messages
-                    where o.Msisdn == myMsisdn
+                    where o.Msisdn == myMsisdn orderby o.MessageId
                     select o);
                 return q;
             }

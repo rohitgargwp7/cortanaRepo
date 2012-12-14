@@ -25,7 +25,9 @@ namespace windows_client.View
 {
     public partial class NewSelectUserPage : PhoneApplicationPage, HikePubSub.Listener
     {
-        bool canGoBack = true;
+        private bool hideSmsContacts;
+        private bool isFreeSmsOn = true;
+        private bool canGoBack = true;
         private bool isClicked = false;
         private string TAP_MSG = AppResources.SelectUser_TapMsg_Txt;
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
@@ -35,6 +37,7 @@ namespace windows_client.View
         public MyProgressIndicator progress = null;
         List<Group<ContactInfo>> glistFiltered = null;
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
+        public List<Group<ContactInfo>> filteredJumpList = null;
         private List<Group<ContactInfo>> defaultJumpList = null;
         private string charsEntered;
 
@@ -47,7 +50,8 @@ namespace windows_client.View
 
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
-        ApplicationBarIconButton refreshIconButton = null;
+        private ApplicationBarIconButton refreshIconButton = null;
+        private ApplicationBarMenuItem onHikeFilter = null;
 
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
@@ -169,6 +173,12 @@ namespace windows_client.View
         public NewSelectUserPage()
         {
             InitializeComponent();
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out isFreeSmsOn);
+            if (isFreeSmsOn)
+                hideSmsContacts = true;
+            else
+                hideSmsContacts = false;
+
             /* Case whe this page is called from GroupInfo page*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
                 isGroupChat = true;
@@ -189,7 +199,14 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, e) =>
             {
                 jumpList = getGroupedList(allContactsList);
-                contactsListBox.ItemsSource = jumpList;
+                if(!hideSmsContacts)
+                {
+                    if(filteredJumpList == null)
+                        MakeFilteredJumpList();
+                    contactsListBox.ItemsSource = filteredJumpList;
+                }
+                else
+                    contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
             };
             initPage();
@@ -237,7 +254,7 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
             appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            appBar.IsMenuEnabled = true;
 
             refreshIconButton = new ApplicationBarIconButton();
             refreshIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
@@ -245,6 +262,15 @@ namespace windows_client.View
             refreshIconButton.Click += new EventHandler(refreshContacts_Click);
             refreshIconButton.IsEnabled = true;
             appBar.Buttons.Add(refreshIconButton);
+
+            onHikeFilter = new ApplicationBarMenuItem();
+            if (isFreeSmsOn)
+                onHikeFilter.Text = AppResources.SelectUser_HideSmsContacts_Txt;
+            else
+                onHikeFilter.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
+            onHikeFilter.Click += new EventHandler(OnHikeFilter_Click);
+            appBar.MenuItems.Add(onHikeFilter);
+
             selectUserPage.ApplicationBar = appBar;
 
             if (isGroupChat)
@@ -265,6 +291,27 @@ namespace windows_client.View
             else
             {
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelected_Click);
+            }
+        }
+
+        private void OnHikeFilter_Click(object sender, EventArgs e)
+        {
+            enterNameTxt.Text = stringBuilderForContactNames.ToString();
+            if (hideSmsContacts)
+            {
+                if (filteredJumpList == null)
+                {
+                    MakeFilteredJumpList();
+                }
+                contactsListBox.ItemsSource = filteredJumpList;
+                hideSmsContacts = !hideSmsContacts;
+                onHikeFilter.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
+            }
+            else
+            {
+                contactsListBox.ItemsSource = jumpList;
+                hideSmsContacts = !hideSmsContacts;
+                onHikeFilter.Text = AppResources.SelectUser_HideSmsContacts_Txt;
             }
         }
 
@@ -293,8 +340,7 @@ namespace windows_client.View
             }
 
             List<Group<ContactInfo>> glist = createGroups();
-            bool isFreeSmsOn = true;
-            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out isFreeSmsOn);
+            
             for (int i = 0; i < (allContactsList != null ? allContactsList.Count : 0); i++)
             {
                 ContactInfo c = allContactsList[i];
@@ -373,6 +419,23 @@ namespace windows_client.View
             return key.ToString();
         }
 
+        private void MakeFilteredJumpList()
+        {
+            filteredJumpList = createGroups();
+            for (int i = 0; i < jumpList.Count; i++)
+            {
+                Group<ContactInfo> g = jumpList[i];
+                if (!g.HasItems)
+                    continue;
+                for (int j = 0; j < g.Items.Count; j++)
+                {
+                    ContactInfo c = g.Items[j];
+                    if (c.OnHike) // if on hike 
+                        filteredJumpList[i].Items.Add(c);
+                }
+            }
+        }
+
         #endregion
 
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -428,7 +491,14 @@ namespace windows_client.View
             charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))
             {
-                contactsListBox.ItemsSource = jumpList;
+                if (!hideSmsContacts)
+                {
+                    if(filteredJumpList == null)
+                        MakeFilteredJumpList();
+                    contactsListBox.ItemsSource = filteredJumpList;
+                }
+                else
+                    contactsListBox.ItemsSource = jumpList;
                 return;
             }
 
@@ -831,15 +901,24 @@ namespace windows_client.View
                 ConversationTableUtils.updateConversation(updatedContacts);
             }
 
-            List<ContactInfo> allContactsList = UsersTableUtils.getAllContactsByGroup();
+            allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.isABScanning = false;
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                filteredJumpList = null;
                 jumpList = getGroupedList(allContactsList);
-                contactsListBox.ItemsSource = jumpList;
+
+                // this logic handles the case where hide sms contacts is there and user refreshed the list 
+                if (!hideSmsContacts)
+                {
+                    MakeFilteredJumpList();
+                    contactsListBox.ItemsSource = filteredJumpList;
+                }
+                else
+                    contactsListBox.ItemsSource = jumpList;
                 progress.Hide();
                 enableAppBar();
             });

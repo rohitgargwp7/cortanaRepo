@@ -1166,4 +1166,12 @@
     <value>Unable to download file. </value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
+  <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
+    <value>hide sms contacts</value>
+    <comment>Text used in app menu bar</comment>
+  </data>
+  <data name="SelectUser_ShowSmsContacts_Txt" xml:space="preserve">
+    <value>show sms contacts</value>
+    <comment>Text used in app menu bar</comment>
+  </data>
 </root>

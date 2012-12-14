@@ -85,7 +85,7 @@ namespace windows_client
         private static PushHelper _pushHelper;
         private static object lockObj = new object();
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
-        PageState ps = PageState.WELCOME_SCREEN;
+        private static PageState ps = PageState.WELCOME_SCREEN;
         #endregion
 
         #region PROPERTIES
@@ -328,9 +328,6 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-            if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
-                isNewInstall = false;
-
             /* Load App token if its there*/
             if (appSettings.Contains(TOKEN_SETTING))
             {
@@ -352,9 +349,7 @@ namespace windows_client
             Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
             Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
             #endregion
-
             _isAppLaunched = true;
-            instantiateClasses();
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -373,6 +368,8 @@ namespace windows_client
 
             if (_isTombstoneLaunch)
             {
+                if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
+                    isNewInstall = false;
                 instantiateClasses();
             }
             else
@@ -410,6 +407,11 @@ namespace windows_client
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_Navigating;
+
+            if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
+                isNewInstall = false;
+            instantiateClasses();
+
             string targetPage = e.Uri.ToString();
             //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
@@ -587,8 +589,6 @@ namespace windows_client
 
         private static void instantiateClasses()
         {
-            PageState ps = PageState.WELCOME_SCREEN;
-            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
 
             #region GROUP CACHE
 
@@ -855,6 +855,9 @@ namespace windows_client
                 convList =  ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
+                // there was no country code in first version, and as first version was released in India , we are setting value to +91 
+                WriteToIsoStorageSettings(COUNTRY_CODE_SETTING, "+91");
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
                 return convList;
             }
             else if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
@@ -865,7 +868,14 @@ namespace windows_client
                  */
                 convList = ConversationTableUtils.getAllConvs();
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);               
+                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);
+
+                string country_code = null;
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+                if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+                    App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+                else
+                    App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
             else // this corresponds to the latest version and is called everytime except update launch
@@ -874,8 +884,9 @@ namespace windows_client
                 appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
                 convList = ConversationTableUtils.getAllConvs();
 
+                int convListCount = convList == null ? 0 : convList.Count;
                 // This shows something failed while reading from Convs , so move to backup plan i.e read from individual files
-                if ((convList == null || convList.Count == 0) && convs > 0)
+                if (convListCount != convs)
                     convList = ConversationTableUtils.GetConvsFromIndividualFiles();
 
                 return convList;

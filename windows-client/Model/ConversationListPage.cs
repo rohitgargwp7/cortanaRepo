@@ -380,6 +380,16 @@ namespace windows_client.Model
             }
         }
 
+        public Visibility IsGroupChat
+        {
+            get
+            {
+                if (Utils.isGroupConversation(_msisdn))
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
+        }
+
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
