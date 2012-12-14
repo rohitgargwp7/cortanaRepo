@@ -686,7 +686,7 @@ namespace windows_client
 
                 if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
                 {
-                    App.WriteToIsoStorageSettings("New_Update", true);
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                     if (Utils.compareVersion(_currentVersion,"1.5.0.0") !=1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.UpdateToVersionOne();

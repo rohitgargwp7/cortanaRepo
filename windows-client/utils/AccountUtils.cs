@@ -822,7 +822,7 @@ namespace windows_client.utils
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
                 if(!isRefresh)
-                    App.WriteToIsoStorageSettings("ContactsToShow",msgToShow);
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
                 return server_contacts;
             }
             catch (ArgumentException)

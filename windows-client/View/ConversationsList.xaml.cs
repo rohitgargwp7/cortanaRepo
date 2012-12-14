@@ -214,10 +214,10 @@ namespace windows_client.View
                 Utils.requestAccountInfo();
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
             }
-            else if (App.appSettings.Contains("New_Update"))
+            else if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
-                App.RemoveKeyFromAppSettings("New_Update");
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
 
             // move to seperate thread later
@@ -239,10 +239,10 @@ namespace windows_client.View
         private void ShowLaunchMessages()
         {
             List<ContactInfo> cl = null;
-            App.appSettings.TryGetValue("ContactsToShow", out cl);
+            App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out cl);
             if (cl == null)
             {
-                App.RemoveKeyFromAppSettings("ContactsToShow");
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
                 return;
             }
             for (int i = 0; i < cl.Count; i++)
@@ -266,7 +266,7 @@ namespace windows_client.View
                 if (obj != null)
                     App.ViewModel.MessageListPageCollection.Insert(0, obj);
             }
-            App.RemoveKeyFromAppSettings("ContactsToShow");
+            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
         }
 
         private void initAppBar()

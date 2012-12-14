@@ -70,7 +70,7 @@ namespace windows_client.View
         {
             var fb = new FacebookClient();
             var parameters = new Dictionary<string, object>();
-            parameters["access_token"] = (string)App.appSettings["FbAccessToken"];
+            parameters["access_token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
             parameters["next"] = "https://www.facebook.com/connect/login_success.html";
             var logoutUrl = fb.GetLogoutUrl(parameters);
             BrowserControl.Navigate(logoutUrl);
@@ -123,8 +123,8 @@ namespace windows_client.View
                 FacebookOAuthResult oauthResult;
                 if (e.Uri.AbsoluteUri == "https://www.facebook.com/connect/login_success.html")
                 {
-                    App.RemoveKeyFromAppSettings("FbAccessToken");
-                    App.RemoveKeyFromAppSettings("FbUserId");
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN);
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.FB_USER_ID);
                     App.RemoveKeyFromAppSettings(HikeConstants.FB_LOGGED_IN);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
@@ -169,8 +169,8 @@ namespace windows_client.View
 
                 var result = (IDictionary<string, object>)e.GetResultData();
                 string id = (string)result["id"];
-                App.WriteToIsoStorageSettings("FbAccessToken", accessToken);
-                App.WriteToIsoStorageSettings("FbUserId", id);
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, accessToken);
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, id);
                 App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -422,8 +422,8 @@ namespace windows_client.View
                     {
                         var responseText = reader.ReadToEnd();
                         var userInfo = ExtractTokenInfo(responseText);
-                        App.WriteToIsoStorageSettings("TwToken", token);
-                        App.WriteToIsoStorageSettings("TwTokenSecret", tokenSecret);
+                        App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN, token);
+                        App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET, tokenSecret);
                         App.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
                         Dispatcher.BeginInvoke(() =>
                         {
