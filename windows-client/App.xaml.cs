@@ -876,8 +876,9 @@ namespace windows_client
                 appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
                 convList = ConversationTableUtils.getAllConvs();
 
+                int convListCount = convList == null ? 0 : convList.Count;
                 // This shows something failed while reading from Convs , so move to backup plan i.e read from individual files
-                if ((convList == null || convList.Count == 0) && convs > 0)
+                if (convListCount != convs)
                     convList = ConversationTableUtils.GetConvsFromIndividualFiles();
 
                 return convList;
