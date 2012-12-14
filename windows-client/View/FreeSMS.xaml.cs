@@ -228,7 +228,7 @@ namespace windows_client.View
 
         public void SocialPostFB(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -244,7 +244,7 @@ namespace windows_client.View
 
         public void SocialDeleteFB(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -280,7 +280,7 @@ namespace windows_client.View
 
         public void SocialPostTW(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -293,7 +293,7 @@ namespace windows_client.View
 
         public void SocialDeleteTW(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

@@ -919,13 +919,13 @@ namespace windows_client.View
                 convMessage.IsSms = !isOnHike;
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
 
-                if (chatBubble.FileAttachment.ContentType.Contains("image"))
+                if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                     convMessage.Message = AppResources.Image_Txt;
-                else if (chatBubble.FileAttachment.ContentType.Contains("audio"))
+                else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                     convMessage.Message = AppResources.Audio_Txt;
-                else if (chatBubble.FileAttachment.ContentType.Contains("video"))
+                else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                     convMessage.Message = AppResources.Video_Txt;
-                else if (chatBubble.FileAttachment.ContentType.Contains("location"))
+                else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                 {
                     convMessage.Message = AppResources.Location_Txt;
                     byte[] locationInfo = null;
@@ -1304,17 +1304,17 @@ namespace windows_client.View
                         convMessage.HasAttachment = true;
                         convMessage.MessageId = chatBubble.MessageId;
                         convMessage.FileAttachment = chatBubble.FileAttachment;
-                        if (convMessage.FileAttachment.ContentType.Contains("image"))
+                        if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
-                        else if (convMessage.FileAttachment.ContentType.Contains("audio"))
+                        else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
                         }
-                        else if (convMessage.FileAttachment.ContentType.Contains("location"))
+                        else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
@@ -1325,7 +1325,7 @@ namespace windows_client.View
                             string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfoBytes, 0, locationInfoBytes.Length);
                             convMessage.MetaDataString = locationInfoString;
                         }
-                        else if (convMessage.FileAttachment.ContentType.Contains("video"))
+                        else if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                         {
                             convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                                 "/" + convMessage.FileAttachment.FileKey;
@@ -1351,7 +1351,7 @@ namespace windows_client.View
             {
                 MiscDBUtil.saveAttachmentObject(chatBubble.FileAttachment, mContactNumber, chatBubble.MessageId);
             }
-            if (chatBubble.FileAttachment.ContentType.Contains("image"))
+            if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
             {
                 object[] fileTapped = new object[2];
                 fileTapped[0] = chatBubble.MessageId;
@@ -1359,7 +1359,7 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State["objectForFileTransfer"] = fileTapped;
                 NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
             }
-            else if (chatBubble.FileAttachment.ContentType.Contains("audio") | chatBubble.FileAttachment.ContentType.Contains("video"))
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO) | chatBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
             {
                 MediaPlayerLauncher mediaPlayerLauncher = new MediaPlayerLauncher();
                 string fileLocation = HikeConstants.FILES_BYTE_LOCATION + "/" + contactNumberOrGroupId + "/" + Convert.ToString(chatBubble.MessageId);
@@ -1375,7 +1375,7 @@ namespace windows_client.View
                 {
                 }
             }
-            else if (chatBubble.FileAttachment.ContentType.Contains("location"))
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
             {
                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
                 byte[] filebytes;
@@ -1848,7 +1848,7 @@ namespace windows_client.View
                     fileName = fileName.Substring(fileName.LastIndexOf("/") + 1);
 
                 convMessage.FileAttachment = new Attachment(fileName, thumbnailBytes, Attachment.AttachmentState.STARTED);
-                convMessage.FileAttachment.ContentType = "image";
+                convMessage.FileAttachment.ContentType = HikeConstants.IMAGE;
                 convMessage.Message = AppResources.Image_Txt;
 
                 SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnailBytes);
@@ -1978,11 +1978,11 @@ namespace windows_client.View
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
                 {
-                    if (lastMessageBubble.FileAttachment.ContentType.Contains("image"))
+                    if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                         obj.LastMessage = AppResources.Image_Txt;
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains("audio"))
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                         obj.LastMessage = AppResources.Audio_Txt;
-                    if (lastMessageBubble.FileAttachment.ContentType.Contains("video"))
+                    if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                         obj.LastMessage = AppResources.Video_Txt;
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
@@ -2955,7 +2955,7 @@ namespace windows_client.View
 
         public void updateAddressBook_Callback(JObject obj)
         {
-            if ((obj == null) || "fail" == (string)obj["stat"])
+            if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 Dispatcher.BeginInvoke(() =>
                 {

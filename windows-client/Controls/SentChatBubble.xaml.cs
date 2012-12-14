@@ -387,7 +387,7 @@ namespace windows_client.Controls
                 MessageImage.MaxHeight = 180;
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Right;
                 MessageImage.Margin = imgMargin;
-                if (contentType.Contains("audio"))
+                if (contentType.Contains(HikeConstants.AUDIO))
                     this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentSend;
                 else if (isNudge)
                 {
@@ -400,7 +400,7 @@ namespace windows_client.Controls
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if (contentType.Contains("video") || contentType.Contains("audio"))
+                if (contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO))
                 {
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;

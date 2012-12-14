@@ -188,7 +188,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && "ok" == (string)obj["stat"])
+                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
                     if (userName != name.Text)
                     {
@@ -231,7 +231,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && "ok" == (string)obj["stat"])
+                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
 
                     if (userEmail != email.Text)

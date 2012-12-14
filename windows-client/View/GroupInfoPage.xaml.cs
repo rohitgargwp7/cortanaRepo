@@ -412,7 +412,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && "ok" == (string)obj["stat"])
+                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
                     App.ViewModel.ConvMap[groupId].Avatar = buffer;
                     groupImage.Source = grpImage;
@@ -499,7 +499,7 @@ namespace windows_client.View
 
         private void setName_Callback(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 ConversationTableUtils.updateGroupName(groupId, groupName);
                 GroupTableUtils.updateGroupName(groupId, groupName);
@@ -639,7 +639,7 @@ namespace windows_client.View
 
         public void updateAddressBook_Callback(JObject obj)
         {
-            if ((obj == null) || "fail" == (string)obj["stat"])
+            if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 Dispatcher.BeginInvoke(() =>
                 {

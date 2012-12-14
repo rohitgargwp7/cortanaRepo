@@ -192,6 +192,16 @@ namespace windows_client
         public static string TW_LOGGED_IN = "TwLoggedIn";
         public static string ACCOUNT = "account";
 
+        /* FILE BASED CONSTANTS*/
+        public static readonly string LOCATION = "location";
+        public static readonly string VIDEO = "video";
+        public static readonly string AUDIO = "audio";
+        public static readonly string IMAGE = "image";
+
+        public static readonly string OK = "ok";
+        public static readonly string STAT = "stat";
+        public static readonly string FAIL = "fail";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";

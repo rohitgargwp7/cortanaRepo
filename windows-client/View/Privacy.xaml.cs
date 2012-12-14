@@ -83,7 +83,7 @@ namespace windows_client.View
 
         private void unlinkAccountResponse_Callback(JObject obj)
         {
-            if (obj == null || "fail" == (string)obj["stat"])
+            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 Debug.WriteLine("Unlink Account", "Could not unlink account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -129,7 +129,7 @@ namespace windows_client.View
 
         private void deleteAccountResponse_Callback(JObject obj)
         {
-            if (obj == null || "fail" == (string)obj["stat"])
+            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>

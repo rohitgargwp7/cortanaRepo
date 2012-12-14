@@ -91,7 +91,7 @@ namespace windows_client.Controls
 
         protected override void uploadOrDownloadCompleted()
         {
-            if (this.PlayIcon != null && this.FileAttachment.ContentType.Contains("image"))
+            if (this.PlayIcon != null && this.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                 this.PlayIcon.Visibility = Visibility.Collapsed;
         }
 
@@ -212,7 +212,7 @@ namespace windows_client.Controls
                 MessageImage.MaxHeight = 180;
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Left;
                 MessageImage.Margin = imgMargin;
-                if (contentType.Contains("audio"))
+                if (contentType.Contains(HikeConstants.AUDIO))
                     this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentReceive;
                 else if (isNudge)
                 {
@@ -225,13 +225,13 @@ namespace windows_client.Controls
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if ((contentType.Contains("video") || contentType.Contains("audio") || showDownload) && !contentType.Contains("location"))
+                if ((contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO) || showDownload) && !contentType.Contains(HikeConstants.LOCATION))
                 {
 
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;
                     PlayIcon.MaxHeight = 42;
-                    if (contentType.Contains("image"))
+                    if (contentType.Contains(HikeConstants.IMAGE))
                         PlayIcon.Source = UI_Utils.Instance.DownloadIcon;
                     else
                         PlayIcon.Source = UI_Utils.Instance.PlayIcon;

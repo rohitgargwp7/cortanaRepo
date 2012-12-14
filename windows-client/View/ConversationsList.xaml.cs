@@ -279,7 +279,9 @@ namespace windows_client.View
 
             /* Add icons */
             composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
+            composeIconButton.IconUri = new Uri(
+            
+            /View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
             composeIconButton.IsEnabled = true;
@@ -476,7 +478,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && "ok" == (string)obj["stat"])
+                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
                     avatarImage.Source = profileImage;
                     avatarImage.MaxHeight = 83;
