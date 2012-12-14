@@ -59,6 +59,19 @@ namespace windows_client.View
             DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
             showTutorial();
         }
+        private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (favTutePvt.SelectedIndex == 0)
+            {
+                favBox1.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
+                favBox0.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
+            }
+            else
+            {
+                favBox0.Fill = UI_Utils.Instance.WalkThroughSelectedColumn;
+                favBox1.Fill = UI_Utils.Instance.WalkThroughUnselectedColumn;
+            }
+        }
 
         private void showTutorial()
         {
@@ -365,14 +378,14 @@ namespace windows_client.View
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
-                favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
+                favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x36, 0x36, 0x36));
             }
             else
             {
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
-                favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x1a, 0x1a, 0x1a));
+                favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
