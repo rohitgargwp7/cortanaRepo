@@ -24,6 +24,7 @@ namespace windows_client
         public EnterName()
         {
             InitializeComponent();
+            App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, Utils.getAppVersion());// new install so write version
             App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
             App.RemoveKeyFromAppSettings(App.SET_NAME_FAILED);
             if (!App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED) && !App.isABScanning)
