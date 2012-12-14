@@ -223,7 +223,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  added you as favourite. Would you like to do the same?.
+        ///   Looks up a localized string similar to added you as favourite. Would you like to do the same?.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt {
             get {
@@ -2005,7 +2005,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Free SMS.
+        ///   Looks up a localized string similar to Send free SMS to India.
         /// </summary>
         public static string Settings_FreeSMSToggleSwitchHeader {
             get {
