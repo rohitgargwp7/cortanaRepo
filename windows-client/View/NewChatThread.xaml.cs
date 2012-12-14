@@ -549,7 +549,35 @@ namespace windows_client.View
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             initBlockUnblockState();
+            showNudgeTute();
         }
+
+        private void showNudgeTute()
+        {
+            //if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
+            if(true)
+            {
+                overlayForNudge.Visibility = Visibility.Visible;
+                overlayForNudge.Opacity = 0.65;
+                nudgeTuteGrid.Visibility = Visibility.Visible;
+                messageListBox.IsHitTestVisible = bottomPanel.IsHitTestVisible = false;
+                //SystemTray.IsVisible = false;
+            }
+            else
+            {
+                chatThreadMainPage.ApplicationBar = appBar;
+            }
+        }
+
+        private void dismissNudgeTutorial_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            overlayForNudge.Visibility = Visibility.Collapsed;
+            nudgeTuteGrid.Visibility = Visibility.Collapsed;
+            messageListBox.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
+            chatThreadMainPage.ApplicationBar = appBar;
+            App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
+        }
+
 
         private void processGroupJoin(bool isNewgroup)
         {
@@ -776,7 +804,7 @@ namespace windows_client.View
                     _isFav = true;
                 }
             }
-            chatThreadMainPage.ApplicationBar = appBar;
+//            chatThreadMainPage.ApplicationBar = appBar;
         }
 
         private void initInviteMenuItem()
