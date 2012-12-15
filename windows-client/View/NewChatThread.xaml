@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:local="clr-namespace:windows_client.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
@@ -48,19 +49,20 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <!--<ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
+        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
             <StackPanel Name="MessageList" Margin="0,0,26,0" VerticalAlignment="Bottom">
 
             </StackPanel>
-        </ScrollViewer>-->
+        </ScrollViewer>
 
-        <ListBox x:Name="messageListBox" Opacity="0" Height="560" Width="450" Grid.Row="1" Margin="21,-10,10,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap" VirtualizingStackPanel.VirtualizationMode="Recycling" GotFocus="messageListBox_GotFocus">
-            <ListBox.ItemsPanel>
+
+        <!--<local:CustomListBox x:Name="messageListBox" Opacity="0" Height="560" Width="450" Grid.Row="1" Margin="21,-10,10,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap" VirtualizingStackPanel.VirtualizationMode="Recycling" GotFocus="messageListBox_GotFocus">
+            <local:CustomListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel VerticalAlignment="Bottom"/>
                 </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
+            </local:CustomListBox.ItemsPanel>
+        </local:CustomListBox>-->
 
         <!--<toolkit:LongListSelector x:Name="tempList" IsFlatList="True" VerticalAlignment="Bottom" Height="500" Grid.Row="1" Margin="24,0,24,0" >
 

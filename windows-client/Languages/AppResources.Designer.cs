@@ -385,7 +385,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tap on &apos;+&apos; next to a friend to add them as a favourite.
+        ///   Looks up a localized string similar to You have no favorites right now..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {
@@ -421,7 +421,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You\&apos;ve just earned {0} free SMS.
+        ///   Looks up a localized string similar to You&apos;ve just earned {0} free SMS.
         /// </summary>
         public static string CREDITS_EARNED {
             get {
