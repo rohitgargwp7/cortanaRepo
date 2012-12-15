@@ -210,7 +210,7 @@
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Tap on '+' next to a friend to add them as a favourite</value>
+    <value>You have no favorites right now.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
