@@ -897,7 +897,7 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 ScrollToBottom();
-                //scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
                 NetworkManager.turnOffNetworkManager = false;
             });
         }
