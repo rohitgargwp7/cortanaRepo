@@ -196,7 +196,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Tap="Button_Tap_1" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
+                            <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Tap="Button_Tap_2" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
                                 <Image Source="images/favorites_heart.png" Height="90"></Image>
                                 <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                                 <TextBlock Text="Tap here to add new." Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
@@ -220,11 +220,10 @@
                             </ListBox>
 
                             <!--<Rectangle x:Name="favsBar" Height="1" Grid.Row="3" Margin="0,20,0,0"/>-->
-                            <Button Visibility="Collapsed" Margin="0,30,0,0" FontSize="20" BorderThickness="0" Foreground="#ffffff" Width="220" Height="70" Background="#2e91d3" Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" Grid.Row="2" Tap="Button_Tap_1"/>
                             <!--<TextBlock Margin="0,20,0,0" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="4" Tap="Button_Tap_1"/>-->
                             <StackPanel x:Name="addFavsPanel" Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
                                 <Image Source="images/add_favorites.png" Height="69" VerticalAlignment="Center"></Image>
-                                <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="Add More" HorizontalAlignment="Left" Tap="Button_Tap_1"/>
+                                <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="Add More" HorizontalAlignment="Left"/>
                             </StackPanel>
                         </Grid>
                     </ScrollViewer>
