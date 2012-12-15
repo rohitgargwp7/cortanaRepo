@@ -640,7 +640,7 @@ namespace windows_client.View
                     JObject obj = new JObject();
                     obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.DATA] = data;
-
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
