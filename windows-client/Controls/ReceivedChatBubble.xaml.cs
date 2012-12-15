@@ -217,8 +217,8 @@ namespace windows_client.Controls
                 else if (isNudge)
                 {
                     this.MessageImage.Source = UI_Utils.Instance.NudgeReceived;
-                    this.MessageImage.Height = 24;
-                    this.MessageImage.Width = 31;
+                    this.MessageImage.Height = 35;
+                    this.MessageImage.Width = 46;
                     this.MessageImage.Margin = nudgeMargin;
                 }
 
