@@ -555,7 +555,7 @@ namespace windows_client.View
         private void showNudgeTute()
         {
             if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-            //            if (true)
+//            if (true)
             {
                 overlayForNudge.Visibility = Visibility.Visible;
                 //overlayForNudge.Opacity = 0.65;
@@ -577,6 +577,7 @@ namespace windows_client.View
             MessageList.IsHitTestVisible = bottomPanel.IsHitTestVisible = true;
             chatThreadMainPage.ApplicationBar = appBar;
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
+            ScrollToBottom();
         }
 
 
@@ -896,7 +897,7 @@ namespace windows_client.View
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 ScrollToBottom();
-                //scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
                 NetworkManager.turnOffNetworkManager = false;
             });
         }

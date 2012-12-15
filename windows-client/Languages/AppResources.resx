@@ -210,7 +210,7 @@
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Tap on '+' next to a friend to add them as a favourite</value>
+    <value>You have no favorites right now.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -566,7 +566,7 @@
     <comment>General Text</comment>
   </data>
   <data name="CREDITS_EARNED" xml:space="preserve">
-    <value>You\'ve just earned {0} free SMS</value>
+    <value>You've just earned {0} free SMS</value>
     <comment>General Text</comment>
   </data>
   <data name="DND_USER" xml:space="preserve">
