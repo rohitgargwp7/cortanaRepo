@@ -1086,6 +1086,7 @@ namespace windows_client.View
             Button btn = sender as Button;
             if (!btn.IsEnabled)
                 return;
+            btn.Content = "Invited";
             ContactInfo ci = btn.DataContext as ContactInfo;
             if (ci == null)
                 return;
