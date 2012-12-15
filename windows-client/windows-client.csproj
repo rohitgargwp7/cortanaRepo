@@ -93,7 +93,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CustomListBox.cs" />
     <Compile Include="Controls\MyChatBubble.cs" />
     <Compile Include="Controls\NotificationChatBubble.xaml.cs">
       <DependentUpon>NotificationChatBubble.xaml</DependentUpon>
