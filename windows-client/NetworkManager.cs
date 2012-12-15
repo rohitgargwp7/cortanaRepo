@@ -134,7 +134,7 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
-                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains("location"))
+                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                     {
                         byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(convMessage.MetaDataString);
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +

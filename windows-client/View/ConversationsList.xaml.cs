@@ -226,10 +226,10 @@ namespace windows_client.View
                 Utils.requestAccountInfo();
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
             }
-            else if (App.appSettings.Contains("New_Update"))
+            else if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
-                App.RemoveKeyFromAppSettings("New_Update");
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
 
             // move to seperate thread later
@@ -251,10 +251,10 @@ namespace windows_client.View
         private void ShowLaunchMessages()
         {
             List<ContactInfo> cl = null;
-            App.appSettings.TryGetValue("ContactsToShow", out cl);
+            App.appSettings.TryGetValue(HikeConstants.AppSettings.CONTACTS_TO_SHOW, out cl);
             if (cl == null)
             {
-                App.RemoveKeyFromAppSettings("ContactsToShow");
+                App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
                 return;
             }
             for (int i = 0; i < cl.Count; i++)
@@ -278,7 +278,7 @@ namespace windows_client.View
                 if (obj != null)
                     App.ViewModel.MessageListPageCollection.Insert(0, obj);
             }
-            App.RemoveKeyFromAppSettings("ContactsToShow");
+            App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
         }
 
         private void initAppBar()
@@ -290,6 +290,7 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             /* Add icons */
+
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
@@ -488,7 +489,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && "ok" == (string)obj["stat"])
+                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
                     avatarImage.Source = profileImage;
                     avatarImage.MaxHeight = 83;
@@ -620,6 +621,11 @@ namespace windows_client.View
                 {
                     convObj.IsFav = true;
                     App.ViewModel.FavList.Insert(0,convObj);
+                    if (App.ViewModel.IsPending(convObj.Msisdn))
+                    {
+                        App.ViewModel.PendingRequests.Remove(convObj);
+                        MiscDBUtil.SavePendingRequests();
+                    }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
                     int count = 0;

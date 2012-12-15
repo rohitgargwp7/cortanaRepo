@@ -163,10 +163,10 @@ namespace windows_client.utils
             if (obj != null)
             {
                 JToken statusToken;
-                obj.TryGetValue("stat", out statusToken);
+                obj.TryGetValue(HikeConstants.STAT, out statusToken);
                 stat = statusToken.ToString();
             }
-            if (stat != "ok")
+            if (stat != HikeConstants.OK)
             {
                 try
                 {

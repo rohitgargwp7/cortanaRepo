@@ -78,22 +78,22 @@ namespace windows_client.DbUtils
                 //DO NOT Update message text in db. We sent the below line, but we save content type as message.
                 //here message status should be updated in db, as on event listener message state should be unknown
 
-                if (contentType.Contains("image"))
+                if (contentType.Contains(HikeConstants.IMAGE))
                 {
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL + 
                         "/" + fileKey;
                 }
-                else if (contentType.Contains("audio"))
+                else if (contentType.Contains(HikeConstants.AUDIO))
                 {
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Voice_msg_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
-                else if (contentType.Contains("location"))
+                else if (contentType.Contains(HikeConstants.LOCATION))
                 {
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Location_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
-                else if (contentType.Contains("video"))
+                else if (contentType.Contains(HikeConstants.VIDEO))
                 {
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;

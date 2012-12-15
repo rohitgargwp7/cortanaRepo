@@ -192,6 +192,16 @@ namespace windows_client
         public static string TW_LOGGED_IN = "TwLoggedIn";
         public static string ACCOUNT = "account";
 
+        /* FILE BASED CONSTANTS*/
+        public static readonly string LOCATION = "location";
+        public static readonly string VIDEO = "video";
+        public static readonly string AUDIO = "audio";
+        public static readonly string IMAGE = "image";
+
+        public static readonly string OK = "ok";
+        public static readonly string STAT = "stat";
+        public static readonly string FAIL = "fail";
+
         public static class Extras
         {
             public static readonly string ANIMATED_ONCE = "animatedOnce";
@@ -235,6 +245,17 @@ namespace windows_client
             public static string HIKE_USER = "hike_user";
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
+        }
+
+        public static class AppSettings
+        {
+            public static readonly string PAGE_STATE = "page_State";
+            public static readonly string FB_USER_ID = "FbUserId";
+            public static readonly string FB_ACCESS_TOKEN = "FbAccessToken";
+            public static readonly string TWITTER_TOKEN = "TwToken";
+            public static readonly string TWITTER_TOKEN_SECRET = "TwTokenSecret";
+            public static readonly string CONTACTS_TO_SHOW = "ContactsToShow";
+            public static readonly string NEW_UPDATE = "New_Update";
         }
     }
 }

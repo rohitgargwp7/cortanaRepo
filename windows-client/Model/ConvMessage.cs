@@ -464,7 +464,7 @@ namespace windows_client.Model
             {
                 metadata = new JObject();
                 filesData = new JArray();
-                if (!FileAttachment.ContentType.Contains("location"))
+                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                 {
                     singleFileInfo = new JObject();
                     singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
@@ -472,7 +472,7 @@ namespace windows_client.Model
                     singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
                     if (FileAttachment.Thumbnail != null)
                         singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
-                    //if (FileAttachment.ContentType.Contains("location"))
+                    //if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                     //{
                     //    JObject locationInfo = JObject.Parse(this.MetaDataString);
                     //    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
@@ -750,7 +750,7 @@ namespace windows_client.Model
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
                         this.FileAttachment = new Attachment(fileName==null?"":fileName.ToString(), fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-                        if (contentType.ToString().Contains("location"))
+                        if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -793,13 +793,13 @@ namespace windows_client.Model
                     if (this.HasAttachment)
                     {
                         string messageText = "";
-                        if (this.FileAttachment.ContentType.Contains("image"))
+                        if (this.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                             messageText = AppResources.Image_Txt;
-                        else if (this.FileAttachment.ContentType.Contains("audio"))
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
                             messageText = AppResources.Audio_Txt;
-                        else if (this.FileAttachment.ContentType.Contains("video"))
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
                             messageText = AppResources.Video_Txt;
-                        else if (this.FileAttachment.ContentType.Contains("location"))
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                             messageText = AppResources.Location_Txt;
                         this._message = messageText;
                     }

@@ -80,7 +80,7 @@ namespace windows_client
 
         private void setName_Callback(JObject obj)
         {
-            if (obj == null || "ok" != (string)obj["stat"])
+            if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {

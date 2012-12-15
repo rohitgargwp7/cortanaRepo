@@ -118,7 +118,7 @@ namespace windows_client
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
-                                if (chatBubble!=null && chatBubble.FileAttachment.ContentType.Contains("image"))
+                                if (chatBubble!=null && chatBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                                 {
                                     IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                     MediaLibrary library = new MediaLibrary();

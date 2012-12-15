@@ -279,7 +279,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
             req.Method = "PUT";
-            req.ContentType = convMessage.FileAttachment.ContentType.Contains("image") ? "" : convMessage.FileAttachment.ContentType;
+            req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
@@ -683,7 +683,7 @@ namespace windows_client.utils
         {
             try
             {
-                if ((obj == null) || "fail" == (string)obj["stat"])
+                if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                 {
                     return null;
                 }
@@ -734,7 +734,7 @@ namespace windows_client.utils
         {
             try
             {
-                if ((obj == null) || "fail" == (string)obj["stat"])
+                if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                 {
                     return null;
                 }
@@ -822,7 +822,7 @@ namespace windows_client.utils
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
                 if(!isRefresh)
-                    App.WriteToIsoStorageSettings("ContactsToShow",msgToShow);
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
                 return server_contacts;
             }
             catch (ArgumentException)

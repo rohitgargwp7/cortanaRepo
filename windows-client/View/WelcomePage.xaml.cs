@@ -84,7 +84,7 @@ namespace windows_client
                 return;
             }
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
-            if ("fail" == (string)obj["stat"])
+            if (HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
             }

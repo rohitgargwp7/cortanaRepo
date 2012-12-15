@@ -86,8 +86,8 @@ namespace windows_client.View
                     case SocialState.FB_LOGIN:
                         ChangeElementsState(false);
                         JObject oj = new JObject();
-                        oj["id"] = (string)App.appSettings["FbUserId"];
-                        oj["token"] = (string)App.appSettings["FbAccessToken"];
+                        oj["id"] = (string)App.appSettings[HikeConstants.AppSettings.FB_USER_ID];
+                        oj["token"] = (string)App.appSettings[HikeConstants.AppSettings.FB_ACCESS_TOKEN];
                         AccountUtils.SocialPost(oj, new AccountUtils.postResponseFunction(SocialPostFB), "fb", true);
                         break;
                     case SocialState.FB_LOGOUT:
@@ -96,8 +96,8 @@ namespace windows_client.View
                         break;
                     case SocialState.TW_LOGIN:
                         JObject ojj = new JObject();
-                        ojj["id"] = (string)App.appSettings["TwToken"]; ;
-                        ojj["token"] = (string)App.appSettings["TwTokenSecret"];
+                        ojj["id"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN]; ;
+                        ojj["token"] = (string)App.appSettings[HikeConstants.AppSettings.TWITTER_TOKEN_SECRET];
                         AccountUtils.SocialPost(ojj, new AccountUtils.postResponseFunction(SocialPostTW), "twitter", true);
                         break;
                     default:
@@ -228,7 +228,7 @@ namespace windows_client.View
 
         public void SocialPostFB(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -244,7 +244,7 @@ namespace windows_client.View
 
         public void SocialDeleteFB(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -267,8 +267,8 @@ namespace windows_client.View
                     return;
                 else
                 {
-                    App.RemoveKeyFromAppSettings("TwToken");
-                    App.RemoveKeyFromAppSettings("TwTokenSecret");
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+                    App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
                     App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
                     AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), "twitter", false);
                     return;
@@ -280,7 +280,7 @@ namespace windows_client.View
 
         public void SocialPostTW(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -293,7 +293,7 @@ namespace windows_client.View
 
         public void SocialDeleteTW(JObject obj)
         {
-            if (obj != null && "ok" == (string)obj["stat"])
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -404,8 +404,8 @@ namespace windows_client.View
                         return;
                     else
                     {
-                        App.RemoveKeyFromAppSettings("TwToken");
-                        App.RemoveKeyFromAppSettings("TwTokenSecret");
+                        App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
+                        App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
                         App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
                         AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), "twitter", false);
                         return;
