@@ -369,8 +369,8 @@
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
     <Content Include="View\images\favorites_heart.png" />
-    <Content Include="View\images\favorites_tour_01.png" />
-    <Content Include="View\images\favorites_tour_02.png" />
+    <Content Include="View\images\favorites_tour_01.jpg" />
+    <Content Include="View\images\favorites_tour_02.jpg" />
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
