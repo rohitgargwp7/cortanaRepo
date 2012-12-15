@@ -229,8 +229,8 @@
             <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
 
-        <Rectangle x:Name="overlayForNudge" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
-        <Grid x:Name="nudgeTuteGrid" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
+        <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
+        <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
