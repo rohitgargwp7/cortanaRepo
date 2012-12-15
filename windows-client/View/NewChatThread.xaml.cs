@@ -1013,7 +1013,7 @@ namespace windows_client.View
 
                 if (messagesCollection.Contains(emptyImage))
                     messagesCollection.Remove(emptyImage);
-                scheduler.Schedule(scheduledScrolling, TimeSpan.FromMilliseconds(500));
+                scheduler.Schedule(scheduledScrolling, TimeSpan.FromMilliseconds(200));
                 //if(messagesCollection.Contains(emptyImage))
                 //    messagesCollection.Remove(emptyImage);
 
