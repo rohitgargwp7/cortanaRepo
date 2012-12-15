@@ -26,6 +26,7 @@ using System.Device.Location;
 using windows_client.Misc;
 using Microsoft.Phone.UserData;
 using windows_client.Languages;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -1105,7 +1106,7 @@ namespace windows_client.View
                     favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
                 App.ViewModel.FavList.Insert(0, favObj);
                 MiscDBUtil.SaveFavourites();
-
+                MiscDBUtil.SaveFavourites(favObj);
                 if (App.ViewModel.IsPending(favObj.Msisdn))
                 {
                     App.ViewModel.PendingRequests.Remove(favObj);
@@ -1121,6 +1122,9 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 _isFav = true;
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
             }
             else
             {
@@ -1136,6 +1140,7 @@ namespace windows_client.View
                 if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
                     App.ViewModel.ConvMap[mContactNumber].IsFav = false;
                 MiscDBUtil.SaveFavourites();
+                MiscDBUtil.DeleteFavourite(mContactNumber);
                 mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
 
                 JObject data = new JObject();
@@ -1145,6 +1150,9 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 _isFav = false;
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
             }
         }
 
