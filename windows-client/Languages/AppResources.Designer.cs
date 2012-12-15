@@ -421,7 +421,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You\&apos;ve just earned {0} free SMS.
+        ///   Looks up a localized string similar to You&apos;ve just earned {0} free SMS.
         /// </summary>
         public static string CREDITS_EARNED {
             get {

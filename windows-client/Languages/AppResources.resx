@@ -566,7 +566,7 @@
     <comment>General Text</comment>
   </data>
   <data name="CREDITS_EARNED" xml:space="preserve">
-    <value>You\'ve just earned {0} free SMS</value>
+    <value>You've just earned {0} free SMS</value>
     <comment>General Text</comment>
   </data>
   <data name="DND_USER" xml:space="preserve">
