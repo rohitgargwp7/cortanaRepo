@@ -701,8 +701,7 @@ namespace windows_client.View
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
-                    addFavsPanel.Opacity = 0;
+
                 // there will be two background workers that will independently load three sections
 
                 #region Favourites
@@ -752,6 +751,7 @@ namespace windows_client.View
                         {
                             emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
+                            addFavsPanel.Opacity = 1;
                         }
                     };
                 }
