@@ -196,22 +196,23 @@ namespace windows_client.View
         {
             if (_isAddToFavPage)
             {
+                bool isPendingRemoved = false;
                 for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count);i++ )
                 {
                     if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn)) // if not already favourite then only add to fav
                     {
                         ConversationListObject favObj = null;
                         if (App.ViewModel.ConvMap.ContainsKey(hikeFavList[i].Msisdn))
-                        {
                             favObj = App.ViewModel.ConvMap[hikeFavList[i].Msisdn];
-                            App.ViewModel.FavList.Insert(0, favObj);
-                        }
                         else
-                        {
                             favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
-                            App.ViewModel.FavList.Insert(0, favObj);
+                            
+                        App.ViewModel.FavList.Insert(0, favObj);
+                        if (App.ViewModel.IsPending(favObj.Msisdn)) // if this is in pending already , remove from pending and add to fav
+                        {
+                            App.ViewModel.PendingRequests.Remove(favObj);
+                            isPendingRemoved = true;
                         }
-
                         int count = 0;
                         App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                         App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
@@ -226,6 +227,8 @@ namespace windows_client.View
                     }
                 }
                 MiscDBUtil.SaveFavourites();
+                if (isPendingRemoved)
+                    MiscDBUtil.SavePendingRequests();
                 App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
             }
             else

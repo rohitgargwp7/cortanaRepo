@@ -290,10 +290,9 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             /* Add icons */
+
             composeIconButton = new ApplicationBarIconButton();
-            composeIconButton.IconUri = new Uri(
-            
-            /View/images/appbar.add.rest.png", UriKind.Relative);
+            composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
             composeIconButton.Click += new EventHandler(selectUserBtn_Click);
             composeIconButton.IsEnabled = true;
@@ -622,6 +621,11 @@ namespace windows_client.View
                 {
                     convObj.IsFav = true;
                     App.ViewModel.FavList.Insert(0,convObj);
+                    if (App.ViewModel.IsPending(convObj.Msisdn))
+                    {
+                        App.ViewModel.PendingRequests.Remove(convObj);
+                        MiscDBUtil.SavePendingRequests();
+                    }
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.SaveFavourites(convObj);
                     int count = 0;
