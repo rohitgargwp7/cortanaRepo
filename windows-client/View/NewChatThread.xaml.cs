@@ -240,7 +240,7 @@ namespace windows_client.View
             }
             emptyImage = new Image();
             emptyImage.Source = UI_Utils.Instance.EmptyImage;
-            emptyImage.Height = 4;
+            emptyImage.Height = 1;
 
             bw.RunWorkerAsync();
             photoChooserTask = new PhotoChooserTask();
@@ -554,8 +554,8 @@ namespace windows_client.View
 
         private void showNudgeTute()
         {
-//            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-            if (true)
+            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
+//            if (true)
             {
                 overlayForNudge.Visibility = Visibility.Visible;
                 //overlayForNudge.Opacity = 0.65;
@@ -999,7 +999,7 @@ namespace windows_client.View
                 messageListBox.UpdateLayout();
                 messageListBox.SelectedIndex = messagesCollection.Count - 1;
                 messageListBox.UpdateLayout();
-                messageListBox.ScrollIntoView(messagesCollection[messagesCollection.Count - 1]);
+                messageListBox.ScrollIntoView(emptyImage);
                 messageListBox.UpdateLayout();
             });
         }
@@ -1011,7 +1011,9 @@ namespace windows_client.View
             if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
             {
 
-                scheduler.Schedule(scheduledScrolling, TimeSpan.FromMilliseconds(5));
+                if (messagesCollection.Contains(emptyImage))
+                    messagesCollection.Remove(emptyImage);
+                scheduler.Schedule(scheduledScrolling, TimeSpan.FromMilliseconds(200));
                 //if(messagesCollection.Contains(emptyImage))
                 //    messagesCollection.Remove(emptyImage);
 
@@ -1428,6 +1430,7 @@ namespace windows_client.View
          */
         private MyChatBubble AddMessageToUI(ConvMessage convMessage, bool readFromDB)
         {
+            MyChatBubble addedChatBubble = null;
             try
             {
                 #region NO_INFO
@@ -1474,13 +1477,11 @@ namespace windows_client.View
                             this.messagesCollection.Add(chatBubble.splitChatBubbles[i]);
                         }
                     }
-                    if (!readFromDB)
-                        ScrollToBottom();
                     if (convMessage.FileAttachment != null)
                     {
                         chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
                     }
-                    return chatBubble;
+                    addedChatBubble = chatBubble;
                 }
                 #endregion
                 #region MEMBERS JOINED GROUP CHAT
@@ -1497,7 +1498,8 @@ namespace windows_client.View
                         MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
                         this.messagesCollection.Add(dndChatBubble);
                     }
-                    ScrollToBottom();
+                    if (!readFromDB)
+                        ScrollToBottom();
 
                 }
                 #endregion
@@ -1521,7 +1523,6 @@ namespace windows_client.View
                         }
                         MyChatBubble chatBubble = new NotificationChatBubble(type, gp.FirstName + text);
                         this.messagesCollection.Add(chatBubble);
-                        ScrollToBottom();
                     }
                 }
                 #endregion
@@ -1554,7 +1555,6 @@ namespace windows_client.View
                         {
                             MyChatBubble chatBubble = new NotificationChatBubble(type, text);
                             this.messagesCollection.Add(chatBubble);
-                            ScrollToBottom();
                         }
                     }
                     if (waitingParticipants == null)
@@ -1585,8 +1585,6 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    if (!readFromDB)
-                        ScrollToBottom();
                 }
                 #endregion
                 #region HIKE_USER
@@ -1594,7 +1592,6 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region SMS_USER
@@ -1602,7 +1599,6 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region USER_OPT_IN
@@ -1615,7 +1611,6 @@ namespace windows_client.View
                     }
                     MyChatBubble chatBubble = new NotificationChatBubble(type, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region DND_USER
@@ -1625,7 +1620,6 @@ namespace windows_client.View
                     {
                         MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, convMessage.Message);
                         this.messagesCollection.Add(chatBubble);
-                        ScrollToBottom();
                     }
                 }
                 #endregion
@@ -1635,7 +1629,6 @@ namespace windows_client.View
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + AppResources.USER_LEFT);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region GROUP END
@@ -1643,8 +1636,6 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.GROUP_END, AppResources.GROUP_CHAT_END);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
-
                 }
                 #endregion
                 #region CREDITS REWARDS
@@ -1652,7 +1643,6 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region INTERNATIONAL_USER
@@ -1660,7 +1650,6 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region INTERNATIONAL_GROUPCHAT_USER
@@ -1668,12 +1657,9 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, AppResources.SMS_INDIA);
                     this.messagesCollection.Add(chatBubble);
-
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     MyChatBubble chatBubbleLeft = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + AppResources.USER_LEFT);
                     this.messagesCollection.Add(chatBubbleLeft);
-
-                    ScrollToBottom();
                 }
                 #endregion
                 #region GROUP NAME CHANGED
@@ -1681,9 +1667,10 @@ namespace windows_client.View
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
                     this.messagesCollection.Add(chatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
+                if (!readFromDB)
+                    ScrollToBottom();
 
                 msgBubbleCount++;
             }
@@ -1691,7 +1678,7 @@ namespace windows_client.View
             {
                 Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
             }
-            return null;
+            return addedChatBubble;
         }
 
         private void inviteUserBtn_Click(object sender, EventArgs e)
