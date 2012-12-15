@@ -23,6 +23,7 @@ using System.Windows.Media;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
+using System.Collections.ObjectModel;
 
 namespace windows_client.View
 {
@@ -617,6 +618,7 @@ namespace windows_client.View
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
+                        addFavsPanel.Opacity = 0;
                     }
                 }
                 else // add to fav
@@ -643,6 +645,7 @@ namespace windows_client.View
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
+                        addFavsPanel.Opacity = 1;
                     }
                 }
             }
@@ -698,7 +701,9 @@ namespace windows_client.View
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                // there will be three background workers that will independently load three sections
+                if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+                    addFavsPanel.Opacity = 0;
+                // there will be two background workers that will independently load three sections
 
                 #region Favourites
 
@@ -817,11 +822,13 @@ namespace windows_client.View
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
+                        addFavsPanel.Opacity = 1;
                     }
-                    else if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+                    else if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0) // remove fav
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
+                        addFavsPanel.Opacity = 0;
                     }
                 });
             }
@@ -1096,6 +1103,7 @@ namespace windows_client.View
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
+                addFavsPanel.Opacity = 1;
             }
         }
 
@@ -1114,6 +1122,7 @@ namespace windows_client.View
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
+                addFavsPanel.Opacity = 0;
             }
         }
 
@@ -1153,6 +1162,7 @@ namespace windows_client.View
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
+                addFavsPanel.Opacity = 0;
             }
         }
 
@@ -1160,6 +1170,8 @@ namespace windows_client.View
 
         private void Button_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (addFavsPanel.Opacity == 0)
+                return;
             PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
             string uri = "/View/InviteUsers.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));

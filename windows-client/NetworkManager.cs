@@ -485,6 +485,7 @@ namespace windows_client
                                                 {
                                                     lock (lockObj)      // this has to be done here as we need to ensure , that fav or pending should be added once
                                                     {
+                                                        bool thrAreFavs = false;
                                                         KeyValuePair<string, JToken> fkkvv;
                                                         IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
                                                         while (kVals.MoveNext())
@@ -497,8 +498,10 @@ namespace windows_client
                                                                 isFav = false;
                                                             Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
                                                             LoadFavAndPending(isFav, fkkvv.Key); // true for favs
-
+                                                            thrAreFavs = true;
                                                         }
+                                                        if(thrAreFavs)
+                                                            this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
                                                     }
                                                 });
                                             }
@@ -816,48 +819,49 @@ namespace windows_client
             #endregion
 
         }
+
         private void LoadFavAndPending(bool isFav, string msisdn)
         {
-                ObservableCollection<ConversationListObject> l;
-                if (isFav)
-                    l = App.ViewModel.FavList;
-                else
-                    l = App.ViewModel.PendingRequests;
+            ObservableCollection<ConversationListObject> l;
+            if (isFav)
+                l = App.ViewModel.FavList;
+            else
+                l = App.ViewModel.PendingRequests;
 
-                if (isFav)
-                {
-                    if (App.ViewModel.Isfavourite(msisdn))
-                        return;
-                }
-                else
-                {
-                    if (App.ViewModel.IsPending(msisdn))
-                        return;
-                }
+            if (isFav)
+            {
+                if (App.ViewModel.Isfavourite(msisdn))
+                    return;
+            }
+            else
+            {
+                if (App.ViewModel.IsPending(msisdn))
+                    return;
+            }
 
-                ConversationListObject favObj = null;
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                {
-                    favObj = App.ViewModel.ConvMap[msisdn];
-                    if(favObj != null)
-                        l.Add(favObj);
-                }
-                else
-                {
-                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
+            ConversationListObject favObj = null;
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            {
+                favObj = App.ViewModel.ConvMap[msisdn];
+                if (favObj != null)
                     l.Add(favObj);
-                }
-                if (isFav)
-                {
-                    MiscDBUtil.SaveFavourites();
-                    MiscDBUtil.SaveFavourites(favObj);
-                    int count = 0;
-                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-                }
-                else
-                    MiscDBUtil.SavePendingRequests();
+            }
+            else
+            {
+                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
+                l.Add(favObj);
+            }
+            if (isFav)
+            {
+                MiscDBUtil.SaveFavourites();
+                MiscDBUtil.SaveFavourites(favObj);
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+            }
+            else
+                MiscDBUtil.SavePendingRequests();
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
