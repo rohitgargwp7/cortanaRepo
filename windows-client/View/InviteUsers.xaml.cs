@@ -114,6 +114,11 @@ namespace windows_client.View
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
             {
+                if (_isAddToFavPage)
+                {
+                    if (allContactsList == null || allContactsList.Count == 0)
+                        emptyHikeFriendsTxt.Visibility = Visibility.Visible;
+                }
                 jumpList = getGroupedList(allContactsList);
                 contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
