@@ -92,6 +92,8 @@
                     </DataTemplate>
                 </toolkit:LongListSelector.ItemTemplate>
             </toolkit:LongListSelector>
+            <TextBlock x:Name="emptyHikeFriendsTxt" Visibility="Collapsed" Text="Bummer! None of your friends are on hike." FontSize="26" TextWrapping="Wrap" Grid.Row="2" Margin="24,20,24,0" />
+
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage >
