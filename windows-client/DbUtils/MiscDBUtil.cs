@@ -535,7 +535,7 @@ namespace windows_client.DbUtils
                     if (!store.DirectoryExists("FAVS"))
                         store.CreateDirectory("FAVS");
 
-                    string fName = "FAVS" + "\\" + obj.Msisdn.Replace(":", "_");
+                    string fName = "FAVS" + "\\" + obj.Msisdn.Replace(":", "_"); // ttoohis will handle GC 
                     using (var file = store.OpenFile(fName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                     {
                         using (BinaryWriter writer = new BinaryWriter(file))
@@ -566,7 +566,10 @@ namespace windows_client.DbUtils
                     }
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
                 }
-                catch { }
+                catch(Exception e) 
+                {
+                    Debug.WriteLine("Exception :: {0}",e.StackTrace);
+                }
             }
         }
 

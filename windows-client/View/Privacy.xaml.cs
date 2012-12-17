@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Notification;
 using windows_client.Languages;
+using windows_client.DbUtils;
 
 namespace windows_client.View
 {
@@ -56,14 +57,14 @@ namespace windows_client.View
         }
         private void RegisterListeners()
         {
-            App.HikePubSubInstance.addListener(HikePubSub.ACCOUNT_DELETED, this);
+           
         }
 
         private void RemoveListeners()
         {
             try
             {
-                App.HikePubSubInstance.removeListener(HikePubSub.ACCOUNT_DELETED, this);
+               
             }
             catch { }
         }
@@ -95,22 +96,7 @@ namespace windows_client.View
                 });
                 return;
             }
-            NetworkManager.turnOffNetworkManager = true;
-            App.MqttManagerInstance.disconnectFromBroker(false);
-            App.ClearAppSettings();
-            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-            App.HikePubSubInstance.publish(HikePubSub.DELETE_ACCOUNT, null);
-
-            HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-            if (pushChannel != null)
-            {
-                if (pushChannel.IsShellTileBound)
-                    pushChannel.UnbindToShellTile();
-                if (pushChannel.IsShellToastBound)
-                    pushChannel.UnbindToShellToast();
-                pushChannel.Close();
-            }
-
+            DeleteLocalStorage();
         }
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -141,14 +127,17 @@ namespace windows_client.View
                 });
                 return;
             }
+            DeleteLocalStorage();
+        }
+
+        private void DeleteLocalStorage()
+        {
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
             App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-            App.HikePubSubInstance.publish(HikePubSub.DELETE_ACCOUNT, null);
+            MiscDBUtil.clearDatabase();
 
-
-            //delete push channel
             HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
             if (pushChannel != null)
             {
@@ -158,34 +147,32 @@ namespace windows_client.View
                     pushChannel.UnbindToShellToast();
                 pushChannel.Close();
             }
+
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                App.ViewModel.ClearViewModel();
+                try
+                {
+                    progress.Hide();
+                    progress = null;
+                }
+                catch
+                {
+                }
+                try
+                {
+                    NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
+                }
+                catch { }
+            });
+
+
         }
 
         public void onEventReceived(string type, object obj)
         {
-            #region ACCOUNT_DELETED
-            if (HikePubSub.ACCOUNT_DELETED == type)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    App.ViewModel.MessageListPageCollection.Clear();
-                    App.ViewModel.ConvMap.Clear();
-                    try
-                    {
-                        progress.Hide();
-                        progress = null;
-                    }
-                    catch
-                    {
-                    }
-                    try
-                    {
-                        NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
-                    }
-                    catch { }
-                });
-                return;
-            }
-            #endregion
+            
         }
     }
 }

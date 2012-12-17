@@ -261,5 +261,17 @@ namespace windows_client.ViewModel
         }
         #endregion
 
+
+        public void ClearViewModel()
+        {
+            if (_pendingReq != null)
+                _pendingReq.Clear();
+            if (_favList != null)
+                _favList.Clear();
+            if (_messageListPageCollection != null)
+                _messageListPageCollection.Clear();
+            if (_convMap != null)
+                _convMap.Clear();
+        }
     }
 }

@@ -34,7 +34,6 @@ namespace windows_client.DbUtils
             mPubSub.addListener(HikePubSub.BLOCK_USER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
-            mPubSub.addListener(HikePubSub.DELETE_ACCOUNT, this);
             mPubSub.addListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.addListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.addListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
@@ -53,7 +52,6 @@ namespace windows_client.DbUtils
             mPubSub.removeListener(HikePubSub.BLOCK_USER, this);
             mPubSub.removeListener(HikePubSub.UNBLOCK_USER, this);
             mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
-            mPubSub.removeListener(HikePubSub.DELETE_ACCOUNT, this);
             mPubSub.removeListener(HikePubSub.GROUP_LEFT, this);
             mPubSub.removeListener(HikePubSub.BLOCK_GROUPOWNER, this);
             mPubSub.removeListener(HikePubSub.UNBLOCK_GROUPOWNER, this);
@@ -307,13 +305,6 @@ namespace windows_client.DbUtils
                     MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC + "_small", thumbnailBytes);
                     MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, fileBytes);
                 }
-            }
-            #endregion
-            #region DELETE ACCOUNT
-            else if (HikePubSub.DELETE_ACCOUNT == type)
-            {
-                MiscDBUtil.clearDatabase();
-                mPubSub.publish(HikePubSub.ACCOUNT_DELETED, null);
             }
             #endregion
             #region GROUP LEFT

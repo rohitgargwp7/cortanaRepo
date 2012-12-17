@@ -103,8 +103,6 @@ namespace windows_client
 
         public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
 
-        public static readonly string DELETE_ACCOUNT = "deleteAccount";
-
         public static readonly string ACCOUNT_DELETED = "accountDeleted";
 
         public static readonly string INVITEE_NUM_CHANGED = "inviteeNoChanged";
