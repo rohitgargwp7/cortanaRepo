@@ -17,6 +17,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Text.RegularExpressions;
 using windows_client.Languages;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -37,7 +38,7 @@ namespace windows_client.View
         {
             InitializeComponent();
             App.appSettings.TryGetValue(App.GENDER, out userGender);
-
+            
             if (userGender == "m")
             {
                 genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
@@ -141,8 +142,7 @@ namespace windows_client.View
             // if gender is changed
             if (genderIndex != genderListPicker.SelectedIndex)
             {
-                //genderIndex = genderListPicker.SelectedIndex;
-                obj[App.GENDER] = genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "";
+                obj[App.GENDER] = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : genderListPicker.SelectedIndex == 1 ? "f" : "");
                 shouldSendProfile = true;
             }
 
@@ -252,8 +252,16 @@ namespace windows_client.View
                     try
                     {
                         MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
+                        if (genderListPicker.Items.Count == 3) // if select is there remove it
+                        {
+                            genderListPicker.ItemsSource = new List<string> { "male","female"};
+                            genderIndex--;
+                        }
                     }
-                    catch { }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Exception :: ", e.StackTrace);
+                    }
                 }
                 else // failure from server
                 {
@@ -267,7 +275,10 @@ namespace windows_client.View
                     {
                         MessageBox.Show(AppResources.EditProfile_EmailUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
                     }
-                    catch { }
+                    catch(Exception e) 
+                    {
+                        Debug.WriteLine("Exception :: ", e.StackTrace);
+                    }
 
                 }
                 isClicked = false;
