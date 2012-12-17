@@ -18,6 +18,7 @@ using windows_client.View;
 using windows_client.DbUtils;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
+using windows_client.Languages;
 
 namespace windows_client
 {
@@ -74,11 +75,11 @@ namespace windows_client
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show("Unable to download file. " + ex.Message);
+                MessageBox.Show(AppResources.FileTransfer_ErrorMsgBoxText + ex.Message);
             }
             catch (Exception e)
             {
-                MessageBox.Show("Unable to download file.");
+                MessageBox.Show(AppResources.FileTransfer_ErrorMsgBoxText);
             }
         }
 
@@ -117,7 +118,7 @@ namespace windows_client
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
-                                if (chatBubble!=null && chatBubble.FileAttachment.ContentType.Contains("image"))
+                                if (chatBubble!=null && chatBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                                 {
                                     IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                     MediaLibrary library = new MediaLibrary();

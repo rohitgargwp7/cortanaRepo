@@ -43,6 +43,33 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllHikeContactsOrdered
+        {
+            get
+            {
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc) =>
+                         from o in hdc.users
+                         where o.OnHike == true
+                         orderby o.Name
+                         select o);
+                return q;
+            }
+        }
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllHikeContacts
+        {
+            get
+            {
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc) =>
+                         from o in hdc.users
+                         where o.OnHike == true
+                         select o);
+                return q;
+            }
+        }
         public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromName
         {
             get
@@ -152,7 +179,7 @@ namespace windows_client.DbUtils
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
                 ((HikeChatsDb hdc, string myMsisdn) =>
                     from o in hdc.messages
-                    where o.Msisdn == myMsisdn
+                    where o.Msisdn == myMsisdn orderby o.MessageId
                     select o);
                 return q;
             }
@@ -241,21 +268,21 @@ namespace windows_client.DbUtils
                     CompiledQuery.Compile<HikeMqttPersistenceDb, IQueryable<HikePacket>>
                     ((HikeMqttPersistenceDb hdc) =>
                         from o in hdc.mqttMessages
-                        orderby o.MqttId
+                        orderby o.Timestamp
                         select o);
                 return q;
             }
         }
 
-        public static Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> GetMqttMsgForMsgId
+        public static Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> GetMqttMsgForTimestamp
         {
             get
             {
                 Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> q =
                    CompiledQuery.Compile<HikeMqttPersistenceDb, long, IQueryable<HikePacket>>
-                   ((HikeMqttPersistenceDb hdc, long id) =>
+                   ((HikeMqttPersistenceDb hdc, long ts) =>
                        from o in hdc.mqttMessages
-                       where o.MessageId == id
+                       where o.Timestamp == ts
                        select o);
                 return q;
             }

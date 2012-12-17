@@ -15,11 +15,14 @@ using Newtonsoft.Json.Linq;
 using windows_client.utils;
 using System.Net.NetworkInformation;
 using System.Threading;
+using System.Text.RegularExpressions;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
     public partial class EditProfile : PhoneApplicationPage
     {
+        bool isClicked = false;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
         List<string> genderList = new List<string>(3);
@@ -33,9 +36,27 @@ namespace windows_client.View
         public EditProfile()
         {
             InitializeComponent();
-            genderList.Add("Select");
-            genderList.Add("Male");
-            genderList.Add("Female");
+            App.appSettings.TryGetValue(App.GENDER, out userGender);
+
+            if (userGender == "m")
+            {
+                genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
+                //genderListPicker.SelectedIndex = 0;
+            }
+            else if (userGender == "f")
+            {
+                genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
+                //genderListPicker.SelectedIndex = 1;
+            }
+            else // nothing is selected
+            {
+                genderList.Add(AppResources.EditProfile_GenderSelect_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
+                genderList.Add(AppResources.EditProfile_GenderFemale_lstPckr);
+            }
+
             genderListPicker.ItemsSource = genderList;
             TiltEffect.TiltableItems.Add(typeof(ListPickerItem));
             prepopulate();
@@ -47,7 +68,7 @@ namespace windows_client.View
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_save.png", UriKind.Relative);
-            nextIconButton.Text = "save";
+            nextIconButton.Text = AppResources.Save_AppBar_Btn;
             nextIconButton.Click += new EventHandler(doneBtn_Click);
             nextIconButton.IsEnabled = true;
             appBar.Buttons.Add(nextIconButton);
@@ -65,24 +86,25 @@ namespace windows_client.View
                 userEmail = (string)App.appSettings[App.EMAIL];
             email.Text = userEmail;
 
-            App.appSettings.TryGetValue(App.GENDER, out userGender);
-
             if (userGender == "m")
-                genderListPicker.SelectedIndex = 1;
+                genderListPicker.SelectedIndex = 0;
             else if (userGender == "f")
-                genderListPicker.SelectedIndex = 2;
+                genderListPicker.SelectedIndex = 1;
             genderIndex = genderListPicker.SelectedIndex;
         }
 
         private void doneBtn_Click(object sender, EventArgs e)
         {
+            if (isClicked)
+                return;
+            isClicked = true;
             shouldSendProfile = false;
             nameErrorTxt.Opacity = 0;
             emailErrorTxt.Opacity = 0;
-
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                isClicked = false;
                 return;
             }
             this.Focus(); // this will hide keyboard
@@ -94,14 +116,15 @@ namespace windows_client.View
             {
                 nameErrorTxt.Opacity = 1;
                 //progressBar.IsEnabled = false;
-                shellProgress.IsVisible = false; ;
+                shellProgress.IsVisible = false;
+                isClicked = false;
                 return;
             }
 
             JObject obj = new JObject();
             if (userEmail != email.Text) // if email is changed
             {
-                if (true) // check if email is valid
+                if (ValidateEmail(email.Text)) // check if email is valid
                 {
                     obj[App.EMAIL] = email.Text;
                     shouldSendProfile = true;
@@ -111,6 +134,7 @@ namespace windows_client.View
                     emailErrorTxt.Opacity = 1;
                     //progressBar.IsEnabled = false;
                     shellProgress.IsVisible = false;
+                    isClicked = false;
                     return;
                 }
             }
@@ -136,10 +160,11 @@ namespace windows_client.View
             {
                 if (userName == name.Text)
                 {
-                    MessageBox.Show("Nothing is changed!!", "Profile Not Updated!", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.EditProfile_UpdatErrMsgBx_Text, AppResources.EditProfile_UpdatErrMsgBx_Captn, MessageBoxButton.OK);
                 }
                 //progressBar.IsEnabled = false;
                 shellProgress.IsVisible = false;
+                isClicked = false;
             }
         }
 
@@ -163,7 +188,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && "ok" == (string)obj["stat"])
+                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
                     if (userName != name.Text)
                     {
@@ -180,7 +205,11 @@ namespace windows_client.View
                         MakeFieldsReadOnly(false);
                         //progressBar.IsEnabled = false;
                         shellProgress.IsVisible = false;
-                        MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                        try
+                        {
+                            MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
+                        }
+                        catch { }
                     }
                 }
                 else
@@ -188,8 +217,13 @@ namespace windows_client.View
                     MakeFieldsReadOnly(false);
                     //progressBar.IsEnabled = false;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Unable to change name. Try again.", "Something went wrong", MessageBoxButton.OK);
+                    try
+                    {
+                        MessageBox.Show(AppResources.EditProfile_NameUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
+                    }
+                    catch { }
                 }
+                isClicked = false;
             });
         }
 
@@ -197,7 +231,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && "ok" == (string)obj["stat"])
+                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
 
                     if (userEmail != email.Text)
@@ -215,19 +249,28 @@ namespace windows_client.View
                     //progressBar.IsEnabled = false;
                     //progressBar.Opacity = 0;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Your profile has been updated.", "Profile Updated", MessageBoxButton.OK);
+                    try
+                    {
+                        MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
+                    }
+                    catch { }
                 }
                 else // failure from server
                 {
                     MakeFieldsReadOnly(false);
-                    if(App.appSettings.Contains(App.EMAIL))
+                    if (App.appSettings.Contains(App.EMAIL))
                         email.Text = (string)App.appSettings[App.EMAIL];
                     //progressBar.IsEnabled = false;
                     //progressBar.Opacity = 0;
                     shellProgress.IsVisible = false;
-                    MessageBox.Show("Unable to change email or gender. Try again.", "Something went wrong", MessageBoxButton.OK);
-                    
+                    try
+                    {
+                        MessageBox.Show(AppResources.EditProfile_EmailUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
+                    }
+                    catch { }
+
                 }
+                isClicked = false;
             });
         }
 
@@ -267,7 +310,7 @@ namespace windows_client.View
 
         private void textbox_LostFocus(object sender, RoutedEventArgs e)
         {
-            ContentPanel.Margin = new Thickness(15, 0, 15,  0);
+            ContentPanel.Margin = new Thickness(15, 0, 15, 0);
 
         }
 
@@ -286,6 +329,12 @@ namespace windows_client.View
                 genderListPicker.Focus();
             }
 
+        }
+
+        public static bool ValidateEmail(string str)
+        {
+            // Return true if strIn is in valid e-mail format.
+            return Regex.IsMatch(str, @"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*");
         }
     }
 }

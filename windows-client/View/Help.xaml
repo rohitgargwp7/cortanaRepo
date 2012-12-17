@@ -23,7 +23,7 @@
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
             <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
-            <TextBlock Text="help" FontFamily="Segoe WP SemiLight" FontSize="68" FontStretch="Expanded"  Margin="22,0,0,0" />
+            <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" FontStretch="Expanded"  Margin="22,0,0,0" />
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" Margin="4,0,0,0">
@@ -40,28 +40,28 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="1" Margin="20,10,0,0" Tap="FAQs_Tap">
-                    <TextBlock Text="FAQs" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="Frequently asked questions" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_FAQsTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_FAQsTxt, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="20,30,0,0" Tap="ContactUs_Tap">
-                    <TextBlock Text="Contact Us" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="Contact our support team for help" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_ContactUsTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_ContactUsText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,30,0,0" Tap="Legal_Tap">
-                    <TextBlock Text="Legal" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="Read Terms of service and privacy policy" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_LegalTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_LegalText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
-                <StackPanel Grid.Row="3" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
-                    <TextBlock Text="Walkthrough" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="View the meet hike walkthrough" FontSize="20"/>
+                <StackPanel x:Name="walkthroughPanel" Grid.Row="3" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_WalkthroughTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_WalkthroughText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
                 <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,30,0,0" Tap="rateAndReview_Tap">
-                    <TextBlock Text="Rate the App" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="Rate and review hike on the marketplace" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="1" Margin="20,30,0,0">
-                    <TextBlock Text="Version" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_AppVersionTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                     <TextBlock x:Name="applicationVersion" Text="1.1.0.0" FontSize="20"/>
                 </StackPanel>
             </Grid>

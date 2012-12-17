@@ -10,6 +10,7 @@ using System.Net.NetworkInformation;
 using Microsoft.Phone.Tasks;
 using windows_client.DbUtils;
 using System.Diagnostics;
+using windows_client.Languages;
 
 
 namespace windows_client
@@ -32,7 +33,7 @@ namespace windows_client
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            nextIconButton.Text = "accept";
+            nextIconButton.Text = AppResources.WelcomePage_Accept_AppBar;
             nextIconButton.Click += new EventHandler(getStarted_click);
             appBar.Buttons.Add(nextIconButton);
             welcomePage.ApplicationBar = appBar;
@@ -83,7 +84,7 @@ namespace windows_client
                 return;
             }
             /* This case is when you are on wifi and need to go to fallback screen to register.*/
-            if ("fail" == (string)obj["stat"])
+            if (HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 nextPage = new Uri("/View/EnterNumber.xaml", UriKind.Relative);
             }

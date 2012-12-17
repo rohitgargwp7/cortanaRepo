@@ -84,7 +84,6 @@ namespace windows_client.Mqtt
 
         private IScheduler scheduler = Scheduler.NewThread;
 
-
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
         private volatile bool disconnectCalled = false;
@@ -124,7 +123,7 @@ namespace windows_client.Mqtt
             {
                 if (mqttConnection != null)
                 {
-                    disconnectCalled = true;
+                    disconnectCalled = !reconnect;
                     mqttConnection.disconnect(new DisconnectCB(reconnect, this));
                     mqttConnection = null;
                 }
@@ -272,23 +271,29 @@ namespace windows_client.Mqtt
             };
             bw.RunWorkerAsync();
         }
+        
+        private static object lockObj = new object();
+
 
         private void connectInBackground()
         {
-            disconnectCalled = false;
-            if (isConnected())
+            lock (lockObj)
             {
-                return;
-            }
+                disconnectCalled = false;
+                if (isConnected())
+                {
+                    return;
+                }
 
-            if (isUserOnline())
-            {
-                connectToBroker();
-            }
-            else
-            {
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-                scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                if (isUserOnline())
+                {
+                    connectToBroker();
+                }
+                else
+                {
+                    setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                    scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                }
             }
         }
 
@@ -336,12 +341,20 @@ namespace windows_client.Mqtt
             return topics.ToArray();
         }
 
+        void recursivePingSchedule(Action<TimeSpan> action)
+        {
+            action(TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
+            ping();
+        }
+
+        private volatile bool isRecursivePingScheduled = false;
 
         public void onConnected()
         {
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
             subscribeToTopics(getTopics());
-            scheduler.Schedule(ping, TimeSpan.FromMinutes(10));
+            if (!isRecursivePingScheduled)  
+                scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
             /* Accesses the persistence object from the main handler thread */
 
@@ -360,7 +373,7 @@ namespace windows_client.Mqtt
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             mqttConnection = null;
             if (!disconnectCalled)
-                connect();
+                disconnectFromBroker(true);
         }
 
         public void onPublish(String topic, byte[] body)
@@ -401,14 +414,14 @@ namespace windows_client.Mqtt
             string objType = data.ToString();
             json.TryGetValue("d", out data);
             JObject dataObj;
-            int msgId;
+            long msgId;
 
             if (objType == NetworkManager.MESSAGE || objType == NetworkManager.INVITE)
             {
                 dataObj = JObject.FromObject(data);
                 JToken messageIdToken;
                 dataObj.TryGetValue("i", out messageIdToken);
-                msgId = Convert.ToInt32(messageIdToken.ToString());
+                msgId = Convert.ToInt64(messageIdToken.ToString());
             }
             else
             {

@@ -13,6 +13,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Notification;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -30,142 +31,64 @@ namespace windows_client.View
             App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
             this.pushNotifications.IsChecked = isPushEnabled;
             if (isPushEnabled)
-                this.pushNotifications.Content = "On";
+                this.pushNotifications.Content = AppResources.On;
             else
-                this.pushNotifications.Content = "Off";
+                this.pushNotifications.Content = AppResources.Off;
             
             bool isVibrateEnabled = true;
             App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
             this.vibrate.IsChecked = isVibrateEnabled;
             if (isVibrateEnabled)
-                this.vibrate.Content = "On";
+                this.vibrate.Content = AppResources.On;
             else
-                this.vibrate.Content = "Off";
+                this.vibrate.Content = AppResources.Off;
 
+            bool showFreeSMS = true;
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out showFreeSMS);
+            this.showFreeSMSToggle.IsChecked = showFreeSMS;
+            if (showFreeSMS)
+                this.showFreeSMSToggle.Content = AppResources.On;
+            else
+                this.showFreeSMSToggle.Content = AppResources.Off;
         }
 
         private void pushNotifications_Checked(object sender, RoutedEventArgs e)
         {
-            this.pushNotifications.Content = "On";
+            this.pushNotifications.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
-
-            try
-            {
-                HttpNotificationChannel pushChannel;
-
-                pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, "hike.in");
-
-                if (pushChannel != null)
-                {
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                }
-                else
-                {
-                    pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_NAME);
-                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                    pushChannel.Open();
-                }
-                if (!pushChannel.IsShellTileBound)
-                    pushChannel.BindToShellTile();
-                if (!pushChannel.IsShellToastBound)
-                    pushChannel.BindToShellToast();
-
-                if (pushChannel.ChannelUri == null)
-                    return;
-
-                System.Diagnostics.Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            catch (Exception)
-            {
-            }
+            App.PushHelperInstance.registerPushnotifications();
         }
 
         private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.pushNotifications.Content = "Off";
+            this.pushNotifications.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,false);
+            App.PushHelperInstance.closePushnotifications();
 
-            try
-            {
-                HttpNotificationChannel pushChannel;
-                pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-                if (pushChannel != null)
-                {
-                    if (pushChannel.IsShellTileBound)
-                        pushChannel.UnbindToShellTile();
-                    if (pushChannel.IsShellToastBound)
-                        pushChannel.UnbindToShellToast();
-                    pushChannel.Close();
-                }
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            catch (Exception)
-            {
-            }
-
-        }
-
-        public void postPushNotification_Callback(JObject obj)
-        {
-            string stat = "";
-            if (obj != null)
-            {
-                JToken statusToken;
-                obj.TryGetValue("stat", out statusToken);
-                stat = statusToken.ToString();
-            }
-            if (stat != "ok")
-            {
-                try
-                {
-                    HttpNotificationChannel pushChannel;
-                    pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-                    if (pushChannel != null)
-                    {
-                        if (pushChannel.IsShellTileBound)
-                            pushChannel.UnbindToShellTile();
-                        if (pushChannel.IsShellToastBound)
-                            pushChannel.UnbindToShellToast();
-                        pushChannel.Close();
-                    }
-                }
-                catch (Exception)
-                { }
-            }
-        }
-
-        public void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
-        {
-            AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-        }
-
-        public void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
-        {
-            // Error handling logic
-            //Dispatcher.BeginInvoke(() =>
-            //    MessageBox.Show(String.Format("A push notification {0} error occurred.  {1} ({2}) {3}",
-            //        e.ErrorType, e.Message, e.ErrorCode, e.ErrorAdditionalData))
-            //        );
         }
 
         private void vibrate_Checked(object sender, RoutedEventArgs e)
         {
-            this.vibrate.Content = "On";
+            this.vibrate.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, true);
         }
 
         private void vibrate_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.vibrate.Content = "Off";
+            this.vibrate.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.VIBRATE_PREF, false);
+        }
+
+        private void showFreeSMSToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            this.showFreeSMSToggle.Content = AppResources.On;
+            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+        }
+
+        private void showFreeSMSToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.showFreeSMSToggle.Content = AppResources.Off;
+            App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
         }
     }
 }

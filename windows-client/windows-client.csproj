@@ -53,12 +53,16 @@
     <Reference Include="Coding4Fun.Phone.Controls">
       <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\packages\Facebook.6.0.24\lib\sl4-windowsphone71\Facebook.dll</HintPath>
+    </Reference>
     <Reference Include="finalmqtt">
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Maps, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
@@ -73,7 +77,9 @@
       <HintPath>lib\SharpCompress.WP7.dll</HintPath>
     </Reference>
     <Reference Include="system.data.linq" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Servicemodel.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -111,7 +117,15 @@
     <Compile Include="FileTransfer.cs" />
     <Compile Include="HikeConstants.cs" />
     <Compile Include="HikePubSub.cs" />
+    <Compile Include="Languages\AppResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Languages\LocalizedStrings.cs" />
+    <Compile Include="Misc\GroupManager.cs" />
     <Compile Include="Misc\IBinarySerializable.cs" />
+    <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
     <Compile Include="Model\GroupInfo.cs" />
@@ -127,12 +141,12 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
-    <Compile Include="Test\Test.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
+    <Compile Include="utils\PushHelper.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
     <Compile Include="utils\Utils.cs" />
@@ -157,6 +171,9 @@
     </Compile>
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SocialPages.xaml.cs">
+      <DependentUpon>SocialPages.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FreeSMS.xaml.cs">
       <DependentUpon>FreeSMS.xaml</DependentUpon>
@@ -187,6 +204,9 @@
     </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ShareLocation.xaml.cs">
+      <DependentUpon>ShareLocation.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Walkthrough.xaml.cs">
       <DependentUpon>Walkthrough.xaml</DependentUpon>
@@ -249,6 +269,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\SocialPages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\FreeSMS.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -289,6 +313,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ShareLocation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Walkthrough.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -313,14 +341,39 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="View\images\add_favorites.png" />
+    <Content Include="View\images\add_user_icon.png" />
     <Content Include="View\images\audio_file_icon_white.png" />
+    <Content Include="View\images\avatars\Beach.png" />
+    <Content Include="View\images\avatars\BluePeople.png" />
+    <Content Include="View\images\avatars\Candy.png" />
+    <Content Include="View\images\avatars\Cocktail.png" />
+    <Content Include="View\images\avatars\Coffee.png" />
+    <Content Include="View\images\avatars\CoffeePeople.png" />
+    <Content Include="View\images\avatars\Digital.png" />
+    <Content Include="View\images\avatars\EarthyPeople.png" />
+    <Content Include="View\images\avatars\GreenPeople.png" />
+    <Content Include="View\images\avatars\PinkPeople.png" />
+    <Content Include="View\images\avatars\RedPeople.png" />
+    <Content Include="View\images\avatars\Sneakers.png" />
+    <Content Include="View\images\avatars\Space.png" />
+    <Content Include="View\images\avatars\TealPeople.png" />
     <Content Include="View\images\change_pic.png" />
     <Content Include="View\images\chat_sms_error.png" />
+    <Content Include="View\images\connected_tick.png" />
     <Content Include="View\images\delete_account_white.png" />
+    <Content Include="View\images\drop_pin_icon.png" />
+    <Content Include="View\images\emptyImage.png" />
     <Content Include="View\images\empty_screen_logo_black.png" />
     <Content Include="View\images\empty_screen_logo_white.png" />
     <Content Include="View\images\empty_screen_tip_black.png" />
     <Content Include="View\images\empty_screen_tip_white.png" />
+    <Content Include="View\images\favorites_heart.png" />
+    <Content Include="View\images\favorites_tour_01.jpg" />
+    <Content Include="View\images\favorites_tour_02.jpg" />
+    <Content Include="View\images\fb_icon.png" />
+    <Content Include="View\images\hike_favorite.png" />
+    <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
     <Content Include="View\images\icon_play.png" />
     <Content Include="View\images\icon_play_stop.png" />
@@ -331,11 +384,18 @@
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
     <Content Include="View\images\made_with_love_dark.png" />
+    <Content Include="View\images\map-pin.png" />
     <Content Include="View\images\menu_audio_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
     <Content Include="View\images\mic_icon.png" />
     <Content Include="View\images\mic_icon_black.png" />
     <Content Include="View\images\new_message.png" />
+    <Content Include="View\images\nudge_received.png" />
+    <Content Include="View\images\nudge_sent.png" />
+    <Content Include="View\images\nudge_tutorial.png" />
+    <Content Include="View\images\plus_tap_on.png" />
+    <Content Include="View\images\tick.png" />
+    <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
     <Resource Include="hi.png" />
@@ -356,8 +416,6 @@
     <Content Include="View\images\chat_left.png" />
     <Content Include="View\images\chat_reward.png" />
     <Content Include="View\images\chat_waiting.png" />
-    <Content Include="View\images\default_group.png" />
-    <Content Include="View\images\default_user.png" />
     <Content Include="View\images\delete_account_black.png" />
     <Content Include="View\images\download_icon.png" />
     <Content Include="View\images\emoticons\emo_im_01_bigsmile.png" />
@@ -563,7 +621,13 @@
       <Name>Phone.Controls</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Languages\AppResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

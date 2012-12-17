@@ -12,13 +12,14 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using windows_client.Model;
+using Newtonsoft.Json.Linq;
+using Microsoft.Phone.Shell;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
     public partial class Invite : PhoneApplicationPage
     {
-        string email_invite = "Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!";
-        string external_invite_message = "I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp";
 
         public Invite()
         {
@@ -30,7 +31,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SOCIAL);
             string inviteToken = null;
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(external_invite_message, inviteToken==null?"":inviteToken);
+            string inviteMsg = string.Format(AppResources.Social_Invite_Txt, inviteToken == null ? "" : inviteToken);
             ShareLinkTask shareLinkTask = new ShareLinkTask();
             shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
             shareLinkTask.Message = inviteMsg;
@@ -48,9 +49,9 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.INVITE_EMAIL);
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(email_invite, inviteToken);
+            string inviteMsg = string.Format(AppResources.Email_Invite_Txt, inviteToken);
             EmailComposeTask f5EmailCompose = new EmailComposeTask();
-            f5EmailCompose.Subject = "hike. Fun, free messaging for life";
+            f5EmailCompose.Subject = AppResources.Hike_txt + AppResources.Fun_Free_Messaging_Txt;
             f5EmailCompose.Body = inviteMsg;
             try
             {
@@ -66,7 +67,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.INVITE_MESSAGE);
             string inviteToken = "";
             App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(App.sms_invite_message, inviteToken);
+            string inviteMsg = string.Format(AppResources.sms_invite_message, inviteToken);
             SmsComposeTask sms = new Microsoft.Phone.Tasks.SmsComposeTask();
             sms.Body = inviteMsg;
             try
@@ -77,5 +78,6 @@ namespace windows_client.View
             {
             }
         }
+
     }
 }

@@ -10,6 +10,7 @@ using System.Net.NetworkInformation;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
+using windows_client.Languages;
 
 namespace windows_client
 {
@@ -91,7 +92,7 @@ namespace windows_client
         public EnterNumber()
         {
             InitializeComponent();
-            this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
+            //this.Loaded += new RoutedEventHandler(EnterNumberPage_Loaded);
 
             initializeCountryCodes();
 
@@ -103,7 +104,7 @@ namespace windows_client
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            nextIconButton.Text = "Next";
+            nextIconButton.Text = AppResources.AppBar_Next_Btn;
             nextIconButton.Click += new EventHandler(enterPhoneBtn_Click);
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
@@ -354,9 +355,9 @@ namespace windows_client
             phoneNumber = countryCode.Substring(countryCode.IndexOf('+')) + txtEnterPhone.Text.Trim();
             if (String.IsNullOrEmpty(phoneNumber))
                 return;
-            if (phoneNumber.Length < 10 || phoneNumber.Length > 15)
+            if (phoneNumber.Length < 1 || phoneNumber.Length > 15)
             {
-                MessageBox.Show("Enter valid phone number.", "Incorrect Phone Number", MessageBoxButton.OK);
+                MessageBox.Show(AppResources.EnterNumber_MsgBoxText_Msg, AppResources.EnterNumber_IncorrectPh_TxtBlk, MessageBoxButton.OK);
                 txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
                 return;
             }
@@ -364,14 +365,14 @@ namespace windows_client
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                msisdnErrorTxt.Text = "Connectivity issue.";
+                msisdnErrorTxt.Text = AppResources.Connectivity_Issue;
                 msisdnErrorTxt.Visibility = Visibility.Visible;
                 return;
             }
             txtEnterPhone.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             msgTxtBlk.Opacity = 1;
-            msgTxtBlk.Text = "Verifying your number.";
+            msgTxtBlk.Text = AppResources.EnterNumber_VerifyNumberMsg_TxtBlk;
             msisdnErrorTxt.Visibility = Visibility.Collapsed;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -396,14 +397,14 @@ namespace windows_client
                 });
                 return;
             }
-            string unauthedMSISDN = (string)obj["msisdn"];
+            string unauthedMSISDN = (string)obj[App.MSISDN_SETTING];
             if (unauthedMSISDN == null)
             {
                 //logger.Info("SignupTask", "Unable to send PIN to user");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     msgTxtBlk.Opacity = 0;
-                    msisdnErrorTxt.Text = "Incorrect phone number.";
+                    msisdnErrorTxt.Text = AppResources.EnterNumber_IncorrectPh_TxtBlk;
                     msisdnErrorTxt.Visibility = Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
@@ -497,6 +498,9 @@ namespace windows_client
                 txtEnterPhone.Select(txtEnterPhone.Text.Length, 0);
                 PhoneApplicationService.Current.State.Remove("EnteredPhone");
             }
+
+            txtEnterPhone.Hint = "Phone Number";
+            txtEnterCountry.Foreground = UI_Utils.Instance.Black;
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -549,13 +553,13 @@ namespace windows_client
 
         void EnterNumberPage_Loaded(object sender, RoutedEventArgs e)
         {
-            txtEnterPhone.Hint = "Phone Number";
+            txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
             txtEnterCountry.Foreground = UI_Utils.Instance.Black;
         }
 
         private void txtEnterPhone_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtEnterPhone.Hint = "Phone Number";
+            txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
             txtEnterPhone.Foreground = UI_Utils.Instance.SignUpForeground;
         }
 
@@ -569,7 +573,7 @@ namespace windows_client
             {
                 nextIconButton.IsEnabled = false;
             }
-            if (txtEnterPhone.Text.Length > 7)
+            if (txtEnterPhone.Text.Length >= 1 && txtEnterPhone.Text.Length <= 15)
                 nextIconButton.IsEnabled = true;
             else
                 nextIconButton.IsEnabled = false;

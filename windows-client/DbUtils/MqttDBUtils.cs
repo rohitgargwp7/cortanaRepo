@@ -4,14 +4,19 @@ using System.Linq;
 using System.Data.Linq;
 using System.Diagnostics;
 using System;
+using Microsoft.Phone.Data.Linq;
 
 namespace windows_client.DbUtils
 {
     public class MqttDBUtils
     {
+        public const int Latest_Version = 1;
+
         private static object lockObj = new object();
 
         #region MqttPersistence
+
+
         /// <summary>
         /// Retrives all messages thet were unsent previously, and are required to send when connection re-establishes
         /// deletes pending messages from db after reading
@@ -26,14 +31,14 @@ namespace windows_client.DbUtils
                 using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
                 {
                     res = DbCompiledQueries.GetAllSentMessages(context).ToList<HikePacket>();
-                    context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
-                    context.SubmitChanges();
+                    //context.mqttMessages.DeleteAllOnSubmit(context.mqttMessages);
+                    //context.SubmitChanges();
                 }
                 return (res == null || res.Count() == 0) ? null : res;
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Exception while fetching MQTT msgs : "+e.StackTrace);
+                Debug.WriteLine("Exception while fetching MQTT msgs : " + e.StackTrace);
                 return null;
             }
         }
@@ -61,13 +66,13 @@ namespace windows_client.DbUtils
             //TODO update observable list
         }
 
-        public static void removeSentMessage(long msgId)
+        public static void removeSentMessage(long timestamp)
         {
             lock (lockObj)
             {
                 using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
                 {
-                    List<HikePacket> entriesToDelete = DbCompiledQueries.GetMqttMsgForMsgId(context, msgId).ToList();
+                    List<HikePacket> entriesToDelete = DbCompiledQueries.GetMqttMsgForTimestamp(context, timestamp).ToList();
                     if (entriesToDelete == null || entriesToDelete.Count == 0)
                         return;
                     context.mqttMessages.DeleteAllOnSubmit<HikePacket>(entriesToDelete);
@@ -114,6 +119,27 @@ namespace windows_client.DbUtils
                 }
                 // Submit succeeds on second try.
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+            }
+        }
+
+        public static void UpdateToVersionOne()
+        {
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+            {
+                DatabaseSchemaUpdater schemaUpdater = context.CreateDatabaseSchemaUpdater();
+                // get current database schema version
+                // if not changed the version is 0 by default
+                int version = schemaUpdater.DatabaseSchemaVersion;
+
+                // if current version of database schema is old
+                if (version == 0)
+                {
+                    // add Address column to the table corresponding to the Person class
+                    // IMPORTANT: update database schema version before calling Execute
+                    schemaUpdater.DatabaseSchemaVersion = Latest_Version;
+                    // execute changes to database schema
+                    schemaUpdater.Execute();
+                }
             }
         }
 

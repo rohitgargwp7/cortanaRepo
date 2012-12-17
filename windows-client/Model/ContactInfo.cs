@@ -7,6 +7,8 @@ using Microsoft.Phone.Data.Linq.Mapping;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
 using System.Windows;
+using System.IO;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -22,6 +24,8 @@ namespace windows_client.Model
         private bool _onHike;
         private bool _hasCustomPhoto;
         private bool _isInvited;
+        private byte[] _avatar;
+        private bool _isFav;
 
         //it significantly improves update performance
 
@@ -159,6 +163,31 @@ namespace windows_client.Model
                 NotifyPropertyChanged("IsInvited");
                 NotifyPropertyChanged("InvitedStringVisible");
                 NotifyPropertyChanged("InviteButtonVisible");
+            }
+        }
+
+        public bool IsFav
+        {
+            get
+            {
+                return _isFav;
+            }
+            set
+            {
+                if (value != _isFav)
+                {
+                    _isFav = value;
+                }
+            }
+        }   // this is used in inviteUsers page , when you show hike users
+
+        public bool IsEnabled
+        {
+            get
+            {
+                if (_isFav)
+                    return false;
+                return true;
             }
         }
 
@@ -349,6 +378,48 @@ namespace windows_client.Model
             {
                 _id = id;
                 _msisdn = msisdn;
+            }
+        }
+
+        public byte[] Avatar
+        {
+            get
+            {
+                return _avatar;
+            }
+            set
+            {
+                if (value != _avatar)
+                    _avatar = value;
+            }
+        }
+
+        public BitmapImage AvatarImage
+        {
+            get
+            {
+                try
+                {
+                    if (_avatar == null)
+                    {
+                        if (Utils.isGroupConversation(Msisdn))
+                            return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn);
+                        return UI_Utils.Instance.getDefaultAvatar(Msisdn);
+                    }
+                    else
+                    {
+                        MemoryStream memStream = new MemoryStream(_avatar);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage();
+                        empImage.SetSource(memStream);
+                        return empImage;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
+                    return null;
+                }
             }
         }
     }

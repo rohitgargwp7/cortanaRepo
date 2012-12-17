@@ -5,11 +5,21 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Microsoft.Phone.Reactive;
 using System;
+using windows_client.DbUtils;
 
 namespace windows_client.ViewModel
 {
     public class HikeViewModel : INotifyPropertyChanged, HikePubSub.Listener
     {
+        // this key will track number of conversations in the app. If this does not match the convs at load time , simply move to backup plan.
+        public static string NUMBER_OF_CONVERSATIONS = "NoConvs";
+
+        public static string NUMBER_OF_FAVS = "NoFavs";
+
+        private ObservableCollection<ConversationListObject> _pendingReq = null;
+
+        private ObservableCollection<ConversationListObject> _favList = null;
+
         private IScheduler scheduler = Scheduler.NewThread;
 
         private Dictionary<string, ConversationListObject> _convMap;
@@ -42,12 +52,53 @@ namespace windows_client.ViewModel
             }
         }
 
+        public bool IsPendingListLoaded
+        {
+            get;
+            set;
+        }
+
+        public ObservableCollection<ConversationListObject> PendingRequests
+        {
+            get
+            {
+                return _pendingReq;
+            }
+            set
+            {
+                if (value != _pendingReq)
+                    _pendingReq = value;
+            }
+        }
+
+        public ObservableCollection<ConversationListObject> FavList
+        {
+            get
+            {
+                return _favList;
+            }
+        }
+
         public HikeViewModel(List<ConversationListObject> convList)
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>(convList);
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
+            _pendingReq = new ObservableCollection<ConversationListObject>();
+            _favList = new ObservableCollection<ConversationListObject>();
+
+            // this order should be maintained as _convMap should be populated before loading fav list
             for (int i = 0; i < convList.Count; i++)
+            {
                 _convMap[convList[i].Msisdn] = convList[i];
+            }
+            MiscDBUtil.LoadFavourites(_favList,_convMap);
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            if (count != _favList.Count) // values are not loaded, move to backup plan
+            {
+                _favList.Clear();
+                MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
+            }
             RegisterListeners();
         }
 
@@ -55,7 +106,71 @@ namespace windows_client.ViewModel
         {
             _messageListPageCollection = new ObservableCollection<ConversationListObject>();
             _convMap = new Dictionary<string, ConversationListObject>();
+            _favList = new ObservableCollection<ConversationListObject>();
+            _pendingReq = new ObservableCollection<ConversationListObject>();
+            MiscDBUtil.LoadFavourites(_favList, _convMap);
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            if (count != _favList.Count) // values are not loaded, move to backup plan
+            {
+                _favList.Clear();
+                MiscDBUtil.LoadFavouritesFromIndividualFiles(_favList, _convMap);
+            }
             RegisterListeners();
+        }
+
+        public bool Isfavourite(string mContactNumber)
+        {
+            if (_favList.Count == 0)
+                return false;
+            for (int i = 0; i < _favList.Count; i++)
+            {
+                if (_favList[i].Msisdn == mContactNumber)
+                    return true;
+            }
+            return false;
+        }
+
+        public ConversationListObject GetFav(string mContactNumber)
+        {
+            if (_favList.Count == 0)
+                return null;
+            for (int i = 0; i < _favList.Count; i++)
+            {
+                if (_favList[i].Msisdn == mContactNumber)
+                    return _favList[i];
+            }
+            return null;
+        }
+
+        public bool IsPending(string ms)
+        {
+            if (!IsPendingListLoaded)
+            {
+                MiscDBUtil.LoadPendingRequests();
+                IsPendingListLoaded = true;
+            }
+            if (_pendingReq == null)
+                return false;
+            for (int i = 0; i < _pendingReq.Count; i++)
+            {
+                if (_pendingReq[i].Msisdn == ms)
+                    return true;
+            }
+            return false;
+        }
+
+        public ConversationListObject GetPending(string mContactNumber)
+        {
+            if (_pendingReq.Count == 0)
+                return null;
+            for (int i = 0; i < _pendingReq.Count; i++)
+            {
+                if (_pendingReq[i].Msisdn == mContactNumber)
+                    return _pendingReq[i];
+            }
+            return null;
+
         }
 
         private void RefreshNewConversationObject()
@@ -67,6 +182,8 @@ namespace windows_client.ViewModel
                     if (App.ViewModel.MessageListPageCollection.Count > 0)
                     {
                         ConversationListObject c = App.ViewModel.MessageListPageCollection[0];
+                        if (c == null)
+                            return;
                         App.ViewModel.MessageListPageCollection.RemoveAt(0);
                         App.ViewModel.MessageListPageCollection.Insert(0, c);
                     }
@@ -81,8 +198,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
-            App.HikePubSubInstance.addListener(HikePubSub.UPDATE_UI, this);
-            App.HikePubSubInstance.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
 
         private void RemoveListeners()
@@ -90,8 +205,6 @@ namespace windows_client.ViewModel
             App.HikePubSubInstance.removeListener(HikePubSub.MESSAGE_RECEIVED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
             App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.UPDATE_UI, this);
-            App.HikePubSubInstance.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
         }
 
         public void onEventReceived(string type, object obj)
@@ -132,38 +245,6 @@ namespace windows_client.ViewModel
                 }
             }
             #endregion
-            #region UPDATE_UI
-            else if (HikePubSub.UPDATE_UI == type)
-            {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
-                if (!App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    return;
-
-                ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
-                byte[] _avatar = (byte[])vals[1];
-                try
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        convObj.Avatar = _avatar;
-                    });
-                }
-                catch (KeyNotFoundException)
-                {
-                }
-            }
-            #endregion
-            #region GROUP NAME CHANGED
-            else if (HikePubSub.GROUP_NAME_CHANGED == type)
-            {
-                object[] vals = (object[])obj;
-                string groupId = (string)vals[0];
-                string groupName = (string)vals[1];
-                ConversationListObject cObj = App.ViewModel.ConvMap[groupId];
-                cObj.ContactName = groupName;
-            }
-            #endregion
         }
 
         #region INotifyPropertyChanged Members
@@ -180,5 +261,17 @@ namespace windows_client.ViewModel
         }
         #endregion
 
+
+        public void ClearViewModel()
+        {
+            if (_pendingReq != null)
+                _pendingReq.Clear();
+            if (_favList != null)
+                _favList.Clear();
+            if (_messageListPageCollection != null)
+                _messageListPageCollection.Clear();
+            if (_convMap != null)
+                _convMap.Clear();
+        }
     }
 }

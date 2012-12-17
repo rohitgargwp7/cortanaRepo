@@ -2,13 +2,12 @@
 using System.Windows;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
-using System.IO.IsolatedStorage;
 using Newtonsoft.Json.Linq;
-using System.Windows.Media;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
-using Microsoft.Phone.Reactive;
+using System.Windows.Threading;
+using windows_client.Languages;
 
 namespace windows_client
 {
@@ -18,8 +17,9 @@ namespace windows_client
         string pinEntered;
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
-        private IScheduler scheduler = Scheduler.NewThread;
-        private readonly int callMeTimeout = 15;
+        private DispatcherTimer progressTimer;
+        private int timerValue = 60;
+        private readonly string CallMeTimer = "CallMeTimer";
 
         public EnterPin()
         {
@@ -34,7 +34,7 @@ namespace windows_client
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-            nextIconButton.Text = "Next";
+            nextIconButton.Text = AppResources.AppBar_Next_Btn;
             nextIconButton.Click += new EventHandler(btnEnterPin_Click);
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
@@ -53,7 +53,7 @@ namespace windows_client
             {
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                pinErrorTxt.Text = "Connectivity issue.";
+                pinErrorTxt.Text = AppResources.Connectivity_Issue;
                 pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                 isNextClicked = false;
                 return;
@@ -71,11 +71,12 @@ namespace windows_client
         {
             Uri nextPage = null;
 
-            if (obj == null || "fail" == (string)obj["stat"])
+            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 // logger.Info("HTTP", "Unable to create account");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    pinErrorTxt.Text = AppResources.EnterPin_PinError_TxtBlk;
                     pinErrorTxt.Visibility = System.Windows.Visibility.Visible;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
@@ -107,13 +108,14 @@ namespace windows_client
         void EnterPinPage_Loaded(object sender, RoutedEventArgs e)
         {
             txtBxEnterPin.Focus();
+            this.Loaded -= EnterPinPage_Loaded;
         }
 
         private void txtBxEnterPin_GotFocus(object sender, RoutedEventArgs e)
         {
             try
             {
-                txtBxEnterPin.Hint = "Pin";
+                txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
             }
             catch { }
@@ -159,15 +161,36 @@ namespace windows_client
                 nextIconButton.IsEnabled = false;
         }
 
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            progressTimer.Stop();
+            progressTimer = null;
+            PhoneApplicationService.Current.State[CallMeTimer] = timerValue;
+        }
+
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            if (callMe.Opacity == 0)
+            
+            timer.Visibility = Visibility.Visible;
+            progressTimer = new DispatcherTimer();
+            progressTimer.Interval = TimeSpan.FromSeconds(1);
+            progressTimer.Tick += new EventHandler(enableCallMeOption);
+            progressTimer.Start();
+            if (PhoneApplicationService.Current.State.ContainsKey(CallMeTimer))
             {
-                scheduler.Schedule(showCallMeOption, TimeSpan.FromSeconds(callMeTimeout));
+                timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
+                PhoneApplicationService.Current.State.Remove(CallMeTimer);
+                if(timerValue < 60)
+                    timer.Text = "0:" + timerValue.ToString("00");
             }
+
+            if (timerValue == 0)
+                timer.Visibility = Visibility.Collapsed;
+
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
                 object obj = null;
@@ -233,12 +256,22 @@ namespace windows_client
             catch { }
         }
 
-        private void showCallMeOption()
+        private void enableCallMeOption(object sender, EventArgs e)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                callMe.Opacity = 1;
-                callMeButton.Focus();   
+                if (timerValue > 0)
+                {
+                    timerValue--;
+                    timer.Text = "0:" + timerValue.ToString("00");
+                }
+                if (timerValue == 0 && callMeButton.IsEnabled == false)
+                {
+                    timer.Visibility = Visibility.Collapsed;
+                    callMeButton.IsEnabled = true;
+                    callMeButton.Focus();
+                    return;
+                }
             });
         }
 
@@ -249,18 +282,25 @@ namespace windows_client
                 string msisdn;
                 App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out msisdn);
                 AccountUtils.postForCallMe(msisdn, new AccountUtils.postResponseFunction(callMePostResponse_Callback));
-                MessageBox.Show("Calling you for PIN.", "", MessageBoxButton.OK);
+                MessageBox.Show(AppResources.EnterPin_CallingMsg_MsgBox);
 
             }
         }
 
         private void callMePostResponse_Callback(JObject obj)
         {
-            if (obj == null)
+            string stat = "";
+            if (obj != null)
+            {
+                JToken statusToken;
+                obj.TryGetValue(HikeConstants.STAT, out statusToken);
+                stat = statusToken.ToString();
+            }
+            if (stat != HikeConstants.OK)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBox.Show("Couldn't call you. Try again later.", "", MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.EnterPin_CallErrorMsg_MsgBox);
                 });
 
             }

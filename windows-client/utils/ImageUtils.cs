@@ -23,6 +23,7 @@ namespace windows_client.utils
         private SolidColorBrush hikeSentChatBubbleTimestamp;
         private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
+        private SolidColorBrush phoneThemeColor;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -32,19 +33,25 @@ namespace windows_client.utils
         private BitmapImage audioAttachmentSend;
         private BitmapImage httpFailed;
         private BitmapImage typingNotificationBitmap;
+        private BitmapImage emptyImage;
         private BitmapImage sent;
         private BitmapImage delivered;
         private BitmapImage read;
         private BitmapImage trying;
         private BitmapImage unread;
-        private BitmapImage defaultAvatarBitmapImage;
-        private BitmapImage defaultGroupImage;
+        //private BitmapImage defaultAvatarBitmapImage;
+        //private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
         private BitmapImage reward;
         private BitmapImage participantLeft;
+        private BitmapImage nudgeSend;
+        private BitmapImage nudgeReceived;
+        private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
+        private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
+
         private SolidColorBrush receiveMessageForeground;
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
-        private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 300, 15, 0);
+        private Thickness chatThreadKeyPadUpMargin = new Thickness(0, 315, 15, 0);
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
@@ -252,6 +259,18 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush PhoneThemeColor
+        {
+            get
+            {
+                if (phoneThemeColor == null)
+                {
+                    phoneThemeColor = new SolidColorBrush((Color)Application.Current.Resources["PhoneAccentColor"]); ;
+                }
+                return phoneThemeColor;
+            }
+        }
+        
         public BitmapImage OnHikeImage
         {
             get
@@ -343,6 +362,16 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage EmptyImage
+        {
+            get
+            {
+                if (emptyImage == null)
+                    emptyImage = new BitmapImage(new Uri("/View/images/emptyImage.png", UriKind.Relative));
+                return emptyImage;
+            }
+        }
+        
         public BitmapImage Sent
         {
             get
@@ -394,25 +423,25 @@ namespace windows_client.utils
         }
 
 
-        public BitmapImage DefaultAvatarBitmapImage
-        {
-            get
-            {
-                if (defaultAvatarBitmapImage == null)
-                    defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/default_user.png", UriKind.Relative));
-                return defaultAvatarBitmapImage;
-            }
-        }
+        //public BitmapImage DefaultAvatarBitmapImage
+        //{
+        //    get
+        //    {
+        //        if (defaultAvatarBitmapImage == null)
+        //            defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/default_user.png", UriKind.Relative));
+        //        return defaultAvatarBitmapImage;
+        //    }
+        //}
 
-        public BitmapImage DefaultGroupImage
-        {
-            get
-            {
-                if (defaultGroupImage == null)
-                    defaultGroupImage = new BitmapImage(new Uri("/View/images/default_group.png", UriKind.Relative));
-                return defaultGroupImage;
-            }
-        }
+        //public BitmapImage DefaultGroupImage
+        //{
+        //    get
+        //    {
+        //        if (defaultGroupImage == null)
+        //            defaultGroupImage = new BitmapImage(new Uri("/View/images/default_group.png", UriKind.Relative));
+        //        return defaultGroupImage;
+        //    }
+        //}
 
         public BitmapImage Waiting
         {
@@ -454,6 +483,26 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage NudgeSent
+        {
+            get
+            {
+                if (nudgeSend == null)
+                    nudgeSend = new BitmapImage(new Uri("/View/images/nudge_sent.png", UriKind.Relative));
+                return nudgeSend;
+            }
+        }
+
+        public BitmapImage NudgeReceived
+        {
+            get
+            {
+                if (nudgeReceived == null)
+                    nudgeReceived = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
+                return nudgeReceived;
+            }
+        }
+        
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -516,6 +565,80 @@ namespace windows_client.utils
             }
         }
 
+        #endregion
+
+        #region DEFAULT AVATARS
+        private int computeHash(string msisdn)
+        {
+            int last3Digits = Convert.ToInt32(msisdn.Substring(msisdn.Length - 3));
+            return last3Digits % 7;
+        }
+
+        public BitmapImage getDefaultAvatar(string msisdn)
+        {
+            int index = computeHash(msisdn);
+            if (defaultUserAvatars[index] == null)
+            {
+                switch (index)
+                {
+                    case 0:
+                        defaultUserAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/Digital.png", UriKind.Relative));
+                        break;
+                    case 1:
+                        defaultUserAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/Sneakers.png", UriKind.Relative));
+                        break;
+                    case 2:
+                        defaultUserAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/Space.png", UriKind.Relative));
+                        break;
+                    case 3:
+                        defaultUserAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/Beach.png", UriKind.Relative));
+                        break;
+                    case 4:
+                        defaultUserAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/Candy.png", UriKind.Relative));
+                        break;
+                    case 5:
+                        defaultUserAvatars[5] = new BitmapImage(new Uri("/View/images/avatars/Cocktail.png", UriKind.Relative));
+                        break;
+                    default:
+                        defaultUserAvatars[6] = new BitmapImage(new Uri("/View/images/avatars/Coffee.png", UriKind.Relative));
+                        break;
+                }
+            }
+            return defaultUserAvatars[index];
+        }
+
+        public BitmapImage getDefaultGroupAvatar(string groupId)
+        {
+            int index = computeHash(groupId);
+            if (defaultGroupAvatars[index] == null)
+            {
+                switch (index)
+                {
+                    case 0:
+                        defaultGroupAvatars[0] = new BitmapImage(new Uri("/View/images/avatars/RedPeople.png", UriKind.Relative));
+                        break;
+                    case 1:
+                        defaultGroupAvatars[1] = new BitmapImage(new Uri("/View/images/avatars/TealPeople.png", UriKind.Relative));
+                        break;
+                    case 2:
+                        defaultGroupAvatars[2] = new BitmapImage(new Uri("/View/images/avatars/BluePeople.png", UriKind.Relative));
+                        break;
+                    case 3:
+                        defaultGroupAvatars[3] = new BitmapImage(new Uri("/View/images/avatars/CoffeePeople.png", UriKind.Relative));
+                        break;
+                    case 4:
+                        defaultGroupAvatars[4] = new BitmapImage(new Uri("/View/images/avatars/EarthyPeople.png", UriKind.Relative));
+                        break;
+                    case 5:
+                        defaultGroupAvatars[5] = new BitmapImage(new Uri("/View/images/avatars/GreenPeople.png", UriKind.Relative));
+                        break;
+                    default:
+                        defaultGroupAvatars[6] = new BitmapImage(new Uri("/View/images/avatars/PinkPeople.png", UriKind.Relative));
+                        break;
+                }
+            }
+            return defaultGroupAvatars[index];
+        }
 
         #endregion
     }

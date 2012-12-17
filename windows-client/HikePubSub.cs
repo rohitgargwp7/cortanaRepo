@@ -28,6 +28,10 @@ namespace windows_client
         /* broadcast when the sender sends the message (click the send button in chat thread view) */
         public static readonly string MESSAGE_SENT = "messagesent";
 
+        public static readonly string FORWARD_ATTACHMENT = "forwardAttachment";
+
+        public static readonly string ATTACHMENT_SENT = "attachmentSent";
+        
         public static readonly string MESSAGE_DELIVERED = "messageDelivered"; // represents that msg is delivered to receiver but is not read.
 
         public static readonly string MESSAGE_DELIVERED_READ = "messageDeliveredRead"; // represents that msg is delivered to receiver and is read by the same.
@@ -99,8 +103,6 @@ namespace windows_client
 
         public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
 
-        public static readonly string DELETE_ACCOUNT = "deleteAccount";
-
         public static readonly string ACCOUNT_DELETED = "accountDeleted";
 
         public static readonly string INVITEE_NUM_CHANGED = "inviteeNoChanged";
@@ -126,6 +128,8 @@ namespace windows_client
         public static readonly string UPDATE_ACCOUNT_NAME = "updateAccountName";
 
         public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
+
+        public static readonly string ADD_REMOVE_FAV_OR_PENDING = "addRemFP";
 
         private readonly Thread mThread;
 

@@ -11,10 +11,13 @@ using System.Windows.Shapes;
 using windows_client.utils;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using windows_client.Misc;
+using System.Text;
 
 namespace windows_client.Model
 {
-    public class GroupParticipant : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<GroupParticipant>
+    public class GroupParticipant : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<GroupParticipant>, IBinarySerializable
     {
         private string _grpId;
         private string _name; // this is  full name
@@ -78,7 +81,10 @@ namespace windows_client.Model
             set
             {
                 if (value != _name)
+                {
                     _name = value;
+                    NotifyPropertyChanged("Name");
+                }
             }
         }
 
@@ -216,6 +222,64 @@ namespace windows_client.Model
                 return false;
             }
             return (_msisdn == o.Msisdn);
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            try
+            {
+                if (_grpId == null)
+                    writer.WriteStringBytes(string.Empty);
+                else
+                    writer.WriteStringBytes(_grpId);
+
+                if (_name == null)
+                    writer.WriteStringBytes(string.Empty);
+                else
+                    writer.WriteStringBytes(_name);
+
+                if (_msisdn == null)
+                    writer.WriteStringBytes(string.Empty);
+                else
+                    writer.WriteStringBytes(_msisdn);
+                writer.Write(_hasLeft);
+                writer.Write(_isOnHike);
+                writer.Write(_isDND);
+                writer.Write(_hasOptIn);
+                writer.Write(_isUsed);
+            }
+            catch
+            {
+                throw new Exception("Unable to write to a file...");
+            }
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            try
+            {
+                int count = reader.ReadInt32();
+                _grpId = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_grpId == string.Empty)
+                    _grpId = null;
+                count = reader.ReadInt32();
+                _name = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_name == string.Empty) // this is done so that we can specifically set null if contact name is not there
+                    _name = null;
+                count = reader.ReadInt32();
+                _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_msisdn == string.Empty)
+                    _msisdn = null;
+                _hasLeft = reader.ReadBoolean();
+                _isOnHike = reader.ReadBoolean();
+                _isDND = reader.ReadBoolean();
+                _hasOptIn = reader.ReadBoolean();
+                _isUsed = reader.ReadBoolean();
+            }
+            catch
+            {
+                throw new Exception("Conversation Object corrupt");
+            }
         }
 
         #region INotifyPropertyChanged Members

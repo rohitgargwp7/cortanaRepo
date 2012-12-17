@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.Text;
+using windows_client.Languages;
 
 namespace windows_client.Model
 {
@@ -31,6 +32,10 @@ namespace windows_client.Model
         private byte[] _avatar;
         private bool _isFirstMsg = false; // this is used in GC , when you want to show joined msg for SMS and DND users.
         private long _lastMsgId;
+        private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
+        private BitmapImage empImage = null;
+        private bool _isFav;
+
         #endregion
 
         #region Properties
@@ -123,6 +128,7 @@ namespace windows_client.Model
                     NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
                     NotifyPropertyChanged("IsOnhike");
+                    NotifyPropertyChanged("ShowOnHikeImage");
                 }
             }
         }
@@ -149,20 +155,6 @@ namespace windows_client.Model
         }
 
         [DataMember]
-        public bool IsFirstMsg
-        {
-            get
-            {
-                return _isFirstMsg;
-            }
-            set
-            {
-                if (value != _isFirstMsg)
-                    _isFirstMsg = value;
-            }
-        }
-
-        [DataMember]
         public long LastMsgId
         {
             get
@@ -177,12 +169,48 @@ namespace windows_client.Model
                 }
             }
         }
+
+        public Visibility ShowOnHikeImage
+        {
+            get
+            {
+                if (_isOnhike)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+        }
+
+        [DataMember]
+        public int MuteVal
+        {
+            get
+            {
+                return _muteVal;
+            }
+            set
+            {
+                if (value != _muteVal)
+                    _muteVal = value;
+            }
+        }
+
+        public bool IsMute
+        {
+            get
+            {
+                if (_muteVal > -1)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         public BitmapImage SDRStatusImage
         {
             get
             {
                 switch (_messageStatus)
-                { 
+                {
                     case ConvMessage.State.SENT_CONFIRMED:
                         return UI_Utils.Instance.Sent;
                     case ConvMessage.State.SENT_DELIVERED:
@@ -204,7 +232,7 @@ namespace windows_client.Model
             get
             {
                 switch (_messageStatus)
-                { 
+                {
                     case ConvMessage.State.SENT_CONFIRMED:
                     case ConvMessage.State.SENT_DELIVERED:
                     case ConvMessage.State.SENT_DELIVERED_READ:
@@ -213,23 +241,6 @@ namespace windows_client.Model
                         return Visibility.Visible;
                     default:
                         return Visibility.Collapsed;
-                }
-            }
-        }
-
-        public byte[] Avatar
-        {
-            get
-            {
-                return _avatar;
-            }
-            set
-            {
-                if (_avatar != value)
-                {
-                    _avatar = value;
-                    NotifyPropertyChanged("Avatar");
-                    NotifyPropertyChanged("AvatarImage");
                 }
             }
         }
@@ -253,23 +264,43 @@ namespace windows_client.Model
             }
         }
 
+        public byte[] Avatar
+        {
+            get
+            {
+                return _avatar;
+            }
+            set
+            {
+                if (_avatar != value)
+                {
+                    _avatar = value;
+                    empImage = null; // reset to null whenever avatar changes
+                    NotifyPropertyChanged("Avatar");
+                    NotifyPropertyChanged("AvatarImage");
+                }
+            }
+        }
+
         public BitmapImage AvatarImage
         {
             get
             {
                 try
                 {
-                    if (_avatar == null)
+                    if (empImage != null) // if image is already set return that
+                        return empImage;
+                    else if (_avatar == null)
                     {
                         if (Utils.isGroupConversation(_msisdn))
-                            return UI_Utils.Instance.DefaultGroupImage;
-                        return UI_Utils.Instance.DefaultAvatarBitmapImage;
+                            return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn);
+                        return UI_Utils.Instance.getDefaultAvatar(Msisdn);
                     }
                     else
                     {
                         MemoryStream memStream = new MemoryStream(_avatar);
                         memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
+                        empImage = new BitmapImage();
                         empImage.SetSource(memStream);
                         return empImage;
                     }
@@ -321,7 +352,45 @@ namespace windows_client.Model
             }
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus,long lastMsgId)
+        public bool IsFav
+        {
+            get
+            {
+                return _isFav;
+            }
+            set
+            {
+                if (value != _isFav)
+                {
+                    _isFav = value;
+                    NotifyPropertyChanged("IsFav");
+                    NotifyPropertyChanged("FavMsg");
+                }
+            }
+        }
+
+        public string FavMsg
+        {
+            get
+            {
+                if (IsFav) // if already favourite
+                    return AppResources.RemFromFav_Txt;
+                else
+                    return AppResources.Add_To_Fav_Txt;
+            }
+        }
+
+        public Visibility IsGroupChat
+        {
+            get
+            {
+                if (Utils.isGroupConversation(_msisdn))
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
+        }
+
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
             this._contactName = contactName;
@@ -333,7 +402,7 @@ namespace windows_client.Model
             this._lastMsgId = lastMsgId;
         }
 
-        public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus,long lastMsgId)
+        public ConversationListObject(string msisdn, string contactName, string lastMessage, long timestamp, ConvMessage.State msgStatus, long lastMsgId)
             : this(msisdn, contactName, lastMessage, false, timestamp, null, msgStatus, lastMsgId)
         {
 
@@ -342,6 +411,14 @@ namespace windows_client.Model
         public ConversationListObject()
         {
 
+        }
+
+        public ConversationListObject(string msisdn, string contactName, bool onHike, byte[] avatar)
+        {
+            this._msisdn = msisdn;
+            this._contactName = contactName;
+            this._isOnhike = onHike;
+            this._avatar = avatar;
         }
 
         public int CompareTo(ConversationListObject rhs)
@@ -394,6 +471,7 @@ namespace windows_client.Model
                 writer.Write((int)_messageStatus);
                 writer.Write(_isFirstMsg);
                 writer.Write(_lastMsgId);
+                writer.Write(_muteVal);
             }
             catch
             {
@@ -402,6 +480,18 @@ namespace windows_client.Model
         }
 
         public void Read(BinaryReader reader)
+        {
+            if (Utils.compareVersion(App.CURRENT_VERSION, "1.5.0.0") != 1) // current_ver <= 1.5.0.0
+            {
+                ReadVer_1_4_0_0(reader);
+            }
+            else  //current_ver >= 1.5.0.0
+            {
+                ReadVer_Latest(reader);
+            }           
+        }
+
+        public void ReadVer_1_4_0_0(BinaryReader reader)
         {
             try
             {
@@ -428,7 +518,87 @@ namespace windows_client.Model
                 throw new Exception("Conversation Object corrupt");
             }
         }
-        
+
+        public void ReadVer_Latest(BinaryReader reader)
+        {
+            try
+            {
+                int count = reader.ReadInt32();
+                _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_msisdn == "*@N@*")
+                    _msisdn = null;
+                count = reader.ReadInt32();
+                _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
+                    _contactName = null;
+                count = reader.ReadInt32();
+                _lastMessage = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_lastMessage == "*@N@*")
+                    _lastMessage = null;
+                _timeStamp = reader.ReadInt64();
+                _isOnhike = reader.ReadBoolean();
+                _messageStatus = (ConvMessage.State)reader.ReadInt32();
+                _isFirstMsg = reader.ReadBoolean();
+                _lastMsgId = reader.ReadInt64();
+                _muteVal = reader.ReadInt32();
+            }
+            catch
+            {
+                throw new Exception("Conversation Object corrupt");
+            }
+        }
+
+        public void ReadVer_1_0_0_0(BinaryReader reader)
+        {
+            _msisdn = reader.ReadString();
+            _contactName = reader.ReadString();
+            if (_contactName == "*@N@*") // this is done so that we can specifically set null if contact name is not there
+                _contactName = null;
+            _lastMessage = reader.ReadString();
+            _timeStamp = reader.ReadInt64();
+            _isOnhike = reader.ReadBoolean();
+            _messageStatus = (ConvMessage.State)reader.ReadInt32();
+            _isFirstMsg = reader.ReadBoolean();
+            _lastMsgId = reader.ReadInt64();
+        }
+
+        #region FAVOURITES AND PENDING SECTION
+
+        public void WriteFavOrPending(BinaryWriter writer)
+        {
+            try
+            {
+                if (_msisdn == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_msisdn);
+
+                if (_contactName == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_contactName);
+                writer.Write(_isOnhike);
+            }
+            catch
+            {
+                throw new Exception("Unable to write to a file...");
+            }
+        }
+
+        public void ReadFavOrPending(BinaryReader reader)
+        {
+            int count = reader.ReadInt32();
+            _msisdn = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (_msisdn == "*@N@*")
+                _msisdn = null;
+            count = reader.ReadInt32();
+            _contactName = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+            if (_contactName == "*@N@*")
+                _contactName = null;
+            _isOnhike = reader.ReadBoolean();
+        }
+        #endregion
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -455,18 +625,25 @@ namespace windows_client.Model
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
+        private string ms;
+        private string p1;
+        private bool p2;
+        private byte[] _av;
 
         // Used to notify that a property is about to change
         private void NotifyPropertyChanging(string propertyName)
         {
             if (PropertyChanging != null)
             {
-                try
-                {
-                    PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-                }
-                catch (Exception)
-                { }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                        }
+                        catch (Exception)
+                        { }
+                    });
             }
         }
         #endregion
