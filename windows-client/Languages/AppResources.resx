@@ -1174,4 +1174,39 @@
     <value>show sms contacts</value>
     <comment>Text used in app menu bar</comment>
   </data>
+  <data name="Favorites_TapToAdd" xml:space="preserve">
+    <value>Tap here to add new.</value>
+    <comment>xaml (below heart image)</comment>
+  </data>
+  <data name="Favorites_Tute_Screen1" xml:space="preserve">
+    <value>A permanent place for all your favorite friends.</value>
+    <comment>xaml (below tute image)</comment>
+  </data>
+  <data name="Favorites_Tute_Screen1_2" xml:space="preserve">
+    <value>Chatting with them is just a tap away.</value>
+    <comment>xaml (below tute image)</comment>
+  </data>
+  <data name="Favorites_Tute_Screen2" xml:space="preserve">
+    <value>To see all your hike friends and add new to favorites tap the + button</value>
+    <comment>xaml (below tute image)</comment>
+  </data>
+  <data name="Invited" xml:space="preserve">
+    <value>Invited</value>
+  </data>
+  <data name="Invite_Small" xml:space="preserve">
+    <value>Invite</value>
+  </data>
+  <data name="Nudge" xml:space="preserve">
+    <value>Nudge</value>
+  </data>
+  <data name="Nudge_Exclamation" xml:space="preserve">
+    <value>Nudge!</value>
+  </data>
+  <data name="Nudge_Tute" xml:space="preserve">
+    <value>Double tap anywhere on the chat to nudge your friend.</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

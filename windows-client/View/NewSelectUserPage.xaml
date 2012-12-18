@@ -97,7 +97,7 @@
                                     <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
-                            <Button Content="Invite" Background="#e9ecee" Foreground="#595959" Height="65" Width="110" FontSize="20" Grid.Column="1" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" BorderThickness="0" Tap="Invite_Tap"/>
+                            <Button Content="{Binding Path= LocalizedResources.Invite_Small, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" Width="110" FontSize="20" Grid.Column="1" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" BorderThickness="0" Tap="Invite_Tap"/>
 
                         </Grid>
                         
