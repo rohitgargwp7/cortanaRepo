@@ -13,6 +13,10 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" Name="shareLocation">
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="True" />
+    </shell:SystemTray.ProgressIndicator>
+
     <phone:PhoneApplicationPage.Resources>
         <Style TargetType="my:Pushpin" x:Key="PushpinStyle">
             <Setter Property="Template">
