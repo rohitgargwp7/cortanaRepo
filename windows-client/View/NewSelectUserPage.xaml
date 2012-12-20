@@ -87,7 +87,7 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="300"/>
+                                <ColumnDefinition Width="320"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel x:Name="Sender" Grid.Column="0" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="0,2,0,2">
