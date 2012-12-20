@@ -826,6 +826,42 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tap here to add new..
+        /// </summary>
+        public static string Favorites_TapToAdd {
+            get {
+                return ResourceManager.GetString("Favorites_TapToAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A permanent place for all your favorite friends..
+        /// </summary>
+        public static string Favorites_Tute_Screen1 {
+            get {
+                return ResourceManager.GetString("Favorites_Tute_Screen1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chatting with them is just a tap away..
+        /// </summary>
+        public static string Favorites_Tute_Screen1_2 {
+            get {
+                return ResourceManager.GetString("Favorites_Tute_Screen1_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To see all your hike friends and add new to favorites tap the + button.
+        /// </summary>
+        public static string Favorites_Tute_Screen2 {
+            get {
+                return ResourceManager.GetString("Favorites_Tute_Screen2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sent you a {0}. To view go to .
         /// </summary>
         public static string FILES_MESSAGE_PREFIX {
@@ -1411,11 +1447,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invite.
+        /// </summary>
+        public static string Invite_Small {
+            get {
+                return ResourceManager.GetString("Invite_Small", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to INVITE.
         /// </summary>
         public static string Invite_Txt {
             get {
                 return ResourceManager.GetString("Invite_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invited.
+        /// </summary>
+        public static string Invited {
+            get {
+                return ResourceManager.GetString("Invited", resourceCulture);
             }
         }
         
@@ -1528,11 +1582,47 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nudge.
+        /// </summary>
+        public static string Nudge {
+            get {
+                return ResourceManager.GetString("Nudge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nudge!.
+        /// </summary>
+        public static string Nudge_Exclamation {
+            get {
+                return ResourceManager.GetString("Nudge_Exclamation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Double tap anywhere on the chat to nudge your friend..
+        /// </summary>
+        public static string Nudge_Tute {
+            get {
+                return ResourceManager.GetString("Nudge_Tute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         public static string Off {
             get {
                 return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
             }
         }
         

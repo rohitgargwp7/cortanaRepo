@@ -165,6 +165,7 @@ namespace windows_client.View
             watcher.PositionChanged -= watcher_PositionChanged;
             watcher.Stop();
             watcher.Dispose();
+            shellProgress.IsVisible = false;
         }
     }
 }

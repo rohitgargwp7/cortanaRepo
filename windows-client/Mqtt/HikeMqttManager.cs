@@ -429,7 +429,7 @@ namespace windows_client.Mqtt
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
-            HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
+            HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeTicks());
             send(packet, qos);
         }
 
