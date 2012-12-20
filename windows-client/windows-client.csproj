@@ -388,6 +388,7 @@
     <Content Include="View\images\menu_photo_icon.png" />
     <Content Include="View\images\mic_icon.png" />
     <Content Include="View\images\mic_icon_black.png" />
+    <Content Include="View\images\mute_icon_main.png" />
     <Content Include="View\images\new_message.png" />
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
