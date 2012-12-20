@@ -48,7 +48,7 @@ namespace windows_client.View
 
         bool afterMute = true;
         private bool _isFav;
-        private bool isMute = false;
+        private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
         private bool isGroupChat = false;
@@ -140,6 +140,29 @@ namespace windows_client.View
             get
             {
                 return msgMap;
+            }
+        }
+
+        public bool IsMute      /* This map will contain only outgoing messages */
+        {
+            get
+            {
+                return _isMute;
+            }
+            set
+            {
+                if (value != _isMute)
+                {
+                    _isMute = value;
+                    if (_isMute)
+                    {
+                        gcMuteGrid.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        gcMuteGrid.Visibility = Visibility.Collapsed;
+                    }
+                }
             }
         }
 
@@ -440,7 +463,7 @@ namespace windows_client.View
                         groupOwner = gi.GroupOwner;
                     if (gi != null && !gi.GroupAlive)
                         isGroupAlive = false;
-                    isMute = convObj.IsMute;
+                    IsMute = convObj.IsMute;
                 }
 
                 if (convObj.ContactName != null)
@@ -747,7 +770,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(leaveMenuItem);
 
                 muteGroupMenuItem = new ApplicationBarMenuItem();
-                muteGroupMenuItem.Text = isMute ? "unmute group" : "mute group";
+                muteGroupMenuItem.Text = IsMute ? "unmute group" : "mute group";
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
@@ -1010,11 +1033,11 @@ namespace windows_client.View
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
-            if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+            if (!IsMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
             {
                 MessageList.UpdateLayout();
                 Scroller.UpdateLayout();
-                if (!isMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+                if (!IsMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
                     Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
             }
         }
@@ -1207,9 +1230,9 @@ namespace windows_client.View
             JObject o = new JObject();
             o["id"] = mContactNumber;
             obj[HikeConstants.DATA] = o;
-            if (isMute) // GC is muted , request to unmute
+            if (IsMute) // GC is muted , request to unmute
             {
-                isMute = false;
+                IsMute = false;
                 obj[HikeConstants.TYPE] = "unmute";
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
@@ -1218,7 +1241,7 @@ namespace windows_client.View
             }
             else // GC is unmute , request to mute
             {
-                isMute = true;
+                IsMute = true;
                 obj[HikeConstants.TYPE] = "mute";
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
