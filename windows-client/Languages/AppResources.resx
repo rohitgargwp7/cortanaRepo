@@ -597,10 +597,6 @@
     <value>More than 1 contacts found for number : {0}</value>
     <comment>This is called when an unknown number is added and same num already exists in phone</comment>
   </data>
-  <data name="Mute_Txt" xml:space="preserve">
-    <value>mute</value>
-    <comment>General Text</comment>
-  </data>
   <data name="NoInfoForTask_Txt" xml:space="preserve">
     <value>No information regarding the task result is available.</value>
     <comment>cs</comment>
@@ -740,10 +736,6 @@
   <data name="UnBlock_Txt" xml:space="preserve">
     <value>Unblock</value>
     <comment>xaml</comment>
-  </data>
-  <data name="Unmute_Txt" xml:space="preserve">
-    <value>unmute</value>
-    <comment>General Text</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
     <value> has been invited</value>
