@@ -65,7 +65,7 @@
                 <!--<Image Source="images\enter_name.png" Margin="15,10,0,10" Height="20" />-->
 
                 <TextBlock Text="{Binding Path= LocalizedResources.EnterName_Name_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" Margin="24,0,0,0" />
-                <toolkit:PhoneTextBox x:Name="txtBxEnterName" BorderThickness="2" LostFocus="txtBxEnterName_LostFocus" GotFocus="txtBxEnterName_GotFocus" InputScope="PersonalFullName" Margin="12,0,0,0" HorizontalAlignment="Left" Width="454" Height="78" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" />
+                <toolkit:PhoneTextBox x:Name="txtBxEnterName" TextOptions.TextHintingMode="Animated" BorderThickness="2" LostFocus="txtBxEnterName_LostFocus" GotFocus="txtBxEnterName_GotFocus" InputScope="PersonalFullName" Margin="12,0,0,0" HorizontalAlignment="Left" Width="454" Height="78" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" />
 
                 <TextBlock Height="25" TextAlignment="Center" 
                            Margin="0,0,0,0" Name="nameErrorTxt" 

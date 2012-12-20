@@ -53,7 +53,7 @@
                 <Image Source="images\hike_logo_small.png" HorizontalAlignment="Left" Height="40" Margin="24,15,0,0"></Image>
 
                 <TextBlock x:Name="txtBlkSMSPin" TextWrapping="Wrap" MaxWidth="400" Text="{Binding Path= LocalizedResources.EnterPin_PinMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
-                <toolkit:PhoneTextBox x:Name="txtBxEnterPin" HorizontalAlignment="Left" Width="454" Height="78" BorderThickness="2" LostFocus="txtBxEnterPin_LostFocus" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" InputScope="Number" Margin="12,0,0,0" TextChanged="txtBxEnterPin_TextChanged" />
+                <toolkit:PhoneTextBox x:Name="txtBxEnterPin" TextOptions.TextHintingMode="Animated" HorizontalAlignment="Left" Width="454" Height="78" BorderThickness="2" LostFocus="txtBxEnterPin_LostFocus" GotFocus="txtBxEnterPin_GotFocus" Foreground="Black" InputScope="Number" Margin="12,0,0,0" TextChanged="txtBxEnterPin_TextChanged" />
 
 
 
