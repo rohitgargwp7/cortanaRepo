@@ -44,7 +44,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <toolkit:PhoneTextBox x:Name="enterNameTxt" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
             
