@@ -512,25 +512,17 @@ namespace windows_client
                                         Debug.WriteLine(ex);
                                     }
                                 }
-                                App.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
-                            }
-                            else
+
+                                // save only for Twitter , FB
+                                //App.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
+                            }// save only tc , invite_token
+                            else if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                             {
-                                string val = null;
-                                if (oj is JObject)
-                                {
-                                    JObject jj = (JObject)oj;
-                                    val = jj.ToString(Newtonsoft.Json.Formatting.None);
-                                }
-                                else if (oj is JArray)
-                                {
-                                    JArray jarr = (JArray)oj;
-                                    val = jarr.ToString(Newtonsoft.Json.Formatting.None);
-                                }
-                                else
-                                    val = oj.ToString();
+                                string val = oj.ToString();
                                 Debug.WriteLine("AI :: Value : " + val);
-                                App.WriteToIsoStorageSettings(kv.Key, val);
+                                
+                                if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
+                                    App.WriteToIsoStorageSettings(kv.Key, val);
                             }
                         }
                         catch { }
