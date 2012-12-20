@@ -1519,15 +1519,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to mute.
-        /// </summary>
-        public static string Mute_Txt {
-            get {
-                return ResourceManager.GetString("Mute_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} and {1} others.
         /// </summary>
         public static string NamingConvention_Txt {
@@ -2361,15 +2352,6 @@ namespace windows_client.Languages {
         public static string UnBlock_Txt {
             get {
                 return ResourceManager.GetString("UnBlock_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to unmute.
-        /// </summary>
-        public static string Unmute_Txt {
-            get {
-                return ResourceManager.GetString("Unmute_Txt", resourceCulture);
             }
         }
         

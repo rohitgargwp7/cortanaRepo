@@ -46,6 +46,7 @@ namespace windows_client.View
         private string mContactName = null;
         private string lastText = "";
 
+        bool afterMute = true;
         private bool _isFav;
         private bool isMute = false;
         private bool isFirstLaunch = true;
@@ -745,11 +746,10 @@ namespace windows_client.View
                 leaveMenuItem.Click += new EventHandler(leaveGroup_Click);
                 appBar.MenuItems.Add(leaveMenuItem);
 
-                //TODO : Uncomment this when mute has to be supported.
-                //muteGroupMenuItem = new ApplicationBarMenuItem();
-                //muteGroupMenuItem.Text = isMute ? "unmute group" : "mute group";
-                //muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
-                //appBar.MenuItems.Add(muteGroupMenuItem);
+                muteGroupMenuItem = new ApplicationBarMenuItem();
+                muteGroupMenuItem.Text = isMute ? "unmute group" : "mute group";
+                muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
+                appBar.MenuItems.Add(muteGroupMenuItem);
 
                 if (groupOwner != null)
                 {
@@ -1210,21 +1210,22 @@ namespace windows_client.View
             if (isMute) // GC is muted , request to unmute
             {
                 isMute = false;
-                obj[HikeConstants.TYPE] = AppResources.Unmute_Txt;
+                obj[HikeConstants.TYPE] = "unmute";
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                afterMute = true;
             }
             else // GC is unmute , request to mute
             {
                 isMute = true;
-                obj[HikeConstants.TYPE] = AppResources.Mute_Txt;
+                obj[HikeConstants.TYPE] = "mute";
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                afterMute = false;
             }
-
         }
 
         private void groupInfo_Click(object sender, EventArgs e)

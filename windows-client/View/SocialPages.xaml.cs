@@ -446,7 +446,6 @@ namespace windows_client.View
 
         private void Browser_Navigating(object sender, NavigatingEventArgs e)
         {
-
             string uri = e.Uri.AbsoluteUri.ToString();
             if (uri.Contains("get.hike.in") || uri.Contains("windowsphone"))
             {
