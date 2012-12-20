@@ -476,6 +476,8 @@ namespace windows_client
                                     {
                                         kkvv = kkeyVvals.Current;
                                         Debug.WriteLine("AI :: Key : " + kkvv.Key);
+
+                                        #region FAVOURITES
                                         if (kkvv.Key == HikeConstants.FAVORITES)
                                         {
                                             JObject favJSON = kkvv.Value.ToObject<JObject>();
@@ -500,12 +502,41 @@ namespace windows_client
                                                             LoadFavAndPending(isFav, fkkvv.Key); // true for favs
                                                             thrAreFavs = true;
                                                         }
-                                                        if(thrAreFavs)
+                                                        if (thrAreFavs)
                                                             this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
                                                     }
                                                 });
                                             }
                                         }
+
+                                        #endregion
+                                        #region FACEBOOK AND TWITTER
+                                        if (kkvv.Key == HikeConstants.ACCOUNTS)
+                                        {
+                                            JObject socialObj = kkvv.Value.ToObject<JObject>();
+                                            if (socialObj != null)
+                                            {
+                                                JToken socialJToken;
+                                                socialObj.TryGetValue(HikeConstants.TWITTER, out socialJToken);
+                                                if (socialJToken != null) // twitter is present in JSON
+                                                {
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN, (string)(socialJToken as JObject)["id"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET, (string)(socialJToken as JObject)["token"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
+                                                }
+                                                socialJToken = null;
+                                                socialObj.TryGetValue(HikeConstants.FACEBOOK, out socialJToken);
+                                                if (socialJToken != null) // facebook is present in JSON
+                                                {
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, (string)(socialJToken as JObject)["id"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, (string)(socialJToken as JObject)["token"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
+                                                }
+                                            }
+
+                                        }
+
+                                        #endregion
                                     }
                                     catch (Exception ex)
                                     {
