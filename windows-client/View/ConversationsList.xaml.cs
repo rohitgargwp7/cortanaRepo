@@ -378,6 +378,7 @@ namespace windows_client.View
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
                 privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
                 helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
+                rewardsImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative)); // todo change this later
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
@@ -390,6 +391,9 @@ namespace windows_client.View
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
+            //if (App.appSettings.Contains("REWARDS_TOKEN"))
+                rewards_StackPanel.Visibility = Visibility.Visible;
+
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
@@ -893,6 +897,18 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
+        }
+
+        private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            try
+            {
+                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
+            }
         }
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)

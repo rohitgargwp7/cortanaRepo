@@ -17,12 +17,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using windows_client.Languages;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
     public partial class SocialPages : PhoneApplicationPage
     {
-        private bool isTwitter;
+        private string socialNetwork;
         private string token;
         private string tokenSecret;
         private string pin;
@@ -33,19 +34,28 @@ namespace windows_client.View
         public SocialPages()
         {
             InitializeComponent();
-            PhoneApplicationService.Current.State["FromSocialPage"] = true;
-            isTwitter = (bool)PhoneApplicationService.Current.State[HikeConstants.SOCIAL];
-            if (isTwitter)
+            object sn;
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.SOCIAL, out sn))
+                socialNetwork = (string)sn;
+
+            if (socialNetwork == HikeConstants.TWITTER)
             {
+                PhoneApplicationService.Current.State["FromSocialPage"] = true;
                 BrowserControl.IsScriptEnabled = false;
                 AuthenticateTwitter();
             }
-            else
+            else if (socialNetwork == HikeConstants.FACEBOOK)
             {
+                PhoneApplicationService.Current.State["FromSocialPage"] = true;
                 if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                     LogoutFb();
                 else
                     LogInFb();
+            }
+            else
+            {
+                Uri page = new Uri("http://get.hike.in/rewards/wp7");
+                BrowserControl.Navigate(page);
             }
         }
 
@@ -79,7 +89,7 @@ namespace windows_client.View
         private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             #region TWITTER
-            if (isTwitter)
+            if (socialNetwork == HikeConstants.TWITTER)
             {
                 try
                 {
@@ -118,7 +128,7 @@ namespace windows_client.View
             }
             #endregion
             #region FACEBOOK
-            else // facebook auth
+            else if (socialNetwork == HikeConstants.FACEBOOK) // facebook auth
             {
                 FacebookOAuthResult oauthResult;
                 if (e.Uri.AbsoluteUri == "https://www.facebook.com/connect/login_success.html")
@@ -147,6 +157,11 @@ namespace windows_client.View
                     MessageBox.Show(oauthResult.ErrorDescription);
                     NavigationService.GoBack(); // take you to the proper page
                 }
+            }
+            #endregion
+            #region HIKE INVITE URL
+            else
+            {
             }
             #endregion
         }
@@ -447,7 +462,7 @@ namespace windows_client.View
         private void Browser_Navigating(object sender, NavigatingEventArgs e)
         {
             string uri = e.Uri.AbsoluteUri.ToString();
-            if (uri.Contains("get.hike.in") || uri.Contains("windowsphone"))
+            if (uri.Contains("get.hike.in") && uri.Contains("windowsphone") ||  uri.Contains("zune"))
             {
                 e.Cancel = true;
                 Dispatcher.BeginInvoke(() =>
@@ -455,6 +470,21 @@ namespace windows_client.View
                         if (uri.Contains("denied") && NavigationService.CanGoBack)
                             NavigationService.GoBack();
                     });
+            }
+            else if (uri.Contains("invite"))
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    Uri nextPage = new Uri("/View/InviteUsers.xaml", UriKind.Relative);
+                    try
+                    {
+                        NavigationService.Navigate(nextPage);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("SocialPages SCREEN :: Exception while navigating to Invite screen : " + ex.StackTrace);
+                    }
+                });
             }
         }
 

@@ -1209,4 +1209,8 @@
     <value>Remove From Group</value>
     <comment>General text</comment>
   </data>
+  <data name="Rewards_Txt" xml:space="preserve">
+    <value>Rewards</value>
+    <comment>Rewards Text</comment>
+  </data>
 </root>
