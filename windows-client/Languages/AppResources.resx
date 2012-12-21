@@ -882,7 +882,7 @@
     <value>A new version of hike is out. Would you like to update the app?</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
-    <value> (owner)</value>
+    <value>owner</value>
   </data>
   <data name="Participants_Txt" xml:space="preserve">
     <value>Participants</value>

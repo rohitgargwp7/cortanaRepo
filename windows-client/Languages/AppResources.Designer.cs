@@ -1636,7 +1636,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  (owner).
+        ///   Looks up a localized string similar to owner.
         /// </summary>
         public static string Owner_Txt {
             get {
