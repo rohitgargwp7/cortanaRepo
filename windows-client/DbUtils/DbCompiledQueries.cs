@@ -12,48 +12,6 @@ namespace windows_client.DbUtils
 
         #region GroupTable Queries
 
-        public static Func<HikeChatsDb, string, string, IQueryable<GroupMembers>> GetGroupMembers
-        {
-            get
-            {
-                Func<HikeChatsDb, string,string,IQueryable<GroupMembers>> q =
-                     CompiledQuery.Compile<HikeChatsDb, string, string, IQueryable<GroupMembers>>
-                     ((HikeChatsDb hdc, string grpId,string msisdn) =>
-                         from o in hdc.groupMembers
-                         where o.GroupId == grpId && o.Msisdn == msisdn
-                         select o);
-                return q;
-            }
-        }
-
-        public static Func<HikeChatsDb,string ,IQueryable<GroupMembers>> GetGroupMembersForGroupID
-        {
-            get
-            {
-                Func<HikeChatsDb,string ,IQueryable<GroupMembers>> q =
-                     CompiledQuery.Compile<HikeChatsDb, string, IQueryable<GroupMembers>>
-                     ((HikeChatsDb hdc,string grpId) =>
-                         from o in hdc.groupMembers
-                         where o.GroupId == grpId 
-                         select o);
-                return q;
-            }
-        }
-
-        public static Func<HikeChatsDb, string, IQueryable<GroupMembers>> GetActiveGroupMembersForGroupID
-        {
-            get
-            {
-                Func<HikeChatsDb, string, IQueryable<GroupMembers>> q =
-                     CompiledQuery.Compile<HikeChatsDb, string, IQueryable<GroupMembers>>
-                     ((HikeChatsDb hdc, string grpId) =>
-                         from o in hdc.groupMembers
-                         where o.GroupId == grpId && o.HasLeft == false
-                         select o);
-                return q;
-            }
-        }
-
         public static Func<HikeChatsDb, string, IQueryable<GroupInfo>> GetGroupInfoForID
         {
             get
@@ -85,6 +43,33 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllHikeContactsOrdered
+        {
+            get
+            {
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc) =>
+                         from o in hdc.users
+                         where o.OnHike == true
+                         orderby o.Name
+                         select o);
+                return q;
+            }
+        }
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllHikeContacts
+        {
+            get
+            {
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc) =>
+                         from o in hdc.users
+                         where o.OnHike == true
+                         select o);
+                return q;
+            }
+        }
         public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromName
         {
             get
@@ -194,11 +179,25 @@ namespace windows_client.DbUtils
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
                 ((HikeChatsDb hdc, string myMsisdn) =>
                     from o in hdc.messages
-                    where o.Msisdn == myMsisdn
+                    where o.Msisdn == myMsisdn orderby o.MessageId
                     select o);
                 return q;
             }
         }
+        public static Func<HikeChatsDb, string, long, string, IQueryable<ConvMessage>> GetMessageForMappedMsgIdMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, long, string, IQueryable<ConvMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, long, string, IQueryable<ConvMessage>>
+                ((HikeChatsDb hdc, string myMsisdn, long mappedMsgId, string msg) =>
+                    from o in hdc.messages
+                    where o.Msisdn == myMsisdn && o.MappedMessageId == mappedMsgId && o.Message == msg
+                    select o);
+                return q;
+            }
+        }
+
         public static Func<HikeChatsDb, long, IQueryable<ConvMessage>> GetMessagesForMsgId
         {
             get
@@ -230,32 +229,32 @@ namespace windows_client.DbUtils
 
         #region ConversationTable Queries
 
-        public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations
-        {
-            get
-            {
-                Func<HikeChatsDb, IQueryable<ConversationListObject>> q =
-                    CompiledQuery.Compile<HikeChatsDb, IQueryable<ConversationListObject>>
-                    ((HikeChatsDb hdc) =>
-                        from o in hdc.conversations
-                        select o);
-                return q;
-            }
-        }
+        //public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations
+        //{
+        //    get
+        //    {
+        //        Func<HikeChatsDb, IQueryable<ConversationListObject>> q =
+        //            CompiledQuery.Compile<HikeChatsDb, IQueryable<ConversationListObject>>
+        //            ((HikeChatsDb hdc) =>
+        //                from o in hdc.conversations
+        //                select o);
+        //        return q;
+        //    }
+        //}
 
-        public static Func<HikeChatsDb, string, IQueryable<ConversationListObject>> GetConvForMsisdn
-        {
-            get
-            {
-                Func<HikeChatsDb, string, IQueryable<ConversationListObject>> q =
-                    CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConversationListObject>>
-                    ((HikeChatsDb hdc, string _msisdn) =>
-                        from o in hdc.conversations
-                        where o.Msisdn == _msisdn
-                        select o);
-                return q;
-            }
-        }
+        //public static Func<HikeChatsDb, string, IQueryable<ConversationListObject>> GetConvForMsisdn
+        //{
+        //    get
+        //    {
+        //        Func<HikeChatsDb, string, IQueryable<ConversationListObject>> q =
+        //            CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConversationListObject>>
+        //            ((HikeChatsDb hdc, string _msisdn) =>
+        //                from o in hdc.conversations
+        //                where o.Msisdn == _msisdn
+        //                select o);
+        //        return q;
+        //    }
+        //}
 
         #endregion
 
@@ -269,20 +268,21 @@ namespace windows_client.DbUtils
                     CompiledQuery.Compile<HikeMqttPersistenceDb, IQueryable<HikePacket>>
                     ((HikeMqttPersistenceDb hdc) =>
                         from o in hdc.mqttMessages
+                        orderby o.Timestamp
                         select o);
                 return q;
             }
         }
 
-        public static Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> GetMqttMsgForMsgId
+        public static Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> GetMqttMsgForTimestamp
         {
             get
             {
                 Func<HikeMqttPersistenceDb, long, IQueryable<HikePacket>> q =
                    CompiledQuery.Compile<HikeMqttPersistenceDb, long, IQueryable<HikePacket>>
-                   ((HikeMqttPersistenceDb hdc, long id) =>
+                   ((HikeMqttPersistenceDb hdc, long ts) =>
                        from o in hdc.mqttMessages
-                       where o.MessageId == id
+                       where o.Timestamp == ts
                        select o);
                 return q;
             }

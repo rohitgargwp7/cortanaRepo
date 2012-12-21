@@ -5,172 +5,42 @@ using System.Collections.Generic;
 using windows_client.DbUtils;
 using System;
 using System.Diagnostics;
-using System;
-using System.Windows.Media;
 using System.Windows;
+using System.IO;
+using Microsoft.Phone.Info;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client.utils
 {
     public class Utils
     {
-        public class Group<T> : IEnumerable<T>
-        {
-            public Group(string name, List<T> items)
-            {
-                this.Title = name;
-                this.Items = items;
-            }
 
-            public override bool Equals(object obj)
-            {
-                Group<T> that = obj as Group<T>;
 
-                return (that != null) && (this.Title.Equals(that.Title));
-            }
-            public override int GetHashCode()
-            {
-                return this.Title.GetHashCode();
-            }
-            public string Title
-            {
-                get;
-                set;
-            }
-
-            public List<T> Items
-            {
-                get;
-                set;
-            }
-            public bool HasItems
-            {
-                get
-                {
-                    return (Items == null || Items.Count == 0) ? false : true;
-                }
-            }
-
-            /// <summary>
-            /// This is used to colour the tiles - greying out those that have no entries
-            /// </summary>
-            public Brush GroupBackgroundBrush
-            {
-                get
-                {
-                    return (SolidColorBrush)Application.Current.Resources[(HasItems) ? "PhoneAccentBrush" : "PhoneChromeBrush"];
-                }
-            }
-            #region IEnumerable<T> Members
-
-            public IEnumerator<T> GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
-
-            #region IEnumerable Members
-
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
-        }
-
-        private static Dictionary<string, GroupParticipant> groupCache = null;
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
-
-        public static Dictionary<string, GroupParticipant> GroupCache
-        {
-            get
-            {
-                return groupCache;
-            }
-            set
-            {
-                if (value != groupCache)
-                    groupCache = value;
-            }
-        }
-        public static GroupParticipant getGroupParticipant(string name, string msisdn)
-        {
-            if (groupCache == null)
-            {
-                groupCache = new Dictionary<string, GroupParticipant>();
-            }
-            if (groupCache.ContainsKey(msisdn))
-                return groupCache[msisdn];
-            ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-            GroupParticipant gp = new GroupParticipant(cInfo != null ? getFirstName(cInfo.Name) : name, msisdn, cInfo != null ? cInfo.OnHike : true);
-            groupCache.Add(msisdn, gp);
-            // App.appSettings[App.GROUPS_CACHE] = groupCache; Doing this while app is closing
-            return gp;
-        }
 
         public static void savedAccountCredentials(JObject obj)
         {
-            App.MSISDN = (string)obj["msisdn"]; 
+            JToken secure_push = null;
+            if (obj.TryGetValue(HikeConstants.SECURE_PUSH,out secure_push))
+            {
+                appSettings[HikeConstants.SECURE_PUSH] = secure_push.ToObject<bool>();
+            }
+            App.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
             appSettings[App.MSISDN_SETTING] = App.MSISDN;
             appSettings[App.UID_SETTING] = (string)obj["uid"];
             appSettings[App.TOKEN_SETTING] = (string)obj["token"];
             appSettings[App.SMS_SETTING] = (int)obj[NetworkManager.SMS_CREDITS];
+            appSettings[App.IS_PUSH_ENABLED] = (bool)true;
+            appSettings[App.VIBRATE_PREF] = (bool)true;
+            appSettings[App.LAST_UPDATE_CHECK_TIME] = (long)-1;
+            appSettings[App.LAST_ANALYTICS_POST_TIME] = (long)TimeUtils.getCurrentTimeStamp();
             appSettings.Save();
         }
 
         public static bool isGroupConversation(string msisdn)
         {
             return !msisdn.StartsWith("+");
-        }
-
-        public static string defaultGroupName(List<GroupMembers> participantList)
-        {
-            if (participantList == null || participantList.Count == 0)
-            {
-                return "Group";
-            }
-            List<GroupMembers> groupParticipants = new List<GroupMembers>();
-            for (int i = 0; i < participantList.Count; i++)
-            {
-                if (!participantList[i].HasLeft)
-                {
-                    groupParticipants.Add(participantList[i]);
-                }
-            }
-            groupParticipants.Sort(Utils.CompareByName<GroupMembers>); 
-
-            switch (groupParticipants.Count)
-            {
-                case 0:
-                    return "";
-                case 1:
-                    return Utils.getFirstName(groupParticipants[0].Name);
-                case 2:
-                    return Utils.getFirstName(groupParticipants[0].Name) + " and "
-                    + Utils.getFirstName(groupParticipants[1].Name);
-                default:
-                    return Utils.getFirstName(groupParticipants[0].Name) + " and "
-                    + (groupParticipants.Count - 1) + " others";
-            }
-        }
-
-        public static List<GroupMembers> getGroupMemberList(JObject jsonObject)
-        {
-            if (jsonObject == null)
-                return null;
-            JArray array = (JArray)jsonObject[HikeConstants.DATA];
-            List<GroupMembers> gmList = new List<GroupMembers>(array.Count);
-            for (int i = 0; i < array.Count; i++)
-            {
-                JObject nameMsisdn = (JObject)array[i];
-                string contactNum = (string)nameMsisdn[HikeConstants.MSISDN];
-                string contactName = getGroupParticipant((string)nameMsisdn[HikeConstants.NAME],contactNum).Name;
-                GroupMembers gm = new GroupMembers((string)jsonObject[HikeConstants.TO], contactNum, contactName);
-                gmList.Add(gm);
-            }
-            return gmList;
         }
 
         public static int CompareByName<T>(T a, T b)
@@ -229,51 +99,181 @@ namespace windows_client.utils
             }
         }
 
-        public static ConvMessage [] splitUserJoinedMessage(ConvMessage convMessage)
+        public static bool isDarkTheme()
         {
-            string[] names= null;
-            ConvMessage[] c = null;
-
-            if (convMessage.Message.IndexOf(',') == -1) // only one name in message ex "abc joined the group chat"
-            {
-                int spaceIndex = convMessage.Message.IndexOf(" ");
-            
-                ConvMessage cm = new ConvMessage(convMessage.Message.Substring(0, spaceIndex) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
-                cm.GrpParticipantState = convMessage.GrpParticipantState;
-                c = new ConvMessage[1];
-                c[0] = cm;
-                return c;
-            }
-                
-            else
-                names = convMessage.Message.Split(','); // ex : "a,b joined the group chat"
-           
-            c = new ConvMessage[names.Length];
-            int i = 0;
-            for (; i < names.Length-1; i++)
-            {
-                c[i] = new ConvMessage(names[i] + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
-                c[i].GrpParticipantState = convMessage.GrpParticipantState;
-            }
-            names[i] = names[i].Trim();
-            int idx = names[i].IndexOf(" ");
-            c[i] = new ConvMessage(names[i].Substring(0,idx) + " has joined the Group Chat", convMessage.Msisdn, convMessage.Timestamp, convMessage.MessageStatus);
-            c[i].GrpParticipantState = convMessage.GrpParticipantState;
-            return c;
+            return ((Visibility)Application.Current.Resources["PhoneDarkThemeVisibility"] == Visibility.Visible);
         }
 
-
-        public static string getFirstName(string name)
+        public static string[] splitUserJoinedMessage(string msg)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(msg))
                 return null;
-            name = name.Trim();
-            int idx = name.IndexOf(" ");
-            if (idx != -1)
-                return name.Substring(0, idx);
-            else
-                return name;
+            char[] delimiters = new char[] { ',' };
+            return msg.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static void TellAFriend()
+        {
+
+        }
+
+        /// <summary>
+        /// -1 if v1 < v2
+        /// 0 if v1=v2
+        /// 1 is v1>v2
+        /// </summary>
+        /// <param name="version1"></param>
+        /// <param name="version2"></param>
+        /// <returns></returns>
+        public static int compareVersion(string version1, string version2)
+        {
+            string[] version1_parts = version1.Split('.');
+            string[] version2_parts = version2.Split('.');
+            int i;
+            int min = version1_parts.Length < version2_parts.Length ? version1_parts.Length : version2_parts.Length;
+            for (i = 0; i < min && version1_parts[i] == version2_parts[i]; i++) ;
+
+            int v1, v2;
+            if (version1_parts.Length == version2_parts.Length)
+            {
+                if (i == version2_parts.Length)
+                    return 0;
+                v1 = Convert.ToInt32(version1_parts[i]);
+                v2 = Convert.ToInt32(version2_parts[i]);
+            }
+            else if (version1_parts.Length > version2_parts.Length)
+            {
+                v2 = 0;
+                v1 = Convert.ToInt32(version1_parts[i]);
+            }
+            else
+            {
+                v1 = 0;
+                v2 = Convert.ToInt32(version2_parts[i]);
+            }
+            if (v1 > v2)
+                return 1;
+            return -1;
+
+        }
+
+        public static bool isCriticalUpdatePending()
+        {
+            try
+            {
+                string lastCriticalVersion = "";
+                App.appSettings.TryGetValue<string>(App.LAST_CRITICAL_VERSION, out lastCriticalVersion);
+                if (String.IsNullOrEmpty(lastCriticalVersion))
+                    return false;
+                string currentVersion = Utils.getAppVersion();
+                return compareVersion(lastCriticalVersion, currentVersion) == 1;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
+        public static string getAppVersion()
+        {
+            Uri manifest = new Uri("WMAppManifest.xml", UriKind.Relative);
+            var si = Application.GetResourceStream(manifest);
+            if (si != null)
+            {
+                using (StreamReader sr = new StreamReader(si.Stream))
+                {
+                    bool haveApp = false;
+                    while (!sr.EndOfStream)
+                    {
+                        string line = sr.ReadLine();
+                        if (!haveApp)
+                        {
+                            int i = line.IndexOf("AppPlatformVersion=\"", StringComparison.InvariantCulture);
+                            if (i >= 0)
+                            {
+                                haveApp = true;
+                                line = line.Substring(i + 20);
+                                int z = line.IndexOf("\"");
+                                if (z >= 0)
+                                {
+                                    // if you're interested in the app plat version at all                        
+                                    // AppPlatformVersion = line.Substring(0, z);                      
+                                }
+                            }
+                        }
+
+                        int y = line.IndexOf("Version=\"", StringComparison.InvariantCulture);
+                        if (y >= 0)
+                        {
+                            int z = line.IndexOf("\"", y + 9, StringComparison.InvariantCulture);
+                            if (z >= 0)
+                            {
+                                // We have the version, no need to read on.                      
+                                return line.Substring(y + 9, z - y - 9);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return "Unknown";
+        }
+
+        public static string getOSVersion()
+        {
+            return System.Environment.OSVersion.Version.Major.ToString() + "." + System.Environment.OSVersion.Version.Minor.ToString()
+                + "." + System.Environment.OSVersion.Version.Build.ToString();
+        }
+
+        //unique id for device. note:- it is not imei number
+        public static string getDeviceId()
+        {
+            object uniqueIdObj = null;
+            byte[] uniqueId = null;
+            if (DeviceExtendedProperties.TryGetValue("DeviceUniqueId", out uniqueIdObj))
+            {
+                uniqueId = (byte [])uniqueIdObj;
+            }
+            return uniqueId==null?null:BitConverter.ToString(uniqueId);
+        }
+
+        //carrier DeviceNetworkInformation.CellularMobileOperator;
+
+        public static string getDeviceModel()
+        {
+            string model = null;
+            object theModel = null;
+
+            if (Microsoft.Phone.Info.DeviceExtendedProperties.TryGetValue("DeviceName", out theModel))
+                model = theModel as string;
+
+            return model;
+        }
+
+        public static JObject deviceInforForAnalytics()
+        {
+            JObject info = new JObject();
+            info["_device"] = getDeviceModel();
+            info["_app_version"] = getAppVersion();
+            info["tag"] = "cbs";
+            info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
+            info["device_id"] = getDeviceId();
+            info["_os_version"] = getOSVersion();
+            info["_os"] = "windows";
+            JObject infoPacket = new JObject();
+            infoPacket[HikeConstants.DATA] = info;
+            infoPacket[HikeConstants.TYPE] = HikeConstants.LOG_EVENT;
+            return infoPacket;
+        }
+
+        public static bool IsIndianNumber(string msisdn)
+        {
+            if (msisdn == null)
+                return false;
+            if (msisdn.StartsWith("+91"))
+                return true;
+            return false;
+        }
     }
 }

@@ -1,35 +1,73 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using windows_client.Model;
 using windows_client.utils;
 
 namespace windows_client.Controls
 {
     public partial class NotificationChatBubble : MyChatBubble {
-        public NotificationChatBubble(string message, bool onHike) {
-            // Required to initialize variables
+
+        public enum MessageType
+        {
+            HIKE_PARTICIPANT_JOINED, // hike participant has left
+            SMS_PARTICIPANT_OPTED_IN, // sms participant has joined Group Chat
+            SMS_PARTICIPANT_INVITED, // sms participant has invited
+            PARTICIPANT_LEFT, // The participant has joined
+            GROUP_END, // Group chat has ended
+            USER_JOINED_HIKE, // Sms user joined hike
+            WAITING,
+            REWARD,
+            INTERNATIONAL_USER_BLOCKED,
+            UNKNOWN
+        }
+
+
+        public NotificationChatBubble(MessageType messageType, string message)
+        {
             InitializeComponent();
-            if (!String.IsNullOrEmpty(message))
+            setNotificationMessage(messageType, message);
+            if (Utils.isDarkTheme())
             {
-                this.UserName.Text = message;
-            }
-            this.OnHikeImage.Source = UI_Utils.Instance.OnHikeImage;
-            if (onHike)
-            {
-                //this.HikeBubble.Source = UI_Utils.Instance.MessageReadBitmapImage;
+                border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 0x3a, 0x3a, 0x3a));
             }
             else
             {
-                //this.HikeBubble.Source = UI_Utils.Instance.DefaultAvatarBitmapImage;
-
+                border.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 0xcd, 0xcd, 0xcd));
             }
+        }
+
+        public void setNotificationMessage(MessageType messageType, string message)
+        {
+            switch (messageType)
+            {
+                case MessageType.HIKE_PARTICIPANT_JOINED:
+                    NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
+                    break;
+                case MessageType.SMS_PARTICIPANT_INVITED:
+                    NotificationImage.Source = UI_Utils.Instance.NotOnHikeImage;
+                    break;
+                case MessageType.SMS_PARTICIPANT_OPTED_IN:
+                    NotificationImage.Source = UI_Utils.Instance.ChatAcceptedImage;
+                    break;
+                case MessageType.USER_JOINED_HIKE:
+                    NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
+                    break;
+                case MessageType.PARTICIPANT_LEFT:
+                    NotificationImage.Source = UI_Utils.Instance.ParticipantLeft;
+                    break;
+                case MessageType.GROUP_END:
+                    NotificationImage.Source = UI_Utils.Instance.ParticipantLeft;
+                    break;
+                case MessageType.WAITING:
+                    NotificationImage.Source = UI_Utils.Instance.Waiting;
+                    break;
+                case MessageType.REWARD:
+                    NotificationImage.Source = UI_Utils.Instance.Reward;
+                    break;
+                case MessageType.INTERNATIONAL_USER_BLOCKED:
+                    NotificationImage.Source = UI_Utils.Instance.IntUserBlocked;
+                    break;
+            }
+            UserName.Text = message;
         }
     }
 }

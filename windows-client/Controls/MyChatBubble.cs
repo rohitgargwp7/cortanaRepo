@@ -11,28 +11,60 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Windows.Navigation;
+using windows_client.Model;
+using windows_client.utils;
+using System.Collections.Generic;
+using windows_client.View;
+using windows_client.DbUtils;
 
 namespace windows_client.Controls
 {
     public class MyChatBubble : UserControl
     {
+        private long _timeStampLong;
+        private long _messageId;
+        private ConvMessage.State _messageState;
+        public Attachment FileAttachment;
 
-        public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
+        public string Text;
+        public string TimeStamp;
+        public List<MyChatBubble> splitChatBubbles = null;
 
-        public string Text
+        //TODO: Try to use a single property for timestamp.
+        //either dispose off the convmessage or else keep a reference to it in this class
+        public long TimeStampLong
         {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
-        }
-
-        public static DependencyProperty TimeStampProperty = DependencyProperty.Register("TimeStamp", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
-
-        public string TimeStamp
-        {
-            get { return (string)GetValue(TimeStampProperty); }
+            get
+            {
+                return _timeStampLong;
+            }
             set
             {
-                SetValue(TimeStampProperty, value);
+                _timeStampLong = value;
+            }
+        }
+
+        public long MessageId
+        {
+            get
+            {
+                return _messageId;
+            }
+            set
+            {
+                _messageId = value;
+            }
+        }
+
+        public ConvMessage.State MessageStatus
+        {
+            get
+            {
+                return _messageState;
+            }
+            set
+            {
+                _messageState = value;
             }
         }
 
@@ -40,43 +72,56 @@ namespace windows_client.Controls
         {
         }
 
-        public MyChatBubble(RoutedEventHandler copyClick, RoutedEventHandler forwardClick)
+        public MyChatBubble(ConvMessage cm)
         {
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = false;
-
-            MenuItem copy = new MenuItem();
-            copy.Header = "copy";
-            copy.Click += copyClick;
-            menu.Items.Add(copy);
-            ContextMenuService.SetContextMenu(this, menu);
-
-            MenuItem forward = new MenuItem();
-            forward.Header = "forward";
-            forward.Click += forwardClick;
-            menu.Items.Add(forward);
-            ContextMenuService.SetContextMenu(this, menu);
-
+            this.Text = cm.Message;
+            this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
+            this._messageId = cm.MessageId;
+            this._timeStampLong = cm.Timestamp;
+            this._messageState = cm.MessageStatus;
+            if (cm.FileAttachment != null)
+            {
+                this.FileAttachment = cm.FileAttachment;
+                setAttachmentState(cm.FileAttachment.FileState);
+            }
+            else if (!cm.HasAttachment)
+            {
+                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                if (currentPage != null)
+                {
+                    ContextMenu contextMenu = null;
+                    if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains("poke"))   
+                    {
+                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.COMPLETED,
+                            false); //since it is not an attachment message this bool won't make difference
+                    }
+                    else
+                    {
+                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
+                            true); //set to tru to have only delete option for nudge bubbles
+                    }
+                    ContextMenuService.SetContextMenu(this, contextMenu);
+                }
+            }
         }
 
-        void AddButton_Click(object sender, RoutedEventArgs e)
+        public void setTapEvent(EventHandler<Microsoft.Phone.Controls.GestureEventArgs> tapEventHandler)
         {
-            bool result = (sender is MyChatBubble);
-            int i = 32;
-            i++;
+            var gl = GestureService.GetGestureListener(this);
+            gl.Tap += tapEventHandler;
         }
 
+        protected virtual void uploadOrDownloadCanceled()
+        { }
 
-        void MenuItem_Tap_Copy(object sender, System.Windows.Input.GestureEventArgs e)
+        protected virtual void uploadOrDownloadStarted()
+        { }
+
+        protected virtual void uploadOrDownloadCompleted()
+        { }
+
+        public virtual void setAttachmentState(Attachment.AttachmentState attachmentState)
         {
-            Clipboard.SetText(this.Text);
         }
-
-        //private void MenuItem_Tap_Forward(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    PhoneApplicationService.Current.State["forwardedText"] = this.Text;
-        //    NavigationService.Navigate(new Uri("/View/SelectUserToMsg.xaml", UriKind.Absolute));
-        //}
-
     }
 }

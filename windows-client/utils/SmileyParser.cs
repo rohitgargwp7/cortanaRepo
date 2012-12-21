@@ -1,24 +1,51 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using windows_client.utils;
+using Microsoft.Phone.Tasks;
 
 namespace windows_client
 {
     public class SmileyParser
     {
+        private bool IS_INSTANTIATED = false;
+        public BitmapImage[] _emoticonImagesForList0 = null;
+        public BitmapImage[] _emoticonImagesForList1 = null;
+        public BitmapImage[] _emoticonImagesForList2 = null;
+
+        public readonly int emoticon0Size = 80;
+        public readonly int emoticon1Size = 30;
+        public readonly int emoticon2Size = 39;
+
+        private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+        private static volatile SmileyParser instance = null;
+
+        public static SmileyParser Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new SmileyParser();
+                    }
+                }
+                return instance;
+            }
+        }
+
+        private SmileyParser()
+        {
+        }
         //121 is missing
-        public static string[] emoticonStrings = 
+        public string[] emoticonStrings = 
         {
             ":))",  // 01 bigsmile 
             ":-)",  // 02 happy 
@@ -40,7 +67,7 @@ namespace windows_client
             ":?-(",  // 18 sorry 
             ":'-(",  // 19 cry 
             "l-o",  // 20 boring 
-            ":0",  // 21 hungry 
+            ":-0",  // 21 hungry 
             "(scared)",  // 22 scared 
             "o_o",  // 23 shock 
             "(sweat)",  // 24 sweat 
@@ -48,7 +75,7 @@ namespace windows_client
             ":D",  // 26 lol 
             ":o",  // 27 woo 
             ":-O",  // 28 surprise 
-            ":-&lt;",  // 29 frown 
+            ":-<",  // 29 frown 
             "X(",  // 30 angry 
             "(wornout)",  // 31 wornout 
             "(stop)",  // 32 stop 
@@ -86,7 +113,7 @@ namespace windows_client
             "(music)",  // 64 music 
             ":-B",  // 65 nerd 
             "(ninja)",  // 66 ninja 
-            "&lt;:--)",  // 67 party 
+            "<:--)",  // 67 party 
             "P-(",  // 68 pirate 
             ":-@",  // 69 rage 
             "(@>---)",  // 70 rose 
@@ -170,26 +197,98 @@ namespace windows_client
             "(brains2)",  // 149 brains 
             "(sleeping2)",  // 150 sleeping 
       };
-
-
-        public static BitmapImage[] _emoticonImagesForList0 = null;
-        public static BitmapImage[] _emoticonImagesForList1 = null;
-        public static BitmapImage[] _emoticonImagesForList2 = null;
-
-        public static int emoticon0Size = 80;
-        public static int emoticon1Size = 30;
-        public static int emoticon2Size = 39;
-
-        public static void loadEmoticons()
+        //regex for emoticons, email, url and phone number
+        private Regex chatThreadRegex;
+        public Regex ChatThreadRegex
         {
+            get
+            {
+                if (chatThreadRegex == null)
+                    chatThreadRegex = createPattern(false);
+                return chatThreadRegex;
+            }
+        }
 
+        private Regex emoticonRegex;
+        public Regex EmoticonRegex
+        {
+            get
+            {
+                if (emoticonRegex == null)
+                    emoticonRegex = createPattern(true);
+                return emoticonRegex;
+            }
+        }
+
+        private string emailRegexPattern = @"(([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+))";
+        private string hyperLinkRegexPattern = @"((https?://)?[\w\-\.]+\.([a-zA-z]{2,3})[?_%@!:/\+=&\w\-\.]*)"; 
+        private string phoneNumberRegexPattern = @"\b(\+?[\d-]{8,13})";
+
+        private Regex emailRegex;
+        public Regex EmailRegex
+        {
+            get
+            {
+                if (emailRegex == null)
+                    emailRegex = new Regex(emailRegexPattern);
+                return emailRegex;
+            }
+        }
+
+        private Regex hyperLinkRegex;
+        public Regex HyperLinkRegex
+        {
+            get
+            {
+                if (hyperLinkRegex == null)
+                    hyperLinkRegex = new Regex(hyperLinkRegexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                return hyperLinkRegex;
+            }
+        }
+
+        private Regex phoneNumberRegex;
+        public Regex PhoneNumberRegex
+        {
+            get
+            {
+                if (phoneNumberRegex == null)
+                    phoneNumberRegex = new Regex(phoneNumberRegexPattern);
+                return phoneNumberRegex;
+            }
+        }
+
+        public enum RegexType
+        {
+            EMAIL = 0,
+            URL,
+            PHONE_NO,
+            EMOTICONS
+        }
+
+
+        public RegexType regexCatergory(string s)
+        {
+            if (EmailRegex.IsMatch(s))
+                return RegexType.EMAIL;
+            if (HyperLinkRegex.IsMatch(s))
+                return RegexType.URL;
+            if (PhoneNumberRegex.IsMatch(s))
+                return RegexType.PHONE_NO;
+            return RegexType.EMOTICONS;
+        }
+
+
+        public void initializeSmileyParser()
+        {
+            if (IS_INSTANTIATED)
+                return;
             _emoticonImagesForList0 = new BitmapImage[emoticon0Size];
             int i, j, k = 0;
             for (i = 0; i < emoticon0Size; i++)
             {
                 _emoticonImagesForList0[i] = new BitmapImage();
                 _emoticonImagesForList0[i].CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                _emoticonImagesForList0[i].UriSource = new Uri(emoticonPaths[i], UriKind.Relative);    
+                _emoticonImagesForList0[i].UriSource = new Uri(emoticonPaths[i], UriKind.Relative);
             }
 
             _emoticonImagesForList1 = new BitmapImage[emoticon1Size];
@@ -197,7 +296,7 @@ namespace windows_client
             {
                 _emoticonImagesForList1[j] = new BitmapImage();
                 _emoticonImagesForList1[j].CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                _emoticonImagesForList1[j].UriSource = new Uri(emoticonPaths[i+j], UriKind.Relative);
+                _emoticonImagesForList1[j].UriSource = new Uri(emoticonPaths[i + j], UriKind.Relative);
             }
 
             _emoticonImagesForList2 = new BitmapImage[emoticon2Size];
@@ -205,8 +304,9 @@ namespace windows_client
             {
                 _emoticonImagesForList2[k] = new BitmapImage();
                 _emoticonImagesForList2[k].CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                _emoticonImagesForList2[k].UriSource = new Uri(emoticonPaths[i+j+k], UriKind.Relative);
+                _emoticonImagesForList2[k].UriSource = new Uri(emoticonPaths[i + j + k], UriKind.Relative);
             }
+            IS_INSTANTIATED = true;
         }
 
         //static void imageOpenedHandler(object sender, RoutedEventArgs e)
@@ -216,7 +316,7 @@ namespace windows_client
         //    image.PixelWidth = 40;
         //}
 
-        public static string[] emoticonPaths = 
+        public string[] emoticonPaths = 
         {
         	"/View/images/emoticons/emo_im_01_bigsmile.png",
 			"/View/images/emoticons/emo_im_02_happy.png",
@@ -372,22 +472,11 @@ namespace windows_client
         };
 
 
-        private static Regex _pattern;
-        public static Regex Pattern
-        {
-            get
-            {
-                if (_pattern == null)
-                    _pattern = createPattern();
-                return _pattern;
-            }
-        }
 
-
-        public static BitmapImage lookUpFromCache(string emoticon)
+        public BitmapImage lookUpFromCache(string emoticon)
         {
             int imgIndex;
-            SmileyParser.EmoticonUriHash.TryGetValue(emoticon, out imgIndex);
+            EmoticonUriHash.TryGetValue(emoticon, out imgIndex);
 
             if (imgIndex < _emoticonImagesForList0.Length)
             {
@@ -397,15 +486,15 @@ namespace windows_client
             {
                 return _emoticonImagesForList1[imgIndex - _emoticonImagesForList0.Length];
             }
-            else 
+            else
             {
                 return _emoticonImagesForList2[imgIndex - _emoticonImagesForList0.Length - _emoticonImagesForList1.Length];
             }
         }
 
 
-        private static Dictionary<string, int> _emoticonUriHash;
-        public static Dictionary<string, int> EmoticonUriHash
+        private Dictionary<string, int> _emoticonUriHash;
+        public Dictionary<string, int> EmoticonUriHash
         {
             get
             {
@@ -422,22 +511,24 @@ namespace windows_client
             }
         }
 
+        //private string escapeForRegex(string patternString)
+        //{
+        //    patternString.Replace(")", "\\)");
+        //    patternString.Replace("(", "\\(");
+        //    patternString.Replace("[", "\\[");
+        //    patternString.Replace("*", "\\*");
+        //    patternString.Replace(".", "\\.");
+        //    patternString.Replace("^", "\\^");
+        //    patternString.Replace("?", "\\?");
+        //    patternString.Replace("$", "\\$");
+        //    patternString.Replace("|", "\\|");
 
-        private static Regex _smileyPattern;
-        public static Regex SmileyPattern
-        {
-            get
-            {
-                if (_smileyPattern == null)
-                    _smileyPattern = createPattern();
-                return _smileyPattern;
-            }
-        }
+        //}
 
         //these characters shoule be escaped for regex
         // \, *, +, ?, |, {, [, (,), ^, $,., #
-
-        private static Regex createPattern()
+        //created regex for emoticons, email and http link
+        private Regex createPattern(bool isOnlyEmoticons)
         {
             StringBuilder patternString = new StringBuilder();
             int i = 0;
@@ -459,9 +550,6 @@ namespace windows_client
                 }
                 patternString.Append('|');
             }
-            //patternString.Replace("\\", "\\\\");
-
-            //patternString.Append(emoticonStrings[i].Replace("|", "\\|")).Append('|').Append(emoticonStrings[i + 1].Replace("|", "\\|"));
 
             patternString.Replace(")", "\\)");
             patternString.Replace("(", "\\(");
@@ -471,14 +559,172 @@ namespace windows_client
             patternString.Replace("^", "\\^");
             patternString.Replace("?", "\\?");
             patternString.Replace("$", "\\$");
-
-            patternString.Replace('|', ')', patternString.Length - 1, 1);
+            if (isOnlyEmoticons)
+            {
+                patternString.Replace('|', ')', patternString.Length - 1, 1);
+            }
+            else
+            {
+                patternString.Append(emailRegexPattern);
+                patternString.Append('|');
+                patternString.Append(hyperLinkRegexPattern);
+                patternString.Append('|');
+                patternString.Append(phoneNumberRegexPattern);
+                patternString.Append(')');
+            }
             return new Regex("(" + patternString.ToString());
         }
 
-        public static MatchCollection matchPattern(string messageString)
+        public Paragraph LinkifyEmoticons(string messageString)
         {
-            return SmileyPattern.Matches(messageString);
+            MatchCollection matchCollection = EmoticonRegex.Matches(messageString);
+            Paragraph p = new Paragraph();
+            int startIndex = 0;
+            int endIndex = -1;
+            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
+            for (int i = 0; i < maxCount; i++)
+            {
+                String emoticon = matchCollection[i].ToString();
+                //Regex never returns an empty string. Still have added an extra check
+                if (String.IsNullOrEmpty(emoticon))
+                    continue;
+
+                int index = matchCollection[i].Index;
+                endIndex = index - 1;
+                if (index > 0)
+                {
+                    Run r = new Run();
+                    r.Text = messageString.Substring(startIndex, endIndex - startIndex + 1);
+                    p.Inlines.Add(r);
+                }
+                startIndex = index + emoticon.Length;
+                //TODO check if imgPath is null or not
+                Image img = new Image();
+                img.Source = lookUpFromCache(emoticon);
+                img.Height = 25;
+                img.Width = 25;
+                img.Margin = UI_Utils.Instance.ConvListEmoticonMargin;
+
+                InlineUIContainer ui = new InlineUIContainer();
+                ui.Child = img;
+                p.Inlines.Add(ui);
+            }
+            if (startIndex < messageString.Length)
+            {
+                Run r2 = new Run();
+                r2.Text = messageString.Substring(startIndex, messageString.Length - startIndex);
+                p.Inlines.Add(r2);
+            }
+            return p;
         }
+        private void selectUserBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Hyperlink caller = sender as Hyperlink;
+            PhoneCallTask phoneCallTask = new PhoneCallTask();
+            string targetPhoneNumber = caller.TargetName.Replace("-", "");
+            targetPhoneNumber = targetPhoneNumber.Trim();
+            targetPhoneNumber = targetPhoneNumber.Replace(" ", "");
+            phoneCallTask.PhoneNumber = targetPhoneNumber;
+            try
+            {
+                phoneCallTask.Show();
+            }
+            catch { }
+        }
+
+        public Paragraph LinkifyAll(string message)
+        {
+            MatchCollection matchCollection = ChatThreadRegex.Matches(message);
+            var p = new Paragraph();
+            int startIndex = 0;
+            int endIndex = -1;
+            int maxCount = matchCollection.Count < HikeConstants.MAX_EMOTICON_SUPPORTED ? matchCollection.Count : HikeConstants.MAX_EMOTICON_SUPPORTED;
+            int currentEmoticonCount = 0;
+            for (int i = 0; i < matchCollection.Count; i++)
+            {
+                string regexMatch = matchCollection[i].ToString();
+
+                //Regex never returns an empty string. Still have added an extra check
+                if (string.IsNullOrEmpty(regexMatch))
+                    continue;
+
+                int index = matchCollection[i].Index;
+                endIndex = index - 1;
+
+                if (index > 0)
+                {
+                    Run r = new Run();
+                    r.Text = message.Substring(startIndex, endIndex - startIndex + 1);
+                    p.Inlines.Add(r);
+                }
+
+                startIndex = index + regexMatch.Length;
+
+                RegexType regexType = regexCatergory(regexMatch);
+                if (regexType != RegexType.EMOTICONS)
+                {
+                    try
+                    {
+                        Hyperlink MyLink = new Hyperlink();
+                        string url = regexMatch;
+                        if (regexType == RegexType.EMAIL)
+                            url = "mailto:" + regexMatch;
+                        else if (regexType == RegexType.URL && !regexMatch.StartsWith("http://") && !regexMatch.StartsWith("ftp://") &&
+                            !regexMatch.StartsWith("https://"))
+                            url = "http://" + regexMatch;
+                        if (regexType == RegexType.PHONE_NO)
+                        {
+                            MyLink.Click += new RoutedEventHandler(selectUserBtn_Click);
+                            MyLink.TargetName = regexMatch;
+                        }
+                        else
+                        {
+                            MyLink.NavigateUri = new Uri(url);
+                            MyLink.TargetName = "_blank";
+                        }
+                        MyLink.Inlines.Add(regexMatch);
+                        p.Inlines.Add(MyLink);
+                    }
+                    catch (UriFormatException)
+                    {
+                        Run r = new Run();
+                        r.Text = regexMatch;
+                        p.Inlines.Add(r);
+                    }
+                }
+                else
+                {
+                    if (currentEmoticonCount < maxCount)
+                    {
+                        //TODO check if imgPath is null or not
+                        Image img = new Image();
+                        img.Source = lookUpFromCache(regexMatch);
+                        img.Height = 35;
+                        img.Width = 35;
+                        //                        img.Margin  = new Thickness(0, 5, 0, 0);
+
+
+                        InlineUIContainer ui = new InlineUIContainer();
+                        ui.Child = img;
+                        p.Inlines.Add(ui);
+                        currentEmoticonCount++;
+                    }
+                    else
+                    {
+                        Run r = new Run();
+                        r.Text = regexMatch;
+                        p.Inlines.Add(r);
+                    }
+                }
+            }
+            if (startIndex < message.Length)
+            {
+                Run r2 = new Run();
+                r2.Text = message.Substring(startIndex, message.Length - startIndex);
+                p.Inlines.Add(r2);
+            }
+            return p;
+        }
+
     }
 }

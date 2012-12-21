@@ -42,12 +42,12 @@ namespace finalmqtt.Client
         }
 
         private Socket _socket;
-        const int MAX_BUFFER_SIZE = 1024 * 30;
+        const int MAX_BUFFER_SIZE = 1024 * 40;
         const int socketReadBufferSize = 1024 * 10;
         private byte[] bufferForSocketReads;
         private readonly String id;
         private volatile bool stopped;
-//        private volatile bool connected;
+        //        private volatile bool connected;
         private volatile bool connackReceived;
         private volatile bool disconnectSent = false;
 
@@ -67,7 +67,7 @@ namespace finalmqtt.Client
         {
             this.id = id;
             this.stopped = true;
-//            this.connected = false;
+            //            this.connected = false;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
             this.mqttListener = listener;
             this.pendingOutput = new List<byte>();
@@ -149,24 +149,37 @@ namespace finalmqtt.Client
         /// <param name="e"></param>
         private void onReadCompleted(object s, SocketAsyncEventArgs e)
         {
-            if (e.SocketError == SocketError.Success)
+            try
             {
-                input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
-            }
-            else
-            {
-                if (mqttListener != null)
+                if (e.SocketError == SocketError.Success)
                 {
-                    if (_socket != null)
-                    {
-                        _socket.Close();
-                        _socket = null;
-                    }
-                    mqttListener.onDisconnected();
+                    input.writeBytes(e.Buffer, e.Offset, e.BytesTransferred);
                 }
+                else
+                {
+                    if (mqttListener != null)
+                    {
+                        if (_socket != null)
+                        {
+                            _socket.Close();
+                            _socket = null;
+                        }
+                        mqttListener.onDisconnected();
+                    }
+                }
+                readMessagesFromBuffer();
+                read();
             }
-            readMessagesFromBuffer();
-            read();
+            catch (Exception)
+            {
+                if (_socket != null)
+                {
+                    _socket.Close();
+                    _socket = null;
+                }
+                mqttListener.onDisconnected();
+            }
+
         }
 
         /// <summary>
@@ -209,6 +222,11 @@ namespace finalmqtt.Client
             }
             catch
             {
+                if (_socket != null)
+                {
+                    _socket.Close();
+                    _socket = null;
+                }
                 mqttListener.onDisconnected();
             }
         }
@@ -284,9 +302,10 @@ namespace finalmqtt.Client
         /// <param name="cb">Callback to be called in case of error</param>
         public void sendCallbackMessage(Message msg, Callback cb)
         {
-            if (!_socket.Connected || !connackReceived)
+            if (_socket == null || !_socket.Connected || !connackReceived || msg == null)
             {
-                cb.onFailure(null);
+                if (cb != null)
+                    cb.onFailure(null);
                 return;
             }
             try
@@ -296,14 +315,16 @@ namespace finalmqtt.Client
             }
             catch (ObjectDisposedException ode)
             {
-                cb.onFailure(ode);
+                if (cb != null)
+                    cb.onFailure(ode);
             }
             catch (SocketException se)
             {
-                cb.onFailure(se);
+                if (cb != null)
+                    cb.onFailure(se);
             }
 
-            if (msg is RetryableMessage)
+            if (msg is RetryableMessage && cb!=null)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
                 if (messageId != 0)
@@ -314,7 +335,6 @@ namespace finalmqtt.Client
                 }
             }
         }
-
 
         public bool ping(Callback cb)// throws IOException
         {
@@ -423,6 +443,7 @@ namespace finalmqtt.Client
             if (msg.getStatus() != ConnAckMessage.ConnectionStatus.ACCEPTED)
             {
                 connectCallback.onFailure(new ConnectionException("Unable to connect to server", msg.getStatus()));
+                return;
             }
             if (mqttListener != null)
                 mqttListener.onConnected();

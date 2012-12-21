@@ -6,67 +6,112 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="True">
+    toolkit:TiltEffect.IsTiltEnabled="True"
+    Name="groupInfoPage" shell:SystemTray.IsVisible="True">
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="False" />
+    </shell:SystemTray.ProgressIndicator>
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--Pivot Control-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <Image Source="images\hike_logo_small.png" Margin="25,20,0,0" HorizontalAlignment="Left" Height="34" Width="127"></Image>
-            <TextBlock Text="group info" FontSize="60" FontStretch="Expanded"  Margin="23,0,0,0" Foreground="Black" Height="80"/>
-        </StackPanel>
+        <TextBlock Text="{Binding Path= LocalizedResources.GroupInfo_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" FontFamily="Segoe WP SemiLight" FontStretch="Expanded"  Margin="21,0,0,0" Height="90"/>
 
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="90"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
 
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0" Height="100">
+            <!--<StackPanel Grid.Row="0" Orientation="Horizontal" Margin="30, 10, 0,0" Height="100">
                 <Button Height="Auto">
                     <StackPanel Orientation="Horizontal" Margin="-15">
-                        <Border BorderBrush="Black" BorderThickness="3">
-                            <Image x:Name="groupImage" Height="80" Width="80" Tap="onGroupProfileTap" Source="images\ic_avatar0.png" />
-                        </Border>
+                        <Image x:Name="groupImage" Height="80" Width="80" Tap="onGroupProfileTap" Source="images\default_group.png" />
                     </StackPanel>
                 </Button>
-                <StackPanel Orientation="Vertical" Margin="20, 0,0,0">
-                    <TextBlock Foreground="Black" FontSize="25" Opacity="0.6" Text="Group Name" Margin="0,2,0,0"/>
-                    <StackPanel Background="#e5e5e5" Orientation="Vertical" Margin="0,12,0,5" Height="Auto">
-                        <TextBlock Margin="10,0,0,5"  TextWrapping="Wrap" x:Name="groupName" Text="Sample" Foreground="Black" FontSize="30" Width="290"></TextBlock>
-                    </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="0, 0,0,0">
+                    <TextBlock FontSize="24" Opacity="0.6" Text="Group Name" Margin="20,2,0,0"/>
+                    <TextBox Name="groupNameTxtBox" Text="GROUP NAME" Height="68" 
+                             VerticalAlignment="Center" Width="330" GotFocus="groupNameTxtBox_GotFocus"
+                             FontSize="24" TextWrapping="Wrap" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
                 </StackPanel>
+            </StackPanel>-->
+
+
+            <Grid Grid.Row="0" Margin="0, 10, 0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Image x:Name="groupImage" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="24,12,5,0" Tap="onGroupProfileTap" Height="83" Source="images\default_group.png" />
+                <Image Grid.Column="0" Grid.Row="1" Grid.RowSpan="1" Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,12" Source="images\change_pic.png" />
+
+                <!--<StackPanel Grid.Column="1" Orientation="Vertical" Margin="0, 0,0,0">-->
+                <TextBlock Grid.Column="1" Grid.Row="0" FontSize="24" Opacity="0.6" Text="{Binding Path= LocalizedResources.GrpName_Txt, Source={StaticResource LocalizedStrings}}" Margin="20,15,0,0" />
+                <TextBox Margin="-15,0,0,0" Grid.Column="1" Grid.Row="1" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
+                             VerticalAlignment="Center" Width="330" GotFocus="groupNameTxtBox_GotFocus"
+                             FontSize="24" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
+                
+            </Grid>
+
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="24,30,0,0">
+                <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="40" Height="40"></Image>
+                <TextBlock Text="{Binding Path= LocalizedResources.Participants_Txt, Source={StaticResource LocalizedStrings}}" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="35,30,0,0">
-                <Image Source="images\add_users.png" Tap="AddParticipants_Tap" Width="35" Height="35"></Image>
-                <TextBlock Text="Participants" Foreground="Black" FontSize="35" Margin="20,0,0,0"></TextBlock>
-            </StackPanel>
-            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="35,5,0,0">
+            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="24,15,0,0">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel ItemHeight="151" ItemWidth="151"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Height="25" Width="25" Fill="{Binding SquareColor}"></Rectangle>
-                            <TextBlock Foreground="Black" Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
-                        </StackPanel>
+                        <Grid Background="{Binding SquareColor}" Margin="0,0,22,22" Height="151" Width="151">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name}" Width="120" Foreground="White" TextWrapping="Wrap" FontSize="22" Margin="10,14,20,0" Grid.Row="0"></TextBlock>
+                            <TextBlock Margin="17,0,0,30" Grid.Row="1" Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="White" FontSize="18" Opacity="{Binding IsOwner}"></TextBlock>
+                                        <toolkit:ContextMenuService.ContextMenu>
+                                            <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
+                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
+                                            </toolkit:ContextMenu>
+                                        </toolkit:ContextMenuService.ContextMenu>
+                                        <!--<Image Source="images\remove_icon.png" Grid.Row="1" Height="16" Width="16" Margin="0,0,20,20" HorizontalAlignment="Right" Tap="removeParticipant_Tap" />-->
+                        </Grid>
+                        
+                        
+                        <!--<StackPanel Margin="0,0,22,22" Orientation="Vertical" Background="{Binding SquareColor}" Height="145" Width="145">
+                        </StackPanel>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Row="3">
-                <Button Content="Invite SMS participants to hike" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" BorderBrush="Black" Width="380" Foreground="Black"></Button>
+                <Button x:Name="inviteBtn" Content="{Binding Path= LocalizedResources.GroupInfo_InviteSMSUsers_Btn_Txt, Source={StaticResource LocalizedStrings}}" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" Width="380"></Button>
             </StackPanel>
 
         </Grid>

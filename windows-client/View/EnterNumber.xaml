@@ -10,8 +10,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="False" Name="enterNumber"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True" Name="enterNumber"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -37,7 +37,7 @@
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -45,28 +45,83 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-
-
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.Row="0">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="500" >
-                <Image Source="images\hike_logo_small.png" Height="40" Margin="0,25,0,10"></Image>
-                <Rectangle Height="1" Margin="2,15,0,0" Fill="#e5e5e5"></Rectangle>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
+                <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,10"></Image>
 
-                <TextBlock x:Name="txtBlkOldSchool" Foreground="Black" TextWrapping="Wrap" Text="  We couldn't pull your phone #" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
-                <TextBlock x:Name="txtBlkEnterNumber" Foreground="Black" TextWrapping="Wrap" Text="Enter it below to get started" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
+                <TextBlock x:Name="txtBlkOldSchool" TextWrapping="Wrap" HorizontalAlignment="Left" MaxWidth="400" Text="{Binding Path= LocalizedResources.EnterNumber_EnterNum_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24"  TextAlignment="Left" Margin="24,20,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="80" VerticalAlignment="Top" />
 
-                <Border BorderThickness="2" Width="310" Height="56" Margin="5,10,0,0" BorderBrush="Black">
-                    <StackPanel Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" >
-                        <Image Source="images\phone_number.png" Margin="15,10,0,10" Height="20" />
-                        <toolkit:PhoneTextBox x:Name="txtEnterPhone" GotFocus="txtEnterPhone_GotFocus" BorderThickness="0" InputScope="Number" Margin="0,-10,0,0" Width="250" Height="70" TextChanged="txtEnterPhone_TextChanged" />
-                    </StackPanel>
-                </Border>
+                <toolkit:PhoneTextBox x:Name="txtEnterCountry" BorderThickness="2" GotFocus="txtEnterCountry_GotFocus" HorizontalAlignment="Left" Margin="12,-2,0,0" Width="454" Height="78"/>
 
-                <TextBlock x:Name="enterPhoneBtn" FontSize="22" Foreground="Black" Opacity="0" Margin="130,80,0,0"></TextBlock>
-                <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,10,0,0" Foreground="Black" Background="#FFF2F6F8" IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed"/>
-                <TextBlock Height="30" TextAlignment="Center" HorizontalAlignment="Center" Margin="86,328,126,0" Name="msisdnErrorTxt" Text="Invalid MSISDN. Try again !!" VerticalAlignment="Top" Foreground="#FFF51313" Visibility="Collapsed" />
+                <toolkit:PhoneTextBox KeyUp="txtEnterPhone_KeyUp" x:Name="txtEnterPhone" TextOptions.TextHintingMode="Animated" MaxLength="15" BorderThickness="2" GotFocus="txtEnterPhone_GotFocus" LostFocus="txtEnterPhone_LostFocus" InputScope="Number" HorizontalAlignment="Left" Margin="12,0,0,0" Width="454" Height="78" TextChanged="txtEnterPhone_TextChanged" />
+
+                <TextBlock Height="25" TextAlignment="Left" 
+                           Margin="24,0,0,0" Name="msisdnErrorTxt" 
+                           Text="{Binding Path= LocalizedResources.NetworkError_TryAgain, Source={StaticResource LocalizedStrings}}" 
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center" 
+                           Visibility="Collapsed" FontSize="18" Foreground="Red" />
+
+                <TextBlock x:Name="msgTxtBlk" FontSize="18" Opacity="0" 
+                           Margin="24,0,0,0" HorizontalAlignment="Left"
+                           Foreground="{StaticResource PhoneForegroundBrush}"
+                           VerticalAlignment="Center">
+                </TextBlock>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,10,0,0" 
+                                                Background="Transparent" IsIndeterminate="True" 
+                                                VerticalAlignment="Center" 
+                                                VerticalContentAlignment="Center" 
+                                                FontSize="24" HorizontalAlignment="Stretch" 
+                                                HorizontalContentAlignment="Left" 
+                                                IsEnabled="False" IsTabStop="True" 
+                                                Opacity="0"/>
             </StackPanel>
         </Grid>
+
+        <toolkit:LongListSelector Margin="24,20,0,0" Grid.Row="0" Visibility="Collapsed" x:Name="countryList" Background="Transparent" IsFlatList="False" IsBouncy="True" GroupViewOpened="countryList_GroupViewOpened" GroupViewClosing="countryList_GroupViewClosing">
+            <toolkit:LongListSelector.ListHeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_SelectCountry_TxtBlk, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" Margin="0,0,0,20"  FontSize="22"/>
+                </DataTemplate>
+            </toolkit:LongListSelector.ListHeaderTemplate>
+            <toolkit:LongListSelector.GroupItemsPanel>
+                <ItemsPanelTemplate>
+                    <toolkit:WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </toolkit:LongListSelector.GroupItemsPanel>
+            <toolkit:LongListSelector.GroupItemTemplate>
+                <DataTemplate>
+                    <Border Background="{Binding GroupBackgroundBrush}" Width="99" Height="99" Margin="6" 
+                                IsHitTestVisible="{Binding HasItems}">
+                        <TextBlock Text="{Binding Title}" 
+                            Style="{StaticResource PhoneTextExtraLargeStyle}"
+                            Margin="{StaticResource PhoneTouchTargetOverhang}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"                                        
+                            VerticalAlignment="Bottom"/>
+                    </Border>
+                </DataTemplate>
+            </toolkit:LongListSelector.GroupItemTemplate>
+            <toolkit:LongListSelector.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent">
+                        <Border Background="{StaticResource PhoneAccentBrush}" 
+                        Width="55" Height="55" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Title}" 
+                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Style="{StaticResource PhoneTextLargeStyle}"
+                                VerticalAlignment="Bottom"/>
+                        </Border>
+                    </Border>
+                </DataTemplate>
+            </toolkit:LongListSelector.GroupHeaderTemplate>
+            <toolkit:LongListSelector.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Tap="countryList_Tap" FontFamily="Segoe WP SemiLight" Margin="0,12,0,12" FontSize="36"/>
+                </DataTemplate>
+            </toolkit:LongListSelector.ItemTemplate>
+
+        </toolkit:LongListSelector>
+
     </Grid>
 </phone:PhoneApplicationPage>

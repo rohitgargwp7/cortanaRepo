@@ -31,7 +31,8 @@ namespace finalmqtt.Msg
             if (map.ContainsKey(messageId))
             {
                 map.Remove(messageId);
-                cb.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + messageId));
+                if(cb!=null)
+                    cb.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + messageId));
             }
         }
     }

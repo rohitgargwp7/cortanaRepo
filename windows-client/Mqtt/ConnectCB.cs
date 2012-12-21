@@ -16,7 +16,12 @@ namespace windows_client.Mqtt
         {
             if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.BAD_USERNAME_OR_PASSWORD))
             {
-                App.appSettings.Clear();
+                bool isPresent =false;
+                if(App.appSettings.Contains(App.IS_DB_CREATED))
+                    isPresent = true;
+                App.ClearAppSettings();
+                if(isPresent)
+                    App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
             }
             hikeMqttManager.setConnectionStatus(windows_client.Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
         }

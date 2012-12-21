@@ -10,7 +10,7 @@
     
     <Grid x:Name="LayoutRoot">
         <StackPanel>
-            <RichTextBox x:Name="RichText" FontSize="24" TextWrapping="Wrap" Foreground="{Binding Foreground}" />
+            <RichTextBox x:Name="RichText" FontSize="21" TextWrapping="Wrap" />
         </StackPanel>
     </Grid>
 </UserControl>

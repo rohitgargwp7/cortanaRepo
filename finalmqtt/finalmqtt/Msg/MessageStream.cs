@@ -141,7 +141,16 @@ namespace finalmqtt.Msg
         public void writeBytes(byte[] source, int start, int bytesToWrite)
         {
             if (bytesToWrite > data.Length - this.Size())
-                throw new IndexOutOfRangeException("Requested for " + bytesToWrite + "bytes. Buffer capacity " + (data.Length - this.Size()));
+            {
+                byte[] temp = new byte[data.Length * 2];
+                int bytesBeforeRotation = data.Length - startIndex;
+
+                Buffer.BlockCopy(data, startIndex, temp, 0, bytesBeforeRotation);
+                Buffer.BlockCopy(data, 0, temp, bytesBeforeRotation, data.Length - bytesBeforeRotation);
+                endIndex = this.Size();
+                startIndex = 0;
+                data = temp;
+            }
             if (data.Length - endIndex >= bytesToWrite)
             {
                 Buffer.BlockCopy(source, 0, data, endIndex, bytesToWrite);

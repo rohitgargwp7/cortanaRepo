@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.Phone.Reactive;
 using System.Threading;
 using System.Windows;
+using System.ComponentModel;
 
 namespace windows_client.Mqtt
 {
@@ -20,6 +21,7 @@ namespace windows_client.Mqtt
     {
         public MqttConnection mqttConnection;
         private HikePubSub pubSub;
+
         // constants used to define MQTT connection status
         public enum MQTTConnectionStatus
         {
@@ -51,12 +53,14 @@ namespace windows_client.Mqtt
 
         // taken from preferences
         // host name of the server we're receiving push notifications from
-        private String brokerHostName = AccountUtils.HOST;
+
+
+        private String brokerHostName = AccountUtils.MQTT_HOST;
 
 
         // defaults - this sample uses very basic defaults for it's interactions
         // with message brokers
-        private int brokerPortNumber = 1883;
+        private int brokerPortNumber = AccountUtils.MQTT_PORT;
 
         //        private HikeMqttPersistence persistence = null;
 
@@ -79,7 +83,6 @@ namespace windows_client.Mqtt
         private String uid;
 
         private IScheduler scheduler = Scheduler.NewThread;
-
 
         private Dictionary<Int32, HikePacket> mqttIdToPacket;
 
@@ -113,18 +116,17 @@ namespace windows_client.Mqtt
  * Terminates a connection to the message broker.
  */
         //synchronized
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        //        [MethodImpl(MethodImplOptions.Synchronized)]
         public void disconnectFromBroker(bool reconnect)
         {
             try
             {
                 if (mqttConnection != null)
                 {
-                    disconnectCalled = true;
+                    disconnectCalled = !reconnect;
                     mqttConnection.disconnect(new DisconnectCB(reconnect, this));
                     mqttConnection = null;
                 }
-
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             }
             catch (Exception e)
@@ -134,7 +136,7 @@ namespace windows_client.Mqtt
 
 
         //synchronized
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        //[MethodImpl(MethodImplOptions.Synchronized)]
         public void connectToBroker()
         {
             if (connectionStatus == MQTTConnectionStatus.CONNECTING)
@@ -227,16 +229,23 @@ namespace windows_client.Mqtt
 
         public void ping()
         {
-            if (disconnectCalled == false)
+            try
             {
-                if (mqttConnection != null)
+                if (disconnectCalled == false)
                 {
-                    mqttConnection.ping(new PingCB(this));
+                    if (mqttConnection != null)
+                    {
+                        mqttConnection.ping(new PingCB(this));
+                    }
+                    else
+                    {
+                        connect();
+                    }
                 }
-                else
-                {
-                    connect();
-                }
+            }
+            catch (Exception)
+            {
+                connect();
             }
         }
 
@@ -244,7 +253,6 @@ namespace windows_client.Mqtt
         {
             if (this.connectionStatus == MQTTConnectionStatus.CONNECTING)
                 return;
-
             if (mqttConnection != null)
             {
                 mqttConnection.disconnect(new DisconnectCB(false, this));
@@ -256,22 +264,39 @@ namespace windows_client.Mqtt
 
         public void connect()
         {
-            disconnectCalled = false;
-            if (isConnected())
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (ss, ee) =>
             {
-                return;
-            }
+                connectInBackground();
+            };
+            bw.RunWorkerAsync();
+        }
+        
+        private static object lockObj = new object();
 
-            if (isUserOnline())
+
+        private void connectInBackground()
+        {
+            lock (lockObj)
             {
-                connectToBroker();
-            }
-            else
-            {
-                setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-                scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                disconnectCalled = false;
+                if (isConnected())
+                {
+                    return;
+                }
+
+                if (isUserOnline())
+                {
+                    connectToBroker();
+                }
+                else
+                {
+                    setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+                    scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                }
             }
         }
+
 
         public void send(HikePacket packet, int qos)
         {
@@ -288,11 +313,10 @@ namespace windows_client.Mqtt
                     {
                     }
                 }
-
                 this.connect();
                 return;
             }
-            PublishCB pbCB = new PublishCB(packet, this);
+            PublishCB pbCB = new PublishCB(packet, this, qos);
             String tempString = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
 
             mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
@@ -317,12 +341,20 @@ namespace windows_client.Mqtt
             return topics.ToArray();
         }
 
+        void recursivePingSchedule(Action<TimeSpan> action)
+        {
+            action(TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
+            ping();
+        }
+
+        private volatile bool isRecursivePingScheduled = false;
 
         public void onConnected()
         {
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
             subscribeToTopics(getTopics());
-            scheduler.Schedule(ping, TimeSpan.FromMinutes(10));
+            if (!isRecursivePingScheduled)  
+                scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
             /* Accesses the persistence object from the main handler thread */
 
@@ -340,8 +372,8 @@ namespace windows_client.Mqtt
         {
             setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             mqttConnection = null;
-            if(!disconnectCalled)
-                connect();
+            if (!disconnectCalled)
+                disconnectFromBroker(true);
         }
 
         public void onPublish(String topic, byte[] body)
@@ -354,26 +386,42 @@ namespace windows_client.Mqtt
         {
             if (type == HikePubSub.MQTT_PUBLISH) // signifies msg is received through web sockets.
             {
-                JObject json = (JObject)obj;
-                mqttPublishToServer(json);
+                if (obj is object[])
+                {
+                    object[] vals = (object[])obj;
+                    JObject json = (JObject)vals[0];
+                    int qos = (int)vals[1];
+                    mqttPublishToServer(json, qos);
+                }
+                else
+                {
+                    JObject json = (JObject)obj;
+                    mqttPublishToServer(json);
+                }
             }
         }
 
         public void mqttPublishToServer(JObject json)
+        {
+            mqttPublishToServer(json, 1);
+        }
+
+
+        public void mqttPublishToServer(JObject json, int qos)
         {
             JToken data;
             json.TryGetValue(HikeConstants.TYPE, out data);
             string objType = data.ToString();
             json.TryGetValue("d", out data);
             JObject dataObj;
-            int msgId;
+            long msgId;
 
-            if (objType == NetworkManager.MESSAGE)
+            if (objType == NetworkManager.MESSAGE || objType == NetworkManager.INVITE)
             {
                 dataObj = JObject.FromObject(data);
                 JToken messageIdToken;
                 dataObj.TryGetValue("i", out messageIdToken);
-                msgId = Convert.ToInt32(messageIdToken.ToString());
+                msgId = Convert.ToInt64(messageIdToken.ToString());
             }
             else
             {
@@ -381,8 +429,8 @@ namespace windows_client.Mqtt
             }
             String msgToPublish = json.ToString(Newtonsoft.Json.Formatting.None);
             byte[] byteData = Encoding.UTF8.GetBytes(msgToPublish);
-            HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeStamp());
-            send(packet, 1);
+            HikePacket packet = new HikePacket(msgId, byteData, TimeUtils.getCurrentTimeTicks());
+            send(packet, qos);
         }
 
     }

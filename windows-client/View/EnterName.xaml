@@ -10,8 +10,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-    shell:SystemTray.IsVisible="False" Name="enterName"
+    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True" Name="enterName"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
 
     <toolkit:TransitionService.NavigationInTransition>
@@ -38,7 +38,7 @@
 
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="White">
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -51,25 +51,43 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.RowSpan="2" >
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="500" >
-                <Image Source="images\hike_logo_small.png" Height="40" Margin="0,15,0,0"></Image>
-                <Rectangle Height="2" Margin="2,15,0,0" Fill="#2e91d3"></Rectangle>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
+                <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,0"></Image>
+                <!--<Rectangle Height="2" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>-->
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto" Height="60">
-                    <TextBlock Foreground="Black" TextWrapping="Wrap" Text="Your are all set on" FontSize="24"  TextAlignment="Center" Margin="-11,28,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
-                    <TextBlock x:Name="txtBlckPhoneNumber" Foreground="Black" TextWrapping="Wrap" Text="" FontSize="25"  TextAlignment="Center" Margin="0,27,8,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="Auto" Height="35" Margin="24,20,0,0">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.EnterName_YourMsisdn_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24"  TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
+                    <TextBlock x:Name="txtBlckPhoneNumber" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" Text="" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                 </StackPanel>
-                <TextBlock Foreground="Black" TextWrapping="Wrap" Text="What's your name?" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
-                <Border BorderThickness="2" Width="310" Height="56" Margin="5,10,0,0" BorderBrush="Black">
-                    <StackPanel Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" >
-                        <Image Source="images\enter_name.png" Margin="15,10,0,10" Height="20" />
-                        <toolkit:PhoneTextBox x:Name="txtBxEnterName" GotFocus="txtBxEnterName_GotFocus" Foreground="Black" BorderThickness="0" Margin="0,-10,0,0" Width="250" Height="70" TextChanged="txtBxEnterName_TextChanged" />
-                    </StackPanel>
-                </Border>
-                <!--<Button x:Name="enterNameBtn" BorderThickness=".8" Background="#2e91d3" BorderBrush="#1c577f" Foreground="White" Margin="37,10,37,429" Content="Lets hike" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="72" Click="btnEnterName_Click" Width="344">
-                </Button>-->
-                <TextBlock x:Name="enterNameBtn" Text="" FontSize="22" Foreground="Black" Opacity="0" Margin="150,80,0,0"></TextBlock>
-                <toolkit:PerformanceProgressBar x:Name="progressBar" Foreground="Black" Background="#FFF2F6F8" IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Visibility="Collapsed" Margin="0,10,0,0"/>
+                <!--<TextBlock TextWrapping="Wrap" Text="Enter name" FontSize="20" TextAlignment="Left" Margin="24,20,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
+                <Border BorderThickness="2" Width="310" Height="56" Margin="24,10,0,0" HorizontalAlignment="Left" BorderBrush="Black">
+                    <StackPanel Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" Background="White">-->
+                <!--<Image Source="images\enter_name.png" Margin="15,10,0,10" Height="20" />-->
+
+                <TextBlock Text="{Binding Path= LocalizedResources.EnterName_Name_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" Margin="24,0,0,0" />
+                <toolkit:PhoneTextBox x:Name="txtBxEnterName" TextOptions.TextHintingMode="Animated" BorderThickness="2" LostFocus="txtBxEnterName_LostFocus" GotFocus="txtBxEnterName_GotFocus" InputScope="PersonalFullName" Margin="12,0,0,0" HorizontalAlignment="Left" Width="454" Height="78" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" />
+
+                <TextBlock Height="25" TextAlignment="Center" 
+                           Margin="0,0,0,0" Name="nameErrorTxt" 
+                           Text="{Binding Path= LocalizedResources.NetworkError_TryAgain, Source={StaticResource LocalizedStrings}}" 
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" 
+                           Visibility="Collapsed" FontSize="18" Foreground="Red" />
+
+                <TextBlock x:Name="msgTxtBlk" Text="Test" FontSize="18"
+                           Foreground="{StaticResource PhoneForegroundBrush}"
+                           HorizontalAlignment="Left" VerticalAlignment="Center"
+                           Opacity="0" Margin="24,0,0,0">
+
+                </TextBlock>
+                <toolkit:PerformanceProgressBar x:Name="progressBar" Background="Transparent" 
+                                                IsIndeterminate="True" 
+                                                VerticalAlignment="Center" 
+                                                VerticalContentAlignment="Center" 
+                                                FontSize="24" HorizontalAlignment="Stretch" 
+                                                HorizontalContentAlignment="Center" 
+                                                IsEnabled="False" IsTabStop="True" 
+                                                Opacity="0" Margin="0,10,0,0"/>
             </StackPanel>
         </Grid>
     </Grid>

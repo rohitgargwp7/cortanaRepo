@@ -53,6 +53,38 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<ContactInfo> GetAllHikeContacts()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                List<ContactInfo> res;
+                try
+                {
+                    res = DbCompiledQueries.GetAllHikeContacts(context).ToList<ContactInfo>();
+                }
+                catch (Exception)
+                {
+                    res = null;
+                }
+                return res;
+            }
+        }
+        public static List<ContactInfo> GetAllHikeContactsOrdered()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                List<ContactInfo> res;
+                try
+                {
+                    res = DbCompiledQueries.GetAllHikeContactsOrdered(context).ToList<ContactInfo>();
+                }
+                catch (Exception)
+                {
+                    res = null;
+                }
+                return res;
+            }
+        }
         public static List<ContactInfo> getAllContacts()
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -75,6 +107,15 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 var users = from user in context.users orderby user.Name select user;
+                return users.ToList<ContactInfo>();
+            }
+        }
+
+        public static List<ContactInfo> getAllContactsToInvite()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users where user.OnHike==false orderby user.Name select user;
                 return users.ToList<ContactInfo>();
             }
         }
@@ -179,33 +220,25 @@ namespace windows_client.DbUtils
             return false;
         }
 
-        public static void deleteMultipleRows(List<SelectUserToMsg.DelContacts> ids)
+        public static void deleteMultipleRows(List<ContactInfo.DelContacts> ids)
         {
             if(ids == null || ids.Count == 0)
                 return;
             bool shouldSubmit = false;
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
+                //using (HikeChatsDb chats = new HikeChatsDb(App.MsgsDBConnectionstring))
                 {
                     for (int i = 0; i < ids.Count; i++)
                     {
                         context.users.DeleteAllOnSubmit<ContactInfo>(DbCompiledQueries.GetUsersWithGivenId(context, ids[i].Id));
-                        if (ConversationsList.ConvMap.ContainsKey(ids[i].Msisdn))
+                        if (App.ViewModel.ConvMap.ContainsKey(ids[i].Msisdn))
                         {
-                            ConversationListObject cObj = DbCompiledQueries.GetConvForMsisdn(chats, ids[i].Msisdn).FirstOrDefault();
-                            if (cObj.ContactName != null)
-                            {
-                                cObj.ContactName = null;
-                                shouldSubmit = true;
-                            }
-                            ConversationListObject obj = ConversationsList.ConvMap[ids[i].Msisdn];
+                            ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
+                            ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
+                            //ConversationTableUtils.saveConvObjectList();
                         }
-                    }
-                    if (shouldSubmit)
-                    {
-                        MessagesTableUtils.SubmitWithConflictResolve(chats);
                     }
                 }
                 SubmitWithConflictResolve(context);
@@ -232,15 +265,6 @@ namespace windows_client.DbUtils
                 return;
             deleteMultipleRows(updatedContacts);
             addContacts(updatedContacts);
-        }
-
-        public static List<ContactInfo> getAllContactsToInvite()
-        {
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
-            {
-                List<ContactInfo> res = DbCompiledQueries.GetContactsForOnhikeStatus(context).ToList<ContactInfo>();
-                return (res==null || res.Count == 0) ? null : res;
-            }
         }
 
         private static void SubmitWithConflictResolve(HikeUsersDb context)
