@@ -79,13 +79,28 @@
                 <TextBlock Text="{Binding Path= LocalizedResources.Participants_Txt, Source={StaticResource LocalizedStrings}}" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
             <ListBox x:Name="groupChatParticipants" Tap="btnGetSelected_Tap" Grid.Row="2" Margin="24,5,0,0">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel ItemHeight="145" ItemWidth="145"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Height="25" Width="25" Fill="{Binding SquareColor}"></Rectangle>
-                            <TextBlock Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
+                        <Grid Background="{Binding SquareColor}" Margin="0,0,22,22" Height="145" Width="145">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name}" Width="120" TextWrapping="Wrap" FontSize="22" Margin="14,14,0,0" Grid.Row="0"></TextBlock>
+                            
                             <TextBlock Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="Gray" FontSize="20" Opacity="{Binding IsOwner}"></TextBlock>
-                        </StackPanel>
+                            <Image Source="images\remove_icon.png" Grid.Row="1" Height="36" Width="36" Margin="0,0,20,20" HorizontalAlignment="Right" Tap="removeParticipant_Tap"/>
+                        </Grid>
+                        
+                        
+                        <!--<StackPanel Margin="0,0,22,22" Orientation="Vertical" Background="{Binding SquareColor}" Height="145" Width="145">
+                        </StackPanel>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
