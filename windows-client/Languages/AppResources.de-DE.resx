@@ -1170,4 +1170,7 @@
     <value>Datei kann nicht heruntergeladen werden. </value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
+  <data name="Remove_From_grp_txt" xml:space="preserve">
+    <value />
+  </data>
 </root>

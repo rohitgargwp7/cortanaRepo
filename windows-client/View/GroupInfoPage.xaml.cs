@@ -37,7 +37,7 @@ namespace windows_client.View
         private bool imageHandlerCalled = false;
         private ContactInfo contactInfo = null;
         private GroupParticipant gp_obj; // this will be used for adding unknown number to add book
-
+        private GroupInfo gi;
         public bool EnableInviteBtn
         {
             get
@@ -90,7 +90,7 @@ namespace windows_client.View
             groupId = PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] as string;
             groupName = PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] as string;
 
-            GroupInfo gi = GroupTableUtils.getGroupInfoForId(groupId);
+            gi = GroupTableUtils.getGroupInfoForId(groupId);
             if (gi == null)
                 return;
             if (!App.IS_TOMBSTONED)
@@ -126,12 +126,20 @@ namespace windows_client.View
                 GroupParticipant gp = hikeUsersList[i];
                 if (gi.GroupOwner == gp.Msisdn)
                     gp.IsOwner = 1;
+                if (gi.GroupOwner == (string)App.appSettings[App.MSISDN_SETTING] && gp.Msisdn != gi.GroupOwner) // if this user is owner
+                    gp.RemoveFromGroup = Visibility.Visible;
+                else
+                    gp.RemoveFromGroup = Visibility.Collapsed;
                 groupMembersOC.Add(gp);
             }
 
             for (int i = 0; i < (smsUsersList != null ? smsUsersList.Count : 0); i++)
             {
                 GroupParticipant gp = smsUsersList[i];
+                if (gi.GroupOwner == (string)App.appSettings[App.MSISDN_SETTING]) // if this user is owner
+                    gp.RemoveFromGroup = Visibility.Visible;
+                else
+                    gp.RemoveFromGroup = Visibility.Collapsed;
                 groupMembersOC.Add(gp);
                 smsUsers++;
             }
@@ -148,6 +156,7 @@ namespace windows_client.View
             List<GroupParticipant> smsUsers = null;
             for (int i = 0; i < list.Count; i++)
             {
+
                 if (!list[i].HasLeft && list[i].IsOnHike)
                 {
                     hikeUsers.Add(list[i]);
@@ -305,7 +314,7 @@ namespace windows_client.View
                         {
                             groupMembersOC[i].IsOnHike = true;
                             smsUsers--;
-                            if(smsUsers == 0)
+                            if (smsUsers == 0)
                                 this.inviteBtn.IsEnabled = false;
                             return;
                         }
@@ -511,7 +520,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.ViewModel.ConvMap[groupId].ContactName = groupName;
-                    if(App.newChatThreadPage != null)
+                    if (App.newChatThreadPage != null)
                         App.newChatThreadPage.userName.Text = groupName; // set the name here only to fix bug# 1666
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
@@ -543,12 +552,6 @@ namespace windows_client.View
         {
             groupInfoPage.ApplicationBar = null;
         }
-
-        private void removeParticipant_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-
-        }
-
 
         private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -697,7 +700,7 @@ namespace windows_client.View
                     App.newChatThreadPage.userName.Text = gpName;
                 if (App.ViewModel.ConvMap.ContainsKey(groupId))
                     App.ViewModel.ConvMap[groupId].ContactName = gpName;
-       
+
                 if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
                 {
                     App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
@@ -710,7 +713,7 @@ namespace windows_client.View
                 }
                 if (count > 1)
                 {
-                    MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND,gp_obj.Msisdn));
+                    MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND, gp_obj.Msisdn));
                 }
                 else
                 {
@@ -719,5 +722,68 @@ namespace windows_client.View
             });
         }
 
+        private void MenuItem_Tap_AddUser(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+            if (selectedListBoxItem == null)
+                return;
+
+            GroupParticipant gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
+
+            if (gp_obj == null)
+                return;
+            if (!gp_obj.Msisdn.Contains(gp_obj.Name)) // shows name is already stored so return
+                return;
+            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(gp_obj.Msisdn);
+            if (ci != null)
+                return;
+            ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
+        }
+        private void MenuItem_Tap_RemoveMember(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(AppResources.RemoveFromGrpConfirmation_Txt, AppResources.Remove_From_grp_txt, MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+            ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+            if (selectedListBoxItem == null)
+                return;
+
+            GroupParticipant gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
+            if (gp_obj == null)
+                return;
+
+
+            // send 'gck' packet
+            // remove from OC
+            // correct group name if required
+            // set this guy as left in group cache
+
+            JArray kickOutMsisdns = new JArray();
+            kickOutMsisdns.Add(gp_obj.Msisdn);
+            JObject data = new JObject();
+            data.Add(HikeConstants.MSISDNS, kickOutMsisdns);
+            JObject jObj = new JObject();
+            jObj.Add(HikeConstants.TO, groupId);
+            jObj.Add(HikeConstants.FROM, App.MSISDN);
+            jObj.Add(HikeConstants.DATA, data);
+            jObj.Add(HikeConstants.TYPE, "gck");
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
+
+            //GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, gp_obj.Msisdn, groupId);
+            //gp.HasLeft = true;
+            //gp.IsUsed = false;
+            //GroupManager.Instance.SaveGroupCache(groupId);
+
+            //groupMembersOC.Remove(gp_obj);
+
+            //if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
+            //{
+            //    string grpName = GroupManager.Instance.defaultGroupName(groupId);
+            //    groupNameTxtBox.Text = grpName;
+            //    if (App.ViewModel.ConvMap.ContainsKey(groupId))
+            //        App.ViewModel.ConvMap[groupId].ContactName = grpName;
+            //    if(App.newChatThreadPage != null)
+            //        App.newChatThreadPage.userName.Text = grpName;
+        }
     }
 }

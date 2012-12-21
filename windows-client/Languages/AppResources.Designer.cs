@@ -1834,6 +1834,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove From Group.
+        /// </summary>
+        public static string Remove_From_grp_txt {
+            get {
+                return ResourceManager.GetString("Remove_From_grp_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove this person from group ?.
+        /// </summary>
+        public static string RemoveFromGrpConfirmation_Txt {
+            get {
+                return ResourceManager.GetString("RemoveFromGrpConfirmation_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
         public static string Save_AppBar_Btn {
@@ -1843,7 +1861,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add user.
+        ///   Looks up a localized string similar to Add User.
         /// </summary>
         public static string SelectUser_AddUser_Txt {
             get {

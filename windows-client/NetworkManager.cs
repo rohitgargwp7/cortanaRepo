@@ -746,7 +746,7 @@ namespace windows_client
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
                     GroupManager.Instance.SaveGroupCache(groupId);
-                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
+                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false); // grp name will change inside this
                     if (cObj == null)
                         return;
 
