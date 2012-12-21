@@ -544,8 +544,15 @@ namespace windows_client.View
             groupInfoPage.ApplicationBar = null;
         }
 
+        private void removeParticipant_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+
         private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            groupChatParticipants.SelectedIndex = -1;
             gp_obj = (sender as ListBox).SelectedItem as GroupParticipant;
             if (gp_obj == null)
                 return;
@@ -711,5 +718,6 @@ namespace windows_client.View
                 }
             });
         }
+
     }
 }

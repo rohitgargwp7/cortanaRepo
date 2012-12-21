@@ -78,14 +78,29 @@
                 <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="40" Height="40"></Image>
                 <TextBlock Text="{Binding Path= LocalizedResources.Participants_Txt, Source={StaticResource LocalizedStrings}}" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
-            <ListBox x:Name="groupChatParticipants" Tap="btnGetSelected_Tap" Grid.Row="2" Margin="24,5,0,0">
+            <ListBox x:Name="groupChatParticipants" Tap="btnGetSelected_Tap" Grid.Row="2" Margin="24,15,0,0">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel ItemHeight="151" ItemWidth="151"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Height="25" Width="25" Fill="{Binding SquareColor}"></Rectangle>
-                            <TextBlock Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="Gray" FontSize="20" Opacity="{Binding IsOwner}"></TextBlock>
-                        </StackPanel>
+                        <Grid Background="{Binding SquareColor}" Margin="0,0,22,22" Height="151" Width="151">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name}" Width="120" Foreground="White" TextWrapping="Wrap" FontSize="22" Margin="10,14,20,0" Grid.Row="0"></TextBlock>
+
+                            <TextBlock Margin="17,0,0,30" Grid.Row="1" Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="White" FontSize="18" Opacity="{Binding IsOwner}"></TextBlock>
+                            <!--<Image Source="images\remove_icon.png" Grid.Row="1" Height="16" Width="16" Margin="0,0,20,20" HorizontalAlignment="Right" Tap="removeParticipant_Tap" />-->
+                        </Grid>
+                        
+                        
+                        <!--<StackPanel Margin="0,0,22,22" Orientation="Vertical" Background="{Binding SquareColor}" Height="145" Width="145">
+                        </StackPanel>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
