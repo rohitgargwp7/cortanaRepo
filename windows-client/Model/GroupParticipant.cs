@@ -20,7 +20,7 @@ namespace windows_client.Model
     public class GroupParticipant : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<GroupParticipant>, IBinarySerializable
     {
         private string _grpId;
-        private string _name; // this is  full name
+        private string _name; // this is full name
         private string _msisdn;
         private bool _hasLeft;
         private bool _isOnHike;
@@ -190,6 +190,42 @@ namespace windows_client.Model
         {
             get;
             set;
+        }
+
+        public Visibility RemoveFromGroup
+        {
+            get;
+            set;
+        }
+
+        public Visibility AddUserVisibility
+        {
+            get
+            {
+                if (_msisdn.Contains(_name))
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+        }
+
+        public Visibility ContextMenuVisibility
+        {
+            get
+            {
+                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible)
+                    return Visibility.Visible;
+                return Visibility.Collapsed;
+            }
+        }
+
+        public bool ContextMenuIsEnabled
+        {
+            get
+            {
+                if (ContextMenuVisibility == Visibility.Visible)
+                    return true;
+                return false;
+            }
         }
 
         public SolidColorBrush SquareColor

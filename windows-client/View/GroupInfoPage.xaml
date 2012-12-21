@@ -78,13 +78,19 @@
                 <Image Name="addUserImage" Source="images\add_users.png" Tap="AddParticipants_Tap" Width="40" Height="40"></Image>
                 <TextBlock Text="{Binding Path= LocalizedResources.Participants_Txt, Source={StaticResource LocalizedStrings}}" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
-            <ListBox x:Name="groupChatParticipants" Tap="btnGetSelected_Tap" Grid.Row="2" Margin="24,5,0,0">
+            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="24,5,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <Rectangle Height="25" Width="25" Fill="{Binding SquareColor}"></Rectangle>
                             <TextBlock Text="{Binding Name}" FontSize="30" Margin="20,0,0,0"></TextBlock>
                             <TextBlock Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="Gray" FontSize="20" Opacity="{Binding IsOwner}"></TextBlock>
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
+                                    <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

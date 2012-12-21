@@ -168,6 +168,7 @@ namespace windows_client
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
+        public static string MSISDNS = "msisdns";
         public static string NAME = "name";
         public static string NEW_USER = "nu";
         public static string DND_NUMBERS = "dndnumbers";

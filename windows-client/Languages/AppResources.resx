@@ -1201,4 +1201,12 @@
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
+    <value>Are you sure you want to remove this person from group ?</value>
+    <comment>Remove member from group text</comment>
+  </data>
+  <data name="Remove_From_grp_txt" xml:space="preserve">
+    <value>Remove From Group</value>
+    <comment>General text</comment>
+  </data>
 </root>
