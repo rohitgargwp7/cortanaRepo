@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using windows_client.Controls;
 using System.Threading;
+using windows_client.DbUtils;
 
 namespace windows_client.utils
 {
@@ -137,7 +138,7 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE,SOCIAL_POST,SOCIAL_DELETE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -288,7 +289,7 @@ namespace windows_client.utils
                 chatbubble });
         }
 
-        public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction,string socialNetowrk,bool isPost)
+        public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
             addToken(req);
@@ -394,10 +395,10 @@ namespace windows_client.utils
                     Dictionary<string, List<ContactInfo>> contacts_to_update = vars[2] as Dictionary<string, List<ContactInfo>>;
                     JArray ids_json = vars[3] as JArray;
                     finalCallbackFunction = vars[4] as postResponseFunction;
-                    if(ids_json != null)
+                    if (ids_json != null)
                         data.Add("remove", ids_json);
                     JObject ids_to_update = getJsonContactList(contacts_to_update);
-                    if(ids_to_update != null)
+                    if (ids_to_update != null)
                         data.Add("update", ids_to_update);
                     break;
                 #endregion
@@ -730,7 +731,7 @@ namespace windows_client.utils
             return updateContacts;
         }
 
-        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id,bool isRefresh)
+        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id, bool isRefresh)
         {
             try
             {
@@ -743,6 +744,8 @@ namespace windows_client.utils
                 {
                     return null;
                 }
+                bool isFavSaved = false;
+                bool isPendingSaved = false;
                 int hikeCount = 1, smsCount = 1;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
@@ -770,7 +773,7 @@ namespace windows_client.utils
                             count++;
                             continue;
                         }
-                        bool onhike = (bool)entry["onhike"];                        
+                        bool onhike = (bool)entry["onhike"];
                         ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
 
                         if (!isRefresh) // this is case for new installation
@@ -793,7 +796,7 @@ namespace windows_client.utils
                         }
                         else // this is refresh contacts case
                         {
-                            if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn))
+                            if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
                             {
                                 try
                                 {
@@ -807,21 +810,37 @@ namespace windows_client.utils
                             else // fav and pending case
                             {
                                 ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
-                                if (c != null)
+                                if (c != null) // this user is in favs
+                                {
                                     c.ContactName = cn.Name;
-                                c = App.ViewModel.GetPending(cn.Msisdn);
-                                if (c != null)
-                                    c.ContactName = cn.Name;
+                                    MiscDBUtil.SaveFavourites(c);
+                                    isFavSaved = true;
+                                }
+                                else
+                                {
+                                    c = App.ViewModel.GetPending(cn.Msisdn);
+                                    if (c != null)
+                                    {
+                                        c.ContactName = cn.Name;
+                                        isPendingSaved = true;
+                                    }
+                                }
+
                             }
+
                         }
                         server_contacts.Add(cn);
                         totalContacts++;
                     }
                 }
+                if (isFavSaved)
+                    MiscDBUtil.SaveFavourites();
+                if (isPendingSaved)
+                    MiscDBUtil.SavePendingRequests();
                 msisdns = null;
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
-                if(!isRefresh)
+                if (!isRefresh)
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
                 return server_contacts;
             }

@@ -876,7 +876,7 @@ namespace windows_client.View
                 {
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
                     hikeIds.Add(dCn);
-                    if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn))
+                    if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
                     {
                         try
                         {
@@ -887,6 +887,15 @@ namespace windows_client.View
                         {
                             Debug.WriteLine("REFRESH CONTACTS :: Delete contact exception " + e.StackTrace);
                         }
+                    }
+                    else // if this contact is in favourite or pending and not in convMap update this also
+                    {
+                        ConversationListObject obj;
+                        obj = App.ViewModel.GetFav(id);
+                        if(obj == null) // this msisdn is not in favs , check in pending
+                            obj = App.ViewModel.GetPending(id);
+                        if (obj != null)
+                            obj.ContactName = null;
                     }
                 }
             }
