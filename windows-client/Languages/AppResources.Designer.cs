@@ -1636,7 +1636,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  (owner).
+        ///   Looks up a localized string similar to owner.
         /// </summary>
         public static string Owner_Txt {
             get {
@@ -1861,7 +1861,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add user.
+        ///   Looks up a localized string similar to Add User.
         /// </summary>
         public static string SelectUser_AddUser_Txt {
             get {

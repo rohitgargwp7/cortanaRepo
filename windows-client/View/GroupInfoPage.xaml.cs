@@ -314,7 +314,7 @@ namespace windows_client.View
                         {
                             groupMembersOC[i].IsOnHike = true;
                             smsUsers--;
-                            if(smsUsers == 0)
+                            if (smsUsers == 0)
                                 this.inviteBtn.IsEnabled = false;
                             return;
                         }
@@ -520,7 +520,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.ViewModel.ConvMap[groupId].ContactName = groupName;
-                    if(App.newChatThreadPage != null)
+                    if (App.newChatThreadPage != null)
                         App.newChatThreadPage.userName.Text = groupName; // set the name here only to fix bug# 1666
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
@@ -551,6 +551,20 @@ namespace windows_client.View
         private void groupNameTxtBox_LostFocus(object sender, RoutedEventArgs e)
         {
             groupInfoPage.ApplicationBar = null;
+        }
+
+        private void btnGetSelected_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            groupChatParticipants.SelectedIndex = -1;
+            gp_obj = (sender as ListBox).SelectedItem as GroupParticipant;
+            if (gp_obj == null)
+                return;
+            if (!gp_obj.Msisdn.Contains(gp_obj.Name)) // shows name is already stored so return
+                return;
+            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(gp_obj.Msisdn);
+            if (ci != null)
+                return;
+            ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
 
         private void saveContactTask_Completed(object sender, SaveContactResult e)
@@ -686,7 +700,7 @@ namespace windows_client.View
                     App.newChatThreadPage.userName.Text = gpName;
                 if (App.ViewModel.ConvMap.ContainsKey(groupId))
                     App.ViewModel.ConvMap[groupId].ContactName = gpName;
-       
+
                 if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
                 {
                     App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
@@ -699,7 +713,7 @@ namespace windows_client.View
                 }
                 if (count > 1)
                 {
-                    MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND,gp_obj.Msisdn));
+                    MessageBox.Show(string.Format(AppResources.MORE_THAN_1_CONTACT_FOUND, gp_obj.Msisdn));
                 }
                 else
                 {
@@ -713,7 +727,7 @@ namespace windows_client.View
             ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
                 return;
-            
+
             GroupParticipant gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
 
             if (gp_obj == null)
