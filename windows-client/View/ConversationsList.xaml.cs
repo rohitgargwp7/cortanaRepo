@@ -391,7 +391,7 @@ namespace windows_client.View
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
-            //if (App.appSettings.Contains("REWARDS_TOKEN"))
+            if (App.appSettings.Contains("REWARDS_TOKEN"))
                 rewards_StackPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
