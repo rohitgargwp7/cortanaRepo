@@ -324,7 +324,7 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[4] as postResponseFunction;
                     data.Add("set_cookie", "0");
                     data.Add("devicetype", "windows");
-                    data[HikeConstants.DEVICE_ID] = Utils.getDeviceId();
+                    data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
                     //data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
                     data[HikeConstants.DEVICE_VERSION] = Utils.getOSVersion();
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
