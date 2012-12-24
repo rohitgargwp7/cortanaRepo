@@ -79,15 +79,20 @@ namespace windows_client.View
 
         public void getProfilePic_Callback(byte[] fullBytes)
         {
-            shellProgress.IsVisible = false;
-            if (fullBytes != null && fullBytes.Length > 0)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                shellProgress.IsVisible = false;
+                if (fullBytes != null && fullBytes.Length > 0)
                 {
                     setImage(fullBytes);
-                });
-                MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
-            }
+                }
+                else
+                {
+                    byte[] smallThumbnailImage = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+                    setImage(smallThumbnailImage);
+                }
+            });
+            MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
         }
 
         private void setImage(byte[] imageBytes)
