@@ -222,7 +222,7 @@ namespace windows_client.View
                 if (res == MessageBoxResult.Cancel)
                     return;
             }
-            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = false;
+            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
             NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
         }
 
@@ -274,7 +274,7 @@ namespace windows_client.View
                     return;
                 }
             }
-            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = true;
+            PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
             NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
         }
 
@@ -411,7 +411,7 @@ namespace windows_client.View
                         return;
                     }
                 }
-                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = true;
+                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.TWITTER;
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
             }
         }
@@ -426,7 +426,7 @@ namespace windows_client.View
                     if (res == MessageBoxResult.Cancel)
                         return;
                 }
-                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = false;
+                PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
             }
         }
