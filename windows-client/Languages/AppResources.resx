@@ -1213,4 +1213,8 @@
     <value>Rewards</value>
     <comment>Rewards Text</comment>
   </data>
+  <data name="Conversations_Rewards_Txt" xml:space="preserve">
+    <value>rewards</value>
+    <comment>conv list stack panel text</comment>
+  </data>
 </root>

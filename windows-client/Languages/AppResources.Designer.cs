@@ -385,6 +385,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to rewards.
+        /// </summary>
+        public static string Conversations_Rewards_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_Rewards_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have no favorites right now..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
