@@ -31,7 +31,8 @@ namespace windows_client.View
         bool isgroupNameSelfChanged = false;
         bool isProfilePicTapped = false;
         string groupName;
-        byte[] buffer = null;
+        byte[] fullViewImageBytes = null;
+        byte[] thumbnailBytes = null;
         BitmapImage grpImage = null;
         private int smsUsers = 0;
         private bool imageHandlerCalled = false;
@@ -390,14 +391,6 @@ namespace windows_client.View
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
-            //else
-            //{
-            //    Uri uri = new Uri("/View/images/tick.png", UriKind.Relative);
-            //    grpImage = new BitmapImage(uri);
-            //    grpImage.CreateOptions = BitmapCreateOptions.None;
-            //    grpImage.UriSource = uri;
-            //    grpImage.ImageOpened += imageOpenedHandler;
-            //}
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
@@ -407,14 +400,18 @@ namespace windows_client.View
             imageHandlerCalled = false;
             BitmapImage image = (BitmapImage)sender;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-
+            using (var msLargeImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
+                thumbnailBytes = msLargeImage.ToArray();
+            }
             using (var msSmallImage = new MemoryStream())
             {
-                writeableBitmap.SaveJpeg(msSmallImage, 83, 83, 0, 95);
-                buffer = msSmallImage.ToArray();
+                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 95);
+                fullViewImageBytes = msSmallImage.ToArray();
             }
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
+            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
         }
 
         public void updateProfile_Callback(JObject obj)
@@ -423,14 +420,14 @@ namespace windows_client.View
             {
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
-                    App.ViewModel.ConvMap[groupId].Avatar = buffer;
+                    App.ViewModel.ConvMap[groupId].Avatar = fullViewImageBytes;
                     groupImage.Source = grpImage;
                     groupImage.Height = 83;
                     groupImage.Width = 83;
                     object[] vals = new object[3];
                     vals[0] = groupId;
-                    vals[1] = buffer;
-                    vals[2] = null;
+                    vals[1] = fullViewImageBytes;
+                    vals[2] = thumbnailBytes;
                     mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                     if (App.newChatThreadPage != null)
                         App.newChatThreadPage.userImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
