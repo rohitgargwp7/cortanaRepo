@@ -18,7 +18,7 @@
     <shell:SystemTray.ProgressIndicator>
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="False" />
     </shell:SystemTray.ProgressIndicator>
-    
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--Pivot Control-->
@@ -70,7 +70,7 @@
                 <TextBox Margin="-15,0,0,0" Grid.Column="1" Grid.Row="1" Name="groupNameTxtBox" Text="{Binding Path= LocalizedResources.GROUP_NAME_TXT, Source={StaticResource LocalizedStrings}}" Height="72" 
                              VerticalAlignment="Center" Width="330" GotFocus="groupNameTxtBox_GotFocus"
                              FontSize="24" LostFocus="groupNameTxtBox_LostFocus" InputScope="Text"></TextBox>
-                
+
             </Grid>
 
 
@@ -85,7 +85,7 @@
                         <toolkit:WrapPanel ItemHeight="151" ItemWidth="151"/>
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
-                
+
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Background="{Binding SquareColor}" Margin="0,0,22,22" Height="151" Width="151">
@@ -95,25 +95,19 @@
                             </Grid.RowDefinitions>
                             <TextBlock Text="{Binding Name}" Width="120" Foreground="White" TextWrapping="Wrap" FontSize="22" Margin="10,14,20,0" Grid.Row="0"></TextBlock>
                             <TextBlock Margin="17,0,0,30" Grid.Row="1" Text="{Binding Path= LocalizedResources.Owner_Txt, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="White" FontSize="18" Opacity="{Binding IsOwner}"></TextBlock>
-                                        <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
-                                            </toolkit:ContextMenu>
-                                        </toolkit:ContextMenuService.ContextMenu>
-                                        <!--<Image Source="images\remove_icon.png" Grid.Row="1" Height="16" Width="16" Margin="0,0,20,20" HorizontalAlignment="Right" Tap="removeParticipant_Tap" />-->
+                            <toolkit:ContextMenuService.ContextMenu>
+                                <toolkit:ContextMenu Name="ctxMenu" Visibility="{Binding ContextMenuVisibility}" IsEnabled="{Binding ContextMenuIsEnabled}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <toolkit:MenuItem Header="{Binding Path= LocalizedResources.SelectUser_AddUser_Txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding AddUserVisibility}" Tap="MenuItem_Tap_AddUser"/>
+                                    <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Remove_From_grp_txt, Source={StaticResource LocalizedStrings}}" Visibility="{Binding RemoveFromGroup}" Tap="MenuItem_Tap_RemoveMember"/>
+                                </toolkit:ContextMenu>
+                            </toolkit:ContextMenuService.ContextMenu>
                         </Grid>
-                        
-                        
-                        <!--<StackPanel Margin="0,0,22,22" Orientation="Vertical" Background="{Binding SquareColor}" Height="145" Width="145">
-                        </StackPanel>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Row="3">
                 <Button x:Name="inviteBtn" Content="{Binding Path= LocalizedResources.GroupInfo_InviteSMSUsers_Btn_Txt, Source={StaticResource LocalizedStrings}}" Tap="inviteSMSUsers_Tap" Height="90" FontSize="20" BorderThickness="2" Width="380"></Button>
             </StackPanel>
-
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
