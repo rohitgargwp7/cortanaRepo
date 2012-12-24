@@ -113,7 +113,7 @@ namespace windows_client.DbUtils
             #endregion
         }
 
-        public static void saveAvatarImage(string msisdn, byte[] imageBytes)
+        public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
             if (imageBytes == null)
                 return;
@@ -124,6 +124,10 @@ namespace windows_client.DbUtils
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
+                        if (isUpdated && store.FileExists(FileName + "_fullView"))
+                        {
+                            store.DeleteFile(FileName + "_fullView");
+                        }
                         using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {
                             stream.Write(imageBytes, 0, imageBytes.Length);
