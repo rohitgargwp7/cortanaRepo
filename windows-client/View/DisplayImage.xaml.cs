@@ -49,6 +49,7 @@ namespace windows_client.View
                 else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                 {
                     fileName = msisdn + "_fullView";
+                    shellProgress.IsVisible = true;
                     if (!Utils.isGroupConversation(msisdn))
                     {
                         AccountUtils.createGetRequest("/account/avatar/" + msisdn + "?fullsize=1", getProfilePic_Callback);
@@ -65,6 +66,7 @@ namespace windows_client.View
                     byte[] defaultImageBytes = MiscDBUtil.getThumbNailForMsisdn(fileName);
                     if (defaultImageBytes == null || defaultImageBytes.Length == 0)
                     {
+                        shellProgress.IsVisible = true;
                         AccountUtils.createGetRequest("/static/avatars/" + fileName, getProfilePic_Callback);
                     }
                     else
@@ -77,6 +79,7 @@ namespace windows_client.View
 
         public void getProfilePic_Callback(byte[] fullBytes)
         {
+            shellProgress.IsVisible = false;
             if (fullBytes != null && fullBytes.Length > 0)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
