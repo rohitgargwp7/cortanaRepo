@@ -968,7 +968,7 @@ namespace windows_client.View
                 addNewAttachmentMessageToUI(newChatBubble);
                 //msgMap.Add(convMessage.MessageId, newChatBubble);
 
-                object[] vals = new object[2];
+                object[] vals = new object[3];
                 vals[0] = convMessage;
                 vals[1] = sourceFilePath;
                 vals[2] = newChatBubble;
