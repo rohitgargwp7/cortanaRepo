@@ -143,6 +143,23 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static bool hasCustomProfileImage(string msisdn)
+        {
+            msisdn = msisdn.Replace(":", "_");
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                try
+                {
+                    if (store.FileExists(THUMBNAILS + "\\" + msisdn)) // Check if file exists
+                    {
+                        return true;
+                    }
+                }
+                catch { }
+            }
+            return false;
+        }
+
         public static byte[] getThumbNailForMsisdn(string msisdn)
         {
             msisdn = msisdn.Replace(":", "_");
