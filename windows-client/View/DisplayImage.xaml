@@ -24,12 +24,12 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
             <Image Name="FileImage" Grid.Row="0" RenderTransformOrigin="0.5,0.5" CacheMode="BitmapCache">
-                <Image.RenderTransform>
+                <!--<Image.RenderTransform>
                     <CompositeTransform x:Name="transform" />
                 </Image.RenderTransform>
                 <toolkit:GestureService.GestureListener>
                     <toolkit:GestureListener DragDelta="GestureListener_DragDelta" PinchCompleted="GestureListener_PinchCompleted" PinchStarted="OnPinchStarted" PinchDelta="OnPinchDelta" />
-                </toolkit:GestureService.GestureListener>
+                </toolkit:GestureService.GestureListener>-->
             </Image>
             <!--<MediaElement  Grid.Row="0" x:Name="FileMedia"></MediaElement>-->
         </Grid>
