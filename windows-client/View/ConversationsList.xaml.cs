@@ -957,7 +957,7 @@ namespace windows_client.View
 
             if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
             {
-                AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
+                AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
             }
         }
 
