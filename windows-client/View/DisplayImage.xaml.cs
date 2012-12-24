@@ -5,17 +5,14 @@ using Microsoft.Phone.Shell;
 using System.Windows.Media.Imaging;
 using System.IO;
 using windows_client.DbUtils;
-using System.IO.IsolatedStorage;
 using windows_client.utils;
-using Newtonsoft.Json.Linq;
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
     {
         private BitmapImage fileImage;
-
-        double initialAngle;
-        double initialScale;
+        private string msisdn;
+        private string fileName;//name of file recived from server. it would be either msisdn or default avatr file name
 
         public DisplayImage()
         {
@@ -30,34 +27,28 @@ namespace windows_client.View
                 object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
                 PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
                 long messsageId = (long)fileTapped[0];
-                string msisdn = (string)fileTapped[1];
+                msisdn = (string)fileTapped[1];
                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
-
                 byte[] filebytes;
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-                MemoryStream memStream = new MemoryStream(filebytes);
-                memStream.Seek(0, SeekOrigin.Begin);
-                fileImage = new BitmapImage();
-                fileImage.SetSource(memStream);
-                this.FileImage.Source = fileImage;
+                setImage(filebytes);
             }
             else
             {
                 object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                 PhoneApplicationService.Current.State.Remove("displayProfilePic");
-                string msisdn = (string)profilePicTapped[0];
+                msisdn = (string)profilePicTapped[0];
                 string filePath = msisdn + "_fullView";
+
+                //check if image is already stored
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
                 {
-                    MemoryStream memStream = new MemoryStream(fullViewBytes);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    fileImage = new BitmapImage();
-                    fileImage.SetSource(memStream);
-                    this.FileImage.Source = fileImage;
+                    setImage(fullViewBytes);
                 }
-                else
+                else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                 {
+                    fileName = msisdn + "_fullView";
                     if (!Utils.isGroupConversation(msisdn))
                     {
                         AccountUtils.createGetRequest("/account/avatar/" + msisdn + "?fullsize=1", getProfilePic_Callback);
@@ -65,6 +56,20 @@ namespace windows_client.View
                     else
                     {
                         AccountUtils.createGetRequest("/group/" + msisdn + "/avatar/?fullsize=1", getProfilePic_Callback);
+                    }
+                }
+                else
+                {
+                    fileName = UI_Utils.Instance.getDefaultAvatarFileName(msisdn,
+                        Utils.isGroupConversation(msisdn));
+                    byte[] defaultImageBytes = MiscDBUtil.getThumbNailForMsisdn(fileName);
+                    if (defaultImageBytes == null || defaultImageBytes.Length == 0)
+                    {
+                        AccountUtils.createGetRequest("/static/avatars/" + fileName, getProfilePic_Callback);
+                    }
+                    else
+                    {
+                        setImage(defaultImageBytes);
                     }
                 }
             }
@@ -76,14 +81,21 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MemoryStream memStream = new MemoryStream(fullBytes);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    fileImage = new BitmapImage();
-                    fileImage.SetSource(memStream);
-                    this.FileImage.Source = fileImage;
+                    setImage(fullBytes);
                 });
+                MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
             }
         }
+
+        private void setImage(byte[] imageBytes)
+        {
+            MemoryStream memStream = new MemoryStream(imageBytes);
+            memStream.Seek(0, SeekOrigin.Begin);
+            fileImage = new BitmapImage();
+            fileImage.SetSource(memStream);
+            this.FileImage.Source = fileImage;
+        }
+
         //private void OnPinchStarted(object sender, PinchStartedGestureEventArgs e)
         //{
         //    initialAngle = transform.Rotation;
