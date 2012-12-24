@@ -48,6 +48,7 @@ namespace windows_client.utils
         private BitmapImage nudgeReceived;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
+        private string[] defaultAvatarFileNames;
 
         private SolidColorBrush receiveMessageForeground;
         private Thickness convListEmoticonMargin = new Thickness(0, 5, 0, 0);
@@ -69,7 +70,9 @@ namespace windows_client.utils
                     lock (syncRoot)
                     {
                         if (instance == null)
+                        {
                             instance = new UI_Utils();
+                        }
                     }
                 }
                 return instance;
@@ -79,6 +82,21 @@ namespace windows_client.utils
 
         private UI_Utils()
         {
+            defaultAvatarFileNames = new string[14];
+            defaultAvatarFileNames[0] = "Digital.png";
+            defaultAvatarFileNames[1] = "Sneakers.png";
+            defaultAvatarFileNames[2] = "Space.png";
+            defaultAvatarFileNames[3] = "Beach.png";
+            defaultAvatarFileNames[4] = "Candy.png";
+            defaultAvatarFileNames[5] = "Cocktail.png";
+            defaultAvatarFileNames[6] = "Coffee.png";
+            defaultAvatarFileNames[7] = "RedPeople.png";
+            defaultAvatarFileNames[8] = "TealPeople.png";
+            defaultAvatarFileNames[9] = "BluePeople.png";
+            defaultAvatarFileNames[10] = "CoffeePeople.png";
+            defaultAvatarFileNames[11] = "EarthyPeople.png";
+            defaultAvatarFileNames[12] = "GreenPeople.png";
+            defaultAvatarFileNames[13] = "PinkPeople.png";
         }
 
         #region public  properties
@@ -270,7 +288,7 @@ namespace windows_client.utils
                 return phoneThemeColor;
             }
         }
-        
+
         public BitmapImage OnHikeImage
         {
             get
@@ -330,7 +348,7 @@ namespace windows_client.utils
                 return audioAttachmentReceive;
             }
         }
-        
+
 
         public BitmapImage AudioAttachmentSend
         {
@@ -371,7 +389,7 @@ namespace windows_client.utils
                 return emptyImage;
             }
         }
-        
+
         public BitmapImage Sent
         {
             get
@@ -502,7 +520,7 @@ namespace windows_client.utils
                 return nudgeReceived;
             }
         }
-        
+
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -574,6 +592,13 @@ namespace windows_client.utils
             return last3Digits % 7;
         }
 
+        public string getDefaultAvatarFileName(string msisdn, bool isGroup)
+        {
+            int index = computeHash(msisdn);
+            index += (isGroup ? 7 : 0);
+            return defaultAvatarFileNames[index];
+        }
+
         public BitmapImage getDefaultAvatar(string msisdn)
         {
             int index = computeHash(msisdn);
@@ -639,7 +664,6 @@ namespace windows_client.utils
             }
             return defaultGroupAvatars[index];
         }
-
         #endregion
     }
 }
