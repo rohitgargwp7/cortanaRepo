@@ -378,7 +378,6 @@ namespace windows_client.View
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
                 privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
                 helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
-                rewardsImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative)); // todo change this later
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
@@ -394,7 +393,7 @@ namespace windows_client.View
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             if (App.appSettings.Contains("REWARDS_TOKEN"))
-                rewards_StackPanel.Visibility = Visibility.Visible;
+                rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
