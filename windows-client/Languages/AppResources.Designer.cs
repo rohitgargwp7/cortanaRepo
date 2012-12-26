@@ -394,7 +394,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tell a friend.
+        ///   Looks up a localized string similar to invite friends.
         /// </summary>
         public static string Conversations_TellFriend_Txt {
             get {
