@@ -537,6 +537,19 @@ namespace windows_client
                                         }
 
                                         #endregion
+                                        #region REWARDS
+                                        if(kkvv.Key == HikeConstants.REWARDS_TOKEN)
+                                        {
+                                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
+                                        }
+                                        // whenever this key will come toggle the show rewards thing
+                                        if (kkvv.Key == HikeConstants.SHOW_REWARDS)
+                                        {
+                                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToString());
+                                            pubSub.publish(HikePubSub.REWARDS_TOGGLE,null);
+                                        }
+
+                                        #endregion
                                     }
                                     catch (Exception ex)
                                     {

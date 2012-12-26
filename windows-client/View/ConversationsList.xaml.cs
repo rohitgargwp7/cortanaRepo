@@ -837,6 +837,17 @@ namespace windows_client.View
                 });
             }
             #endregion
+            else if (HikePubSub.REWARDS_TOGGLE == type)
+            {
+                bool showRewards;
+                appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards);
+                if (showRewards) // show rewards screen
+                {
+                }
+                else
+                {
+                }
+            }
         }
 
         #endregion
