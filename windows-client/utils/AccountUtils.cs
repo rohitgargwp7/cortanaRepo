@@ -81,6 +81,7 @@ namespace windows_client.utils
         public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+        public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
 
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
@@ -489,7 +490,7 @@ namespace windows_client.utils
         public static void createGetRequest(string requestUrl, getProfilePicFunction callback)
         {
             HttpWebRequest request =
-            (HttpWebRequest)HttpWebRequest.Create(BASE + requestUrl);
+            (HttpWebRequest)HttpWebRequest.Create(AVATAR_BASE + requestUrl);
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
