@@ -579,8 +579,7 @@ namespace windows_client.View
 
         private void showNudgeTute()
         {
-            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-//            if (true)
+            if (!isGroupChat && App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
             {
                 overlayForNudge.Visibility = Visibility.Visible;
                 //overlayForNudge.Opacity = 0.65;
