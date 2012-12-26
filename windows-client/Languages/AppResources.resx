@@ -1210,7 +1210,7 @@
     <comment>General text</comment>
   </data>
   <data name="Rewards_Txt" xml:space="preserve">
-    <value>Rewards</value>
+    <value>rewards</value>
     <comment>Rewards Text</comment>
   </data>
 </root>

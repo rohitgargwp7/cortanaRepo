@@ -35,7 +35,7 @@ namespace windows_client.View
         bool _isFavListBound = false;
         bool _isPendingListBound = false;
         bool isProfilePicTapped = false;
-        byte[] thumbnailBytes = null;
+        byte[] fullViewImageBytes = null;
         byte[] largeImageBytes = null;
         private bool firstLoad = true;
         private bool showFreeSMS = false;
@@ -77,7 +77,7 @@ namespace windows_client.View
         private void showTutorial()
         {
             if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
-//            if(true)
+            //            if(true)
             {
                 overlay.Visibility = Visibility.Visible;
                 TutorialsGrid.Visibility = Visibility.Visible;
@@ -378,10 +378,10 @@ namespace windows_client.View
                 settingsImage.Source = new BitmapImage(new Uri("images/settings_dark.png", UriKind.Relative));
                 privacyImage.Source = new BitmapImage(new Uri("images/privacy_dark.png", UriKind.Relative));
                 helpImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative));
-                rewardsImage.Source = new BitmapImage(new Uri("images/help_dark.png", UriKind.Relative)); // todo change this later
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/rewards_link_dark.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x36, 0x36, 0x36));
             }
             else
@@ -389,10 +389,11 @@ namespace windows_client.View
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             if (App.appSettings.Contains("REWARDS_TOKEN"))
-                rewards_StackPanel.Visibility = Visibility.Visible;
+                rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
@@ -473,23 +474,19 @@ namespace windows_client.View
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
-
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-
             using (var msLargeImage = new MemoryStream())
             {
                 writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
                 largeImageBytes = msLargeImage.ToArray();
             }
-
             using (var msSmallImage = new MemoryStream())
             {
-                writeableBitmap.SaveJpeg(msSmallImage, 83, 83, 0, 95);
-                thumbnailBytes = msSmallImage.ToArray();
+                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 95);
+                fullViewImageBytes = msSmallImage.ToArray();
             }
-
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(thumbnailBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
         }
 
         public void updateProfile_Callback(JObject obj)
@@ -503,7 +500,7 @@ namespace windows_client.View
                     avatarImage.MaxWidth = 83;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
-                    vals[1] = thumbnailBytes;
+                    vals[1] = fullViewImageBytes;
                     vals[2] = largeImageBytes;
                     mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                 }
@@ -628,7 +625,7 @@ namespace windows_client.View
                 else // add to fav
                 {
                     convObj.IsFav = true;
-                    App.ViewModel.FavList.Insert(0,convObj);
+                    App.ViewModel.FavList.Insert(0, convObj);
                     if (App.ViewModel.IsPending(convObj.Msisdn))
                     {
                         App.ViewModel.PendingRequests.Remove(convObj);
@@ -660,7 +657,7 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             int convs = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-            
+
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -970,7 +967,7 @@ namespace windows_client.View
 
             if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
             {
-                AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
+                AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
             }
         }
 
@@ -1111,7 +1108,7 @@ namespace windows_client.View
         {
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             App.ViewModel.PendingRequests.Remove(fObj);
-            App.ViewModel.FavList.Insert(0,fObj);
+            App.ViewModel.FavList.Insert(0, fObj);
 
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;

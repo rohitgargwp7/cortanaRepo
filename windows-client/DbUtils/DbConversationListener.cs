@@ -292,18 +292,17 @@ namespace windows_client.DbUtils
             {
                 object[] vals = (object[])obj;
                 string msisdn = (string)vals[0];
-
-                byte[] thumbnailBytes = (byte[])vals[1];
-                byte[] fileBytes = (byte[])vals[2];
+                byte[] fullViewBytes = (byte[])vals[1];
+                byte[] thumbnailBytes = (byte[])vals[2];
                 if (Utils.isGroupConversation(msisdn))
                 {
                     string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes);
+                    MiscDBUtil.saveAvatarImage(grpId + "_fullView", fullViewBytes, false);
+                    MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes, false);
                 }
                 else
                 {
-                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC + "_small", thumbnailBytes);
-                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, fileBytes);
+                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, thumbnailBytes, false);
                 }
             }
             #endregion
