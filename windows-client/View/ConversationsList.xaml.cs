@@ -392,7 +392,8 @@ namespace windows_client.View
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
-            if (App.appSettings.Contains("REWARDS_TOKEN"))
+            bool showRewards;
+            if (App.appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards)
                 rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
@@ -838,11 +839,15 @@ namespace windows_client.View
             {
                 bool showRewards;
                 appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards);
-                if (showRewards) // show rewards screen
+                if (showRewards) // show rewards option
                 {
+                    if (rewardsPanel.Visibility == System.Windows.Visibility.Collapsed)
+                        rewardsPanel.Visibility = System.Windows.Visibility.Visible;
                 }
-                else
+                else // hide rewards option 
                 {
+                    if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
+                        rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
                 }
             }
         }

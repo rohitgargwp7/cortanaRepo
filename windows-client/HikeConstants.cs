@@ -245,6 +245,7 @@ namespace windows_client
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string DND_USER_IN_GROUP = "dugc";
             public static string ACCOUNT_INFO = "ai";
+            public static string ACCOUNT_CONFIG = "ac";
             public static string GROUP_USER_JOINED_OR_WAITING = "gujow";
             public static string USER_OPT_IN = "uo";
             public static string USER_JOIN = "uj";
@@ -252,6 +253,7 @@ namespace windows_client
             public static string HIKE_USER = "hike_user";
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
+            
         }
 
         public static class AppSettings

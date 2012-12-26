@@ -588,6 +588,29 @@ namespace windows_client
 
             }
             #endregion
+            else if (HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+
+                    JToken rew;
+                    if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
+                        App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
+                    rew = null;
+                    if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
+                    {
+                        App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
+                        pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
+            }
             #region USER_OPT_IN
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
