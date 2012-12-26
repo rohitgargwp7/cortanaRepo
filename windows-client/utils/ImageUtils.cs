@@ -83,20 +83,20 @@ namespace windows_client.utils
         private UI_Utils()
         {
             defaultAvatarFileNames = new string[14];
-            defaultAvatarFileNames[0] = "Digital.png";
-            defaultAvatarFileNames[1] = "Sneakers.png";
-            defaultAvatarFileNames[2] = "Space.png";
-            defaultAvatarFileNames[3] = "Beach.png";
-            defaultAvatarFileNames[4] = "Candy.png";
-            defaultAvatarFileNames[5] = "Cocktail.png";
-            defaultAvatarFileNames[6] = "Coffee.png";
-            defaultAvatarFileNames[7] = "RedPeople.png";
-            defaultAvatarFileNames[8] = "TealPeople.png";
-            defaultAvatarFileNames[9] = "BluePeople.png";
-            defaultAvatarFileNames[10] = "CoffeePeople.png";
-            defaultAvatarFileNames[11] = "EarthyPeople.png";
-            defaultAvatarFileNames[12] = "GreenPeople.png";
-            defaultAvatarFileNames[13] = "PinkPeople.png";
+            defaultAvatarFileNames[0] = "Digital.jpg";
+            defaultAvatarFileNames[1] = "Sneakers.jpg";
+            defaultAvatarFileNames[2] = "Space.jpg";
+            defaultAvatarFileNames[3] = "Beach.jpg";
+            defaultAvatarFileNames[4] = "Candy.jpg";
+            defaultAvatarFileNames[5] = "Cocktail.jpg";
+            defaultAvatarFileNames[6] = "Coffee.jpg";
+            defaultAvatarFileNames[7] = "RedPeople.jpg";
+            defaultAvatarFileNames[8] = "TealPeople.jpg";
+            defaultAvatarFileNames[9] = "BluePeople.jpg";
+            defaultAvatarFileNames[10] = "CoffeePeople.jpg";
+            defaultAvatarFileNames[11] = "EarthyPeople.jpg";
+            defaultAvatarFileNames[12] = "GreenPeople.jpg";
+            defaultAvatarFileNames[13] = "PinkPeople.jpg";
         }
 
         #region public  properties
