@@ -81,6 +81,7 @@ namespace windows_client.utils
         public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+        public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
 
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
@@ -132,6 +133,7 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
+        public delegate void getProfilePicFunction(byte[] data);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
 
@@ -324,7 +326,7 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[4] as postResponseFunction;
                     data.Add("set_cookie", "0");
                     data.Add("devicetype", "windows");
-                    data[HikeConstants.DEVICE_ID] = Utils.getDeviceId();
+                    data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
                     //data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
                     data[HikeConstants.DEVICE_VERSION] = Utils.getOSVersion();
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
@@ -469,10 +471,26 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
         }
 
-        public static void checkForUpdates(postResponseFunction callback)
+        //GET request
+        public static void createGetRequest(string requestUrl, postResponseFunction callback, bool isRelativeUrl)
+        {
+            HttpWebRequest request = null;
+            if (isRelativeUrl)
+            {
+                request = (HttpWebRequest)HttpWebRequest.Create(BASE + requestUrl);
+            }
+            else
+            {
+                request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            }
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        }
+
+        //GET request
+        public static void createGetRequest(string requestUrl, getProfilePicFunction callback)
         {
             HttpWebRequest request =
-            (HttpWebRequest)HttpWebRequest.Create(HikeConstants.UPDATE_URL);
+            (HttpWebRequest)HttpWebRequest.Create(AVATAR_BASE + requestUrl);
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
@@ -481,26 +499,36 @@ namespace windows_client.utils
             object[] vars = (object[])result.AsyncState;
 
             HttpWebRequest request = vars[0] as HttpWebRequest;
-            postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
             JObject jObject = null;
+            string data = "";
+            byte[] fileBytes = null;
             if (request != null)
             {
                 try
                 {
                     WebResponse response = request.EndGetResponse(result);
                     Stream responseStream = response.GetResponseStream();
-                    string data;
                     if (string.Equals(response.Headers[HttpRequestHeader.ContentEncoding], "gzip", StringComparison.OrdinalIgnoreCase))
                     {
                         data = decompressResponse(responseStream);
                     }
                     else
                     {
-                        using (var reader = new StreamReader(responseStream))
+                        if (vars[1] is postResponseFunction)
                         {
-                            data = reader.ReadToEnd();
+                            using (var reader = new StreamReader(responseStream))
+                            {
+                                data = reader.ReadToEnd();
+                            }
+                            jObject = JObject.Parse(data);
                         }
-                        jObject = JObject.Parse(data);
+                        else if (vars[1] is getProfilePicFunction)
+                        {
+                            using (BinaryReader br = new BinaryReader(responseStream))
+                            {
+                                fileBytes = br.ReadBytes((int)responseStream.Length);
+                            }
+                        }
                     }
                 }
                 catch (IOException ioe)
@@ -517,7 +545,17 @@ namespace windows_client.utils
                 }
                 finally
                 {
-                    finalCallbackFunction(jObject);
+                    if (vars[1] is postResponseFunction)
+                    {
+                        postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
+                        finalCallbackFunction(jObject);
+                    }
+                    else if (vars[1] is getProfilePicFunction)
+                    {
+                        getProfilePicFunction finalCallbackFunction = vars[1] as getProfilePicFunction;
+                        finalCallbackFunction(fileBytes);
+                    }
+
                 }
             }
         }

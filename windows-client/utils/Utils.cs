@@ -227,7 +227,7 @@ namespace windows_client.utils
         }
 
         //unique id for device. note:- it is not imei number
-        public static string getDeviceId()
+        public static string getHashedDeviceId()
         {
             object uniqueIdObj = null;
             byte[] uniqueId = null;
@@ -235,7 +235,10 @@ namespace windows_client.utils
             {
                 uniqueId = (byte [])uniqueIdObj;
             }
-            return uniqueId==null?null:BitConverter.ToString(uniqueId);
+            string deviceId = uniqueId==null?null:BitConverter.ToString(uniqueId);
+            if (string.IsNullOrEmpty(deviceId))
+                return null;
+            return deviceId.GetHashCode().ToString();
         }
 
         //carrier DeviceNetworkInformation.CellularMobileOperator;
@@ -258,7 +261,7 @@ namespace windows_client.utils
             info["_app_version"] = getAppVersion();
             info["tag"] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
-            info["device_id"] = getDeviceId();
+            info["device_id"] = getHashedDeviceId();
             info["_os_version"] = getOSVersion();
             info["_os"] = "windows";
             JObject infoPacket = new JObject();

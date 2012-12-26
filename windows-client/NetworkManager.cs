@@ -362,10 +362,10 @@ namespace windows_client
                 {
                     // ':' is not supported in Isolated Storage so replacing it with '_'
                     string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId, imageBytes);
+                    MiscDBUtil.saveAvatarImage(grpId, imageBytes, true);
                 }
                 else
-                    MiscDBUtil.saveAvatarImage(msisdn, imageBytes);
+                    MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
                 st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {

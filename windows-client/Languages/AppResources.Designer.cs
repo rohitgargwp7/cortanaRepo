@@ -1852,7 +1852,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rewards.
+        ///   Looks up a localized string similar to rewards.
         /// </summary>
         public static string Rewards_Txt {
             get {

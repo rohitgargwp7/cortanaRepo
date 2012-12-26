@@ -2860,15 +2860,21 @@ namespace windows_client.View
             }
         }
 
+        private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            object[] fileTapped = new object[1];
+            fileTapped[0] = mContactNumber;
+            PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
+            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+        }
+
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!isGroupChat)
             {
                 if (mUserIsBlocked)
                     return;
-
                 emoticonPanel.Visibility = Visibility.Collapsed;
-
                 if ((!isOnHike && mCredits <= 0))
                     return;
                 ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
