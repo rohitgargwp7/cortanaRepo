@@ -47,7 +47,7 @@ namespace windows_client.View
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
-
+        private bool isShowFavTute = true;
         #endregion
 
         #region Page Based Functions
@@ -58,7 +58,8 @@ namespace windows_client.View
             initAppBar();
             initProfilePage();
             DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
-            showTutorial();
+            if(isShowFavTute)
+                showTutorial();
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

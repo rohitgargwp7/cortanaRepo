@@ -85,6 +85,7 @@ namespace windows_client.View
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private BingMapsTask bingMapsTask = null;
+        private bool isShowNudgeTute = true;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -574,7 +575,8 @@ namespace windows_client.View
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             initBlockUnblockState();
-            showNudgeTute();
+            if(isShowNudgeTute)
+                showNudgeTute();
         }
 
         private void showNudgeTute()
