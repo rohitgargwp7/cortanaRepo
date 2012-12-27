@@ -1480,12 +1480,10 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        //chatBubble = new SentChatBubble(convMessage, readFromDB);
                         chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                        if (convMessage.MessageId > 0 && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                        //else if (convMessage.MessageId == -1)
-                        //    msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
                     }
                     else
                     {
