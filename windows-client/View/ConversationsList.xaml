@@ -80,14 +80,14 @@
                                                              Loaded="RichTextBox_Loaded" Margin="0,-2,0,5" Height="35" VerticalAlignment="Center" />
                                                     <!--<local:LinkifiedTextBox Text="{Binding LastMessage}" FontSize="21" ForegroundColor="{Binding LastMessageColor}" MaxHeight="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>-->
                                                 </StackPanel>
+                                                <toolkit:ContextMenuService.ContextMenu>
+                                                    <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
+                                                        <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding IsGroupChat}" Tap="MenuItem_Tap_AddRemoveFav"/>
+                                                    </toolkit:ContextMenu>
+                                                </toolkit:ContextMenuService.ContextMenu>
                                             </StackPanel>
                                         </StackPanel>
-                                        <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
-                                                <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding IsGroupChat}" Tap="MenuItem_Tap_AddRemoveFav"/>
-                                            </toolkit:ContextMenu>
-                                        </toolkit:ContextMenuService.ContextMenu>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
