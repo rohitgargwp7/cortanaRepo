@@ -575,7 +575,7 @@ namespace windows_client.View
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             initBlockUnblockState();
-            if(isShowNudgeTute)
+            if (isShowNudgeTute)
                 showNudgeTute();
         }
 
@@ -921,8 +921,11 @@ namespace windows_client.View
                 //messageListBox.Opacity = 1;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                ScrollToBottom();
-                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                if (!IsMute)
+                {
+                    ScrollToBottom();
+                    scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                }
                 NetworkManager.turnOffNetworkManager = false;
             });
         }
@@ -1038,8 +1041,7 @@ namespace windows_client.View
             {
                 MessageList.UpdateLayout();
                 Scroller.UpdateLayout();
-                if (!IsMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
-                    Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+                Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
             }
         }
 
@@ -1519,9 +1521,6 @@ namespace windows_client.View
                         MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
                         this.MessageList.Children.Add(dndChatBubble);
                     }
-                    if (!readFromDB)
-                        ScrollToBottom();
-
                 }
                 #endregion
                 #region PARTICIPANT_JOINED
@@ -1598,7 +1597,6 @@ namespace windows_client.View
                     }
                     MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString()));
                     this.MessageList.Children.Add(wchatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region USER_JOINED
@@ -1690,10 +1688,10 @@ namespace windows_client.View
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
-                if (!readFromDB)
-                    ScrollToBottom();
-
+                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                ScrollToBottom();
                 msgBubbleCount++;
+
             }
             catch (Exception e)
             {
