@@ -488,10 +488,11 @@ namespace windows_client.utils
         }
 
         //GET request
-        public static void createGetRequest(string requestUrl, getProfilePicFunction callback)
+        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
         {
-            HttpWebRequest request =
-            (HttpWebRequest)HttpWebRequest.Create(AVATAR_BASE + requestUrl);
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            if(setCookie)
+                addToken(request);
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 

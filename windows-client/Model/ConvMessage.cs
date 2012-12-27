@@ -817,13 +817,9 @@ namespace windows_client.Model
                     metadataJsonString = "{poke: true}";
                 }
 
-                //if (_groupParticipant != null) // reprsents group chat
-                //{
-                //    _message = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
-                //}
-                JToken ts = null;
-                if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
-                    _timestamp = ts.ToObject<long>();
+                //JToken ts = null;
+                //if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
+                _timestamp = TimeUtils.getCurrentTimeStamp();
 
                 /* prevent us from receiving a message from the future */
 

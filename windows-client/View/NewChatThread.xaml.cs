@@ -85,6 +85,7 @@ namespace windows_client.View
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private BingMapsTask bingMapsTask = null;
+        private bool isShowNudgeTute = true;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -574,13 +575,13 @@ namespace windows_client.View
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             initBlockUnblockState();
-            showNudgeTute();
+            if (isShowNudgeTute)
+                showNudgeTute();
         }
 
         private void showNudgeTute()
         {
-            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-//            if (true)
+            if (!isGroupChat && App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
             {
                 overlayForNudge.Visibility = Visibility.Visible;
                 //overlayForNudge.Opacity = 0.65;
@@ -923,8 +924,11 @@ namespace windows_client.View
                 //messageListBox.Opacity = 1;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                ScrollToBottom();
-                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                if (!IsMute)
+                {
+                    ScrollToBottom();
+                    scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                }
                 NetworkManager.turnOffNetworkManager = false;
             });
         }
@@ -1040,8 +1044,7 @@ namespace windows_client.View
             {
                 MessageList.UpdateLayout();
                 Scroller.UpdateLayout();
-                if (!IsMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
-                    Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+                Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
             }
         }
 
@@ -1483,12 +1486,10 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        //chatBubble = new SentChatBubble(convMessage, readFromDB);
                         chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                        if (convMessage.MessageId > 0 && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                        //else if (convMessage.MessageId == -1)
-                        //    msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
                     }
                     else
                     {
@@ -1524,9 +1525,6 @@ namespace windows_client.View
                         MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
                         this.MessageList.Children.Add(dndChatBubble);
                     }
-                    if (!readFromDB)
-                        ScrollToBottom();
-
                 }
                 #endregion
                 #region PARTICIPANT_JOINED
@@ -1603,7 +1601,6 @@ namespace windows_client.View
                     }
                     MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString()));
                     this.MessageList.Children.Add(wchatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region USER_JOINED
@@ -1695,10 +1692,10 @@ namespace windows_client.View
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
-                if (!readFromDB)
-                    ScrollToBottom();
-
+                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                ScrollToBottom();
                 msgBubbleCount++;
+
             }
             catch (Exception e)
             {
@@ -2915,8 +2912,13 @@ namespace windows_client.View
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
-                VibrateController vibrate = VibrateController.Default;
-                vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                bool isVibrateEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                if (isVibrateEnabled)
+                {
+                    VibrateController vibrate = VibrateController.Default;
+                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                }
             }
         }
 
