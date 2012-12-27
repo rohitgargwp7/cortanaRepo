@@ -351,6 +351,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+            mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
         }
 
         private void removeListeners()
@@ -362,6 +363,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+                mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
             }
             catch { }
         }
@@ -393,7 +395,7 @@ namespace windows_client.View
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             bool showRewards;
-            if (App.appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards)
+            if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
@@ -556,6 +558,7 @@ namespace windows_client.View
             GroupManager.Instance.GroupCache.Clear();
             GroupManager.Instance.DeleteAllGroups();
             GroupTableUtils.deleteAllGroups();
+
         }
 
         private void createGroup_Click(object sender, EventArgs e)
@@ -841,13 +844,19 @@ namespace windows_client.View
                 appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards);
                 if (showRewards) // show rewards option
                 {
-                    if (rewardsPanel.Visibility == System.Windows.Visibility.Collapsed)
-                        rewardsPanel.Visibility = System.Windows.Visibility.Visible;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsPanel.Visibility == System.Windows.Visibility.Collapsed)
+                            rewardsPanel.Visibility = System.Windows.Visibility.Visible;
+                    });
                 }
                 else // hide rewards option 
                 {
-                    if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
-                        rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
+                            rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
+                    });
                 }
             }
         }
