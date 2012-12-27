@@ -111,6 +111,8 @@ namespace windows_client
 
         public static readonly string GROUP_END = "groupEnd";
 
+        public static readonly string GROUP_ALIVE = "groupAlive";
+
         public static readonly string GROUP_NAME_CHANGED = "groupNameChanged";
 
         public static readonly string PARTICIPANT_JOINED_GROUP = "participantJoinedGroup";
