@@ -79,13 +79,15 @@ namespace windows_client
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
-        private static Dictionary<string, GroupParticipant> groupsCache = null;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static PushHelper _pushHelper;
-        private static object lockObj = new object();
+        private static PushHelper _pushHelper;        
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
+
+        private static object lockObj = new object();
+        //public static object AppGlobalLock = new object(); // this lock will be used across system to sync 2 diff threads example network manager and deleting all threads
+
         #endregion
 
         #region PROPERTIES
