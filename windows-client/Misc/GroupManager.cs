@@ -293,8 +293,9 @@ namespace windows_client.Misc
                     for (int i = 0; i < files.Length; i++)
                     {
                         string grpId = files[i].Replace("_", ":");
-                        if (groupCache.ContainsKey(grpId))
+                        if (groupCache.ContainsKey(grpId)) // if this group is already loaded ignore
                             continue;
+
                         string fileName = GROUP_DIR + "\\" + files[i];
                         List<GroupParticipant> gpList = null;
 
@@ -412,6 +413,36 @@ namespace windows_client.Misc
                     store.DeleteFile(GROUP_DIR + "\\" + grp);
                 }
             }
+        }
+
+        public void RefreshGroupCache(ContactInfo cn)
+        {
+            foreach (string grpId in groupCache.Keys)
+            {
+                GroupParticipant gp = GetParticipant(grpId,cn.Msisdn);
+                if (gp != null) // represents this contact lies in the group
+                {
+                    gp.Name = cn.Name;
+                    App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId); // update groupname
+                    // update chat thread and group info page
+                    object [] o = new object[2];
+                    o[0] = grpId;
+                    o[1] = App.ViewModel.ConvMap[grpId].ContactName;
+                    App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED,grpId);
+                    GetParticipantList(grpId).Sort();
+                    SaveGroupCache(grpId); // save the cache
+                }
+            }
+        }
+
+        private GroupParticipant GetParticipant(string groupId,string msisdn)
+        {
+            for (int i = 0; i < groupCache[groupId].Count; i++)
+            {
+                if (groupCache[groupId][i].Msisdn == msisdn)
+                    return groupCache[groupId][i];
+            }
+            return null;
         }
     }
 }
