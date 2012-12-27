@@ -702,7 +702,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
                 }
-                else
+                else // fav and pending case update
                 {
                     ConversationListObject co = App.ViewModel.GetFav(gp_obj.Msisdn);
                     if (co != null)
@@ -721,6 +721,11 @@ namespace windows_client.View
 
         private void MenuItem_Tap_AddUser(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                return;
+            }
             ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
                 return;
@@ -736,11 +741,18 @@ namespace windows_client.View
                 return;
             ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
+
         private void MenuItem_Tap_RemoveMember(object sender, System.Windows.Input.GestureEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.RemoveFromGrpConfirmation_Txt, AppResources.Remove_From_grp_txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                return;
+            }
             ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
                 return;
