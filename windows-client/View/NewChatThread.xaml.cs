@@ -2881,8 +2881,13 @@ namespace windows_client.View
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
-                VibrateController vibrate = VibrateController.Default;
-                vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                bool isVibrateEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                if (isVibrateEnabled)
+                {
+                    VibrateController vibrate = VibrateController.Default;
+                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                }
             }
         }
 
