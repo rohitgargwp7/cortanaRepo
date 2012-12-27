@@ -1240,6 +1240,7 @@ namespace windows_client.View
                 IsMute = false;
                 obj[HikeConstants.TYPE] = "unmute";
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 afterMute = true;
