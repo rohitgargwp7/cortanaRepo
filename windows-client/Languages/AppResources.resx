@@ -206,7 +206,7 @@
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>Remove From Favorites</value>
+    <value>remove from favorites</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
@@ -1212,5 +1212,13 @@
   <data name="Rewards_Txt" xml:space="preserve">
     <value>rewards</value>
     <comment>Rewards Text</comment>
+  </data>
+  <data name="Tap_To_Invite_Txt" xml:space="preserve">
+    <value>Tap here to invite</value>
+    <comment>Tap to invite text</comment>
+  </data>
+  <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
+    <value>Tap here to add this person</value>
+    <comment>Add to Group Msg</comment>
   </data>
 </root>

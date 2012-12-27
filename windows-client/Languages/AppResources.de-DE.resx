@@ -1176,4 +1176,10 @@
   <data name="Rewards_Txt" xml:space="preserve">
     <value />
   </data>
+  <data name="Tap_To_Invite_Txt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
+    <value />
+  </data>
 </root>

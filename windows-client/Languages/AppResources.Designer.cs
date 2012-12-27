@@ -1825,7 +1825,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove From Favorites.
+        ///   Looks up a localized string similar to remove from favorites.
         /// </summary>
         public static string RemFromFav_Txt {
             get {
@@ -2059,6 +2059,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tap here to add this person.
+        /// </summary>
+        public static string SelectUser_TapMsg_Grp_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_TapMsg_Grp_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tap here to message this person.
         /// </summary>
         public static string SelectUser_TapMsg_Txt {
@@ -2271,6 +2280,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to invite.
+        /// </summary>
+        public static string Tap_To_Invite_Txt {
+            get {
+                return ResourceManager.GetString("Tap_To_Invite_Txt", resourceCulture);
             }
         }
         
