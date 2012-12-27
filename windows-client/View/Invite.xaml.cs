@@ -30,7 +30,7 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_SOCIAL);
             string inviteToken = null;
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(AppResources.Social_Invite_Txt, inviteToken == null ? "" : inviteToken);
             ShareLinkTask shareLinkTask = new ShareLinkTask();
             shareLinkTask.LinkUri = new Uri("http://get.hike.in/" + inviteToken, UriKind.Absolute);
@@ -48,7 +48,7 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_EMAIL);
             string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             string inviteMsg = string.Format(AppResources.Email_Invite_Txt, inviteToken);
             EmailComposeTask f5EmailCompose = new EmailComposeTask();
             f5EmailCompose.Subject = AppResources.Hike_txt + AppResources.Fun_Free_Messaging_Txt;
@@ -65,18 +65,20 @@ namespace windows_client.View
         private void Messaging_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE_MESSAGE);
-            string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            string inviteMsg = string.Format(AppResources.sms_invite_message, inviteToken);
-            SmsComposeTask sms = new Microsoft.Phone.Tasks.SmsComposeTask();
-            sms.Body = inviteMsg;
-            try
-            {
-                sms.Show();
-            }
-            catch
-            {
-            }
+            string uri = "/View/InviteUsers.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            //string inviteToken = "";
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            //string inviteMsg = string.Format(AppResources.sms_invite_message, inviteToken);
+            //SmsComposeTask sms = new Microsoft.Phone.Tasks.SmsComposeTask();
+            //sms.Body = inviteMsg;
+            //try
+            //{
+            //    sms.Show();
+            //}
+            //catch
+            //{
+            //}
         }
 
     }
