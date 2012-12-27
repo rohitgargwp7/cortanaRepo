@@ -278,5 +278,37 @@ namespace windows_client.utils
                 return true;
             return false;
         }
+
+        public static bool IsNumber(string charsEntered)
+        {
+            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
+            {
+                charsEntered = charsEntered.Substring(1);
+            }
+            long i = 0;
+            return long.TryParse(charsEntered, out i);
+        }
+
+        public static bool IsNumberValid(string charsEntered)
+        {
+            // TODO : Use regex if required
+            // CASES 
+            /*
+             * 1. If number starts with '+'
+             */
+
+            if (charsEntered.StartsWith("+"))
+            {
+                if (charsEntered.Length < 2 || charsEntered.Length > 15)
+                    return false;
+            }
+            else
+            {
+                if (charsEntered.Length < 1 || charsEntered.Length > 15)
+                    return false;
+            }
+            return true;
+        }
+
     }
 }
