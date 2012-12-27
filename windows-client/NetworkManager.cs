@@ -588,6 +588,7 @@ namespace windows_client
 
             }
             #endregion
+            #region ACCOUNT CONFIG
             else if (HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG == type)
             {
                 JObject data = null;
@@ -611,6 +612,7 @@ namespace windows_client
                     Debug.WriteLine(e);
                 }
             }
+            #endregion
             #region USER_OPT_IN
             else if (HikeConstants.MqttMessageTypes.USER_OPT_IN == type)
             {
@@ -672,22 +674,38 @@ namespace windows_client
                 #region ALREADY ADDED TO GROUP
                 else if (gcState == GroupChatState.ALREADY_ADDED_TO_GROUP)
                 {
-                    // update JSON in the metadata .....
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
 
-                    if (dndList.Count > 0) // there are people who are in dnd , show their msg
+                    // this is the case when you kick out a user and the again adds him
+                    if (gi != null && !gi.GroupAlive) // if group exists and is dead
                     {
-                        JObject o = new JObject();
-                        o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
-                        convMessage = new ConvMessage(); // this will be normal DND msg
-                        convMessage.Msisdn = grpId;
-                        convMessage.MetaDataString = o.ToString(Formatting.None);
-                        convMessage.Message = GetDndMsg(dndList);
-                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
-                        convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
+                        GroupTableUtils.SetGroupAlive(grpId);
+                        convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
+                        if (dndList != null && dndList.Count > 0)
+                        {
+                            string dndMsg = GetDndMsg(dndList);
+                            convMessage.Message += ";" + dndMsg;
+                        }
+                        this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
                     }
-                    else
-                        return;
+                    else // this is normal case
+                    {
+                        // update JSON in the metadata .....
+                        if (dndList.Count > 0) // there are people who are in dnd , show their msg
+                        {
+                            JObject o = new JObject();
+                            o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
+                            convMessage = new ConvMessage(); // this will be normal DND msg
+                            convMessage.Msisdn = grpId;
+                            convMessage.MetaDataString = o.ToString(Formatting.None);
+                            convMessage.Message = GetDndMsg(dndList);
+                            convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                            convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
+                            convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
+                        }
+                        else
+                            return;
+                    }
                 }
                 #endregion
                 #region DUPLICATE GCJ
