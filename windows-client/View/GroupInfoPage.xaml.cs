@@ -725,7 +725,7 @@ namespace windows_client.View
             if (selectedListBoxItem == null)
                 return;
 
-            GroupParticipant gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
+            gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
 
             if (gp_obj == null)
                 return;
