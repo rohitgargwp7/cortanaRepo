@@ -545,7 +545,7 @@ namespace windows_client
                                         // whenever this key will come toggle the show rewards thing
                                         if (kkvv.Key == HikeConstants.SHOW_REWARDS)
                                         {
-                                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToString());
+                                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
                                             pubSub.publish(HikePubSub.REWARDS_TOGGLE,null);
                                         }
 
