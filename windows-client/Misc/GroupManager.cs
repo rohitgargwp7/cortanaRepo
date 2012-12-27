@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace windows_client.Misc
     class GroupManager
     {
         private string GROUP_DIR = "groups_dir";
+        private object readWriteLock = new object();
         private IsolatedStorageFile isoStore = IsolatedStorageFile.GetUserStoreForApplication();
 
         private Dictionary<string, List<GroupParticipant>> groupCache = null;
@@ -79,49 +81,12 @@ namespace windows_client.Misc
 
         public void SaveGroupCache(string grpId)
         {
-            string grp = grpId.Replace(":", "_");
-            string fileName = GROUP_DIR + "\\" + grp;
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                try
+                string grp = grpId.Replace(":", "_");
+                string fileName = GROUP_DIR + "\\" + grp;
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    if (store.FileExists(fileName))
-                        store.DeleteFile(fileName);
-                }
-                catch { }
-                try
-                {
-                    using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(file))
-                        {
-                            writer.Seek(0, SeekOrigin.Begin);
-                            writer.Write(groupCache[grpId].Count);
-                            for (int i = 0; i < groupCache[grpId].Count; i++)
-                            {
-                                GroupParticipant item = groupCache[grpId][i];
-                                item.Write(writer);
-                            }
-                            writer.Flush();
-                            writer.Close();
-                        }
-                        file.Close();
-                        file.Dispose();
-                    }
-                }
-                catch { }
-            }
-        }
-
-        public void SaveGroupCache()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                foreach (string grpId in groupCache.Keys)
-                {
-                    string grp = grpId.Replace(":", "_");
-                    string fileName = GROUP_DIR + "\\" + grp;
-
                     try
                     {
                         if (store.FileExists(fileName))
@@ -153,11 +118,116 @@ namespace windows_client.Misc
             }
         }
 
+        public void SaveGroupCache()
+        {
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    foreach (string grpId in groupCache.Keys)
+                    {
+                        string grp = grpId.Replace(":", "_");
+                        string fileName = GROUP_DIR + "\\" + grp;
+
+                        try
+                        {
+                            if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+                        catch { }
+                        try
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                            {
+                                using (BinaryWriter writer = new BinaryWriter(file))
+                                {
+                                    writer.Seek(0, SeekOrigin.Begin);
+                                    writer.Write(groupCache[grpId].Count);
+                                    for (int i = 0; i < groupCache[grpId].Count; i++)
+                                    {
+                                        GroupParticipant item = groupCache[grpId][i];
+                                        item.Write(writer);
+                                    }
+                                    writer.Flush();
+                                    writer.Close();
+                                }
+                                file.Close();
+                                file.Dispose();
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
+
         public List<GroupParticipant> GetParticipantList(string grpId)
         {
             if (groupCache.ContainsKey(grpId))
                 return groupCache[grpId];
             else // load from file
+            {
+                lock (readWriteLock)
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        List<GroupParticipant> gpList = null;
+                        string grp = grpId.Replace(":", "_");
+                        string fileName = GROUP_DIR + "\\" + grp;
+                        if (!store.FileExists(fileName))
+                            return null;
+                        else
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            {
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    int count = 0;
+                                    try
+                                    {
+                                        count = reader.ReadInt32();
+                                    }
+                                    catch { }
+                                    if (count > 0)
+                                    {
+                                        gpList = new List<GroupParticipant>(count);
+                                        for (int i = 0; i < count; i++)
+                                        {
+                                            GroupParticipant item = new GroupParticipant();
+                                            try
+                                            {
+                                                item.Read(reader);
+                                            }
+                                            catch
+                                            {
+                                                item = null;
+                                            }
+                                        }
+                                    }
+                                    reader.Close();
+                                }
+                                try
+                                {
+                                    file.Close();
+                                    file.Dispose();
+                                }
+                                catch { }
+                            }
+                            if (gpList != null)
+                                groupCache[grpId] = gpList;
+                            return gpList;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void LoadGroupParticipants(string grpId)
+        {
+            if (groupCache.ContainsKey(grpId))
+                return;
+
+            lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -165,7 +235,7 @@ namespace windows_client.Misc
                     string grp = grpId.Replace(":", "_");
                     string fileName = GROUP_DIR + "\\" + grp;
                     if (!store.FileExists(fileName))
-                        return null;
+                        return;
                     else
                     {
                         using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -187,6 +257,7 @@ namespace windows_client.Misc
                                         try
                                         {
                                             item.Read(reader);
+                                            gpList.Add(item);
                                         }
                                         catch
                                         {
@@ -205,122 +276,68 @@ namespace windows_client.Misc
                         }
                         if (gpList != null)
                             groupCache[grpId] = gpList;
-                        return gpList;
                     }
-                }
-            }
-        }
-
-        public void LoadGroupParticipants(string grpId)
-        {
-            if (groupCache.ContainsKey(grpId))
-                return;
-
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                List<GroupParticipant> gpList = null;
-                string grp = grpId.Replace(":", "_");
-                string fileName = GROUP_DIR + "\\" + grp;
-                if (!store.FileExists(fileName))
-                    return;
-                else
-                {
-                    using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    {
-                        using (var reader = new BinaryReader(file))
-                        {
-                            int count = 0;
-                            try
-                            {
-                                count = reader.ReadInt32();
-                            }
-                            catch { }
-                            if (count > 0)
-                            {
-                                gpList = new List<GroupParticipant>(count);
-                                for (int i = 0; i < count; i++)
-                                {
-                                    GroupParticipant item = new GroupParticipant();
-                                    try
-                                    {
-                                        item.Read(reader);
-                                        gpList.Add(item);
-                                    }
-                                    catch
-                                    {
-                                        item = null;
-                                    }
-                                }
-                            }
-                            reader.Close();
-                        }
-                        try
-                        {
-                            file.Close();
-                            file.Dispose();
-                        }
-                        catch { }
-                    }
-                    if (gpList != null)
-                        groupCache[grpId] = gpList;
                 }
             }
         }
 
         public void LoadGroupCache()
         {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                string[] files = store.GetFileNames(GROUP_DIR + "\\*");
-                if (files == null || files.Length == 0)
-                    return;
-                for (int i = 0; i < files.Length; i++)
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    string grpId = files[i].Replace("_", ":");
-                    if (groupCache.ContainsKey(grpId))
-                        continue;
-                    string fileName = GROUP_DIR + "\\" + files[i];
-                    List<GroupParticipant> gpList = null;
-
-                    using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    string[] files = store.GetFileNames(GROUP_DIR + "\\*");
+                    if (files == null || files.Length == 0)
+                        return;
+                    for (int i = 0; i < files.Length; i++)
                     {
-                        using (var reader = new BinaryReader(file))
+                        string grpId = files[i].Replace("_", ":");
+                        if (groupCache.ContainsKey(grpId))
+                            continue;
+                        string fileName = GROUP_DIR + "\\" + files[i];
+                        List<GroupParticipant> gpList = null;
+
+                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
-                            int count = 0;
-                            try
+                            using (var reader = new BinaryReader(file))
                             {
-                                count = reader.ReadInt32();
-                            }
-                            catch { }
-                            if (count > 0)
-                            {
-                                gpList = new List<GroupParticipant>(count);
-                                for (int j = 0; j < count; j++)
+                                int count = 0;
+                                try
                                 {
-                                    GroupParticipant item = new GroupParticipant();
-                                    try
+                                    count = reader.ReadInt32();
+                                }
+                                catch { }
+                                if (count > 0)
+                                {
+                                    gpList = new List<GroupParticipant>(count);
+                                    for (int j = 0; j < count; j++)
                                     {
-                                        item.Read(reader);
-                                        gpList.Add(item);
-                                    }
-                                    catch
-                                    {
-                                        item = null;
+                                        GroupParticipant item = new GroupParticipant();
+                                        try
+                                        {
+                                            item.Read(reader);
+                                            gpList.Add(item);
+                                        }
+                                        catch
+                                        {
+                                            item = null;
+                                        }
                                     }
                                 }
+                                reader.Close();
                             }
-                            reader.Close();
+                            try
+                            {
+                                file.Close();
+                                file.Dispose();
+                            }
+                            catch { }
                         }
-                        try
-                        {
-                            file.Close();
-                            file.Dispose();
-                        }
-                        catch { }
-                    }
-                    if (gpList != null)
-                        groupCache[grpId] = gpList;
+                        if (gpList != null)
+                            groupCache[grpId] = gpList;
 
+                    }
                 }
             }
         }
@@ -361,11 +378,23 @@ namespace windows_client.Misc
 
         public void DeleteAllGroups()
         {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                string[] files = store.GetFileNames(GROUP_DIR + "\\*");
-                for (int i = 0; i < files.Length; i++)
-                    store.DeleteFile(GROUP_DIR + "\\" + files[i]);
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    string[] files = store.GetFileNames(GROUP_DIR + "\\*");
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        try
+                        {
+                            store.DeleteFile(GROUP_DIR + "\\" + files[i]);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while deleting all groups :: " + e.StackTrace);
+                        }
+                    }
+                }
             }
         }
 
@@ -375,10 +404,13 @@ namespace windows_client.Misc
         /// <param name="grpId"></param>
         public void DeleteGroup(string grpId)
         {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            lock (readWriteLock)
             {
-                string grp = grpId.Replace(":","_");
-                store.DeleteFile(GROUP_DIR + "\\" + grp);
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    string grp = grpId.Replace(":", "_");
+                    store.DeleteFile(GROUP_DIR + "\\" + grp);
+                }
             }
         }
     }
