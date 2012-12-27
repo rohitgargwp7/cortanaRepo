@@ -371,8 +371,15 @@ namespace windows_client
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                        this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                        try
+                        {
+                            App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                            this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Network Manager : Exception in ICON :: "+ex.StackTrace);
+                        }
                     });
                 }
                 else
@@ -538,7 +545,7 @@ namespace windows_client
 
                                         #endregion
                                         #region REWARDS
-                                        if(kkvv.Key == HikeConstants.REWARDS_TOKEN)
+                                        if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
                                         {
                                             App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
                                         }
@@ -546,7 +553,7 @@ namespace windows_client
                                         if (kkvv.Key == HikeConstants.SHOW_REWARDS)
                                         {
                                             App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
-                                            pubSub.publish(HikePubSub.REWARDS_TOGGLE,null);
+                                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
                                         }
 
                                         #endregion
@@ -564,7 +571,7 @@ namespace windows_client
                             {
                                 string val = oj.ToString();
                                 Debug.WriteLine("AI :: Value : " + val);
-                                
+
                                 if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                                     App.WriteToIsoStorageSettings(kv.Key, val);
                             }
@@ -681,11 +688,6 @@ namespace windows_client
                     {
                         GroupTableUtils.SetGroupAlive(grpId);
                         convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
-                        if (dndList != null && dndList.Count > 0)
-                        {
-                            string dndMsg = GetDndMsg(dndList);
-                            convMessage.Message += ";" + dndMsg;
-                        }
                         this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
                     }
                     else // this is normal case
@@ -871,19 +873,28 @@ namespace windows_client
                     return;
                 if (App.ViewModel.IsPending(ms))
                     return;
-                ConversationListObject favObj;
-                if (App.ViewModel.ConvMap.ContainsKey(ms))
-                    favObj = App.ViewModel.ConvMap[ms];
-                else // user not saved in address book
-                {
-                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
-                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    App.ViewModel.PendingRequests.Add(favObj);
-                    MiscDBUtil.SavePendingRequests();
-                    this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    try
+                    {
+
+                        ConversationListObject favObj;
+                        if (App.ViewModel.ConvMap.ContainsKey(ms))
+                            favObj = App.ViewModel.ConvMap[ms];
+                        else // user not saved in address book
+                        {
+                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                            favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                        }
+
+                        App.ViewModel.PendingRequests.Add(favObj);
+                        MiscDBUtil.SavePendingRequests();
+                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    }
+                    catch(Exception e) 
+                    {
+                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: "+e.StackTrace);
+                    }
                 });
 
             }
