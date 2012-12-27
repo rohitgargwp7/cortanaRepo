@@ -214,7 +214,7 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
-    <value>Weitersagen</value>
+    <value />
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
@@ -1174,6 +1174,12 @@
     <value />
   </data>
   <data name="Rewards_Txt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Tap_To_Invite_Txt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
     <value />
   </data>
 </root>

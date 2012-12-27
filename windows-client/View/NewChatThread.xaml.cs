@@ -664,8 +664,11 @@ namespace windows_client.View
             else
             {
                 GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                if (gif != null && string.IsNullOrEmpty(gif.GroupName))
+                if (gif != null && string.IsNullOrEmpty(gif.GroupName)) // set groupname if not alreay set
+                {
                     mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
+                    ConversationTableUtils.updateGroupName(mContactNumber,mContactName); // update DB and UI
+                }
             }
             userName.Text = mContactName;
             if (isNewgroup)
@@ -1089,6 +1092,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
+            mPubSub.addListener(HikePubSub.GROUP_ALIVE, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
         }
@@ -1109,6 +1113,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
+                mPubSub.removeListener(HikePubSub.GROUP_ALIVE, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             }
@@ -1238,6 +1243,7 @@ namespace windows_client.View
                 IsMute = false;
                 obj[HikeConstants.TYPE] = "unmute";
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 afterMute = true;
@@ -1704,7 +1710,7 @@ namespace windows_client.View
                 return;
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
@@ -2641,6 +2647,23 @@ namespace windows_client.View
 
             #endregion
 
+            #region GROUP ALIVE
+
+            else if (HikePubSub.GROUP_ALIVE == type)
+            {
+                string groupId = (string)obj;
+
+                if (mContactNumber == groupId)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        groupChatAlive();
+                    });
+                }
+            }
+
+            #endregion
+
             #region PARTICIPANT_LEFT_GROUP
 
             else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
@@ -2698,6 +2721,16 @@ namespace windows_client.View
             sendIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
+        }
+
+        private void groupChatAlive()
+        {
+            isGroupAlive = true;
+            sendMsgTxtbox.IsHitTestVisible = true;
+            appBar.IsMenuEnabled = true;
+            sendIconButton.IsEnabled = true;
+            emoticonsIconButton.IsEnabled = true;
+            fileTransferIconButton.IsEnabled = true;
         }
 
         #endregion

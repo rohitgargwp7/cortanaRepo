@@ -61,7 +61,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add to Favorites.
+        ///   Looks up a localized string similar to add to favorites.
         /// </summary>
         public static string Add_To_Fav_Txt {
             get {
@@ -142,7 +142,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
+        ///   Looks up a localized string similar to cancel.
         /// </summary>
         public static string Cancel_Txt {
             get {
@@ -394,7 +394,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to tell a friend.
+        ///   Looks up a localized string similar to invite friends.
         /// </summary>
         public static string Conversations_TellFriend_Txt {
             get {
@@ -412,7 +412,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy.
+        ///   Looks up a localized string similar to copy.
         /// </summary>
         public static string Copy_txt {
             get {
@@ -448,7 +448,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
+        ///   Looks up a localized string similar to delete.
         /// </summary>
         public static string Delete_Txt {
             get {
@@ -880,7 +880,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Forward.
+        ///   Looks up a localized string similar to forward.
         /// </summary>
         public static string Forward_Txt {
             get {
@@ -1825,7 +1825,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove From Favorites.
+        ///   Looks up a localized string similar to remove from favorites.
         /// </summary>
         public static string RemFromFav_Txt {
             get {
@@ -1834,7 +1834,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove From Group.
+        ///   Looks up a localized string similar to remove from group.
         /// </summary>
         public static string Remove_From_grp_txt {
             get {
@@ -1870,7 +1870,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add User.
+        ///   Looks up a localized string similar to add user.
         /// </summary>
         public static string SelectUser_AddUser_Txt {
             get {
@@ -2055,6 +2055,15 @@ namespace windows_client.Languages {
         public static string SelectUser_SmsMsg_Txt {
             get {
                 return ResourceManager.GetString("SelectUser_SmsMsg_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to add this person.
+        /// </summary>
+        public static string SelectUser_TapMsg_Grp_Txt {
+            get {
+                return ResourceManager.GetString("SelectUser_TapMsg_Grp_Txt", resourceCulture);
             }
         }
         
@@ -2271,6 +2280,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap here to invite.
+        /// </summary>
+        public static string Tap_To_Invite_Txt {
+            get {
+                return ResourceManager.GetString("Tap_To_Invite_Txt", resourceCulture);
             }
         }
         

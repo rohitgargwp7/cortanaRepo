@@ -171,6 +171,7 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
+            
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -207,7 +208,6 @@ namespace windows_client.View
             }
             shellProgress.IsVisible = false;
             myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
-
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
@@ -352,6 +352,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+            mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
         }
 
         private void removeListeners()
@@ -363,6 +364,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+                mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
             }
             catch { }
         }
@@ -393,7 +395,8 @@ namespace windows_client.View
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
-            if (App.appSettings.Contains("REWARDS_TOKEN"))
+            bool showRewards;
+            if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
 
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
@@ -556,6 +559,7 @@ namespace windows_client.View
             GroupManager.Instance.GroupCache.Clear();
             GroupManager.Instance.DeleteAllGroups();
             GroupTableUtils.deleteAllGroups();
+
         }
 
         private void createGroup_Click(object sender, EventArgs e)
@@ -835,6 +839,27 @@ namespace windows_client.View
                 });
             }
             #endregion
+            else if (HikePubSub.REWARDS_TOGGLE == type)
+            {
+                bool showRewards;
+                appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards);
+                if (showRewards) // show rewards option
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsPanel.Visibility == System.Windows.Visibility.Collapsed)
+                            rewardsPanel.Visibility = System.Windows.Visibility.Visible;
+                    });
+                }
+                else // hide rewards option 
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
+                            rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
+                    });
+                }
+            }
         }
 
         #endregion

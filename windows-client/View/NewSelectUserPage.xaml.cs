@@ -179,13 +179,19 @@ namespace windows_client.View
             else
                 hideSmsContacts = false;
 
-            /* Case whe this page is called from GroupInfo page*/
+            /* Case when this page is called from GroupInfo page*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            {
                 isGroupChat = true;
+                TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+            }
 
             /* Case when this page is called from create group button.*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
+            {
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
+                TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+            }
 
             //if (isGroupChat)
             //    title.Text = "new group chat";
@@ -547,7 +553,7 @@ namespace windows_client.View
         {
             bool areCharsNumber = false;
             bool isPlus = false;
-            if (isNumber(charsEntered))
+            if (Utils.IsNumber(charsEntered))
             {
                 areCharsNumber = true;
                 if (charsEntered.StartsWith("+"))
@@ -608,7 +614,7 @@ namespace windows_client.View
                 }
                 charsEntered = (isPlus ? "+" : "") + charsEntered;
                 list[26].Items[0].Name = charsEntered;
-                if (IsNumberValid(charsEntered))
+                if (Utils.IsNumberValid(charsEntered))
                 {
                     list[26].Items[0].Msisdn = TAP_MSG;
                 }
@@ -623,27 +629,6 @@ namespace windows_client.View
             if (areCharsNumber)
                 return list;
             return glistFiltered;
-        }
-
-        private bool IsNumberValid(string charsEntered)
-        {
-            // TODO : Use regex if required
-            // CASES 
-            /*
-             * 1. If number starts with '+'
-             */
-
-            if (charsEntered.StartsWith("+"))
-            {
-                if (charsEntered.Length < 2 || charsEntered.Length > 15)
-                    return false;
-            }
-            else
-            {
-                if (charsEntered.Length < 1 || charsEntered.Length > 15)
-                    return false;
-            }
-            return true;
         }
 
         #region GROUP CHAT RELATED
@@ -973,16 +958,6 @@ namespace windows_client.View
             }
         }
 
-        private bool isNumber(string charsEntered)
-        {
-            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
-            {
-                charsEntered = charsEntered.Substring(1);
-            }
-            long i = 0;
-            return long.TryParse(charsEntered, out i);
-        }
-
         private ContactInfo GetContactIfExists(ContactInfo contact)
         {
             if (glistFiltered == null)
@@ -1101,7 +1076,7 @@ namespace windows_client.View
                 return;
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), ci.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = true;
             convMessage.IsInvite = true;

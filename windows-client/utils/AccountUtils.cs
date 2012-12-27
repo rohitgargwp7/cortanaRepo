@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
+using windows_client.Misc;
 
 namespace windows_client.utils
 {
@@ -793,6 +794,11 @@ namespace windows_client.utils
                     msgToShow = new List<ContactInfo>(5);
                     msisdns = new List<string>();
                 }
+                else // if refresh case load groups in cache
+                {
+                    GroupManager.Instance.LoadGroupCache();
+                }
+
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
                 KeyValuePair<string, JToken> kv;
@@ -864,9 +870,8 @@ namespace windows_client.utils
                                         isPendingSaved = true;
                                     }
                                 }
-
                             }
-
+                            GroupManager.Instance.RefreshGroupCache(cn);
                         }
                         server_contacts.Add(cn);
                         totalContacts++;

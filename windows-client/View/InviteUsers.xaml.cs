@@ -12,17 +12,28 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using System.Threading;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
     public partial class InviteUsers : PhoneApplicationPage
     {
+        private string TAP_MSG = AppResources.Tap_To_Invite_Txt;
+
         private bool _isAddToFavPage;
+        private bool xyz;
         private bool isClicked = false;
+        private string charsEntered;
+        private List<Group<ContactInfo>> defaultJumpList = null;
+        List<Group<ContactInfo>> glistFiltered = null;
+        Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
         private List<ContactInfo> allContactsList = null; // contacts list
         private Dictionary<string, bool> contactsList = new Dictionary<string, bool>(); // this will work as a hashset and will be used in invite
         private List<ContactInfo> hikeFavList = null;
+        ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
+
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
 
@@ -100,6 +111,7 @@ namespace windows_client.View
             {
                 topHeader.Text = AppResources.Add_To_Fav_Txt;
                 title.Text = AppResources.Hike_Friends_Text;
+                enterNameTxt.Visibility = System.Windows.Visibility.Collapsed;
                 _isAddToFavPage = true;
             }
             shellProgress.IsVisible = true;
@@ -208,7 +220,10 @@ namespace windows_client.View
                     {
                         ConversationListObject favObj = null;
                         if (App.ViewModel.ConvMap.ContainsKey(hikeFavList[i].Msisdn))
+                        {
                             favObj = App.ViewModel.ConvMap[hikeFavList[i].Msisdn];
+                            favObj.IsFav = true;
+                        }
                         else
                             favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
                             
@@ -239,7 +254,7 @@ namespace windows_client.View
             else
             {
                 string inviteToken = "";
-                App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
                 int count = 0;
                 foreach (string key in contactsList.Keys)
                 {
@@ -305,5 +320,151 @@ namespace windows_client.View
             }
         }
 
+        private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            enterNameTxt.BorderBrush = UI_Utils.Instance.Black;
+        }
+
+        private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (xyz) // this is done to avoid twice calling of "enterNameTxt_TextChanged" function
+            {
+                xyz = !xyz;
+                return;
+            }
+            xyz = !xyz;
+
+            charsEntered = enterNameTxt.Text.ToLower();
+            Debug.WriteLine("Chars Entered : {0}", charsEntered);
+
+            charsEntered = charsEntered.Trim();
+            if (String.IsNullOrWhiteSpace(charsEntered))
+            {
+                contactsListBox.ItemsSource = jumpList;
+                return;
+            }
+
+            if (groupListDictionary.ContainsKey(charsEntered))
+            {
+                List<Group<ContactInfo>> gl = groupListDictionary[charsEntered];
+                if (gl == null)
+                {
+                    groupListDictionary.Remove(charsEntered);
+                    contactsListBox.ItemsSource = null;
+                    return;
+                }
+                if (gl[26].Items.Count > 0 && gl[26].Items[0].Msisdn != null)
+                {
+                    gl[26].Items[0].Name = charsEntered;
+                    if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
+                    {
+                        gl[26].Items[0].Msisdn = TAP_MSG;
+                    }
+                    else
+                    {
+                        gl[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
+                    }
+                }
+                contactsListBox.ItemsSource = gl;
+                Thread.Sleep(5);
+                return;
+            }
+            //glistFiltered = createGroups();
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (s, ev) =>
+            {
+                glistFiltered = getFilteredContactsFromNameOrPhoneAsync(charsEntered, 0, 26);
+            };
+            bw.RunWorkerAsync();
+            bw.RunWorkerCompleted += (s, ev) =>
+            {
+                if (glistFiltered != null)
+                    groupListDictionary[charsEntered] = glistFiltered;
+                contactsListBox.ItemsSource = glistFiltered;
+                Thread.Sleep(2);
+            };
+        }
+
+        private List<Group<ContactInfo>> getFilteredContactsFromNameOrPhoneAsync(string charsEntered, int start, int end)
+        {
+            bool areCharsNumber = false;
+            bool isPlus = false;
+            if (Utils.IsNumber(charsEntered))
+            {
+                areCharsNumber = true;
+                if (charsEntered.StartsWith("+"))
+                {
+                    isPlus = true;
+                    charsEntered = charsEntered.Substring(1);
+                }
+            }
+            List<Group<ContactInfo>> listToIterate = null;
+            int charsLength = charsEntered.Length - 1;
+            if (charsLength > 0)
+            {
+                if (groupListDictionary.ContainsKey(charsEntered.Substring(0, charsLength)))
+                {
+                    listToIterate = groupListDictionary[charsEntered.Substring(0, charsEntered.Length - 1)];
+                    if (listToIterate == null)
+                        listToIterate = jumpList;
+                }
+                else
+                    listToIterate = jumpList;
+            }
+            else
+                listToIterate = jumpList;
+            bool createNewFilteredList = true;
+            for (int i = start; i < end; i++)
+            {
+                int maxJ = listToIterate == null ? 0 : (listToIterate[i].Items == null ? 0 : listToIterate[i].Items.Count);
+                for (int j = 0; j < maxJ; j++)
+                {
+                    ContactInfo cn = listToIterate[i].Items[j];
+                    if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
+                    {
+                        if (createNewFilteredList)
+                        {
+                            createNewFilteredList = false;
+                            glistFiltered = createGroups();
+                        }
+                        glistFiltered[i].Items.Add(cn);
+                    }
+                }
+            }
+            List<Group<ContactInfo>> list = null;
+            if (areCharsNumber)
+            {
+
+                if (glistFiltered == null || createNewFilteredList)
+                {
+                    if (defaultJumpList == null)
+                        defaultJumpList = createGroups();
+                    list = defaultJumpList;
+                    if (defaultJumpList[26].Items.Count == 0)
+                        defaultJumpList[26].Items.Insert(0, defaultContact);
+                }
+                else
+                {
+                    list = glistFiltered;
+                    list[26].Items.Insert(0, defaultContact);
+                }
+                charsEntered = (isPlus ? "+" : "") + charsEntered;
+                list[26].Items[0].Name = charsEntered;
+                if (Utils.IsNumberValid(charsEntered))
+                {
+                    list[26].Items[0].Msisdn = TAP_MSG;
+                }
+                else
+                {
+                    list[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
+                }
+
+            }
+            if (!areCharsNumber && createNewFilteredList)
+                return null;
+            if (areCharsNumber)
+                return list;
+            return glistFiltered;
+        }
     }
 }

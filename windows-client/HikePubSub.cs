@@ -111,6 +111,8 @@ namespace windows_client
 
         public static readonly string GROUP_END = "groupEnd";
 
+        public static readonly string GROUP_ALIVE = "groupAlive";
+
         public static readonly string GROUP_NAME_CHANGED = "groupNameChanged";
 
         public static readonly string PARTICIPANT_JOINED_GROUP = "participantJoinedGroup";
@@ -121,7 +123,7 @@ namespace windows_client
 
         public static readonly string DELETE_ALL_CONVERSATIONS="deleteAllConversations";
 
-        public static string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
+        public static readonly string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
 
         public static readonly string ATTACHMENT_RESEND = "resendOrForward";
 
@@ -130,6 +132,8 @@ namespace windows_client
         public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
 
         public static readonly string ADD_REMOVE_FAV_OR_PENDING = "addRemFP";
+
+        public static readonly string REWARDS_TOGGLE = "rew_tog";
 
         private readonly Thread mThread;
 

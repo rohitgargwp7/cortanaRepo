@@ -371,8 +371,15 @@ namespace windows_client
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
-                        this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                        try
+                        {
+                            App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                            this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Network Manager : Exception in ICON :: "+ex.StackTrace);
+                        }
                     });
                 }
                 else
@@ -537,6 +544,19 @@ namespace windows_client
                                         }
 
                                         #endregion
+                                        #region REWARDS
+                                        if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
+                                        {
+                                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
+                                        }
+                                        // whenever this key will come toggle the show rewards thing
+                                        if (kkvv.Key == HikeConstants.SHOW_REWARDS)
+                                        {
+                                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
+                                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                                        }
+
+                                        #endregion
                                     }
                                     catch (Exception ex)
                                     {
@@ -551,7 +571,7 @@ namespace windows_client
                             {
                                 string val = oj.ToString();
                                 Debug.WriteLine("AI :: Value : " + val);
-                                
+
                                 if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                                     App.WriteToIsoStorageSettings(kv.Key, val);
                             }
@@ -573,6 +593,31 @@ namespace windows_client
                     return;
                 }
 
+            }
+            #endregion
+            #region ACCOUNT CONFIG
+            else if (HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+
+                    JToken rew;
+                    if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
+                        App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
+                    rew = null;
+                    if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
+                    {
+                        App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
+                        pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
             }
             #endregion
             #region USER_OPT_IN
@@ -636,22 +681,33 @@ namespace windows_client
                 #region ALREADY ADDED TO GROUP
                 else if (gcState == GroupChatState.ALREADY_ADDED_TO_GROUP)
                 {
-                    // update JSON in the metadata .....
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
 
-                    if (dndList.Count > 0) // there are people who are in dnd , show their msg
+                    // this is the case when you kick out a user and the again adds him
+                    if (gi != null && !gi.GroupAlive) // if group exists and is dead
                     {
-                        JObject o = new JObject();
-                        o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
-                        convMessage = new ConvMessage(); // this will be normal DND msg
-                        convMessage.Msisdn = grpId;
-                        convMessage.MetaDataString = o.ToString(Formatting.None);
-                        convMessage.Message = GetDndMsg(dndList);
-                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
-                        convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
+                        GroupTableUtils.SetGroupAlive(grpId);
+                        convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
+                        this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
                     }
-                    else
-                        return;
+                    else // this is normal case
+                    {
+                        // update JSON in the metadata .....
+                        if (dndList.Count > 0) // there are people who are in dnd , show their msg
+                        {
+                            JObject o = new JObject();
+                            o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
+                            convMessage = new ConvMessage(); // this will be normal DND msg
+                            convMessage.Msisdn = grpId;
+                            convMessage.MetaDataString = o.ToString(Formatting.None);
+                            convMessage.Message = GetDndMsg(dndList);
+                            convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                            convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
+                            convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
+                        }
+                        else
+                            return;
+                    }
                 }
                 #endregion
                 #region DUPLICATE GCJ
@@ -817,19 +873,28 @@ namespace windows_client
                     return;
                 if (App.ViewModel.IsPending(ms))
                     return;
-                ConversationListObject favObj;
-                if (App.ViewModel.ConvMap.ContainsKey(ms))
-                    favObj = App.ViewModel.ConvMap[ms];
-                else // user not saved in address book
-                {
-                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
-                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    App.ViewModel.PendingRequests.Add(favObj);
-                    MiscDBUtil.SavePendingRequests();
-                    this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    try
+                    {
+
+                        ConversationListObject favObj;
+                        if (App.ViewModel.ConvMap.ContainsKey(ms))
+                            favObj = App.ViewModel.ConvMap[ms];
+                        else // user not saved in address book
+                        {
+                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                            favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                        }
+
+                        App.ViewModel.PendingRequests.Add(favObj);
+                        MiscDBUtil.SavePendingRequests();
+                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    }
+                    catch(Exception e) 
+                    {
+                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: "+e.StackTrace);
+                    }
                 });
 
             }

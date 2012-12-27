@@ -17,6 +17,7 @@ using windows_client.Misc;
 using System.Diagnostics;
 using Microsoft.Phone.UserData;
 using windows_client.Languages;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -702,7 +703,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
                 }
-                else
+                else // fav and pending case update
                 {
                     ConversationListObject co = App.ViewModel.GetFav(gp_obj.Msisdn);
                     if (co != null)
@@ -721,11 +722,16 @@ namespace windows_client.View
 
         private void MenuItem_Tap_AddUser(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                return;
+            }
             ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
                 return;
 
-            GroupParticipant gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
+            gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
 
             if (gp_obj == null)
                 return;
@@ -736,11 +742,18 @@ namespace windows_client.View
                 return;
             ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
+
         private void MenuItem_Tap_RemoveMember(object sender, System.Windows.Input.GestureEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.RemoveFromGrpConfirmation_Txt, AppResources.Remove_From_grp_txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                return;
+            }
             ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
                 return;
@@ -781,6 +794,72 @@ namespace windows_client.View
             //        App.ViewModel.ConvMap[groupId].ContactName = grpName;
             //    if(App.newChatThreadPage != null)
             //        App.newChatThreadPage.userName.Text = grpName;
+        }
+
+        private void MenuItem_Tap_AddRemoveFav(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            GroupParticipant gp = selectedListBoxItem.DataContext as GroupParticipant;
+            if (gp != null)
+            {
+                if (gp.IsFav) // already fav , remove request
+                {
+                    MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
+                    if (result == MessageBoxResult.Cancel)
+                        return;
+                    gp.IsFav = false;
+                    ConversationListObject favObj = App.ViewModel.GetFav(gp.Msisdn);
+                    App.ViewModel.FavList.Remove(favObj);
+
+                    JObject data = new JObject();
+                    data["id"] = gp.Msisdn;
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                    obj[HikeConstants.DATA] = data;
+
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.DeleteFavourite(gp.Msisdn);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                }
+                else // add to fav
+                {
+                    gp.IsFav = true;
+                    ConversationListObject favObj;
+                    if (App.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
+                    {
+                        favObj = App.ViewModel.ConvMap[gp.Msisdn];
+                        favObj.IsFav = true;
+                    }
+                    else
+                        favObj = new ConversationListObject(gp.Msisdn, gp.Name, gp.IsOnHike, MiscDBUtil.getThumbNailForMsisdn(gp.Msisdn));
+                    App.ViewModel.FavList.Insert(0, favObj);
+                    if (App.ViewModel.IsPending(gp.Msisdn))
+                    {
+                        App.ViewModel.PendingRequests.Remove(favObj);
+                        MiscDBUtil.SavePendingRequests();
+                    }
+                    MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.SaveFavourites(favObj);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                    JObject data = new JObject();
+                    data["id"] = gp.Msisdn;
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                    obj[HikeConstants.DATA] = data;
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                }
+            }
         }
     }
 }

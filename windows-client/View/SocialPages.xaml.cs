@@ -54,7 +54,9 @@ namespace windows_client.View
             }
             else
             {
-                Uri page = new Uri("http://get.hike.in/rewards/wp7");
+                string url = "http://hike.in/";
+                //string url = AccountUtils.IsProd ? "http://hike.in/" : "staging.im.hike.in/8080/";
+                Uri page = new Uri(url+"rewards/wp7/"+(string)App.appSettings[HikeConstants.REWARDS_TOKEN]);
                 BrowserControl.Navigate(page);
             }
         }
