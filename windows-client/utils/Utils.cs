@@ -9,6 +9,7 @@ using System.Windows;
 using System.IO;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Net.NetworkInformation;
+using System.Security.Cryptography;
 
 namespace windows_client.utils
 {
@@ -238,7 +239,24 @@ namespace windows_client.utils
             string deviceId = uniqueId==null?null:BitConverter.ToString(uniqueId);
             if (string.IsNullOrEmpty(deviceId))
                 return null;
-            return deviceId.GetHashCode().ToString();
+            deviceId = deviceId.Replace("-", "");
+            return "wp:" + computeHash(deviceId);
+        }
+
+        private static string computeHash(string input)
+        {
+            string rethash = "";
+            try
+            {
+                var sha = new HMACSHA1();
+                var bytes = System.Text.Encoding.UTF8.GetBytes(input);
+                byte[] resultHash = sha.ComputeHash(bytes);
+                rethash = Convert.ToBase64String(resultHash);
+            }
+            catch (Exception ex)
+            {
+            }
+            return rethash; 
         }
 
         //carrier DeviceNetworkInformation.CellularMobileOperator;
