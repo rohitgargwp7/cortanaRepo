@@ -52,11 +52,11 @@ namespace windows_client.View
                     shellProgress.IsVisible = true;
                     if (!Utils.isGroupConversation(msisdn))
                     {
-                        AccountUtils.createGetRequest("/account/avatar/" + msisdn + "?fullsize=1", getProfilePic_Callback);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true);
                     }
                     else
                     {
-                        AccountUtils.createGetRequest("/group/" + msisdn + "/avatar/?fullsize=1", getProfilePic_Callback);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true);
                     }
                 }
                 else
@@ -67,7 +67,7 @@ namespace windows_client.View
                     if (defaultImageBytes == null || defaultImageBytes.Length == 0)
                     {
                         shellProgress.IsVisible = true;
-                        AccountUtils.createGetRequest("/static/avatars/" + fileName, getProfilePic_Callback);
+                        AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false);
                     }
                     else
                     {
@@ -92,7 +92,8 @@ namespace windows_client.View
                     setImage(smallThumbnailImage);
                 }
             });
-            MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
+            if (fullBytes != null && fullBytes.Length > 0)
+                MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
         }
 
         private void setImage(byte[] imageBytes)
