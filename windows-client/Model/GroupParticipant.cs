@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using windows_client.Misc;
 using System.Text;
+using windows_client.Languages;
 
 namespace windows_client.Model
 {
@@ -190,6 +191,42 @@ namespace windows_client.Model
         {
             get;
             set;
+        }
+
+        public bool IsFav
+        {
+            get
+            {
+                if (App.ViewModel.Isfavourite(_msisdn))
+                    return true;
+                return false;
+            }
+            set
+            {
+                NotifyPropertyChanged("IsFav");
+                NotifyPropertyChanged("FavMsg");
+            }
+        }
+
+        public string FavMsg
+        {
+            get
+            {
+                if (IsFav) // if already favourite
+                    return AppResources.RemFromFav_Txt;
+                else
+                    return AppResources.Add_To_Fav_Txt;
+            }
+        }
+
+        public Visibility ShowAddTofav
+        {
+            get
+            {
+                if (IsOwner == 1)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
         }
 
         public Visibility RemoveFromGroup
