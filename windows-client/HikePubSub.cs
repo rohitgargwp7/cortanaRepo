@@ -123,7 +123,7 @@ namespace windows_client
 
         public static readonly string DELETE_ALL_CONVERSATIONS="deleteAllConversations";
 
-        public static string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
+        public static readonly string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
 
         public static readonly string ATTACHMENT_RESEND = "resendOrForward";
 
@@ -133,7 +133,7 @@ namespace windows_client
 
         public static readonly string ADD_REMOVE_FAV_OR_PENDING = "addRemFP";
 
-        public static string REWARDS_TOGGLE = "rew_tog";
+        public static readonly string REWARDS_TOGGLE = "rew_tog";
 
         private readonly Thread mThread;
 
