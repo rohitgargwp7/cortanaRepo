@@ -1221,4 +1221,12 @@
     <value>Tap here to add this person</value>
     <comment>Add to Group Msg</comment>
   </data>
+  <data name="ChatThread_GCMute" xml:space="preserve">
+    <value>This group chat is muted</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="Favorites_AddMore" xml:space="preserve">
+    <value>Add More</value>
+    <comment>xaml</comment>
+  </data>
 </root>

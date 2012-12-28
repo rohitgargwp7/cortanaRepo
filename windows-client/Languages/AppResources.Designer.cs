@@ -187,6 +187,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This group chat is muted.
+        /// </summary>
+        public static string ChatThread_GCMute {
+            get {
+                return ResourceManager.GetString("ChatThread_GCMute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connectivity issue..
         /// </summary>
         public static string Connectivity_Issue {
@@ -822,6 +831,15 @@ namespace windows_client.Languages {
         public static string Error_Txt {
             get {
                 return ResourceManager.GetString("Error_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add More.
+        /// </summary>
+        public static string Favorites_AddMore {
+            get {
+                return ResourceManager.GetString("Favorites_AddMore", resourceCulture);
             }
         }
         
