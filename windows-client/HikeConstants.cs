@@ -93,7 +93,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
         private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp7/black.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
-        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp7" : "http://staging.get.hike.in/updates/wp7";
+        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp7" : "http://staging.im.hike.in:8080/updates/wp7";
 
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
