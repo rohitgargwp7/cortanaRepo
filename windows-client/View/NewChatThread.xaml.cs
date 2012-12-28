@@ -773,7 +773,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(leaveMenuItem);
 
                 muteGroupMenuItem = new ApplicationBarMenuItem();
-                muteGroupMenuItem.Text = IsMute ? "unmute group" : "mute group";
+                muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
