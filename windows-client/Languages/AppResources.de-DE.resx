@@ -134,7 +134,7 @@
     <comment>Network issue msg (used in all pages)</comment>
   </data>
   <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
-    <value>  hat dich als Favoriten hinzugefügt. Möchtest du das auch tun?</value>
+    <value> hat dich als Favoriten hinzugefügt. Möchtest du das auch tun?</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
@@ -202,19 +202,19 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Bist du sicher, dass du diesen Kontakt aus den Favoriten entfernen willst?</value>
+    <value>Bist du sicher, dass du diesen Kontakt aus deinen Favoriten entfernen willst?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>Aus Favoriten entfernen</value>
+    <value>aus Favoriten entfernen</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>Auf '+' neben Freunden tippen, um sie als Favoriten hinzuzufügen.</value>
+    <value>Keine Favoriten vorhanden.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
-    <value />
+    <value>Freunde einladen</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
@@ -566,7 +566,7 @@
     <comment>General Text</comment>
   </data>
   <data name="CREDITS_EARNED" xml:space="preserve">
-    <value> Du hast gerade {0} Frei-SMS verdient</value>
+    <value>Du hast gerade {0} Frei-SMS verdient.</value>
     <comment>General Text</comment>
   </data>
   <data name="DND_USER" xml:space="preserve">
@@ -574,7 +574,7 @@
     <comment>General Text</comment>
   </data>
   <data name="FILES_MESSAGE_PREFIX" xml:space="preserve">
-    <value>Habe dir folgendes gesendet: 1 {0}. Zum ansehen, gehe auf </value>
+    <value>Hat dir folgendes gesendet: 1 {0}. Zum ansehen, gehe auf </value>
     <comment>General Text</comment>
   </data>
   <data name="Forward_Txt" xml:space="preserve">
@@ -597,16 +597,8 @@
     <value>Mehr als 1 Kontakt mit dieser Nummer vorhanden: {0}</value>
     <comment>This is called when an unknown number is added and same num already exists in phone</comment>
   </data>
-  <data name="Mute_Txt" xml:space="preserve">
-    <value>stummschalten</value>
-    <comment>General Text</comment>
-  </data>
   <data name="NoInfoForTask_Txt" xml:space="preserve">
     <value>Zu diesem Prozessergebnis sind keine Informationen vorhanden.</value>
-    <comment>cs</comment>
-  </data>
-  <data name="NewChatThread_UserCancelledTask_Txt" xml:space="preserve">
-    <value>Cannot_Select_Pic_Phone_Connected_to_PC</value>
     <comment>cs</comment>
   </data>
   <data name="NO_CONTACT_SAVED" xml:space="preserve">
@@ -744,10 +736,6 @@
   <data name="UnBlock_Txt" xml:space="preserve">
     <value>Entsperren</value>
     <comment>xaml</comment>
-  </data>
-  <data name="Unmute_Txt" xml:space="preserve">
-    <value>Stummschaltung aufheben</value>
-    <comment>General Text</comment>
   </data>
   <data name="USER_INVITED" xml:space="preserve">
     <value> wurde eingeladen</value>
@@ -894,7 +882,7 @@
     <value>Es gibt eine neue Version von hike. Möchtest du updaten?</value>
   </data>
   <data name="Owner_Txt" xml:space="preserve">
-    <value> (Besitzer)</value>
+    <value>Besitzer</value>
   </data>
   <data name="Participants_Txt" xml:space="preserve">
     <value>Teilnehmer</value>
@@ -1124,7 +1112,7 @@
     <comment>cs. Message box error while unlinking</comment>
   </data>
   <data name="Settings_FreeSMSToggleSwitchHeader" xml:space="preserve">
-    <value>Frei-SMS anzeigen</value>
+    <value>Sende Frei-SMS nach Indien</value>
     <comment>xaml. </comment>
   </data>
   <data name="Settings_PushToggleSwitchHeader" xml:space="preserve">
@@ -1170,16 +1158,67 @@
     <value>Datei kann nicht heruntergeladen werden. </value>
     <comment>cs. Text in message box followed by exception message</comment>
   </data>
+  <data name="SelectUser_HideSmsContacts_Txt" xml:space="preserve">
+    <value>SMS-Kontakte ausblenden</value>
+    <comment>Text used in app menu bar</comment>
+  </data>
+  <data name="SelectUser_ShowSmsContacts_Txt" xml:space="preserve">
+    <value>SMS-Kontakte anzeigen</value>
+    <comment>Text used in app menu bar</comment>
+  </data>
+  <data name="Favorites_TapToAdd" xml:space="preserve">
+    <value>Zum Hinzufügen hier tippen.</value>
+    <comment>xaml (below heart image)</comment>
+  </data>
+  <data name="Favorites_Tute_Screen1" xml:space="preserve">
+    <value>Ein ständiger Platz für alle deine besten Freunde.</value>
+    <comment>xaml (below tute image)</comment>
+  </data>
+  <data name="Favorites_Tute_Screen1_2" xml:space="preserve">
+    <value>Für einen Chat mit ihnen musst du nur einmal tippen.</value>
+    <comment>xaml (below tute image)</comment>
+  </data>
+  <data name="Favorites_Tute_Screen2" xml:space="preserve">
+    <value>Um alle deine Freunde bei hike zu sehen und neue Favoriten hinzuzufügen, tippe auf +</value>
+    <comment>xaml (below tute image)</comment>
+  </data>
+  <data name="Invited" xml:space="preserve">
+    <value>Eingeladen</value>
+  </data>
+  <data name="Invite_Small" xml:space="preserve">
+    <value>Einladen</value>
+  </data>
+  <data name="Nudge" xml:space="preserve">
+    <value>Grüßen</value>
+  </data>
+  <data name="Nudge_Exclamation" xml:space="preserve">
+    <value>Grüßen!</value>
+  </data>
+  <data name="Nudge_Tute" xml:space="preserve">
+    <value>Mit einem Doppeltippen irgendwo im Chat kannst du deinen Freund grüßen.</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="RemoveFromGrpConfirmation_Txt" xml:space="preserve">
+    <value>Bist du sicher, dass du diese Person aus der Gruppe entfernen willst?</value>
+    <comment>Remove member from group text</comment>
+  </data>
   <data name="Remove_From_grp_txt" xml:space="preserve">
-    <value />
+    <value>Aus Gruppe entfernen</value>
+    <comment>General text</comment>
   </data>
   <data name="Rewards_Txt" xml:space="preserve">
-    <value />
+    <value>Belohnung</value>
+    <comment>Rewards Text</comment>
   </data>
   <data name="Tap_To_Invite_Txt" xml:space="preserve">
-    <value />
+    <value>Zum Einladen hier tippen</value>
+    <comment>Tap to invite text</comment>
   </data>
   <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
-    <value />
+    <value>Hier tippen, um diese Person hinzuzufügen</value>
+    <comment>Add to Group Msg</comment>
   </data>
 </root>
