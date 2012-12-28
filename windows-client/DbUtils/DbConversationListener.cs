@@ -297,7 +297,7 @@ namespace windows_client.DbUtils
                 if (Utils.isGroupConversation(msisdn))
                 {
                     string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId + "_fullView", fullViewBytes, false);
+                    MiscDBUtil.saveAvatarImage(grpId + HikeConstants.FULL_VIEW_IMAGE_PREFIX, fullViewBytes, false);
                     MiscDBUtil.saveAvatarImage(grpId, thumbnailBytes, false);
                 }
                 else

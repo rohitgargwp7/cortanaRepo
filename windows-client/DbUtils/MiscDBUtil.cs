@@ -124,9 +124,9 @@ namespace windows_client.DbUtils
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        if (isUpdated && store.FileExists(FileName + "_fullView"))
+                        if (isUpdated && store.FileExists(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX))
                         {
-                            store.DeleteFile(FileName + "_fullView");
+                            store.DeleteFile(FileName + HikeConstants.FULL_VIEW_IMAGE_PREFIX);
                         }
                         using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {

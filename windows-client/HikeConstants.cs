@@ -107,6 +107,7 @@ namespace windows_client
         public static readonly string FAVORITES = "favorites";
         public static readonly string PENDING = "pending"; // TODO : Change to exact constant
         public static readonly string IS_SECURE_CHANNEL = "is_secure_channel";
+        public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
         public static string FAQS_LINK
         {
