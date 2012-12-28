@@ -39,7 +39,7 @@ namespace windows_client.Model
 
         //ct = chat thread
         public static readonly string GROUP_INFO = "ctGI";
-        public static readonly string ADD_TO_FAVS_APP_BAR = "ctATFAB";
+        public static readonly string ADD_TO_FAVS_APP_BAR_CHATTHREAD = "ctATFAB";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD = "ctRFFAB";
         public static readonly string SEE_LARGE_PROFILE_PIC = "ctLPP"; //chat thread large profile pic
 
