@@ -484,6 +484,7 @@ namespace windows_client.utils
             {
                 request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             }
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
