@@ -26,7 +26,7 @@ namespace windows_client.Mqtt
             hikeMqttManager.setConnectionStatus(HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             if (reconnect)
             {
-                hikeMqttManager.connectToBroker();
+                hikeMqttManager.connect();
             }
         }
 
@@ -40,7 +40,7 @@ namespace windows_client.Mqtt
 
             if (reconnect)
             {
-                hikeMqttManager.connectToBroker();
+                hikeMqttManager.connect();
             }
         }
     }
