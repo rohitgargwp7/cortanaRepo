@@ -624,6 +624,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         addFavsPanel.Opacity = 0;
                     }
+                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FROM_FAVS);
                 }
                 else // add to fav
                 {
@@ -651,6 +652,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         addFavsPanel.Opacity = 1;
                     }
+                    App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
                 }
             }
         }
@@ -837,6 +839,7 @@ namespace windows_client.View
                 });
             }
             #endregion
+            #region REWARDS TOGGLE
             else if (HikePubSub.REWARDS_TOGGLE == type)
             {
                 bool showRewards;
@@ -858,6 +861,7 @@ namespace windows_client.View
                     });
                 }
             }
+            #endregion
         }
 
         #endregion
@@ -924,6 +928,7 @@ namespace windows_client.View
         {
             try
             {
+                App.AnalyticsInstance.addEvent(Analytics.REWARDS);
                 NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
             }
             catch (Exception ex)
@@ -1119,6 +1124,7 @@ namespace windows_client.View
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             App.ViewModel.PendingRequests.Remove(fObj);
             App.ViewModel.FavList.Insert(0, fObj);

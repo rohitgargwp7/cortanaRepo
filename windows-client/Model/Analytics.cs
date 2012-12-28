@@ -43,6 +43,13 @@ namespace windows_client.Model
         //gi = group info
         public static readonly string INVITE_SMS_PARTICIPANTS = "giInv";
 
+        // rewards
+        public static readonly string REWARDS = "rewards";
+
+        #region FAVOURITES
+        public static readonly string ADD_TO_FAVS = "addToFavs";
+        public static readonly string REMOVE_FROM_FAVS = "remFromFavs";
+        #endregion
 
         private Dictionary<string, int> eventMap = null;
 
