@@ -110,7 +110,7 @@ namespace windows_client.View
             }
             else
             {
-                App.MqttManagerInstance.connectionStatus = Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
+                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
             }
         }
 
