@@ -2086,7 +2086,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Search or Enter Phone Number....
+        ///   Looks up a localized string similar to  Search or Enter Phone #....
         /// </summary>
         public static string SelectUser_TxtBoxHint_Txt {
             get {
@@ -2095,7 +2095,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unmute group.
+        ///   Looks up a localized string similar to unmute.
         /// </summary>
         public static string SelectUser_UnMuteGrp_Txt {
             get {
