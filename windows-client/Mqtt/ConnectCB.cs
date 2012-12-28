@@ -1,5 +1,8 @@
 ﻿using System;
 using mqtttest.Client;
+using System.Windows;
+using windows_client.DbUtils;
+using Microsoft.Phone.Notification;
 
 namespace windows_client.Mqtt
 {
@@ -22,6 +25,21 @@ namespace windows_client.Mqtt
                 App.ClearAppSettings();
                 if(isPresent)
                     App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
+                NetworkManager.turnOffNetworkManager = true; // stop network manager
+                App.MqttManagerInstance.disconnectFromBroker(false);
+                MiscDBUtil.clearDatabase();
+
+                HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
+                if (pushChannel != null)
+                {
+                    if (pushChannel.IsShellTileBound)
+                        pushChannel.UnbindToShellTile();
+                    if (pushChannel.IsShellToastBound)
+                        pushChannel.UnbindToShellToast();
+                    pushChannel.Close();
+                }
+
+                App.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS,null);
             }
             hikeMqttManager.setConnectionStatus(windows_client.Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
         }

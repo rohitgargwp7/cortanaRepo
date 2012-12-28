@@ -1155,6 +1155,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
             }
             else
             {
@@ -1183,6 +1184,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FROM_FAVS);
             }
         }
 
