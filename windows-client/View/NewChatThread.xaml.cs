@@ -64,7 +64,6 @@ namespace windows_client.View
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
         //messages stored in db, other messages would have their attachment object set
 
-        private int msgBubbleCount = 0;
         private int mCredits;
         private long lastTextChangedTime;
         private long lastTypingNotificationShownTime;
@@ -1040,7 +1039,7 @@ namespace windows_client.View
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
-            if (!IsMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+            if (!IsMute || this.MessageList.Children.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal)
             {
                 MessageList.UpdateLayout();
                 Scroller.UpdateLayout();
@@ -1252,7 +1251,7 @@ namespace windows_client.View
             {
                 IsMute = true;
                 obj[HikeConstants.TYPE] = "mute";
-                App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
+                App.ViewModel.ConvMap[mContactNumber].MuteVal = this.MessageList.Children.Count;
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
@@ -1694,8 +1693,6 @@ namespace windows_client.View
                 #endregion
                 //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 ScrollToBottom();
-                msgBubbleCount++;
-
             }
             catch (Exception e)
             {

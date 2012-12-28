@@ -78,12 +78,10 @@ namespace windows_client.View
         private void showTutorial()
         {
             if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
-            //            if(true)
             {
                 overlay.Visibility = Visibility.Visible;
                 TutorialsGrid.Visibility = Visibility.Visible;
                 launchPagePivot.IsHitTestVisible = false;
-                //SystemTray.IsVisible = false;
             }
             else
             {

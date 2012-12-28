@@ -675,7 +675,7 @@ namespace windows_client
 
                 if (!isNewInstall)// this has to be called for no new install case
                     convList = GetConversations();
-                else
+                else // new install case
                 {
                     convList = null;
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
@@ -842,12 +842,24 @@ namespace windows_client
             }
         }
 
+        /// <summary>
+        /// this function is used as an upgrade function too.
+        /// </summary>
+        /// <returns></returns>
         private static List<ConversationListObject> GetConversations()
         {
             List<ConversationListObject> convList = null;
             appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
             if (_currentVersion == null)
                 _currentVersion = "1.0.0.0";
+
+            // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.6.0.0
+            if (Utils.compareVersion(_currentVersion, "1.6.0.0") != 1) // current version is less than equal to 1.6.0.0
+            {
+                WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
+                WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
+            }
+
             if (_currentVersion == "1.0.0.0")  // user is upgrading from version 1.0.0.0 to latest
             {
                 /*
@@ -880,6 +892,7 @@ namespace windows_client
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
+      
             else // this corresponds to the latest version and is called everytime except update launch
             {
                 int convs = 0;
