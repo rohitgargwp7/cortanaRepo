@@ -702,11 +702,11 @@
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Telefonnummer eingeben oder suchen...</value>
+    <value> Tel. # suchen / eingeben...</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>Gruppenstummschaltung aufheben</value>
+    <value>Stummschaltung aufheben</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
