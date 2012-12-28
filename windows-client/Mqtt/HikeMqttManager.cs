@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using finalmqtt.Client;
 using windows_client.utils;
 using System.Collections.Generic;
@@ -10,8 +9,6 @@ using System.Net.NetworkInformation;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using Microsoft.Phone.Reactive;
-using System.Threading;
-using System.Windows;
 using System.ComponentModel;
 
 namespace windows_client.Mqtt
@@ -245,7 +242,7 @@ namespace windows_client.Mqtt
             }
             catch (Exception)
             {
-                connect();
+                //connect();
             }
         }
 
@@ -292,7 +289,7 @@ namespace windows_client.Mqtt
                 else
                 {
                     setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-                    scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                    //scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
                 }
             }
         }
@@ -351,6 +348,11 @@ namespace windows_client.Mqtt
 
         public void onConnected()
         {
+            if (isConnected())
+            {
+                return;
+            }
+
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
             subscribeToTopics(getTopics());
             if (!isRecursivePingScheduled)  

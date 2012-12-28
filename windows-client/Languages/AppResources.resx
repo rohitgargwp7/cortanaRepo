@@ -434,7 +434,7 @@
     <comment>cs</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Connect and get a </value>
+    <value>Connect and get a</value>
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
@@ -442,11 +442,11 @@
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
-    <value>Earn an extra </value>
+    <value>Earn an extra</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
-    <value>{0} free SMS </value>
+    <value>{0} free SMS</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
@@ -702,11 +702,11 @@
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Search or Enter Phone Number...</value>
+    <value> Search or Enter Phone #...</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>unmute group</value>
+    <value>unmute</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
@@ -1220,5 +1220,13 @@
   <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
     <value>Tap here to add this person</value>
     <comment>Add to Group Msg</comment>
+  </data>
+  <data name="ChatThread_GCMute" xml:space="preserve">
+    <value>This group chat is muted</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="Favorites_AddMore" xml:space="preserve">
+    <value>Add More</value>
+    <comment>xaml</comment>
   </data>
 </root>

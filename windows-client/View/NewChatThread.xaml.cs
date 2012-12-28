@@ -773,7 +773,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(leaveMenuItem);
 
                 muteGroupMenuItem = new ApplicationBarMenuItem();
-                muteGroupMenuItem.Text = IsMute ? "unmute group" : "mute group";
+                muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
@@ -1155,7 +1155,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-                App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
+                App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS_APP_BAR_CHATTHREAD);
             }
             else
             {
@@ -1184,7 +1184,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FROM_FAVS);
+                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD);
             }
         }
 
@@ -2891,6 +2891,7 @@ namespace windows_client.View
 
         private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
             object[] fileTapped = new object[1];
             fileTapped[0] = mContactNumber;
             PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;

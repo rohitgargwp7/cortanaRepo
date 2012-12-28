@@ -244,7 +244,7 @@ namespace windows_client.View
                         obj[HikeConstants.DATA] = data;
                         App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                         MiscDBUtil.SaveFavourites(favObj);
-                        App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
+                        App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_INVITE_USERS);
                     }
                 }
                 MiscDBUtil.SaveFavourites();

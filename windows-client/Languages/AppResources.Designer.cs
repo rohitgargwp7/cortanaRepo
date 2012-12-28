@@ -187,6 +187,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This group chat is muted.
+        /// </summary>
+        public static string ChatThread_GCMute {
+            get {
+                return ResourceManager.GetString("ChatThread_GCMute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connectivity issue..
         /// </summary>
         public static string Connectivity_Issue {
@@ -826,6 +835,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add More.
+        /// </summary>
+        public static string Favorites_AddMore {
+            get {
+                return ResourceManager.GetString("Favorites_AddMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tap here to add new..
         /// </summary>
         public static string Favorites_TapToAdd {
@@ -889,7 +907,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect and get a .
+        ///   Looks up a localized string similar to Connect and get a.
         /// </summary>
         public static string FreeSMS_Cnnct_TxtBlk1 {
             get {
@@ -907,7 +925,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Earn an extra .
+        ///   Looks up a localized string similar to Earn an extra.
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
             get {
@@ -916,7 +934,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} free SMS .
+        ///   Looks up a localized string similar to {0} free SMS.
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk2 {
             get {
@@ -2086,7 +2104,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Search or Enter Phone Number....
+        ///   Looks up a localized string similar to  Search or Enter Phone #....
         /// </summary>
         public static string SelectUser_TxtBoxHint_Txt {
             get {
@@ -2095,7 +2113,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unmute group.
+        ///   Looks up a localized string similar to unmute.
         /// </summary>
         public static string SelectUser_UnMuteGrp_Txt {
             get {

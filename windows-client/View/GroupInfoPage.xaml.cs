@@ -828,7 +828,7 @@ namespace windows_client.View
                     int count = 0;
                     App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FROM_FAVS);
+                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO);
                 }
                 else // add to fav
                 {
@@ -859,7 +859,7 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
-                    App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
+                    App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
                 }
             }
         }

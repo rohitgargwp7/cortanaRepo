@@ -46,7 +46,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Margin="24,0,0,0" Text="This group chat is muted" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
+                    <TextBlock Grid.Column="0" Margin="24,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
                     <Image Grid.Column="1" Source="images\mute_icon_main.png" Margin="0,0,24,0" VerticalAlignment="Center" HorizontalAlignment="Right" Height="26" Width="25"/>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Margin="24,0,20,10">

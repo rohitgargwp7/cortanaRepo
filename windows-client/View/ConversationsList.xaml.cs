@@ -108,7 +108,7 @@ namespace windows_client.View
             }
             else
             {
-                App.MqttManagerInstance.connectionStatus = Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
+                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
             }
         }
 
@@ -626,7 +626,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         addFavsPanel.Opacity = 0;
                     }
-                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FROM_FAVS);
+                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
                 }
                 else // add to fav
                 {
@@ -654,7 +654,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         addFavsPanel.Opacity = 1;
                     }
-                    App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
+                    App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
                 }
             }
         }
@@ -1143,7 +1143,7 @@ namespace windows_client.View
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS);
+            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             App.ViewModel.PendingRequests.Remove(fObj);
             App.ViewModel.FavList.Insert(0, fObj);

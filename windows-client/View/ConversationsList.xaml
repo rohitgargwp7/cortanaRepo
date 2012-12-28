@@ -228,7 +228,7 @@
                             <!--<TextBlock Margin="0,20,0,0" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="4" Tap="Button_Tap_1"/>-->
                             <StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
                                 <Image Source="images/add_favorites.png" Height="69" VerticalAlignment="Center"></Image>
-                                <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="Add More" HorizontalAlignment="Left"/>
+                                <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Favorites_AddMore, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"/>
                             </StackPanel>
                         </Grid>
                     </ScrollViewer>

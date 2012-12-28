@@ -38,7 +38,7 @@ namespace windows_client.View
                 object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                 PhoneApplicationService.Current.State.Remove("displayProfilePic");
                 msisdn = (string)profilePicTapped[0];
-                string filePath = msisdn + "_fullView";
+                string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
 
                 //check if image is already stored
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
@@ -48,7 +48,7 @@ namespace windows_client.View
                 }
                 else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                 {
-                    fileName = msisdn + "_fullView";
+                    fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                     shellProgress.IsVisible = true;
                     if (!Utils.isGroupConversation(msisdn))
                     {
@@ -79,6 +79,8 @@ namespace windows_client.View
 
         public void getProfilePic_Callback(byte[] fullBytes)
         {
+            if (fullBytes != null && fullBytes.Length > 0)
+                MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 shellProgress.IsVisible = false;
@@ -92,8 +94,6 @@ namespace windows_client.View
                     setImage(smallThumbnailImage);
                 }
             });
-            if (fullBytes != null && fullBytes.Length > 0)
-                MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
         }
 
         private void setImage(byte[] imageBytes)

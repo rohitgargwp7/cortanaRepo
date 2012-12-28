@@ -26,7 +26,7 @@ namespace windows_client.Controls
             }
             receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE));
             receivedChatBubble.splitChatBubbles = new List<MyChatBubble>();
-            int lengthOfNextBubble = 1800;
+            int lengthOfNextBubble = 1400;
             for (int i = 1; i <= (cm.Message.Length / HikeConstants.MAX_CHATBUBBLE_SIZE); i++)
             {
                 if ((cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) / HikeConstants.MAX_CHATBUBBLE_SIZE > 0)
