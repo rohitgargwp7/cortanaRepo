@@ -351,6 +351,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
             mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
+            mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
         }
 
         private void removeListeners()
@@ -363,6 +364,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
+                mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
             }
             catch { }
         }
@@ -859,6 +861,23 @@ namespace windows_client.View
                         if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
                             rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
                     });
+                }
+            }
+            #endregion
+            #region BAD_USER_PASS
+            else if (HikePubSub.BAD_USER_PASS == type)
+            {
+                try
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        App.ViewModel.ClearViewModel();
+                        Uri nextPage = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                        NavigationService.Navigate(nextPage);
+                    });
+                }
+                catch (Exception e)
+                {
                 }
             }
             #endregion
