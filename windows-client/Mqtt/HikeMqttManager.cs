@@ -242,7 +242,7 @@ namespace windows_client.Mqtt
             }
             catch (Exception)
             {
-                connect();
+                //connect();
             }
         }
 
@@ -289,7 +289,7 @@ namespace windows_client.Mqtt
                 else
                 {
                     setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-                    scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
+                    //scheduler.Schedule(ping, TimeSpan.FromSeconds(10));
                 }
             }
         }
