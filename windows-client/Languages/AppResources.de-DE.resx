@@ -434,11 +434,11 @@
     <comment>cs</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Verbinde dich und erhalte sofort  </value>
+    <value>Verbinde dich und erhalte sofort </value>
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
+  </data> 
   <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
-    <value>\\ contained in the first string</value>
+    <value></value>
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
