@@ -1225,4 +1225,8 @@
     <value>Dieser Gruppenchat ist stummgeschaltet</value>
     <comment>xaml</comment>
   </data>
+  <data name="Favorites_AddMore" xml:space="preserve">
+    <value>Mehr hinzufügen</value>
+    <comment>xaml</comment>
+  </data>
 </root>
