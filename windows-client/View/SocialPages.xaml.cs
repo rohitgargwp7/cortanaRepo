@@ -473,8 +473,9 @@ namespace windows_client.View
                             NavigationService.GoBack();
                     });
             }
-            else if (uri.Contains("invite"))
+            else if (uri.Contains("invite") && (uri.Contains("Hike.in")||uri.Contains("hike.in")))
             {
+                e.Cancel = true;
                 Dispatcher.BeginInvoke(() =>
                 {
                     Uri nextPage = new Uri("/View/InviteUsers.xaml", UriKind.Relative);
