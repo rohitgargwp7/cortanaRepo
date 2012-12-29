@@ -713,7 +713,17 @@ namespace windows_client
                 #region DUPLICATE GCJ
                 else if (gcState == GroupChatState.DUPLICATE)
                 {
-                    return;
+                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
+
+                    // this is the case when you kick out a user and the again adds him
+                    if (gi != null && !gi.GroupAlive) // if group exists and is dead
+                    {
+                        GroupTableUtils.SetGroupAlive(grpId);
+                        convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
+                        this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
+                    }
+                    else
+                        return;
                 }
                 #endregion
                 #region ADD NEW MEMBERS TO EXISTING GROUP
