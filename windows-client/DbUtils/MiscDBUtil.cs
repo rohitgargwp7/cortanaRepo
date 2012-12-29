@@ -117,6 +117,7 @@ namespace windows_client.DbUtils
         {
             if (imageBytes == null)
                 return;
+            msisdn = msisdn.Replace(":", "_");
             string FileName = THUMBNAILS + "\\" + msisdn;
             lock (lockObj)
             {

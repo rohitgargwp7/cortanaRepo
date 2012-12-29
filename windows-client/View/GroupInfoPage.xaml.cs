@@ -73,8 +73,8 @@ namespace windows_client.View
             initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 83;
-            photoChooserTask.PixelWidth = 83;
+            photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
+            photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
             TiltEffect.TiltableItems.Add(typeof(TextBlock));
         }
@@ -408,11 +408,11 @@ namespace windows_client.View
             }
             using (var msSmallImage = new MemoryStream())
             {
-                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 95);
+                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
                 fullViewImageBytes = msSmallImage.ToArray();
             }
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
         }
 
         public void updateProfile_Callback(JObject obj)
