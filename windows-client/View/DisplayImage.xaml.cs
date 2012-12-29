@@ -19,13 +19,18 @@ namespace windows_client.View
             InitializeComponent();
         }
 
+        protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
+        {
+            base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
+            PhoneApplicationService.Current.State.Remove("displayProfilePic");
+        }
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
             {
                 object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
-                PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
                 long messsageId = (long)fileTapped[0];
                 msisdn = (string)fileTapped[1];
                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
@@ -33,10 +38,9 @@ namespace windows_client.View
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
                 setImage(filebytes);
             }
-            else
+            else if (PhoneApplicationService.Current.State.ContainsKey("displayProfilePic"))
             {
                 object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
-                PhoneApplicationService.Current.State.Remove("displayProfilePic");
                 msisdn = (string)profilePicTapped[0];
                 string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
 
