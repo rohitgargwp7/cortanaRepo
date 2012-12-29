@@ -987,8 +987,14 @@ namespace windows_client.View
         private void enableAppBar()
         {
             refreshIconButton.IsEnabled = true;
-            if (isGroupChat && existingGroupUsers >= 3)
+
+            // should be Group Chat
+            // if new group then number of users should be greater than equal to 3 
+            // if existing group then added user should atleast be 1
+            if (isGroupChat && ((!isExistingGroup && existingGroupUsers >= 3) || (isExistingGroup && (existingGroupUsers - defaultGroupmembers > 0))))
+            {
                 doneIconButton.IsEnabled = true;
+            }
         }
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
