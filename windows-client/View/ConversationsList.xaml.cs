@@ -1145,6 +1145,10 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+
+            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                return;
+
             App.ViewModel.PendingRequests.Remove(fObj);
             App.ViewModel.FavList.Insert(0, fObj);
 

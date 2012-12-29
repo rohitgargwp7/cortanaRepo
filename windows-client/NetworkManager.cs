@@ -378,7 +378,7 @@ namespace windows_client
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("Network Manager : Exception in ICON :: "+ex.StackTrace);
+                            Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
                         }
                     });
                 }
@@ -866,15 +866,16 @@ namespace windows_client
             #region ADD FAVOURITES
             else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
-                string ms = (string)jsonObj[HikeConstants.FROM];
-                if (ms == null)
-                    return;
-                if (App.ViewModel.Isfavourite(ms)) // already favourite
-                    return;
-                if (App.ViewModel.IsPending(ms))
-                    return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    string ms = (string)jsonObj[HikeConstants.FROM];
+                    if (ms == null)
+                        return;
+                    if (App.ViewModel.Isfavourite(ms)) // already favourite
+                        return;
+                    if (App.ViewModel.IsPending(ms))
+                        return;
+
                     try
                     {
 
@@ -891,9 +892,9 @@ namespace windows_client
                         MiscDBUtil.SavePendingRequests();
                         this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
                     }
-                    catch(Exception e) 
+                    catch (Exception e)
                     {
-                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: "+e.StackTrace);
+                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
                     }
                 });
 
