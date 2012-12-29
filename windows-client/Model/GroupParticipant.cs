@@ -221,9 +221,10 @@ namespace windows_client.Model
 
         public Visibility ShowAddTofav
         {
+            // it should not be shown for self
             get
             {
-                if (IsOwner == 1)
+                if (_msisdn == App.MSISDN)
                     return Visibility.Collapsed;
                 return Visibility.Visible;
             }
@@ -249,7 +250,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible)
+                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }
