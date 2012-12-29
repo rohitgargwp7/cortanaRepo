@@ -652,7 +652,8 @@ namespace windows_client.View
                     usersToAdd.Add(gp);
                 }
             }
-
+            if (usersToAdd.Count == 0)
+                return;
             GroupManager.Instance.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             GroupManager.Instance.SaveGroupCache(mContactNumber);
