@@ -10,7 +10,6 @@ namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
     {
-        private BitmapImage fileImage;
         private string msisdn;
         private string fileName;//name of file recived from server. it would be either msisdn or default avatr file name
 
@@ -95,7 +94,23 @@ namespace windows_client.View
                 else
                 {
                     byte[] smallThumbnailImage = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-                    setImage(smallThumbnailImage);
+                    if (smallThumbnailImage != null && smallThumbnailImage.Length > 0)
+                    {
+                        setImage(smallThumbnailImage);
+                    }
+                    else
+                    {
+                        BitmapImage defaultImage = null;
+                        if (Utils.isGroupConversation(msisdn))
+                        {
+                            defaultImage = UI_Utils.Instance.getDefaultGroupAvatar(msisdn);
+                        }
+                        else
+                        {
+                            defaultImage = UI_Utils.Instance.getDefaultAvatar(msisdn);
+                        }
+                        this.FileImage.Source = defaultImage;
+                    }
                 }
             });
         }
@@ -104,7 +119,7 @@ namespace windows_client.View
         {
             MemoryStream memStream = new MemoryStream(imageBytes);
             memStream.Seek(0, SeekOrigin.Begin);
-            fileImage = new BitmapImage();
+            BitmapImage fileImage = new BitmapImage();
             fileImage.SetSource(memStream);
             this.FileImage.Source = fileImage;
         }
