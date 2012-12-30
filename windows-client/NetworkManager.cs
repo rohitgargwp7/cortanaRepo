@@ -692,6 +692,8 @@ namespace windows_client
                     // this is the case when you kick out a user and the again adds him
                     if (gi != null && !gi.GroupAlive) // if group exists and is dead
                     {
+                        if (!App.IS_MARKETPLACE)// remove this later , this is only for QA
+                            MessageBox.Show("GCJ came after adding knocked user!!");
                         GroupTableUtils.SetGroupAlive(grpId);
                         convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
                         this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
@@ -724,6 +726,8 @@ namespace windows_client
                     // this is the case when you kick out a user and the again adds him
                     if (gi != null && !gi.GroupAlive) // if group exists and is dead
                     {
+                        if (!App.IS_MARKETPLACE) // remove this later , this is only for QA
+                            MessageBox.Show("GCJ came after adding knocked user!!");
                         GroupTableUtils.SetGroupAlive(grpId);
                         convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
                         this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
