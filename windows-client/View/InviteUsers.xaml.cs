@@ -211,6 +211,7 @@ namespace windows_client.View
 
         private void Invite_Or_Fav_Click(object sender, EventArgs e)
         {
+            #region FAV SECTION
             if (_isAddToFavPage)
             {
                 bool isPendingRemoved = false;
@@ -252,6 +253,8 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
                 App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
             }
+#endregion
+            #region INVITE
             else
             {
                 string inviteToken = "";
@@ -273,6 +276,7 @@ namespace windows_client.View
                 if (count > 0)
                     MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
+            #endregion
             NavigationService.GoBack();
         }
 
@@ -285,7 +289,14 @@ namespace windows_client.View
         {
             CheckBox c = sender as CheckBox;
             ContactInfo cn = c.DataContext as ContactInfo;
-            string msisdn = cn.Msisdn;
+            string msisdn;
+            if (cn.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
+            {
+                msisdn = Utils.NormalizeNumber(cn.Name);
+                cn = GetContactIfExists(cn);
+            }
+            else
+                msisdn = cn.Msisdn;
             if ((bool)c.IsChecked) // this will be true when checkbox is not checked initially and u clicked it
             {
                 if(_isAddToFavPage)
@@ -319,6 +330,23 @@ namespace windows_client.View
                 else
                     doneIconButton.IsEnabled = false;
             }
+        }
+
+        private ContactInfo GetContactIfExists(ContactInfo contact)
+        {
+            if (glistFiltered == null)
+                return contact;
+            for (int i = 0; i < 26; i++)
+            {
+                if (glistFiltered[i] == null || glistFiltered[i].Items == null)
+                    return contact;
+                for (int k = 0; k < glistFiltered[i].Items.Count; k++)
+                {
+                    if (glistFiltered[i].Items[k].Msisdn == contact.Msisdn)
+                        return glistFiltered[i].Items[k];
+                }
+            }
+            return contact;
         }
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
@@ -357,6 +385,20 @@ namespace windows_client.View
                 if (gl[26].Items.Count > 0 && gl[26].Items[0].Msisdn != null)
                 {
                     gl[26].Items[0].Name = charsEntered;
+                    if (!_isAddToFavPage)
+                    {
+                        string num = Utils.NormalizeNumber(charsEntered);
+                        if (contactsList.ContainsKey(num))
+                        {
+                            gl[26].Items[0].IsInvite = true;
+                            gl[26].Items[0].IsFav = true;
+                        }
+                        else
+                        {
+                            gl[26].Items[0].IsInvite = false;
+                            gl[26].Items[0].IsFav = false;
+                        }
+                    }
                     if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
                         gl[26].Items[0].Msisdn = TAP_MSG;
@@ -366,6 +408,7 @@ namespace windows_client.View
                         gl[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                     }
                 }
+                contactsListBox.ItemsSource = null;
                 contactsListBox.ItemsSource = gl;
                 Thread.Sleep(5);
                 return;
@@ -421,6 +464,19 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i].Items[j];
+                    if (!_isAddToFavPage )
+                    {
+                        if (contactsList.ContainsKey(cn.Msisdn))
+                        {
+                            cn.IsFav = true;
+                            cn.IsInvite = true;
+                        }
+                        else
+                        {
+                            cn.IsFav = false;
+                            cn.IsInvite = false;
+                        }
+                    }
                     if (cn.Name.ToLower().Contains(charsEntered) || cn.Msisdn.Contains(charsEntered) || cn.PhoneNo.Contains(charsEntered))
                     {
                         if (createNewFilteredList)

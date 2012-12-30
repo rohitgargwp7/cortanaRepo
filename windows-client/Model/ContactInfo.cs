@@ -181,11 +181,17 @@ namespace windows_client.Model
             }
         }   // this is used in inviteUsers page , when you show hike users
 
+        public bool IsInvite
+        {
+            get;
+            set;
+        }
+
         public bool IsEnabled
         {
             get
             {
-                if (_isFav)
+                if (_isFav && !IsInvite)
                     return false;
                 return true;
             }
