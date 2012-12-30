@@ -453,7 +453,7 @@ namespace windows_client.View
                 return;
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
-                contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Msisdn = Utils.NormalizeNumber(contact.Name);
                 contact.Name = null;
                 contact = GetContactIfExists(contact);
                 if (App.ViewModel.ConvMap.ContainsKey(contact.Msisdn))
@@ -688,7 +688,7 @@ namespace windows_client.View
 
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
-                contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Msisdn = Utils.NormalizeNumber(contact.Name);
                 contact = GetContactIfExists(contact);
             }
 
@@ -930,33 +930,6 @@ namespace windows_client.View
         }
 
         #endregion
-
-        private string normalizeNumber(string msisdn)
-        {
-            if (msisdn.StartsWith("+"))
-            {
-                return msisdn;
-            }
-            else if (msisdn.StartsWith("00"))
-            {
-                /*
-                 * Doing for US numbers
-                 */
-                return "+" + msisdn.Substring(2);
-            }
-            else if (msisdn.StartsWith("0"))
-            {
-                string country_code = null;
-                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                return ((country_code == null ? "+91" : country_code) + msisdn.Substring(1));
-            }
-            else
-            {
-                string country_code2 = null;
-                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
-                return (country_code2 == null ? "+91" : country_code2) + msisdn;
-            }
-        }
 
         private ContactInfo GetContactIfExists(ContactInfo contact)
         {
