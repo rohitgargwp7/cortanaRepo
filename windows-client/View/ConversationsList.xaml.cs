@@ -399,7 +399,7 @@ namespace windows_client.View
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
 
-            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
+            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
