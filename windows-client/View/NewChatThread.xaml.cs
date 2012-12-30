@@ -540,7 +540,6 @@ namespace windows_client.View
                     if (avatar == null)
                     {
                         avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
-                        userImage.Source = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
                     }
                     else
                     {
@@ -548,10 +547,10 @@ namespace windows_client.View
                         memStream.Seek(0, SeekOrigin.Begin);
                         BitmapImage empImage = new BitmapImage();
                         empImage.SetSource(memStream);
-                        userImage.Source = empImage;
                         avatarImage = empImage;
                     }
                 }
+                userImage.Source = avatarImage;
             }
             #endregion
 

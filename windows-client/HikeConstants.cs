@@ -207,8 +207,9 @@ namespace windows_client
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
         public static readonly string FAIL = "fail";
-        public static string REWARDS_TOKEN = "reward_token";
-        public static string SHOW_REWARDS  = "show_rewards";
+        public static readonly string REWARDS_TOKEN = "reward_token";
+        public static readonly string SHOW_REWARDS  = "show_rewards";
+        public static readonly string REWARDS_VALUE = "tt";
 
         public static class Extras
         {
@@ -254,6 +255,7 @@ namespace windows_client
             public static string HIKE_USER = "hike_user";
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
+            public static string REWARDS = "rewards";
             
         }
 

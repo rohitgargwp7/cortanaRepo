@@ -135,6 +135,8 @@ namespace windows_client
 
         public static readonly string REWARDS_TOGGLE = "rew_tog";
 
+        public static readonly string REWARDS_CHANGED = "rew_changed";
+
         public static readonly string BAD_USER_PASS = "badUserPass";
 
         private readonly Thread mThread;

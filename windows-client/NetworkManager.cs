@@ -384,23 +384,21 @@ namespace windows_client
                 }
                 else
                 {
-                    ConversationListObject c = App.ViewModel.GetFav(msisdn);
-                    if (c != null) // for favourites
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        if (msisdn == null)
+                            return;
+                        ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                        if (c != null) // for favourites
                         {
                             c.Avatar = imageBytes;
-                        });
-                    }
-                    c = App.ViewModel.GetPending(msisdn);
-                    if (c != null) // for pending requests
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        }
+                        c = App.ViewModel.GetPending(msisdn);
+                        if (c != null) // for pending requests
                         {
                             c.Avatar = imageBytes;
-                        });
-                    }
-
+                        }
+                    });
                 }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
@@ -492,8 +490,6 @@ namespace windows_client
                                             {
                                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
-                                                    lock (lockObj)      // this has to be done here as we need to ensure , that fav or pending should be added once
-                                                    {
                                                         bool thrAreFavs = false;
                                                         KeyValuePair<string, JToken> fkkvv;
                                                         IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
@@ -511,7 +507,6 @@ namespace windows_client
                                                         }
                                                         if (thrAreFavs)
                                                             this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
-                                                    }
                                                 });
                                             }
                                         }
@@ -554,6 +549,17 @@ namespace windows_client
                                         {
                                             App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
                                             pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                                        }
+
+                                        if (kkvv.Key == HikeConstants.MqttMessageTypes.REWARDS)
+                                        {
+                                            JObject ttObj = kkvv.Value.ToObject<JObject>();
+                                            if (ttObj != null)
+                                            {
+                                                int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
+                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE,rew_val);
+                                                pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
+                                            }
                                         }
 
                                         #endregion
@@ -910,6 +916,23 @@ namespace windows_client
 
             }
             #endregion
+            #region REWARDS VALU CHANGED
+            else if (HikeConstants.MqttMessageTypes.REWARDS == type)
+            {
+              JObject data = null;
+              try
+              {
+                  data = (JObject)jsonObj[HikeConstants.DATA];
+                  int rewards_val = (int)data[HikeConstants.REWARDS_VALUE];
+                  App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rewards_val);
+                  pubSub.publish(HikePubSub.REWARDS_CHANGED,rewards_val);
+              }
+              catch (Exception e)
+              {
+                  Debug.WriteLine("Netwok Manager :: Exception in REWARDS : "+e.StackTrace);
+              }
+            }
+            #endregion
             #region OTHER
             else
             {
@@ -921,6 +944,8 @@ namespace windows_client
 
         private void LoadFavAndPending(bool isFav, string msisdn)
         {
+            if (msisdn == null)
+                return;
             ObservableCollection<ConversationListObject> l;
             if (isFav)
                 l = App.ViewModel.FavList;

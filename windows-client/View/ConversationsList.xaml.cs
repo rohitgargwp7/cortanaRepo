@@ -351,6 +351,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
             mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
+            mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
         }
 
@@ -364,6 +365,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
+                mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
             }
             catch { }
@@ -399,7 +401,18 @@ namespace windows_client.View
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
                 rewardsPanel.Visibility = Visibility.Visible;
 
-            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
+            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
+
+            int rew_val = 0;
+            App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE,out rew_val);
+            if (rew_val <= 0)
+                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+            else
+            {
+                rewardsTxtBlk.Text = Convert.ToString(rew_val);
+                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+            }
+
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
@@ -860,6 +873,29 @@ namespace windows_client.View
                     {
                         if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
                             rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
+                    });
+                }
+            }
+            #endregion
+            #region REWARDS CHANGED
+            else if (HikePubSub.REWARDS_CHANGED == type)
+            {
+                int rew_val = (int)obj;
+                if (rew_val <= 0) // hide value
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
+                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+                    });
+                }
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
+                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                        rewardsTxtBlk.Text = Convert.ToString(rew_val);
                     });
                 }
             }

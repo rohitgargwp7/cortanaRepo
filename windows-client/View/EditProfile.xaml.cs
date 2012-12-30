@@ -243,7 +243,8 @@ namespace windows_client.View
                     if (genderIndex != genderListPicker.SelectedIndex)
                     {
                         genderIndex = genderListPicker.SelectedIndex;
-                        App.WriteToIsoStorageSettings(App.GENDER, genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "");
+                        string gender = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : ""):(genderListPicker.SelectedIndex == 0 ? "m" : "f");
+                        App.WriteToIsoStorageSettings(App.GENDER, gender);
                     }
                     MakeFieldsReadOnly(false);
                     //progressBar.IsEnabled = false;
