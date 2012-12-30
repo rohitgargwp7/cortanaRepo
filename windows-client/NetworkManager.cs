@@ -882,41 +882,47 @@ namespace windows_client
             #region ADD FAVOURITES
             else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                try
                 {
-                    string ms = (string)jsonObj[HikeConstants.FROM];
-                    if (ms == null)
-                        return;
-                    if (App.ViewModel.Isfavourite(ms)) // already favourite
-                        return;
-                    if (App.ViewModel.IsPending(ms))
-                        return;
-
-                    try
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        string ms = (string)jsonObj[HikeConstants.FROM];
+                        if (ms == null)
+                            return;
+                        if (App.ViewModel.Isfavourite(ms)) // already favourite
+                            return;
+                        if (App.ViewModel.IsPending(ms))
+                            return;
 
-                        ConversationListObject favObj;
-                        if (App.ViewModel.ConvMap.ContainsKey(ms))
-                            favObj = App.ViewModel.ConvMap[ms];
-                        else // user not saved in address book
+                        try
                         {
-                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                            favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+
+                            ConversationListObject favObj;
+                            if (App.ViewModel.ConvMap.ContainsKey(ms))
+                                favObj = App.ViewModel.ConvMap[ms];
+                            else // user not saved in address book
+                            {
+                                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                                favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                            }
+
+                            App.ViewModel.PendingRequests.Add(favObj);
+                            MiscDBUtil.SavePendingRequests();
+                            this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
                         }
-
-                        App.ViewModel.PendingRequests.Add(favObj);
-                        MiscDBUtil.SavePendingRequests();
-                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
-                    }
-                });
-
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : "+e.StackTrace);
+                }
             }
             #endregion
-            #region REWARDS VALU CHANGED
+            #region REWARDS VALUE CHANGED
             else if (HikeConstants.MqttMessageTypes.REWARDS == type)
             {
               JObject data = null;
