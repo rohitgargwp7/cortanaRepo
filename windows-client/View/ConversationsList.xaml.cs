@@ -409,7 +409,7 @@ namespace windows_client.View
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = Convert.ToString(rew_val);
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             }
 
@@ -895,7 +895,7 @@ namespace windows_client.View
                     {
                         if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
                             rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                        rewardsTxtBlk.Text = Convert.ToString(rew_val);
+                        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})", Convert.ToString(rew_val));
                     });
                 }
             }
