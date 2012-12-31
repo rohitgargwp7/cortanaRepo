@@ -666,7 +666,7 @@ namespace windows_client.View
                 if (gif != null && string.IsNullOrEmpty(gif.GroupName)) // set groupname if not alreay set
                 {
                     mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
-                    ConversationTableUtils.updateGroupName(mContactNumber,mContactName); // update DB and UI
+                    ConversationTableUtils.updateGroupName(mContactNumber, mContactName); // update DB and UI
                 }
             }
             userName.Text = mContactName;
@@ -2650,15 +2650,14 @@ namespace windows_client.View
 
             else if (HikePubSub.GROUP_ALIVE == type)
             {
-                string groupId = (string)obj;
-
-                if (mContactNumber == groupId)
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    string groupId = (string)obj;
+                    if (mContactNumber == groupId)
                     {
                         groupChatAlive();
-                    });
-                }
+                    }
+                });
             }
 
             #endregion

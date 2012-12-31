@@ -55,7 +55,7 @@ namespace windows_client
         private object lockObj = new object();
         public enum GroupChatState
         {
-            ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE
+            ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE, KICKEDOUT_USER_ADDED
         }
         private NetworkManager()
         {
@@ -490,23 +490,23 @@ namespace windows_client
                                             {
                                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
-                                                        bool thrAreFavs = false;
-                                                        KeyValuePair<string, JToken> fkkvv;
-                                                        IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
-                                                        while (kVals.MoveNext())
-                                                        {
-                                                            bool isFav = true; // true for fav , false for pending
-                                                            fkkvv = kVals.Current; // kkvv contains favourites MSISDN
-                                                            JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
-                                                            JToken pToken;
-                                                            if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
-                                                                isFav = false;
-                                                            Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                            LoadFavAndPending(isFav, fkkvv.Key); // true for favs
-                                                            thrAreFavs = true;
-                                                        }
-                                                        if (thrAreFavs)
-                                                            this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                                                    bool thrAreFavs = false;
+                                                    KeyValuePair<string, JToken> fkkvv;
+                                                    IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
+                                                    while (kVals.MoveNext())
+                                                    {
+                                                        bool isFav = true; // true for fav , false for pending
+                                                        fkkvv = kVals.Current; // kkvv contains favourites MSISDN
+                                                        JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
+                                                        JToken pToken;
+                                                        if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
+                                                            isFav = false;
+                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
+                                                        thrAreFavs = true;
+                                                    }
+                                                    if (thrAreFavs)
+                                                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
                                                 });
                                             }
                                         }
@@ -557,7 +557,7 @@ namespace windows_client
                                             if (ttObj != null)
                                             {
                                                 int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
-                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE,rew_val);
+                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
                                                 pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
                                             }
                                         }
@@ -663,6 +663,7 @@ namespace windows_client
                 ConvMessage convMessage = null;
                 List<GroupParticipant> dndList = new List<GroupParticipant>(1);
                 GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
+
                 #region NEW GROUP
                 if (gcState == GroupChatState.NEW_GROUP) // this group is created by someone else
                 {
@@ -687,53 +688,40 @@ namespace windows_client
                 #region ALREADY ADDED TO GROUP
                 else if (gcState == GroupChatState.ALREADY_ADDED_TO_GROUP)
                 {
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
-
-                    // this is the case when you kick out a user and the again adds him
-                    if (gi != null && !gi.GroupAlive) // if group exists and is dead
+                    // update JSON in the metadata .....
+                    if (dndList.Count > 0) // there are people who are in dnd , show their msg
                     {
-                        if (!App.IS_MARKETPLACE)// remove this later , this is only for QA
-                            MessageBox.Show("GCJ came after adding knocked user!!");
-                        GroupTableUtils.SetGroupAlive(grpId);
-                        convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
-                        this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
+                        JObject o = new JObject();
+                        o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
+                        convMessage = new ConvMessage(); // this will be normal DND msg
+                        convMessage.Msisdn = grpId;
+                        convMessage.MetaDataString = o.ToString(Formatting.None);
+                        convMessage.Message = GetDndMsg(dndList);
+                        convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
+                        convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
+                        convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
                     }
-                    else // this is normal case
-                    {
-                        // update JSON in the metadata .....
-                        if (dndList.Count > 0) // there are people who are in dnd , show their msg
-                        {
-                            JObject o = new JObject();
-                            o[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP;
-                            convMessage = new ConvMessage(); // this will be normal DND msg
-                            convMessage.Msisdn = grpId;
-                            convMessage.MetaDataString = o.ToString(Formatting.None);
-                            convMessage.Message = GetDndMsg(dndList);
-                            convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                            convMessage.GrpParticipantState = ConvMessage.ParticipantInfoState.DND_USER;
-                            convMessage.Timestamp = TimeUtils.getCurrentTimeStamp();
-                        }
-                        else
-                            return;
-                    }
+                    else
+                        return;
                 }
                 #endregion
                 #region DUPLICATE GCJ
                 else if (gcState == GroupChatState.DUPLICATE)
                 {
-                    GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
-
-                    // this is the case when you kick out a user and the again adds him
-                    if (gi != null && !gi.GroupAlive) // if group exists and is dead
+                    return;
+                }
+                #endregion
+                #region KICKEDOUT USER ADDED
+                else if (gcState == GroupChatState.KICKEDOUT_USER_ADDED)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (!App.IS_MARKETPLACE) // remove this later , this is only for QA
                             MessageBox.Show("GCJ came after adding knocked user!!");
-                        GroupTableUtils.SetGroupAlive(grpId);
-                        convMessage = new ConvMessage(jsonObj, false, false); // this will be normal DND msg
-                        this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
-                    }
-                    else
-                        return;
+                    });
+                    GroupTableUtils.SetGroupAlive(grpId);
+                    convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
+                    this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
                 }
                 #endregion
                 #region ADD NEW MEMBERS TO EXISTING GROUP
@@ -844,7 +832,6 @@ namespace windows_client
             {
                 try
                 {
-
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     bool goAhead = GroupTableUtils.SetGroupDead(groupId);
                     if (goAhead)
@@ -922,25 +909,25 @@ namespace windows_client
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : "+e.StackTrace);
+                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
                 }
             }
             #endregion
             #region REWARDS VALUE CHANGED
             else if (HikeConstants.MqttMessageTypes.REWARDS == type)
             {
-              JObject data = null;
-              try
-              {
-                  data = (JObject)jsonObj[HikeConstants.DATA];
-                  int rewards_val = (int)data[HikeConstants.REWARDS_VALUE];
-                  App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rewards_val);
-                  pubSub.publish(HikePubSub.REWARDS_CHANGED,rewards_val);
-              }
-              catch (Exception e)
-              {
-                  Debug.WriteLine("Netwok Manager :: Exception in REWARDS : "+e.StackTrace);
-              }
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    int rewards_val = (int)data[HikeConstants.REWARDS_VALUE];
+                    App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rewards_val);
+                    pubSub.publish(HikePubSub.REWARDS_CHANGED, rewards_val);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Netwok Manager :: Exception in REWARDS : " + e.StackTrace);
+                }
             }
             #endregion
             #region OTHER
@@ -1154,15 +1141,11 @@ namespace windows_client
             GroupManager.Instance.SaveGroupCache();
         }
 
+        #region OLD ADD GROUPMEMBERS LOGIC
         /// <summary>
         /// This function will return 
         ///  -- > true , if new users are added to GC
         ///  -- > false , if GCJ is come to notify DND status
-        /// 
-        /// </summary>
-        /// <param name="arr"></param>
-        /// <param name="grpId"></param>
-        /// <returns></returns>
         //private bool AddGroupmembers(JArray arr, string grpId)
         //{
         //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
@@ -1223,6 +1206,8 @@ namespace windows_client
 
         //}
 
+        #endregion
+
         /*
          * This function performs 3 roles
          * 1. Same GCJ is received by user who created group
@@ -1239,6 +1224,10 @@ namespace windows_client
                 List<GroupParticipant> l = GroupManager.Instance.GetParticipantList(grpId);
                 if (l == null || l.Count == 0)
                     return GroupChatState.NEW_GROUP;
+
+                GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
+                if (gi != null && !gi.GroupAlive)
+                    return GroupChatState.KICKEDOUT_USER_ADDED;
 
                 GroupChatState output = GroupChatState.DUPLICATE;
                 Dictionary<string, GroupParticipant> gpMap = GetGroupParticipantMap(l);
