@@ -415,7 +415,7 @@ namespace windows_client
             instantiateClasses();
 
             string targetPage = e.Uri.ToString();
-            //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
+            
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
