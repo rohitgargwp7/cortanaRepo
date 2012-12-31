@@ -85,6 +85,7 @@ namespace windows_client.Model
                 {
                     _name = value;
                     NotifyPropertyChanged("Name");
+                    NotifyPropertyChanged("AddUserVisibility");
                 }
             }
         }
