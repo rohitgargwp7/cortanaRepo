@@ -660,6 +660,7 @@ namespace windows_client
                 {
                     return;
                 }
+                GroupManager.Instance.LoadGroupParticipants(grpId);
                 ConvMessage convMessage = null;
                 List<GroupParticipant> dndList = new List<GroupParticipant>(1);
                 GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
