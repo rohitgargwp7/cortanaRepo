@@ -63,7 +63,6 @@ namespace windows_client.DbUtils
                 cObj.GroupAlive = true;
                 MessagesTableUtils.SubmitWithConflictResolve(context);
             }
-            return;
         }
 
         public static GroupInfo getGroupInfoForId(string groupId)
