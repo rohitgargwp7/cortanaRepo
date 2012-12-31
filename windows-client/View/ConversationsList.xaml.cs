@@ -222,15 +222,11 @@ namespace windows_client.View
             appBar.Opacity = 1;
             NetworkManager.turnOffNetworkManager = false;
             App.MqttManagerInstance.connect();
-            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
+            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
-                App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 Utils.requestAccountInfo();
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
-            }
-            else if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
-            {
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
+                App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
 
