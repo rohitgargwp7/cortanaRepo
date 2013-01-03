@@ -68,16 +68,17 @@ namespace windows_client
         public static readonly int ATTACHMENT_MAX_HEIGHT = 800;
         public static readonly int ATTACHMENT_MAX_WIDTH = 800;
         public static readonly int MAX_EMOTICON_SUPPORTED = 10;
-        public static readonly int VIBRATE_DURATION = 1000;
-        public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 120;
+        public static readonly int VIBRATE_DURATION = 700;
+        public static readonly int MAX_AUDIO_RECORDTIME_SUPPORTED = 360; // 6 minutes
         public static readonly int RECURSIVE_PING_INTERVAL = 270;//seconds
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
+        public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
         public static readonly int TYPING_NOTIFICATION_AUTOHIDE = 20; //seconds
-        public static readonly int MAX_CHATBUBBLE_SIZE = 1800;//chars
+        public static readonly int MAX_CHATBUBBLE_SIZE = 1400;//chars
 
         public static readonly int ANALYTICS_POST_TIME = 12;//hours on prod and minutes on staging
         public static readonly string ANALYTICS_OBJECT_FILE = "eventsFile";
@@ -92,7 +93,7 @@ namespace windows_client
         private static readonly string TERMS_AND_CONDITIONS_BLACK = "http://hike.in/terms/wp7/black.html";
         private static readonly string FAQS_LINK_BLACK = "http://get.hike.in/help/wp7/black.html";
         //private static readonly string CONTACT_US_LINK = "http://support.hike.in";
-        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp7" : "http://staging.get.hike.in/updates/wp7";
+        public static readonly string UPDATE_URL = AccountUtils.IsProd ? "http://get.hike.in/updates/wp7" : "http://staging.im.hike.in:8080/updates/wp7";
 
         //for device info
         public static readonly string DEVICE_TYPE = "devicetype";//The OS
@@ -106,6 +107,7 @@ namespace windows_client
         public static readonly string FAVORITES = "favorites";
         public static readonly string PENDING = "pending"; // TODO : Change to exact constant
         public static readonly string IS_SECURE_CHANNEL = "is_secure_channel";
+        public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
         public static string FAQS_LINK
         {
@@ -205,6 +207,9 @@ namespace windows_client
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
         public static readonly string FAIL = "fail";
+        public static readonly string REWARDS_TOKEN = "reward_token";
+        public static readonly string SHOW_REWARDS  = "show_rewards";
+        public static readonly string REWARDS_VALUE = "tt";
 
         public static class Extras
         {
@@ -242,6 +247,7 @@ namespace windows_client
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string DND_USER_IN_GROUP = "dugc";
             public static string ACCOUNT_INFO = "ai";
+            public static string ACCOUNT_CONFIG = "ac";
             public static string GROUP_USER_JOINED_OR_WAITING = "gujow";
             public static string USER_OPT_IN = "uo";
             public static string USER_JOIN = "uj";
@@ -249,6 +255,8 @@ namespace windows_client
             public static string HIKE_USER = "hike_user";
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
+            public static string REWARDS = "rewards";
+            
         }
 
         public static class AppSettings

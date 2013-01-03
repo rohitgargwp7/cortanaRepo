@@ -80,14 +80,14 @@
                                                              Loaded="RichTextBox_Loaded" Margin="0,-2,0,5" Height="35" VerticalAlignment="Center" />
                                                     <!--<local:LinkifiedTextBox Text="{Binding LastMessage}" FontSize="21" ForegroundColor="{Binding LastMessageColor}" MaxHeight="35" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Top"/>-->
                                                 </StackPanel>
+                                                <toolkit:ContextMenuService.ContextMenu>
+                                                    <toolkit:ContextMenu x:Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
+                                                        <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding IsGroupChat}" Tap="MenuItem_Tap_AddRemoveFav"/>
+                                                    </toolkit:ContextMenu>
+                                                </toolkit:ContextMenuService.ContextMenu>
                                             </StackPanel>
                                         </StackPanel>
-                                        <toolkit:ContextMenuService.ContextMenu>
-                                            <toolkit:ContextMenu Name="ctxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                <toolkit:MenuItem Header="{Binding Path= LocalizedResources.Delete_Txt, Source={StaticResource LocalizedStrings}}" Tap="MenuItem_Tap_Delete"/>
-                                                <toolkit:MenuItem Header="{Binding FavMsg}" Visibility="{Binding IsGroupChat}" Tap="MenuItem_Tap_AddRemoveFav"/>
-                                            </toolkit:ContextMenu>
-                                        </toolkit:ContextMenuService.ContextMenu>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -118,34 +118,43 @@
                         </StackPanel>
                     </Grid>
 
-                    <StackPanel Margin="0, 15, 0,10" Orientation="Vertical" Grid.Row="1">
-                        <StackPanel x:Name="freeSMSPanel" Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,15,0,5">
-                            <Image Name ="freeSmsImage" VerticalAlignment="Top" Margin="0,10,0,0" Source="images\free_sms.png" Height="35">
-                            </Image>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FreeSms_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" Margin="15,0,0,0" FontSize="39"></TextBlock>
-                                <TextBlock x:Name="creditsTxtBlck" FontSize="18" Margin="15,0,0,0"></TextBlock>
+                    <ScrollViewer Margin="0, 10, 0,10" Grid.Row="1">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel x:Name="freeSMSPanel" Orientation="Horizontal"  Tap="FreeSMS_Tap" Margin="15,15,0,0">
+                                <Image Name ="freeSmsImage" VerticalAlignment="Top" Margin="0,10,0,0" Source="images\free_sms.png" Height="35">
+                                </Image>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding Path= LocalizedResources.Conversations_FreeSms_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                                    <TextBlock x:Name="creditsTxtBlck" FontSize="18" Margin="15,0,0,0"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel x:Name="rewardsPanel" Visibility="Collapsed"  Orientation="Horizontal" Tap="Rewards_Tap" Margin="15,0,0,0">
+                                <Image Name ="rewards" VerticalAlignment="Center" Height="35"/>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding Path= LocalizedResources.Rewards_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                                    <TextBlock x:Name="rewardsTxtBlk" FontSize="18" Margin="15,0,0,0"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Invite_Tap" Margin="15,5,0,5">
+                                <Image Name ="invite" VerticalAlignment="Center" Height="35">
+                                </Image>
+                                <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TellFriend_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,5,0,5" Tap="Privacy_Tap">
+                                <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Width="26" Height="35"></Image>
+                                <TextBlock Text="{Binding Path= LocalizedResources.Privacy, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
+                            </StackPanel>
+                            <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,5,0,5">
+                                <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="34" Width="34">
+                                </Image>
+                                <TextBlock Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" FontSize="39" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,5,0,5" Tap="Help_Tap">
+                                <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
+                                <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Invite_Tap" Margin="15,15,0,5">
-                            <Image Name ="invite" VerticalAlignment="Center" Height="35">
-                            </Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TellFriend_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Privacy_Tap">
-                            <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Width="26" Height="35"></Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Privacy, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
-                        </StackPanel>
-                        <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,15,0,5">
-                            <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="34" Width="34">
-                            </Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" FontSize="39" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0"></TextBlock>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,15,0,5" Tap="Help_Tap">
-                            <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
-                            <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
-                        </StackPanel>
-                    </StackPanel>
+                    </ScrollViewer>
                 </Grid>
             </controls:PivotItem>
 
@@ -223,7 +232,7 @@
                             <!--<TextBlock Margin="0,20,0,0" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="4" Tap="Button_Tap_1"/>-->
                             <StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
                                 <Image Source="images/add_favorites.png" Height="69" VerticalAlignment="Center"></Image>
-                                <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="Add More" HorizontalAlignment="Left"/>
+                                <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Favorites_AddMore, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"/>
                             </StackPanel>
                         </Grid>
                     </ScrollViewer>

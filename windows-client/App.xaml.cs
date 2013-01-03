@@ -79,13 +79,15 @@ namespace windows_client
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
-        private static Dictionary<string, GroupParticipant> groupsCache = null;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static PushHelper _pushHelper;
-        private static object lockObj = new object();
+        private static PushHelper _pushHelper;        
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
+
+        private static object lockObj = new object();
+        //public static object AppGlobalLock = new object(); // this lock will be used across system to sync 2 diff threads example network manager and deleting all threads
+
         #endregion
 
         #region PROPERTIES
@@ -413,7 +415,7 @@ namespace windows_client
             instantiateClasses();
 
             string targetPage = e.Uri.ToString();
-            //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
+            
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
@@ -673,7 +675,7 @@ namespace windows_client
 
                 if (!isNewInstall)// this has to be called for no new install case
                     convList = GetConversations();
-                else
+                else // new install case
                 {
                     convList = null;
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
@@ -840,12 +842,24 @@ namespace windows_client
             }
         }
 
+        /// <summary>
+        /// this function is used as an upgrade function too.
+        /// </summary>
+        /// <returns></returns>
         private static List<ConversationListObject> GetConversations()
         {
             List<ConversationListObject> convList = null;
             appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
             if (_currentVersion == null)
                 _currentVersion = "1.0.0.0";
+
+            // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.6.0.0
+            if (Utils.compareVersion(_currentVersion, "1.6.0.0") != 1) // current version is less than equal to 1.6.0.0
+            {
+                WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
+                WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
+            }
+
             if (_currentVersion == "1.0.0.0")  // user is upgrading from version 1.0.0.0 to latest
             {
                 /*
@@ -878,6 +892,7 @@ namespace windows_client
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
+      
             else // this corresponds to the latest version and is called everytime except update launch
             {
                 int convs = 0;

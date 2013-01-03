@@ -206,7 +206,7 @@
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>Remove From Favorites</value>
+    <value>remove from favorites</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
@@ -214,7 +214,7 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
-    <value>tell a friend</value>
+    <value>invite friends</value>
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
@@ -222,7 +222,7 @@
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Delete_Txt" xml:space="preserve">
-    <value>Delete</value>
+    <value>delete</value>
     <comment>Chats ContextMenu (xaml)</comment>
   </data>
   <data name="AppBar_Done_Btn" xml:space="preserve">
@@ -434,7 +434,7 @@
     <comment>cs</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Connect and get a </value>
+    <value>Connect and get a</value>
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
@@ -442,11 +442,11 @@
     <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
-    <value>Earn an extra </value>
+    <value>Earn an extra</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk2" xml:space="preserve">
-    <value>{0} free SMS </value>
+    <value>{0} free SMS</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
   </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk3" xml:space="preserve">
@@ -550,7 +550,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Cancel_Txt" xml:space="preserve">
-    <value>Cancel</value>
+    <value>cancel</value>
     <comment>General Text</comment>
   </data>
   <data name="CONTACT_NOT_SAVED_ON_SERVER" xml:space="preserve">
@@ -562,7 +562,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Copy_txt" xml:space="preserve">
-    <value>Copy</value>
+    <value>copy</value>
     <comment>General Text</comment>
   </data>
   <data name="CREDITS_EARNED" xml:space="preserve">
@@ -578,7 +578,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Forward_Txt" xml:space="preserve">
-    <value>Forward</value>
+    <value>forward</value>
     <comment>General Text</comment>
   </data>
   <data name="GROUP_CHAT_END" xml:space="preserve">
@@ -610,11 +610,11 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>Add to Favorites</value>
+    <value>add to favorites</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
-    <value>Add User</value>
+    <value>add user</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AlreadyAdded_Txt" xml:space="preserve">
@@ -702,11 +702,11 @@
     <comment>xaml</comment>
   </data>
   <data name="SelectUser_TxtBoxHint_Txt" xml:space="preserve">
-    <value> Search or Enter Phone Number...</value>
+    <value> Search or Enter Phone #...</value>
     <comment>textbox hint (xaml)</comment>
   </data>
   <data name="SelectUser_UnMuteGrp_Txt" xml:space="preserve">
-    <value>unmute group</value>
+    <value>unmute</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_UserAlreadyAdded_Txt" xml:space="preserve">
@@ -1206,7 +1206,27 @@
     <comment>Remove member from group text</comment>
   </data>
   <data name="Remove_From_grp_txt" xml:space="preserve">
-    <value>Remove From Group</value>
+    <value>remove from group</value>
     <comment>General text</comment>
+  </data>
+  <data name="Rewards_Txt" xml:space="preserve">
+    <value>rewards</value>
+    <comment>Rewards Text</comment>
+  </data>
+  <data name="Tap_To_Invite_Txt" xml:space="preserve">
+    <value>Tap here to invite</value>
+    <comment>Tap to invite text</comment>
+  </data>
+  <data name="SelectUser_TapMsg_Grp_Txt" xml:space="preserve">
+    <value>Tap here to add this person</value>
+    <comment>Add to Group Msg</comment>
+  </data>
+  <data name="ChatThread_GCMute" xml:space="preserve">
+    <value>This group chat is muted</value>
+    <comment>xaml</comment>
+  </data>
+  <data name="Favorites_AddMore" xml:space="preserve">
+    <value>Add More</value>
+    <comment>xaml</comment>
   </data>
 </root>

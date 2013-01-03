@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using windows_client.Misc;
 using System.Text;
+using windows_client.Languages;
 
 namespace windows_client.Model
 {
@@ -84,6 +85,7 @@ namespace windows_client.Model
                 {
                     _name = value;
                     NotifyPropertyChanged("Name");
+                    NotifyPropertyChanged("AddUserVisibility");
                 }
             }
         }
@@ -192,6 +194,43 @@ namespace windows_client.Model
             set;
         }
 
+        public bool IsFav
+        {
+            get
+            {
+                if (App.ViewModel.Isfavourite(_msisdn))
+                    return true;
+                return false;
+            }
+            set
+            {
+                NotifyPropertyChanged("IsFav");
+                NotifyPropertyChanged("FavMsg");
+            }
+        }
+
+        public string FavMsg
+        {
+            get
+            {
+                if (IsFav) // if already favourite
+                    return AppResources.RemFromFav_Txt;
+                else
+                    return AppResources.Add_To_Fav_Txt;
+            }
+        }
+
+        public Visibility ShowAddTofav
+        {
+            // it should not be shown for self
+            get
+            {
+                if (_msisdn == App.MSISDN)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
+        }
+
         public Visibility RemoveFromGroup
         {
             get;
@@ -212,7 +251,7 @@ namespace windows_client.Model
         {
             get
             {
-                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible)
+                if (AddUserVisibility == Visibility.Visible || RemoveFromGroup == Visibility.Visible || ShowAddTofav == Visibility.Visible)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }

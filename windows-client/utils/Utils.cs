@@ -9,6 +9,7 @@ using System.Windows;
 using System.IO;
 using Microsoft.Phone.Info;
 using Microsoft.Phone.Net.NetworkInformation;
+using System.Security.Cryptography;
 
 namespace windows_client.utils
 {
@@ -227,7 +228,7 @@ namespace windows_client.utils
         }
 
         //unique id for device. note:- it is not imei number
-        public static string getDeviceId()
+        public static string getHashedDeviceId()
         {
             object uniqueIdObj = null;
             byte[] uniqueId = null;
@@ -235,7 +236,27 @@ namespace windows_client.utils
             {
                 uniqueId = (byte [])uniqueIdObj;
             }
-            return uniqueId==null?null:BitConverter.ToString(uniqueId);
+            string deviceId = uniqueId==null?null:BitConverter.ToString(uniqueId);
+            if (string.IsNullOrEmpty(deviceId))
+                return null;
+            deviceId = deviceId.Replace("-", "");
+            return "wp:" + computeHash(deviceId);
+        }
+
+        private static string computeHash(string input)
+        {
+            string rethash = "";
+            try
+            {
+                var sha = new HMACSHA1();
+                var bytes = System.Text.Encoding.UTF8.GetBytes(input);
+                byte[] resultHash = sha.ComputeHash(bytes);
+                rethash = Convert.ToBase64String(resultHash);
+            }
+            catch (Exception ex)
+            {
+            }
+            return rethash; 
         }
 
         //carrier DeviceNetworkInformation.CellularMobileOperator;
@@ -258,7 +279,7 @@ namespace windows_client.utils
             info["_app_version"] = getAppVersion();
             info["tag"] = "cbs";
             info["_carrier"] = DeviceNetworkInformation.CellularMobileOperator;
-            info["device_id"] = getDeviceId();
+            info["device_id"] = getHashedDeviceId();
             info["_os_version"] = getOSVersion();
             info["_os"] = "windows";
             JObject infoPacket = new JObject();
@@ -274,6 +295,65 @@ namespace windows_client.utils
             if (msisdn.StartsWith("+91"))
                 return true;
             return false;
+        }
+
+        public static bool IsNumber(string charsEntered)
+        {
+            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
+            {
+                charsEntered = charsEntered.Substring(1);
+            }
+            long i = 0;
+            return long.TryParse(charsEntered, out i);
+        }
+
+        public static bool IsNumberValid(string charsEntered)
+        {
+            // TODO : Use regex if required
+            // CASES 
+            /*
+             * 1. If number starts with '+'
+             */
+
+            if (charsEntered.StartsWith("+"))
+            {
+                if (charsEntered.Length < 2 || charsEntered.Length > 15)
+                    return false;
+            }
+            else
+            {
+                if (charsEntered.Length < 1 || charsEntered.Length > 15)
+                    return false;
+            }
+            return true;
+        }
+
+
+        public static string NormalizeNumber(string msisdn)
+        {
+            if (msisdn.StartsWith("+"))
+            {
+                return msisdn;
+            }
+            else if (msisdn.StartsWith("00"))
+            {
+                /*
+                 * Doing for US numbers
+                 */
+                return "+" + msisdn.Substring(2);
+            }
+            else if (msisdn.StartsWith("0"))
+            {
+                string country_code = null;
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+                return ((country_code == null ? "+91" : country_code) + msisdn.Substring(1));
+            }
+            else
+            {
+                string country_code2 = null;
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
+                return (country_code2 == null ? "+91" : country_code2) + msisdn;
+            }
         }
     }
 }

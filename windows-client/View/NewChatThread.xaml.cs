@@ -64,7 +64,6 @@ namespace windows_client.View
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
         //messages stored in db, other messages would have their attachment object set
 
-        private int msgBubbleCount = 0;
         private int mCredits;
         private long lastTextChangedTime;
         private long lastTypingNotificationShownTime;
@@ -85,6 +84,7 @@ namespace windows_client.View
         ApplicationBarIconButton fileTransferIconButton = null;
         private PhotoChooserTask photoChooserTask;
         private BingMapsTask bingMapsTask = null;
+        private bool isShowNudgeTute = true;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -540,7 +540,6 @@ namespace windows_client.View
                     if (avatar == null)
                     {
                         avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
-                        userImage.Source = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
                     }
                     else
                     {
@@ -548,10 +547,10 @@ namespace windows_client.View
                         memStream.Seek(0, SeekOrigin.Begin);
                         BitmapImage empImage = new BitmapImage();
                         empImage.SetSource(memStream);
-                        userImage.Source = empImage;
                         avatarImage = empImage;
                     }
                 }
+                userImage.Source = avatarImage;
             }
             #endregion
 
@@ -574,13 +573,13 @@ namespace windows_client.View
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             initBlockUnblockState();
-            showNudgeTute();
+            if (isShowNudgeTute)
+                showNudgeTute();
         }
 
         private void showNudgeTute()
         {
-            if (App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
-//            if (true)
+            if (!isGroupChat && App.appSettings.Contains(App.SHOW_NUDGE_TUTORIAL))
             {
                 overlayForNudge.Visibility = Visibility.Visible;
                 //overlayForNudge.Opacity = 0.65;
@@ -652,7 +651,8 @@ namespace windows_client.View
                     usersToAdd.Add(gp);
                 }
             }
-
+            if (usersToAdd.Count == 0)
+                return;
             GroupManager.Instance.GroupCache[mContactNumber].Sort();
             usersToAdd.Sort();
             GroupManager.Instance.SaveGroupCache(mContactNumber);
@@ -663,8 +663,11 @@ namespace windows_client.View
             else
             {
                 GroupInfo gif = GroupTableUtils.getGroupInfoForId(mContactNumber);
-                if (gif != null && string.IsNullOrEmpty(gif.GroupName))
+                if (gif != null && string.IsNullOrEmpty(gif.GroupName)) // set groupname if not alreay set
+                {
                     mContactName = GroupManager.Instance.defaultGroupName(mContactNumber);
+                    ConversationTableUtils.updateGroupName(mContactNumber, mContactName); // update DB and UI
+                }
             }
             userName.Text = mContactName;
             if (isNewgroup)
@@ -770,7 +773,7 @@ namespace windows_client.View
                 appBar.MenuItems.Add(leaveMenuItem);
 
                 muteGroupMenuItem = new ApplicationBarMenuItem();
-                muteGroupMenuItem.Text = IsMute ? "unmute group" : "mute group";
+                muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
 
@@ -920,8 +923,11 @@ namespace windows_client.View
                 //messageListBox.Opacity = 1;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                ScrollToBottom();
-                scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                if (!IsMute)
+                {
+                    ScrollToBottom();
+                    scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                }
                 NetworkManager.turnOffNetworkManager = false;
             });
         }
@@ -968,7 +974,7 @@ namespace windows_client.View
                 addNewAttachmentMessageToUI(newChatBubble);
                 //msgMap.Add(convMessage.MessageId, newChatBubble);
 
-                object[] vals = new object[2];
+                object[] vals = new object[3];
                 vals[0] = convMessage;
                 vals[1] = sourceFilePath;
                 vals[2] = newChatBubble;
@@ -1033,12 +1039,11 @@ namespace windows_client.View
         //this function is called from UI thread only. No need to synch.
         private void ScrollToBottom()
         {
-            if (!IsMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
+            if (!IsMute || this.MessageList.Children.Count < App.ViewModel.ConvMap[mContactNumber].MuteVal)
             {
                 MessageList.UpdateLayout();
                 Scroller.UpdateLayout();
-                if (!IsMute || msgBubbleCount < App.ViewModel.ConvMap[mContactNumber].MuteVal)
-                    Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
+                Scroller.ScrollToVerticalOffset(Scroller.ScrollableHeight);
             }
         }
 
@@ -1086,6 +1091,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
             mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
+            mPubSub.addListener(HikePubSub.GROUP_ALIVE, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
         }
@@ -1106,6 +1112,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
                 mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
+                mPubSub.removeListener(HikePubSub.GROUP_ALIVE, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             }
@@ -1148,6 +1155,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS_APP_BAR_CHATTHREAD);
             }
             else
             {
@@ -1176,6 +1184,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD);
             }
         }
 
@@ -1235,6 +1244,7 @@ namespace windows_client.View
                 IsMute = false;
                 obj[HikeConstants.TYPE] = "unmute";
                 App.ViewModel.ConvMap[mContactNumber].MuteVal = -1;
+                ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_MuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                 afterMute = true;
@@ -1243,7 +1253,7 @@ namespace windows_client.View
             {
                 IsMute = true;
                 obj[HikeConstants.TYPE] = "mute";
-                App.ViewModel.ConvMap[mContactNumber].MuteVal = msgBubbleCount;
+                App.ViewModel.ConvMap[mContactNumber].MuteVal = this.MessageList.Children.Count;
                 ConversationTableUtils.saveConvObject(App.ViewModel.ConvMap[mContactNumber], mContactNumber.Replace(":", "_"));
                 muteGroupMenuItem.Text = AppResources.SelectUser_UnMuteGrp_Txt;
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
@@ -1477,12 +1487,10 @@ namespace windows_client.View
                     MyChatBubble chatBubble;
                     if (convMessage.IsSent)
                     {
-                        //chatBubble = new SentChatBubble(convMessage, readFromDB);
                         chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                        if (convMessage.MessageId > 0 && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
                             msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                        //else if (convMessage.MessageId == -1)
-                        //    msgMap.Add(TempMessageId, (SentChatBubble)chatBubble);
                     }
                     else
                     {
@@ -1518,9 +1526,6 @@ namespace windows_client.View
                         MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
                         this.MessageList.Children.Add(dndChatBubble);
                     }
-                    if (!readFromDB)
-                        ScrollToBottom();
-
                 }
                 #endregion
                 #region PARTICIPANT_JOINED
@@ -1597,7 +1602,6 @@ namespace windows_client.View
                     }
                     MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString()));
                     this.MessageList.Children.Add(wchatBubble);
-                    ScrollToBottom();
                 }
                 #endregion
                 #region USER_JOINED
@@ -1689,10 +1693,8 @@ namespace windows_client.View
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
-                if (!readFromDB)
-                    ScrollToBottom();
-
-                msgBubbleCount++;
+                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                ScrollToBottom();
             }
             catch (Exception e)
             {
@@ -1707,7 +1709,7 @@ namespace windows_client.View
                 return;
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
@@ -2644,6 +2646,22 @@ namespace windows_client.View
 
             #endregion
 
+            #region GROUP ALIVE
+
+            else if (HikePubSub.GROUP_ALIVE == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    string groupId = (string)obj;
+                    if (mContactNumber == groupId)
+                    {
+                        groupChatAlive();
+                    }
+                });
+            }
+
+            #endregion
+
             #region PARTICIPANT_LEFT_GROUP
 
             else if (HikePubSub.PARTICIPANT_LEFT_GROUP == type)
@@ -2701,6 +2719,16 @@ namespace windows_client.View
             sendIconButton.IsEnabled = false;
             emoticonsIconButton.IsEnabled = false;
             fileTransferIconButton.IsEnabled = false;
+        }
+
+        private void groupChatAlive()
+        {
+            isGroupAlive = true;
+            sendMsgTxtbox.IsHitTestVisible = true;
+            appBar.IsMenuEnabled = true;
+            sendIconButton.IsEnabled = true;
+            emoticonsIconButton.IsEnabled = true;
+            fileTransferIconButton.IsEnabled = true;
         }
 
         #endregion
@@ -2860,15 +2888,22 @@ namespace windows_client.View
             }
         }
 
+        private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
+            object[] fileTapped = new object[1];
+            fileTapped[0] = mContactNumber;
+            PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
+            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+        }
+
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!isGroupChat)
             {
                 if (mUserIsBlocked)
                     return;
-
                 emoticonPanel.Visibility = Visibility.Collapsed;
-
                 if ((!isOnHike && mCredits <= 0))
                     return;
                 ConvMessage convMessage = new ConvMessage("Nudge!", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
@@ -2876,8 +2911,13 @@ namespace windows_client.View
                 convMessage.HasAttachment = false;
                 convMessage.MetaDataString = "{poke:1}";
                 sendMsg(convMessage, false);
-                VibrateController vibrate = VibrateController.Default;
-                vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                bool isVibrateEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
+                if (isVibrateEnabled)
+                {
+                    VibrateController vibrate = VibrateController.Default;
+                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                }
             }
         }
 

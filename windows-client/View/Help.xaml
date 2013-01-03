@@ -49,7 +49,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="1" Margin="20,30,0,0" Tap="Legal_Tap">
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_LegalTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Help_LegalText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_LegalText, Source={StaticResource LocalizedStrings}}" FontSize="20" TextWrapping="Wrap"/>
                 </StackPanel>
                 <StackPanel x:Name="walkthroughPanel" Grid.Row="3" Grid.Column="1" Margin="20,30,0,0" Tap="Walkthrough_Tap">
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_WalkthroughTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
@@ -57,7 +57,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="4" Grid.Column="1" Margin="20,30,0,0" Tap="rateAndReview_Tap">
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}" FontSize="20" TextWrapping="Wrap"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Grid.Column="1" Margin="20,30,0,0">

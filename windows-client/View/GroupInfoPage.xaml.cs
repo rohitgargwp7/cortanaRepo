@@ -17,6 +17,7 @@ using windows_client.Misc;
 using System.Diagnostics;
 using Microsoft.Phone.UserData;
 using windows_client.Languages;
+using windows_client.ViewModel;
 
 namespace windows_client.View
 {
@@ -31,7 +32,8 @@ namespace windows_client.View
         bool isgroupNameSelfChanged = false;
         bool isProfilePicTapped = false;
         string groupName;
-        byte[] buffer = null;
+        byte[] fullViewImageBytes = null;
+        byte[] thumbnailBytes = null;
         BitmapImage grpImage = null;
         private int smsUsers = 0;
         private bool imageHandlerCalled = false;
@@ -71,8 +73,8 @@ namespace windows_client.View
             initPageBasedOnState();
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 83;
-            photoChooserTask.PixelWidth = 83;
+            photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
+            photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
             TiltEffect.TiltableItems.Add(typeof(TextBlock));
         }
@@ -390,14 +392,6 @@ namespace windows_client.View
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
-            //else
-            //{
-            //    Uri uri = new Uri("/View/images/tick.png", UriKind.Relative);
-            //    grpImage = new BitmapImage(uri);
-            //    grpImage.CreateOptions = BitmapCreateOptions.None;
-            //    grpImage.UriSource = uri;
-            //    grpImage.ImageOpened += imageOpenedHandler;
-            //}
         }
 
         void imageOpenedHandler(object sender, RoutedEventArgs e)
@@ -407,14 +401,18 @@ namespace windows_client.View
             imageHandlerCalled = false;
             BitmapImage image = (BitmapImage)sender;
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-
+            using (var msLargeImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
+                thumbnailBytes = msLargeImage.ToArray();
+            }
             using (var msSmallImage = new MemoryStream())
             {
-                writeableBitmap.SaveJpeg(msSmallImage, 83, 83, 0, 95);
-                buffer = msSmallImage.ToArray();
+                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
+                fullViewImageBytes = msSmallImage.ToArray();
             }
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(buffer, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
+            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
         }
 
         public void updateProfile_Callback(JObject obj)
@@ -423,14 +421,14 @@ namespace windows_client.View
             {
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
-                    App.ViewModel.ConvMap[groupId].Avatar = buffer;
+                    App.ViewModel.ConvMap[groupId].Avatar = fullViewImageBytes;
                     groupImage.Source = grpImage;
                     groupImage.Height = 83;
                     groupImage.Width = 83;
                     object[] vals = new object[3];
                     vals[0] = groupId;
-                    vals[1] = buffer;
-                    vals[2] = null;
+                    vals[1] = fullViewImageBytes;
+                    vals[2] = thumbnailBytes;
                     mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                     if (App.newChatThreadPage != null)
                         App.newChatThreadPage.userImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
@@ -705,7 +703,7 @@ namespace windows_client.View
                 {
                     App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
                 }
-                else
+                else // fav and pending case update
                 {
                     ConversationListObject co = App.ViewModel.GetFav(gp_obj.Msisdn);
                     if (co != null)
@@ -724,11 +722,16 @@ namespace windows_client.View
 
         private void MenuItem_Tap_AddUser(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                return;
+            }
             ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
                 return;
 
-            GroupParticipant gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
+            gp_obj = selectedListBoxItem.DataContext as GroupParticipant;
 
             if (gp_obj == null)
                 return;
@@ -739,11 +742,18 @@ namespace windows_client.View
                 return;
             ContactUtils.saveContact(gp_obj.Msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
         }
+
         private void MenuItem_Tap_RemoveMember(object sender, System.Windows.Input.GestureEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(AppResources.RemoveFromGrpConfirmation_Txt, AppResources.Remove_From_grp_txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                return;
+            }
             ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
             if (selectedListBoxItem == null)
                 return;
@@ -784,6 +794,74 @@ namespace windows_client.View
             //        App.ViewModel.ConvMap[groupId].ContactName = grpName;
             //    if(App.newChatThreadPage != null)
             //        App.newChatThreadPage.userName.Text = grpName;
+        }
+
+        private void MenuItem_Tap_AddRemoveFav(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ListBoxItem selectedListBoxItem = this.groupChatParticipants.ItemContainerGenerator.ContainerFromItem((sender as MenuItem).DataContext) as ListBoxItem;
+            if (selectedListBoxItem == null)
+            {
+                return;
+            }
+            GroupParticipant gp = selectedListBoxItem.DataContext as GroupParticipant;
+            if (gp != null)
+            {
+                if (gp.IsFav) // already fav , remove request
+                {
+                    MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
+                    if (result == MessageBoxResult.Cancel)
+                        return;
+                    gp.IsFav = false;
+                    ConversationListObject favObj = App.ViewModel.GetFav(gp.Msisdn);
+                    App.ViewModel.FavList.Remove(favObj);
+
+                    JObject data = new JObject();
+                    data["id"] = gp.Msisdn;
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                    obj[HikeConstants.DATA] = data;
+
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.DeleteFavourite(gp.Msisdn);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO);
+                }
+                else // add to fav
+                {
+                    gp.IsFav = true;
+                    ConversationListObject favObj;
+                    if (App.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
+                    {
+                        favObj = App.ViewModel.ConvMap[gp.Msisdn];
+                        favObj.IsFav = true;
+                    }
+                    else
+                        favObj = new ConversationListObject(gp.Msisdn, gp.Name, gp.IsOnHike, MiscDBUtil.getThumbNailForMsisdn(gp.Msisdn));
+                    App.ViewModel.FavList.Insert(0, favObj);
+                    if (App.ViewModel.IsPending(gp.Msisdn))
+                    {
+                        App.ViewModel.PendingRequests.Remove(favObj);
+                        MiscDBUtil.SavePendingRequests();
+                    }
+                    MiscDBUtil.SaveFavourites();
+                    MiscDBUtil.SaveFavourites(favObj);
+                    int count = 0;
+                    App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                    App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+                    JObject data = new JObject();
+                    data["id"] = gp.Msisdn;
+                    JObject obj = new JObject();
+                    obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                    obj[HikeConstants.DATA] = data;
+                    mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
+                }
+            }
         }
     }
 }

@@ -179,13 +179,19 @@ namespace windows_client.View
             else
                 hideSmsContacts = false;
 
-            /* Case whe this page is called from GroupInfo page*/
+            /* Case when this page is called from GroupInfo page*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            {
                 isGroupChat = true;
+                TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+            }
 
             /* Case when this page is called from create group button.*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
+            {
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
+                TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+            }
 
             //if (isGroupChat)
             //    title.Text = "new group chat";
@@ -447,7 +453,7 @@ namespace windows_client.View
                 return;
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
-                contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Msisdn = Utils.NormalizeNumber(contact.Name);
                 contact.Name = null;
                 contact = GetContactIfExists(contact);
                 if (App.ViewModel.ConvMap.ContainsKey(contact.Msisdn))
@@ -547,7 +553,7 @@ namespace windows_client.View
         {
             bool areCharsNumber = false;
             bool isPlus = false;
-            if (isNumber(charsEntered))
+            if (Utils.IsNumber(charsEntered))
             {
                 areCharsNumber = true;
                 if (charsEntered.StartsWith("+"))
@@ -608,7 +614,7 @@ namespace windows_client.View
                 }
                 charsEntered = (isPlus ? "+" : "") + charsEntered;
                 list[26].Items[0].Name = charsEntered;
-                if (IsNumberValid(charsEntered))
+                if (Utils.IsNumberValid(charsEntered))
                 {
                     list[26].Items[0].Msisdn = TAP_MSG;
                 }
@@ -623,27 +629,6 @@ namespace windows_client.View
             if (areCharsNumber)
                 return list;
             return glistFiltered;
-        }
-
-        private bool IsNumberValid(string charsEntered)
-        {
-            // TODO : Use regex if required
-            // CASES 
-            /*
-             * 1. If number starts with '+'
-             */
-
-            if (charsEntered.StartsWith("+"))
-            {
-                if (charsEntered.Length < 2 || charsEntered.Length > 15)
-                    return false;
-            }
-            else
-            {
-                if (charsEntered.Length < 1 || charsEntered.Length > 15)
-                    return false;
-            }
-            return true;
         }
 
         #region GROUP CHAT RELATED
@@ -703,7 +688,7 @@ namespace windows_client.View
 
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
-                contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Msisdn = Utils.NormalizeNumber(contact.Name);
                 contact = GetContactIfExists(contact);
             }
 
@@ -946,43 +931,6 @@ namespace windows_client.View
 
         #endregion
 
-        private string normalizeNumber(string msisdn)
-        {
-            if (msisdn.StartsWith("+"))
-            {
-                return msisdn;
-            }
-            else if (msisdn.StartsWith("00"))
-            {
-                /*
-                 * Doing for US numbers
-                 */
-                return "+" + msisdn.Substring(2);
-            }
-            else if (msisdn.StartsWith("0"))
-            {
-                string country_code = null;
-                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                return ((country_code == null ? "+91" : country_code) + msisdn.Substring(1));
-            }
-            else
-            {
-                string country_code2 = null;
-                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
-                return (country_code2 == null ? "+91" : country_code2) + msisdn;
-            }
-        }
-
-        private bool isNumber(string charsEntered)
-        {
-            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
-            {
-                charsEntered = charsEntered.Substring(1);
-            }
-            long i = 0;
-            return long.TryParse(charsEntered, out i);
-        }
-
         private ContactInfo GetContactIfExists(ContactInfo contact)
         {
             if (glistFiltered == null)
@@ -1012,8 +960,14 @@ namespace windows_client.View
         private void enableAppBar()
         {
             refreshIconButton.IsEnabled = true;
-            if (isGroupChat && existingGroupUsers >= 3)
+
+            // should be Group Chat
+            // if new group then number of users should be greater than equal to 3 
+            // if existing group then added user should atleast be 1
+            if (isGroupChat && ((!isExistingGroup && existingGroupUsers >= 3) || (isExistingGroup && (existingGroupUsers - defaultGroupmembers > 0))))
+            {
                 doneIconButton.IsEnabled = true;
+            }
         }
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
@@ -1101,7 +1055,7 @@ namespace windows_client.View
                 return;
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
-            App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
             ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), ci.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
             convMessage.IsSms = true;
             convMessage.IsInvite = true;

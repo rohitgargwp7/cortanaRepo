@@ -612,7 +612,8 @@ namespace windows_client.Model
                 {
                     try
                     {
-                        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                        if(propertyName != null)
+                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                     }
                     catch (Exception)
                     {
@@ -639,7 +640,8 @@ namespace windows_client.Model
                     {
                         try
                         {
-                            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                            if (propertyName != null)
+                                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
                         }
                         catch (Exception)
                         { }

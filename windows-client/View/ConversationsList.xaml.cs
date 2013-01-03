@@ -35,7 +35,7 @@ namespace windows_client.View
         bool _isFavListBound = false;
         bool _isPendingListBound = false;
         bool isProfilePicTapped = false;
-        byte[] thumbnailBytes = null;
+        byte[] fullViewImageBytes = null;
         byte[] largeImageBytes = null;
         private bool firstLoad = true;
         private bool showFreeSMS = false;
@@ -47,7 +47,7 @@ namespace windows_client.View
         ApplicationBarIconButton composeIconButton;
         BitmapImage profileImage = null;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
-
+        private bool isShowFavTute = true;
         #endregion
 
         #region Page Based Functions
@@ -58,7 +58,8 @@ namespace windows_client.View
             initAppBar();
             initProfilePage();
             DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
-            showTutorial();
+            if(isShowFavTute)
+                showTutorial();
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -77,12 +78,10 @@ namespace windows_client.View
         private void showTutorial()
         {
             if (App.appSettings.Contains(App.SHOW_FAVORITES_TUTORIAL))
-//            if(true)
             {
                 overlay.Visibility = Visibility.Visible;
                 TutorialsGrid.Visibility = Visibility.Visible;
                 launchPagePivot.IsHitTestVisible = false;
-                //SystemTray.IsVisible = false;
             }
             else
             {
@@ -109,7 +108,7 @@ namespace windows_client.View
             }
             else
             {
-                App.MqttManagerInstance.connectionStatus = Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
+                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
             }
         }
 
@@ -170,6 +169,7 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
+            
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -206,7 +206,6 @@ namespace windows_client.View
             }
             shellProgress.IsVisible = false;
             myListBox.ItemsSource = App.ViewModel.MessageListPageCollection;
-
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
@@ -223,15 +222,11 @@ namespace windows_client.View
             appBar.Opacity = 1;
             NetworkManager.turnOffNetworkManager = false;
             App.MqttManagerInstance.connect();
-            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION))
+            if (App.appSettings.Contains(HikeConstants.IS_NEW_INSTALLATION) || App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
             {
-                App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 Utils.requestAccountInfo();
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
-            }
-            else if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE))
-            {
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, Utils.deviceInforForAnalytics());
+                App.RemoveKeyFromAppSettings(HikeConstants.IS_NEW_INSTALLATION);
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.NEW_UPDATE);
             }
 
@@ -351,6 +346,9 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+            mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
+            mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
+            mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
         }
 
         private void removeListeners()
@@ -362,6 +360,9 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+                mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
+                mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
+                mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
             }
             catch { }
         }
@@ -381,6 +382,7 @@ namespace windows_client.View
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_black.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/rewards_link_dark.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x36, 0x36, 0x36));
             }
             else
@@ -388,9 +390,25 @@ namespace windows_client.View
                 emptyScreenImage.Source = new BitmapImage(new Uri("images/empty_screen_logo_white.png", UriKind.Relative));
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
+                rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
                 //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
-            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = UI_Utils.Instance.EditProfileForeground;
+            bool showRewards;
+            if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
+                rewardsPanel.Visibility = Visibility.Visible;
+
+            editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
+
+            int rew_val = 0;
+            App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE,out rew_val);
+            if (rew_val <= 0)
+                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+            else
+            {
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+            }
+
             string name;
             appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
             if (name != null)
@@ -398,8 +416,8 @@ namespace windows_client.View
             creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, (int)App.appSettings[App.SMS_SETTING]);
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = 83;
-            photoChooserTask.PixelWidth = 83;
+            photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
+            photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Stopwatch st = Stopwatch.StartNew();
@@ -469,23 +487,19 @@ namespace windows_client.View
         void imageOpenedHandler(object sender, RoutedEventArgs e)
         {
             BitmapImage image = (BitmapImage)sender;
-
             WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-
             using (var msLargeImage = new MemoryStream())
             {
                 writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
                 largeImageBytes = msLargeImage.ToArray();
             }
-
             using (var msSmallImage = new MemoryStream())
             {
-                writeableBitmap.SaveJpeg(msSmallImage, 83, 83, 0, 95);
-                thumbnailBytes = msSmallImage.ToArray();
+                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
+                fullViewImageBytes = msSmallImage.ToArray();
             }
-
             //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(thumbnailBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
         }
 
         public void updateProfile_Callback(JObject obj)
@@ -499,7 +513,7 @@ namespace windows_client.View
                     avatarImage.MaxWidth = 83;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
-                    vals[1] = thumbnailBytes;
+                    vals[1] = fullViewImageBytes;
                     vals[2] = largeImageBytes;
                     mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                 }
@@ -554,6 +568,7 @@ namespace windows_client.View
             GroupManager.Instance.GroupCache.Clear();
             GroupManager.Instance.DeleteAllGroups();
             GroupTableUtils.deleteAllGroups();
+
         }
 
         private void createGroup_Click(object sender, EventArgs e)
@@ -620,11 +635,12 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         addFavsPanel.Opacity = 0;
                     }
+                    App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
                 }
                 else // add to fav
                 {
                     convObj.IsFav = true;
-                    App.ViewModel.FavList.Insert(0,convObj);
+                    App.ViewModel.FavList.Insert(0, convObj);
                     if (App.ViewModel.IsPending(convObj.Msisdn))
                     {
                         App.ViewModel.PendingRequests.Remove(convObj);
@@ -647,6 +663,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         addFavsPanel.Opacity = 1;
                     }
+                    App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
                 }
             }
         }
@@ -656,7 +673,7 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             int convs = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
-            
+
             App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
@@ -833,6 +850,69 @@ namespace windows_client.View
                 });
             }
             #endregion
+            #region REWARDS TOGGLE
+            else if (HikePubSub.REWARDS_TOGGLE == type)
+            {
+                bool showRewards;
+                appSettings.TryGetValue(HikeConstants.SHOW_REWARDS, out showRewards);
+                if (showRewards) // show rewards option
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsPanel.Visibility == System.Windows.Visibility.Collapsed)
+                            rewardsPanel.Visibility = System.Windows.Visibility.Visible;
+                    });
+                }
+                else // hide rewards option 
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsPanel.Visibility == System.Windows.Visibility.Visible)
+                            rewardsPanel.Visibility = System.Windows.Visibility.Collapsed;
+                    });
+                }
+            }
+            #endregion
+            #region REWARDS CHANGED
+            else if (HikePubSub.REWARDS_CHANGED == type)
+            {
+                int rew_val = (int)obj;
+                if (rew_val <= 0) // hide value
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Visible)
+                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+                    });
+                }
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
+                            rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
+                        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})", Convert.ToString(rew_val));
+                    });
+                }
+            }
+            #endregion
+            #region BAD_USER_PASS
+            else if (HikePubSub.BAD_USER_PASS == type)
+            {
+                try
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        App.ViewModel.ClearViewModel();
+                        Uri nextPage = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
+                        NavigationService.Navigate(nextPage);
+                    });
+                }
+                catch (Exception e)
+                {
+                }
+            }
+            #endregion
         }
 
         #endregion
@@ -895,6 +975,19 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
 
+        private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            try
+            {
+                App.AnalyticsInstance.addEvent(Analytics.REWARDS);
+                NavigationService.Navigate(new Uri("/View/SocialPages.xaml", UriKind.Relative));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CONVERSATIONSLIST SCREEN :: Exception while navigating to SocialPages screen : " + ex.StackTrace);
+            }
+        }
+
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.INVITE);
@@ -943,7 +1036,7 @@ namespace windows_client.View
 
             if (lastTimeStamp == -1 || TimeUtils.isUpdateTimeElapsed(lastTimeStamp))
             {
-                AccountUtils.checkForUpdates(new AccountUtils.postResponseFunction(checkUpdate_Callback));
+                AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
             }
         }
 
@@ -1082,9 +1175,14 @@ namespace windows_client.View
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+
+            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                return;
+
             App.ViewModel.PendingRequests.Remove(fObj);
-            App.ViewModel.FavList.Insert(0,fObj);
+            App.ViewModel.FavList.Insert(0, fObj);
 
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;

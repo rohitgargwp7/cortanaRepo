@@ -46,11 +46,11 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Margin="24,0,0,0" Text="This group chat is muted" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
+                    <TextBlock Grid.Column="0" Margin="24,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
                     <Image Grid.Column="1" Source="images\mute_icon_main.png" Margin="0,0,24,0" VerticalAlignment="Center" HorizontalAlignment="Right" Height="26" Width="25"/>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Margin="24,0,20,10">
-                    <Image Name="userImage" Height="50"></Image>
+                    <Image Name="userImage" Height="50" Tap="userImage_Tap"></Image>
                     <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>
             </StackPanel>
@@ -233,7 +233,7 @@
                                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
 
         <Rectangle x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
-        <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
+        <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="320" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
             <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
             <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>

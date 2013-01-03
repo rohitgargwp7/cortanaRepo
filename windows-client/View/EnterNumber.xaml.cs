@@ -499,8 +499,9 @@ namespace windows_client
                 PhoneApplicationService.Current.State.Remove("EnteredPhone");
             }
 
-            txtEnterPhone.Hint = "Phone Number";
+            txtEnterPhone.Hint = AppResources.EnterNumber_Ph_Hint_TxtBox;
             txtEnterCountry.Foreground = UI_Utils.Instance.Black;
+            
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

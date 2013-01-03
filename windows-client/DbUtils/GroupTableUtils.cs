@@ -53,6 +53,18 @@ namespace windows_client.DbUtils
             return true;
         }
 
+        public static void SetGroupAlive(string groupId)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                if (cObj == null)
+                    return;
+                cObj.GroupAlive = true;
+                MessagesTableUtils.SubmitWithConflictResolve(context);
+            }
+        }
+
         public static GroupInfo getGroupInfoForId(string groupId)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
