@@ -15,8 +15,6 @@ namespace windows_client.utils
 {
     public class Utils
     {
-
-
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
@@ -248,7 +246,7 @@ namespace windows_client.utils
             string rethash = "";
             try
             {
-                var sha = new HMACSHA1();
+                var sha = new SHA1Managed();
                 var bytes = System.Text.Encoding.UTF8.GetBytes(input);
                 byte[] resultHash = sha.ComputeHash(bytes);
                 rethash = Convert.ToBase64String(resultHash);
