@@ -511,7 +511,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Female.
+        ///   Looks up a localized string similar to female.
         /// </summary>
         public static string EditProfile_GenderFemale_lstPckr {
             get {
@@ -520,7 +520,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Male.
+        ///   Looks up a localized string similar to male.
         /// </summary>
         public static string EditProfile_GenderMale_LstPckr {
             get {
@@ -529,7 +529,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select.
+        ///   Looks up a localized string similar to select.
         /// </summary>
         public static string EditProfile_GenderSelect_LstPckr {
             get {
