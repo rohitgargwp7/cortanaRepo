@@ -1229,4 +1229,7 @@
     <value>Add More</value>
     <comment>xaml</comment>
   </data>
+  <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
+    <value>Your have 0 free SMS left</value>
+  </data>
 </root>

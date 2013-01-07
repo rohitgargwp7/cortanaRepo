@@ -1573,6 +1573,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your have 0 free SMS left.
+        /// </summary>
+        public static string NoFreeSmsLeft_Txt {
+            get {
+                return ResourceManager.GetString("NoFreeSmsLeft_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No information regarding the task result is available..
         /// </summary>
         public static string NoInfoForTask_Txt {

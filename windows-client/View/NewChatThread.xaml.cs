@@ -1751,6 +1751,7 @@ namespace windows_client.View
         {
             if (mUserIsBlocked)
                 return;
+
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = "";
 
@@ -1760,8 +1761,15 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
 
-            if ((!isOnHike && mCredits <= 0) || message == "")
+            if (message == "")
                 return;
+
+            if (!isOnHike && mCredits <= 0)
+            {
+                this.Focus();
+                alertOnNoSmsLeft();
+                return;
+            }
 
             endTypingSent = true;
             sendTypingNotification(false);
@@ -3134,5 +3142,41 @@ namespace windows_client.View
         }
 
         #endregion
+
+        private void alertOnNoSmsLeft()
+        {
+            overlayForNoSms.Visibility = System.Windows.Visibility.Visible;
+            overlayForNoSms.Opacity = 0.85;
+            HikeTitle.IsHitTestVisible = false;
+            MessageList.IsHitTestVisible = false;
+            bottomPanel.IsHitTestVisible = false;
+            OverlayNoSmsPanel.Visibility = Visibility.Visible;
+            emoticonsIconButton.IsEnabled = false;
+            sendIconButton.IsEnabled = false;
+            fileTransferIconButton.IsEnabled = false;
+        }
+
+        private void btnOkFreeMsgClick(object sender, RoutedEventArgs e)
+        {
+            overlayForNoSms.Visibility = System.Windows.Visibility.Collapsed;
+            HikeTitle.IsHitTestVisible = true;
+            MessageList.IsHitTestVisible = true;
+            bottomPanel.IsHitTestVisible = true;
+            OverlayNoSmsPanel.Visibility = Visibility.Collapsed;
+            if (isGroupChat && !isGroupAlive)
+            {
+                emoticonsIconButton.IsEnabled = false;
+                sendIconButton.IsEnabled = false;
+                fileTransferIconButton.IsEnabled = false;
+            }
+            else
+            {
+                emoticonsIconButton.IsEnabled = true;
+                sendIconButton.IsEnabled = true;
+                fileTransferIconButton.IsEnabled = true;
+            }
+        }
+
+
     }
 }
