@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using mqtttest.Client;
 using Microsoft.Phone.Reactive;
 using System.Threading;
+using System.Diagnostics;
 
 namespace finalmqtt.Client
 {
@@ -51,7 +52,9 @@ namespace finalmqtt.Client
         private volatile bool connackReceived;
         private volatile bool disconnectSent = false;
 
-        private Dictionary<short, Callback> map = new Dictionary<short, Callback>();
+        private Dictionary<short, Callback> msgCallbacksMap = new Dictionary<short, Callback>();
+        private Dictionary<short, IDisposable> scheduledActionsMap = new Dictionary<short, IDisposable>();
+
         private IScheduler scheduler = Scheduler.NewThread;
 
         private String host;
@@ -311,7 +314,6 @@ namespace finalmqtt.Client
             try
             {
                 msg.write();
-
             }
             catch (ObjectDisposedException ode)
             {
@@ -329,9 +331,10 @@ namespace finalmqtt.Client
                 short messageId = ((RetryableMessage)msg).getMessageId();
                 if (messageId != 0)
                 {
-                    map.Add(messageId, cb);
-                    Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
-                    scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
+                    msgCallbacksMap.Add(messageId, cb);
+                    Action callbackMessageAction = (new CallBackTimerTask(msgCallbacksMap, messageId, cb)).HandleTimerTask;
+                    IDisposable scheduledAction = scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
+                    scheduledActionsMap.Add(messageId, scheduledAction);
                 }
             }
         }
@@ -349,6 +352,16 @@ namespace finalmqtt.Client
             sendCallbackMessage(msg, cb);
         }
 
+        public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
+        {
+            for (int i = 0; i < message.Length; i++)
+            {
+                PublishMessage msg = new PublishMessage(topic, message[i], qos, this);
+                msg.setMessageId(getNextMessageId());
+                sendCallbackMessage(msg, cb[i]);
+            }
+        }
+        
         public void subscribe(String topic, Callback cb) //throws IOException 
         {
             SubscribeMessage msg = new SubscribeMessage(topic, QoS.AT_MOST_ONCE, this);
@@ -374,11 +387,11 @@ namespace finalmqtt.Client
             if (_socket.Connected)
             {
                 DisconnectMessage msg = new DisconnectMessage(this);
-                foreach (KeyValuePair<short, Callback> kvp in map)
+                foreach (KeyValuePair<short, Callback> kvp in msgCallbacksMap)
                 {
                     kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
                 }
-                map.Clear();
+                msgCallbacksMap.Clear();
                 disconnectSent = true;
                 sendCallbackMessage(msg, cb);
             }
@@ -403,10 +416,16 @@ namespace finalmqtt.Client
                 if (messageId != 0)
                 {
                     Callback cb;
-                    if (map.ContainsKey(messageId))
+                    IDisposable scheduledAction;
+                    if (msgCallbacksMap.ContainsKey(messageId))
                     {
-                        map.TryGetValue(messageId, out cb);
-                        map.Remove(messageId);
+                        scheduledActionsMap.TryGetValue(messageId, out scheduledAction);
+                        scheduledActionsMap.Remove(messageId);
+                        if (scheduledAction != null)
+                            scheduledAction.Dispose();
+                        Debug.WriteLine("MQTTCONNECTION:: Disposing action for message ID - " + messageId);
+                        msgCallbacksMap.TryGetValue(messageId, out cb);
+                        msgCallbacksMap.Remove(messageId);
                         if (cb != null)
                         {
                             cb.onSuccess();
