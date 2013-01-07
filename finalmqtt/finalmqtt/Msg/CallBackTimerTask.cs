@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
 using mqtttest.Client;
+using System.Diagnostics;
 
 namespace finalmqtt.Msg
 {
@@ -28,6 +29,8 @@ namespace finalmqtt.Msg
 
         public void HandleTimerTask()
         {
+            Debug.WriteLine("CALLBACK TIMER:: For message ID - " + messageId);
+
             if (map.ContainsKey(messageId))
             {
                 map.Remove(messageId);
