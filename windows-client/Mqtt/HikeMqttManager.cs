@@ -175,7 +175,7 @@ namespace windows_client.Mqtt
         {
             return (mqttConnection != null) && (MQTTConnectionStatus.CONNECTING == connectionStatus);
         }
-        
+
         private void unsubscribeFromTopics(string[] topics)
         {
             if (!isConnected())
@@ -290,7 +290,7 @@ namespace windows_client.Mqtt
                 connectInBackground();
             }
         }
-        
+
         private static object lockObj = new object();
 
 
@@ -316,7 +316,7 @@ namespace windows_client.Mqtt
             }
         }
 
-
+        //this is called when messages are sent 1 by 1
         public void send(HikePacket packet, int qos)
         {
             if (!isConnected())
@@ -337,14 +337,31 @@ namespace windows_client.Mqtt
             }
             PublishCB pbCB = null;
             if (qos > 0)
-                pbCB = new PublishCB(packet, this, qos);
-            String tempString = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
-
+                pbCB = new PublishCB(packet, this, qos, false);
             mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
                     pbCB);
         }
 
+        //this is called to send unsent messages. They all are sent in a single thread
+        public void sendAllUnsentMessages(List<HikePacket> packets)
+        {
+            if (!isConnected())
+            {
+                this.connect();
+                return;
+            }
+            byte[][] messagesToSend = new byte[packets.Count][];
+            PublishCB[] messageCallbacks = new PublishCB[packets.Count];
+            for (int i = 0; i < packets.Count; i++)
+            {
+                messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
+                messagesToSend[i] = packets[i].Message;
+            }
+            mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+                    messagesToSend, QoS.AT_LEAST_ONCE,
+                    messageCallbacks);
+        }
 
         private Topic[] getTopics()
         {
@@ -378,7 +395,7 @@ namespace windows_client.Mqtt
             }
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
             subscribeToTopics(getTopics());
-            if (!isRecursivePingScheduled)  
+            if (!isRecursivePingScheduled)
                 scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
             /* Accesses the persistence object from the main handler thread */
@@ -389,11 +406,7 @@ namespace windows_client.Mqtt
             if (packets == null)
                 return;
             Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
-            for (int i = 0; i < packets.Count; i++)
-            {
-                send(packets[i], 1);
-//                System.Threading.Thread.Sleep(600);
-            }
+            sendAllUnsentMessages(packets);
         }
 
         public void onDisconnected()
