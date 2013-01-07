@@ -255,7 +255,7 @@ namespace windows_client.View
                         MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
                         if (genderListPicker.Items.Count == 3) // if select is there remove it
                         {
-                            genderListPicker.ItemsSource = new List<string> { "male","female"};
+                            genderListPicker.ItemsSource = new List<string> { AppResources.EditProfile_GenderMale_LstPckr,AppResources.EditProfile_GenderFemale_lstPckr};
                             genderIndex--;
                         }
                     }
