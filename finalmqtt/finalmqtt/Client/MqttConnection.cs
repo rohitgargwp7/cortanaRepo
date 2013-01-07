@@ -66,6 +66,8 @@ namespace finalmqtt.Client
         private MessageStream input;
         private List<byte> pendingOutput;
 
+        public delegate Callback onAckFailedDelegate(short messageId);
+
         public MqttConnection(String id, String host, int port, String username, String password, Callback cb, Listener listener)
         {
             this.id = id;
@@ -329,11 +331,26 @@ namespace finalmqtt.Client
                 if (messageId != 0)
                 {
                     msgCallbacksMap.Add(messageId, cb);
-                    Action callbackMessageAction = (new CallBackTimerTask(msgCallbacksMap, messageId, cb)).HandleTimerTask;
+                    Action callbackMessageAction = (new CallBackTimerTask(new onAckFailedDelegate(onReceivingAck), messageId, cb)).HandleTimerTask;
                     IDisposable scheduledAction = scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
                     scheduledActionsMap.Add(messageId, scheduledAction);
                 }
             }
+        }
+
+        public Callback onReceivingAck(short messageId)
+        {
+            Callback cb = null;
+            if (msgCallbacksMap.ContainsKey(messageId))
+            {
+                msgCallbacksMap.TryGetValue(messageId, out cb);
+                msgCallbacksMap.Remove(messageId);
+            }
+            if (scheduledActionsMap.ContainsKey(messageId))
+            {
+                scheduledActionsMap.Remove(messageId);
+            }
+            return cb;
         }
 
         public void sendCallbackMessage(Message[] msg, Callback[] cb)

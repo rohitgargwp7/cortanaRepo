@@ -11,18 +11,19 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using mqtttest.Client;
 using System.Diagnostics;
+using finalmqtt.Client;
 
 namespace finalmqtt.Msg
 {
     public class CallBackTimerTask
     {
-        private Dictionary<short, Callback> map = new Dictionary<short, Callback>();
         private short messageId;
         private Callback cb;
+        private MqttConnection.onAckFailedDelegate onAckFailed;
 
-        public CallBackTimerTask(Dictionary<short, Callback> map, short messageId, Callback cb)
+        public CallBackTimerTask(MqttConnection.onAckFailedDelegate onAckFailed, short messageId, Callback cb)
         {
-            this.map = map;
+            this.onAckFailed = onAckFailed;
             this.messageId = messageId;
             this.cb = cb;
         }
@@ -30,13 +31,9 @@ namespace finalmqtt.Msg
         public void HandleTimerTask()
         {
             Debug.WriteLine("CALLBACK TIMER:: For message ID - " + messageId);
-
-            if (map.ContainsKey(messageId))
-            {
-                map.Remove(messageId);
-                if(cb!=null)
-                    cb.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + messageId));
-            }
+            Callback cb = onAckFailed(messageId);
+            if (cb != null)
+                cb.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + messageId));
         }
     }
 }
