@@ -573,6 +573,12 @@ namespace windows_client.View
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
             initBlockUnblockState();
+            App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
+            if (!isOnHike && mCredits <= 0)
+            {
+                ToggleAlertOnNoSms(true);
+            }
+
             if (isShowNudgeTute)
                 showNudgeTute();
         }
@@ -1271,6 +1277,13 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
+            if (!isOnHike && mCredits <= 0)
+            {
+                ToggleAlertOnNoSms(false);
+                NavigationService.GoBack();
+                return;
+            }
+
             if (mUserIsBlocked) // UNBLOCK REQUEST
             {
                 if (isGroupChat)
@@ -1761,15 +1774,9 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
 
-            if (message == "")
-                return;
 
-            if (!isOnHike && mCredits <= 0)
-            {
-                this.Focus();
-                alertOnNoSmsLeft();
+            if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
-            }
 
             endTypingSent = true;
             sendTypingNotification(false);
@@ -1784,11 +1791,7 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
-            {
-                this.Focus();
-                alertOnNoSmsLeft();
                 return;
-            }
 
             if (e.TaskResult == TaskResult.OK)
             {
@@ -2238,6 +2241,33 @@ namespace windows_client.View
                 // DO OTHER STUFF TODO 
             }
         }
+
+        private void ToggleAlertOnNoSms(bool onEnter)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   convertControlsToNoSms(onEnter);
+                   showOverlay(onEnter);
+               });
+        }
+
+        private void convertControlsToNoSms(bool toNoSms)
+        {
+            if (toNoSms)
+            {
+                BlockTxtBlk.Text = AppResources.NoFreeSmsLeft_Txt;
+                btnBlockUnblock.Content = AppResources.OK;
+                blockUnblockMenuItem.IsEnabled = false;
+
+            }
+            else
+            {
+                BlockTxtBlk.Text = AppResources.SelectUser_BlockMsg_Txt;
+                btnBlockUnblock.Content = UNBLOCK_USER;
+                blockUnblockMenuItem.IsEnabled = true;
+            }
+        }
+
         private void showOverlay(bool show)
         {
             if (show)
@@ -2520,6 +2550,7 @@ namespace windows_client.View
                 mCredits = (int)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    ToggleAlertOnNoSms(!isOnHike && mCredits <= 0);
                     updateChatMetadata();
                     if (!animatedOnce)
                     {
@@ -3147,39 +3178,41 @@ namespace windows_client.View
 
         #endregion
 
-        private void alertOnNoSmsLeft()
-        {
-            overlayForNoSms.Visibility = System.Windows.Visibility.Visible;
-            overlayForNoSms.Opacity = 0.85;
-            HikeTitle.IsHitTestVisible = false;
-            MessageList.IsHitTestVisible = false;
-            bottomPanel.IsHitTestVisible = false;
-            OverlayNoSmsPanel.Visibility = Visibility.Visible;
-            emoticonsIconButton.IsEnabled = false;
-            sendIconButton.IsEnabled = false;
-            fileTransferIconButton.IsEnabled = false;
-        }
 
-        private void btnOkFreeMsgClick(object sender, RoutedEventArgs e)
-        {
-            overlayForNoSms.Visibility = System.Windows.Visibility.Collapsed;
-            HikeTitle.IsHitTestVisible = true;
-            MessageList.IsHitTestVisible = true;
-            bottomPanel.IsHitTestVisible = true;
-            OverlayNoSmsPanel.Visibility = Visibility.Collapsed;
-            if (isGroupChat && !isGroupAlive)
-            {
-                emoticonsIconButton.IsEnabled = false;
-                sendIconButton.IsEnabled = false;
-                fileTransferIconButton.IsEnabled = false;
-            }
-            else
-            {
-                emoticonsIconButton.IsEnabled = true;
-                sendIconButton.IsEnabled = true;
-                fileTransferIconButton.IsEnabled = true;
-            }
-        }
+
+        //private void alertOnNoSmsLeft()
+        //{
+        //    overlayForNoSms.Visibility = System.Windows.Visibility.Visible;
+        //    overlayForNoSms.Opacity = 0.85;
+        //    HikeTitle.IsHitTestVisible = false;
+        //    MessageList.IsHitTestVisible = false;
+        //    bottomPanel.IsHitTestVisible = false;
+        //    OverlayNoSmsPanel.Visibility = Visibility.Visible;
+        //    emoticonsIconButton.IsEnabled = false;
+        //    sendIconButton.IsEnabled = false;
+        //    fileTransferIconButton.IsEnabled = false;
+        //}
+
+        //private void btnOkFreeMsgClick(object sender, RoutedEventArgs e)
+        //{
+        //    overlayForNoSms.Visibility = System.Windows.Visibility.Collapsed;
+        //    HikeTitle.IsHitTestVisible = true;
+        //    MessageList.IsHitTestVisible = true;
+        //    bottomPanel.IsHitTestVisible = true;
+        //    OverlayNoSmsPanel.Visibility = Visibility.Collapsed;
+        //    if (isGroupChat && !isGroupAlive)
+        //    {
+        //        emoticonsIconButton.IsEnabled = false;
+        //        sendIconButton.IsEnabled = false;
+        //        fileTransferIconButton.IsEnabled = false;
+        //    }
+        //    else
+        //    {
+        //        emoticonsIconButton.IsEnabled = true;
+        //        sendIconButton.IsEnabled = true;
+        //        fileTransferIconButton.IsEnabled = true;
+        //    }
+        //}
 
 
     }
