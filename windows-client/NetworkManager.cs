@@ -222,6 +222,7 @@ namespace windows_client
                 try
                 {
                     msgID = long.Parse(id);
+                    Debug.WriteLine("NETWORK MANAGER:: Received report for Message Id " + msgID);
                 }
                 catch (FormatException e)
                 {
@@ -937,7 +938,6 @@ namespace windows_client
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
             #endregion
-
         }
 
         private void LoadFavAndPending(bool isFav, string msisdn)
