@@ -570,13 +570,17 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
+            initBlockUnblockState();
+
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
-            initBlockUnblockState();
-            App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
-            if (!isOnHike && mCredits <= 0)
+            else
             {
-                ToggleAlertOnNoSms(true);
+                App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
+                if (!isOnHike && mCredits <= 0)
+                {
+                    ToggleAlertOnNoSms(true);
+                }
             }
 
             if (isShowNudgeTute)
@@ -1277,6 +1281,7 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
+            if(!isGroupChat|| !isGroupAlive)
             if (!isOnHike && mCredits <= 0)
             {
                 ToggleAlertOnNoSms(false);
@@ -2550,7 +2555,10 @@ namespace windows_client.View
                 mCredits = (int)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    ToggleAlertOnNoSms(!isOnHike && mCredits <= 0);
+                    if (!isGroupChat || !isGroupAlive)
+                    {
+                        ToggleAlertOnNoSms(!isOnHike && mCredits <= 0);
+                    }
                     updateChatMetadata();
                     if (!animatedOnce)
                     {
