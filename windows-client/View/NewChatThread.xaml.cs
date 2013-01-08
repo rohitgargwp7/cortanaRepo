@@ -1784,7 +1784,11 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
 
             if ((!isOnHike && mCredits <= 0))
+            {
+                this.Focus();
+                alertOnNoSmsLeft();
                 return;
+            }
 
             if (e.TaskResult == TaskResult.OK)
             {
