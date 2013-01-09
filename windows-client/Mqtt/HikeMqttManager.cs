@@ -414,7 +414,7 @@ namespace windows_client.Mqtt
             JToken data;
             json.TryGetValue(HikeConstants.TYPE, out data);
             string objType = data.ToString();
-            json.TryGetValue("d", out data);
+            json.TryGetValue(HikeConstants.DATA, out data);
             JObject dataObj;
             long msgId;
 
