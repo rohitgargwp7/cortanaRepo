@@ -1734,7 +1734,7 @@ namespace windows_client.View
             convMessage.IsInvite = true;
             sendMsg(convMessage, false);
             if(cannotSendFreeSms)
-                showNoSmsOverlay(false);
+                showOverlay(false);
         }
 
         #endregion
@@ -2255,7 +2255,7 @@ namespace windows_client.View
             Deployment.Current.Dispatcher.BeginInvoke(() =>
                {
                    ToggleControlsToNoSms(onEnter);
-                   showNoSmsOverlay(onEnter);
+                   showOverlay(onEnter);
                    if (onEnter)
                    {
                        sendMsgTxtbox.Tap += SendMsgBtn_Tap;
@@ -2271,7 +2271,7 @@ namespace windows_client.View
 
         private void SendMsgBtn_Tap(object sender, EventArgs e)
         {
-            showNoSmsOverlay(true);
+            showOverlay(true);
         }
 
         private void ToggleControlsToNoSms(bool toNoSms)
@@ -2283,9 +2283,7 @@ namespace windows_client.View
                 btnBlockUnblock.Click -= blockUnblock_Click;
                 btnBlockUnblock.Click += inviteUserBtn_Click;
                 overlayRectangle.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(NoFreeSmsOverlay_Tap);
-                emoticonsIconButton.IsEnabled = false;
-                sendIconButton.IsEnabled = false;
-                fileTransferIconButton.IsEnabled = false;
+              
 
             }
             else
@@ -2301,30 +2299,7 @@ namespace windows_client.View
        
         private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            showNoSmsOverlay(false);
-        }
-
-        private void showNoSmsOverlay(bool show)
-        {
-            if (show)
-            {
-                overlayRectangle.Visibility = System.Windows.Visibility.Visible;
-                overlayRectangle.Opacity = 0.85;
-                HikeTitle.IsHitTestVisible = false;
-                MessageList.IsHitTestVisible = false;
-                bottomPanel.IsHitTestVisible = false;
-                OverlayMessagePanel.Visibility = Visibility.Visible;
-
-            }
-            else
-            {
-                overlayRectangle.Visibility = System.Windows.Visibility.Collapsed;
-                HikeTitle.IsHitTestVisible = true;
-                MessageList.IsHitTestVisible = true;
-                bottomPanel.IsHitTestVisible = true;
-                OverlayMessagePanel.Visibility = Visibility.Collapsed;
-
-            }
+            showOverlay(false);
         }
 
         private void showOverlay(bool show)
