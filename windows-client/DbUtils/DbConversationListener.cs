@@ -78,7 +78,7 @@ namespace windows_client.DbUtils
 
                 if (contentType.Contains(HikeConstants.IMAGE))
                 {
-                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL + 
+                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Photo_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
                 else if (contentType.Contains(HikeConstants.AUDIO))
@@ -145,11 +145,18 @@ namespace windows_client.DbUtils
                     {
                         addSentMessageToMsgMap(chatBubble);
                     }
-                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+                    ConversationBox convBox = null;
+                    if (!App.ViewModel.ConvBoxMap.TryGetValue(convObj.Msisdn, out convBox))
                     {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj);
+                        convBox = new ConversationBox(convObj);
+                        App.ViewModel.ConvBoxMap.Add(convObj.Msisdn, convBox);
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    else
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(convBox);
+                        convBox.update(convObj);
+                    }
+                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
 
                     if (!isNewGroup)
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
@@ -172,11 +179,20 @@ namespace windows_client.DbUtils
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     addSentMessageToMsgMap(chatBubble);
-                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+
+                    ConversationBox convBox = null;
+                    if (!App.ViewModel.ConvBoxMap.TryGetValue(convObj.Msisdn, out convBox))
                     {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj);
+                        convBox = new ConversationBox(convObj);
+                        App.ViewModel.ConvBoxMap.Add(convObj.Msisdn, convBox);
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    else
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(convBox);
+                        convBox.update(convObj);
+                    }
+                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
+
                 });
 
                 //forward attachment message
@@ -199,15 +215,23 @@ namespace windows_client.DbUtils
                 //convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, false);
                 chatBubble.MessageId = convMessage.MessageId;
-                
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     addSentMessageToMsgMap(chatBubble);
-                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
+                    ConversationBox convBox = null;
+                    if (!App.ViewModel.ConvBoxMap.TryGetValue(convObj.Msisdn, out convBox))
                     {
-                        App.ViewModel.MessageListPageCollection.Remove(convObj);
+                        convBox = new ConversationBox(convObj);
+                        App.ViewModel.ConvBoxMap.Add(convObj.Msisdn, convBox);
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convObj);
+                    else
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(convBox);
+                        convBox.update(convObj);
+                    }
+                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
+
                 });
 
                 //send attachment message (new attachment - upload case)
