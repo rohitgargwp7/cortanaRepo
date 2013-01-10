@@ -13,12 +13,14 @@ using System.Diagnostics;
 using System.Windows.Media.Imaging;
 using windows_client.Controls;
 using System.Threading;
+using windows_client.DbUtils;
+using windows_client.Misc;
 
 namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = true;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -80,6 +82,7 @@ namespace windows_client.utils
         public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
+        public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
 
         public static readonly string NETWORK_PREFS_NAME = "NetworkPrefs";
 
@@ -131,13 +134,14 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
+        public delegate void getProfilePicFunction(byte[] data);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
 
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE,SOCIAL_POST,SOCIAL_DELETE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -279,7 +283,7 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
             req.Method = "PUT";
-            req.ContentType = convMessage.FileAttachment.ContentType.Contains("image") ? "" : convMessage.FileAttachment.ContentType;
+            req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";
@@ -288,7 +292,7 @@ namespace windows_client.utils
                 chatbubble });
         }
 
-        public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction,string socialNetowrk,bool isPost)
+        public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/connect/" + socialNetowrk)) as HttpWebRequest;
             addToken(req);
@@ -323,7 +327,7 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[4] as postResponseFunction;
                     data.Add("set_cookie", "0");
                     data.Add("devicetype", "windows");
-                    data[HikeConstants.DEVICE_ID] = Utils.getDeviceId();
+                    data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
                     //data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
                     data[HikeConstants.DEVICE_VERSION] = Utils.getOSVersion();
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
@@ -394,9 +398,11 @@ namespace windows_client.utils
                     Dictionary<string, List<ContactInfo>> contacts_to_update = vars[2] as Dictionary<string, List<ContactInfo>>;
                     JArray ids_json = vars[3] as JArray;
                     finalCallbackFunction = vars[4] as postResponseFunction;
-
-                    data.Add("remove", ids_json);
-                    data.Add("update", getJsonContactList(contacts_to_update));
+                    if (ids_json != null)
+                        data.Add("remove", ids_json);
+                    JObject ids_to_update = getJsonContactList(contacts_to_update);
+                    if (ids_to_update != null)
+                        data.Add("update", ids_to_update);
                     break;
                 #endregion
                 #region DELETE ACCOUNT
@@ -466,10 +472,29 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
         }
 
-        public static void checkForUpdates(postResponseFunction callback)
+        //GET request
+        public static void createGetRequest(string requestUrl, postResponseFunction callback, bool isRelativeUrl)
         {
-            HttpWebRequest request =
-            (HttpWebRequest)HttpWebRequest.Create(HikeConstants.UPDATE_URL);
+            HttpWebRequest request = null;
+            if (isRelativeUrl)
+            {
+                request = (HttpWebRequest)HttpWebRequest.Create(BASE + requestUrl);
+            }
+            else
+            {
+                request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            }
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        }
+
+        //GET request
+        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
+        {
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            if(setCookie)
+                addToken(request);
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString(); 
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
@@ -478,26 +503,36 @@ namespace windows_client.utils
             object[] vars = (object[])result.AsyncState;
 
             HttpWebRequest request = vars[0] as HttpWebRequest;
-            postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
             JObject jObject = null;
+            string data = "";
+            byte[] fileBytes = null;
             if (request != null)
             {
                 try
                 {
                     WebResponse response = request.EndGetResponse(result);
                     Stream responseStream = response.GetResponseStream();
-                    string data;
                     if (string.Equals(response.Headers[HttpRequestHeader.ContentEncoding], "gzip", StringComparison.OrdinalIgnoreCase))
                     {
                         data = decompressResponse(responseStream);
                     }
                     else
                     {
-                        using (var reader = new StreamReader(responseStream))
+                        if (vars[1] is postResponseFunction)
                         {
-                            data = reader.ReadToEnd();
+                            using (var reader = new StreamReader(responseStream))
+                            {
+                                data = reader.ReadToEnd();
+                            }
+                            jObject = JObject.Parse(data);
                         }
-                        jObject = JObject.Parse(data);
+                        else if (vars[1] is getProfilePicFunction)
+                        {
+                            using (BinaryReader br = new BinaryReader(responseStream))
+                            {
+                                fileBytes = br.ReadBytes((int)responseStream.Length);
+                            }
+                        }
                     }
                 }
                 catch (IOException ioe)
@@ -514,7 +549,17 @@ namespace windows_client.utils
                 }
                 finally
                 {
-                    finalCallbackFunction(jObject);
+                    if (vars[1] is postResponseFunction)
+                    {
+                        postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
+                        finalCallbackFunction(jObject);
+                    }
+                    else if (vars[1] is getProfilePicFunction)
+                    {
+                        getProfilePicFunction finalCallbackFunction = vars[1] as getProfilePicFunction;
+                        finalCallbackFunction(fileBytes);
+                    }
+
                 }
             }
         }
@@ -681,7 +726,7 @@ namespace windows_client.utils
         {
             try
             {
-                if ((obj == null) || "fail" == (string)obj["stat"])
+                if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                 {
                     return null;
                 }
@@ -728,11 +773,11 @@ namespace windows_client.utils
             return updateContacts;
         }
 
-        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id,bool isRefresh)
+        public static List<ContactInfo> getContactList(JObject obj, Dictionary<string, List<ContactInfo>> new_contacts_by_id, bool isRefresh)
         {
             try
             {
-                if ((obj == null) || "fail" == (string)obj["stat"])
+                if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                 {
                     return null;
                 }
@@ -741,6 +786,8 @@ namespace windows_client.utils
                 {
                     return null;
                 }
+                bool isFavSaved = false;
+                bool isPendingSaved = false;
                 int hikeCount = 1, smsCount = 1;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
@@ -749,6 +796,11 @@ namespace windows_client.utils
                     msgToShow = new List<ContactInfo>(5);
                     msisdns = new List<string>();
                 }
+                else // if refresh case load groups in cache
+                {
+                    GroupManager.Instance.LoadGroupCache();
+                }
+
                 List<ContactInfo> server_contacts = new List<ContactInfo>();
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
                 KeyValuePair<string, JToken> kv;
@@ -768,47 +820,74 @@ namespace windows_client.utils
                             count++;
                             continue;
                         }
-                        bool onhike = (bool)entry["onhike"];                        
+                        bool onhike = (bool)entry["onhike"];
                         ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
 
                         if (!isRefresh) // this is case for new installation
                         {
-                            if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
+                            if (cn.Msisdn != (string)App.appSettings[App.MSISDN_SETTING]) // do not add own number
                             {
-                                msisdns.Add(cn.Msisdn);
-                                msgToShow.Add(cn);
-                                hikeCount++;
-                            }
-                            if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
-                            {
-                                msisdns.Add(cn.Msisdn);
-                                msgToShow.Add(cn);
-                                smsCount++;
+                                if (onhike && hikeCount <= 3 && !msisdns.Contains(cn.Msisdn))
+                                {
+                                    msisdns.Add(cn.Msisdn);
+                                    msgToShow.Add(cn);
+                                    hikeCount++;
+                                }
+                                if (!onhike && smsCount <= 2 && cn.Msisdn.StartsWith("+91") && !msisdns.Contains(cn.Msisdn)) // allow only indian numbers for sms
+                                {
+                                    msisdns.Add(cn.Msisdn);
+                                    msgToShow.Add(cn);
+                                    smsCount++;
+                                }
                             }
                         }
                         else // this is refresh contacts case
                         {
-                            if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn))
+                            if (App.ViewModel.ConvMap.ContainsKey(cn.Msisdn)) // update convlist
                             {
                                 try
                                 {
-                                    App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name; 
+                                    App.ViewModel.ConvMap[cn.Msisdn].ContactName = cn.Name;
                                 }
                                 catch (Exception e)
                                 {
-                                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception "+e.StackTrace);
+                                    Debug.WriteLine("REFRESH CONTACTS :: Update contact exception " + e.StackTrace);
                                 }
                             }
+                            else // fav and pending case
+                            {
+                                ConversationListObject c = App.ViewModel.GetFav(cn.Msisdn);
+                                if (c != null) // this user is in favs
+                                {
+                                    c.ContactName = cn.Name;
+                                    MiscDBUtil.SaveFavourites(c);
+                                    isFavSaved = true;
+                                }
+                                else
+                                {
+                                    c = App.ViewModel.GetPending(cn.Msisdn);
+                                    if (c != null)
+                                    {
+                                        c.ContactName = cn.Name;
+                                        isPendingSaved = true;
+                                    }
+                                }
+                            }
+                            GroupManager.Instance.RefreshGroupCache(cn);
                         }
                         server_contacts.Add(cn);
                         totalContacts++;
                     }
                 }
+                if (isFavSaved)
+                    MiscDBUtil.SaveFavourites();
+                if (isPendingSaved)
+                    MiscDBUtil.SavePendingRequests();
                 msisdns = null;
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
-                if(!isRefresh)
-                    App.WriteToIsoStorageSettings("ContactsToShow",msgToShow);
+                if (!isRefresh)
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
                 return server_contacts;
             }
             catch (ArgumentException)

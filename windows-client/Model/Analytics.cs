@@ -13,6 +13,9 @@ namespace windows_client.Model
         public static readonly string DELETE_ALL_CHATS = "coDelAll";
         public static readonly string COMPOSE = "coCom";
         public static readonly string GROUP_CHAT = "coGrp";
+        public static readonly string ADD_FAVS_FROM_FAV_REQUEST = "coATFReq";
+        public static readonly string ADD_FAVS_CONTEXT_MENU_CONVLIST = "coATFCM";
+        public static readonly string REMOVE_FAVS_CONTEXT_MENU_CONVLIST = "coRFFCM";
 
         //pr = profile screen
         public static readonly string FREE_SMS = "prFrS";
@@ -21,17 +24,24 @@ namespace windows_client.Model
         public static readonly string SETTINGS = "prSet";
         public static readonly string HELP = "prHlp";
         public static readonly string EDIT_PROFILE = "prEdtPr";
+        public static readonly string REWARDS = "prRew";
 
         //in = invite Screen
         public static readonly string INVITE_SOCIAL = "inSo";
         public static readonly string INVITE_EMAIL = "inEm";
         public static readonly string INVITE_MESSAGE = "inMsg";
 
+        //inu = invite users
+        public static readonly string ADD_FAVS_INVITE_USERS = "inuATF";
+
         //su = select user
         public static readonly string REFRESH_CONTACTS = "suRC";
 
         //ct = chat thread
         public static readonly string GROUP_INFO = "ctGI";
+        public static readonly string ADD_TO_FAVS_APP_BAR_CHATTHREAD = "ctATFAB";
+        public static readonly string REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD = "ctRFFAB";
+        public static readonly string SEE_LARGE_PROFILE_PIC = "ctLPP"; //chat thread large profile pic
 
         //hp = help
         public static readonly string FAQS = "hpFAQ";
@@ -42,7 +52,8 @@ namespace windows_client.Model
 
         //gi = group info
         public static readonly string INVITE_SMS_PARTICIPANTS = "giInv";
-
+        public static readonly string ADD_FAVS_CONTEXT_MENU_GROUP_INFO = "giATFCM";
+        public static readonly string REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO = "giRFFCM";
 
         private Dictionary<string, int> eventMap = null;
 
@@ -157,6 +168,10 @@ namespace windows_client.Model
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
+                    if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
+                    {
+                        store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
+                    }
                     using (var file = store.OpenFile(filePath, FileMode.Create, FileAccess.Write))
                     {
                         using (var writer = new BinaryWriter(file))
@@ -173,7 +188,7 @@ namespace windows_client.Model
             string filePath = HikeConstants.ANALYTICS_OBJECT_DIRECTORY + "/" + HikeConstants.ANALYTICS_OBJECT_FILE;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
             {
-                if (!store.FileExists(filePath))
+                if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY) || !store.FileExists(filePath))
                 {
                     return;
                 }

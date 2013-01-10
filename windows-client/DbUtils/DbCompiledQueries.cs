@@ -43,6 +43,33 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllHikeContactsOrdered
+        {
+            get
+            {
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc) =>
+                         from o in hdc.users
+                         where o.OnHike == true
+                         orderby o.Name
+                         select o);
+                return q;
+            }
+        }
+        public static Func<HikeUsersDb, IQueryable<ContactInfo>> GetAllHikeContacts
+        {
+            get
+            {
+                Func<HikeUsersDb, IQueryable<ContactInfo>> q =
+                     CompiledQuery.Compile<HikeUsersDb, IQueryable<ContactInfo>>
+                     ((HikeUsersDb hdc) =>
+                         from o in hdc.users
+                         where o.OnHike == true
+                         select o);
+                return q;
+            }
+        }
         public static Func<HikeUsersDb, string, IQueryable<ContactInfo>> GetContactFromName
         {
             get
@@ -152,7 +179,7 @@ namespace windows_client.DbUtils
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
                 ((HikeChatsDb hdc, string myMsisdn) =>
                     from o in hdc.messages
-                    where o.Msisdn == myMsisdn
+                    where o.Msisdn == myMsisdn orderby o.MessageId
                     select o);
                 return q;
             }

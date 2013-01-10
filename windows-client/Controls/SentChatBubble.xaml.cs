@@ -11,6 +11,9 @@ using Microsoft.Phone.Reactive;
 using System;
 using windows_client.View;
 using windows_client.DbUtils;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.Controls
 {
@@ -20,12 +23,47 @@ namespace windows_client.Controls
         private ConvMessage.State messageState;
         private IScheduler scheduler = Scheduler.NewThread;
 
-        public SentChatBubble(ConvMessage cm, bool readFromDB)
+        public static SentChatBubble getSplitChatBubbles(ConvMessage cm, bool readFromDB)
+        {
+            try
+            {
+                SentChatBubble sentChatBubble;
+                if (cm.Message.Length < HikeConstants.MAX_CHATBUBBLE_SIZE)
+                {
+                    sentChatBubble = new SentChatBubble(cm, readFromDB, cm.Message);
+                    return sentChatBubble;
+                }
+                sentChatBubble = new SentChatBubble(cm, readFromDB, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE));
+                sentChatBubble.splitChatBubbles = new List<MyChatBubble>();
+                int lengthOfNextBubble = 1400;
+                for (int i = 1; i <= (cm.Message.Length / HikeConstants.MAX_CHATBUBBLE_SIZE); i++)
+                {
+                    if ((cm.Message.Length - (i ) * HikeConstants.MAX_CHATBUBBLE_SIZE) / HikeConstants.MAX_CHATBUBBLE_SIZE > 0)
+                    {
+                        lengthOfNextBubble = HikeConstants.MAX_CHATBUBBLE_SIZE;
+                    }
+                    else
+                    {
+                        lengthOfNextBubble = (cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) % HikeConstants.MAX_CHATBUBBLE_SIZE;
+                    }
+                    SentChatBubble splitBubble = new SentChatBubble(cm, readFromDB, cm.Message.Substring(i * HikeConstants.MAX_CHATBUBBLE_SIZE,
+                        lengthOfNextBubble));
+                    sentChatBubble.splitChatBubbles.Add(splitBubble);
+                }
+                return sentChatBubble;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Sent chat bubble :: " + e.StackTrace);
+                return null;
+            }
+        }
+
+        public SentChatBubble(ConvMessage cm, bool readFromDB, string messageText)
             : base(cm)
         {
-            // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(cm);
+            initializeBasedOnState(cm, messageText);
             //IsSms is false for group chat
             switch (cm.MessageStatus)
             {
@@ -47,7 +85,10 @@ namespace windows_client.Controls
                 case ConvMessage.State.SENT_UNCONFIRMED:
                     if (this.FileAttachment != null)
                     {
-                        this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                        if (string.IsNullOrEmpty(this.FileAttachment.FileKey))
+                            this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                        else
+                            this.SDRImage.Source = UI_Utils.Instance.Trying;
                     }
                     else if (readFromDB)
                     {
@@ -71,17 +112,71 @@ namespace windows_client.Controls
                     this.MessageImage.Source = fileThumbnail;
                 }
             }
-
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
+
+        //public SentChatBubble(ConvMessage cm, bool readFromDB)
+        //    : base(cm)
+        //{
+        //    // Required to initialize variables
+        //    InitializeComponent();
+        //    initializeBasedOnState(cm, cm.Message);
+        //    //IsSms is false for group chat
+        //    switch (cm.MessageStatus)
+        //    {
+        //        case ConvMessage.State.SENT_CONFIRMED:
+        //            this.SDRImage.Source = UI_Utils.Instance.Sent;
+        //            break;
+        //        case ConvMessage.State.SENT_DELIVERED:
+        //            this.SDRImage.Source = UI_Utils.Instance.Delivered;
+        //            break;
+        //        case ConvMessage.State.SENT_DELIVERED_READ:
+        //            this.SDRImage.Source = UI_Utils.Instance.Read;
+        //            break;
+        //        case ConvMessage.State.UNKNOWN:
+        //            if (cm.HasAttachment)
+        //            {
+        //                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+        //            }
+        //            break;
+        //        case ConvMessage.State.SENT_UNCONFIRMED:
+        //            if (this.FileAttachment != null)
+        //            {
+        //                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+        //            }
+        //            else if (readFromDB)
+        //            {
+        //                this.SDRImage.Source = UI_Utils.Instance.Trying;
+        //            }
+        //            else
+        //            {
+        //                scheduleTryingImage();
+        //            }
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //    if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null)
+        //    {
+        //        using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
+        //        {
+        //            memStream.Seek(0, SeekOrigin.Begin);
+        //            BitmapImage fileThumbnail = new BitmapImage();
+        //            fileThumbnail.SetSource(memStream);
+        //            this.MessageImage.Source = fileThumbnail;
+        //        }
+        //    }
+        //    this.BubblePoint.Fill = bubbleColor;
+        //    this.BubbleBg.Fill = bubbleColor;
+        //}
 
         public SentChatBubble(ConvMessage cm, byte[] thumbnailsBytes)
             : base(cm)
         {
             // Required to initialize variables
             InitializeComponent();
-            initializeBasedOnState(cm);
+            initializeBasedOnState(cm, cm.Message);
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
             if (thumbnailsBytes != null && thumbnailsBytes.Length > 0)
@@ -113,25 +208,28 @@ namespace windows_client.Controls
                     switch (messageState)
                     {
                         case ConvMessage.State.SENT_CONFIRMED:
-                            this.SDRImage.Source = UI_Utils.Instance.Sent;
+                            setSDRImage(UI_Utils.Instance.Sent);
                             if (this.FileAttachment != null && this.FileAttachment.FileState != Attachment.AttachmentState.COMPLETED)
                             {
                                 this.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                             }
                             break;
                         case ConvMessage.State.SENT_DELIVERED:
-                            this.SDRImage.Source = UI_Utils.Instance.Delivered;
+                            setSDRImage(UI_Utils.Instance.Delivered);
                             break;
                         case ConvMessage.State.SENT_DELIVERED_READ:
-                            this.SDRImage.Source = UI_Utils.Instance.Read;
+                            setSDRImage(UI_Utils.Instance.Read);
                             break;
                         case ConvMessage.State.SENT_FAILED:
-                            this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                            setSDRImage(UI_Utils.Instance.HttpFailed);
                             break;
                         case ConvMessage.State.SENT_UNCONFIRMED:
                             if (this.FileAttachment != null)
                             {
-                                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                                if (string.IsNullOrEmpty(this.FileAttachment.FileKey))
+                                    this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
+                                else
+                                    this.SDRImage.Source = UI_Utils.Instance.Trying;
                             }
                             else
                             {
@@ -140,6 +238,18 @@ namespace windows_client.Controls
                             break;
                     }
                 });
+            }
+        }
+
+        private void setSDRImage(BitmapImage img)
+        {
+            this.SDRImage.Source = img;
+            if (this.splitChatBubbles != null && this.splitChatBubbles.Count > 0)
+            {
+                for (int i = 0; i < this.splitChatBubbles.Count; i++)
+                {
+                    (this.splitChatBubbles[i] as SentChatBubble).SDRImage.Source = img;
+                }
             }
         }
 
@@ -198,24 +308,22 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true);
+                    ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
                         case Attachment.AttachmentState.CANCELED:
                             uploadOrDownloadCanceled();
-                            setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
                             uploadOrDownloadCanceled();
-                            setContextMenu(currentPage.AttachmentUploadCanceledOrFailed);
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.COMPLETED:
-                            setContextMenu(currentPage.AttachmentUploadedOrDownloaded);
                             uploadOrDownloadCompleted();
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.STARTED:
-                            setContextMenu(currentPage.AttachmentUploading);
                             uploadOrDownloadStarted();
                             MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
                             break;
@@ -243,11 +351,15 @@ namespace windows_client.Controls
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
 
-        private void initializeBasedOnState(ConvMessage cm)
+        //private static Thickness textBubbleMargin = new Thickness(74, 12, 0, 10);
+        //private static Thickness nudgeBubbleMargin = new Thickness(348, 12, 0, 10);
+        //private static Thickness attachmentBubbleMargin = new Thickness(200, 12, 0, 10);
+
+        private void initializeBasedOnState(ConvMessage cm, string messageString)
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            string messageString = cm.Message;
+            //string messageString = cm.Message;
             bool isSMS = cm.IsSms;
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
@@ -275,19 +387,20 @@ namespace windows_client.Controls
                 MessageImage.MaxHeight = 180;
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Right;
                 MessageImage.Margin = imgMargin;
-                if (contentType.Contains("audio"))
+                if (contentType.Contains(HikeConstants.AUDIO))
                     this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentSend;
                 else if (isNudge)
                 {
                     this.MessageImage.Source = UI_Utils.Instance.NudgeSent;
-                    this.MessageImage.Height = 24;
-                    this.MessageImage.Width = 31;
+                    this.MessageImage.Height = 35;
+                    this.MessageImage.Width = 48;
                     this.MessageImage.Margin = nudgeMargin;
+                    //this.Margin = nudgeBubbleMargin;
                 }
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if (contentType.Contains("video") || contentType.Contains("audio"))
+                if (contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO))
                 {
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;
@@ -318,6 +431,7 @@ namespace windows_client.Controls
                     uploadProgress.MaxHeight = 100;
                     Grid.SetRow(uploadProgress, 1);
                     attachment.Children.Add(uploadProgress);
+                    //this.Margin = attachmentBubbleMargin;
                 }
             }
             else
@@ -330,6 +444,7 @@ namespace windows_client.Controls
                 Grid.SetRow(MessageText, 0);
                 Grid.SetColumn(MessageText, 1);
                 wrapperGrid.Children.Add(MessageText);
+                //this.Margin = textBubbleMargin;
             }
 
             SDRImage = new Image();

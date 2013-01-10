@@ -53,6 +53,38 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<ContactInfo> GetAllHikeContacts()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                List<ContactInfo> res;
+                try
+                {
+                    res = DbCompiledQueries.GetAllHikeContacts(context).ToList<ContactInfo>();
+                }
+                catch (Exception)
+                {
+                    res = null;
+                }
+                return res;
+            }
+        }
+        public static List<ContactInfo> GetAllHikeContactsOrdered()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                List<ContactInfo> res;
+                try
+                {
+                    res = DbCompiledQueries.GetAllHikeContactsOrdered(context).ToList<ContactInfo>();
+                }
+                catch (Exception)
+                {
+                    res = null;
+                }
+                return res;
+            }
+        }
         public static List<ContactInfo> getAllContacts()
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -204,7 +236,7 @@ namespace windows_client.DbUtils
                         {
                             ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
-                            //ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
+                            ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
                             //ConversationTableUtils.saveConvObjectList();
                         }
                     }

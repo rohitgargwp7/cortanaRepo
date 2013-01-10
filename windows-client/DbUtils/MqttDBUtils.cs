@@ -4,11 +4,14 @@ using System.Linq;
 using System.Data.Linq;
 using System.Diagnostics;
 using System;
+using Microsoft.Phone.Data.Linq;
 
 namespace windows_client.DbUtils
 {
     public class MqttDBUtils
     {
+        public const int Latest_Version = 1;
+
         private static object lockObj = new object();
 
         #region MqttPersistence
@@ -57,6 +60,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception e)
                     {
+                        Debug.WriteLine("Failed to add unsent packet with id :: " + packet.MessageId);
                     }
                 }
             }
@@ -76,11 +80,13 @@ namespace windows_client.DbUtils
                     try
                     {
                         context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                        Debug.WriteLine("Removed unsent packet with timestamp :: " + timestamp);
                     }
 
                     catch (ChangeConflictException e)
                     {
                         Debug.WriteLine(e.Message);
+                        Debug.WriteLine("Failed to remove unsent packet with timestamp :: " + timestamp);
                         // Automerge database values for members that client
                         // has not modified.
                         foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -116,6 +122,27 @@ namespace windows_client.DbUtils
                 }
                 // Submit succeeds on second try.
                 context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+            }
+        }
+
+        public static void UpdateToVersionOne()
+        {
+            using (HikeMqttPersistenceDb context = new HikeMqttPersistenceDb(App.MqttDBConnectionstring))
+            {
+                DatabaseSchemaUpdater schemaUpdater = context.CreateDatabaseSchemaUpdater();
+                // get current database schema version
+                // if not changed the version is 0 by default
+                int version = schemaUpdater.DatabaseSchemaVersion;
+
+                // if current version of database schema is old
+                if (version == 0)
+                {
+                    // add Address column to the table corresponding to the Person class
+                    // IMPORTANT: update database schema version before calling Execute
+                    schemaUpdater.DatabaseSchemaVersion = Latest_Version;
+                    // execute changes to database schema
+                    schemaUpdater.Execute();
+                }
             }
         }
 

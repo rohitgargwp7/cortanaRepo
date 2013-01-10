@@ -10,13 +10,13 @@ using System.Text;
 using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
+using windows_client.Languages;
 
 namespace windows_client
 {
     public partial class EnterName : PhoneApplicationPage
     {
         public bool isClicked = false;
-        private string SCANNING_CONTACTS = "Scanning Contacts ...";
         private string ac_name;
         public ApplicationBar appBar;
         public ApplicationBarIconButton nextIconButton;
@@ -24,6 +24,7 @@ namespace windows_client
         public EnterName()
         {
             InitializeComponent();
+            App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, Utils.getAppVersion());// new install so write version
             App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
             App.RemoveKeyFromAppSettings(App.SET_NAME_FAILED);
             if (!App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED) && !App.isABScanning)
@@ -39,7 +40,7 @@ namespace windows_client
 
             nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = "done";
+            nextIconButton.Text = AppResources.AppBar_Done_Btn;
             nextIconButton.Click += new EventHandler(btnEnterPin_Click);
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
@@ -55,7 +56,7 @@ namespace windows_client
                 msgTxtBlk.Opacity = 0;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
-                nameErrorTxt.Text = "Connectivity issue.";
+                nameErrorTxt.Text = AppResources.Connectivity_Issue;
                 nameErrorTxt.Visibility = Visibility.Visible;
                 App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                 App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);
@@ -73,13 +74,13 @@ namespace windows_client
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
             msgTxtBlk.Opacity = 1;
-            msgTxtBlk.Text = SCANNING_CONTACTS;
+            msgTxtBlk.Text = AppResources.EnterName_ScanningContacts_Txt;
             AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
         }
 
         private void setName_Callback(JObject obj)
         {
-            if (obj == null || "ok" != (string)obj["stat"])
+            if (obj == null || HikeConstants.OK != (string)obj[HikeConstants.STAT])
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -89,7 +90,7 @@ namespace windows_client
                     if (!string.IsNullOrWhiteSpace(ac_name))
                         nextIconButton.IsEnabled = true;
                     msgTxtBlk.Opacity = 0;
-                    nameErrorTxt.Text = "Error!! Name not set. Try Again!!";
+                    nameErrorTxt.Text = AppResources.EnterName_NameErrorTxt;
                     nameErrorTxt.Visibility = Visibility.Visible;
                     App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
                     App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);
@@ -113,11 +114,35 @@ namespace windows_client
                 return;
             isCalled = true;
             txtBxEnterName.IsReadOnly = false;
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
-            Uri nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
-            PhoneApplicationService.Current.State["FromNameScreen"] = true;
+
+            App.WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
+            App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
+            
+            Uri nextPage;
+            string country_code = null;
+            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+            {
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
+            }
+            if ("+91" != country_code)
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                nextPage = nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
+                nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
+                PhoneApplicationService.Current.State["FromNameScreen"] = true;
+            }
+            App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
             nameErrorTxt.Visibility = Visibility.Collapsed;
-            msgTxtBlk.Text = "Getting you in";
+            msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
             Thread.Sleep(2 * 1000);
             try
             {
@@ -152,6 +177,16 @@ namespace windows_client
                     nameErrorTxt.Text = (string)this.State["nameErrorTxt.Text"];
                 }
             }
+            string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+            msisdn = msisdn.Substring(msisdn.Length - 10);
+            StringBuilder userMsisdn = new StringBuilder();
+            userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
+
+            string country_code = null;
+            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+
+
+            txtBlckPhoneNumber.Text = " " + (country_code == null ? "+91" : country_code) + "-" + userMsisdn.ToString();
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -192,17 +227,13 @@ namespace windows_client
 
         void EnterNamePage_Loaded(object sender, RoutedEventArgs e)
         {
-            string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
-            msisdn = msisdn.Substring(msisdn.Length - 10);
-            StringBuilder userMsisdn = new StringBuilder();
-            userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
-            txtBlckPhoneNumber.Text = userMsisdn.ToString();
             txtBxEnterName.Focus();
+            this.Loaded -= EnterNamePage_Loaded;
         }
 
         private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
         {
-            txtBxEnterName.Hint = "Name";
+            txtBxEnterName.Hint = AppResources.EnterName_Name_Hint;
             txtBxEnterName.Foreground = UI_Utils.Instance.SignUpForeground;
         }
 

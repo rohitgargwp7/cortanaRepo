@@ -10,6 +10,12 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Phone.Notification;
 using System.Text;
+using windows_client.Misc;
+using windows_client.View;
+using System.Collections.ObjectModel;
+using windows_client.Languages;
+using System.Windows.Threading;
+using windows_client.ViewModel;
 
 namespace windows_client
 {
@@ -46,9 +52,10 @@ namespace windows_client
 
         private static volatile NetworkManager instance;
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
+        private object lockObj = new object();
         public enum GroupChatState
         {
-            ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE
+            ALREADY_ADDED_TO_GROUP, NEW_GROUP, ADD_MEMBER, DUPLICATE, KICKEDOUT_USER_ADDED
         }
         private NetworkManager()
         {
@@ -116,6 +123,8 @@ namespace windows_client
                     try
                     {
                         convMessage = new ConvMessage(jsonObj);
+                        if (Utils.isGroupConversation(convMessage.Msisdn))
+                            GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
                     catch (Exception e)
                     {
@@ -125,7 +134,7 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
-                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains("location"))
+                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                     {
                         byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(convMessage.MetaDataString);
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
@@ -153,16 +162,40 @@ namespace windows_client
             #region START_TYPING
             else if (START_TYPING == type) /* Start Typing event received*/
             {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, msisdn);
+                    this.pubSub.publish(HikePubSub.TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
             #region END_TYPING
             else if (END_TYPING == type) /* End Typing event received */
             {
+                string sentTo = "";
+                try
+                {
+                    sentTo = (string)jsonObj[HikeConstants.TO];
+                }
+                catch (Exception e)
+                {
+                }
+
+                object[] vals = new object[2];
+                vals[0] = msisdn;
+                vals[1] = sentTo;
                 if (msisdn != null)
-                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, msisdn);
+                    this.pubSub.publish(HikePubSub.END_TYPING_CONVERSATION, vals);
                 return;
             }
             #endregion
@@ -189,6 +222,7 @@ namespace windows_client
                 try
                 {
                     msgID = long.Parse(id);
+                    Debug.WriteLine("NETWORK MANAGER:: Received report for Message Id " + msgID);
                 }
                 catch (FormatException e)
                 {
@@ -284,19 +318,19 @@ namespace windows_client
                     return;
                 }
                 bool joined = USER_JOINED == type;
-
+                GroupManager.Instance.LoadGroupCache();
                 if (joined)
                 {
                     // if user is in contact list then only show the joined msg
                     bool isUserInContactList = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn) != null ? true : false;
                     ProcessUoUjMsgs(jsonObj, false, isUserInContactList);
                 }
-                else if (Utils.GroupCache != null)
+                else if (GroupManager.Instance.GroupCache != null)
                 {
-                    bool shouldSave = false;
-                    foreach (string key in Utils.GroupCache.Keys)
+                    foreach (string key in GroupManager.Instance.GroupCache.Keys)
                     {
-                        List<GroupParticipant> l = Utils.GroupCache[key];
+                        bool shouldSave = false;
+                        List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
                         for (int i = 0; i < l.Count; i++)
                         {
                             if (l[i].Msisdn == uMsisdn)
@@ -305,9 +339,9 @@ namespace windows_client
                                 shouldSave = true;
                             }
                         }
+                        if (shouldSave)
+                            GroupManager.Instance.SaveGroupCache(key);
                     }
-                    if (shouldSave)
-                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
                 }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
@@ -323,21 +357,50 @@ namespace windows_client
                     return;
                 string iconBase64 = temp.ToString();
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                object[] vals = new object[2];
-                vals[0] = msisdn;
-                vals[1] = imageBytes;
 
-                this.pubSub.publish(HikePubSub.UPDATE_UI, vals);
                 Stopwatch st = Stopwatch.StartNew();
                 if (Utils.isGroupConversation(msisdn))
                 {
                     // ':' is not supported in Isolated Storage so replacing it with '_'
                     string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId, imageBytes);
+                    MiscDBUtil.saveAvatarImage(grpId, imageBytes, true);
                 }
                 else
-                    MiscDBUtil.saveAvatarImage(msisdn, imageBytes);
+                    MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
                 st.Stop();
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            App.ViewModel.ConvMap[msisdn].Avatar = imageBytes;
+                            this.pubSub.publish(HikePubSub.UPDATE_UI, msisdn);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
+                        }
+                    });
+                }
+                else
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (msisdn == null)
+                            return;
+                        ConversationListObject c = App.ViewModel.GetFav(msisdn);
+                        if (c != null) // for favourites
+                        {
+                            c.Avatar = imageBytes;
+                        }
+                        c = App.ViewModel.GetPending(msisdn);
+                        if (c != null) // for pending requests
+                        {
+                            c.Avatar = imageBytes;
+                        }
+                    });
+                }
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to save image for msisdn {0} : {1}", msisdn, msec);
             }
@@ -408,22 +471,117 @@ namespace windows_client
                                     App.WriteToIsoStorageSettings(HikeConstants.SECURE_PUSH, vall);
                                 }
                             }
+                            else if (kv.Key == HikeConstants.ACCOUNT)
+                            {
+                                JObject acntValObj = (JObject)oj;
+                                KeyValuePair<string, JToken> kkvv;
+                                IEnumerator<KeyValuePair<string, JToken>> kkeyVvals = acntValObj.GetEnumerator();
+                                while (kkeyVvals.MoveNext())
+                                {
+                                    try
+                                    {
+                                        kkvv = kkeyVvals.Current;
+                                        Debug.WriteLine("AI :: Key : " + kkvv.Key);
 
-                            string val = null;
-                            if (oj is JObject)
+                                        #region FAVOURITES
+                                        if (kkvv.Key == HikeConstants.FAVORITES)
+                                        {
+                                            JObject favJSON = kkvv.Value.ToObject<JObject>();
+                                            if (favJSON != null)
+                                            {
+                                                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                                {
+                                                    bool thrAreFavs = false;
+                                                    KeyValuePair<string, JToken> fkkvv;
+                                                    IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
+                                                    while (kVals.MoveNext())
+                                                    {
+                                                        bool isFav = true; // true for fav , false for pending
+                                                        fkkvv = kVals.Current; // kkvv contains favourites MSISDN
+                                                        JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
+                                                        JToken pToken;
+                                                        if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
+                                                            isFav = false;
+                                                        Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
+                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
+                                                        thrAreFavs = true;
+                                                    }
+                                                    if (thrAreFavs)
+                                                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                                                });
+                                            }
+                                        }
+
+                                        #endregion
+                                        #region FACEBOOK AND TWITTER
+                                        if (kkvv.Key == HikeConstants.ACCOUNTS)
+                                        {
+                                            JObject socialObj = kkvv.Value.ToObject<JObject>();
+                                            if (socialObj != null)
+                                            {
+                                                JToken socialJToken;
+                                                socialObj.TryGetValue(HikeConstants.TWITTER, out socialJToken);
+                                                if (socialJToken != null) // twitter is present in JSON
+                                                {
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN, (string)(socialJToken as JObject)["id"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET, (string)(socialJToken as JObject)["token"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.TW_LOGGED_IN, true);
+                                                }
+                                                socialJToken = null;
+                                                socialObj.TryGetValue(HikeConstants.FACEBOOK, out socialJToken);
+                                                if (socialJToken != null) // facebook is present in JSON
+                                                {
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, (string)(socialJToken as JObject)["id"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, (string)(socialJToken as JObject)["token"]);
+                                                    App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
+                                                }
+                                            }
+
+                                        }
+
+                                        #endregion
+                                        #region REWARDS
+                                        if (kkvv.Key == HikeConstants.REWARDS_TOKEN)
+                                        {
+                                            App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, kkvv.Value.ToString());
+                                        }
+                                        // whenever this key will come toggle the show rewards thing
+                                        if (kkvv.Key == HikeConstants.SHOW_REWARDS)
+                                        {
+                                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, kkvv.Value.ToObject<bool>());
+                                            pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                                        }
+
+                                        if (kkvv.Key == HikeConstants.MqttMessageTypes.REWARDS)
+                                        {
+                                            JObject ttObj = kkvv.Value.ToObject<JObject>();
+                                            if (ttObj != null)
+                                            {
+                                                int rew_val = (int)ttObj[HikeConstants.REWARDS_VALUE];
+                                                App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rew_val);
+                                                pubSub.publish(HikePubSub.REWARDS_CHANGED, rew_val);
+                                            }
+                                        }
+
+                                        #endregion
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                    }
+                                }
+
+                                // save only for Twitter , FB
+                                //App.WriteToIsoStorageSettings(kv.Key, (oj as JObject).ToString(Newtonsoft.Json.Formatting.None));
+                            }// save only tc , invite_token
+                            else if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
                             {
-                                JObject jj = (JObject)oj;
-                                val = jj.ToString(Newtonsoft.Json.Formatting.None);
+                                string val = oj.ToString();
+                                Debug.WriteLine("AI :: Value : " + val);
+
+                                if (kv.Key == HikeConstants.INVITE_TOKEN || kv.Key == HikeConstants.TOTAL_CREDITS_PER_MONTH)
+                                    App.WriteToIsoStorageSettings(kv.Key, val);
                             }
-                            else if (oj is JArray)
-                            {
-                                JArray jarr = (JArray)oj;
-                                val = jarr.ToString(Newtonsoft.Json.Formatting.None);
-                            }
-                            else
-                                val = oj.ToString();
-                            Debug.WriteLine("AI :: Value : " + val);
-                            App.WriteToIsoStorageSettings(kv.Key, val);
                         }
                         catch { }
                     }
@@ -442,6 +600,31 @@ namespace windows_client
                     return;
                 }
 
+            }
+            #endregion
+            #region ACCOUNT CONFIG
+            else if (HikeConstants.MqttMessageTypes.ACCOUNT_CONFIG == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    Debug.WriteLine("NETWORK MANAGER : Received account info json : {0}", jsonObj.ToString());
+
+                    JToken rew;
+                    if (data.TryGetValue(HikeConstants.REWARDS_TOKEN, out rew))
+                        App.WriteToIsoStorageSettings(HikeConstants.REWARDS_TOKEN, rew.ToString());
+                    rew = null;
+                    if (data.TryGetValue(HikeConstants.SHOW_REWARDS, out rew))
+                    {
+                        App.WriteToIsoStorageSettings(HikeConstants.SHOW_REWARDS, rew.ToObject<bool>());
+                        pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
             }
             #endregion
             #region USER_OPT_IN
@@ -478,9 +661,11 @@ namespace windows_client
                 {
                     return;
                 }
+                GroupManager.Instance.LoadGroupParticipants(grpId);
                 ConvMessage convMessage = null;
                 List<GroupParticipant> dndList = new List<GroupParticipant>(1);
                 GroupChatState gcState = AddGroupmembers(arr, grpId, dndList);
+
                 #region NEW GROUP
                 if (gcState == GroupChatState.NEW_GROUP) // this group is created by someone else
                 {
@@ -506,7 +691,6 @@ namespace windows_client
                 else if (gcState == GroupChatState.ALREADY_ADDED_TO_GROUP)
                 {
                     // update JSON in the metadata .....
-
                     if (dndList.Count > 0) // there are people who are in dnd , show their msg
                     {
                         JObject o = new JObject();
@@ -527,6 +711,19 @@ namespace windows_client
                 else if (gcState == GroupChatState.DUPLICATE)
                 {
                     return;
+                }
+                #endregion
+                #region KICKEDOUT USER ADDED
+                else if (gcState == GroupChatState.KICKEDOUT_USER_ADDED)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (!App.IS_MARKETPLACE) // remove this later , this is only for QA
+                            MessageBox.Show("GCJ came after adding knocked user!!");
+                    });
+                    GroupTableUtils.SetGroupAlive(grpId);
+                    convMessage = new ConvMessage(jsonObj, false, false); // this will be normal GCJ msg
+                    this.pubSub.publish(HikePubSub.GROUP_ALIVE, grpId);
                 }
                 #endregion
                 #region ADD NEW MEMBERS TO EXISTING GROUP
@@ -552,8 +749,8 @@ namespace windows_client
                 ConversationListObject obj = MessagesTableUtils.addGroupChatMessage(convMessage, jsonObj);
                 if (obj == null)
                     return;
-
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                GroupManager.Instance.SaveGroupCache(grpId);
+                //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
                 Debug.WriteLine("NetworkManager", "Group is new");
 
                 object[] vals = new object[2];
@@ -582,20 +779,11 @@ namespace windows_client
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)
                     {
-                        //ConvMessage cm = new ConvMessage();
-                        //cm.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
-                        //cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
-                        //cm.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
-                        //cm.Timestamp = TimeUtils.getCurrentTimeStamp();
-                        //cm.Msisdn = groupId;
-                        //ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                        //if (obj == null)
-                        //    return;
-                        //object[] values = new object[2];
-                        //vals[0] = cm;
-                        //vals[1] = obj;                       
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            App.ViewModel.ConvMap[groupId].ContactName = groupName;
+                        });
                         this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
-                        //this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, values);
                     }
                 }
                 catch (Exception e)
@@ -617,13 +805,14 @@ namespace windows_client
                 {
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     string fromMsisdn = (string)jsonObj[HikeConstants.DATA];
-                    GroupParticipant gp = Utils.getGroupParticipant(null, fromMsisdn, groupId);
+                    GroupManager.Instance.LoadGroupParticipants(groupId);
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, fromMsisdn, groupId);
                     if (gp.HasLeft)
                         return;
 
                     ConvMessage convMsg = new ConvMessage(jsonObj, false, false);
-                    App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false);
+                    GroupManager.Instance.SaveGroupCache(groupId);
+                    ConversationListObject cObj = MessagesTableUtils.addChatMessage(convMsg, false); // grp name will change inside this
                     if (cObj == null)
                         return;
 
@@ -645,7 +834,6 @@ namespace windows_client
             {
                 try
                 {
-
                     string groupId = (string)jsonObj[HikeConstants.TO];
                     bool goAhead = GroupTableUtils.SetGroupDead(groupId);
                     if (goAhead)
@@ -684,18 +872,123 @@ namespace windows_client
                 pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
             }
             #endregion
+            #region ADD FAVOURITES
+            else if (HikeConstants.MqttMessageTypes.ADD_FAVOURITE == type)
+            {
+                try
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        string ms = (string)jsonObj[HikeConstants.FROM];
+                        if (ms == null)
+                            return;
+                        if (App.ViewModel.Isfavourite(ms)) // already favourite
+                            return;
+                        if (App.ViewModel.IsPending(ms))
+                            return;
+
+                        try
+                        {
+
+                            ConversationListObject favObj;
+                            if (App.ViewModel.ConvMap.ContainsKey(ms))
+                                favObj = App.ViewModel.ConvMap[ms];
+                            else // user not saved in address book
+                            {
+                                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                                favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                            }
+
+                            App.ViewModel.PendingRequests.Add(favObj);
+                            MiscDBUtil.SavePendingRequests();
+                            this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
+                        }
+                    });
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
+                }
+            }
+            #endregion
+            #region REWARDS VALUE CHANGED
+            else if (HikeConstants.MqttMessageTypes.REWARDS == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    int rewards_val = (int)data[HikeConstants.REWARDS_VALUE];
+                    App.WriteToIsoStorageSettings(HikeConstants.REWARDS_VALUE, rewards_val);
+                    pubSub.publish(HikePubSub.REWARDS_CHANGED, rewards_val);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Netwok Manager :: Exception in REWARDS : " + e.StackTrace);
+                }
+            }
+            #endregion
             #region OTHER
             else
             {
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
             #endregion
+        }
 
+        private void LoadFavAndPending(bool isFav, string msisdn)
+        {
+            if (msisdn == null)
+                return;
+            ObservableCollection<ConversationListObject> l;
+            if (isFav)
+                l = App.ViewModel.FavList;
+            else
+                l = App.ViewModel.PendingRequests;
+
+            if (isFav)
+            {
+                if (App.ViewModel.Isfavourite(msisdn))
+                    return;
+            }
+            else
+            {
+                if (App.ViewModel.IsPending(msisdn))
+                    return;
+            }
+
+            ConversationListObject favObj = null;
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            {
+                favObj = App.ViewModel.ConvMap[msisdn];
+                if (favObj != null)
+                    l.Add(favObj);
+            }
+            else
+            {
+                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
+                l.Add(favObj);
+            }
+            if (isFav)
+            {
+                MiscDBUtil.SaveFavourites();
+                MiscDBUtil.SaveFavourites(favObj);
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+            }
+            else
+                MiscDBUtil.SavePendingRequests();
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
         {
-            List<GroupParticipant> members = Utils.GroupCache[grpId];
+            List<GroupParticipant> members = GroupManager.Instance.GetParticipantList(grpId);
             List<GroupParticipant> output = null;
 
             for (int i = 0; i < members.Count; i++)
@@ -717,19 +1010,19 @@ namespace windows_client
             if (dndMembersList.Count == 1)
                 msgText.Append(dndMembersList[0].FirstName);
             else if (dndMembersList.Count == 2)
-                msgText.Append(dndMembersList[0].FirstName + " and " + dndMembersList[1].FirstName);
+                msgText.Append(dndMembersList[0].FirstName + AppResources.And_txt + dndMembersList[1].FirstName);
             else
             {
                 for (int i = 0; i < dndMembersList.Count; i++)
                 {
                     msgText.Append(dndMembersList[i].FirstName);
                     if (i == dndMembersList.Count - 2)
-                        msgText.Append(" and ");
+                        msgText.Append(AppResources.And_txt);
                     else if (i < dndMembersList.Count - 2)
                         msgText.Append(",");
                 }
             }
-            return string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString());
+            return string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
         }
 
         private void ProcessUoUjMsgs(JObject jsonObj, bool isOptInMsg, bool isUserInContactList)
@@ -772,14 +1065,15 @@ namespace windows_client
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     if (obj == null)
                     {
-                        App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                        GroupManager.Instance.SaveGroupCache(cm.Msisdn);
+                        //App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
                         return;
                     }
                     if (credits <= 0)
                         vals = new object[2];
                     else                    // this shows that we have to show credits msg as this user got credits.
                     {
-                        string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                        string text = string.Format(AppResources.CREDITS_EARNED, credits);
                         JObject o = new JObject();
                         o.Add("t", "credits_gained");
                         ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
@@ -797,9 +1091,9 @@ namespace windows_client
                 }
             }
             // UPDATE group cache
-            foreach (string key in Utils.GroupCache.Keys)
+            foreach (string key in GroupManager.Instance.GroupCache.Keys)
             {
-                List<GroupParticipant> l = Utils.GroupCache[key];
+                List<GroupParticipant> l = GroupManager.Instance.GroupCache[key];
                 for (int i = 0; i < l.Count; i++)
                 {
                     if (l[i].Msisdn == ms) // if this msisdn exists in group
@@ -813,12 +1107,12 @@ namespace windows_client
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);
                         if (co == null)
                         {
-                            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                            GroupManager.Instance.SaveGroupCache();
                             return;
                         }
                         if (credits > 0)                    // this shows that we have to show credits msg as this user got credits.
                         {
-                            string text = string.Format(HikeConstants.CREDITS_EARNED, credits);
+                            string text = string.Format(AppResources.CREDITS_EARNED, credits);
                             JObject o = new JObject();
                             o.Add("t", "credits_gained");
                             ConvMessage cmCredits = new ConvMessage(ConvMessage.ParticipantInfoState.CREDITS_GAINED, o);
@@ -827,7 +1121,7 @@ namespace windows_client
                             co = MessagesTableUtils.addChatMessage(cmCredits, false);
                             if (co == null)
                             {
-                                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+                                GroupManager.Instance.SaveGroupCache();
                                 return;
                             }
                             values = new object[3];
@@ -845,23 +1139,20 @@ namespace windows_client
                     }
                 }
             }
-            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+            GroupManager.Instance.SaveGroupCache();
         }
+
+        #region OLD ADD GROUPMEMBERS LOGIC
         /// <summary>
         /// This function will return 
         ///  -- > true , if new users are added to GC
         ///  -- > false , if GCJ is come to notify DND status
-        /// 
-        /// </summary>
-        /// <param name="arr"></param>
-        /// <param name="grpId"></param>
-        /// <returns></returns>
         //private bool AddGroupmembers(JArray arr, string grpId)
         //{
         //    if (App.ViewModel.ConvMap.ContainsKey(grpId))
         //    {
         //        List<GroupParticipant> l = null;
-        //        Utils.GroupCache.TryGetValue(grpId, out l);
+        //        GroupManager.Instance.GroupCache.TryGetValue(grpId, out l);
         //        if (l == null)
         //            return true;
 
@@ -908,13 +1199,15 @@ namespace windows_client
         //            }
         //        }
         //        if (saveCache)
-        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+        //            App.WriteToIsoStorageSettings(App.GROUPS_CACHE, GroupManager.Instance.GroupCache);
         //        return output;
         //    }
         //    else
         //        return true;
 
         //}
+
+        #endregion
 
         /*
          * This function performs 3 roles
@@ -929,10 +1222,13 @@ namespace windows_client
             else
             {
                 // now check if its same gcj packet created by owner or its different gcj packet
-                List<GroupParticipant> l = null;
-                Utils.GroupCache.TryGetValue(grpId, out l);
+                List<GroupParticipant> l = GroupManager.Instance.GetParticipantList(grpId);
                 if (l == null || l.Count == 0)
                     return GroupChatState.NEW_GROUP;
+
+                GroupInfo gi = GroupTableUtils.getGroupInfoForId(grpId);
+                if (gi != null && !gi.GroupAlive)
+                    return GroupChatState.KICKEDOUT_USER_ADDED;
 
                 GroupChatState output = GroupChatState.DUPLICATE;
                 Dictionary<string, GroupParticipant> gpMap = GetGroupParticipantMap(l);

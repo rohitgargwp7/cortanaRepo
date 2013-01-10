@@ -103,8 +103,6 @@ namespace windows_client
 
         public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
 
-        public static readonly string DELETE_ACCOUNT = "deleteAccount";
-
         public static readonly string ACCOUNT_DELETED = "accountDeleted";
 
         public static readonly string INVITEE_NUM_CHANGED = "inviteeNoChanged";
@@ -112,6 +110,8 @@ namespace windows_client
         public static readonly string GROUP_LEFT = "groupLeft";
 
         public static readonly string GROUP_END = "groupEnd";
+
+        public static readonly string GROUP_ALIVE = "groupAlive";
 
         public static readonly string GROUP_NAME_CHANGED = "groupNameChanged";
 
@@ -123,13 +123,21 @@ namespace windows_client
 
         public static readonly string DELETE_ALL_CONVERSATIONS="deleteAllConversations";
 
-        public static string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
+        public static readonly string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
 
         public static readonly string ATTACHMENT_RESEND = "resendOrForward";
 
         public static readonly string UPDATE_ACCOUNT_NAME = "updateAccountName";
 
         public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
+
+        public static readonly string ADD_REMOVE_FAV_OR_PENDING = "addRemFP";
+
+        public static readonly string REWARDS_TOGGLE = "rew_tog";
+
+        public static readonly string REWARDS_CHANGED = "rew_changed";
+
+        public static readonly string BAD_USER_PASS = "badUserPass";
 
         private readonly Thread mThread;
 

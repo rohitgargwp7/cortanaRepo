@@ -11,6 +11,8 @@ using System.Text;
 using windows_client.DbUtils;
 using System.Collections.Generic;
 using Microsoft.Phone.Shell;
+using windows_client.Misc;
+using windows_client.Languages;
 
 namespace windows_client.Model
 {
@@ -81,11 +83,10 @@ namespace windows_client.Model
                 return ParticipantInfoState.NO_INFO;
             JToken typeToken = null;
             string type = null;
-            if(obj.TryGetValue(HikeConstants.TYPE, out typeToken))
+            if (obj.TryGetValue(HikeConstants.TYPE, out typeToken))
                 type = typeToken.ToString();
             else
-                return ParticipantInfoState.NO_INFO;
-            type = (string)obj[HikeConstants.TYPE];
+                type = null;
 
             if (HikeConstants.MqttMessageTypes.GROUP_CHAT_JOIN == type)
                 return ParticipantInfoState.PARTICIPANT_JOINED;
@@ -463,30 +464,40 @@ namespace windows_client.Model
             {
                 metadata = new JObject();
                 filesData = new JArray();
-                singleFileInfo = new JObject();
-                singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
-                singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
-                if (FileAttachment.Thumbnail != null)
-                    singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
-                if (FileAttachment.ContentType.Contains("location"))
+                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                 {
-                    JObject locationInfo = JObject.Parse(this.MetaDataString);
-                    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
-                    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
-                    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
-                    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
+                    singleFileInfo = new JObject();
+                    singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
+                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                    singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
+                    if (FileAttachment.Thumbnail != null)
+                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    //if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    //{
+                    //    JObject locationInfo = JObject.Parse(this.MetaDataString);
+                    //    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
+                    //    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
+                    //    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
+                    //    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
+                    //}
+                }
+                else
+                {
+                    //add thumbnail here
+                    JObject uploadedJSON = JObject.Parse(this.MetaDataString);
+                    singleFileInfo = uploadedJSON[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
+                    singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
+                    singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                 }
                 filesData.Add(singleFileInfo.ToObject<JToken>());
-
                 metadata[HikeConstants.FILES_DATA] = filesData;
                 data[HikeConstants.METADATA] = metadata;
             }
             else if (this.MetaDataString !=null && this.MetaDataString.Contains("poke"))
             {
-                metadata = new JObject();
-                metadata["poke"] = true;
-                data[HikeConstants.METADATA] = metadata;
+                //metadata = new JObject();
+                //metadata["poke"] = true;
+                data["poke"] = true;
             }
 
             obj[HikeConstants.TO] = _msisdn;
@@ -739,7 +750,7 @@ namespace windows_client.Model
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
                         this.FileAttachment = new Attachment(fileName==null?"":fileName.ToString(), fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-                        if (contentType.ToString().Contains("location"))
+                        if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
                             JObject locationFile = new JObject();
                             locationFile[HikeConstants.LATITUDE] = fileObject[HikeConstants.LATITUDE];
@@ -771,7 +782,6 @@ namespace windows_client.Model
                 JObject data = (JObject)obj[HikeConstants.DATA];
                 JToken msg;
 
-
                 if (data.TryGetValue(HikeConstants.SMS_MESSAGE, out msg)) // if sms 
                 {
                     _message = msg.ToString();
@@ -783,30 +793,33 @@ namespace windows_client.Model
                     if (this.HasAttachment)
                     {
                         string messageText = "";
-                        if (this.FileAttachment.ContentType.Contains("image"))
-                            messageText = "image";
-                        else if (this.FileAttachment.ContentType.Contains("audio"))
-                            messageText = "audio";
-                        else if (this.FileAttachment.ContentType.Contains("video"))
-                            messageText = "video";
+                        if (this.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                            messageText = AppResources.Image_Txt;
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                            messageText = AppResources.Audio_Txt;
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                            messageText = AppResources.Video_Txt;
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                            messageText = AppResources.Location_Txt;
                         this._message = messageText;
                     }
                     else
                     {
                         if (participantInfoState == ParticipantInfoState.INTERNATIONAL_USER)
-                            _message = "SMS works only to India at the moment.";
+                            _message = AppResources.SMS_Works_Only_In_India_Txt;
                         else
                             _message = (string)data[HikeConstants.HIKE_MESSAGE];
                     }
 
                 }
-                //if (_groupParticipant != null) // reprsents group chat
-                //{
-                //    _message = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn).FirstName + " - " + _message;
-                //}
-                JToken ts = null;
-                if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
-                    _timestamp = ts.ToObject<long>();
+                if (data.TryGetValue("poke", out msg)) // if sms 
+                {
+                    metadataJsonString = "{poke: true}";
+                }
+
+                //JToken ts = null;
+                //if (data.TryGetValue(HikeConstants.TIMESTAMP, out ts))
+                _timestamp = TimeUtils.getCurrentTimeStamp();
 
                 /* prevent us from receiving a message from the future */
 
@@ -861,7 +874,7 @@ namespace windows_client.Model
                     }
                     catch { }
 
-                    GroupParticipant gp = Utils.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
                     gp.HasLeft = false;
                     if (!isSelfGenerated) // if you yourself created JSON dont update these as GP is already updated while creating grp.
                     {
@@ -876,25 +889,25 @@ namespace windows_client.Model
                     }
                 }
                 if (!isSelfGenerated) // when I am group owner chache is already sorted
-                    Utils.GroupCache[toVal].Sort();
+                    GroupManager.Instance.GroupCache[toVal].Sort();
                 if (addedLater)
                 {
                     addedMembers.Sort();
                     this._message = GetMsgText(addedMembers, false);
                 }
                 else
-                    this._message = GetMsgText(Utils.GroupCache[toVal], true);
+                    this._message = GetMsgText(GroupManager.Instance.GroupCache[toVal], true);
             }
 
             else if (this.participantInfoState == ParticipantInfoState.GROUP_END)
             {
-                this._message = HikeConstants.GROUP_CHAT_END;
+                this._message = AppResources.GROUP_CHAT_END;
             }
             else if (this.participantInfoState == ParticipantInfoState.PARTICIPANT_LEFT || this.participantInfoState == ParticipantInfoState.INTERNATIONAL_GROUP_USER)// Group member left
             {
                 this._groupParticipant = (toVal != null) ? (string)obj[HikeConstants.DATA] : null;
-                GroupParticipant gp = Utils.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
-                this._message = gp.FirstName + HikeConstants.USER_LEFT;
+                GroupParticipant gp = GroupManager.Instance.getGroupParticipant(_groupParticipant, _groupParticipant, _msisdn);
+                this._message = gp.FirstName + AppResources.USER_LEFT;
                 gp.HasLeft = true;
                 gp.IsUsed = false;
             }
@@ -908,19 +921,18 @@ namespace windows_client.Model
 
         private string GetMsgText(List<GroupParticipant> groupList, bool isNewGroup)
         {
-            string msg = "Group Chat with {0}";
+            string msg = AppResources.GroupChatWith_Txt;
             if (!isNewGroup)
-                msg = "Added {0} to the group";
+                msg = AppResources.Added_X_To_GC;
             switch (groupList.Count)
             {
                 case 1:
                     return string.Format(msg, groupList[0].FirstName);
                 case 2:
-                    return string.Format(msg, groupList[0].FirstName + " and "
+                    return string.Format(msg, groupList[0].FirstName + AppResources.And_txt
                     + groupList[1].FirstName);
                 default:
-                    return string.Format(msg, groupList[0].FirstName + " and "
-                    + (groupList.Count - 1) + " others");
+                    return string.Format(msg, string.Format(AppResources.NamingConvention_Txt,groupList[0].FirstName ,groupList.Count - 1));
             }
         }
 
@@ -934,49 +946,10 @@ namespace windows_client.Model
             switch (this.participantInfoState)
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
-                    this.Message = HikeConstants.SMS_INDIA;
+                    this.Message = AppResources.SMS_INDIA;
                     break;
                 default: break;
             }
         }
-
-        public static JObject ProcessGCLogic(string grpId)
-        {
-            List<GroupParticipant> l = Utils.GroupCache[grpId];
-            JObject obj = new JObject();
-            bool isValid = false;
-            bool saveCache = false;
-            try
-            {
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_USER_JOINED_OR_WAITING;
-                obj[HikeConstants.TO] = grpId;
-                JArray array = new JArray();
-                for (int i = 0; i < l.Count; i++)
-                {
-                    if (!l[i].IsOnHike && !l[i].IsUsed && !l[i].HasLeft) // used is to track if we have shown joined for a user already
-                    {
-                        JObject nameMsisdn = new JObject();
-                        nameMsisdn[HikeConstants.NAME] = l[i].Name;
-                        nameMsisdn[HikeConstants.MSISDN] = l[i].Msisdn;
-                        nameMsisdn["onhike"] = l[i].IsOnHike;
-                        nameMsisdn["dnd"] = l[i].IsDND;
-                        array.Add(nameMsisdn);
-                        l[i].IsUsed = true;
-                        isValid = true;
-                        saveCache = true;
-                    }
-                }
-                obj[HikeConstants.DATA] = array;
-            }
-            catch
-            {
-            }
-            if (saveCache)
-                App.WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
-            if (isValid)
-                return obj;
-            return null;
-        }
-
     }
 }

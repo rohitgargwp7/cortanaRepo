@@ -12,6 +12,8 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.Phone.Shell;
 using System.Text;
+using windows_client.Misc;
+using windows_client.Languages;
 
 namespace windows_client.DbUtils
 {
@@ -102,30 +104,30 @@ namespace windows_client.DbUtils
                 {
                     return false;
                 }
-                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                {
-                    long msgId = convMessage.MessageId;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
+                //if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
+                //{
+                //    long msgId = convMessage.MessageId;
+                //    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                //    {
 
-                        NewChatThread currentPage = App.newChatThreadPage;
+                //        NewChatThread currentPage = App.newChatThreadPage;
 
-                        if (currentPage != null)
-                        {
-                            if (convMessage.IsSent)
-                            {
-                                SentChatBubble sentChatBubble;
-                                currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
-                                if (sentChatBubble != null)
-                                {
-                                    currentPage.OutgoingMsgsMap.Remove(currentMessageId);
-                                    currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
-                                    sentChatBubble.MessageId = convMessage.MessageId;
-                                }
-                            }
-                        }
-                    });
-                }
+                //        if (currentPage != null)
+                //        {
+                //            if (convMessage.IsSent)
+                //            {
+                //                SentChatBubble sentChatBubble;
+                //                currentPage.OutgoingMsgsMap.TryGetValue(currentMessageId, out sentChatBubble);
+                //                if (sentChatBubble != null)
+                //                {
+                //                    currentPage.OutgoingMsgsMap.Remove(currentMessageId);
+                //                    currentPage.OutgoingMsgsMap.Add(convMessage.MessageId, sentChatBubble);
+                //                    sentChatBubble.MessageId = convMessage.MessageId;
+                //                }
+                //            }
+                //        }
+                //    });
+                //}
             }
             return true;
         }
@@ -139,7 +141,7 @@ namespace windows_client.DbUtils
                 bool success = addMessage(convMsg);
                 if (!success)
                     return null;
-                string groupName = Utils.defaultGroupName(convMsg.Msisdn);
+                string groupName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 obj = ConversationTableUtils.addGroupConversation(convMsg, groupName);
                 App.ViewModel.ConvMap[convMsg.Msisdn] = obj;
                 GroupInfo gi = new GroupInfo(convMsg.Msisdn, null, convMsg.GroupParticipant, true);
@@ -148,7 +150,7 @@ namespace windows_client.DbUtils
             else // add a member to a group
             {
                 List<GroupParticipant> existingMembers = null;
-                Utils.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
+                GroupManager.Instance.GroupCache.TryGetValue(convMsg.Msisdn, out existingMembers);
                 if (existingMembers == null)
                     return null;
 
@@ -156,7 +158,7 @@ namespace windows_client.DbUtils
                 GroupInfo gi = GroupTableUtils.getGroupInfoForId(convMsg.Msisdn);
 
                 if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set                
-                    obj.ContactName = Utils.defaultGroupName(obj.Msisdn);
+                    obj.ContactName = GroupManager.Instance.defaultGroupName(obj.Msisdn);
 
                 if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
                 {
@@ -208,7 +210,7 @@ namespace windows_client.DbUtils
                     if (gi == null)
                         return null;
                     if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
+                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region PARTICIPANT_LEFT
@@ -219,7 +221,7 @@ namespace windows_client.DbUtils
                     if (gi == null)
                         return null;
                     if (string.IsNullOrEmpty(gi.GroupName)) // no group name is set
-                        obj.ContactName = Utils.defaultGroupName(convMsg.Msisdn);
+                        obj.ContactName = GroupManager.Instance.defaultGroupName(convMsg.Msisdn);
                 }
                 #endregion
                 #region GROUP_JOINED_OR_WAITING
@@ -232,7 +234,7 @@ namespace windows_client.DbUtils
                         string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
 
                         // every participant is either on DND or not on DND
-                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
                         if (vars[1] == "0") // DND USER and not OPTED IN
                         {
                             if (waitingParticipants == null)
@@ -246,25 +248,25 @@ namespace windows_client.DbUtils
                         if (waitingParticipants.Count == 1)
                             msgText.Append(waitingParticipants[0]);
                         else if (waitingParticipants.Count == 2)
-                            msgText.Append(waitingParticipants[0] + " and " + waitingParticipants[1]);
+                            msgText.Append(waitingParticipants[0] + AppResources.And_txt + waitingParticipants[1]);
                         else
                         {
                             for (int i = 0; i < waitingParticipants.Count; i++)
                             {
                                 msgText.Append(waitingParticipants[0]);
                                 if (i == waitingParticipants.Count - 2)
-                                    msgText.Append(" and ");
+                                    msgText.Append(AppResources.And_txt);
                                 else if (i < waitingParticipants.Count - 2)
                                     msgText.Append(",");
                             }
                         }
-                        obj.LastMessage = string.Format(HikeConstants.WAITING_TO_JOIN, msgText.ToString());
+                        obj.LastMessage = string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString());
                     }
                     else
                     {
                         string[] vars = vals[vals.Length - 1].Split(':');
-                        GroupParticipant gp = Utils.getGroupParticipant(null, vars[0], convMsg.Msisdn);
-                        string text = HikeConstants.USER_JOINED_GROUP_CHAT;
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMsg.Msisdn);
+                        string text = AppResources.USER_JOINED_GROUP_CHAT;
                         obj.LastMessage = gp.FirstName + text;
                     }
                 }
@@ -274,12 +276,12 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = gp.FirstName + HikeConstants.USER_JOINED_GROUP_CHAT;
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        obj.LastMessage = gp.FirstName + AppResources.USER_JOINED_GROUP_CHAT;
                     }
                     else
                     {
-                        obj.LastMessage = obj.NameToShow + HikeConstants.USER_OPTED_IN_MSG;
+                        obj.LastMessage = obj.NameToShow + AppResources.USER_OPTED_IN_MSG;
                     }
                     convMsg.Message = obj.LastMessage;
                 }
@@ -293,7 +295,7 @@ namespace windows_client.DbUtils
                 #region DND_USER
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
                 {
-                    obj.LastMessage = string.Format(HikeConstants.DND_USER, obj.NameToShow);
+                    obj.LastMessage = string.Format(AppResources.DND_USER, obj.NameToShow);
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion
@@ -302,12 +304,12 @@ namespace windows_client.DbUtils
                 {
                     if (Utils.isGroupConversation(obj.Msisdn))
                     {
-                        GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
-                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, gp.FirstName);
+                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.Message, obj.Msisdn);
+                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, gp.FirstName);
                     }
                     else // 1-1 chat
                     {
-                        obj.LastMessage = string.Format(HikeConstants.USER_JOINED_HIKE, obj.NameToShow);
+                        obj.LastMessage = string.Format(AppResources.USER_JOINED_HIKE, obj.NameToShow);
                     }
                     convMsg.Message = obj.LastMessage;
                 }
@@ -315,12 +317,12 @@ namespace windows_client.DbUtils
                 #region GROUP NAME CHANGED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
-                    GroupParticipant gp = Utils.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
                     //convMsg.Message = gp.FirstName + " changed the group name.";
-                    convMsg.Message = "Group Name changed by a group member.";
+                    convMsg.Message = AppResources.GroupNameChangedByGrpMember_Txt;
                 }
                 #endregion
-                #region NO_INFO Or OTHER MSGS
+                #region NO_INFO or OTHER MSGS
                 else
                     obj.LastMessage = convMsg.Message;
                 #endregion

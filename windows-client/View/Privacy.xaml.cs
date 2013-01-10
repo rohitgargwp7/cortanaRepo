@@ -16,6 +16,8 @@ using Phone.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Notification;
+using windows_client.Languages;
+using windows_client.DbUtils;
 
 namespace windows_client.View
 {
@@ -55,25 +57,25 @@ namespace windows_client.View
         }
         private void RegisterListeners()
         {
-            App.HikePubSubInstance.addListener(HikePubSub.ACCOUNT_DELETED, this);
+           
         }
 
         private void RemoveListeners()
         {
             try
             {
-                App.HikePubSubInstance.removeListener(HikePubSub.ACCOUNT_DELETED, this);
+               
             }
             catch { }
         }
 
         private void Unlink_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to unlink your Hike account from this device?", "Unlink Account", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkConfirmMsgBxText, AppResources.Privacy_UnlinkAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
-                progress = new MyProgressIndicator("Unlinking Account...");
+                progress = new MyProgressIndicator(AppResources.Privacy_UnlinkAccountProgress);
 
             progress.Show();
             canGoBack = false;
@@ -82,44 +84,29 @@ namespace windows_client.View
 
         private void unlinkAccountResponse_Callback(JObject obj)
         {
-            if (obj == null || "fail" == (string)obj["stat"])
+            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 Debug.WriteLine("Unlink Account", "Could not unlink account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    MessageBoxResult result = MessageBox.Show("hike couldn't unlink your account. Please try again.", "Account not unlinked", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkErrMsgBxText, AppResources.Privacy_UnlinkErrMsgBxCaptn, MessageBoxButton.OKCancel);
                     progress.Hide();
                     progress = null;
                     canGoBack = true;
                 });
                 return;
             }
-            NetworkManager.turnOffNetworkManager = true;
-            App.MqttManagerInstance.disconnectFromBroker(false);
-            App.ClearAppSettings();
-            App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-            App.HikePubSubInstance.publish(HikePubSub.DELETE_ACCOUNT, null);
-
-            HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-            if (pushChannel != null)
-            {
-                if (pushChannel.IsShellTileBound)
-                    pushChannel.UnbindToShellTile();
-                if (pushChannel.IsShellToastBound)
-                    pushChannel.UnbindToShellToast();
-                pushChannel.Close();
-            }
-
+            DeleteLocalStorage();
         }
 
         private void Delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to delete your Hike account permanently?", "Delete Account", MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.Privacy_DeleteAccounConfirmMsgBxText, AppResources.Privacy_DeleteAccountHeader, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator("Deleting Account...");
+                progress = new MyProgressIndicator(AppResources.Privacy_DeleteAccountProgress);
             }
             progress.Show();
             canGoBack = false;
@@ -128,7 +115,7 @@ namespace windows_client.View
 
         private void deleteAccountResponse_Callback(JObject obj)
         {
-            if (obj == null || "fail" == (string)obj["stat"])
+            if (obj == null || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
             {
                 Debug.WriteLine("Delete Account", "Could not delete account !!");
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -140,14 +127,17 @@ namespace windows_client.View
                 });
                 return;
             }
+            DeleteLocalStorage();
+        }
+
+        private void DeleteLocalStorage()
+        {
             NetworkManager.turnOffNetworkManager = true;
             App.MqttManagerInstance.disconnectFromBroker(false);
             App.ClearAppSettings();
             App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
-            App.HikePubSubInstance.publish(HikePubSub.DELETE_ACCOUNT, null);
+            MiscDBUtil.clearDatabase();
 
-
-            //delete push channel
             HttpNotificationChannel pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
             if (pushChannel != null)
             {
@@ -157,34 +147,32 @@ namespace windows_client.View
                     pushChannel.UnbindToShellToast();
                 pushChannel.Close();
             }
+
+
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                App.ViewModel.ClearViewModel();
+                try
+                {
+                    progress.Hide();
+                    progress = null;
+                }
+                catch
+                {
+                }
+                try
+                {
+                    NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
+                }
+                catch { }
+            });
+
+
         }
 
         public void onEventReceived(string type, object obj)
         {
-            #region ACCOUNT_DELETED
-            if (HikePubSub.ACCOUNT_DELETED == type)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    App.ViewModel.MessageListPageCollection.Clear();
-                    App.ViewModel.ConvMap.Clear();
-                    try
-                    {
-                        progress.Hide();
-                        progress = null;
-                    }
-                    catch
-                    {
-                    }
-                    try
-                    {
-                        NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
-                    }
-                    catch { }
-                });
-                return;
-            }
-            #endregion
+            
         }
     }
 }

@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using mqtttest.Client;
 using Microsoft.Phone.Reactive;
 using System.Threading;
+using System.Diagnostics;
 
 namespace finalmqtt.Client
 {
@@ -46,12 +47,14 @@ namespace finalmqtt.Client
         const int socketReadBufferSize = 1024 * 10;
         private byte[] bufferForSocketReads;
         private readonly String id;
-        private volatile bool stopped;
+        private List<byte> combinedMessageBytes = new List<byte>();
         //        private volatile bool connected;
         private volatile bool connackReceived;
         private volatile bool disconnectSent = false;
 
-        private Dictionary<short, Callback> map = new Dictionary<short, Callback>();
+        private Dictionary<short, Callback> msgCallbacksMap = new Dictionary<short, Callback>();
+        private Dictionary<short, IDisposable> scheduledActionsMap = new Dictionary<short, IDisposable>();
+
         private IScheduler scheduler = Scheduler.NewThread;
 
         private String host;
@@ -63,11 +66,11 @@ namespace finalmqtt.Client
         private MessageStream input;
         private List<byte> pendingOutput;
 
+        public delegate Callback onAckFailedDelegate(short messageId);
+
         public MqttConnection(String id, String host, int port, String username, String password, Callback cb, Listener listener)
         {
             this.id = id;
-            this.stopped = true;
-            //            this.connected = false;
             this.input = new MessageStream(MAX_BUFFER_SIZE);
             this.mqttListener = listener;
             this.pendingOutput = new List<byte>();
@@ -88,7 +91,6 @@ namespace finalmqtt.Client
         /// </summary>
         public void connect()
         {
-            stopped = false;
             DnsEndPoint hostEntry = new DnsEndPoint(host, port);
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
@@ -311,7 +313,6 @@ namespace finalmqtt.Client
             try
             {
                 msg.write();
-
             }
             catch (ObjectDisposedException ode)
             {
@@ -324,14 +325,83 @@ namespace finalmqtt.Client
                     cb.onFailure(se);
             }
 
-            if (msg is RetryableMessage && cb!=null)
+            if (msg is RetryableMessage && cb != null)
             {
                 short messageId = ((RetryableMessage)msg).getMessageId();
                 if (messageId != 0)
                 {
-                    map.Add(messageId, cb);
-                    Action callbackMessageAction = (new CallBackTimerTask(map, messageId, cb)).HandleTimerTask;
-                    scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
+                    msgCallbacksMap.Add(messageId, cb);
+                    Action callbackMessageAction = (new CallBackTimerTask(new onAckFailedDelegate(onReceivingAck), messageId, cb)).HandleTimerTask;
+                    IDisposable scheduledAction = scheduler.Schedule(callbackMessageAction, TimeSpan.FromSeconds(10));
+                    scheduledActionsMap.Add(messageId, scheduledAction);
+                }
+            }
+        }
+
+        public Callback onReceivingAck(short messageId)
+        {
+            Callback cb = null;
+            if (msgCallbacksMap.ContainsKey(messageId))
+            {
+                msgCallbacksMap.TryGetValue(messageId, out cb);
+                msgCallbacksMap.Remove(messageId);
+            }
+            if (scheduledActionsMap.ContainsKey(messageId))
+            {
+                scheduledActionsMap.Remove(messageId);
+            }
+            return cb;
+        }
+
+        public void sendCallbackMessage(Message[] msg, Callback[] cb)
+        {
+            if (_socket == null || !_socket.Connected || !connackReceived || msg == null || cb == null)
+            {
+                if (cb != null)
+                {
+                    for (int i = 0; i < cb.Length; i++)
+                    {
+                        if (cb[i] != null)
+                            cb[i].onFailure(null);
+                    }
+                }
+                return;
+            }
+            try
+            {
+                for (int i = 0; i < msg.Length; i++)
+                {
+                    combinedMessageBytes.AddRange(msg[i].messageContent());
+                }
+                sendMessage(combinedMessageBytes.ToArray());
+                combinedMessageBytes.Clear();
+            }
+            catch (ObjectDisposedException ode)
+            {
+                for (int i = 0; i < cb.Length; i++)
+                {
+                    if (cb[i] != null)
+                        cb[i].onFailure(ode);
+                }
+            }
+            catch (SocketException se)
+            {
+                for (int i = 0; i < cb.Length; i++)
+                {
+                    if (cb[i] != null)
+                        cb[i].onFailure(se);
+                }
+            }
+
+            for (int i = 0; i < msg.Length; i++)
+            {
+                if (msg[i] is RetryableMessage && cb[i] != null)
+                {
+                    short messageId = ((RetryableMessage)msg[i]).getMessageId();
+                    if (messageId != 0)
+                    {
+                        msgCallbacksMap.Add(messageId, cb[i]);
+                    }
                 }
             }
         }
@@ -347,6 +417,17 @@ namespace finalmqtt.Client
             PublishMessage msg = new PublishMessage(topic, message, qos, this);
             msg.setMessageId(getNextMessageId());
             sendCallbackMessage(msg, cb);
+        }
+
+        public void publish(String topic, byte[][] message, QoS qos, Callback[] cb) //throws IOException 
+        {
+            PublishMessage[] messagesToPublish = new PublishMessage[cb.Length];
+            for (int i = 0; i < message.Length; i++)
+            {
+                messagesToPublish[i] = new PublishMessage(topic, message[i], qos, this);
+                messagesToPublish[i].setMessageId(getNextMessageId());
+            }
+            sendCallbackMessage(messagesToPublish, cb);
         }
 
         public void subscribe(String topic, Callback cb) //throws IOException 
@@ -370,15 +451,14 @@ namespace finalmqtt.Client
 
         public void disconnect(Callback cb) //throws IOException 
         {
-            stopped = true;
             if (_socket.Connected)
             {
                 DisconnectMessage msg = new DisconnectMessage(this);
-                foreach (KeyValuePair<short, Callback> kvp in map)
+                foreach (KeyValuePair<short, Callback> kvp in msgCallbacksMap)
                 {
                     kvp.Value.onFailure(new TimeoutException("Couldn't get Ack for retryable Message id=" + kvp.Key));
                 }
-                map.Clear();
+                msgCallbacksMap.Clear();
                 disconnectSent = true;
                 sendCallbackMessage(msg, cb);
             }
@@ -403,10 +483,16 @@ namespace finalmqtt.Client
                 if (messageId != 0)
                 {
                     Callback cb;
-                    if (map.ContainsKey(messageId))
+                    IDisposable scheduledAction;
+                    if (msgCallbacksMap.ContainsKey(messageId))
                     {
-                        map.TryGetValue(messageId, out cb);
-                        map.Remove(messageId);
+                        scheduledActionsMap.TryGetValue(messageId, out scheduledAction);
+                        scheduledActionsMap.Remove(messageId);
+                        if (scheduledAction != null)
+                            scheduledAction.Dispose();
+                        Debug.WriteLine("MQTTCONNECTION:: Disposing action for message ID - " + messageId);
+                        msgCallbacksMap.TryGetValue(messageId, out cb);
+                        msgCallbacksMap.Remove(messageId);
                         if (cb != null)
                         {
                             cb.onSuccess();
@@ -443,6 +529,7 @@ namespace finalmqtt.Client
             if (msg.getStatus() != ConnAckMessage.ConnectionStatus.ACCEPTED)
             {
                 connectCallback.onFailure(new ConnectionException("Unable to connect to server", msg.getStatus()));
+                return;
             }
             if (mqttListener != null)
                 mqttListener.onConnected();

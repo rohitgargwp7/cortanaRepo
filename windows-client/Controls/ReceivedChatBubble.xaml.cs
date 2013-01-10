@@ -10,13 +10,41 @@ using System.Windows.Data;
 using Microsoft.Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.View;
+using System.Collections.Generic;
 
 namespace windows_client.Controls
 {
     public partial class ReceivedChatBubble : MyChatBubble
     {
+        public static ReceivedChatBubble getSplitChatBubbles(ConvMessage cm, bool isGroupChat, string userName)
+        {
+            ReceivedChatBubble receivedChatBubble;
+            if (cm.Message.Length < HikeConstants.MAX_CHATBUBBLE_SIZE)
+            {
+                receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message);
+                return receivedChatBubble;
+            }
+            receivedChatBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring(0, HikeConstants.MAX_CHATBUBBLE_SIZE));
+            receivedChatBubble.splitChatBubbles = new List<MyChatBubble>();
+            int lengthOfNextBubble = 1400;
+            for (int i = 1; i <= (cm.Message.Length / HikeConstants.MAX_CHATBUBBLE_SIZE); i++)
+            {
+                if ((cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) / HikeConstants.MAX_CHATBUBBLE_SIZE > 0)
+                {
+                    lengthOfNextBubble = HikeConstants.MAX_CHATBUBBLE_SIZE;
+                }
+                else
+                {
+                    lengthOfNextBubble = (cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) % HikeConstants.MAX_CHATBUBBLE_SIZE;
+                }
+                ReceivedChatBubble splitBubble = new ReceivedChatBubble(cm, isGroupChat, userName, cm.Message.Substring
+                    (i * HikeConstants.MAX_CHATBUBBLE_SIZE, lengthOfNextBubble));
+                receivedChatBubble.splitChatBubbles.Add(splitBubble);
+            }
+            return receivedChatBubble;
+        }
 
-        public ReceivedChatBubble(ConvMessage cm, bool isGroupChat, string userName)
+        public ReceivedChatBubble(ConvMessage cm, bool isGroupChat, string userName, string messageString)
             : base(cm)
         {
             // Required to initialize variables
@@ -24,7 +52,7 @@ namespace windows_client.Controls
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
-            initializeBasedOnState(cm, isGroupChat, userName);
+            initializeBasedOnState(cm, isGroupChat, userName, messageString);
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
@@ -63,7 +91,7 @@ namespace windows_client.Controls
 
         protected override void uploadOrDownloadCompleted()
         {
-            if (this.PlayIcon != null && this.FileAttachment.ContentType.Contains("image"))
+            if (this.PlayIcon != null && this.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                 this.PlayIcon.Visibility = Visibility.Collapsed;
         }
 
@@ -89,23 +117,21 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, false);
+                    ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
                         case Attachment.AttachmentState.CANCELED:
                             uploadOrDownloadCanceled();
-                            setContextMenu(currentPage.AttachmentDownloadCanceledOrFailed);
                             break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
-                            setContextMenu(currentPage.AttachmentDownloadCanceledOrFailed);
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.COMPLETED:
-                            setContextMenu(currentPage.AttachmentUploadedOrDownloaded);
                             uploadOrDownloadCompleted();
                             MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.STARTED:
-                            setContextMenu(currentPage.AttachmentDownloading);
                             uploadOrDownloadStarted();
                             MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
                             break;
@@ -131,14 +157,13 @@ namespace windows_client.Controls
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
 
-        private void initializeBasedOnState(ConvMessage cm, bool isGroupChat, string userName)
+        private void initializeBasedOnState(ConvMessage cm, bool isGroupChat, string userName, string messageString)
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
-            string messageString = cm.Message;
 
             Rectangle BubbleBg = new Rectangle();
             if (!isNudge)
@@ -187,26 +212,26 @@ namespace windows_client.Controls
                 MessageImage.MaxHeight = 180;
                 MessageImage.HorizontalAlignment = HorizontalAlignment.Left;
                 MessageImage.Margin = imgMargin;
-                if (contentType.Contains("audio"))
+                if (contentType.Contains(HikeConstants.AUDIO))
                     this.MessageImage.Source = UI_Utils.Instance.AudioAttachmentReceive;
                 else if (isNudge)
                 {
                     this.MessageImage.Source = UI_Utils.Instance.NudgeReceived;
-                    this.MessageImage.Height = 24;
-                    this.MessageImage.Width = 31;
+                    this.MessageImage.Height = 35;
+                    this.MessageImage.Width = 46;
                     this.MessageImage.Margin = nudgeMargin;
                 }
 
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if ((contentType.Contains("video") || contentType.Contains("audio") || showDownload) && !contentType.Contains("location"))
+                if ((contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO) || showDownload) && !contentType.Contains(HikeConstants.LOCATION))
                 {
 
                     PlayIcon = new Image();
                     PlayIcon.MaxWidth = 43;
                     PlayIcon.MaxHeight = 42;
-                    if (contentType.Contains("image"))
+                    if (contentType.Contains(HikeConstants.IMAGE))
                         PlayIcon.Source = UI_Utils.Instance.DownloadIcon;
                     else
                         PlayIcon.Source = UI_Utils.Instance.PlayIcon;

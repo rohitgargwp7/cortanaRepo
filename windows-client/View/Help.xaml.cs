@@ -16,6 +16,8 @@ using Microsoft.Phone.Shell;
 using windows_client.Model;
 using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils;
+using windows_client.Languages;
+using System.Text;
 
 namespace windows_client.View
 {
@@ -33,6 +35,16 @@ namespace windows_client.View
                 this.made_with_love.Source = new BitmapImage(new Uri("images/made_with_love.png", UriKind.Relative));
             }
             applicationVersion.Text = utils.Utils.getAppVersion();
+            string country_code = null;
+            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+            if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+            {
+                walkthroughPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                walkthroughPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void FAQs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -51,7 +63,7 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.CONTACT_US);
             EmailComposeTask contactUsMail = new EmailComposeTask();
-            contactUsMail.To = "support@bsb.in";
+            contactUsMail.To = "support@hike.in";
             contactUsMail.Subject = "Feedback on WP7";
 
             string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
@@ -59,9 +71,15 @@ namespace windows_client.View
             //string country_code = "";
             //App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
 
-            contactUsMail.Body = "\n\n\n\n\nHike Version: " + Utils.getAppVersion() +
-                "\nWin OS Version: " + Utils.getOSVersion() + "\nPhone Number: " + msisdn + "\nDevice Model: " + Utils.getDeviceModel() +
-                "\nCarrier: " + DeviceNetworkInformation.CellularMobileOperator;
+            StringBuilder emailBodyText = new StringBuilder();
+
+            emailBodyText.Append("\n\n\n\n\n").Append(AppResources.Help_EmailHikeVersion).Append(Utils.getAppVersion()).Append(
+                "\n").Append(AppResources.Help_EmailOSVersion).Append(Utils.getOSVersion()).Append("\n").Append(AppResources.Help_EmailPhoneNo).
+                Append(msisdn).Append("\n").Append(
+                AppResources.Help_EmailDeviceModel).Append(Utils.getDeviceModel()).Append(
+                "\n").Append(AppResources.Help_EmailCarrier).Append(DeviceNetworkInformation.CellularMobileOperator);
+
+            contactUsMail.Body = emailBodyText.ToString();
             try
             {
                 contactUsMail.Show();

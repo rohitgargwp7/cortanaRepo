@@ -13,6 +13,7 @@ using windows_client.View;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
+using windows_client.Misc;
 
 namespace windows_client
 {
@@ -32,10 +33,12 @@ namespace windows_client
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
+        public static readonly string SHOW_FREE_SMS_SETTING = "freeSMS";
+        public static readonly string SHOW_FAVORITES_TUTORIAL = "favoritesTute";
+        public static readonly string SHOW_NUDGE_TUTORIAL = "nudgeTute";
         public static readonly string MsgsDBConnectionstring = "Data Source=isostore:/HikeChatsDB.sdf";
         public static readonly string UsersDBConnectionstring = "Data Source=isostore:/HikeUsersDB.sdf";
         public static readonly string MqttDBConnectionstring = "Data Source=isostore:/HikeMqttDB.sdf";
-        public static string sms_invite_message = "Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!";
 
         public static readonly string INVITED = "invited";
         public static readonly string INVITED_JOINED = "invitedJoined";
@@ -60,7 +63,9 @@ namespace windows_client
         #region Hike specific instances and functions
 
         #region instances
-        public static bool IS_VIEWMODEL_LOADED = false; 
+        private static string _currentVersion = "1.0.0.0";
+        private static string _latestVersion;
+        public static bool IS_VIEWMODEL_LOADED = false;
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
         public static NewChatThread newChatThreadPage = null;
@@ -74,13 +79,15 @@ namespace windows_client
         private static DbConversationListener dbListener;
         private static HikeMqttManager mMqttManager;
         private static NetworkManager networkManager;
-        private static Dictionary<string, GroupParticipant> groupsCache = null;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static PushHelper _pushHelper;
-        private static object lockObj = new object();
+        private static PushHelper _pushHelper;        
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
-        PageState ps = PageState.WELCOME_SCREEN;
+        private static PageState ps = PageState.WELCOME_SCREEN;
+
+        private static object lockObj = new object();
+        //public static object AppGlobalLock = new object(); // this lock will be used across system to sync 2 diff threads example network manager and deleting all threads
+
         #endregion
 
         #region PROPERTIES
@@ -238,6 +245,22 @@ namespace windows_client
             }
         }
 
+        public static string CURRENT_VERSION
+        {
+            get
+            {
+                return _currentVersion;
+            }
+        }
+
+        public static string LATEST_VERSION
+        {
+            get
+            {
+                return _latestVersion;
+            }
+        }
+
         #endregion
 
         #endregion
@@ -307,9 +330,6 @@ namespace windows_client
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
-            if(appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
-                isNewInstall = false;
-
             /* Load App token if its there*/
             if (appSettings.Contains(TOKEN_SETTING))
             {
@@ -331,9 +351,7 @@ namespace windows_client
             Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
             Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
             #endregion
-
             _isAppLaunched = true;
-            instantiateClasses();
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -352,7 +370,14 @@ namespace windows_client
 
             if (_isTombstoneLaunch)
             {
+                if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
+                    isNewInstall = false;
                 instantiateClasses();
+            }
+            else
+            {
+                if (ps == PageState.CONVLIST_SCREEN)
+                    MqttManagerInstance.connect();
             }
             NetworkManager.turnOffNetworkManager = false;
         }
@@ -362,30 +387,35 @@ namespace windows_client
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
-            if (IS_VIEWMODEL_LOADED)
-                ConversationTableUtils.saveConvObjectList();
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
             PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState;
+            if (IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
+                ConversationTableUtils.saveConvObjectList();
+            }
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            if (Utils.GroupCache == null)
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             App.AnalyticsInstance.saveObject();
         }
 
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             RootFrame.Navigating -= RootFrame_Navigating;
+
+            if (appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps))
+                isNewInstall = false;
+            instantiateClasses();
+
             string targetPage = e.Uri.ToString();
-            //MessageBox.Show(targetPage, "share", MessageBoxButton.OK);
+            
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
@@ -432,16 +462,13 @@ namespace windows_client
             }
             catch
             {
-                return null;
+                return "";
             }
         }
 
         // Code to execute if a navigation fails
         private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            if(IS_VIEWMODEL_LOADED)
-                ConversationTableUtils.saveConvObjectList();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
             //MessageBoxResult result = MessageBox.Show("Exception :: ", e.ToString(), MessageBoxButton.OK);
             //if (result == MessageBoxResult.OK)
             if (System.Diagnostics.Debugger.IsAttached)
@@ -450,14 +477,20 @@ namespace windows_client
                 System.Diagnostics.Debugger.Break();
             }
             App.AnalyticsInstance.saveObject();
+            if (IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
+                ConversationTableUtils.saveConvObjectList();
+            }
         }
 
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            if(IS_VIEWMODEL_LOADED)
-                ConversationTableUtils.saveConvObjectList();
-            WriteToIsoStorageSettings(App.GROUPS_CACHE, Utils.GroupCache);
+
             App.AnalyticsInstance.saveObject();
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -472,8 +505,17 @@ namespace windows_client
                 Debug.WriteLine("UNHANDLED EXCEPTION : {0}", e.ExceptionObject.StackTrace);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                        (RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
+                    MessageBox.Show(e.ExceptionObject.ToString(), "Exception", MessageBoxButton.OK);
+                    //(RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Source = new Uri("/View/Error.xaml", UriKind.Relative);
                 });
+            }
+            if (IS_VIEWMODEL_LOADED)
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                if (convs != 0 && App.ViewModel.ConvMap.Count == 0)
+                    return;
+                ConversationTableUtils.saveConvObjectList();
             }
         }
 
@@ -549,17 +591,16 @@ namespace windows_client
 
         private static void instantiateClasses()
         {
-            PageState ps = PageState.WELCOME_SCREEN;
-            appSettings.TryGetValue<PageState>(App.PAGE_STATE, out ps);
-            
+
             #region GROUP CACHE
-            if (!App.appSettings.Contains(App.GROUPS_CACHE))
+
+            if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
             {
-                Utils.GroupCache = new Dictionary<string, List<GroupParticipant>>();
+                GroupManager.Instance.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
+                GroupManager.Instance.SaveGroupCache();
+                RemoveKeyFromAppSettings(App.GROUPS_CACHE);
             }
 
-            else if (Utils.GroupCache == null)
-                Utils.GroupCache = (Dictionary<string, List<GroupParticipant>>)App.appSettings[App.GROUPS_CACHE];
             #endregion
             #region PUBSUB
             Stopwatch st = Stopwatch.StartNew();
@@ -594,7 +635,7 @@ namespace windows_client
             if (ps == PageState.CONVLIST_SCREEN)
             {
                 NetworkManager.turnOffNetworkManager = true;
-                App.MqttManagerInstance.connect();                
+                App.MqttManagerInstance.connect();
             }
             st.Stop();
             msec = st.ElapsedMilliseconds;
@@ -629,46 +670,28 @@ namespace windows_client
             IS_VIEWMODEL_LOADED = false;
             if (_viewModel == null)
             {
-                string current_ver = "1.0.0.0";
+                _latestVersion = Utils.getAppVersion();
                 List<ConversationListObject> convList = null;
 
-                try
-                {
-                    // If version exists means build is 1.4.0.0 or later else 1.1.0.0
-                    if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
-                        convList = ConversationTableUtils.getAllConversations();
-                    else
-                        convList = ConversationTableUtils.getAllConvs();
-                }
-                catch 
+                if (!isNewInstall)// this has to be called for no new install case
+                    convList = GetConversations();
+                else // new install case
                 {
                     convList = null;
+                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);// new install so write version
                 }
+
                 if (convList == null || convList.Count == 0)
                     _viewModel = new HikeViewModel();
                 else
                     _viewModel = new HikeViewModel(convList);
 
-                if (!isNewInstall && !appSettings.TryGetValue<string>("File_System_Version", out current_ver))
+                if (!isNewInstall && Utils.compareVersion(_latestVersion, _currentVersion) == 1) // shows this is update
                 {
-                    // save the new single file in isolated storage, delete all old files.
-                    //ConversationTableUtils.saveConvObjectList(); // this will save the map
-                    ConversationTableUtils.deleteAllConversationsOld();
-
-                    // instantiate new directories
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                    {
-                        if (!store.DirectoryExists(HikeConstants.ANALYTICS_OBJECT_DIRECTORY))
-                        {
-                            store.CreateDirectory(HikeConstants.ANALYTICS_OBJECT_DIRECTORY);
-                        }
-                    }
-                }
-                if (current_ver == null)
-                    current_ver = "1.0.0.0";
-                if (!isNewInstall && Utils.compareVersion(Utils.getAppVersion(), current_ver) == 1) // this is update
-                {
-                    App.WriteToIsoStorageSettings("New_Update", true);
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
+                    App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
+                    if (Utils.compareVersion(_currentVersion,"1.5.0.0") !=1) // if current version is less than equal to 1.5.0.0 then upgrade DB
+                        MqttDBUtils.UpdateToVersionOne();
                 }
             }
             st.Stop();
@@ -683,8 +706,6 @@ namespace windows_client
             }
             #endregion
 
-            if (!appSettings.Contains("File_System_Version") || (string)appSettings["File_System_Version"] != Utils.getAppVersion())
-                App.WriteToIsoStorageSettings("File_System_Version", Utils.getAppVersion());
         }
 
         public static void createDatabaseAsync()
@@ -702,7 +723,10 @@ namespace windows_client
                         {
                             store.CreateDirectory(MiscDBUtil.THUMBNAILS);
                         }
-
+                        if (!string.IsNullOrEmpty(MiscDBUtil.MISC_DIR) && !store.DirectoryExists(MiscDBUtil.MISC_DIR))
+                        {
+                            store.CreateDirectory(MiscDBUtil.MISC_DIR);
+                        }
                         if (!store.DirectoryExists(ConversationTableUtils.CONVERSATIONS_DIRECTORY))
                         {
                             store.CreateDirectory(ConversationTableUtils.CONVERSATIONS_DIRECTORY);
@@ -740,9 +764,9 @@ namespace windows_client
                     long msec = st.ElapsedMilliseconds;
                     Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
-                catch 
-                { 
-                    RemoveKeyFromAppSettings(App.IS_DB_CREATED); 
+                catch
+                {
+                    RemoveKeyFromAppSettings(App.IS_DB_CREATED);
                 }
             };
             bw.RunWorkerAsync();
@@ -815,6 +839,72 @@ namespace windows_client
                 {
                     Debug.WriteLine("Problem while removing key from isolated storage.");
                 }
+            }
+        }
+
+        /// <summary>
+        /// this function is used as an upgrade function too.
+        /// </summary>
+        /// <returns></returns>
+        private static List<ConversationListObject> GetConversations()
+        {
+            List<ConversationListObject> convList = null;
+            appSettings.TryGetValue<string>(HikeConstants.FILE_SYSTEM_VERSION, out _currentVersion);
+            if (_currentVersion == null)
+                _currentVersion = "1.0.0.0";
+
+            // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.6.0.0
+            if (Utils.compareVersion(_currentVersion, "1.6.0.0") != 1) // current version is less than equal to 1.6.0.0
+            {
+                WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
+                WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
+            }
+
+            if (_currentVersion == "1.0.0.0")  // user is upgrading from version 1.0.0.0 to latest
+            {
+                /*
+                 * 1. Read from individual files.
+                 * 2. Overite old files as they are written in a wrong format
+                 */
+                convList =  ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
+                ConversationTableUtils.saveConvObjectListIndividual(convList);
+                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
+                // there was no country code in first version, and as first version was released in India , we are setting value to +91 
+                WriteToIsoStorageSettings(COUNTRY_CODE_SETTING, "+91");
+                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+                return convList;
+            }
+            else if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // current version is less than equal to 1.5.0.0 and greater than 1.0.0.0
+            {
+                /*
+                 * 1. Read from Convs File
+                 * 2. Store each conv in an individual file.
+                 */
+                convList = ConversationTableUtils.getAllConvs();
+                ConversationTableUtils.saveConvObjectListIndividual(convList);
+                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);
+
+                string country_code = null;
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+                if (string.IsNullOrEmpty(country_code) || country_code == "+91")
+                    App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
+                else
+                    App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
+                return convList;
+            }
+      
+            else // this corresponds to the latest version and is called everytime except update launch
+            {
+                int convs = 0;
+                appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+                convList = ConversationTableUtils.getAllConvs();
+
+                int convListCount = convList == null ? 0 : convList.Count;
+                // This shows something failed while reading from Convs , so move to backup plan i.e read from individual files
+                if (convListCount != convs)
+                    convList = ConversationTableUtils.GetConvsFromIndividualFiles();
+
+                return convList;
             }
         }
     }

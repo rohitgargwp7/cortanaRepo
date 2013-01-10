@@ -9,23 +9,23 @@ namespace windows_client.Mqtt
     public class PublishCB : Callback
     {
         private HikePacket packet;
-        bool called;
         private HikeMqttManager hikeMqttManager;
         private int qos;
+        private bool removeFromDBOnReceivingAck;
 
-        public PublishCB(HikePacket packet, HikeMqttManager hikeMqttManager, int qos)
+        public PublishCB(HikePacket packet, HikeMqttManager hikeMqttManager, int qos, bool removeFromDBOnReceivingAck)
         {
             this.packet = packet;
-            this.called = false;
             this.hikeMqttManager = hikeMqttManager;
             this.qos = qos;
+            this.removeFromDBOnReceivingAck = removeFromDBOnReceivingAck;
         }
 
         public void onSuccess()
         {
             if (packet != null)
             {
-                if (qos > 0)
+                if (qos > 0 && removeFromDBOnReceivingAck)
                 {
                     MqttDBUtils.removeSentMessage(packet.Timestamp);
                 }
@@ -47,12 +47,6 @@ namespace windows_client.Mqtt
                 if (qos > 0)
                 {
                     MqttDBUtils.addSentMessage(packet);
-                }
-                if (packet.MessageId > 0) // represents ack for message that is recieved by server
-                {
-                    JObject obj = new JObject();
-                    obj[HikeConstants.DATA] = Convert.ToString(packet.MessageId);
-                    App.HikePubSubInstance.publish(HikePubSub.WS_RECEIVED, obj.ToString());
                 }
             }
         }

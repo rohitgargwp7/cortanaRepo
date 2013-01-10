@@ -10,6 +10,7 @@ using Microsoft.Phone.Controls.Maps;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
 using Newtonsoft.Json.Linq;
+using windows_client.Languages;
 
 namespace windows_client.View
 {
@@ -35,9 +36,9 @@ namespace windows_client.View
             //add icon for send
             shareIconButton = new ApplicationBarIconButton();
             shareIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            shareIconButton.Text = "share location";
+            shareIconButton.Text = AppResources.ShareLocation_Txt;
             shareIconButton.Click += new EventHandler(shareBtn_Click);
-            shareIconButton.IsEnabled = true;
+            shareIconButton.IsEnabled = false;
             appBar.Buttons.Add(shareIconButton);
 
             shareLocation.ApplicationBar = appBar;
@@ -54,19 +55,39 @@ namespace windows_client.View
 
         private void shareBtn_Click(object sender, EventArgs e)
         {
+            //JObject locationFile = new JObject();
+            //locationFile[HikeConstants.LATITUDE] = locationPushpin.Location.Latitude;
+            //locationFile[HikeConstants.LONGITUDE] = locationPushpin.Location.Longitude;
+            //locationFile[HikeConstants.ZOOM_LEVEL] = map.ZoomLevel;
+            //locationFile[HikeConstants.LOCATION_ADDRESS] = "";
 
-            JObject locationFile = new JObject();
-            locationFile[HikeConstants.LATITUDE] = locationPushpin.Location.Latitude;
-            locationFile[HikeConstants.LONGITUDE] = locationPushpin.Location.Longitude;
-            locationFile[HikeConstants.ZOOM_LEVEL] = map.ZoomLevel;
-            locationFile[HikeConstants.LOCATION_ADDRESS] = "";
+            //object[] locationDetails = new object[2];
+            //locationDetails[0] = locationFile;
+            //locationDetails[1] = captureThumbnail();
+            //PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
+            //map = null;
+
+            byte[] thumbnailBytes = captureThumbnail();
+            JObject metadata = new JObject();
+            JArray filesData = new JArray();
+            JObject singleFileInfo = new JObject();
+            singleFileInfo[HikeConstants.FILE_NAME] = "Location";
+            singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = "hikemap/location";
+            singleFileInfo[HikeConstants.LATITUDE] = locationPushpin.Location.Latitude;
+            singleFileInfo[HikeConstants.LONGITUDE] = locationPushpin.Location.Longitude;
+            singleFileInfo[HikeConstants.ZOOM_LEVEL] = map.ZoomLevel;
+            singleFileInfo[HikeConstants.LOCATION_ADDRESS] = "";
+            //            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(thumbnailBytes);
+
+            filesData.Add(singleFileInfo.ToObject<JToken>());
+
+            metadata[HikeConstants.FILES_DATA] = filesData;
 
             object[] locationDetails = new object[2];
-            locationDetails[0] = locationFile;
-            locationDetails[1] = captureThumbnail();
+            locationDetails[0] = metadata;
+            locationDetails[1] = thumbnailBytes;
             PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
             map = null;
-
             NavigationService.GoBack();
         }
 
@@ -75,11 +96,11 @@ namespace windows_client.View
             switch (e.Status)
             {
                 case GeoPositionStatus.Disabled:
-                    MessageBox.Show("Location Service is not enabled on the device");
+                    MessageBox.Show(AppResources.ShareLocation_LocationServiceNotEnabled_Txt);
                     break;
 
                 case GeoPositionStatus.NoData:
-                    MessageBox.Show(" The Location Service is working, but it cannot get location data.");
+                    MessageBox.Show(AppResources.ShareLocation_LocationServiceWorking_Txt);
                     break;
             }
         }
@@ -88,7 +109,7 @@ namespace windows_client.View
         {
             if (e.Position.Location.IsUnknown)
             {
-                MessageBox.Show("Please wait while your prosition is determined....");
+                MessageBox.Show(AppResources.ShareLocation_PlsWaitForPosition_Txt);
                 return;
             }
 
@@ -126,14 +147,25 @@ namespace windows_client.View
             WriteableBitmap screenshot = new WriteableBitmap(map, new TranslateTransform());
             using (MemoryStream ms = new MemoryStream())
             {
-                screenshot.SaveJpeg(ms, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 
-                    0, 100);
+                screenshot.SaveJpeg(ms, HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH, HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT,
+                    0, 60);
                 thumbnailBytes = ms.ToArray();
                 //img = new BitmapImage();
                 //img.SetSource(ms);
                 //ms.Close();
             }
             return thumbnailBytes;
+        }
+
+        private void map_MapResolved(object sender, EventArgs e)
+        {
+            shareIconButton.IsEnabled = true;
+            map.MapResolved -= map_MapResolved;
+            watcher.StatusChanged -= watcher_StatusChanged;
+            watcher.PositionChanged -= watcher_PositionChanged;
+            watcher.Stop();
+            watcher.Dispose();
+            shellProgress.IsVisible = false;
         }
     }
 }

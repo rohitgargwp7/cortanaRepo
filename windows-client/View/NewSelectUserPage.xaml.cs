@@ -17,15 +17,19 @@ using Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
+using windows_client.Misc;
+using windows_client.Languages;
 
 
 namespace windows_client.View
 {
     public partial class NewSelectUserPage : PhoneApplicationPage, HikePubSub.Listener
     {
-        bool canGoBack = true;
+        private bool hideSmsContacts;
+        private bool isFreeSmsOn = true;
+        private bool canGoBack = true;
         private bool isClicked = false;
-        private string TAP_MSG = "Tap here to message this person";
+        private string TAP_MSG = AppResources.SelectUser_TapMsg_Txt;
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
         private bool isGroupChat = false;
@@ -33,11 +37,11 @@ namespace windows_client.View
         public MyProgressIndicator progress = null;
         List<Group<ContactInfo>> glistFiltered = null;
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
+        public List<Group<ContactInfo>> filteredJumpList = null;
         private List<Group<ContactInfo>> defaultJumpList = null;
         private string charsEntered;
 
-        private readonly int MAX_SMS_USRES_ALLOWED = 5;
-        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 10;
+        private readonly int MAX_USERS_ALLOWED_IN_GROUP = 20;
         private int defaultGroupmembers = 0;
 
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
@@ -46,7 +50,8 @@ namespace windows_client.View
 
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
-        ApplicationBarIconButton refreshIconButton = null;
+        private ApplicationBarIconButton refreshIconButton = null;
+        private ApplicationBarMenuItem onHikeFilter = null;
 
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
@@ -168,13 +173,25 @@ namespace windows_client.View
         public NewSelectUserPage()
         {
             InitializeComponent();
-            /* Case whe this page is called from GroupInfo page*/
+            App.appSettings.TryGetValue<bool>(App.SHOW_FREE_SMS_SETTING, out isFreeSmsOn);
+            if (isFreeSmsOn)
+                hideSmsContacts = true;
+            else
+                hideSmsContacts = false;
+
+            /* Case when this page is called from GroupInfo page*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
+            {
                 isGroupChat = true;
+                TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+            }
 
             /* Case when this page is called from create group button.*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.START_NEW_GROUP))
+            {
                 isGroupChat = (bool)PhoneApplicationService.Current.State[HikeConstants.START_NEW_GROUP];
+                TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
+            }
 
             //if (isGroupChat)
             //    title.Text = "new group chat";
@@ -188,7 +205,14 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, e) =>
             {
                 jumpList = getGroupedList(allContactsList);
-                contactsListBox.ItemsSource = jumpList;
+                if(!hideSmsContacts)
+                {
+                    if(filteredJumpList == null)
+                        MakeFilteredJumpList();
+                    contactsListBox.ItemsSource = filteredJumpList;
+                }
+                else
+                    contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
             };
             initPage();
@@ -236,14 +260,23 @@ namespace windows_client.View
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
             appBar.IsVisible = true;
-            appBar.IsMenuEnabled = false;
+            appBar.IsMenuEnabled = true;
 
             refreshIconButton = new ApplicationBarIconButton();
             refreshIconButton.IconUri = new Uri("/View/images/icon_refresh.png", UriKind.Relative);
-            refreshIconButton.Text = "Refresh Contacts";
+            refreshIconButton.Text = AppResources.SelectUser_RefreshContacts_Txt;
             refreshIconButton.Click += new EventHandler(refreshContacts_Click);
             refreshIconButton.IsEnabled = true;
             appBar.Buttons.Add(refreshIconButton);
+
+            onHikeFilter = new ApplicationBarMenuItem();
+            if (isFreeSmsOn)
+                onHikeFilter.Text = AppResources.SelectUser_HideSmsContacts_Txt;
+            else
+                onHikeFilter.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
+            onHikeFilter.Click += new EventHandler(OnHikeFilter_Click);
+            appBar.MenuItems.Add(onHikeFilter);
+
             selectUserPage.ApplicationBar = appBar;
 
             if (isGroupChat)
@@ -253,7 +286,7 @@ namespace windows_client.View
                     return;
                 doneIconButton = new ApplicationBarIconButton();
                 doneIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-                doneIconButton.Text = "Done";
+                doneIconButton.Text = AppResources.AppBar_Done_Btn;
                 doneIconButton.Click += new EventHandler(startGroup_Click);
                 doneIconButton.IsEnabled = false;
                 appBar.Buttons.Add(doneIconButton);
@@ -264,6 +297,27 @@ namespace windows_client.View
             else
             {
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelected_Click);
+            }
+        }
+
+        private void OnHikeFilter_Click(object sender, EventArgs e)
+        {
+            enterNameTxt.Text = stringBuilderForContactNames.ToString();
+            if (hideSmsContacts)
+            {
+                if (filteredJumpList == null)
+                {
+                    MakeFilteredJumpList();
+                }
+                contactsListBox.ItemsSource = filteredJumpList;
+                hideSmsContacts = !hideSmsContacts;
+                onHikeFilter.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
+            }
+            else
+            {
+                contactsListBox.ItemsSource = jumpList;
+                hideSmsContacts = !hideSmsContacts;
+                onHikeFilter.Text = AppResources.SelectUser_HideSmsContacts_Txt;
             }
         }
 
@@ -282,7 +336,7 @@ namespace windows_client.View
                 smsUserCount = 0;
                 for (int i = 0; i < activeExistingGroupMembers.Count; i++)
                 {
-                    if (!Utils.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
+                    if (!GroupManager.Instance.getGroupParticipant(activeExistingGroupMembers[i].Name, activeExistingGroupMembers[i].Msisdn, activeExistingGroupMembers[i].GroupId).IsOnHike)
                     {
                         smsUserCount++;
                     }
@@ -292,6 +346,7 @@ namespace windows_client.View
             }
 
             List<Group<ContactInfo>> glist = createGroups();
+            
             for (int i = 0; i < (allContactsList != null ? allContactsList.Count : 0); i++)
             {
                 ContactInfo c = allContactsList[i];
@@ -302,6 +357,33 @@ namespace windows_client.View
                 }
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
+
+                #region FREE SMS SETTINGS SUPPORT
+
+                if (isFreeSmsOn) // free sms is on 
+                {
+                    if (!c.OnHike && !Utils.IsIndianNumber(c.Msisdn)) // if non hike non indian user
+                    {
+                        if (isGroupChat)
+                            continue;
+                        else
+                            c.IsInvited = true;
+                    }
+                }
+                else // free sms is off
+                {
+                    if (!c.OnHike)
+                    {
+                        if (isGroupChat)
+                            continue;
+                        else
+                            c.IsInvited = true;
+                    }
+                }
+
+
+                #endregion
+
                 string ch = GetCaptionGroup(c);
                 // calculate the index into the list
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
@@ -343,6 +425,23 @@ namespace windows_client.View
             return key.ToString();
         }
 
+        private void MakeFilteredJumpList()
+        {
+            filteredJumpList = createGroups();
+            for (int i = 0; i < jumpList.Count; i++)
+            {
+                Group<ContactInfo> g = jumpList[i];
+                if (!g.HasItems)
+                    continue;
+                for (int j = 0; j < g.Items.Count; j++)
+                {
+                    ContactInfo c = g.Items[j];
+                    if (c.OnHike) // if on hike 
+                        filteredJumpList[i].Items.Add(c);
+                }
+            }
+        }
+
         #endregion
 
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -350,16 +449,20 @@ namespace windows_client.View
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null)
                 return;
-            if (contact.Msisdn == "Enter Valid Number")
+            if (contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt)
                 return;
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
-                contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Msisdn = Utils.NormalizeNumber(contact.Name);
                 contact.Name = null;
                 contact = GetContactIfExists(contact);
                 if (App.ViewModel.ConvMap.ContainsKey(contact.Msisdn))
                     contact.OnHike = App.ViewModel.ConvMap[contact.Msisdn].IsOnhike;
             }
+
+            if (contact.IsInvited) // if this is invite simply ignore
+                return;
+
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contact;
             string uri = "/View/NewChatThread.xaml";
             try
@@ -394,7 +497,14 @@ namespace windows_client.View
             charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))
             {
-                contactsListBox.ItemsSource = jumpList;
+                if (!hideSmsContacts)
+                {
+                    if(filteredJumpList == null)
+                        MakeFilteredJumpList();
+                    contactsListBox.ItemsSource = filteredJumpList;
+                }
+                else
+                    contactsListBox.ItemsSource = jumpList;
                 return;
             }
 
@@ -410,13 +520,13 @@ namespace windows_client.View
                 if (gl[26].Items.Count > 0 && gl[26].Items[0].Msisdn != null)
                 {
                     gl[26].Items[0].Name = charsEntered;
-                    if (charsEntered.Length >= 10 && charsEntered.Length <= 15)
+                    if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
                         gl[26].Items[0].Msisdn = TAP_MSG;
                     }
                     else
                     {
-                        gl[26].Items[0].Msisdn = "Enter Valid Number";
+                        gl[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                     }
                 }
                 contactsListBox.ItemsSource = gl;
@@ -443,7 +553,7 @@ namespace windows_client.View
         {
             bool areCharsNumber = false;
             bool isPlus = false;
-            if (isNumber(charsEntered))
+            if (Utils.IsNumber(charsEntered))
             {
                 areCharsNumber = true;
                 if (charsEntered.StartsWith("+"))
@@ -504,13 +614,13 @@ namespace windows_client.View
                 }
                 charsEntered = (isPlus ? "+" : "") + charsEntered;
                 list[26].Items[0].Name = charsEntered;
-                if (IsNumberValid(charsEntered))
+                if (Utils.IsNumberValid(charsEntered))
                 {
                     list[26].Items[0].Msisdn = TAP_MSG;
                 }
                 else
                 {
-                    list[26].Items[0].Msisdn = "Enter Valid Number";
+                    list[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                 }
 
             }
@@ -519,27 +629,6 @@ namespace windows_client.View
             if (areCharsNumber)
                 return list;
             return glistFiltered;
-        }
-
-        private bool IsNumberValid(string charsEntered)
-        {
-            // TODO : Use regex if required
-            // CASES 
-            /*
-             * 1. If number starts with '+'
-             */
-
-            if (charsEntered.StartsWith("+"))
-            {
-                if (charsEntered.Length < 9 || charsEntered.Length > 15)
-                    return false;
-            }
-            else
-            {
-                if (charsEntered.Length < 8 || charsEntered.Length > 15)
-                    return false;
-            }
-            return true; ;
         }
 
         #region GROUP CHAT RELATED
@@ -594,29 +683,29 @@ namespace windows_client.View
         {
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
 
-            if (contact == null || contact.Msisdn == "Enter Valid Number")
+            if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt)
                 return;
 
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
-                contact.Msisdn = normalizeNumber(contact.Name);
+                contact.Msisdn = Utils.NormalizeNumber(contact.Name);
                 contact = GetContactIfExists(contact);
             }
 
-            if (!contact.OnHike && smsUserCount == MAX_SMS_USRES_ALLOWED)
-            {
-                MessageBoxResult result = MessageBox.Show("5 SMS users already selected", "Cannot add user !!", MessageBoxButton.OK);
-                return;
-            }
+            //if (!contact.OnHike && smsUserCount == MAX_SMS_USRES_ALLOWED)
+            //{
+            //    MessageBoxResult result = MessageBox.Show("5 SMS users already selected", AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
+            //    return;
+            //}
             if (existingGroupUsers == MAX_USERS_ALLOWED_IN_GROUP)
             {
-                MessageBoxResult result = MessageBox.Show("10 users already selected", "Cannot add user !!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_MaxUsersSelected_Txt, MAX_USERS_ALLOWED_IN_GROUP), AppResources.SelectUser_CantAddUser_Txt, MessageBoxButton.OK);
                 return;
             }
 
             if (isNumberAlreadySelected(contact.Msisdn, contactsForgroup))
             {
-                MessageBoxResult result = MessageBox.Show(contact.Msisdn + " is already added to group.", "User already added !!", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_UserAlreadyAdded_Txt, contact.Msisdn), AppResources.SelectUser_AlreadyAdded_Txt, MessageBoxButton.OK);
                 return;
             }
 
@@ -666,11 +755,11 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.REFRESH_CONTACTS);
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show("Please try again", "No network connectivity", MessageBoxButton.OK);
+                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 return;
             }
             if (progress == null)
-                progress = new MyProgressIndicator("This may take a minute or two...");
+                progress = new MyProgressIndicator(AppResources.SelectUser_RefreshWaitMsg_Txt);
 
             disableAppBar();
             progress.Show();
@@ -746,7 +835,6 @@ namespace windows_client.View
              */
 
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
-
         }
 
         public void updateAddressBook_Callback(JObject patchJsonObj)
@@ -761,7 +849,7 @@ namespace windows_client.View
                 return;
             }
 
-            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap,true);
+            List<ContactInfo> updatedContacts = ContactUtils.contactsMap == null ? null : AccountUtils.getContactList(patchJsonObj, ContactUtils.contactsMap, true);
             List<ContactInfo.DelContacts> hikeIds = null;
 
             // Code to delete the removed contacts
@@ -773,7 +861,7 @@ namespace windows_client.View
                 {
                     ContactInfo.DelContacts dCn = new ContactInfo.DelContacts(id, ContactUtils.hike_contactsMap[id][0].Msisdn);
                     hikeIds.Add(dCn);
-                    if(App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn))
+                    if (App.ViewModel.ConvMap.ContainsKey(dCn.Msisdn)) // check convlist map to remove the 
                     {
                         try
                         {
@@ -782,8 +870,17 @@ namespace windows_client.View
                         }
                         catch (Exception e)
                         {
-                            Debug.WriteLine("REFRESH CONTACTS :: Delete contact exception "+e.StackTrace);
+                            Debug.WriteLine("REFRESH CONTACTS :: Delete contact exception " + e.StackTrace);
                         }
+                    }
+                    else // if this contact is in favourite or pending and not in convMap update this also
+                    {
+                        ConversationListObject obj;
+                        obj = App.ViewModel.GetFav(id);
+                        if(obj == null) // this msisdn is not in favs , check in pending
+                            obj = App.ViewModel.GetPending(id);
+                        if (obj != null)
+                            obj.ContactName = null;
                     }
                 }
             }
@@ -798,15 +895,24 @@ namespace windows_client.View
                 ConversationTableUtils.updateConversation(updatedContacts);
             }
 
-            List<ContactInfo> allContactsList = UsersTableUtils.getAllContactsByGroup();
+            allContactsList = UsersTableUtils.getAllContactsByGroup();
             App.isABScanning = false;
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
+                filteredJumpList = null;
                 jumpList = getGroupedList(allContactsList);
-                contactsListBox.ItemsSource = jumpList;
+
+                // this logic handles the case where hide sms contacts is there and user refreshed the list 
+                if (!hideSmsContacts)
+                {
+                    MakeFilteredJumpList();
+                    contactsListBox.ItemsSource = filteredJumpList;
+                }
+                else
+                    contactsListBox.ItemsSource = jumpList;
                 progress.Hide();
                 enableAppBar();
             });
@@ -824,43 +930,6 @@ namespace windows_client.View
         }
 
         #endregion
-
-        private string normalizeNumber(string msisdn)
-        {
-            if (msisdn.StartsWith("+"))
-            {
-                return msisdn;
-            }
-            else if (msisdn.StartsWith("00"))
-            {
-                /*
-                 * Doing for US numbers
-                 */
-                return "+"+msisdn.Substring(2);
-            }
-            else if (msisdn.StartsWith("0"))
-            {
-                string country_code = null;
-                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-                return ((country_code == null?"+91":country_code) + msisdn.Substring(1));
-            }
-            else
-            {
-                string country_code2 = null;
-                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
-                return (country_code2 == null?"+91":country_code2) + msisdn;
-            }
-        }
-
-        private bool isNumber(string charsEntered)
-        {
-            if (charsEntered.StartsWith("+")) // as in +91981 etc etc
-            {
-                charsEntered = charsEntered.Substring(1);
-            }
-            long i = 0;
-            return long.TryParse(charsEntered, out i);
-        }
 
         private ContactInfo GetContactIfExists(ContactInfo contact)
         {
@@ -891,8 +960,14 @@ namespace windows_client.View
         private void enableAppBar()
         {
             refreshIconButton.IsEnabled = true;
-            if (isGroupChat && existingGroupUsers >= 3)
+
+            // should be Group Chat
+            // if new group then number of users should be greater than equal to 3 
+            // if existing group then added user should atleast be 1
+            if (isGroupChat && ((!isExistingGroup && existingGroupUsers >= 3) || (isExistingGroup && (existingGroupUsers - defaultGroupmembers > 0))))
+            {
                 doneIconButton.IsEnabled = true;
+            }
         }
 
         private void enterNameTxt_GotFocus(object sender, System.Windows.RoutedEventArgs e)
@@ -900,6 +975,11 @@ namespace windows_client.View
             enterNameTxt.BorderBrush = UI_Utils.Instance.Black;
         }
 
+        /// <summary>
+        /// This function is for GC. This is called when each contact is tapped, so that it can shown in text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void enterNameTxt_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!isGroupChat) // logic is valid only for Group Chat
@@ -916,7 +996,7 @@ namespace windows_client.View
                 nameLength += contactsForgroup[k].Name.Length + 2; // length of name + "; " i.e 2
                 if (cursorPosition < nameLength)
                 {
-                    MessageBoxResult result = MessageBox.Show(contactsForgroup[k].Name + "[" + contactsForgroup[k].Msisdn + "]" + " will be removed from group.", "Remove Contact ?", MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(string.Format(AppResources.SelectUser_ContactRemoved_Txt, contactsForgroup[k].Name, contactsForgroup[k].Msisdn), AppResources.SelectUser_RemoveContact_Txt, MessageBoxButton.OKCancel);
                     if (result == MessageBoxResult.Cancel)
                     {
                         enterNameTxt.Select(enterNameTxt.Text.Length, 0);
@@ -962,6 +1042,25 @@ namespace windows_client.View
                     });
                 }
             }
+        }
+
+        private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (!btn.IsEnabled)
+                return;
+            btn.Content = AppResources.Invited;
+            ContactInfo ci = btn.DataContext as ContactInfo;
+            if (ci == null)
+                return;
+            long time = TimeUtils.getCurrentTimeStamp();
+            string inviteToken = "";
+            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+            ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), ci.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+            convMessage.IsSms = true;
+            convMessage.IsInvite = true;
+            App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
+            btn.IsEnabled = false;
         }
     }
 }

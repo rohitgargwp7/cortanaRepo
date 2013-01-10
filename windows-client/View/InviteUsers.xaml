@@ -28,23 +28,27 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Grid.Row="0">
-            <TextBlock Text="INVITE" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="24,0,0,5" />
-            <TextBlock Name="title" Text="friends" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="24,-10,0,0" />
+            <TextBlock Name="topHeader"  Text="{Binding Path= LocalizedResources.Invite_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="24,0,0,5" />
+            <TextBlock Name="title" Text="{Binding Path= LocalizedResources.Friends_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="24,-10,0,0" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,5,0,0" Background="Transparent">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0" Background="Transparent">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+            <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
+                                  Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
+                                 TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
+
             <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,56"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsBouncy="True"
-                          IsFlatList="False" ScrollingStarted="contactsListBox_ScrollingStarted">
+                          IsFlatList="False">
                 <toolkit:LongListSelector.GroupItemsPanel>
                     <ItemsPanelTemplate>
                         <toolkit:WrapPanel Orientation="Horizontal"/>
@@ -79,8 +83,8 @@
                 </toolkit:LongListSelector.GroupHeaderTemplate>
                 <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel" Tap="ItemStackPanel_Tap">
-                            <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel">
+                            <CheckBox IsChecked="{Binding IsFav}" IsEnabled="{Binding IsEnabled}" Tap="CheckBox_Tap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2">
                                 <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
                                 <StackPanel Orientation="Horizontal">
@@ -92,6 +96,8 @@
                     </DataTemplate>
                 </toolkit:LongListSelector.ItemTemplate>
             </toolkit:LongListSelector>
+            <TextBlock x:Name="emptyHikeFriendsTxt" Visibility="Collapsed" Text="Bummer! None of your friends are on hike." FontSize="26" TextWrapping="Wrap" Grid.Row="2" Margin="24,20,24,0" />
+
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage >

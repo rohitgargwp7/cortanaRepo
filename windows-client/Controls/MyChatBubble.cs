@@ -26,21 +26,9 @@ namespace windows_client.Controls
         private ConvMessage.State _messageState;
         public Attachment FileAttachment;
 
-//        public static DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
-
         public string Text;
-        
-
-//        public static DependencyProperty TimeStampProperty = DependencyProperty.Register("TimeStamp", typeof(string), typeof(MyChatBubble), new PropertyMetadata(""));
-
         public string TimeStamp;
-        //{
-        //    get { return (string)GetValue(TimeStampProperty); }
-        //    set
-        //    {
-        //        SetValue(TimeStampProperty, value);
-        //    }
-        //}
+        public List<MyChatBubble> splitChatBubbles = null;
 
         //TODO: Try to use a single property for timestamp.
         //either dispose off the convmessage or else keep a reference to it in this class
@@ -84,13 +72,6 @@ namespace windows_client.Controls
         {
         }
 
-        //public MyChatBubble(MyChatBubble chatBubble, long messageId)
-        //{
-        //    this.MessageId = messageId;
-        //    this.FileAttachment = chatBubble.FileAttachment;
-        //    this.TimeStamp = TimeUtils.getTimeStringForChatThread(cm.Timestamp);
-        //}
-
         public MyChatBubble(ConvMessage cm)
         {
             this.Text = cm.Message;
@@ -105,49 +86,29 @@ namespace windows_client.Controls
             }
             else if (!cm.HasAttachment)
             {
-                setNonAttachmentContextMenu();  
+                var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
+                if (currentPage != null)
+                {
+                    ContextMenu contextMenu = null;
+                    if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains("poke"))   
+                    {
+                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.COMPLETED,
+                            false); //since it is not an attachment message this bool won't make difference
+                    }
+                    else
+                    {
+                        contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
+                            true); //set to tru to have only delete option for nudge bubbles
+                    }
+                    ContextMenuService.SetContextMenu(this, contextMenu);
+                }
             }
         }
-
-        //public void updateContextMenu(ContextMenu menu)
-        //{
-        //    ContextMenuService.SetContextMenu(this, menu);
-        //}
 
         public void setTapEvent(EventHandler<Microsoft.Phone.Controls.GestureEventArgs> tapEventHandler)
         {
             var gl = GestureService.GetGestureListener(this);
             gl.Tap += tapEventHandler;
-        }
-
-        //public void setContextMenu(ContextMenu contextMenu)
-        //{
-        //    ContextMenuService.SetContextMenu(this, contextMenu);
-        //}
-
-        protected void setContextMenu(Dictionary<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> contextMenuDictionary)
-        {
-            ContextMenu menu = new ContextMenu();
-            menu.IsZoomEnabled = true;
-            foreach (KeyValuePair<string, EventHandler<Microsoft.Phone.Controls.GestureEventArgs>> entry in contextMenuDictionary)
-            {
-                MenuItem menuItem = new MenuItem();
-                menuItem.Header = entry.Key;
-                var gl = GestureService.GetGestureListener(menuItem);
-                gl.Tap += entry.Value;
-                menu.Items.Add(menuItem);
-            }
-            ContextMenuService.SetContextMenu(this, menu);
-        }
-
-
-        private void setNonAttachmentContextMenu()
-        { 
-            var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
-            if (currentPage != null)
-            {
-                setContextMenu(currentPage.NonAttachmentMenu);
-            }
         }
 
         protected virtual void uploadOrDownloadCanceled()
@@ -158,7 +119,6 @@ namespace windows_client.Controls
 
         protected virtual void uploadOrDownloadCompleted()
         { }
-
 
         public virtual void setAttachmentState(Attachment.AttachmentState attachmentState)
         {

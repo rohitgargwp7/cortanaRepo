@@ -13,6 +13,10 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" Name="shareLocation">
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="True" />
+    </shell:SystemTray.ProgressIndicator>
+
     <phone:PhoneApplicationPage.Resources>
         <Style TargetType="my:Pushpin" x:Key="PushpinStyle">
             <Setter Property="Template">
@@ -36,7 +40,7 @@
 
         <!--<TextBlock Grid.Row="0" Text="Madhur Garg" FontFamily="Segoe WP SemiLight" FontSize="50"/>-->
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
-            <my:Map Tap="map_Tap" x:Name="map" ZoomLevel="5" CredentialsProvider="Ao53FUOhv7gU7n_8UyVabCmx9vqwmaF9CrMxbSPB-70ED_DHa7BB6lvBp7iIe-2U"/>
+            <my:Map Tap="map_Tap" MapResolved="map_MapResolved" x:Name="map" ZoomLevel="5" CredentialsProvider="Ai_A_29738SBQLBfh6iUUS0E4F0vMu-cPReIZxfEW0bOnSGYOR1VMrIREgSfapNT"/>
         </Grid>
     </Grid>
 

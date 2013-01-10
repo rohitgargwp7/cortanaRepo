@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:local="clr-namespace:windows_client.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
@@ -38,10 +39,18 @@
 
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480">
-            <StackPanel Orientation="Vertical" Margin="24,0,20,0">
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                        <Image Name="userImage" Height="50"></Image>
+        <StackPanel x:Name="HikeTitle" Orientation="Vertical" HorizontalAlignment="Left" Width="480" DoubleTap="MessageList_DoubleTap">
+            <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+                <Grid x:Name="gcMuteGrid" Visibility="Collapsed" Background="#414141">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Margin="24,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
+                    <Image Grid.Column="1" Source="images\mute_icon_main.png" Margin="0,0,24,0" VerticalAlignment="Center" HorizontalAlignment="Right" Height="26" Width="25"/>
+                </Grid>
+                <StackPanel Orientation="Horizontal" Margin="24,0,20,10">
+                    <Image Name="userImage" Height="50" Tap="userImage_Tap"></Image>
                     <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>
             </StackPanel>
@@ -55,9 +64,21 @@
         </ScrollViewer>
 
 
+        <!--<local:CustomListBox x:Name="messageListBox" Opacity="0" Height="560" Width="450" Grid.Row="1" Margin="21,-10,10,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap" VirtualizingStackPanel.VirtualizationMode="Recycling" GotFocus="messageListBox_GotFocus">
+            <local:CustomListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                </ItemsPanelTemplate>
+            </local:CustomListBox.ItemsPanel>
+        </local:CustomListBox>-->
+
+        <!--<toolkit:LongListSelector x:Name="tempList" IsFlatList="True" VerticalAlignment="Bottom" Height="500" Grid.Row="1" Margin="24,0,24,0" >
+
+        </toolkit:LongListSelector>-->
+
         <StackPanel x:Name="bottomPanel" Height="Auto" Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="Transparent">
             <StackPanel x:Name="smscounter" Margin="0,5,0,0" Visibility="Collapsed" >
-                <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0" Text="75 sms left"></TextBlock>
+                <TextBlock x:Name="smsCounterTxtBlk"  Margin="20,0,0,0"></TextBlock>
             </StackPanel>
             <StackPanel Visibility="Collapsed" Margin="0,0,0,-10" x:Name="emoticonPanel" LostFocus="emoticonPanel_LostFocus" Background="#323232">
 
@@ -171,7 +192,7 @@
 
                 </Grid>
             </StackPanel>
-            
+
             <Grid x:Name="attachmentMenu" Visibility="Collapsed" Height="100" Background="#292929">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -182,25 +203,25 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,0,0" Tap="shareLocation_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\drop_pin_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Location" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Location_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
                 </StackPanel>
                 <Rectangle Width="1" Fill="#080808" Grid.Column="1"/>
                 <StackPanel Grid.Column="2" Orientation="Vertical" Margin="0,0,0,0" Tap="sendImage_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\menu_photo_icon.png" Height="26" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Image" FontSize="22" Foreground="#f6f6f6" HorizontalAlignment="Center"></TextBlock>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Image_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#f6f6f6" HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
                 <Rectangle Width="1" Fill="#080808" Grid.Column="3"/>
                 <StackPanel Grid.Column="4" Orientation="Vertical" Margin="0,0,0,0" Tap="sendAudio_Tap" Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Image Source="images\menu_audio_icon.png" Height="30" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Audio" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Audio_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock>
                 </StackPanel>
 
             </Grid>
-            
+
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
-                <toolkit:PhoneTextBox  x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
-                                      MinHeight="68" Margin="0,-4,-8,0" Height="Auto" MaxLength="500" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
+                <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                                      MinHeight="68" MaxLength="10000"  Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
             </StackPanel>
         </StackPanel>
         <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
@@ -211,11 +232,26 @@
                                         HorizontalContentAlignment="Center" 
                                         IsEnabled="False" IsTabStop="True" Opacity="0"/>
 
-        <Rectangle x:Name="overlayRectangle" Grid.Row="0" Opacity="0.85" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
-        <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="280" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
+        <Rectangle x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
+        <StackPanel x:Name="OverlayMessagePanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="320" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
             <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
-            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="You have blocked this user. Unblock to continue hiking" Foreground="#FFFFFF" FontSize="30"></TextBlock>
-            <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="Unblock" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
+            <TextBlock Name="BlockTxtBlk" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.SelectUser_BlockMsg_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="30"></TextBlock>
+            <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
+
+        <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
+        <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Image Source="/View/images/nudge_tutorial.png" Margin="0,30,0,15" Grid.Row="0" Height="70"/>
+            <TextBlock Text="{Binding Path= LocalizedResources.Nudge, Source={StaticResource LocalizedStrings}}" FontSize="24" FontFamily="Segoe WP Semibold" Foreground="White" HorizontalAlignment="Center" Grid.Row="1"/>
+            <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Nudge_Tute, Source={StaticResource LocalizedStrings}}" Foreground="White" TextAlignment="Center" Width="250" FontSize="18" HorizontalAlignment="Center" TextWrapping="Wrap" Grid.Row="2"/>
+            <Button Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" BorderThickness="0" Margin="-12,25,-12,-12" Foreground="#c6c6c6" FontSize="20" Height="90" Background="#212121" Tap="dismissNudgeTutorial_Tap" Grid.Row="3"/>
+        </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
