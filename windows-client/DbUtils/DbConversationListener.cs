@@ -145,7 +145,7 @@ namespace windows_client.DbUtils
                     {
                         addSentMessageToMsgMap(chatBubble);
                     }
-                    if (App.ViewModel.ConvMap.ContainsKey(convObj.Msisdn))
+                    if (App.ViewModel.MessageListPageCollection.Contains(convObj))
                     {
                         App.ViewModel.MessageListPageCollection.Remove(convObj);
                     }
