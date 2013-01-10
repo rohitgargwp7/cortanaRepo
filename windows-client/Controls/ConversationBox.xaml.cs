@@ -13,84 +13,114 @@ namespace windows_client.Controls
 {
     public partial class ConversationBox : UserControl
     {
-        private ConvMessage.State _messageStatus;
-        private byte[] _avatar;
-        private long _lastMsgId;
+        private BitmapImage _avatarImage;
+        private string _userName;
+        private string _lastMessage;
+        private long _timestamp;
+        private ConvMessage.State _messageState;
 
-        //GK add message id as private member if required
-
-        public ConversationBox(long msgId, byte[] avatar, string userName, string lastMessage, long timeStamp,
-            bool isNotification,  //set it true for event notification messages
-            ConvMessage.State messageState)
-        {
-            this._lastMsgId = msgId;
-            this._avatar = avatar;
-            this.userName.Text = userName;
-            this.lastMessage.Text = lastMessage;
-            this.timestamp.Text = TimeUtils.getTimeString(timeStamp);
-            this._messageStatus = messageState;
-        }
-
-        public ConversationBox(long msgId, string userName, string lastMessage, long timeStamp,
-            ConvMessage.State messageState)
-            :this(msgId, null, userName, lastMessage, timeStamp, false, messageState)
-        { 
-        
-        }
-
-        public ConversationBox(long msgId, byte[] avatar, string userName, string lastMessage, long timeStamp,
-            ConvMessage.State messageState)
-            : this(msgId, avatar, userName, lastMessage, timeStamp, false, messageState)
-        {
-
-        }
-
-        public long LastMsgId
+        public BitmapImage AvatarImage
         {
             get
             {
-                return _lastMsgId;
+                return _avatarImage;
             }
             set
             {
-                if (_lastMsgId != value)
+                if (_avatarImage != value)
                 {
-                    _lastMsgId = value;
+                    _avatarImage = value;
+                    this.profileImage.Source = _avatarImage;
                 }
             }
         }
 
-
-        //this property is used for showing ~,S,D,R & dor for unread messages
-        public ConvMessage.State MessageStatus
+        public string UserName
         {
             get
             {
-                return _messageStatus;
+                return _userName;
             }
             set
             {
-                if (_messageStatus != value)
+                if (_userName != value)
                 {
-                    _messageStatus = value;
+                    _userName = value;
+                    this.userNameTxtBlck.Text = _userName;
                 }
             }
         }
 
-        //set this on updation of profile image
-        public byte[] Avatar
+        public string LastMessage
         {
             get
             {
-                return _avatar;
+                return _lastMessage;
             }
             set
             {
-                if (_avatar != value)
+                if (_lastMessage != value)
                 {
-                    _avatar = value;
+                    _lastMessage = value;
+                    this.lastMessageTxtBlck.Text = _lastMessage;
                 }
             }
+        }
+
+        public long Timestamp
+        {
+            get
+            {
+                return _timestamp;
+            }
+            set
+            {
+                if (_timestamp != value)
+                {
+                    _timestamp = value;
+                    this.timestampTxtBlck.Text = TimeUtils.getTimeString(_timestamp);
+                }
+            }
+        }
+
+        public ConvMessage.State MessageState
+        {
+            get
+            {
+                return _messageState;
+            }
+            set
+            {
+                if (_messageState != value)
+                {
+                    _messageState = value;
+                }
+            }
+        }
+
+        public ConversationBox(BitmapImage avatarImage, string userName, string lastMessage, long timestamp, ConvMessage.State messageState)
+        {
+            InitializeComponent();
+            this.AvatarImage = avatarImage;
+            this.UserName = userName;
+            this.LastMessage = lastMessage;
+            this.Timestamp = timestamp;
+            this.MessageState = messageState;
+        }
+
+        public ConversationBox(ConversationListObject c)
+        {
+            InitializeComponent();
+            update(c);
+        }
+
+        public void update(ConversationListObject c)
+        {
+            this.AvatarImage = c.AvatarImage;
+            this.UserName = c.ContactName;
+            this.LastMessage = c.LastMessage;
+            this.Timestamp = c.TimeStamp;
+            this.MessageState = c.MessageStatus;
         }
 
     }
