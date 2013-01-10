@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
+using windows_client.Controls;
 
 namespace windows_client.Model
 {
@@ -612,8 +613,13 @@ namespace windows_client.Model
                 {
                     try
                     {
-                        if(propertyName != null)
+                        if (propertyName != null)
+                        {
+                            ConversationBox cb;
+                            if (App.ViewModel.ConvBoxMap.TryGetValue(_msisdn,out cb))
+                                cb.update(this);
                             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                        }
                     }
                     catch (Exception)
                     {

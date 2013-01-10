@@ -24,6 +24,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Collections.ObjectModel;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
@@ -58,7 +59,7 @@ namespace windows_client.View
             initAppBar();
             initProfilePage();
             DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
-            if(isShowFavTute)
+            if (isShowFavTute)
                 showTutorial();
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -169,7 +170,7 @@ namespace windows_client.View
             {
                 freeSMSPanel.Visibility = Visibility.Collapsed;
             }
-            
+
         }
 
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
@@ -274,7 +275,21 @@ namespace windows_client.View
                 c.Msisdn = cl[i].Msisdn;
                 ConversationListObject obj = MessagesTableUtils.addChatMessage(c, false);
                 if (obj != null)
-                    App.ViewModel.MessageListPageCollection.Insert(0, obj);
+                {
+                    ConversationBox convBox = null;
+                    if (!App.ViewModel.ConvBoxMap.TryGetValue(obj.Msisdn, out convBox))
+                    {
+                        convBox = new ConversationBox(obj);
+                        App.ViewModel.ConvBoxMap.Add(obj.Msisdn, convBox);
+                    }
+                    else
+                    {
+                        App.ViewModel.MessageListPageCollection.Remove(convBox);
+                        convBox.update(obj);
+                    }
+                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
+
+                }
             }
             App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
         }
@@ -400,12 +415,12 @@ namespace windows_client.View
             editProfileTextBlck.Foreground = creditsTxtBlck.Foreground = rewardsTxtBlk.Foreground = UI_Utils.Instance.EditProfileForeground;
 
             int rew_val = 0;
-            App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE,out rew_val);
+            App.appSettings.TryGetValue<int>(HikeConstants.REWARDS_VALUE, out rew_val);
             if (rew_val <= 0)
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             }
 
@@ -673,8 +688,13 @@ namespace windows_client.View
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
             int convs = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
+            ConversationBox convBox = null;
+            if (App.ViewModel.ConvBoxMap.TryGetValue(convObj.Msisdn, out convBox))
+            {
+                App.ViewModel.MessageListPageCollection.Remove(convBox); // removed from observable collection
+                App.ViewModel.ConvBoxMap.Remove(convObj.Msisdn);
+            }
 
-            App.ViewModel.MessageListPageCollection.Remove(convObj); // removed from observable collection
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
@@ -891,7 +911,7 @@ namespace windows_client.View
                     {
                         if (rewardsTxtBlk.Visibility == System.Windows.Visibility.Collapsed)
                             rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})", Convert.ToString(rew_val));
+                        rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
                     });
                 }
             }
