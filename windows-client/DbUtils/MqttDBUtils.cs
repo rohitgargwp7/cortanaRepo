@@ -60,6 +60,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception e)
                     {
+                        Debug.WriteLine("Failed to add unsent packet with id :: " + packet.MessageId);
                     }
                 }
             }
@@ -79,11 +80,13 @@ namespace windows_client.DbUtils
                     try
                     {
                         context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                        Debug.WriteLine("Removed unsent packet with timestamp :: " + timestamp);
                     }
 
                     catch (ChangeConflictException e)
                     {
                         Debug.WriteLine(e.Message);
+                        Debug.WriteLine("Failed to remove unsent packet with timestamp :: " + timestamp);
                         // Automerge database values for members that client
                         // has not modified.
                         foreach (ObjectChangeConflict occ in context.ChangeConflicts)

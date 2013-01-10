@@ -60,6 +60,14 @@ namespace finalmqtt.Msg
             readMessage(input, msgLength);
         }
 
+        public byte[] messageContent()
+        {
+            messageData.Add(header.encode());
+            writeMsgLength();
+            writeMessage();
+            return messageData.ToArray();
+        }
+
         public void write()
         {
             messageData.Add(header.encode());

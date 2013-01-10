@@ -10,13 +10,16 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using Microsoft.Phone.Reactive;
 using System.ComponentModel;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Diagnostics;
 
 namespace windows_client.Mqtt
 {
     //    public class HikeMqttManager : Listener
     public class HikeMqttManager : Listener, HikePubSub.Listener
     {
-        public MqttConnection mqttConnection;
+        public volatile MqttConnection mqttConnection;
         private HikePubSub pubSub;
 
         // constants used to define MQTT connection status
@@ -136,7 +139,7 @@ namespace windows_client.Mqtt
         //[MethodImpl(MethodImplOptions.Synchronized)]
         public void connectToBroker()
         {
-            if (connectionStatus == MQTTConnectionStatus.CONNECTING)
+            if (isConnected() || isConnecting())
             {
                 return;
             }
@@ -166,6 +169,11 @@ namespace windows_client.Mqtt
         public bool isConnected()
         {
             return (mqttConnection != null) && (MQTTConnectionStatus.CONNECTED == connectionStatus);
+        }
+
+        public bool isConnecting()
+        {
+            return (mqttConnection != null) && (MQTTConnectionStatus.CONNECTING == connectionStatus);
         }
 
         private void unsubscribeFromTopics(string[] topics)
@@ -259,16 +267,30 @@ namespace windows_client.Mqtt
             connect();
         }
 
+        private static Border b = new Border();
+
         public void connect()
         {
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (ss, ee) =>
+            try
+            {
+                if (isConnected() || isConnecting())
+                {
+                    return;
+                }
+                b.Height = 4;
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (ss, ee) =>
+                {
+                    connectInBackground();
+                };
+                bw.RunWorkerAsync();
+            }
+            catch (Exception)
             {
                 connectInBackground();
-            };
-            bw.RunWorkerAsync();
+            }
         }
-        
+
         private static object lockObj = new object();
 
 
@@ -277,7 +299,7 @@ namespace windows_client.Mqtt
             lock (lockObj)
             {
                 disconnectCalled = false;
-                if (isConnected())
+                if (isConnected() || isConnecting())
                 {
                     return;
                 }
@@ -294,7 +316,7 @@ namespace windows_client.Mqtt
             }
         }
 
-
+        //this is called when messages are sent 1 by 1
         public void send(HikePacket packet, int qos)
         {
             if (!isConnected())
@@ -313,14 +335,33 @@ namespace windows_client.Mqtt
                 this.connect();
                 return;
             }
-            PublishCB pbCB = new PublishCB(packet, this, qos);
-            String tempString = Encoding.UTF8.GetString(packet.Message, 0, packet.Message.Length);
-
+            PublishCB pbCB = null;
+            if (qos > 0)
+                pbCB = new PublishCB(packet, this, qos, false);
             mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
                     packet.Message, (QoS)qos == 0 ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE,
                     pbCB);
         }
 
+        //this is called to send unsent messages. They all are sent in a single thread
+        public void sendAllUnsentMessages(List<HikePacket> packets)
+        {
+            if (!isConnected())
+            {
+                this.connect();
+                return;
+            }
+            byte[][] messagesToSend = new byte[packets.Count][];
+            PublishCB[] messageCallbacks = new PublishCB[packets.Count];
+            for (int i = 0; i < packets.Count; i++)
+            {
+                messageCallbacks[i] = new PublishCB(packets[i], this, 1, true);
+                messagesToSend[i] = packets[i].Message;
+            }
+            mqttConnection.publish(this.topic + HikeConstants.PUBLISH_TOPIC,
+                    messagesToSend, QoS.AT_LEAST_ONCE,
+                    messageCallbacks);
+        }
 
         private Topic[] getTopics()
         {
@@ -352,22 +393,20 @@ namespace windows_client.Mqtt
             {
                 return;
             }
-
             setConnectionStatus(MQTTConnectionStatus.CONNECTED);
             subscribeToTopics(getTopics());
-            if (!isRecursivePingScheduled)  
+            if (!isRecursivePingScheduled)
                 scheduler.Schedule(new Action<Action<TimeSpan>>(recursivePingSchedule), TimeSpan.FromSeconds(HikeConstants.RECURSIVE_PING_INTERVAL));
 
             /* Accesses the persistence object from the main handler thread */
 
             //TODO make it async
             List<HikePacket> packets = MqttDBUtils.getAllSentMessages();
+
             if (packets == null)
                 return;
-            for (int i = 0; i < packets.Count; i++)
-            {
-                send(packets[i], 1);
-            }
+            Debug.WriteLine("MQTT MANAGER:: NUmber os unsent messages" + packets.Count);
+            sendAllUnsentMessages(packets);
         }
 
         public void onDisconnected()
