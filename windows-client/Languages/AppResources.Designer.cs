@@ -1573,7 +1573,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your have 0 free SMS left.
+        ///   Looks up a localized string similar to Invite {0} to continue hiking..
         /// </summary>
         public static string NoFreeSmsLeft_Txt {
             get {

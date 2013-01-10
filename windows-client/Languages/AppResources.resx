@@ -1230,6 +1230,6 @@
     <comment>xaml</comment>
   </data>
   <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
-    <value>Your have 0 free SMS left</value>
+    <value>Invite {0} to continue hiking.</value>
   </data>
 </root>
