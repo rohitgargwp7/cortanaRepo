@@ -60,7 +60,7 @@ namespace windows_client.View
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
-        private bool cannotSendFreeSms = false;
+        private bool showNoSmsLeftOverlay = false;
         private bool isContextMenuTapped = false;
         private JObject groupCreateJson = null;
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
@@ -581,7 +581,7 @@ namespace windows_client.View
                 App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
                 if (!isOnHike && mCredits <= 0)
                 {
-                    cannotSendFreeSms = true;
+                    showNoSmsLeftOverlay = true;
                     ToggleAlertOnNoSms(true);
                 }
             }
@@ -1288,7 +1288,7 @@ namespace windows_client.View
 
             if (mUserIsBlocked) // UNBLOCK REQUEST
             {
-                if (cannotSendFreeSms)
+                if (showNoSmsLeftOverlay)
                     ToggleControlsToNoSms(true);
                 if (isGroupChat)
                 {
@@ -1311,7 +1311,7 @@ namespace windows_client.View
             }
             else     // BLOCK REQUEST
             {
-                if (cannotSendFreeSms)
+                if (showNoSmsLeftOverlay)
                     ToggleControlsToNoSms(false);
                 this.Focus();
                 sendMsgTxtbox.Text = "";
@@ -1733,7 +1733,7 @@ namespace windows_client.View
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
             sendMsg(convMessage, false);
-            if(cannotSendFreeSms)
+            if(showNoSmsLeftOverlay)
                 showOverlay(false);
         }
 
@@ -2329,7 +2329,7 @@ namespace windows_client.View
                     sendIconButton.IsEnabled = false;
                     fileTransferIconButton.IsEnabled = false;
                 }
-                else if (!cannotSendFreeSms)
+                else if (!showNoSmsLeftOverlay)
                 {
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
