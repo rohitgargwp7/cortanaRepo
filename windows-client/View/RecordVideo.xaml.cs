@@ -21,6 +21,7 @@ using Microsoft.Phone.Shell;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using windows_client.Languages;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.View
 {
@@ -118,7 +119,7 @@ namespace windows_client.View
 
         private void send_Click(object sender, EventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED] = "Capture";
+            PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED] = thumbnail;
             NavigationService.GoBack();
         }
 
@@ -278,6 +279,18 @@ namespace windows_client.View
             });
         }
 
+        private byte[] thumbnail = null;
+
+        void captureSource_CaptureImageCompleted(object sender, CaptureImageCompletedEventArgs e)
+        {
+            using (var msLargeImage = new MemoryStream())
+            {
+                e.Result.SaveJpeg(msLargeImage, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, 
+                    HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 90);
+                thumbnail = msLargeImage.ToArray();
+            }
+        }
+
         public void InitializeVideoRecorder()
         {
             if (captureSource == null)
@@ -285,12 +298,11 @@ namespace windows_client.View
                 // Create the VideoRecorder objects.
                 captureSource = new CaptureSource();
                 fileSink = new FileSink();
-
                 videoCaptureDevice = CaptureDeviceConfiguration.GetDefaultVideoCaptureDevice();
 
+                captureSource.CaptureImageCompleted += captureSource_CaptureImageCompleted; 
                 // Add eventhandlers for captureSource.
                 captureSource.CaptureFailed += new EventHandler<ExceptionRoutedEventArgs>(OnCaptureFailed);
-
                 // Initialize the camera if it exists on the device.
                 if (videoCaptureDevice != null)
                 {
@@ -315,6 +327,7 @@ namespace windows_client.View
             }
         }
 
+
         // Set recording state: start recording.
         private void StartVideoRecording()
         {
@@ -332,7 +345,6 @@ namespace windows_client.View
                     && captureSource.State == CaptureState.Started)
                 {
                     captureSource.Stop();
-
                     // Connect the input and output of fileSink.
                     fileSink.CaptureSource = captureSource;
                     fileSink.IsolatedStorageFileName = isoVideoFileName;
@@ -386,7 +398,6 @@ namespace windows_client.View
                     // Disconnect fileSink.
                     fileSink.CaptureSource = null;
                     fileSink.IsolatedStorageFileName = null;
-
                     // Set the button states and the message.
                     UpdateUI(ButtonState.NoChange, "Preparing viewfinder...");
 
@@ -443,6 +454,7 @@ namespace windows_client.View
 
             addOrRemoveAppBarButton(sendIconButton, false);
 
+            captureSource.CaptureImageAsync();
             progressTimer.Start();
             StartVideoRecording();
         }

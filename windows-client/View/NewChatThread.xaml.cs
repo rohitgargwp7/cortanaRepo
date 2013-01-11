@@ -2784,6 +2784,7 @@ namespace windows_client.View
         {
             bool isAudio = true;
             byte[] fileBytes = null;
+            byte[] thumbnail = null;
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
                 fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
@@ -2792,6 +2793,7 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
             {
+                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
                 MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.TEMP_VIDEO_NAME, out fileBytes);
                 PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
                 if (fileBytes == null)
@@ -2816,7 +2818,7 @@ namespace windows_client.View
                 else
                 {
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString();
-                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "video/mp4";
                     convMessage.Message = AppResources.Audio_Txt;
                 
