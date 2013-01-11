@@ -1229,4 +1229,20 @@
     <value>Add More</value>
     <comment>xaml</comment>
   </data>
+  <data name="Pause_Txt" xml:space="preserve">
+    <value>pause</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Play_Txt" xml:space="preserve">
+    <value>play</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Record_Txt" xml:space="preserve">
+    <value>record</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Stop_Txt" xml:space="preserve">
+    <value>stop</value>
+    <comment>record video page app bar</comment>
+  </data>
 </root>
