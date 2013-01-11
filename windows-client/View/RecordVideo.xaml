@@ -21,7 +21,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Landscape" Orientation="LandscapeLeft"
-    shell:SystemTray.IsVisible="False">
+    shell:SystemTray.IsVisible="False" Name="recordVideo">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Canvas x:Name="LayoutRoot" Background="Transparent">
@@ -59,17 +59,5 @@
             <ProgressBar x:Name="recordProgress" Margin="0,5,0,0" Height="8" Background="Transparent" Foreground="White" Minimum="0" Maximum="1"></ProgressBar>
 
         </StackPanel>
-
-
     </Canvas>
-
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" x:Name="PhoneAppBar" Opacity="0.0">
-            <shell:ApplicationBarIconButton IconUri="/Icons/appbar.feature.video.rest.png" Text="record"  x:Name="StartRecording" Click="StartRecording_Click" />
-            <shell:ApplicationBarIconButton IconUri="/Icons/appbar.stop.rest.png" Text="stop" x:Name="StopPlaybackRecording" Click="StopPlaybackRecording_Click"/>
-            <shell:ApplicationBarIconButton IconUri="/Icons/appbar.transport.play.rest.png" Text="play" x:Name="StartPlayback" Click="StartPlayback_Click"  />
-            <shell:ApplicationBarIconButton IconUri="/Icons/appbar.transport.pause.rest.png" Text="pause" x:Name="PausePlayback" Click="PausePlayback_Click"/>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
-
 </phone:PhoneApplicationPage>
