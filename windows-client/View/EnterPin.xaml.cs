@@ -184,7 +184,7 @@ namespace windows_client
             {
                 timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
                 PhoneApplicationService.Current.State.Remove(CallMeTimer);
-                timer.Text = (timerValue / 60).ToString() + (timerValue % 60).ToString("00");
+                timer.Text = (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00");
             }
 
             if (timerValue == 0)
@@ -262,7 +262,7 @@ namespace windows_client
                 if (timerValue > 0)
                 {
                     timerValue--;
-                    timer.Text = "0:" + timerValue.ToString("00");
+                    timer.Text = (timerValue / 60).ToString("00") + ":" + (timerValue % 60).ToString("00");
                 }
                 if (timerValue == 0 && callMeButton.IsEnabled == false)
                 {
