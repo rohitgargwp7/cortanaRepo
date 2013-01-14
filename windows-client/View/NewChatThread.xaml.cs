@@ -15,7 +15,6 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using Coding4Fun.Phone.Controls;
-using System.Collections.ObjectModel;
 using Microsoft.Phone.Tasks;
 using System.IO;
 using windows_client.Controls;
@@ -383,7 +382,7 @@ namespace windows_client.View
             App.newChatThreadPage = this;
 
             #region AUDIO FT
-            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) || 
+            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
             {
                 AudioFileTransfer();
@@ -414,6 +413,7 @@ namespace windows_client.View
 
             if (App.newChatThreadPage == this)
                 App.newChatThreadPage = null;
+            this.MessageList.Children.Clear();
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -1333,7 +1333,7 @@ namespace windows_client.View
                     {
                         chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
                         FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
-                        MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
+                        MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId, chatBubble);
                     }
                     else if (chatBubble is SentChatBubble)
                     {
@@ -1469,6 +1469,7 @@ namespace windows_client.View
                 //TODO : Create attachment object if it requires one
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
+                    MyChatBubble chatBubble = null;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1476,26 +1477,28 @@ namespace windows_client.View
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
                         }
-
                         if (convMessage.FileAttachment == null)
                         {
                             //Done to avoid crash. Code should never reach here
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return null;
                         }
+                        chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
                     }
 
-                    MyChatBubble chatBubble;
-                    if (convMessage.IsSent)
+                    if (chatBubble == null)
                     {
-                        chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                            msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                    }
-                    else
-                    {
-                        chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                        if (convMessage.IsSent)
+                        {
+                            chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
+                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                                msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
+                        }
+                        else
+                        {
+                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                        }
                     }
                     this.MessageList.Children.Add(chatBubble);
                     //this.messagesCollection.Add(chatBubble);
