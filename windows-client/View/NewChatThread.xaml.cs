@@ -26,6 +26,7 @@ using windows_client.Misc;
 using Microsoft.Phone.UserData;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -1331,9 +1332,16 @@ namespace windows_client.View
                 {
                     if (chatBubble is ReceivedChatBubble)
                     {
-                        chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
-                        FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
-                        MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId, chatBubble);
+                        if (NetworkInterface.GetIsNetworkAvailable())
+                        {
+                            chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
+                            FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId, chatBubble);
+                        }
+                        else
+                        {
+                            MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
+                        }
                     }
                     else if (chatBubble is SentChatBubble)
                     {
