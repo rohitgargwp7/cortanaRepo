@@ -277,6 +277,7 @@ namespace windows_client.Mqtt
                 {
                     return;
                 }
+                scheduler.Schedule(connectAgain, TimeSpan.FromSeconds(5));
                 b.Height = 4;
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
@@ -289,6 +290,14 @@ namespace windows_client.Mqtt
             {
                 connectInBackground();
             }
+        }
+
+        private void connectAgain()
+        {
+            if (!isConnected() && !isConnecting() && connectionStatus != MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
+            { 
+                connect();
+            }        
         }
 
         private static object lockObj = new object();
