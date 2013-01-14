@@ -1998,7 +1998,7 @@ namespace windows_client.View
                         obj.LastMessage = "image";
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains("audio"))
                         obj.LastMessage = "audio";
-                    if (lastMessageBubble.FileAttachment.ContentType.Contains("video"))
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains("video"))
                         obj.LastMessage = "video";
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
@@ -2820,10 +2820,9 @@ namespace windows_client.View
                     fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString();
                     convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
                     convMessage.FileAttachment.ContentType = "video/mp4";
-                    convMessage.Message = AppResources.Audio_Txt;
-                
+                    convMessage.Message = AppResources.Video_Txt;
                 }
-                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnail);
                 //msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
