@@ -18,7 +18,7 @@ namespace windows_client
         private ApplicationBar appBar;
         ApplicationBarIconButton nextIconButton;
         private DispatcherTimer progressTimer;
-        private int timerValue = 60;
+        private int timerValue = 180;
         private readonly string CallMeTimer = "CallMeTimer";
 
         public EnterPin()
@@ -184,8 +184,7 @@ namespace windows_client
             {
                 timerValue = (int)PhoneApplicationService.Current.State[CallMeTimer];
                 PhoneApplicationService.Current.State.Remove(CallMeTimer);
-                if(timerValue < 60)
-                    timer.Text = "0:" + timerValue.ToString("00");
+                timer.Text = (timerValue / 60).ToString() + (timerValue % 60).ToString("00");
             }
 
             if (timerValue == 0)
