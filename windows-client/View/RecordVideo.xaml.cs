@@ -49,16 +49,12 @@ namespace windows_client.View
 
 
         private ApplicationBar appBar;
-        ApplicationBarMenuItem blockUnblockMenuItem;
-        ApplicationBarMenuItem muteGroupMenuItem;
-        ApplicationBarMenuItem inviteMenuItem = null;
-        ApplicationBarMenuItem addToFavMenuItem = null;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton recordIconButton = null;
         ApplicationBarIconButton playIconButton = null;
         ApplicationBarIconButton pauseIconButton = null;
         ApplicationBarIconButton stopIconButton = null;
-        private int runningSeconds = 0;
+        private int runningSeconds = -1;
 
 
         public MainPage()
@@ -144,7 +140,7 @@ namespace windows_client.View
 
         private void updateProgress()
         {
-            txtDebug.Text = Convert.ToString(++runningSeconds) + " : " + Convert.ToString(maxPlayingTime);
+            txtDebug.Text = (++runningSeconds).ToString("00") + " : " + maxPlayingTime.ToString("00");
             recordProgress.Value = (double)runningSeconds / maxPlayingTime;
             if (runningSeconds == maxPlayingTime)
             {
@@ -285,7 +281,7 @@ namespace windows_client.View
         {
             using (var msLargeImage = new MemoryStream())
             {
-                e.Result.SaveJpeg(msLargeImage, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH, 
+                e.Result.SaveJpeg(msLargeImage, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH,
                     HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 90);
                 thumbnail = msLargeImage.ToArray();
             }
@@ -300,7 +296,7 @@ namespace windows_client.View
                 fileSink = new FileSink();
                 videoCaptureDevice = CaptureDeviceConfiguration.GetDefaultVideoCaptureDevice();
 
-                captureSource.CaptureImageCompleted += captureSource_CaptureImageCompleted; 
+                captureSource.CaptureImageCompleted += captureSource_CaptureImageCompleted;
                 // Add eventhandlers for captureSource.
                 captureSource.CaptureFailed += new EventHandler<ExceptionRoutedEventArgs>(OnCaptureFailed);
                 // Initialize the camera if it exists on the device.
@@ -334,7 +330,7 @@ namespace windows_client.View
             try
             {
                 txtDebug.Opacity = 1;
-                runningSeconds = 0;
+                runningSeconds = -1;
                 maxPlayingTime = maxVideoRecordTime;
                 recordProgress.Opacity = 1;
                 progressTimer.Start();
@@ -386,7 +382,7 @@ namespace windows_client.View
                 recordProgress.Value = 0;
                 recordProgress.Opacity = 0;
                 maxPlayingTime = runningSeconds;
-                runningSeconds = 0;
+                runningSeconds = -1;
                 progressTimer.Stop();
                 updateProgress();
 
@@ -451,9 +447,7 @@ namespace windows_client.View
             // Avoid duplicate taps.
             recordIconButton.IsEnabled = false;
             addOrRemoveAppBarButton(recordIconButton, false);
-
             addOrRemoveAppBarButton(sendIconButton, false);
-
             captureSource.CaptureImageAsync();
             progressTimer.Start();
             StartVideoRecording();
@@ -479,7 +473,7 @@ namespace windows_client.View
             // Stop during video playback.
             else
             {
-                runningSeconds = 0;
+                runningSeconds = -1;
                 // Remove playback objects.
                 DisposeVideoPlayer();
 
