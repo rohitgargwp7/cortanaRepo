@@ -282,7 +282,7 @@ namespace windows_client.View
             using (var msLargeImage = new MemoryStream())
             {
                 e.Result.SaveJpeg(msLargeImage, HikeConstants.ATTACHMENT_THUMBNAIL_MAX_WIDTH,
-                    HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 90);
+                    HikeConstants.ATTACHMENT_THUMBNAIL_MAX_HEIGHT, 0, 60);
                 thumbnail = msLargeImage.ToArray();
             }
         }
