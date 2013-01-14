@@ -1672,11 +1672,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to pause.
+        /// </summary>
+        public static string Pause_Txt {
+            get {
+                return ResourceManager.GetString("Pause_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to photo.
         /// </summary>
         public static string Photo_Txt {
             get {
                 return ResourceManager.GetString("Photo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to play.
+        /// </summary>
+        public static string Play_Txt {
+            get {
+                return ResourceManager.GetString("Play_Txt", resourceCulture);
             }
         }
         
@@ -1785,6 +1803,15 @@ namespace windows_client.Languages {
         public static string Privacy_UnlinkErrMsgBxText {
             get {
                 return ResourceManager.GetString("Privacy_UnlinkErrMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to record.
+        /// </summary>
+        public static string Record_Txt {
+            get {
+                return ResourceManager.GetString("Record_Txt", resourceCulture);
             }
         }
         
@@ -2298,6 +2325,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to stop.
+        /// </summary>
+        public static string Stop_Txt {
+            get {
+                return ResourceManager.GetString("Stop_Txt", resourceCulture);
             }
         }
         
