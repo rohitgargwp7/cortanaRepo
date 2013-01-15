@@ -56,6 +56,9 @@ namespace windows_client
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
+        public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
+        public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
+
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
@@ -111,13 +114,13 @@ namespace windows_client
 
 
         public static readonly string FIRSTNAME = "fname";
-        public static readonly string MIDDLENAME="mname";
-        public static readonly string LASTNAME="lname";
-        public static readonly string MOBILE="mob";
-        public static readonly string TELEPHONE="tel";
-        public static readonly string EMAIL="email";
-        public static readonly string COMPANY="cmp";
-        public static readonly string JOBTITLE="jtitle";
+        public static readonly string MIDDLENAME = "mname";
+        public static readonly string LASTNAME = "lname";
+        public static readonly string MOBILE = "mob";
+        public static readonly string TELEPHONE = "tel";
+        public static readonly string EMAIL = "email";
+        public static readonly string COMPANY = "cmp";
+        public static readonly string JOBTITLE = "jtitle";
 
         public static string FAQS_LINK
         {
@@ -203,6 +206,7 @@ namespace windows_client
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
+        public static string VIDEO_RECORDED = "videoRecorded";
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";

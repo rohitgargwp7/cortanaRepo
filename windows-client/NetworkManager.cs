@@ -463,15 +463,7 @@ namespace windows_client
                             Debug.WriteLine("AI :: Key : " + kv.Key);
                             JToken valTok = kv.Value;
                             object oj = valTok.ToObject<object>();
-                            if (kv.Key == HikeConstants.SECURE_PUSH)
-                            {
-                                if (oj is bool)
-                                {
-                                    bool vall = (bool)oj;
-                                    App.WriteToIsoStorageSettings(HikeConstants.SECURE_PUSH, vall);
-                                }
-                            }
-                            else if (kv.Key == HikeConstants.ACCOUNT)
+                            if (kv.Key == HikeConstants.ACCOUNT)
                             {
                                 JObject acntValObj = (JObject)oj;
                                 KeyValuePair<string, JToken> kkvv;

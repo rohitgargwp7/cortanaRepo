@@ -730,7 +730,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
-    <value>Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <value>Hi! I�m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
@@ -792,7 +792,7 @@
     <value>To continue using hike, an update is required.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <value>Hi! I�ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren�t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -913,7 +913,7 @@
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
+    <value>I�m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
@@ -1240,5 +1240,20 @@
   </data>
   <data name="SharedContactNotFoundText" xml:space="preserve">
     <value>Please refresh contact list as contact selected does not exists.</value>
+  <data name="Pause_Txt" xml:space="preserve">
+    <value>pause</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Play_Txt" xml:space="preserve">
+    <value>play</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Record_Txt" xml:space="preserve">
+    <value>record</value>
+    <comment>record video page app bar</comment>
+  </data>
+  <data name="Stop_Txt" xml:space="preserve">
+    <value>stop</value>
+    <comment>record video page app bar</comment>
   </data>
 </root>

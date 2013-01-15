@@ -383,7 +383,8 @@ namespace windows_client.View
             App.newChatThreadPage = this;
 
             #region AUDIO FT
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) || 
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
             {
                 AudioFileTransfer();
             }
@@ -2022,6 +2023,7 @@ namespace windows_client.View
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
                 {
+
                     if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                         obj.LastMessage = HikeConstants.IMAGE;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
@@ -2030,6 +2032,7 @@ namespace windows_client.View
                         obj.LastMessage = HikeConstants.VIDEO;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                         obj.LastMessage = HikeConstants.CONTACT;
+                  
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble is NotificationChatBubble)
@@ -2126,6 +2129,13 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
+
+        private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/RecordVideo.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
 
         private void shareLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -2813,30 +2823,53 @@ namespace windows_client.View
 
         private void AudioFileTransfer()
         {
-            byte[] audioBytes = null;
+            bool isAudio = true;
+            byte[] fileBytes = null;
+            byte[] thumbnail = null;
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
-                audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+                fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+                isAudio = true;
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
+            {
+                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
+                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.TEMP_VIDEO_NAME, out fileBytes);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
+                if (fileBytes == null)
+                {
+                    return;
+                }
+                isAudio = false;
             }
             if (!isGroupChat || isGroupAlive)
             {
-                string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
-                convMessage.FileAttachment.ContentType = "audio/voice";
-                convMessage.Message = AppResources.Audio_Txt;
-
-                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+                string fileName;
+                if (isAudio)
+                {
+                    fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment.ContentType = "audio/voice";
+                    convMessage.Message = AppResources.Audio_Txt;
+                }
+                else
+                {
+                    fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString();
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment.ContentType = "video/mp4";
+                    convMessage.Message = AppResources.Video_Txt;
+                }
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnail);
                 //msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
                 object[] vals = new object[3];
                 vals[0] = convMessage;
-                vals[1] = audioBytes;
+                vals[1] = fileBytes;
                 vals[2] = chatBubble;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }

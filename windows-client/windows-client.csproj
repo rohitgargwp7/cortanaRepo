@@ -172,6 +172,9 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\RecordVideo.xaml.cs">
+      <DependentUpon>RecordVideo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SocialPages.xaml.cs">
       <DependentUpon>SocialPages.xaml</DependentUpon>
     </Compile>
@@ -266,6 +269,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Error.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RecordVideo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
