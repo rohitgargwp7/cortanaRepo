@@ -179,6 +179,12 @@ namespace windows_client.View
             else
                 hideSmsContacts = false;
 
+            //case when share contact is called
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
+            {
+                txtChat.Visibility = Visibility.Collapsed;
+                txtTitle.Text = AppResources.ShareContact_Txt;
+            }
             /* Case when this page is called from GroupInfo page*/
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.EXISTING_GROUP_MEMBERS))
             {
@@ -205,9 +211,9 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, e) =>
             {
                 jumpList = getGroupedList(allContactsList);
-                if(!hideSmsContacts)
+                if (!hideSmsContacts)
                 {
-                    if(filteredJumpList == null)
+                    if (filteredJumpList == null)
                         MakeFilteredJumpList();
                     contactsListBox.ItemsSource = filteredJumpList;
                 }
@@ -250,6 +256,7 @@ namespace windows_client.View
             catch { }
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
             PhoneApplicationService.Current.State.Remove("Group_GroupId");
             base.OnRemovedFromJournal(e);
         }
@@ -293,6 +300,10 @@ namespace windows_client.View
                 contactsListBox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(contactSelectedForGroup_Click);
                 enterNameTxt.AddHandler(TextBox.KeyDownEvent, new KeyEventHandler(enterNameTxt_KeyDown), true);
                 enterNameTxt.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(enterNameTxt_Tap);
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
+            {
+                contactsListBox.Tap += contactShared_Click;
             }
             else
             {
@@ -346,7 +357,7 @@ namespace windows_client.View
             }
 
             List<Group<ContactInfo>> glist = createGroups();
-            
+
             for (int i = 0; i < (allContactsList != null ? allContactsList.Count : 0); i++)
             {
                 ContactInfo c = allContactsList[i];
@@ -444,6 +455,39 @@ namespace windows_client.View
 
         #endregion
 
+        private void contactShared_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
+            if (contact == null)
+                return;
+            ContactUtils.getContact(contact.Msisdn, contactSearchCompleted_Callback);
+        }
+
+        public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
+        {
+            IEnumerable<Contact> contacts = e.Results;
+            Contact contact = null;
+            foreach (Contact c in contacts)
+            {
+                contact = c;
+                break;
+            }
+
+            if (contact == null)
+            {
+                MessageBox.Show(AppResources.SharedContactNotFoundText);
+            }
+            else
+            {
+                MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, contact.DisplayName), "Share Contact", MessageBoxButton.OKCancel);
+                if (mr == MessageBoxResult.OK)
+                {
+                    PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED] = contact;
+                    NavigationService.GoBack();
+                }
+            }
+        }
+
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
@@ -499,7 +543,7 @@ namespace windows_client.View
             {
                 if (!hideSmsContacts)
                 {
-                    if(filteredJumpList == null)
+                    if (filteredJumpList == null)
                         MakeFilteredJumpList();
                     contactsListBox.ItemsSource = filteredJumpList;
                 }
@@ -877,7 +921,7 @@ namespace windows_client.View
                     {
                         ConversationListObject obj;
                         obj = App.ViewModel.GetFav(id);
-                        if(obj == null) // this msisdn is not in favs , check in pending
+                        if (obj == null) // this msisdn is not in favs , check in pending
                             obj = App.ViewModel.GetPending(id);
                         if (obj != null)
                             obj.ContactName = null;
