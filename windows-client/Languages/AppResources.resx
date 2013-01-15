@@ -1240,6 +1240,7 @@
   </data>
   <data name="SharedContactNotFoundText" xml:space="preserve">
     <value>Please refresh contact list as contact selected does not exists.</value>
+  </data>
   <data name="Pause_Txt" xml:space="preserve">
     <value>pause</value>
     <comment>record video page app bar</comment>
