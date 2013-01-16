@@ -20,7 +20,6 @@ namespace windows_client.utils
 
         public static void savedAccountCredentials(JObject obj)
         {
-            JToken secure_push = null;
             App.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
             appSettings[App.MSISDN_SETTING] = App.MSISDN;
