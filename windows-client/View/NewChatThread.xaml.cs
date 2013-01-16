@@ -563,8 +563,11 @@ namespace windows_client.View
             #endregion
 
             if (isGroupChat || !isOnHike)
+            {
                 spContactTransfer.Visibility = Visibility.Collapsed;
-            userName.Text = mContactName;
+                rectContactTransfer.Visibility = Visibility.Collapsed;
+            }
+                userName.Text = mContactName;
             if (groupOwner != null)
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
             else

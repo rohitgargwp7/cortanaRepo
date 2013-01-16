@@ -40,7 +40,7 @@ namespace windows_client.View
         public List<Group<ContactInfo>> filteredJumpList = null;
         private List<Group<ContactInfo>> defaultJumpList = null;
         private string charsEntered;
-
+        ContactInfo contactInfoObj;
         private readonly int MAX_USERS_ALLOWED_IN_GROUP = 20;
         private int defaultGroupmembers = 0;
 
@@ -457,25 +457,37 @@ namespace windows_client.View
 
         private void contactShared_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
-            if (contact == null)
+            contactInfoObj = contactsListBox.SelectedItem as ContactInfo;
+            if (contactInfoObj == null)
                 return;
-            ContactUtils.getContact(contact.Msisdn, contactSearchCompleted_Callback);
+
+            string searchNumber=contactInfoObj.Msisdn;
+            string country_code = null;
+            if (App.appSettings.TryGetValue(App.COUNTRY_CODE_SETTING, out country_code))
+            {
+                searchNumber = searchNumber.Replace(country_code, "");
+            }
+            ContactUtils.getContact(contactInfoObj.Msisdn, contactSearchCompleted_Callback);
         }
 
         public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
         {
+            if (contactInfoObj == null)
+                return;
             IEnumerable<Contact> contacts = e.Results;
             Contact contact = null;
             foreach (Contact c in contacts)
             {
-                contact = c;
-                break;
+                if (c.DisplayName == contactInfoObj.Name)
+                {
+                    contact = c;
+                    break;
+                }
             }
 
             if (contact == null)
             {
-                MessageBox.Show(AppResources.SharedContactNotFoundText);
+                MessageBox.Show(AppResources.SharedContactNotFoundText,AppResources.SharedContactNotFoundCaptionText,MessageBoxButton.OK);
             }
             else
             {
