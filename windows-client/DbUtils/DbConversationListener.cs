@@ -209,11 +209,8 @@ namespace windows_client.DbUtils
                     }
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj);
                 });
-
                 //send attachment message (new attachment - upload case)
-
-                MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId);
-
+                MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, chatBubble);
                 convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                 convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
