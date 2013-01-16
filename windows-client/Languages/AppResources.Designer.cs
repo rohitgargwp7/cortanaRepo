@@ -2239,6 +2239,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh Contact List.
+        /// </summary>
+        public static string SharedContactNotFoundCaptionText {
+            get {
+                return ResourceManager.GetString("SharedContactNotFoundCaptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please refresh contact list as contact selected does not exists..
         /// </summary>
         public static string SharedContactNotFoundText {

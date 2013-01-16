@@ -1257,4 +1257,7 @@
     <value>stop</value>
     <comment>record video page app bar</comment>
   </data>
+  <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
+    <value>Refresh Contact List</value>
+  </data>
 </root>
