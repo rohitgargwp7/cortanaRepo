@@ -239,13 +239,6 @@
             <Button Height="75" Name="btnBlockUnblock" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.UnBlock_Txt, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="blockUnblock_Click"></Button>
         </StackPanel>
 
-        <!--<Rectangle x:Name="overlayForNoSms" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed"></Rectangle>
-        <StackPanel x:Name="OverlayNoSmsPanel" Visibility="Collapsed" Opacity="1" Grid.Row="1" Height="320" VerticalAlignment="Top" Margin="25,90,25,0" Orientation="Vertical">
-            <Image Source="images\ic_block_active.png" Height="79" Width="78"></Image>
-            <TextBlock Name="BlockTxtNoSms" HorizontalAlignment="Center" Margin="15,10,15,0" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.NoFreeSmsLeft_Txt, Source={StaticResource LocalizedStrings}}" Foreground="#FFFFFF" FontSize="20"></TextBlock>
-            <Button Height="75" BorderBrush="#FFFFFF" Background="Black" Foreground="#FFFFFF" Content="{Binding Path= LocalizedResources.OK, Source={StaticResource LocalizedStrings}}" Width="250" Margin="0,30,0,0" Click="btnOkFreeMsgClick"></Button>
-        </StackPanel>-->
-
         <Rectangle x:Name="overlayForNudge" Visibility="Collapsed" Grid.Row="0" Grid.RowSpan="3" Fill="#ffffff" ></Rectangle>
         <Grid x:Name="nudgeTuteGrid" Visibility="Collapsed" Grid.Row="1" Width="375" VerticalAlignment="Center"  Background="Black">
             <Grid.RowDefinitions>
