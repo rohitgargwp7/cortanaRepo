@@ -144,9 +144,6 @@ namespace windows_client.utils
                 }
                 else
                 {
-
-                }
-                {
                     contactList = new List<ContactInfo>();
                     contactList.Add(hclist[i]);
                     hikeContactListMap.Add(hclist[i].Id, contactList);
