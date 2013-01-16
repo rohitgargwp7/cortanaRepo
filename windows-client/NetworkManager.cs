@@ -223,6 +223,7 @@ namespace windows_client
                 try
                 {
                     msgID = long.Parse(id);
+                    Debug.WriteLine("NETWORK MANAGER:: Received report for Message Id " + msgID);
                 }
                 catch (FormatException e)
                 {
@@ -469,15 +470,7 @@ namespace windows_client
                             Debug.WriteLine("AI :: Key : " + kv.Key);
                             JToken valTok = kv.Value;
                             object oj = valTok.ToObject<object>();
-                            if (kv.Key == HikeConstants.SECURE_PUSH)
-                            {
-                                if (oj is bool)
-                                {
-                                    bool vall = (bool)oj;
-                                    App.WriteToIsoStorageSettings(HikeConstants.SECURE_PUSH, vall);
-                                }
-                            }
-                            else if (kv.Key == HikeConstants.ACCOUNT)
+                            if (kv.Key == HikeConstants.ACCOUNT)
                             {
                                 JObject acntValObj = (JObject)oj;
                                 KeyValuePair<string, JToken> kkvv;
@@ -944,7 +937,6 @@ namespace windows_client
                 //logger.Info("WebSocketPublisher", "Unknown Type:" + type);
             }
             #endregion
-
         }
 
         private void LoadFavAndPending(bool isFav, string msisdn)

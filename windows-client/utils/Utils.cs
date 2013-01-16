@@ -21,10 +21,6 @@ namespace windows_client.utils
         public static void savedAccountCredentials(JObject obj)
         {
             JToken secure_push = null;
-            if (obj.TryGetValue(HikeConstants.SECURE_PUSH,out secure_push))
-            {
-                appSettings[HikeConstants.SECURE_PUSH] = secure_push.ToObject<bool>();
-            }
             App.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
             appSettings[App.MSISDN_SETTING] = App.MSISDN;
@@ -247,7 +243,7 @@ namespace windows_client.utils
             string rethash = "";
             try
             {
-                var sha = new HMACSHA1();
+                var sha = new SHA1Managed();
                 var bytes = System.Text.Encoding.UTF8.GetBytes(input);
                 byte[] resultHash = sha.ComputeHash(bytes);
                 rethash = Convert.ToBase64String(resultHash);
