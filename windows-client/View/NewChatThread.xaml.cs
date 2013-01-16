@@ -79,6 +79,7 @@ namespace windows_client.View
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarMenuItem addToFavMenuItem = null;
+        ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -812,10 +813,10 @@ namespace windows_client.View
 
                 if (isAddUser)
                 {
-                    ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-                    menuItem2.Text = AppResources.SelectUser_AddUser_Txt;
-                    menuItem2.Click += new EventHandler(addUser_Click);
-                    appBar.MenuItems.Add(menuItem2);
+                    addUserMenuItem = new ApplicationBarMenuItem();
+                    addUserMenuItem.Text = AppResources.SelectUser_AddUser_Txt;
+                    addUserMenuItem.Click += new EventHandler(addUser_Click);
+                    appBar.MenuItems.Add(addUserMenuItem);
                 }
                 ApplicationBarMenuItem callMenuItem = new ApplicationBarMenuItem();
                 callMenuItem.Text = AppResources.Call_Txt;
@@ -3067,6 +3068,7 @@ namespace windows_client.View
                 }
                 else
                 {
+                    appBar.MenuItems.Remove(addUserMenuItem);
                     MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
                 }
             });
