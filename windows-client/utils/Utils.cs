@@ -15,6 +15,7 @@ namespace windows_client.utils
 {
     public class Utils
     {
+
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
@@ -320,7 +321,6 @@ namespace windows_client.utils
             }
             return true;
         }
-
 
         public static string NormalizeNumber(string msisdn)
         {
