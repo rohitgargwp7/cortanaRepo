@@ -2221,6 +2221,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Share Contact.
+        /// </summary>
+        public static string ShareContact_ConfirmationCaption {
+            get {
+                return ResourceManager.GetString("ShareContact_ConfirmationCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to share contact information of {0}.
         /// </summary>
         public static string ShareContact_ConfirmationText {

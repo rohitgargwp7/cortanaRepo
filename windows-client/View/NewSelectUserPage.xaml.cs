@@ -29,6 +29,7 @@ namespace windows_client.View
         private bool isFreeSmsOn = true;
         private bool canGoBack = true;
         private bool isClicked = false;
+        private bool isContactShared = false;
         private string TAP_MSG = AppResources.SelectUser_TapMsg_Txt;
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private bool isExistingGroup = false;
@@ -182,6 +183,7 @@ namespace windows_client.View
             //case when share contact is called
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
+                isContactShared = true;
                 txtChat.Visibility = Visibility.Collapsed;
                 txtTitle.Text = AppResources.ShareContact_Txt;
             }
@@ -211,7 +213,7 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, e) =>
             {
                 jumpList = getGroupedList(allContactsList);
-                if (!hideSmsContacts)
+                if (!hideSmsContacts && !isContactShared)
                 {
                     if (filteredJumpList == null)
                         MakeFilteredJumpList();
@@ -276,14 +278,16 @@ namespace windows_client.View
             refreshIconButton.IsEnabled = true;
             appBar.Buttons.Add(refreshIconButton);
 
-            onHikeFilter = new ApplicationBarMenuItem();
-            if (isFreeSmsOn)
-                onHikeFilter.Text = AppResources.SelectUser_HideSmsContacts_Txt;
-            else
-                onHikeFilter.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
-            onHikeFilter.Click += new EventHandler(OnHikeFilter_Click);
-            appBar.MenuItems.Add(onHikeFilter);
-
+            if (!isContactShared)
+            {
+                onHikeFilter = new ApplicationBarMenuItem();
+                if (isFreeSmsOn)
+                    onHikeFilter.Text = AppResources.SelectUser_HideSmsContacts_Txt;
+                else
+                    onHikeFilter.Text = AppResources.SelectUser_ShowSmsContacts_Txt;
+                onHikeFilter.Click += new EventHandler(OnHikeFilter_Click);
+                appBar.MenuItems.Add(onHikeFilter);
+            }
             selectUserPage.ApplicationBar = appBar;
 
             if (isGroupChat)
@@ -369,30 +373,32 @@ namespace windows_client.View
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
 
+
                 #region FREE SMS SETTINGS SUPPORT
-
-                if (isFreeSmsOn) // free sms is on 
+                if (!isContactShared)
                 {
-                    if (!c.OnHike && !Utils.IsIndianNumber(c.Msisdn)) // if non hike non indian user
+                    if (isFreeSmsOn) // free sms is on 
                     {
-                        if (isGroupChat)
-                            continue;
-                        else
-                            c.IsInvited = true;
+                        if (!c.OnHike && !Utils.IsIndianNumber(c.Msisdn)) // if non hike non indian user
+                        {
+                            if (isGroupChat)
+                                continue;
+                            else
+                                c.IsInvited = true;
+                        }
                     }
-                }
-                else // free sms is off
-                {
-                    if (!c.OnHike)
+                    else // free sms is off
                     {
-                        if (isGroupChat)
-                            continue;
-                        else
-                            c.IsInvited = true;
+                        if (!c.OnHike)
+                        {
+                            if (isGroupChat)
+                                continue;
+                            else
+                                c.IsInvited = true;
+                        }
                     }
+
                 }
-
-
                 #endregion
 
                 string ch = GetCaptionGroup(c);
@@ -460,14 +466,17 @@ namespace windows_client.View
             contactInfoObj = contactsListBox.SelectedItem as ContactInfo;
             if (contactInfoObj == null)
                 return;
-
-            string searchNumber=contactInfoObj.Msisdn;
-            string country_code = null;
-            if (App.appSettings.TryGetValue(App.COUNTRY_CODE_SETTING, out country_code))
+            MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, contactInfoObj.Name),AppResources.ShareContact_ConfirmationCaption, MessageBoxButton.OKCancel);
+            if (mr == MessageBoxResult.OK)
             {
-                searchNumber = searchNumber.Replace(country_code, "");
+                string searchNumber = contactInfoObj.Msisdn;
+                string country_code = null;
+                if (App.appSettings.TryGetValue(App.COUNTRY_CODE_SETTING, out country_code))
+                {
+                    searchNumber = searchNumber.Replace(country_code, "");
+                }
+                ContactUtils.getContact(searchNumber, contactSearchCompleted_Callback);
             }
-            ContactUtils.getContact(contactInfoObj.Msisdn, contactSearchCompleted_Callback);
         }
 
         public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
@@ -487,16 +496,12 @@ namespace windows_client.View
 
             if (contact == null)
             {
-                MessageBox.Show(AppResources.SharedContactNotFoundText,AppResources.SharedContactNotFoundCaptionText,MessageBoxButton.OK);
+                MessageBox.Show(AppResources.SharedContactNotFoundText, AppResources.SharedContactNotFoundCaptionText, MessageBoxButton.OK);
             }
             else
             {
-                MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, contact.DisplayName), "Share Contact", MessageBoxButton.OKCancel);
-                if (mr == MessageBoxResult.OK)
-                {
-                    PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED] = contact;
-                    NavigationService.GoBack();
-                }
+                PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED] = contact;
+                NavigationService.GoBack();
             }
         }
 
