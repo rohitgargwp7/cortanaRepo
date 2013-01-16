@@ -383,7 +383,7 @@ namespace windows_client.View
             App.newChatThreadPage = this;
 
             #region AUDIO FT
-            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) || 
+            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
                 PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
             {
                 AudioFileTransfer();
@@ -567,7 +567,7 @@ namespace windows_client.View
                 spContactTransfer.Visibility = Visibility.Collapsed;
                 rectContactTransfer.Visibility = Visibility.Collapsed;
             }
-                userName.Text = mContactName;
+            userName.Text = mContactName;
             if (groupOwner != null)
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
             else
@@ -1454,9 +1454,9 @@ namespace windows_client.View
                 bingMapsTask.Show();
                 return;
             }
-            else if(chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
             {
-                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
+                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
                 byte[] filebytes;
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
 
@@ -2035,7 +2035,7 @@ namespace windows_client.View
                         obj.LastMessage = HikeConstants.VIDEO;
                     else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                         obj.LastMessage = HikeConstants.CONTACT;
-                  
+
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble is NotificationChatBubble)
@@ -2880,12 +2880,9 @@ namespace windows_client.View
 
         private void ContactTransfer()
         {
-            Contact contact = null;
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
-            {
-                contact = (Contact)PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED];
-                PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT_SELECTED);
-            }
+            Contact contact = (Contact)PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED];
+            PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT_SELECTED);
+
             if ((!isGroupChat || isGroupAlive) && contact != null)
             {
                 string fileName = "con_" + TimeUtils.getCurrentTimeStamp().ToString();
