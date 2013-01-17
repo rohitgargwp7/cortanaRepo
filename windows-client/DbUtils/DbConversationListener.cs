@@ -12,6 +12,7 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.Misc;
 using windows_client.Languages;
+using Microsoft.Phone.Controls;
 
 namespace windows_client.DbUtils
 {
@@ -145,18 +146,19 @@ namespace windows_client.DbUtils
                     {
                         addSentMessageToMsgMap(chatBubble);
                     }
-                    ConversationBox convBox = null;
-                    if (!App.ViewModel.ConvBoxMap.TryGetValue(convObj.Msisdn, out convBox))
+
+                    if (convObj.ConvBoxObj == null)
                     {
-                        convBox = new ConversationBox(convObj);
-                        App.ViewModel.ConvBoxMap.Add(convObj.Msisdn, convBox);
+                        convObj.ConvBoxObj = new ConversationBox(convObj);
+                        if (App.ViewModel.ConversationListPage != null)
+                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(convObj));
                     }
-                    else
+                    else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))//cannot use convMap here because object has pushed to map but not to ui
                     {
-                        App.ViewModel.MessageListPageCollection.Remove(convBox);
-                        convBox.update(convObj);
+                        App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
+
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
 
                     if (!isNewGroup)
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
@@ -180,18 +182,19 @@ namespace windows_client.DbUtils
                 {
                     addSentMessageToMsgMap(chatBubble);
 
-                    ConversationBox convBox = null;
-                    if (!App.ViewModel.ConvBoxMap.TryGetValue(convObj.Msisdn, out convBox))
+                    if (convObj.ConvBoxObj == null)
                     {
-                        convBox = new ConversationBox(convObj);
-                        App.ViewModel.ConvBoxMap.Add(convObj.Msisdn, convBox);
+                        convObj.ConvBoxObj = new ConversationBox(convObj);
+                        if (App.ViewModel.ConversationListPage != null)
+                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(convObj));
+
                     }
-                    else
+                    else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))//cannot use convMap here because object has pushed to map but not to ui
                     {
-                        App.ViewModel.MessageListPageCollection.Remove(convBox);
-                        convBox.update(convObj);
+                        App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
+
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
 
                 });
 
@@ -219,18 +222,18 @@ namespace windows_client.DbUtils
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     addSentMessageToMsgMap(chatBubble);
-                    ConversationBox convBox = null;
-                    if (!App.ViewModel.ConvBoxMap.TryGetValue(convObj.Msisdn, out convBox))
+                    if (convObj.ConvBoxObj == null)
                     {
-                        convBox = new ConversationBox(convObj);
-                        App.ViewModel.ConvBoxMap.Add(convObj.Msisdn, convBox);
+                        convObj.ConvBoxObj = new ConversationBox(convObj);
+                        if (App.ViewModel.ConversationListPage != null)
+                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(convObj));
+
                     }
-                    else
+                    else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))
                     {
-                        App.ViewModel.MessageListPageCollection.Remove(convBox);
-                        convBox.update(convObj);
+                        App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                     }
-                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
+                    App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
 
                 });
 
