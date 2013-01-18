@@ -1229,6 +1229,18 @@
     <value>Add More</value>
     <comment>xaml</comment>
   </data>
+  <data name="ContactTransfer_Text" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="ShareContact_Txt" xml:space="preserve">
+    <value>Share Contact</value>
+  </data>
+  <data name="ShareContact_ConfirmationText" xml:space="preserve">
+    <value>Are you sure you want to share contact information of {0}</value>
+  </data>
+  <data name="SharedContactNotFoundText" xml:space="preserve">
+    <value>Please refresh contact list as contact selected does not exists.</value>
+  </data>
   <data name="Pause_Txt" xml:space="preserve">
     <value>pause</value>
     <comment>record video page app bar</comment>
@@ -1245,7 +1257,14 @@
     <value>stop</value>
     <comment>record video page app bar</comment>
   </data>
+
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
     <value>Is this your number?</value>
+</data>
+  <data name="ShareContact_ConfirmationCaption" xml:space="preserve">
+    <value>Share Contact</value>
+  </data>
+  <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
+    <value>Refresh Contact List</value>
   </data>
 </root>

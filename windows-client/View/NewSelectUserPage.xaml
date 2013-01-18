@@ -32,8 +32,8 @@
                 <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
 
             </StackPanel>
-            <TextBlock Text="{Binding Path= LocalizedResources.SelectUser_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
-            <TextBlock Name="title" Text="{Binding Path= LocalizedResources.SelectUser_Title_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="30,-10,0,0" />
+            <TextBlock Name="txtChat" Text="{Binding Path= LocalizedResources.SelectUser_Header_Txt, Source={StaticResource LocalizedStrings}}" FontSize="22" FontFamily="Segoe WP Semibold" FontStretch="Expanded"  Margin="30,0,0,5" />
+            <TextBlock Name="txtTitle" Text="{Binding Path= LocalizedResources.SelectUser_Title_Txt, Source={StaticResource LocalizedStrings}}" FontSize="68" Height="75" FontFamily="Segoe WP SemiLight" FontStretch="Expanded" Margin="30,-10,0,0" />
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
