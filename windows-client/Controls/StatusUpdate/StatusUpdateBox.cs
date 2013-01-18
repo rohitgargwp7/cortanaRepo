@@ -7,6 +7,8 @@ namespace windows_client.Controls.StatusUpdate
     {
         private string _userName;
         private BitmapImage _userImage;
+        public StatusType _updateType;
+
 
         public string UserName
         {
@@ -38,10 +40,36 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public StatusUpdateBox(string userName, BitmapImage userImage)
+        public StatusType UpdateType
+        {
+            get
+            {
+                return _updateType;
+            }
+            set
+            {
+                if (value != _updateType)
+                {
+                    _updateType = value;
+                }
+            }
+        }
+
+
+        public enum StatusType
+        { 
+            TEXT_UPDATE,
+            IMAGE_UPDATE,
+            LOCATION_UPDATE,
+            FRIEND_REQUEST
+        }
+
+
+        public StatusUpdateBox(string userName, BitmapImage userImage, StatusType updateType)
         {
             this.UserName = userName;
             this.UserImage = userImage;
+            this.UpdateType = UpdateType;
         }
 
         public StatusUpdateBox()
