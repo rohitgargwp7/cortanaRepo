@@ -43,7 +43,7 @@ namespace windows_client.Mqtt
                 }
                 App.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS, null);
             }
-            else
+            else if(hikeMqttManager.connectionStatus != HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
             {
                 scheduler.Schedule(hikeMqttManager.connect, TimeSpan.FromSeconds(5));
             }
