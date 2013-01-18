@@ -277,7 +277,6 @@ namespace windows_client.Mqtt
                 {
                     return;
                 }
-                scheduler.Schedule(connectAgain, TimeSpan.FromSeconds(5));
                 b.Height = 4;
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>

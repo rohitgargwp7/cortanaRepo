@@ -3,12 +3,15 @@ using mqtttest.Client;
 using System.Windows;
 using windows_client.DbUtils;
 using Microsoft.Phone.Notification;
+using Microsoft.Phone.Reactive;
 
 namespace windows_client.Mqtt
 {
     public class ConnectCB : Callback
     {
         private HikeMqttManager hikeMqttManager;
+        private IScheduler scheduler = Scheduler.NewThread;
+
 
         public ConnectCB(HikeMqttManager hikeMqttManager)
         {
@@ -19,11 +22,11 @@ namespace windows_client.Mqtt
         {
             if ((value is ConnectionException) && ((ConnectionException)value).getCode().Equals(finalmqtt.Msg.ConnAckMessage.ConnectionStatus.BAD_USERNAME_OR_PASSWORD))
             {
-                bool isPresent =false;
-                if(App.appSettings.Contains(App.IS_DB_CREATED))
+                bool isPresent = false;
+                if (App.appSettings.Contains(App.IS_DB_CREATED))
                     isPresent = true;
                 App.ClearAppSettings();
-                if(isPresent)
+                if (isPresent)
                     App.WriteToIsoStorageSettings(App.IS_DB_CREATED, true);
                 NetworkManager.turnOffNetworkManager = true; // stop network manager
                 App.MqttManagerInstance.disconnectFromBroker(false);
@@ -38,8 +41,11 @@ namespace windows_client.Mqtt
                         pushChannel.UnbindToShellToast();
                     pushChannel.Close();
                 }
-
-                App.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS,null);
+                App.HikePubSubInstance.publish(HikePubSub.BAD_USER_PASS, null);
+            }
+            else
+            {
+                scheduler.Schedule(hikeMqttManager.connect, TimeSpan.FromSeconds(5));
             }
             hikeMqttManager.setConnectionStatus(windows_client.Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
         }
@@ -47,7 +53,6 @@ namespace windows_client.Mqtt
         public void onSuccess()
         {
             hikeMqttManager.setConnectionStatus(windows_client.Mqtt.HikeMqttManager.MQTTConnectionStatus.CONNECTED);
-
         }
     }
 }
