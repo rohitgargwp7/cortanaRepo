@@ -369,9 +369,6 @@ namespace windows_client
                 msisdnErrorTxt.Visibility = Visibility.Visible;
                 return;
             }
-            MessageBoxResult res = MessageBox.Show(phoneNumber, AppResources.EnterMsisdn_ConfirmNumber_Txt, MessageBoxButton.OKCancel);
-            if (res == MessageBoxResult.Cancel)
-                return;
             txtEnterPhone.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             msgTxtBlk.Opacity = 1;
@@ -663,14 +660,14 @@ namespace windows_client
             return glist;
         }
 
-        //private void countryList_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
-        //{
-        //    isGroupViewOpened = true;
-        //}
+        private void countryList_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
+        {
+            isGroupViewOpened = true;
+        }
 
-        //private void countryList_GroupViewClosing(object sender, GroupViewClosingEventArgs e)
-        //{
-        //    isGroupViewOpened = false;
-        //}
+        private void countryList_GroupViewClosing(object sender, GroupViewClosingEventArgs e)
+        {
+            isGroupViewOpened = false;
+        }
     }
 }
