@@ -1257,6 +1257,10 @@
     <value>stop</value>
     <comment>record video page app bar</comment>
   </data>
+
+  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
+    <value>Is this your number?</value>
+</data>
   <data name="ShareContact_ConfirmationCaption" xml:space="preserve">
     <value>Share Contact</value>
   </data>
@@ -1270,5 +1274,8 @@
   <data name="StatusUpdate_YouCanNowSeeUpdates_TxtBlk" xml:space="preserve">
     <value>You can now see updates from {0}. Would you like to do the same?</value>
     <comment>for friend requests status update in wp8</comment>
+    </data>
+  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
+    <value>Is this your number?</value>
   </data>
 </root>

@@ -4,7 +4,7 @@
   <Languages xmlns="">
     <Language code="de-DE" />
   </Languages>
-  <App xmlns="" ProductID="{9ca5f91c-93f4-4bbe-9cdd-860675fc6f94}" Title="Hike" IsBeta="true" RuntimeType="Silverlight" Version="1.7.0.0" Genre="apps.normal" Author="windows_client author" Description="Messaging Application" Publisher="windows_client" PublisherID="{d9c2d577-1f1d-4f5c-8082-4fd8cbe41ad6}">
+  <App xmlns="" ProductID="{9ca5f91c-93f4-4bbe-9cdd-860675fc6f94}" Title="Hike" IsBeta="true" RuntimeType="Silverlight" Version="1.7.0.1" Genre="apps.normal" Author="windows_client author" Description="Messaging Application" Publisher="windows_client" PublisherID="{d9c2d577-1f1d-4f5c-8082-4fd8cbe41ad6}">
     <IconPath IsRelative="true" IsResource="false">Application_IconImage_62x62.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_GAMERSERVICES" />
