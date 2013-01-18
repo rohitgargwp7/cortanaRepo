@@ -1,15 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using windows_client.utils;
-using System.Windows.Media;
-using System.Text.RegularExpressions;
-using System;
-using Microsoft.Phone.Tasks;
+﻿using System;
 using System.Windows.Media.Imaging;
 using windows_client.Languages;
 using Microsoft.Phone.Controls;
-using System.ComponentModel;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -24,7 +16,7 @@ namespace windows_client.Controls.StatusUpdate
 
         public FriendRequestStatus(string userName, BitmapImage userImage, 
             EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap)
-            : base(userName, userImage)
+            : base(userName, userImage, StatusType.FRIEND_REQUEST)
         {
             InitializeComponent();
             this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, userName);
