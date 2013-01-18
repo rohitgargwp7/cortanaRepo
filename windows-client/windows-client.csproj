@@ -140,6 +140,19 @@
     <Compile Include="Controls\SentChatBubble.xaml.cs">
       <DependentUpon>SentChatBubble.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
+      <DependentUpon>FriendRequestStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\LocationStatusUpdate.xaml.cs">
+      <DependentUpon>LocationStatusUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\ImageStatusUpdate.xaml.cs">
+      <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\TextStatusUpdate.xaml.cs">
+      <DependentUpon>TextStatusUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
@@ -276,6 +289,22 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\SentChatBubble.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\LocationStatusUpdate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\ImageStatusUpdate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\TextStatusUpdate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -679,6 +708,7 @@
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
