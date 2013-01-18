@@ -110,6 +110,16 @@ namespace windows_client
         public static readonly string PENDING = "pending"; // TODO : Change to exact constant
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
+
+        public static readonly string FIRSTNAME = "fname";
+        public static readonly string MIDDLENAME = "mname";
+        public static readonly string LASTNAME = "lname";
+        public static readonly string MOBILE = "mob";
+        public static readonly string TELEPHONE = "tel";
+        public static readonly string EMAIL = "email";
+        public static readonly string COMPANY = "cmp";
+        public static readonly string JOBTITLE = "jtitle";
+
         public static string FAQS_LINK
         {
             get
@@ -181,6 +191,7 @@ namespace windows_client
         public static string GROUP_ID_FROM_CHATTHREAD = "groupIdFromChatThreadPage";
         public static string GROUP_NAME_FROM_CHATTHREAD = "groupNameFromChatThreadPage";
         public static string GROUP_CHAT = "groupChat";
+        public static string SHARE_CONTACT = "shareContact";
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
@@ -192,6 +203,7 @@ namespace windows_client
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
+        public static string CONTACT_SELECTED = "contactSelected";
         public static string VIDEO_RECORDED = "videoRecorded";
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
@@ -205,12 +217,13 @@ namespace windows_client
         public static readonly string VIDEO = "video";
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
+        public static readonly string CONTACT = "contact";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
         public static readonly string FAIL = "fail";
         public static readonly string REWARDS_TOKEN = "reward_token";
-        public static readonly string SHOW_REWARDS  = "show_rewards";
+        public static readonly string SHOW_REWARDS = "show_rewards";
         public static readonly string REWARDS_VALUE = "tt";
 
         public static class Extras
@@ -258,7 +271,7 @@ namespace windows_client
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
             public static string REWARDS = "rewards";
-            
+
         }
 
         public static class AppSettings

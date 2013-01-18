@@ -232,6 +232,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact.
+        /// </summary>
+        public static string ContactTransfer_Text {
+            get {
+                return ResourceManager.GetString("ContactTransfer_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to added you as favourite. Would you like to do the same?.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt {
@@ -2208,6 +2217,51 @@ namespace windows_client.Languages {
         public static string Settings_VibrateToggleSwitchHeader {
             get {
                 return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share Contact.
+        /// </summary>
+        public static string ShareContact_ConfirmationCaption {
+            get {
+                return ResourceManager.GetString("ShareContact_ConfirmationCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to share contact information of {0}.
+        /// </summary>
+        public static string ShareContact_ConfirmationText {
+            get {
+                return ResourceManager.GetString("ShareContact_ConfirmationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share Contact.
+        /// </summary>
+        public static string ShareContact_Txt {
+            get {
+                return ResourceManager.GetString("ShareContact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh Contact List.
+        /// </summary>
+        public static string SharedContactNotFoundCaptionText {
+            get {
+                return ResourceManager.GetString("SharedContactNotFoundCaptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please refresh contact list as contact selected does not exists..
+        /// </summary>
+        public static string SharedContactNotFoundText {
+            get {
+                return ResourceManager.GetString("SharedContactNotFoundText", resourceCulture);
             }
         }
         

@@ -154,6 +154,7 @@ namespace windows_client.utils
 
         public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
+            
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
