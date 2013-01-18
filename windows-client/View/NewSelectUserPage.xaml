@@ -48,11 +48,29 @@
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
             
-            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
+            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
-                          VirtualizingStackPanel.VirtualizationMode="Recycling">
-                <phone:LongListSelector.GroupHeaderTemplate>
+                          IsBouncy="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          IsFlatList="False" ScrollingStarted="contactsListBox_ScrollingStarted">
+                <toolkit:LongListSelector.GroupItemsPanel>
+                    <ItemsPanelTemplate>
+                        <toolkit:WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </toolkit:LongListSelector.GroupItemsPanel>
+                <toolkit:LongListSelector.GroupItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{Binding GroupBackgroundBrush}" Width="99" Height="99" Margin="6" 
+                                IsHitTestVisible="{Binding HasItems}">
+                            <TextBlock Text="{Binding Title}" 
+                            Style="{StaticResource PhoneTextExtraLargeStyle}"
+                            Margin="{StaticResource PhoneTouchTargetOverhang}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"                                        
+                            VerticalAlignment="Bottom"/>
+                        </Border>
+                    </DataTemplate>
+                </toolkit:LongListSelector.GroupItemTemplate>
+                <toolkit:LongListSelector.GroupHeaderTemplate>
                     <DataTemplate>
                         <Border Background="Transparent" Margin="0,5,0,0">
                             <Border Background="{StaticResource PhoneAccentBrush}" 
@@ -64,8 +82,8 @@
                             </Border>
                         </Border>
                     </DataTemplate>
-                </phone:LongListSelector.GroupHeaderTemplate>
-                <phone:LongListSelector.ItemTemplate>
+                </toolkit:LongListSelector.GroupHeaderTemplate>
+                <toolkit:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -95,8 +113,8 @@
                             <Button Content="Invite" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" Height="60" BorderThickness="0" Tap="Invite_Tap"/>
                         </StackPanel>-->
                     </DataTemplate>
-                </phone:LongListSelector.ItemTemplate>
-            </phone:LongListSelector>
+                </toolkit:LongListSelector.ItemTemplate>
+            </toolkit:LongListSelector>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage >
