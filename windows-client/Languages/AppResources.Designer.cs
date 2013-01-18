@@ -250,6 +250,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added you as a favorite!.
+        /// </summary>
+        public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
+            get {
+                return ResourceManager.GetString("Conversations_AddedYouToFav_Txt_WP8FrndStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete All Chats.
         /// </summary>
         public static string Conversations_DelAllChats_Txt {
@@ -2379,6 +2388,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now see updates from {0}. Would you like to do the same?.
+        /// </summary>
+        public static string StatusUpdate_YouCanNowSeeUpdates_TxtBlk {
+            get {
+                return ResourceManager.GetString("StatusUpdate_YouCanNowSeeUpdates_TxtBlk", resourceCulture);
             }
         }
         
