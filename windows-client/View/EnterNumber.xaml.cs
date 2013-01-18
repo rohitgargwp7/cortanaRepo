@@ -37,11 +37,6 @@ namespace windows_client
                 set;
             }
 
-            public List<T> Items
-            {
-                get;
-                set;
-            }  
         }
 
         public EnterNumber()
