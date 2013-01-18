@@ -240,7 +240,7 @@
                                       MinHeight="68" MaxLength="10000"  Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
             </StackPanel>
         </StackPanel>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
+        <ProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
                                         Background="Transparent" IsIndeterminate="True" 
                                         VerticalAlignment="Center" 
                                         VerticalContentAlignment="Center" FontSize="24" 

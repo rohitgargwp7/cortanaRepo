@@ -35,7 +35,50 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
 
+    <phone:PhoneApplicationPage.Resources>
+        <phone:JumpListItemBackgroundConverter x:Key="BackgroundConverter"/>
+        <phone:JumpListItemForegroundConverter x:Key="ForegroundConverter"/>
+        <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
+            <Setter Property="GridCellSize"  Value="113,113"/>
+            <Setter Property="LayoutMode" Value="Grid" />
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border Background="{Binding Converter={StaticResource BackgroundConverter}}"
+                                        Width="113" Height="113" Margin="6" >
+                            <TextBlock Text="{Binding Title}"
+                                               FontFamily="{StaticResource PhoneFontFamilySemiBold}"
+                                               FontSize="48" Padding="6"
+                                               Foreground="{Binding Converter={StaticResource ForegroundConverter}}"
+                                               VerticalAlignment="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
+        <DataTemplate x:Key="ListHeaderTemplate">
+            <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_SelectCountry_TxtBlk, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" Margin="0,0,0,20"  FontSize="22"/>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="GroupHeaderTemplate">
+            <Border Background="Transparent">
+                <Border Background="{StaticResource PhoneAccentBrush}" 
+                        Width="55" Height="55" HorizontalAlignment="Left">
+                    <TextBlock Text="{Binding Title}" 
+                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Style="{StaticResource PhoneTextLargeStyle}"
+                                VerticalAlignment="Bottom"/>
+                </Border>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ItemTemplate">
+            <TextBlock Text="{Binding}" Tap="countryList_Tap" FontFamily="Segoe WP SemiLight" Margin="0,12,0,12" FontSize="36"/>
+        </DataTemplate>
+
+    </phone:PhoneApplicationPage.Resources>
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -68,7 +111,7 @@
                            Foreground="{StaticResource PhoneForegroundBrush}"
                            VerticalAlignment="Center">
                 </TextBlock>
-                <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,10,0,0" 
+                <ProgressBar x:Name="progressBar" Margin="0,10,0,0" 
                                                 Background="Transparent" IsIndeterminate="True" 
                                                 VerticalAlignment="Center" 
                                                 VerticalContentAlignment="Center" 
@@ -79,32 +122,13 @@
             </StackPanel>
         </Grid>
 
-        <phone:LongListSelector Margin="24,20,0,0" Grid.Row="0" Visibility="Collapsed" x:Name="countryList" Background="Transparent">
-            <phone:LongListSelector.ListHeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Path= LocalizedResources.EnterNumber_SelectCountry_TxtBlk, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" Margin="0,0,0,20"  FontSize="22"/>
-                </DataTemplate>
-            </phone:LongListSelector.ListHeaderTemplate>
-            <phone:LongListSelector.GroupHeaderTemplate>
-                <DataTemplate>
-                    <Border Background="Transparent">
-                        <Border Background="{StaticResource PhoneAccentBrush}" 
-                        Width="55" Height="55" HorizontalAlignment="Left">
-                            <TextBlock Text="{Binding Title}" 
-                                Foreground="{StaticResource PhoneForegroundBrush}" 
-                                Style="{StaticResource PhoneTextLargeStyle}"
-                                VerticalAlignment="Bottom"/>
-                        </Border>
-                    </Border>
-                </DataTemplate>
-            </phone:LongListSelector.GroupHeaderTemplate>
-            <phone:LongListSelector.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" Tap="countryList_Tap" FontFamily="Segoe WP SemiLight" Margin="0,12,0,12" FontSize="36"/>
-                </DataTemplate>
-            </phone:LongListSelector.ItemTemplate>
-
-        </phone:LongListSelector>
+        <phone:LongListSelector Margin="24,20,0,0" Grid.Row="0" Visibility="Collapsed" 
+                                x:Name="countryList" Background="Transparent"
+                                IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
+                                ItemTemplate="{StaticResource ItemTemplate}"
+                                GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
+                                JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"
+                                ListHeaderTemplate="{StaticResource ListHeaderTemplate}"/>
 
     </Grid>
 </phone:PhoneApplicationPage>
