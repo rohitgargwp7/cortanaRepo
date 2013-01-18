@@ -133,7 +133,7 @@ namespace windows_client.Controls
                             break;
                         case Attachment.AttachmentState.STARTED:
                             uploadOrDownloadStarted();
-                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId, this);
                             break;
                     }
                 }

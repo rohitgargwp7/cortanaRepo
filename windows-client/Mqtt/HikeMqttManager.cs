@@ -291,6 +291,14 @@ namespace windows_client.Mqtt
             }
         }
 
+        private void connectAgain()
+        {
+            if (!isConnected() && !isConnecting() && connectionStatus != MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
+            { 
+                connect();
+            }        
+        }
+
         private static object lockObj = new object();
 
 
