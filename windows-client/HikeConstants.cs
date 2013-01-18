@@ -191,7 +191,7 @@ namespace windows_client
         public static string GROUP_ID_FROM_CHATTHREAD = "groupIdFromChatThreadPage";
         public static string GROUP_NAME_FROM_CHATTHREAD = "groupNameFromChatThreadPage";
         public static string GROUP_CHAT = "groupChat";
-        public static string SHARE_CONTACT = "sharecontact";
+        public static string SHARE_CONTACT = "shareContact";
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";

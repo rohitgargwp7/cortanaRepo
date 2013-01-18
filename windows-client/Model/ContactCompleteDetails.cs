@@ -23,28 +23,28 @@ namespace windows_client.Model
         {
             JObject jobject = new JObject();
 
-            if (string.IsNullOrEmpty(firstName) == false)
+            if (!string.IsNullOrEmpty(firstName))
                 jobject[HikeConstants.FIRSTNAME] = firstName;
 
-            if (string.IsNullOrEmpty(middleName) == false)
+            if (!string.IsNullOrEmpty(middleName))
                 jobject[HikeConstants.MIDDLENAME] = middleName;
 
-            if (string.IsNullOrEmpty(lastName) == false)
+            if (!string.IsNullOrEmpty(lastName))
                 jobject[HikeConstants.LASTNAME] = lastName;
 
-            if (string.IsNullOrEmpty(mobile) == false)
+            if (!string.IsNullOrEmpty(mobile))
                 jobject[HikeConstants.MOBILE] = mobile;
 
-            if (string.IsNullOrEmpty(telephone) == false)
+            if (!string.IsNullOrEmpty(telephone))
                 jobject[HikeConstants.TELEPHONE] = telephone;
 
-            if (string.IsNullOrEmpty(email) == false)
+            if (!string.IsNullOrEmpty(email))
                 jobject[HikeConstants.EMAIL] = email;
 
-            if (string.IsNullOrEmpty(company) == false)
+            if (!string.IsNullOrEmpty(company))
                 jobject[HikeConstants.COMPANY] = company;
 
-            if (string.IsNullOrEmpty(jobTitle) == false)
+            if (!string.IsNullOrEmpty(jobTitle))
                 jobject[HikeConstants.JOBTITLE] = jobTitle;
             return jobject;
         }
@@ -53,28 +53,28 @@ namespace windows_client.Model
         {
             SaveContactTask saveContactTask = new SaveContactTask();
 
-            if (string.IsNullOrEmpty(firstName) == false)
+            if (!string.IsNullOrEmpty(firstName))
                 saveContactTask.FirstName = firstName;
 
-            if (string.IsNullOrEmpty(middleName) == false)
+            if (!string.IsNullOrEmpty(middleName))
                 saveContactTask.MiddleName = middleName;
 
-            if (string.IsNullOrEmpty(lastName) == false)
+            if (!string.IsNullOrEmpty(lastName))
                 saveContactTask.LastName = lastName;
 
-            if (string.IsNullOrEmpty(mobile) == false)
+            if (!string.IsNullOrEmpty(mobile))
                 saveContactTask.MobilePhone = mobile;
 
-            if (string.IsNullOrEmpty(telephone) == false)
+            if (!string.IsNullOrEmpty(telephone))
                 saveContactTask.HomePhone = telephone;
 
-            if (string.IsNullOrEmpty(email) == false)
+            if (!string.IsNullOrEmpty(email))
                 saveContactTask.WorkEmail = email;
 
-            if (string.IsNullOrEmpty(company) == false)
+            if (!string.IsNullOrEmpty(company))
                 saveContactTask.Company = company;
 
-            if (string.IsNullOrEmpty(jobTitle) == false)
+            if (!string.IsNullOrEmpty(jobTitle))
                 saveContactTask.JobTitle = jobTitle;
             return saveContactTask;
         }
@@ -91,16 +91,10 @@ namespace windows_client.Model
                 if (ph.Kind == PhoneNumberKind.Mobile)
                 {
                     con.mobile = ph.PhoneNumber;
-                    break;
                 }
-            }
-
-            foreach (ContactPhoneNumber ph in c.PhoneNumbers)
-            {
                 if (ph.Kind == PhoneNumberKind.Home)
                 {
                     con.telephone = ph.PhoneNumber;
-                    break;
                 }
             }
 

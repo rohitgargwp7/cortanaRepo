@@ -184,6 +184,7 @@ namespace windows_client.View
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
                 isContactShared = true;
+                hideSmsContacts = true;
                 txtChat.Visibility = Visibility.Collapsed;
                 txtTitle.Text = AppResources.ShareContact_Txt;
             }
@@ -213,7 +214,7 @@ namespace windows_client.View
             bw.RunWorkerCompleted += (s, e) =>
             {
                 jumpList = getGroupedList(allContactsList);
-                if (!hideSmsContacts && !isContactShared)
+                if (!hideSmsContacts)
                 {
                     if (filteredJumpList == null)
                         MakeFilteredJumpList();

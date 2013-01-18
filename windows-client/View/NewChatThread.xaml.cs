@@ -2883,7 +2883,7 @@ namespace windows_client.View
             Contact contact = (Contact)PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED];
             PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT_SELECTED);
 
-            if ((!isGroupChat || isGroupAlive) && contact != null)
+            if (contact != null)
             {
                 string fileName = "con_" + TimeUtils.getCurrentTimeStamp().ToString();
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
