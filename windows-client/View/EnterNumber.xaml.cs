@@ -663,14 +663,14 @@ namespace windows_client
             return glist;
         }
 
-        private void countryList_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
-        {
-            isGroupViewOpened = true;
-        }
+        //private void countryList_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
+        //{
+        //    isGroupViewOpened = true;
+        //}
 
-        private void countryList_GroupViewClosing(object sender, GroupViewClosingEventArgs e)
-        {
-            isGroupViewOpened = false;
-        }
+        //private void countryList_GroupViewClosing(object sender, GroupViewClosingEventArgs e)
+        //{
+        //    isGroupViewOpened = false;
+        //}
     }
 }
