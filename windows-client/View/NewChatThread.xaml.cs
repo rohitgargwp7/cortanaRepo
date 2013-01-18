@@ -79,6 +79,7 @@ namespace windows_client.View
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarMenuItem addToFavMenuItem = null;
+        ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -395,6 +396,13 @@ namespace windows_client.View
                 shareLocation();
             }
             #endregion
+            #region SHARE CONTACT
+            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            {
+                ContactTransfer();
+            }
+            #endregion
+
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -556,6 +564,11 @@ namespace windows_client.View
             }
             #endregion
 
+            if (isGroupChat || !isOnHike)
+            {
+                spContactTransfer.Visibility = Visibility.Collapsed;
+                rectContactTransfer.Visibility = Visibility.Collapsed;
+            }
             userName.Text = mContactName;
             if (groupOwner != null)
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
@@ -814,10 +827,10 @@ namespace windows_client.View
 
                 if (isAddUser)
                 {
-                    ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-                    menuItem2.Text = AppResources.SelectUser_AddUser_Txt;
-                    menuItem2.Click += new EventHandler(addUser_Click);
-                    appBar.MenuItems.Add(menuItem2);
+                    addUserMenuItem = new ApplicationBarMenuItem();
+                    addUserMenuItem.Text = AppResources.SelectUser_AddUser_Txt;
+                    addUserMenuItem.Click += new EventHandler(addUser_Click);
+                    appBar.MenuItems.Add(addUserMenuItem);
                 }
                 ApplicationBarMenuItem callMenuItem = new ApplicationBarMenuItem();
                 callMenuItem.Text = AppResources.Call_Txt;
@@ -967,6 +980,10 @@ namespace windows_client.View
                     string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfo, 0, locationInfo.Length);
                     convMessage.MetaDataString = locationInfoString;
                 }
+                else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                {
+                    convMessage.Message = AppResources.ContactTransfer_Text;
+                }
 
                 SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
 
@@ -1005,6 +1022,8 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove("SharePicker");
                 });
             }
+            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+                ContactTransfer();
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
                 AudioFileTransfer();
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
@@ -1443,6 +1462,20 @@ namespace windows_client.View
                 bingMapsTask.ZoomLevel = zoomLevel;
                 bingMapsTask.Show();
                 return;
+            }
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+            {
+                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
+                byte[] filebytes;
+                MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
+
+                string contactInfoString = Encoding.UTF8.GetString(filebytes, 0, filebytes.Length);
+                JObject contactInfoJobject = JObject.Parse(contactInfoString);
+
+                ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
+                SaveContactTask sct = con.GetSaveCotactTask();
+                sct.Show();
+
             }
         }
 
@@ -2005,12 +2038,16 @@ namespace windows_client.View
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
                 {
-                    if (lastMessageBubble.FileAttachment.ContentType.Contains("image"))
-                        obj.LastMessage = "image";
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains("audio"))
-                        obj.LastMessage = "audio";
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains("video"))
-                        obj.LastMessage = "video";
+
+                    if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                        obj.LastMessage = HikeConstants.IMAGE;
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        obj.LastMessage = HikeConstants.AUDIO;
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                        obj.LastMessage = HikeConstants.VIDEO;
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        obj.LastMessage = HikeConstants.CONTACT;
+
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble is NotificationChatBubble)
@@ -2097,6 +2134,14 @@ namespace windows_client.View
         private void sendAudio_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             NavigationService.Navigate(new Uri("/View/RecordMedia.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void sendContact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
+
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
 
@@ -2845,6 +2890,38 @@ namespace windows_client.View
             }
         }
 
+        private void ContactTransfer()
+        {
+            Contact contact = (Contact)PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED];
+            PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT_SELECTED);
+
+            if (contact != null)
+            {
+                string fileName = "con_" + TimeUtils.getCurrentTimeStamp().ToString();
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
+
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment.ContentType = HikeConstants.CONTACT;
+                convMessage.Message = AppResources.ContactTransfer_Text;
+
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+                //msgMap.Add(convMessage.MessageId, chatBubble);
+
+                addNewAttachmentMessageToUI(chatBubble);
+
+                ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contact);
+
+                JObject json = con.SerialiseToJobject();
+
+                object[] vals = new object[3];
+                vals[0] = convMessage;
+                vals[1] = Encoding.UTF8.GetBytes(json.ToString(Newtonsoft.Json.Formatting.None));
+                vals[2] = chatBubble;
+                App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+            }
+        }
         // this should be called when one gets tap here msg.
         private void smsUser_Click(object sender, EventArgs e)
         {
@@ -3109,6 +3186,7 @@ namespace windows_client.View
                 }
                 else
                 {
+                    appBar.MenuItems.Remove(addUserMenuItem);
                     MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
                 }
             });

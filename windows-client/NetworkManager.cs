@@ -87,6 +87,7 @@ namespace windows_client
             {
                 Thread.Sleep(500);
             }
+           
             JObject jsonObj = null;
             try
             {
@@ -322,9 +323,15 @@ namespace windows_client
                 if (joined)
                 {
                     // if user is in contact list then only show the joined msg
-                    bool isUserInContactList = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn) != null ? true : false;
+                    ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn); 
+                    bool isUserInContactList = c != null ? true : false;
+                    if (isUserInContactList && c.OnHike) // if user exists and is already on hike , do nothing
+                        return;
+
+                    // if user does not exists we dont know about his onhike status , so we need to process
                     ProcessUoUjMsgs(jsonObj, false, isUserInContactList);
                 }
+                // if user has left mark him as non hike user in group cache
                 else if (GroupManager.Instance.GroupCache != null)
                 {
                     foreach (string key in GroupManager.Instance.GroupCache.Keys)
@@ -1090,8 +1097,12 @@ namespace windows_client
                 {
                     if (l[i].Msisdn == ms) // if this msisdn exists in group
                     {
-                        if (!isOptInMsg)
+                        if (!isOptInMsg) // represents UJ event
+                        {
+                            if (l[i].IsOnHike)  // if this user is already on hike
+                                continue;
                             l[i].IsOnHike = true;
+                        }
                         object[] values = null;
                         ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
                         convMsg.Msisdn = key;

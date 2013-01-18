@@ -153,6 +153,7 @@ namespace windows_client
             try
             {
                 mThread = new Thread(new ThreadStart(startPubSub));
+                mThread.Name = "PUBSUB THREAD";
                 mThread.Start();
             }
             catch (ThreadStartException e)
