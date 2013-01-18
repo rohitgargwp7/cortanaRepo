@@ -37,23 +37,11 @@ namespace windows_client.View
         private ApplicationBar appBar;
         private ApplicationBarIconButton doneIconButton = null;
 
-        public class Group<T> : IEnumerable<T>
+        public class Group<T> : List<T>
         {
             public Group(string name, List<T> items)
             {
                 this.Title = name;
-                this.Items = items;
-            }
-
-            public override bool Equals(object obj)
-            {
-                Group<T> that = obj as Group<T>;
-
-                return (that != null) && (this.Title.Equals(that.Title));
-            }
-            public override int GetHashCode()
-            {
-                return this.Title.GetHashCode();
             }
             public string Title
             {
@@ -61,46 +49,6 @@ namespace windows_client.View
                 set;
             }
 
-            public List<T> Items
-            {
-                get;
-                set;
-            }
-            public bool HasItems
-            {
-                get
-                {
-                    return (Items == null || Items.Count == 0) ? false : true;
-                }
-            }
-
-            /// <summary>
-            /// This is used to colour the tiles - greying out those that have no entries
-            /// </summary>
-            public Brush GroupBackgroundBrush
-            {
-                get
-                {
-                    return (SolidColorBrush)Application.Current.Resources[(HasItems) ? "PhoneAccentBrush" : "PhoneChromeBrush"];
-                }
-            }
-            #region IEnumerable<T> Members
-
-            public IEnumerator<T> GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
-
-            #region IEnumerable Members
-
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
         }
 
         public InviteUsers()
@@ -180,7 +128,7 @@ namespace windows_client.View
                 // calculate the index into the list
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
                 // and add the entry
-                glist[index].Items.Add(c);
+                glist[index].Add(c);
             }
             return glist;
         }
@@ -338,12 +286,12 @@ namespace windows_client.View
                 return contact;
             for (int i = 0; i < 26; i++)
             {
-                if (glistFiltered[i] == null || glistFiltered[i].Items == null)
+                if (glistFiltered[i] == null || glistFiltered[i] == null)
                     return contact;
-                for (int k = 0; k < glistFiltered[i].Items.Count; k++)
+                for (int k = 0; k < glistFiltered[i].Count; k++)
                 {
-                    if (glistFiltered[i].Items[k].Msisdn == contact.Msisdn)
-                        return glistFiltered[i].Items[k];
+                    if (glistFiltered[i][k].Msisdn == contact.Msisdn)
+                        return glistFiltered[i][k];
                 }
             }
             return contact;
@@ -382,30 +330,30 @@ namespace windows_client.View
                     contactsListBox.ItemsSource = null;
                     return;
                 }
-                if (gl[26].Items.Count > 0 && gl[26].Items[0].Msisdn != null)
+                if (gl[26].Count > 0 && gl[26][0].Msisdn != null)
                 {
-                    gl[26].Items[0].Name = charsEntered;
+                    gl[26][0].Name = charsEntered;
                     if (!_isAddToFavPage)
                     {
                         string num = Utils.NormalizeNumber(charsEntered);
                         if (contactsList.ContainsKey(num))
                         {
-                            gl[26].Items[0].IsInvite = true;
-                            gl[26].Items[0].IsFav = true;
+                            gl[26][0].IsInvite = true;
+                            gl[26][0].IsFav = true;
                         }
                         else
                         {
-                            gl[26].Items[0].IsInvite = false;
-                            gl[26].Items[0].IsFav = false;
+                            gl[26][0].IsInvite = false;
+                            gl[26][0].IsFav = false;
                         }
                     }
                     if (charsEntered.Length >= 1 && charsEntered.Length <= 15)
                     {
-                        gl[26].Items[0].Msisdn = TAP_MSG;
+                        gl[26][0].Msisdn = TAP_MSG;
                     }
                     else
                     {
-                        gl[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
+                        gl[26][0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                     }
                 }
                 contactsListBox.ItemsSource = null;
@@ -460,10 +408,10 @@ namespace windows_client.View
             bool createNewFilteredList = true;
             for (int i = start; i < end; i++)
             {
-                int maxJ = listToIterate == null ? 0 : (listToIterate[i].Items == null ? 0 : listToIterate[i].Items.Count);
+                int maxJ = listToIterate == null ? 0 : (listToIterate[i] == null ? 0 : listToIterate[i].Count);
                 for (int j = 0; j < maxJ; j++)
                 {
-                    ContactInfo cn = listToIterate[i].Items[j];
+                    ContactInfo cn = listToIterate[i][j];
                     if (!_isAddToFavPage )
                     {
                         if (contactsList.ContainsKey(cn.Msisdn))
@@ -484,7 +432,7 @@ namespace windows_client.View
                             createNewFilteredList = false;
                             glistFiltered = createGroups();
                         }
-                        glistFiltered[i].Items.Add(cn);
+                        glistFiltered[i].Add(cn);
                     }
                 }
             }
@@ -497,23 +445,23 @@ namespace windows_client.View
                     if (defaultJumpList == null)
                         defaultJumpList = createGroups();
                     list = defaultJumpList;
-                    if (defaultJumpList[26].Items.Count == 0)
-                        defaultJumpList[26].Items.Insert(0, defaultContact);
+                    if (defaultJumpList[26].Count == 0)
+                        defaultJumpList[26].Insert(0, defaultContact);
                 }
                 else
                 {
                     list = glistFiltered;
-                    list[26].Items.Insert(0, defaultContact);
+                    list[26].Insert(0, defaultContact);
                 }
                 charsEntered = (isPlus ? "+" : "") + charsEntered;
-                list[26].Items[0].Name = charsEntered;
+                list[26][0].Name = charsEntered;
                 if (Utils.IsNumberValid(charsEntered))
                 {
-                    list[26].Items[0].Msisdn = TAP_MSG;
+                    list[26][0].Msisdn = TAP_MSG;
                 }
                 else
                 {
-                    list[26].Items[0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
+                    list[26][0].Msisdn = AppResources.SelectUser_EnterValidNo_Txt;
                 }
 
             }

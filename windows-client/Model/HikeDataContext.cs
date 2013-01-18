@@ -11,6 +11,8 @@ namespace windows_client.Model
         public Table<ConvMessage> messages;
 
         public Table<GroupInfo> groupInfo;
+
+        public Table<StatusMessage> statusMessage;
     }
 
     public class HikeUsersDb : DataContext

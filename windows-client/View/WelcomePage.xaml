@@ -68,7 +68,8 @@
                 <HyperlinkButton Name="termsLink" Height="70" Margin="0,0,0,55" Content="{Binding Path= LocalizedResources.WelcomePage_TnP_HlBtn, Source={StaticResource LocalizedStrings}}" Width="480" HorizontalAlignment="Center" FontSize="24" FontStyle="Normal" Tap="Privacy_Tap"/>
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="430" Text="{Binding Path= LocalizedResources.WelcomePage_PushMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="0,0,0,4" HorizontalAlignment="Center" Foreground="#909090"/>
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center" Width="440" Text="{Binding Path= LocalizedResources.WelcomePage_13YrsMsg_TxtBlk, Source={StaticResource LocalizedStrings}}" Margin="24,0,24,5" HorizontalAlignment="Center" Foreground="#909090" />
-                <toolkit:PerformanceProgressBar x:Name="progressBar" Margin="0,0,0,20" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0"/>
+                
+                <ProgressBar x:Name="progressBar" Margin="0,0,0,20" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0"/>
             </StackPanel>
         </Grid>
     </Grid>

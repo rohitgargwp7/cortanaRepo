@@ -227,6 +227,37 @@ namespace windows_client.DbUtils
 
         #endregion
 
+        #region STATUS UPDATES
+
+        public static Func<HikeChatsDb, string, IQueryable<StatusMessage>> GetStatusMsgsForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, string myMsisdn) =>
+                    from o in hdc.statusMessage
+                    where o.Msisdn == myMsisdn
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb,IQueryable<StatusMessage>> GetAllStatusMsgs
+        {
+            get
+            {
+                Func<HikeChatsDb, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb,IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc) =>
+                    from o in hdc.statusMessage
+                    select o);
+                return q;
+            }
+        }
+
+        #endregion
+
         #region ConversationTable Queries
 
         //public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations
