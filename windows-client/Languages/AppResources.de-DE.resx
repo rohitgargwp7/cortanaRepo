@@ -1229,4 +1229,7 @@
     <value>Mehr hinzufügen</value>
     <comment>xaml</comment>
   </data>
+  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
+    <value />
+  </data>
 </root>

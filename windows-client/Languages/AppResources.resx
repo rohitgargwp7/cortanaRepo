@@ -1245,4 +1245,7 @@
     <value>stop</value>
     <comment>record video page app bar</comment>
   </data>
+  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
+    <value>Is this your number?</value>
+  </data>
 </root>
