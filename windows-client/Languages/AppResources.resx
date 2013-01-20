@@ -1274,6 +1274,9 @@
     <value>You can now see updates from {0}. Would you like to do the same?</value>
     <comment>for friend requests status update in wp8</comment>
   </data>
+  <data name="CentralTimeLine_Header" xml:space="preserve">
+    <value>RECENT UPDATES</value>
+  </data>
   <data name="StatusUpdate_Photo" xml:space="preserve">
     <value>Chaanged profile picture</value>
   </data>

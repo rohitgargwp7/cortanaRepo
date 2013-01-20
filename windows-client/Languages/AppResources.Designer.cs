@@ -187,6 +187,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RECENT UPDATES.
+        /// </summary>
+        public static string CentralTimeLine_Header {
+            get {
+                return ResourceManager.GetString("CentralTimeLine_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This group chat is muted.
         /// </summary>
         public static string ChatThread_GCMute {
