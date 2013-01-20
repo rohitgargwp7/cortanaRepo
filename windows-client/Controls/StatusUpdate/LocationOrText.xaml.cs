@@ -6,18 +6,18 @@ namespace windows_client.Controls.StatusUpdate
 {
     public partial class LocationOrText : StatusUpdateBox
     {
-        public LocationOrText(string userName, BitmapImage userImage, StatusType updateType, string locationName, long timestamp)
+        public LocationOrText(string userName, BitmapImage userImage, StatusType updateType, string textOrLocationName, long timestamp)
             : base(userName, userImage, updateType)
         {
             InitializeComponent();
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             if (updateType == StatusType.TEXT_UPDATE)
             {
-                this.statusTextTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, locationName);
+                this.statusTextTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, textOrLocationName);
             }
-            else
+            else // for location
             {
-                this.statusTextTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, locationName);
+                this.statusTextTxtBlk.Text = string.Format(AppResources.StatuUpdate_Location, textOrLocationName);
             }
         }
     }

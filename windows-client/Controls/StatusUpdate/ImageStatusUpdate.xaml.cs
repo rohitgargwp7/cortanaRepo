@@ -10,7 +10,7 @@ namespace windows_client.Controls.StatusUpdate
             : base(userName, userImage, StatusType.IMAGE_UPDATE)
         {
             InitializeComponent();
-            this.statusTextTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, locationName);
+            this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             this.statusImage.Source = statusImageBitmap;
         }
