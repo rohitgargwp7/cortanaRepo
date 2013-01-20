@@ -60,6 +60,7 @@ namespace windows_client.Controls.StatusUpdate
         { 
             TEXT_UPDATE,
             IMAGE_UPDATE,
+            IMAGE_TEXT_UPDATE,
             LOCATION_UPDATE,
             FRIEND_REQUEST
         }
