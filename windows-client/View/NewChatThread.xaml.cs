@@ -1738,7 +1738,37 @@ namespace windows_client.View
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
-                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                #region STATUS UPDATE
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    JObject data = JObject.Parse(convMessage.MetaDataString);
+                    IEnumerator<KeyValuePair<string, JToken>> keyVals = data.GetEnumerator();
+                    while (keyVals.MoveNext())
+                    {
+                        try
+                        {
+                            KeyValuePair<string, JToken> kv = keyVals.Current;
+                            if (kv.Key == HikeConstants.PIC_UPDATE)
+                            {
+                                MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PIC_UPDATE, AppResources.PicUpdate_StatusTxt);
+                                this.MessageList.Children.Add(chatBubble);
+                            }
+                            else if (kv.Key == HikeConstants.TEXT_UPDATE)
+                            {
+                                JObject valObj = kv.Value.ToObject<JObject>();
+                                string msg = valObj["data"].ToString();
+                                MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.TEXT_UPDATE, msg);
+                                this.MessageList.Children.Add(chatBubble);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception in Status update : "+e.StackTrace);
+                        }
+                    }
+                    
+                }
+                #endregion
                 ScrollToBottom();
             }
             catch (Exception e)
