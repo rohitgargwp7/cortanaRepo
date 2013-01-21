@@ -588,8 +588,15 @@ namespace windows_client.utils
         #region DEFAULT AVATARS
         private int computeHash(string msisdn)
         {
-            int last3Digits = Convert.ToInt32(msisdn.Substring(msisdn.Length - 3));
-            return last3Digits % 7;
+            try
+            {
+                int last3Digits = Convert.ToInt32(msisdn.Substring(msisdn.Length - 3));
+                return last3Digits % 7;
+            }
+            catch
+            {
+                return 6;
+            }
         }
 
         public string getDefaultAvatarFileName(string msisdn, bool isGroup)
