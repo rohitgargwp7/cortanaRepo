@@ -1277,5 +1277,11 @@
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
     <value>Changed profile picture</value>
     <comment>Text used in profile picture update</comment>
+    </data>
+  <data name="StatusUpdate_Photo" xml:space="preserve">
+    <value>Chaanged profile picture</value>
+  </data>
+  <data name="StatuUpdate_Location" xml:space="preserve">
+    <value>at {0}</value>
   </data>
 </root>

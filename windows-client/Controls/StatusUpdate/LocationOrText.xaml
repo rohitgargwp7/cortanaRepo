@@ -6,14 +6,13 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
-	x:Class="windows_client.Controls.StatusUpdate.ImageStatusUpdate"
+	x:Class="windows_client.Controls.StatusUpdate.LocationOrText"
 	d:DesignWidth="372" d:DesignHeight="86"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
     <!--<Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right">-->
     <Grid x:Name="LayoutRoot" Background="Transparent" Margin="44,12,0,10" HorizontalAlignment="Right">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -26,7 +25,6 @@
         <Image Source="{Binding UserImage}" Margin="0,10,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Height="69" ></Image>
         <TextBlock Text="{Binding UserName}" FontSize="22" Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
         <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="16,0,5,0"/>
-        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="2" Margin="16,0,5,0" />
-        <Image x:Name="statusImage" Margin="0,10,0,0" Grid.Column="0" Grid.Row="3" Grid.RowSpan="4" VerticalAlignment="Top" Height="354" ></Image>
+        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="16,0,5,0" />
     </Grid>
 </status:StatusUpdateBox>

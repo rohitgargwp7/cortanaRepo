@@ -2410,11 +2410,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chaanged profile picture.
+        /// </summary>
+        public static string StatusUpdate_Photo {
+            get {
+                return ResourceManager.GetString("StatusUpdate_Photo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can now see updates from {0}. Would you like to do the same?.
         /// </summary>
         public static string StatusUpdate_YouCanNowSeeUpdates_TxtBlk {
             get {
                 return ResourceManager.GetString("StatusUpdate_YouCanNowSeeUpdates_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to at {0}.
+        /// </summary>
+        public static string StatuUpdate_Location {
+            get {
+                return ResourceManager.GetString("StatuUpdate_Location", resourceCulture);
             }
         }
         
