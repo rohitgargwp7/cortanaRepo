@@ -1717,6 +1717,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changed profile picture.
+        /// </summary>
+        public static string PicUpdate_StatusTxt {
+            get {
+                return ResourceManager.GetString("PicUpdate_StatusTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to play.
         /// </summary>
         public static string Play_Txt {
