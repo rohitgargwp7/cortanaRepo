@@ -931,6 +931,31 @@ namespace windows_client
                 }
             }
             #endregion
+            #region STATUS UPDATE
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, data);
+                    cm.Msisdn = msisdn;
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                    if (obj == null)
+                        return;
+                    // store the msg in STATUS TABLE
+                    List<StatusMessage> smList = StatusMsgsTable.InsertStatusMsgs(msisdn,data);
+                    object[] vals = new object[2];
+                    vals[0] = cm;
+                    vals[1] = obj;
+                    pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Netwok Manager :: Exception in REWARDS : " + e.StackTrace);
+                }
+            }
+            #endregion
             #region OTHER
             else
             {

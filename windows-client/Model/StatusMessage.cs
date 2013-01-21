@@ -24,6 +24,17 @@ namespace windows_client.Model
             PHOTO_UPDATE
         }
 
+        public StatusMessage(string msisdn, string msg, StatusType type)
+        {
+            _msisdn = msisdn;
+            _message = msg;
+            _type = type;
+        }
+
+        public StatusMessage()
+        {
+        }
+
         [Column(IsVersion = true)]
         private Binary version;
 
