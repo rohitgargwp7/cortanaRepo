@@ -74,7 +74,8 @@ namespace windows_client.Model
             GROUP_JOINED_OR_WAITING,
             CREDITS_GAINED,
             INTERNATIONAL_USER,
-            INTERNATIONAL_GROUP_USER
+            INTERNATIONAL_GROUP_USER,
+            STATUS_UPDATE
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
