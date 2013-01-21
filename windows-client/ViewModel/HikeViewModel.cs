@@ -7,6 +7,8 @@ using Microsoft.Phone.Reactive;
 using System;
 using windows_client.DbUtils;
 using windows_client.Controls;
+using windows_client.View;
+using Microsoft.Phone.Controls;
 
 
 namespace windows_client.ViewModel
@@ -39,20 +41,6 @@ namespace windows_client.ViewModel
             }
         }
 
-        private Dictionary<string, ConversationBox> _convBoxMap;
-
-        public Dictionary<string, ConversationBox> ConvBoxMap
-        {
-            get
-            {
-                return _convBoxMap;
-            }
-            set
-            {
-                if (value != _convBoxMap)
-                    _convBoxMap = value;
-            }
-        }
 
         private ObservableCollection<ConversationBox> _messageListPageCollection;
 
@@ -66,6 +54,21 @@ namespace windows_client.ViewModel
             {
                 _messageListPageCollection = value;
                 NotifyPropertyChanged("MessageListPageCollection");
+            }
+        }
+
+        private ConversationsList conversationListPage;
+
+        public ConversationsList ConversationListPage
+        {
+            get
+            {
+                return conversationListPage;
+            }
+            set
+            {
+                if (value != conversationListPage)
+                    conversationListPage = value;
             }
         }
 
@@ -98,9 +101,7 @@ namespace windows_client.ViewModel
 
         public HikeViewModel(List<ConversationListObject> convList)
         {
-
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
-            _convBoxMap = new Dictionary<string, ConversationBox>(convList.Count);
             _pendingReq = new ObservableCollection<ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
 
@@ -109,9 +110,8 @@ namespace windows_client.ViewModel
             foreach (ConversationListObject convListObj in convList)
             {
                 _convMap[convListObj.Msisdn] = convListObj;
-                ConversationBox convBox = new ConversationBox(convListObj);
-                _convBoxMap[convListObj.Msisdn] = convBox;
-                listConversationBox.Add(convBox);
+                convListObj.ConvBoxObj = new ConversationBox(convListObj);//context menu wil bind on page load
+                listConversationBox.Add(convListObj.ConvBoxObj);
             }
             _messageListPageCollection = new ObservableCollection<ConversationBox>(listConversationBox);
             MiscDBUtil.LoadFavourites(_favList, _convMap);
@@ -131,7 +131,6 @@ namespace windows_client.ViewModel
             _convMap = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
             _pendingReq = new ObservableCollection<ConversationListObject>();
-            _convBoxMap = new Dictionary<string, ConversationBox>();
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
@@ -236,32 +235,25 @@ namespace windows_client.ViewModel
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
-                object[] vals = (object[])obj;
-                ConversationListObject mObj = (ConversationListObject)vals[1];
-                if (mObj == null)
-                    return;
-
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    ConversationBox convBox = null;
-
-                    if (App.ViewModel.ConvMap.ContainsKey(mObj.Msisdn) && App.ViewModel.ConvBoxMap.TryGetValue(mObj.Msisdn, out convBox))
                     {
-                        if (!App.ViewModel.MessageListPageCollection.Remove(convBox))
-                            scheduler.Schedule(App.ViewModel.RefreshNewConversationObject, TimeSpan.FromMilliseconds(5));
-                        convBox.update(mObj);
+                        object[] vals = (object[])obj;
+                        ConversationListObject mObj = (ConversationListObject)vals[1];
+                        if (mObj == null)
+                            return;
+
+                        if (mObj.ConvBoxObj == null)
+                        {
+                            mObj.ConvBoxObj = new ConversationBox(mObj);
+                            if (App.ViewModel.ConversationListPage != null)
+                                ContextMenuService.SetContextMenu(mObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(mObj));
+                        }
+                        else
+                            App.ViewModel.MessageListPageCollection.Remove(mObj.ConvBoxObj);
+
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
-                    }
-                    else
-                    {
-                        App.ViewModel.ConvMap[mObj.Msisdn]= mObj;
-                        convBox = new ConversationBox(mObj);
-                        App.ViewModel.ConvBoxMap.Add(mObj.Msisdn, convBox);
-                    }
-
-                    App.ViewModel.MessageListPageCollection.Insert(0, convBox);
-                });
-
+                        App.ViewModel.MessageListPageCollection.Insert(0, mObj.ConvBoxObj);
+                    });
             }
             #endregion
             #region USER_LEFT USER_JOINED
