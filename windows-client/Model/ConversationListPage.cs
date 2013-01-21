@@ -14,11 +14,12 @@ using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
+using windows_client.Controls;
 
 namespace windows_client.Model
 {
     [DataContract]
-    public class ConversationListObject : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ConversationListObject>, IBinarySerializable
+    public class ConversationListObject : IComparable<ConversationListObject>, IBinarySerializable
     {
         private object readWriteLock = new object();
         #region member variables
@@ -35,6 +36,7 @@ namespace windows_client.Model
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
+        private ConversationBox cBoxObj;
 
         #endregion
 
@@ -51,10 +53,8 @@ namespace windows_client.Model
             {
                 if (_contactName != value)
                 {
-                    NotifyPropertyChanging("ContactName");
                     _contactName = value;
-                    NotifyPropertyChanged("ContactName");
-                    NotifyPropertyChanged("NameToShow");
+                    UpdateConversationBox();
                 }
             }
         }
@@ -70,9 +70,8 @@ namespace windows_client.Model
             {
                 if (_lastMessage != value)
                 {
-                    NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
-                    NotifyPropertyChanged("LastMessage");
+                    UpdateConversationBox();
                 }
             }
         }
@@ -88,10 +87,8 @@ namespace windows_client.Model
             {
                 if (_timeStamp != value)
                 {
-                    NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
-                    NotifyPropertyChanged("TimeStamp");
-                    NotifyPropertyChanged("FormattedTimeStamp");
+                    UpdateConversationBox();
                 }
             }
         }
@@ -107,9 +104,8 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
-                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value.Trim();
-                    NotifyPropertyChanged("Msisdn");
+                    UpdateConversationBox();
                 }
             }
         }
@@ -125,10 +121,8 @@ namespace windows_client.Model
             {
                 if (_isOnhike != value)
                 {
-                    NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
-                    NotifyPropertyChanged("IsOnhike");
-                    NotifyPropertyChanged("ShowOnHikeImage");
+                    UpdateConversationBox();
                 }
             }
         }
@@ -144,12 +138,8 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
-                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
-                    NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("LastMessageColor");
-                    NotifyPropertyChanged("SDRStatusImage");
-                    NotifyPropertyChanged("SDRStatusImageVisible");
+                    UpdateConversationBox();
                 }
             }
         }
@@ -276,8 +266,8 @@ namespace windows_client.Model
                 {
                     _avatar = value;
                     empImage = null; // reset to null whenever avatar changes
-                    NotifyPropertyChanged("Avatar");
-                    NotifyPropertyChanged("AvatarImage");
+                    UpdateConversationBox();
+
                 }
             }
         }
@@ -363,8 +353,6 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
-                    NotifyPropertyChanged("IsFav");
-                    NotifyPropertyChanged("FavMsg");
                 }
             }
         }
@@ -380,16 +368,29 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility IsGroupChat
+        public bool IsGroupChat
         {
             get
             {
                 if (Utils.isGroupConversation(_msisdn))
-                    return Visibility.Collapsed;
-                return Visibility.Visible;
+                    return true;
+                return false;
             }
         }
 
+        public ConversationBox ConvBoxObj
+        {
+            get
+            {
+                return cBoxObj;
+            }
+            set
+            {
+                if (value != cBoxObj)
+                    cBoxObj = value;
+            }
+
+        }
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
@@ -410,7 +411,6 @@ namespace windows_client.Model
 
         public ConversationListObject()
         {
-
         }
 
         public ConversationListObject(string msisdn, string contactName, bool onHike, byte[] avatar)
@@ -488,7 +488,7 @@ namespace windows_client.Model
             else  //current_ver >= 1.5.0.0
             {
                 ReadVer_Latest(reader);
-            }           
+            }
         }
 
         public void ReadVer_1_4_0_0(BinaryReader reader)
@@ -599,55 +599,17 @@ namespace windows_client.Model
         }
         #endregion
 
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // Used to notify Silverlight that a property has changed.
-        public void NotifyPropertyChanged(string propertyName)
+        public void UpdateConversationBox()
         {
-            if (PropertyChanged != null)
+            if (cBoxObj != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    try
-                    {
-                        if(propertyName != null)
-                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                });
+              {
+                  cBoxObj.update(this);
+              });
             }
         }
-        #endregion
 
-        #region INotifyPropertyChanging Members
 
-        public event PropertyChangingEventHandler PropertyChanging;
-        private string ms;
-        private string p1;
-        private bool p2;
-        private byte[] _av;
-
-        // Used to notify that a property is about to change
-        private void NotifyPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        try
-                        {
-                            if (propertyName != null)
-                                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-                        }
-                        catch (Exception)
-                        { }
-                    });
-            }
-        }
-        #endregion
     }
 }
