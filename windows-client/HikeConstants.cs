@@ -56,6 +56,9 @@ namespace windows_client
         public static readonly string FILES_BYTE_LOCATION = FILE_TRANSFER_LOCATION + "/FileBytes";
         public static readonly string FILES_THUMBNAILS = FILE_TRANSFER_LOCATION + "/Thumbnails";
         public static readonly string FILES_ATTACHMENT = FILE_TRANSFER_LOCATION + "/Attachments";
+        public static readonly string TEMP_VIDEO_RECORDED = FILE_TRANSFER_LOCATION + "/TempVideo";
+        public static readonly string TEMP_VIDEO_NAME = "CameraMovie.mp4";
+
 
         public static readonly string SHARED_FILE_LOCATION = "/shared/transfers";
         public static readonly string FILE_TRANSFER_BASE_URL = AccountUtils.FILE_TRANSFER_BASE + "/user/ft";
@@ -103,11 +106,19 @@ namespace windows_client
         public static readonly string APP_VERSION = "appversion";//The app version
         public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
         public static readonly string PUSH_CHANNEL_CN = "*.hike.in";//The PUSH CN
-        public static readonly string SECURE_PUSH = "w_secure_push";
         public static readonly string FAVORITES = "favorites";
         public static readonly string PENDING = "pending"; // TODO : Change to exact constant
-        public static readonly string IS_SECURE_CHANNEL = "is_secure_channel";
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
+
+
+        public static readonly string FIRSTNAME = "fname";
+        public static readonly string MIDDLENAME = "mname";
+        public static readonly string LASTNAME = "lname";
+        public static readonly string MOBILE = "mob";
+        public static readonly string TELEPHONE = "tel";
+        public static readonly string EMAIL = "email";
+        public static readonly string COMPANY = "cmp";
+        public static readonly string JOBTITLE = "jtitle";
 
         public static string FAQS_LINK
         {
@@ -180,6 +191,7 @@ namespace windows_client
         public static string GROUP_ID_FROM_CHATTHREAD = "groupIdFromChatThreadPage";
         public static string GROUP_NAME_FROM_CHATTHREAD = "groupNameFromChatThreadPage";
         public static string GROUP_CHAT = "groupChat";
+        public static string SHARE_CONTACT = "shareContact";
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
@@ -191,6 +203,8 @@ namespace windows_client
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
+        public static string CONTACT_SELECTED = "contactSelected";
+        public static string VIDEO_RECORDED = "videoRecorded";
         public static string SHARED_LOCATION = "sharedLocation";
         public static string DND = "dnd";
         public static string INVITE_TOKEN = "invite_token";
@@ -203,12 +217,13 @@ namespace windows_client
         public static readonly string VIDEO = "video";
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
+        public static readonly string CONTACT = "contact";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
         public static readonly string FAIL = "fail";
         public static readonly string REWARDS_TOKEN = "reward_token";
-        public static readonly string SHOW_REWARDS  = "show_rewards";
+        public static readonly string SHOW_REWARDS = "show_rewards";
         public static readonly string REWARDS_VALUE = "tt";
 
         public static class Extras
@@ -256,7 +271,7 @@ namespace windows_client
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
             public static string REWARDS = "rewards";
-            
+
         }
 
         public static class AppSettings

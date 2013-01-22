@@ -22,19 +22,23 @@ namespace windows_client.DbUtils
         private static object lockObj = new object();
 
         //keep a set of currently uploading or downloading messages.
-        private static Dictionary<long, int> uploadingOrDownloadingMessages = new Dictionary<long, int>();
+        private static Dictionary<long, MyChatBubble> uploadingOrDownloadingMessages = new Dictionary<long, MyChatBubble>();
 
-        public static void addUploadingOrDownloadingMessage(long messageId)
+        public static void addUploadingOrDownloadingMessage(long messageId, MyChatBubble chatBubble)
         {
+            if (messageId == -1)
+                return;
             lock (lockObj)
             {
                 if (!uploadingOrDownloadingMessages.ContainsKey(messageId))
-                    uploadingOrDownloadingMessages.Add(messageId, -1);
+                    uploadingOrDownloadingMessages.Add(messageId, chatBubble);
             }
         }
 
         public static void removeUploadingOrDownloadingMessage(long messageId)
         {
+            if (messageId == -1)
+                return;
             lock (lockObj)
             {
                 if (uploadingOrDownloadingMessages.ContainsKey(messageId))
@@ -49,6 +53,21 @@ namespace windows_client.DbUtils
                 return uploadingOrDownloadingMessages.ContainsKey(messageId);
             }
         }
+
+        public static MyChatBubble getUploadingOrDownloadingMessage(long messageId)
+        {
+            if (messageId == -1)
+                return null;
+            lock (lockObj)
+            {
+                if (uploadingOrDownloadingMessages.ContainsKey(messageId))
+                {
+                    return uploadingOrDownloadingMessages[messageId];
+                }
+                return null;
+            }
+        }
+
 
         //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 

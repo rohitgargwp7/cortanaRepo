@@ -15,7 +15,6 @@ using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
 using Coding4Fun.Phone.Controls;
-using System.Collections.ObjectModel;
 using Microsoft.Phone.Tasks;
 using System.IO;
 using windows_client.Controls;
@@ -27,6 +26,7 @@ using windows_client.Misc;
 using Microsoft.Phone.UserData;
 using windows_client.Languages;
 using windows_client.ViewModel;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -79,6 +79,7 @@ namespace windows_client.View
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
         ApplicationBarMenuItem addToFavMenuItem = null;
+        ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
         ApplicationBarIconButton fileTransferIconButton = null;
@@ -383,7 +384,8 @@ namespace windows_client.View
             App.newChatThreadPage = this;
 
             #region AUDIO FT
-            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
+            if (!App.IS_TOMBSTONED && (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED) ||
+                PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED)))
             {
                 AudioFileTransfer();
             }
@@ -394,6 +396,13 @@ namespace windows_client.View
                 shareLocation();
             }
             #endregion
+            #region SHARE CONTACT
+            if (!App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+            {
+                ContactTransfer();
+            }
+            #endregion
+
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -413,6 +422,7 @@ namespace windows_client.View
 
             if (App.newChatThreadPage == this)
                 App.newChatThreadPage = null;
+            this.MessageList.Children.Clear();
         }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
@@ -554,6 +564,11 @@ namespace windows_client.View
             }
             #endregion
 
+            if (isGroupChat || !isOnHike)
+            {
+                spContactTransfer.Visibility = Visibility.Collapsed;
+                rectContactTransfer.Visibility = Visibility.Collapsed;
+            }
             userName.Text = mContactName;
             if (groupOwner != null)
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
@@ -812,10 +827,10 @@ namespace windows_client.View
 
                 if (isAddUser)
                 {
-                    ApplicationBarMenuItem menuItem2 = new ApplicationBarMenuItem();
-                    menuItem2.Text = AppResources.SelectUser_AddUser_Txt;
-                    menuItem2.Click += new EventHandler(addUser_Click);
-                    appBar.MenuItems.Add(menuItem2);
+                    addUserMenuItem = new ApplicationBarMenuItem();
+                    addUserMenuItem.Text = AppResources.SelectUser_AddUser_Txt;
+                    addUserMenuItem.Click += new EventHandler(addUser_Click);
+                    appBar.MenuItems.Add(addUserMenuItem);
                 }
                 ApplicationBarMenuItem callMenuItem = new ApplicationBarMenuItem();
                 callMenuItem.Text = AppResources.Call_Txt;
@@ -965,6 +980,10 @@ namespace windows_client.View
                     string locationInfoString = System.Text.Encoding.UTF8.GetString(locationInfo, 0, locationInfo.Length);
                     convMessage.MetaDataString = locationInfoString;
                 }
+                else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                {
+                    convMessage.Message = AppResources.ContactTransfer_Text;
+                }
 
                 SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
 
@@ -1003,6 +1022,8 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove("SharePicker");
                 });
             }
+            if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT_SELECTED))
+                ContactTransfer();
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
                 AudioFileTransfer();
             if (App.IS_TOMBSTONED && PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARED_LOCATION))
@@ -1332,9 +1353,16 @@ namespace windows_client.View
                 {
                     if (chatBubble is ReceivedChatBubble)
                     {
-                        chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
-                        FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
-                        MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId);
+                        if (NetworkInterface.GetIsNetworkAvailable())
+                        {
+                            chatBubble.setAttachmentState(Attachment.AttachmentState.STARTED);
+                            FileTransfer.Instance.downloadFile(chatBubble, mContactNumber.Replace(":", "_"));
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(chatBubble.MessageId, chatBubble);
+                        }
+                        else
+                        {
+                            MessageBox.Show(AppResources.No_Network_Txt, AppResources.FileTransfer_ErrorMsgBoxText, MessageBoxButton.OK);
+                        }
                     }
                     else if (chatBubble is SentChatBubble)
                     {
@@ -1437,6 +1465,20 @@ namespace windows_client.View
                 bingMapsTask.Show();
                 return;
             }
+            else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+            {
+                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
+                byte[] filebytes;
+                MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
+
+                string contactInfoString = Encoding.UTF8.GetString(filebytes, 0, filebytes.Length);
+                JObject contactInfoJobject = JObject.Parse(contactInfoString);
+
+                ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
+                SaveContactTask sct = con.GetSaveCotactTask();
+                sct.Show();
+
+            }
         }
 
         private void addNewAttachmentMessageToUI(SentChatBubble chatBubble)
@@ -1470,6 +1512,7 @@ namespace windows_client.View
                 //TODO : Create attachment object if it requires one
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
+                    MyChatBubble chatBubble = null;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1477,26 +1520,28 @@ namespace windows_client.View
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
                         }
-
                         if (convMessage.FileAttachment == null)
                         {
                             //Done to avoid crash. Code should never reach here
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return null;
                         }
+                        chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
                     }
 
-                    MyChatBubble chatBubble;
-                    if (convMessage.IsSent)
+                    if (chatBubble == null)
                     {
-                        chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                        if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                            || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                            msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                    }
-                    else
-                    {
-                        chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                        if (convMessage.IsSent)
+                        {
+                            chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
+                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
+                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
+                                msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
+                        }
+                        else
+                        {
+                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                        }
                     }
                     this.MessageList.Children.Add(chatBubble);
                     //this.messagesCollection.Add(chatBubble);
@@ -1995,12 +2040,16 @@ namespace windows_client.View
                 //This updates the Conversation list.
                 if (lastMessageBubble.FileAttachment != null)
                 {
-                    if (lastMessageBubble.FileAttachment.ContentType.Contains("image"))
-                        obj.LastMessage = "image";
-                    else if (lastMessageBubble.FileAttachment.ContentType.Contains("audio"))
-                        obj.LastMessage = "audio";
-                    if (lastMessageBubble.FileAttachment.ContentType.Contains("video"))
-                        obj.LastMessage = "video";
+
+                    if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                        obj.LastMessage = HikeConstants.IMAGE;
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.AUDIO))
+                        obj.LastMessage = HikeConstants.AUDIO;
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.VIDEO))
+                        obj.LastMessage = HikeConstants.VIDEO;
+                    else if (lastMessageBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        obj.LastMessage = HikeConstants.CONTACT;
+
                     obj.MessageStatus = lastMessageBubble.MessageStatus;
                 }
                 else if (lastMessageBubble is NotificationChatBubble)
@@ -2089,6 +2138,21 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/RecordMedia.xaml", UriKind.Relative));
             attachmentMenu.Visibility = Visibility.Collapsed;
         }
+
+        private void sendContact_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.SHARE_CONTACT] = true;
+
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void sendVideo_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/RecordVideo.xaml", UriKind.Relative));
+            attachmentMenu.Visibility = Visibility.Collapsed;
+        }
+
 
         private void shareLocation_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -2776,35 +2840,90 @@ namespace windows_client.View
 
         private void AudioFileTransfer()
         {
-            byte[] audioBytes = null;
+            bool isAudio = true;
+            byte[] fileBytes = null;
+            byte[] thumbnail = null;
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.AUDIO_RECORDED))
             {
-                audioBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
+                fileBytes = (byte[])PhoneApplicationService.Current.State[HikeConstants.AUDIO_RECORDED];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.AUDIO_RECORDED);
+                isAudio = true;
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.VIDEO_RECORDED))
+            {
+                thumbnail = (byte[])PhoneApplicationService.Current.State[HikeConstants.VIDEO_RECORDED];
+                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.TEMP_VIDEO_NAME, out fileBytes);
+                PhoneApplicationService.Current.State.Remove(HikeConstants.VIDEO_RECORDED);
+                if (fileBytes == null)
+                {
+                    return;
+                }
+                isAudio = false;
             }
             if (!isGroupChat || isGroupAlive)
             {
-                string fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
-
-                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
-                convMessage.FileAttachment.ContentType = "audio/voice";
-                convMessage.Message = AppResources.Audio_Txt;
-
-                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+                string fileName;
+                if (isAudio)
+                {
+                    fileName = "aud_" + TimeUtils.getCurrentTimeStamp().ToString();
+                    convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment.ContentType = "audio/voice";
+                    convMessage.Message = AppResources.Audio_Txt;
+                }
+                else
+                {
+                    fileName = "vid_" + TimeUtils.getCurrentTimeStamp().ToString();
+                    convMessage.FileAttachment = new Attachment(fileName, thumbnail, Attachment.AttachmentState.STARTED);
+                    convMessage.FileAttachment.ContentType = "video/mp4";
+                    convMessage.Message = AppResources.Video_Txt;
+                }
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, thumbnail);
                 //msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
                 object[] vals = new object[3];
                 vals[0] = convMessage;
-                vals[1] = audioBytes;
+                vals[1] = fileBytes;
                 vals[2] = chatBubble;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }
         }
 
+        private void ContactTransfer()
+        {
+            Contact contact = (Contact)PhoneApplicationService.Current.State[HikeConstants.CONTACT_SELECTED];
+            PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT_SELECTED);
+
+            if (contact != null)
+            {
+                string fileName = "con_" + TimeUtils.getCurrentTimeStamp().ToString();
+                ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = !isOnHike;
+                convMessage.HasAttachment = true;
+
+                convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
+                convMessage.FileAttachment.ContentType = HikeConstants.CONTACT;
+                convMessage.Message = AppResources.ContactTransfer_Text;
+
+                SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
+                //msgMap.Add(convMessage.MessageId, chatBubble);
+
+                addNewAttachmentMessageToUI(chatBubble);
+
+                ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contact);
+
+                JObject json = con.SerialiseToJobject();
+
+                object[] vals = new object[3];
+                vals[0] = convMessage;
+                vals[1] = Encoding.UTF8.GetBytes(json.ToString(Newtonsoft.Json.Formatting.None));
+                vals[2] = chatBubble;
+                App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
+            }
+        }
         // this should be called when one gets tap here msg.
         private void smsUser_Click(object sender, EventArgs e)
         {
@@ -3069,6 +3188,7 @@ namespace windows_client.View
                 }
                 else
                 {
+                    appBar.MenuItems.Remove(addUserMenuItem);
                     MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
                 }
             });

@@ -15,15 +15,11 @@ namespace windows_client.utils
 {
     public class Utils
     {
+
         private static readonly IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
         public static void savedAccountCredentials(JObject obj)
         {
-            JToken secure_push = null;
-            if (obj.TryGetValue(HikeConstants.SECURE_PUSH,out secure_push))
-            {
-                appSettings[HikeConstants.SECURE_PUSH] = secure_push.ToObject<bool>();
-            }
             App.MSISDN = (string)obj["msisdn"];
             AccountUtils.Token = (string)obj["token"];
             appSettings[App.MSISDN_SETTING] = App.MSISDN;
@@ -325,7 +321,6 @@ namespace windows_client.utils
             }
             return true;
         }
-
 
         public static string NormalizeNumber(string msisdn)
         {

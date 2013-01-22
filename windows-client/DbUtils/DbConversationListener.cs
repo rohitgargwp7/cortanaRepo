@@ -97,7 +97,11 @@ namespace windows_client.DbUtils
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
-
+                else if (contentType.Contains(HikeConstants.VIDEO))
+                {
+                    convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, "Contact") + HikeConstants.FILE_TRANSFER_BASE_URL +
+                        "/" + fileKey;
+                }
                 convMessage.MessageStatus = ConvMessage.State.SENT_UNCONFIRMED;
                 chatBubble.scheduleTryingImage();
                 convMessage.FileAttachment.FileKey = fileKey;
@@ -236,11 +240,8 @@ namespace windows_client.DbUtils
                     App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
 
                 });
-
                 //send attachment message (new attachment - upload case)
-
-                MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId);
-
+                MessagesTableUtils.addUploadingOrDownloadingMessage(convMessage.MessageId, chatBubble);
                 convMessage.FileAttachment.FileState = Attachment.AttachmentState.FAILED_OR_NOT_STARTED;
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
                 convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;

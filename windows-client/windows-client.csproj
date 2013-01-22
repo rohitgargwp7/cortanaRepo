@@ -52,8 +52,9 @@
     <Reference Include="Coding4Fun.Phone.Controls">
       <HintPath>lib\Coding4Fun.Phone.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="Facebook">
-      <HintPath>..\packages\Facebook.6.0.24\lib\sl4-windowsphone71\Facebook.dll</HintPath>
+    <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Facebook.6.1.4\lib\wp71\Facebook.dll</HintPath>
     </Reference>
     <Reference Include="finalmqtt">
       <HintPath>lib\finalmqtt.dll</HintPath>
@@ -62,15 +63,17 @@
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Maps, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e" />
-    <Reference Include="Microsoft.Phone.Controls.Toolkit">
-      <HintPath>lib\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WPtoolkit.4.2012.10.30\lib\sl4-windowsphone71\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Phone.Interop" />
     <Reference Include="Microsoft.Phone.Reactive" />
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\sl4-windowsphone71\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SharpCompress.WP7">
       <HintPath>lib\SharpCompress.WP7.dll</HintPath>
@@ -130,6 +133,7 @@
     <Compile Include="Misc\Social.cs" />
     <Compile Include="Model\Analytics.cs" />
     <Compile Include="Model\Attachment.cs" />
+    <Compile Include="Model\ContactCompleteDetails.cs" />
     <Compile Include="Model\GroupInfo.cs" />
     <Compile Include="Model\GroupParticipant.cs" />
     <Compile Include="Model\HikePacket.cs" />
@@ -173,6 +177,9 @@
     </Compile>
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RecordVideo.xaml.cs">
+      <DependentUpon>RecordVideo.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SocialPages.xaml.cs">
       <DependentUpon>SocialPages.xaml</DependentUpon>
@@ -275,6 +282,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\RecordVideo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SocialPages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -347,6 +358,11 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="README_FIRST.txt" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_user_icon.png" />
     <Content Include="View\images\audio_file_icon_white.png" />
@@ -632,11 +648,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Languages\AppResources.de-DE.resx" />
+    <EmbeddedResource Include="Languages\AppResources.de-DE.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\AppResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />

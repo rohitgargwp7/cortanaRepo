@@ -510,7 +510,7 @@ namespace windows_client.utils
                 return nudgeSend;
             }
         }
-
+        
         public BitmapImage NudgeReceived
         {
             get

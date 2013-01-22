@@ -38,7 +38,7 @@ namespace windows_client.Controls
                 int lengthOfNextBubble = 1400;
                 for (int i = 1; i <= (cm.Message.Length / HikeConstants.MAX_CHATBUBBLE_SIZE); i++)
                 {
-                    if ((cm.Message.Length - (i ) * HikeConstants.MAX_CHATBUBBLE_SIZE) / HikeConstants.MAX_CHATBUBBLE_SIZE > 0)
+                    if ((cm.Message.Length - (i) * HikeConstants.MAX_CHATBUBBLE_SIZE) / HikeConstants.MAX_CHATBUBBLE_SIZE > 0)
                     {
                         lengthOfNextBubble = HikeConstants.MAX_CHATBUBBLE_SIZE;
                     }
@@ -314,6 +314,7 @@ namespace windows_client.Controls
                     {
                         case Attachment.AttachmentState.CANCELED:
                             uploadOrDownloadCanceled();
+                            MessagesTableUtils.removeUploadingOrDownloadingMessage(this.MessageId);
                             break;
                         case Attachment.AttachmentState.FAILED_OR_NOT_STARTED:
                             uploadOrDownloadCanceled();
@@ -325,7 +326,7 @@ namespace windows_client.Controls
                             break;
                         case Attachment.AttachmentState.STARTED:
                             uploadOrDownloadStarted();
-                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId, this);
                             break;
                     }
                 }
@@ -363,6 +364,7 @@ namespace windows_client.Controls
             bool isSMS = cm.IsSms;
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
+            bool isContact = hasAttachment && contentType == HikeConstants.CONTACT;
 
             BubbleBg = new Rectangle();
             Grid.SetRowSpan(BubbleBg, 2);
@@ -397,7 +399,24 @@ namespace windows_client.Controls
                     this.MessageImage.Margin = nudgeMargin;
                     //this.Margin = nudgeBubbleMargin;
                 }
+                else if (isContact)
+                {
+                    this.MessageImage.Source = UI_Utils.Instance.NudgeSent;
+                    this.MessageImage.Height = 35;
+                    this.MessageImage.Width = 48;
+                    this.MessageImage.Margin = nudgeMargin;
+                    MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
+                    MessageText.Width = 330;
+                    MessageText.Foreground = progressColor;
+                    MessageText.Margin = messageTextMargin;
+                    MessageText.FontFamily = UI_Utils.Instance.MessageText;
+                    Grid.SetRow(MessageText, 0);
+                    Grid.SetColumn(MessageText, 1);
+                    attachment.Children.Add(MessageText);
+
+                }
                 Grid.SetRow(MessageImage, 0);
+
                 attachment.Children.Add(MessageImage);
 
                 if (contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO))
