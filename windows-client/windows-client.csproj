@@ -260,6 +260,9 @@
     <Compile Include="View\ShareLocation.xaml.cs">
       <DependentUpon>ShareLocation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\UserProfile.xaml.cs">
+      <DependentUpon>UserProfile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Walkthrough.xaml.cs">
       <DependentUpon>Walkthrough.xaml</DependentUpon>
     </Compile>
@@ -384,6 +387,9 @@
     <Page Include="View\ShareLocation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UserProfile.xaml">
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Walkthrough.xaml">
       <SubType>Designer</SubType>
