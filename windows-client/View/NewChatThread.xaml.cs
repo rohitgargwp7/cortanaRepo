@@ -232,6 +232,7 @@ namespace windows_client.View
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
                 //attachments = new Dictionary<long, Attachment>();
                 loadMessages();
+                ScrollToBottomFromUI();
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to load chat messages for msisdn {0} : {1}", mContactNumber, msec);
@@ -854,7 +855,7 @@ namespace windows_client.View
 
         long lastMessageId = -1;
         bool hasMoreMessages;
-        const int FETCHCOUNT = 21;
+        const int FETCHCOUNT = 11;
         private void loadMessages()
         {
             int i;
@@ -939,8 +940,8 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 if (!IsMute)
                 {
-                    ScrollToBottom();
-                    scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
+                   // ScrollToBottom();
+                    //scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
                 }
                 NetworkManager.turnOffNetworkManager = false;
             });
@@ -1956,7 +1957,7 @@ namespace windows_client.View
                 }
                 #endregion
                 //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
-                ScrollToBottom();
+                //ScrollToBottom();
             }
             catch (Exception e)
             {
