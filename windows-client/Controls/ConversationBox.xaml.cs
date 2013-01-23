@@ -1,6 +1,7 @@
 ﻿using Microsoft.Phone.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using windows_client.Languages;
@@ -61,7 +62,9 @@ namespace windows_client.Controls
                 if (_lastMessage != value)
                 {
                     _lastMessage = value;
-                    this.lastMessageTxtBlck.Text = _lastMessage;
+                    Paragraph p = SmileyParser.Instance.LinkifyEmoticons(_lastMessage);
+                    this.lastMessageTxtBlck.Blocks.Clear();
+                    this.lastMessageTxtBlck.Blocks.Add(p);
                 }
             }
         }
