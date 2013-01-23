@@ -55,7 +55,6 @@ namespace windows_client.utils
                         pushChannel.UnbindToShellToast();
                     pushChannel.Close();
                     pushChannel.Dispose();
-                    App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
                 }
             }
             catch (InvalidOperationException)
@@ -64,7 +63,6 @@ namespace windows_client.utils
             catch (Exception)
             {
             }
-
         }
 
 
@@ -75,20 +73,10 @@ namespace windows_client.utils
             pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
             try
             {
-                bool secure_push;
                 // If the channel was not found, then create a new connection to the push service.
                 if (pushChannel == null)
                 {
-                    if (App.appSettings.TryGetValue(HikeConstants.SECURE_PUSH, out secure_push) && secure_push)
-                    {
-                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
-                        App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, true);
-                    }
-                    else
-                    {
-                        pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName);
-                        App.WriteToIsoStorageSettings(HikeConstants.IS_SECURE_CHANNEL, false);
-                    }
+                    pushChannel = new HttpNotificationChannel(HikeConstants.pushNotificationChannelName, HikeConstants.PUSH_CHANNEL_CN);
 
                     // Register for all the events before attempting to open the channel.
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
@@ -103,32 +91,16 @@ namespace windows_client.utils
                 }
                 else
                 {
-                    bool isChannelSecure;
-                    App.appSettings.TryGetValue(HikeConstants.IS_SECURE_CHANNEL, out isChannelSecure);
-                    if (!isChannelSecure && App.appSettings.TryGetValue(HikeConstants.SECURE_PUSH, out secure_push) && secure_push)
-                    {
-                        //if channel was not secure and we are ready for secured push. close this channel and new channel 
-                        //would be created on next app launch
-                        if (pushChannel.IsShellTileBound)
-                            pushChannel.UnbindToShellTile();
-                        if (pushChannel.IsShellToastBound)
-                            pushChannel.UnbindToShellToast();
-                        pushChannel.Close();
-                        pushChannel.Dispose();
-                    }
-                    else
-                    {
-                        // The channel was already open, so just register for all the events.
-                        pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
-                        pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
-                        // Register for this notification only if you need to receive the notifications while your application is running.
-                        //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
+                    // The channel was already open, so just register for all the events.
+                    pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
+                    pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
+                    // Register for this notification only if you need to receive the notifications while your application is running.
+                    //pushChannel.ShellToastNotificationReceived += new EventHandler<NotificationEventArgs>(PushChannel_ShellToastNotificationReceived);
 
-                        if (pushChannel.ChannelUri != null)
-                        {
-                            Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                            AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
-                        }
+                    if (pushChannel.ChannelUri != null)
+                    {
+                        Debug.WriteLine(pushChannel.ChannelUri.ToString());
+                        AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
                     }
                 }
             }
@@ -168,22 +140,7 @@ namespace windows_client.utils
             }
             if (stat != HikeConstants.OK)
             {
-                try
-                {
-
-                    HttpNotificationChannel pushChannel;
-                    pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
-                    if (pushChannel != null)
-                    {
-                        if (pushChannel.IsShellTileBound)
-                            pushChannel.UnbindToShellTile();
-                        if (pushChannel.IsShellToastBound)
-                            pushChannel.UnbindToShellToast();
-                        pushChannel.Close();
-                    }
-                }
-                catch (Exception)
-                { }
+                this.closePushnotifications();//if server did not ack push token, close it
             }
         }
 

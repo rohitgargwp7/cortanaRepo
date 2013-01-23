@@ -133,7 +133,7 @@ namespace windows_client.Controls
                             break;
                         case Attachment.AttachmentState.STARTED:
                             uploadOrDownloadStarted();
-                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId);
+                            MessagesTableUtils.addUploadingOrDownloadingMessage(this.MessageId, this);
                             break;
                     }
                 }
@@ -161,8 +161,10 @@ namespace windows_client.Controls
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
+            bool isContact = hasAttachment && contentType == HikeConstants.CONTACT;
+
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
-                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
+                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED) && !isContact;
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
             Rectangle BubbleBg = new Rectangle();
@@ -221,7 +223,21 @@ namespace windows_client.Controls
                     this.MessageImage.Width = 46;
                     this.MessageImage.Margin = nudgeMargin;
                 }
+                else if (isContact)
+                {
+                    this.MessageImage.Source = UI_Utils.Instance.NudgeSent;
+                    this.MessageImage.Height = 35;
+                    this.MessageImage.Width = 48;
+                    this.MessageImage.Margin = nudgeMargin;
+                    MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
+                    MessageText.Width = 330;
+                    MessageText.Margin = messageTextMargin;
+                    MessageText.FontFamily = UI_Utils.Instance.MessageText;
+                    Grid.SetRow(MessageText, 0);
+                    Grid.SetColumn(MessageText, 1);
+                    attachment.Children.Add(MessageText);
 
+                }
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 

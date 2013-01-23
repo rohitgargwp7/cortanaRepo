@@ -122,6 +122,7 @@ namespace windows_client.View
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
             this.pendingRequests.SelectedIndex = -1;
+            if(App.ViewModel.MessageListPageCollection.Count>0)
             myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
 //            convScroller.ScrollToVerticalOffset(0);
             App.IS_TOMBSTONED = false;
@@ -898,7 +899,7 @@ namespace windows_client.View
             ConversationListObject convObj;
             if (convBox != null && App.ViewModel.ConvMap.TryGetValue(convBox.Msisdn, out convObj))
             {
-               
+
                 if (convObj.IsFav) // already fav , remove request
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
@@ -923,7 +924,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         addFavsPanel.Opacity = 0;
                     }
-                    menuFavourite.Header=AppResources.Add_To_Fav_Txt;
+                    menuFavourite.Header = AppResources.Add_To_Fav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
                 }
                 else // add to fav
@@ -952,7 +953,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         addFavsPanel.Opacity = 1;
                     }
-                    menuFavourite.Header= AppResources.RemFromFav_Txt;
+                    menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
                 }
             }
@@ -980,6 +981,9 @@ namespace windows_client.View
                 var glCancel = GestureService.GetGestureListener(menuItemFavourite);
                 glCancel.Tap += MenuItem_Tap_AddRemoveFav;
                 menu.Items.Add(menuItemFavourite);
+
+                if (convObj.ConvBoxObj != null)
+                    convObj.ConvBoxObj.FavouriteMenuItem = menuItemFavourite;
             }
             return menu;
         }

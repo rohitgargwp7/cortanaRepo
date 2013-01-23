@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = true;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -283,7 +283,8 @@ namespace windows_client.utils
             HttpWebRequest req = HttpWebRequest.Create(new Uri(HikeConstants.FILE_TRANSFER_BASE_URL)) as HttpWebRequest;
             addToken(req);
             req.Method = "PUT";
-            req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ? "" : convMessage.FileAttachment.ContentType;
+            req.ContentType = convMessage.FileAttachment.ContentType.Contains(HikeConstants.IMAGE) ||
+                convMessage.FileAttachment.ContentType.Contains(HikeConstants.VIDEO) ? "" : convMessage.FileAttachment.ContentType;
             req.Headers["Connection"] = "Keep-Alive";
             req.Headers["Content-Name"] = convMessage.FileAttachment.FileName;
             req.Headers["X-Thumbnail-Required"] = "0";

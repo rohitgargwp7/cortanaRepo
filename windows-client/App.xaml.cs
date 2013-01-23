@@ -665,6 +665,12 @@ namespace windows_client
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
             #endregion
+            #region SMILEY
+            if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
+            {
+                SmileyParser.Instance.initializeSmileyParser();
+            }
+            #endregion
             #region VIEW MODEL
 
             IS_VIEWMODEL_LOADED = false;
@@ -699,12 +705,7 @@ namespace windows_client
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
             IS_VIEWMODEL_LOADED = true;
             #endregion
-            #region SMILEY
-            if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
-            {
-                SmileyParser.Instance.initializeSmileyParser();
-            }
-            #endregion
+            
 
         }
 
@@ -853,8 +854,8 @@ namespace windows_client
             if (_currentVersion == null)
                 _currentVersion = "1.0.0.0";
 
-            // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.6.0.0
-            if (Utils.compareVersion(_currentVersion, "1.6.0.0") != 1) // current version is less than equal to 1.6.0.0
+            // this will ensure that we will show tutorials in case of app upgrade from any version to version later that 1.5.0.8
+            if (Utils.compareVersion(_currentVersion, "1.5.0.8") != 1) // current version is less than equal to 1.5.0.8
             {
                 WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
                 WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);

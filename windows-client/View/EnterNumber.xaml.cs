@@ -369,6 +369,9 @@ namespace windows_client
                 msisdnErrorTxt.Visibility = Visibility.Visible;
                 return;
             }
+            MessageBoxResult res = MessageBox.Show(phoneNumber, AppResources.EnterMsisdn_ConfirmNumber_Txt, MessageBoxButton.OKCancel);
+            if (res == MessageBoxResult.Cancel)
+                return;
             txtEnterPhone.IsReadOnly = true;
             nextIconButton.IsEnabled = false;
             msgTxtBlk.Opacity = 1;

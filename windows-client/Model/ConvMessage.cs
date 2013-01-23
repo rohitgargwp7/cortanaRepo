@@ -801,6 +801,8 @@ namespace windows_client.Model
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                             messageText = AppResources.Location_Txt;
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                            messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;
                     }
                     else
