@@ -22,6 +22,7 @@ namespace windows_client.DbUtils
         public static string FAVOURITES_FILE = "favFile";
         public static string MISC_DIR = "Misc_Dir";
         public static string THUMBNAILS = "THUMBNAILS";
+        public static string PROFILE_PICS = "PROFILE_PICS";
         public static string PENDING_REQ_FILE = "pendingReqFile";
 
         public static void clearDatabase()
@@ -111,6 +112,43 @@ namespace windows_client.DbUtils
             DeleteFavourites();
             DeletePendingRequests();
             #endregion
+        }
+
+        /// <summary>
+        /// This function is used to store profile pics (small) so that same can be used in timelines
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="imageBytes"></param>
+        /// <param name="isUpdated"></param>
+        public static void saveProfileImages(string msisdn, byte[] imageBytes, long picId)
+        {
+            if (imageBytes == null)
+                return;
+            msisdn = msisdn.Replace(":", "_");
+            string FileName = PROFILE_PICS + "\\" + msisdn+"\\"+picId.ToString();
+            lock (lockObj)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(PROFILE_PICS))
+                            store.CreateDirectory(PROFILE_PICS);
+                        if (!store.DirectoryExists(PROFILE_PICS+"\\"+msisdn))
+                            store.CreateDirectory(PROFILE_PICS + "\\" + msisdn);
+                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
+                        {
+                            stream.Write(imageBytes, 0, imageBytes.Length);
+                            stream.Flush();
+                            stream.Close();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
+            }
         }
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
