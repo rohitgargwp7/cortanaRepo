@@ -216,6 +216,7 @@ namespace windows_client
         public static string ACCOUNT = "account";
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
+        public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";

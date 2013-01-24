@@ -216,8 +216,9 @@ namespace windows_client.View
                 //done intentionally so that remaining flow remains same
                 this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_USERPROFILE_PAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_USERPROFILE_PAGE);
-                if (NavigationService.CanGoBack)
-                    NavigationService.RemoveBackEntry();
+                //if (NavigationService.CanGoBack)
+                //    NavigationService.RemoveBackEntry();
+                //todo or not
             }
         }
 
