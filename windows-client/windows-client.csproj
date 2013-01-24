@@ -227,6 +227,9 @@
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PostStatus.xaml.cs">
+      <DependentUpon>PostStatus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RecordVideo.xaml.cs">
       <DependentUpon>RecordVideo.xaml</DependentUpon>
     </Compile>
@@ -344,6 +347,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Error.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PostStatus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
