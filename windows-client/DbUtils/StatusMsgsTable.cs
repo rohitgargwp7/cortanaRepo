@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using windows_client.Languages;
 using windows_client.Model;
 
 namespace windows_client.DbUtils
@@ -13,7 +16,7 @@ namespace windows_client.DbUtils
         /// Add single status msg
         /// </summary>
         /// <param name="sm"></param>
-        public static void AddStatusMsg(StatusMessage sm)
+        public static void InsertStatusMsg(StatusMessage sm)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
@@ -28,6 +31,8 @@ namespace windows_client.DbUtils
         /// <param name="smList"></param>
         public static void AddStatusMsg(List<StatusMessage> smList)
         {
+            if (smList == null)
+                return;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.statusMessage.InsertAllOnSubmit(smList);

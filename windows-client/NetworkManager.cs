@@ -931,6 +931,70 @@ namespace windows_client
                 }
             }
             #endregion
+            #region STATUS UPDATE
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, data);
+                    cm.Msisdn = msisdn;
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                    List<StatusMessage> list = new List<StatusMessage>(2);
+                    JToken val;
+                    #region HANDLE PIC UPDATE
+                    if (data.TryGetValue(HikeConstants.PIC_UPDATE, out val) && val != null) // shows picture update is there
+                    {
+                        try
+                        {
+                            list.Add(new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.PHOTO_UPDATE));
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Pic Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion
+                    #region HANDLE TEXT UPDATE
+                    val = null;
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    {
+                        try
+                        {
+                            list.Add(new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE));
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion
+                    // store the msg in STATUS TABLE
+                    StatusMsgsTable.AddStatusMsg(list);
+                    JToken imgToken;
+                    if (data.TryGetValue(HikeConstants.IMG, out imgToken) && imgToken != null)
+                    {
+                        string iconBase64 = imgToken.ToString();
+                        byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                        MiscDBUtil.saveProfileImages(msisdn, imageBytes, list[0].MessageId);
+                    }
+                                               
+                    // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
+                    if (obj != null)
+                    {
+                        object[] vals = new object[2];
+                        vals[0] = cm;
+                        vals[1] = null; // always send null as we dont want any activity on conversation page
+                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in REWARDS : " + e.StackTrace);
+                }
+            }
+            #endregion
             #region OTHER
             else
             {

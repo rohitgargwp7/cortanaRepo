@@ -1740,7 +1740,42 @@ namespace windows_client.View
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
-                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                #region STATUS UPDATE
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    JObject data = JObject.Parse(convMessage.MetaDataString);
+                    JToken val;
+                    #region HANDLE PIC UPDATE
+                    if (data.TryGetValue(HikeConstants.PIC_UPDATE, out val) && val != null) // shows picture update is there
+                    {
+                        try
+                        {
+                            MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PIC_UPDATE, AppResources.PicUpdate_StatusTxt);
+                            this.MessageList.Children.Add(chatBubble);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Pic Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion
+                    #region HANDLE TEXT UPDATE
+                    val = null;
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    {
+                        try
+                        {
+                            MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.TEXT_UPDATE, val.ToString());
+                            this.MessageList.Children.Add(chatBubble);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion                    
+                }
+                #endregion
                 ScrollToBottom();
             }
             catch (Exception e)
@@ -2462,6 +2497,8 @@ namespace windows_client.View
                     if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted conv, ignore msg
                         return;
                     ConversationListObject cObj = vals[1] as ConversationListObject;
+                    if (cObj == null) // this will happen in status update msg
+                        return;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ToastPrompt toast = new ToastPrompt();
