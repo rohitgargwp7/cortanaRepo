@@ -179,7 +179,7 @@ namespace windows_client
         public static readonly string TWITTER = "twitter";
         public static readonly string FACEBOOK = "fb";
         public static readonly string TEXT_UPDATE = "msg";
-        public static readonly string PIC_UPDATE = "pu";
+        public static readonly string UPDATE_ID = "id";
         public static readonly string IMG = "img";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";

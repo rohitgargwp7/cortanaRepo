@@ -1744,7 +1744,7 @@ namespace windows_client.View
                     JObject data = JObject.Parse(convMessage.MetaDataString);
                     JToken val;
                     #region HANDLE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.PIC_UPDATE, out val) && val != null) // shows picture update is there
+                    if (data.TryGetValue(HikeConstants.UPDATE_ID, out val) && val != null) // shows picture update is there
                     {
                         try
                         {

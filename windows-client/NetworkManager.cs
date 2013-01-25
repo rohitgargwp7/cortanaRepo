@@ -941,14 +941,18 @@ namespace windows_client
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, data);
                     cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    List<StatusMessage> list = new List<StatusMessage>(2);
+                    StatusMessage sm = null;
                     JToken val;
                     #region HANDLE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.PIC_UPDATE, out val) && val != null) // shows picture update is there
+                    if (data.TryGetValue(HikeConstants.UPDATE_ID, out val) && val != null) // shows picture update is there
                     {
+                        string mesg = null;
+                        JToken msgToken;
+                        if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out msgToken) && msgToken != null)
+                            mesg = msgToken.ToString(); 
                         try
                         {
-                            list.Add(new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.PHOTO_UPDATE));
+                            sm = new StatusMessage(msisdn, mesg, StatusMessage.StatusType.PHOTO_UPDATE,msgToken.ToString());
                         }
                         catch (Exception e)
                         {
@@ -957,12 +961,15 @@ namespace windows_client
                     }
                     #endregion
                     #region HANDLE TEXT UPDATE
-                    val = null;
-                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    else if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
                     {
+                        string id = null;
+                        JToken idToken;
+                        if (data.TryGetValue(HikeConstants.UPDATE_ID, out idToken) && idToken != null)
+                            id = idToken.ToString();
                         try
                         {
-                            list.Add(new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE));
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE,id);
                         }
                         catch (Exception e)
                         {
@@ -971,13 +978,13 @@ namespace windows_client
                     }
                     #endregion
                     // store the msg in STATUS TABLE
-                    StatusMsgsTable.AddStatusMsg(list);
+                    StatusMsgsTable.InsertStatusMsg(sm);
                     JToken imgToken;
                     if (data.TryGetValue(HikeConstants.IMG, out imgToken) && imgToken != null)
                     {
                         string iconBase64 = imgToken.ToString();
                         byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                        MiscDBUtil.saveProfileImages(msisdn, imageBytes, list[0].MessageId);
+                        MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.MessageId);
                     }
                                                
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
