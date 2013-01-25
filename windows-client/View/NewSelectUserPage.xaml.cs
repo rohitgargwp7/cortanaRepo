@@ -509,10 +509,9 @@ namespace windows_client.View
         private void contactSelected_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
-            if (contact == null)
+            if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt || contact.Msisdn == App.MSISDN)
                 return;
-            if (contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt)
-                return;
+            
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = Utils.NormalizeNumber(contact.Name);
@@ -745,7 +744,7 @@ namespace windows_client.View
         {
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
 
-            if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt)
+            if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt || contact.Msisdn == App.MSISDN)
                 return;
 
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
