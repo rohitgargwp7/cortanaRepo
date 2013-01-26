@@ -201,6 +201,7 @@
     <Compile Include="utils\PushHelper.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
+    <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
     <Compile Include="View\CentralTimeline.xaml.cs">
