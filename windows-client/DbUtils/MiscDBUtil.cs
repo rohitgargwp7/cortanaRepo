@@ -115,6 +115,14 @@ namespace windows_client.DbUtils
             #endregion
         }
 
+
+        public static void getStatusUpdateImageBytes(string msisdn, long statusUpdateId, out byte[] imageBytes)
+        { 
+            msisdn = msisdn.Replace(":", "_");
+            string filePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
+            readFileFromIsolatedStorage(filePath, out imageBytes);
+        }
+
         /// <summary>
         /// This function is used to store profile pics (small) so that same can be used in timelines
         /// </summary>
@@ -126,7 +134,7 @@ namespace windows_client.DbUtils
             if (imageBytes == null)
                 return;
             msisdn = msisdn.Replace(":", "_");
-            string FileName = PROFILE_PICS + "\\" + msisdn+"\\"+picId.ToString();
+            string FileName = PROFILE_PICS + "\\" + msisdn + "\\" + picId.ToString();
             lock (lockObj)
             {
                 try
@@ -135,7 +143,7 @@ namespace windows_client.DbUtils
                     {
                         if (!store.DirectoryExists(PROFILE_PICS))
                             store.CreateDirectory(PROFILE_PICS);
-                        if (!store.DirectoryExists(PROFILE_PICS+"\\"+msisdn))
+                        if (!store.DirectoryExists(PROFILE_PICS + "\\" + msisdn))
                             store.CreateDirectory(PROFILE_PICS + "\\" + msisdn);
                         using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
                         {
@@ -151,6 +159,7 @@ namespace windows_client.DbUtils
                 }
             }
         }
+
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
@@ -250,13 +259,13 @@ namespace windows_client.DbUtils
                 string[] dirs = store.GetFileNames(PROFILE_PICS + "\\*");
                 foreach (string dir in dirs)
                 {
-                    string[] files = store.GetFileNames(PROFILE_PICS + "\\"+dir+"\\*");
+                    string[] files = store.GetFileNames(PROFILE_PICS + "\\" + dir + "\\*");
 
                     foreach (string file in files)
                     {
                         try
                         {
-                            store.DeleteFile(PROFILE_PICS + "\\" + dir+"\\"+file);
+                            store.DeleteFile(PROFILE_PICS + "\\" + dir + "\\" + file);
                         }
                         catch
                         {
@@ -331,7 +340,6 @@ namespace windows_client.DbUtils
         public static void readFileFromIsolatedStorage(string filePath, out byte[] imageBytes)
         {
             filePath = filePath.Replace(":", "_");
-
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (myIsolatedStorage.FileExists(filePath))
@@ -481,7 +489,7 @@ namespace windows_client.DbUtils
                     string[] files = store.GetFileNames("FAVS\\*");
                     foreach (string fname in files)
                     {
-                        using (var file = store.OpenFile("FAVS\\"+fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        using (var file = store.OpenFile("FAVS\\" + fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
                             using (var reader = new BinaryReader(file))
                             {
@@ -650,9 +658,9 @@ namespace windows_client.DbUtils
                     }
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
                 }
-                catch(Exception e) 
+                catch (Exception e)
                 {
-                    Debug.WriteLine("Exception :: {0}",e.StackTrace);
+                    Debug.WriteLine("Exception :: {0}", e.StackTrace);
                 }
             }
         }
