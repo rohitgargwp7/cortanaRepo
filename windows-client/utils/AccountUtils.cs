@@ -485,7 +485,7 @@ namespace windows_client.utils
             {
                 request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             }
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
@@ -502,7 +502,6 @@ namespace windows_client.utils
         static void GetRequestCallback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
-
             HttpWebRequest request = vars[0] as HttpWebRequest;
             JObject jObject = null;
             string data = "";
