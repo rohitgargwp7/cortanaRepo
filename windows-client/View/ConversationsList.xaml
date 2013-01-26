@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:status="clr-namespace:windows_client.Controls.StatusUpdate"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -209,6 +210,24 @@
                         </Grid>
                     </ScrollViewer>
                 </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Timeline_Header_Txt, Source={StaticResource LocalizedStrings}}">
+                <Grid Background="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.CentralTimeLine_Header, Source={StaticResource LocalizedStrings}}"/>
+                    <phone:LongListSelector Grid.Row="1" IsGroupingEnabled="False" LayoutMode="List">
+                        <phone:LongListSelector.ItemTemplate>
+                            <DataTemplate>
+                                <status:StatusUpdateBox></status:StatusUpdateBox>
+                            </DataTemplate>
+                        </phone:LongListSelector.ItemTemplate>
+                    </phone:LongListSelector>
+                </Grid>
+
             </controls:PivotItem>
         </controls:Pivot>
 
