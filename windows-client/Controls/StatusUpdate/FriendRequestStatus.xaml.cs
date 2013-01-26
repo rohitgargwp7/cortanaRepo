@@ -14,17 +14,22 @@ namespace windows_client.Controls.StatusUpdate
         //    this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, userName);
         //}
 
-        public FriendRequestStatus(string userName, BitmapImage userImage, 
+        public FriendRequestStatus(string userName, BitmapImage userImage,
             EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap)
-            : base(userName, userImage, StatusType.FRIEND_REQUEST)
+            : base(userName, userImage)
         {
             InitializeComponent();
             this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, userName);
-
-            var glYes = GestureService.GetGestureListener(this.yesBtn);
-            glYes.Tap += yesTap;
-            var glNo = GestureService.GetGestureListener(this.noBtn);
-            glNo.Tap += noTap;
+            if (yesTap != null)
+            {
+                var glYes = GestureService.GetGestureListener(this.yesBtn);
+                glYes.Tap += yesTap;
+            }
+            if (noTap != null)
+            {
+                var glNo = GestureService.GetGestureListener(this.noBtn);
+                glNo.Tap += noTap;
+            }
         }
     }
 }
