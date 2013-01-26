@@ -16,6 +16,7 @@ namespace windows_client.Model
         string _msisdn;
         string _message; // this will be stored in JSON format
         StatusType _type;
+        long _timestamp;
 
         public enum StatusType
         {
@@ -95,6 +96,24 @@ namespace windows_client.Model
                 }
             }
         }
+
+        [Column]
+        public long Timestamp
+        {
+            get
+            {
+                return _timestamp;
+            }
+            set
+            {
+                if (_timestamp != value)
+                {
+                    NotifyPropertyChanging("Timestamp");
+                    _timestamp = value;
+                }
+            }
+        }
+
 
         #region INotifyPropertyChanging Members
 
