@@ -25,6 +25,7 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Collections.ObjectModel;
 using windows_client.Controls;
+using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.View
 {
@@ -723,6 +724,11 @@ namespace windows_client.View
                 #endregion
 
             }
+            else if (selectedIndex == 3)
+            {
+                if (!isStatusMessagesLoaded)
+                    loadStatuses();
+            }
         }
 
         #endregion
@@ -1332,6 +1338,16 @@ namespace windows_client.View
 
         #endregion
 
+        #region TIMELINE
+        private bool isStatusMessagesLoaded = false;
+        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+        private void loadStatuses()
+        {
+            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
+
+        }
+
+        #endregion
         private void Button_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (addFavsPanel.Opacity == 0)
