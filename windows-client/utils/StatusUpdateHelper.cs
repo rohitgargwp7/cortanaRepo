@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using windows_client.Controls.StatusUpdate;
 using windows_client.DbUtils;
@@ -52,6 +53,15 @@ namespace windows_client.utils
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.MessageId, out statusImageBytes, out isThumbnail);
                     statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, 
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp);
+                    if (isThumbnail)
+                    {
+                        object[] statusObjects = new object[2];
+                        statusObjects[0] = status;
+                        statusObjects[1] = statusUpdateBox;
+                        //url for downloading status image??
+                        //string relativeUrl;
+                        //AccountUtils.createGetRequest(AccountUtils.BASE + "/" + relativeUrl, onStatusImageDownloaded, true, statusUpdateBox);
+                    }
 
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
@@ -61,6 +71,20 @@ namespace windows_client.utils
             return statusUpdateBox;
         }
 
-        
+        private void onStatusImageDownloaded(byte[] fileBytes, object status)
+        {
+            object[] vars = status as object[];
+            StatusMessage statusMessage = vars[0] as StatusMessage;
+            ImageStatusUpdate statusMessageUI = vars[1] as ImageStatusUpdate;
+            if (fileBytes != null && fileBytes.Length > 0)
+            {
+                //TODO move to background thread
+                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.MessageId, fileBytes);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
+                });
+            }
+        }
     }
 }
