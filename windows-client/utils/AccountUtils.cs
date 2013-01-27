@@ -491,14 +491,14 @@ namespace windows_client.utils
         }
 
         //GET request
-        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
-        {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
-            if(setCookie)
-                addToken(request);
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString(); 
-            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
-        }
+        //public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
+        //{
+        //    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+        //    if(setCookie)
+        //        addToken(request);
+        //    request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString(); 
+        //    request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        //}
 
         public static void createGetRequest(string requestUrl, downloadFile callback, bool setCookie, object metadata)
         {
