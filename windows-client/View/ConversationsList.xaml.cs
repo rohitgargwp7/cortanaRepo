@@ -31,8 +31,6 @@ namespace windows_client.View
 {
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
-
-
         #region Instances
 
         bool _isFavListBound = false;
@@ -1350,6 +1348,8 @@ namespace windows_client.View
         {
             this.statusLLS.ItemsSource = statusList;
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
+            if (statusMessagesFromDB == null)
+                return;
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             { 
                 statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], 
