@@ -23,6 +23,8 @@ namespace windows_client.DbUtils
         public static string MISC_DIR = "Misc_Dir";
         public static string THUMBNAILS = "THUMBNAILS";
         public static string PROFILE_PICS = "PROFILE_PICS";
+        public static string STATUS_UPDATE_LARGE = "STATUS_FULL_IMAGE";
+
         public static string PENDING_REQ_FILE = "pendingReqFile";
 
         public static void clearDatabase()
@@ -115,14 +117,27 @@ namespace windows_client.DbUtils
             #endregion
         }
 
-
-        public static void getStatusUpdateImageBytes(string msisdn, long statusUpdateId, out byte[] imageBytes)
+        #region STATUS UPDATES
+        public static void getStatusUpdateImageThumbnailBytes(string msisdn, long statusUpdateId, out byte[] imageBytes)
         { 
             msisdn = msisdn.Replace(":", "_");
             string filePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
             readFileFromIsolatedStorage(filePath, out imageBytes);
         }
 
+        public static void getStatusUpdateImage(string msisdn, long statusUpdateId, out byte[] imageBytes, out bool isThumbnail)
+        {
+            isThumbnail = false;
+            msisdn = msisdn.Replace(":", "_");
+            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+            readFileFromIsolatedStorage(fullFilePath, out imageBytes);
+            if (fullFilePath == null || fullFilePath.Length == 0)
+            {
+                isThumbnail = true;
+                string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
+                readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
+            }
+        }
         /// <summary>
         /// This function is used to store profile pics (small) so that same can be used in timelines
         /// </summary>
@@ -160,6 +175,7 @@ namespace windows_client.DbUtils
             }
         }
 
+        #endregion
 
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
