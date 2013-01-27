@@ -47,8 +47,12 @@ namespace windows_client.utils
                     statusUpdateBox = new FriendRequestStatus(userName, userProfileThumbnail, yesTap, noTap);
                     break;
                 case StatusMessage.StatusType.PHOTO_UPDATE:
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, null, status.Timestamp);
-//                    MiscDBUtil.getStatusUpdateImageBytes(status.Msisdn, status.MessageId,
+                    byte[] statusImageBytes = null;
+                    bool isThumbnail;
+                    MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.MessageId, out statusImageBytes, out isThumbnail);
+                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, 
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp);
+
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new LocationOrText(userName, userProfileThumbnail, status.Message, status.Timestamp);
@@ -56,5 +60,7 @@ namespace windows_client.utils
             }
             return statusUpdateBox;
         }
+
+        
     }
 }
