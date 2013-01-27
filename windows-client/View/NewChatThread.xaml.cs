@@ -1241,7 +1241,9 @@ namespace windows_client.View
 
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, jObj);
             ConversationListObject cObj = App.ViewModel.ConvMap[mContactNumber];
-            App.ViewModel.MessageListPageCollection.Remove(cObj);
+
+            App.ViewModel.MessageListPageCollection.Remove(cObj.ConvBoxObj); // removed from observable collection
+
             App.ViewModel.ConvMap.Remove(mContactNumber);
 
             mPubSub.publish(HikePubSub.GROUP_LEFT, mContactNumber);
@@ -2104,7 +2106,7 @@ namespace windows_client.View
             else
             {
                 // no message is left, simply remove the object from Conversation list 
-                App.ViewModel.MessageListPageCollection.Remove(obj);
+                App.ViewModel.MessageListPageCollection.Remove(obj.ConvBoxObj); // removed from observable collection
                 App.ViewModel.ConvMap.Remove(mContactNumber);
                 delConv = true;
             }
