@@ -134,7 +134,7 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
-        public delegate void getProfilePicFunction(byte[] data);
+        //public delegate void getProfilePicFunction(byte[] data);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
@@ -564,12 +564,7 @@ namespace windows_client.utils
                         postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
                         finalCallbackFunction(jObject);
                     }
-                    else if (vars[1] is getProfilePicFunction)
-                    {
-                        getProfilePicFunction finalCallbackFunction = vars[1] as getProfilePicFunction;
-                        finalCallbackFunction(fileBytes);
-                    }
-                    else if (vars[2] is downloadFile)
+                    else if (vars[1] is downloadFile)
                     {
                         downloadFile downloadFileCallback = vars[1] as downloadFile;
                         downloadFileCallback(fileBytes, vars[2] as object);
