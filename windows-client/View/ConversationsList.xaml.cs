@@ -1244,6 +1244,49 @@ namespace windows_client.View
         #endregion
 
         #region FAVOURITE ZONE
+        private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
+            if (obj == null)
+                return;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
+            string uri = "/View/NewChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+        private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+                return;
+            ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
+            if (convObj != null)
+            {
+                convObj.IsFav = false;
+                App.ViewModel.FavList.Remove(convObj);
+                JObject data = new JObject();
+                data["id"] = convObj.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+                MiscDBUtil.SaveFavourites();
+                MiscDBUtil.DeleteFavourite(convObj.Msisdn);// remove single file too
+                int count = 0;
+                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+            }
+            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+            {
+                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                favourites.Visibility = System.Windows.Visibility.Collapsed;
+                addFavsPanel.Opacity = 0;
+            }
+        }
+
+        #endregion
+
+        #region TIMELINE
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -1295,50 +1338,7 @@ namespace windows_client.View
                 addFavsPanel.Opacity = 0;
             }
         }
-
-        private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
-            if (obj == null)
-                return;
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-            string uri = "/View/NewChatThread.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
-
-        private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel)
-                return;
-            ConversationListObject convObj = (sender as MenuItem).DataContext as ConversationListObject;
-            if (convObj != null)
-            {
-                convObj.IsFav = false;
-                App.ViewModel.FavList.Remove(convObj);
-                JObject data = new JObject();
-                data["id"] = convObj.Msisdn;
-                JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.DeleteFavourite(convObj.Msisdn);// remove single file too
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-            }
-            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
-            {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
-                favourites.Visibility = System.Windows.Visibility.Collapsed;
-                addFavsPanel.Opacity = 0;
-            }
-        }
-
-        #endregion
-
-        #region TIMELINE
+        
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private void loadStatuses()
