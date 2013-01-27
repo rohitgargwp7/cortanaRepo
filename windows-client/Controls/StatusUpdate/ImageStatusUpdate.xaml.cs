@@ -25,5 +25,13 @@ namespace windows_client.Controls.StatusUpdate
             this.statusImage.Source = statusImageBitmap;
         }
 
+        public BitmapImage StatusImage
+        {
+            set
+            {
+                this.statusImage.Source = value;
+            }
+        }
+
     }
 }
