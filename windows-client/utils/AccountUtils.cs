@@ -135,6 +135,7 @@ namespace windows_client.utils
 
         public delegate void postResponseFunction(JObject obj);
         public delegate void getProfilePicFunction(byte[] data);
+        public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
 
@@ -499,6 +500,15 @@ namespace windows_client.utils
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
+        public static void createGetRequest(string requestUrl, downloadFile callback, bool setCookie, object metadata)
+        {
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            if (setCookie)
+                addToken(request);
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback, metadata });
+        }
+
         static void GetRequestCallback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
@@ -526,7 +536,7 @@ namespace windows_client.utils
                             }
                             jObject = JObject.Parse(data);
                         }
-                        else if (vars[1] is getProfilePicFunction)
+                        else// if (vars[1] is getProfilePicFunction)
                         {
                             using (BinaryReader br = new BinaryReader(responseStream))
                             {
@@ -558,6 +568,11 @@ namespace windows_client.utils
                     {
                         getProfilePicFunction finalCallbackFunction = vars[1] as getProfilePicFunction;
                         finalCallbackFunction(fileBytes);
+                    }
+                    else if (vars[2] is downloadFile)
+                    {
+                        downloadFile downloadFileCallback = vars[1] as downloadFile;
+                        downloadFileCallback(fileBytes, vars[2] as object);
                     }
 
                 }
