@@ -62,11 +62,15 @@
                             <BitmapImage UriSource="images\empty_screen_tip_black.png" CreateOptions="BackgroundCreation"/>
                         </Image.Source>-->
                     </Image>
-                    <ScrollViewer x:Name="convScroller" Height="530" Margin="0, 10,0,0">
-                        <ListBox ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="0" Grid.Column="0" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="9,0,25,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
-                        </ListBox>
-                        <!--<ProgressBar x:Name="progressBar" Margin="0,0,0,10" Background="Transparent" IsIndeterminate="True" VerticalAlignment="Bottom" VerticalContentAlignment="Center" FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" IsEnabled="False" IsTabStop="True" Opacity="0" />-->
-                    </ScrollViewer>
+
+                    <ListBox Grid.Row="0" Grid.Column="0" Height="530" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,10,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+
+
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
 

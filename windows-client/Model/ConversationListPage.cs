@@ -19,7 +19,7 @@ using windows_client.Controls;
 namespace windows_client.Model
 {
     [DataContract]
-    public class ConversationListObject : IComparable<ConversationListObject>, IBinarySerializable
+    public class ConversationListObject : INotifyPropertyChanged, INotifyPropertyChanging, IComparable<ConversationListObject>, IBinarySerializable
     {
         private object readWriteLock = new object();
         #region member variables
@@ -53,8 +53,11 @@ namespace windows_client.Model
             {
                 if (_contactName != value)
                 {
+                    NotifyPropertyChanging("ContactName");
                     _contactName = value;
                     UpdateConversationBox();
+                    NotifyPropertyChanged("ContactName");
+                    NotifyPropertyChanged("NameToShow");
                 }
             }
         }
@@ -70,8 +73,10 @@ namespace windows_client.Model
             {
                 if (_lastMessage != value)
                 {
+                    NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
                     UpdateConversationBox();
+                    NotifyPropertyChanged("LastMessage");
                 }
             }
         }
@@ -87,8 +92,11 @@ namespace windows_client.Model
             {
                 if (_timeStamp != value)
                 {
+                    NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
                     UpdateConversationBox();
+                    NotifyPropertyChanged("TimeStamp");
+                    NotifyPropertyChanged("FormattedTimeStamp");
                 }
             }
         }
@@ -104,8 +112,10 @@ namespace windows_client.Model
             {
                 if (_msisdn != value)
                 {
+                    NotifyPropertyChanging("Msisdn");
                     _msisdn = value.Trim();
                     UpdateConversationBox();
+                    NotifyPropertyChanged("Msisdn");
                 }
             }
         }
@@ -121,8 +131,11 @@ namespace windows_client.Model
             {
                 if (_isOnhike != value)
                 {
+                    NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
                     UpdateConversationBox();
+                    NotifyPropertyChanged("IsOnhike");
+                    NotifyPropertyChanged("ShowOnHikeImage");
                 }
             }
         }
@@ -138,8 +151,13 @@ namespace windows_client.Model
             {
                 if (_messageStatus != value)
                 {
+                    NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     UpdateConversationBox();
+                    NotifyPropertyChanged("MessageStatus");
+                    NotifyPropertyChanged("LastMessageColor");
+                    NotifyPropertyChanged("SDRStatusImage");
+                    NotifyPropertyChanged("SDRStatusImageVisible");
                 }
             }
         }
@@ -267,7 +285,8 @@ namespace windows_client.Model
                     _avatar = value;
                     empImage = null; // reset to null whenever avatar changes
                     UpdateConversationBox();
-
+                    NotifyPropertyChanged("Avatar");
+                    NotifyPropertyChanged("AvatarImage");
                 }
             }
         }
@@ -353,6 +372,9 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
+                    UpdateConvBoxFavMenu();
+                    NotifyPropertyChanged("IsFav");
+                    NotifyPropertyChanged("FavMsg");
                 }
             }
         }
@@ -411,6 +433,7 @@ namespace windows_client.Model
 
         public ConversationListObject()
         {
+
         }
 
         public ConversationListObject(string msisdn, string contactName, bool onHike, byte[] avatar)
@@ -447,7 +470,6 @@ namespace windows_client.Model
         }
 
         #endregion
-
         public void Write(BinaryWriter writer)
         {
             try
@@ -609,6 +631,68 @@ namespace windows_client.Model
               });
             }
         }
+
+        public void UpdateConvBoxFavMenu()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    cBoxObj.UpdateContextMenuFavourites(_isFav);
+                });
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Used to notify Silverlight that a property has changed.
+        public void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        if (propertyName != null)
+                            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                });
+            }
+        }
+        #endregion
+
+        #region INotifyPropertyChanging Members
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        private string ms;
+        private string p1;
+        private bool p2;
+        private byte[] _av;
+
+        // Used to notify that a property is about to change
+        private void NotifyPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
+                    {
+                        if (propertyName != null)
+                            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                    }
+                    catch (Exception)
+                    { }
+                });
+            }
+        }
+        #endregion
 
 
     }

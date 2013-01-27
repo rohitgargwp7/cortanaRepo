@@ -665,6 +665,12 @@ namespace windows_client
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
             #endregion
+            #region SMILEY
+            if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
+            {
+                SmileyParser.Instance.initializeSmileyParser();
+            }
+            #endregion
             #region VIEW MODEL
 
             IS_VIEWMODEL_LOADED = false;
@@ -699,12 +705,7 @@ namespace windows_client
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
             IS_VIEWMODEL_LOADED = true;
             #endregion
-            #region SMILEY
-            if (ps == PageState.CONVLIST_SCREEN) //  this confirms tombstone
-            {
-                SmileyParser.Instance.initializeSmileyParser();
-            }
-            #endregion
+            
 
         }
 

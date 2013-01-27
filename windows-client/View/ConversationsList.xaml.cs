@@ -123,7 +123,9 @@ namespace windows_client.View
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
             this.pendingRequests.SelectedIndex = -1;
-            convScroller.ScrollToVerticalOffset(0);
+            if(App.ViewModel.MessageListPageCollection.Count>0)
+            myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
+//            convScroller.ScrollToVerticalOffset(0);
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -752,7 +754,9 @@ namespace windows_client.View
                         emptyScreenTip.Opacity = 0;
                         emptyScreenImage.Opacity = 0;
                     }
-                    convScroller.ScrollToVerticalOffset(0);
+//                    convScroller.ScrollToVerticalOffset(0);
+                    myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
+
                 });
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -983,6 +987,9 @@ namespace windows_client.View
                 var glCancel = GestureService.GetGestureListener(menuItemFavourite);
                 glCancel.Tap += MenuItem_Tap_AddRemoveFav;
                 menu.Items.Add(menuItemFavourite);
+
+                if (convObj.ConvBoxObj != null)
+                    convObj.ConvBoxObj.FavouriteMenuItem = menuItemFavourite;
             }
             return menu;
         }

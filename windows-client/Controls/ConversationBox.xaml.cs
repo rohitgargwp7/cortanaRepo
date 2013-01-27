@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using Microsoft.Phone.Controls;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using windows_client.Languages;
 using windows_client.Model;
 using windows_client.utils;
 
@@ -15,7 +18,7 @@ namespace windows_client.Controls
         private long _timestamp;
         private string _msisdn;
         private ConvMessage.State _messageState;
-
+        private MenuItem favouriteMenuItem;
         public BitmapImage AvatarImage
         {
             get
@@ -59,7 +62,9 @@ namespace windows_client.Controls
                 if (_lastMessage != value)
                 {
                     _lastMessage = value;
-                    this.lastMessageTxtBlck.Text = _lastMessage;
+                    Paragraph p = SmileyParser.Instance.LinkifyEmoticons(_lastMessage);
+                    this.lastMessageTxtBlck.Blocks.Clear();
+                    this.lastMessageTxtBlck.Blocks.Add(p);
                 }
             }
         }
@@ -141,6 +146,19 @@ namespace windows_client.Controls
             }
         }
 
+        public MenuItem FavouriteMenuItem
+        {
+            get
+            {
+                return favouriteMenuItem;
+            }
+            set
+            {
+                if (this.favouriteMenuItem != value)
+                    this.favouriteMenuItem = value;
+            }
+        }
+
         public ConversationBox(BitmapImage avatarImage, string userName, string lastMessage, long timestamp, ConvMessage.State messageState, string msisdn)
         {
             InitializeComponent();
@@ -176,11 +194,22 @@ namespace windows_client.Controls
         public void update(ConversationListObject c)
         {
             this.AvatarImage = c.AvatarImage;
-            this.UserName = c.ContactName;
+            this.UserName = c.NameToShow;
             this.LastMessage = c.LastMessage;
             this.Timestamp = c.TimeStamp;
             this.MessageState = c.MessageStatus;
             this.Msisdn = c.Msisdn;
+        }
+
+        public void UpdateContextMenuFavourites(bool isFav)
+        {
+            if (favouriteMenuItem != null)
+            {
+                if (isFav) // if already favourite
+                    favouriteMenuItem.Header = AppResources.RemFromFav_Txt;
+                else
+                    favouriteMenuItem.Header = AppResources.Add_To_Fav_Txt;
+            }
         }
     }
 }
