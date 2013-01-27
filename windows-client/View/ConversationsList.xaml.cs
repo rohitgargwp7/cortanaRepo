@@ -901,7 +901,7 @@ namespace windows_client.View
             ConversationListObject convObj;
             if (convBox != null && App.ViewModel.ConvMap.TryGetValue(convBox.Msisdn, out convObj))
             {
-               
+
                 if (convObj.IsFav) // already fav , remove request
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Conversations_RemFromFav_Confirm_Txt, AppResources.RemFromFav_Txt, MessageBoxButton.OKCancel);
@@ -926,7 +926,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         addFavsPanel.Opacity = 0;
                     }
-                    menuFavourite.Header=AppResources.Add_To_Fav_Txt;
+                    menuFavourite.Header = AppResources.Add_To_Fav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
                 }
                 else // add to fav
@@ -955,7 +955,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         addFavsPanel.Opacity = 1;
                     }
-                    menuFavourite.Header= AppResources.RemFromFav_Txt;
+                    menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
                 }
             }
@@ -1288,7 +1288,7 @@ namespace windows_client.View
 
         #region TIMELINE
 
-        private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
@@ -1320,7 +1320,7 @@ namespace windows_client.View
             }
         }
 
-        private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
             JObject data = new JObject();
@@ -1338,13 +1338,18 @@ namespace windows_client.View
                 addFavsPanel.Opacity = 0;
             }
         }
-        
+
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private void loadStatuses()
         {
+            this.statusLLS.ItemsSource = statusList;
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
-
+            for (int i = 0; i < statusMessagesFromDB.Count; i++)
+            { 
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], 
+                    new EventHandler<GestureEventArgs>(yes_Click), new EventHandler<GestureEventArgs>(no_Click)));
+            }
         }
 
         #endregion

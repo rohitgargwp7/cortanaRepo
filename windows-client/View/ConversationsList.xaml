@@ -219,7 +219,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.CentralTimeLine_Header, Source={StaticResource LocalizedStrings}}"/>
-                    <phone:LongListSelector Grid.Row="1" IsGroupingEnabled="False" LayoutMode="List">
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" IsGroupingEnabled="False" LayoutMode="List">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <status:StatusUpdateBox></status:StatusUpdateBox>
@@ -227,7 +227,6 @@
                         </phone:LongListSelector.ItemTemplate>
                     </phone:LongListSelector>
                 </Grid>
-
             </controls:PivotItem>
         </controls:Pivot>
 
