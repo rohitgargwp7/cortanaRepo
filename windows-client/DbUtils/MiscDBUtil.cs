@@ -118,6 +118,14 @@ namespace windows_client.DbUtils
         }
 
         #region STATUS UPDATES
+
+        public static void saveStatusImage(string msisdn, long statusUpdateId, byte[] imageBytes)
+        {
+            msisdn = msisdn.Replace(":", "_");
+            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+            storeFileInIsolatedStorage(fullFilePath, imageBytes);
+        }
+
         public static void getStatusUpdateImageThumbnailBytes(string msisdn, long statusUpdateId, out byte[] imageBytes)
         { 
             msisdn = msisdn.Replace(":", "_");
