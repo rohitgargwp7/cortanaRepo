@@ -122,10 +122,9 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
-            this.pendingRequests.SelectedIndex = -1;
+//            this.pendingRequests.SelectedIndex = -1;
             if(App.ViewModel.MessageListPageCollection.Count>0)
             myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
-//            convScroller.ScrollToVerticalOffset(0);
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -699,31 +698,30 @@ namespace windows_client.View
 
                 #endregion
 
-                #region Pending Requests
-
-                if (!_isPendingListBound)
-                {
-                    _isPendingListBound = true;
-                    BackgroundWorker pendingBw = new BackgroundWorker();
-                    pendingBw.DoWork += (sf, ef) =>
-                    {
-                        if (!App.ViewModel.IsPendingListLoaded) // if list is not loaded
-                            MiscDBUtil.LoadPendingRequests();
-                        App.ViewModel.IsPendingListLoaded = true;
-                    };
-                    pendingBw.RunWorkerAsync();
-                    pendingBw.RunWorkerCompleted += (sf, ef) =>
-                    {
-                        pendingRequests.ItemsSource = App.ViewModel.PendingRequests;
-                        if (App.ViewModel.FavList.Count > 0 || App.ViewModel.PendingRequests.Count > 0)
-                        {
-                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
-                            favourites.Visibility = System.Windows.Visibility.Visible;
-                            addFavsPanel.Opacity = 1;
-                        }
-                    };
-                }
-                #endregion
+                //#region Pending Requests
+                //if (!_isPendingListBound)
+                //{
+                //    _isPendingListBound = true;
+                //    BackgroundWorker pendingBw = new BackgroundWorker();
+                //    pendingBw.DoWork += (sf, ef) =>
+                //    {
+                //        if (!App.ViewModel.IsPendingListLoaded) // if list is not loaded
+                //            MiscDBUtil.LoadPendingRequests();
+                //        App.ViewModel.IsPendingListLoaded = true;
+                //    };
+                //    pendingBw.RunWorkerAsync();
+                //    pendingBw.RunWorkerCompleted += (sf, ef) =>
+                //    {
+                //        pendingRequests.ItemsSource = App.ViewModel.PendingRequests;
+                //        if (App.ViewModel.FavList.Count > 0 || App.ViewModel.PendingRequests.Count > 0)
+                //        {
+                //            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                //            favourites.Visibility = System.Windows.Visibility.Visible;
+                //            addFavsPanel.Opacity = 1;
+                //        }
+                //    };
+                //}
+                //#endregion
 
             }
             else if (selectedIndex == 3)
