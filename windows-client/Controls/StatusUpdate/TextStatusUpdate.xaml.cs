@@ -4,9 +4,9 @@ using windows_client.Languages;
 
 namespace windows_client.Controls.StatusUpdate
 {
-    public partial class LocationOrText : StatusUpdateBox
+    public partial class TextStatusUpdate : StatusUpdateBox
     {
-        public LocationOrText(string userName, BitmapImage userImage, string textOrLocationName, long timestamp)
+        public TextStatusUpdate(string userName, BitmapImage userImage, string textOrLocationName, long timestamp)
             : base(userName, userImage)
         {
             InitializeComponent();

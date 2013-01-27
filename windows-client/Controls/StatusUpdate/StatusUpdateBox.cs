@@ -64,7 +64,7 @@ namespace windows_client.Controls.StatusUpdate
                     statusUpdateBox = new ImageStatusUpdate(userName, userImage, null, timestamp);
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new LocationOrText(userName, userImage, status.Message, timestamp);
+                    statusUpdateBox = new TextStatusUpdate(userName, userImage, status.Message, timestamp);
 
                     break;
             

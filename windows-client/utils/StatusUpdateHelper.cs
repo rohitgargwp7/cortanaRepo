@@ -65,7 +65,7 @@ namespace windows_client.utils
 
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new LocationOrText(userName, userProfileThumbnail, status.Message, status.Timestamp);
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Message, status.Timestamp);
                     break;
             }
             return statusUpdateBox;
