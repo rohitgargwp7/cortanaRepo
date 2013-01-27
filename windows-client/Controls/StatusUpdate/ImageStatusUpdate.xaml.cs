@@ -7,21 +7,30 @@ namespace windows_client.Controls.StatusUpdate
     public partial class ImageStatusUpdate : StatusUpdateBox
     {
         public ImageStatusUpdate(string userName, BitmapImage userImage, BitmapImage statusImageBitmap, long timestamp)
-            : base(userName, userImage, StatusType.IMAGE_UPDATE)
+            : base(userName, userImage)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
-            this.statusImage.Source = statusImageBitmap;
+            if (statusImageBitmap != null)
+                this.statusImage.Source = statusImageBitmap;
         }
 
         public ImageStatusUpdate(string userName, BitmapImage userImage, BitmapImage statusImageBitmap, string updateText, long timestamp)
-            : base(userName, userImage, StatusType.IMAGE_TEXT_UPDATE)
+            : base(userName, userImage)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = updateText;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             this.statusImage.Source = statusImageBitmap;
+        }
+
+        public BitmapImage StatusImage
+        {
+            set
+            {
+                this.statusImage.Source = value;
+            }
         }
 
     }

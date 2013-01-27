@@ -11,7 +11,7 @@ namespace windows_client.View
     public partial class DisplayImage : PhoneApplicationPage
     {
         private string msisdn;
-        private string fileName;//name of file recived from server. it would be either msisdn or default avatr file name
+        //private string fileName;//name of file recived from server. it would be either msisdn or default avatr file name
 
         public DisplayImage()
         {
@@ -42,7 +42,7 @@ namespace windows_client.View
                 object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                 msisdn = (string)profilePicTapped[0];
                 string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
-
+                string fileName;
                 //check if image is already stored
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
@@ -55,11 +55,11 @@ namespace windows_client.View
                     shellProgress.IsVisible = true;
                     if (!Utils.isGroupConversation(msisdn))
                     {
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                     else
                     {
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                 }
                 else
@@ -70,7 +70,7 @@ namespace windows_client.View
                     if (defaultImageBytes == null || defaultImageBytes.Length == 0)
                     {
                         shellProgress.IsVisible = true;
-                        AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false);
+                        AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false, fileName);
                     }
                     else
                     {
@@ -80,8 +80,9 @@ namespace windows_client.View
             }
         }
 
-        public void getProfilePic_Callback(byte[] fullBytes)
+        public void getProfilePic_Callback(byte[] fullBytes, object fName)
         {
+            string fileName = fName as string;
             if (fullBytes != null && fullBytes.Length > 0)
                 MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
             Deployment.Current.Dispatcher.BeginInvoke(() =>

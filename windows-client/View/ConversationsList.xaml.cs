@@ -25,6 +25,7 @@ using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
 using System.Collections.ObjectModel;
 using windows_client.Controls;
+using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.View
 {
@@ -725,6 +726,11 @@ namespace windows_client.View
                 #endregion
 
             }
+            else if (selectedIndex == 3)
+            {
+                if (!isStatusMessagesLoaded)
+                    loadStatuses();
+            }
         }
 
         #endregion
@@ -1245,58 +1251,6 @@ namespace windows_client.View
         #endregion
 
         #region FAVOURITE ZONE
-
-        private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
-
-            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
-                return;
-
-            App.ViewModel.PendingRequests.Remove(fObj);
-            App.ViewModel.FavList.Insert(0, fObj);
-
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-
-            MiscDBUtil.SaveFavourites();
-            MiscDBUtil.SaveFavourites(fObj);
-            MiscDBUtil.SavePendingRequests();
-            int count = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-            if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
-            {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
-                favourites.Visibility = System.Windows.Visibility.Visible;
-                addFavsPanel.Opacity = 1;
-            }
-        }
-
-        private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            App.ViewModel.PendingRequests.Remove(fObj);
-            MiscDBUtil.SavePendingRequests();
-            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
-            {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
-                favourites.Visibility = System.Windows.Visibility.Collapsed;
-                addFavsPanel.Opacity = 0;
-            }
-        }
-
         private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
@@ -1339,6 +1293,73 @@ namespace windows_client.View
 
         #endregion
 
+        #region TIMELINE
+
+        private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
+            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+
+            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                return;
+
+            App.ViewModel.PendingRequests.Remove(fObj);
+            App.ViewModel.FavList.Insert(0, fObj);
+
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+            MiscDBUtil.SaveFavourites();
+            MiscDBUtil.SaveFavourites(fObj);
+            MiscDBUtil.SavePendingRequests();
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+            if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+            {
+                emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                favourites.Visibility = System.Windows.Visibility.Visible;
+                addFavsPanel.Opacity = 1;
+            }
+        }
+
+        private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            App.ViewModel.PendingRequests.Remove(fObj);
+            MiscDBUtil.SavePendingRequests();
+            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+            {
+                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+                favourites.Visibility = System.Windows.Visibility.Collapsed;
+                addFavsPanel.Opacity = 0;
+            }
+        }
+
+        private bool isStatusMessagesLoaded = false;
+        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+        private void loadStatuses()
+        {
+            this.statusLLS.ItemsSource = statusList;
+            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
+            for (int i = 0; i < statusMessagesFromDB.Count; i++)
+            { 
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], 
+                    new EventHandler<GestureEventArgs>(yes_Click), new EventHandler<GestureEventArgs>(no_Click)));
+            }
+        }
+
+        #endregion
         private void Button_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (addFavsPanel.Opacity == 0)

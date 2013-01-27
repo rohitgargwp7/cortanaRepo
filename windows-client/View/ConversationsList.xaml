@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:status="clr-namespace:windows_client.Controls.StatusUpdate"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -143,7 +144,7 @@
                         <Grid Margin="16,0,0,0">
                             <Grid.RowDefinitions>
                                 <!--<RowDefinition Height="Auto"/>-->
-                                <RowDefinition Height="Auto"/>
+                                <!--<RowDefinition Height="Auto"/>-->
                                 <RowDefinition Height="Auto"/>
 
                                 <RowDefinition Height="Auto"/>
@@ -153,7 +154,7 @@
 
                             <!--<TextBlock Grid.Row="0" FontSize="24" Text="{Binding Path= LocalizedResources.Conversations_YourFav_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed"/>-->
 
-                            <ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,0,0,0" Grid.Row="0">
+                            <!--<ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,0,0,0" Grid.Row="0">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="0,0,0,10">
@@ -179,15 +180,15 @@
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
-                            </ListBox>
+                            </ListBox>-->
 
-                            <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Tap="Button_Tap_2" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
+                            <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Tap="Button_Tap_2" Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Center">
                                 <Image Source="images/favorites_heart.png" Height="90"></Image>
                                 <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                                 <TextBlock Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             </StackPanel>
 
-                            <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="favourites_Tap" >
+                            <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="0" Tap="favourites_Tap" >
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
@@ -206,12 +207,29 @@
 
                             <!--<Rectangle x:Name="favsBar" Height="1" Grid.Row="3" Margin="0,20,0,0"/>-->
                             <!--<TextBlock Margin="0,20,0,0" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="4" Tap="Button_Tap_1"/>-->
-                            <StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
+                            <StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="1" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
                                 <Image Source="images/add_favorites.png" Height="69" VerticalAlignment="Center"></Image>
                                 <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Favorites_AddMore, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"/>
                             </StackPanel>
                         </Grid>
                     </ScrollViewer>
+                </Grid>
+            </controls:PivotItem>
+
+            <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Timeline_Header_Txt, Source={StaticResource LocalizedStrings}}">
+                <Grid Background="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.CentralTimeLine_Header, Source={StaticResource LocalizedStrings}}"/>
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" IsGroupingEnabled="False" LayoutMode="List">
+                        <phone:LongListSelector.ItemTemplate>
+                            <DataTemplate>
+                                <status:StatusUpdateBox></status:StatusUpdateBox>
+                            </DataTemplate>
+                        </phone:LongListSelector.ItemTemplate>
+                    </phone:LongListSelector>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>

@@ -2,6 +2,8 @@
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
+using windows_client.DbUtils;
 
 namespace windows_client.utils
 {
@@ -665,5 +667,27 @@ namespace windows_client.utils
             return defaultGroupAvatars[index];
         }
         #endregion
+
+        public BitmapImage createImageFromBytes(byte[] imagebytes)
+        {
+            BitmapImage bitmapImage = null;
+            using (var memStream = new MemoryStream(imagebytes))
+            {
+                memStream.Seek(0, SeekOrigin.Begin);
+                bitmapImage = new BitmapImage();
+                bitmapImage.SetSource(memStream);
+            }
+            return bitmapImage;
+        }
+
+        public BitmapImage getUserProfileThumbnail(string msisdn)
+        {
+            byte[] profileImageBytes = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+            if (profileImageBytes != null && profileImageBytes.Length > 0)
+                return createImageFromBytes(profileImageBytes);
+            if (Utils.isGroupConversation(msisdn))
+                return getDefaultGroupAvatar(msisdn);
+            return getDefaultAvatar(msisdn);
+        }
     }
 }
