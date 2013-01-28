@@ -17,7 +17,6 @@ namespace windows_client.Model
         string _message; // this will be stored in JSON format
         StatusType _type;
         string _mappedId;
-        bool isRead;
 
         public enum StatusType
         {
@@ -50,7 +49,7 @@ namespace windows_client.Model
         private Binary version;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
-        public long MessageId
+        public long StatusId
         {
             get;
             set;
