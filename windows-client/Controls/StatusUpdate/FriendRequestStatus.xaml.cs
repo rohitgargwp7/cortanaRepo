@@ -12,7 +12,7 @@ namespace windows_client.Controls.StatusUpdate
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
-            this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, userName);
+            this.seeUpdatesTxtBlk.Text = userName + "has added"; //string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, userName);
             if (yesTap != null)
             {
                 var glYes = GestureService.GetGestureListener(this.yesBtn);

@@ -630,7 +630,7 @@ namespace windows_client.View
             {
                 if (appBar.Buttons.Contains(composeIconButton))
                     appBar.Buttons.Remove(composeIconButton);
-                if(!appBar.Buttons.Contains(postStatusIconButton))
+                if (!appBar.Buttons.Contains(postStatusIconButton))
                     appBar.Buttons.Add(postStatusIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
@@ -789,8 +789,7 @@ namespace windows_client.View
                 if (isStatusMessagesLoaded)
                 {
                     statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
-                        new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(yes_Click),
-                        new EventHandler<GestureEventArgs>(no_Click)));
+                        new EventHandler<GestureEventArgs>(statusBox_Tap)));
                 }
             }
             #endregion
@@ -1305,14 +1304,20 @@ namespace windows_client.View
         {
             isStatusMessagesLoaded = true;
             this.statusLLS.ItemsSource = statusList;
+            for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
+            {
+                FriendRequestStatus frs = new FriendRequestStatus(App.ViewModel.PendingRequests[i].NameToShow, App.ViewModel.PendingRequests[i].AvatarImage,
+                    App.ViewModel.PendingRequests[i].Msisdn, new EventHandler<GestureEventArgs>(yes_Click),
+                    new EventHandler<GestureEventArgs>(no_Click));
+                statusList.Add(frs);
+            }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             if (statusMessagesFromDB == null)
                 return;
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
                 statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                    new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(yes_Click),
-                    new EventHandler<GestureEventArgs>(no_Click)));
+                    new EventHandler<GestureEventArgs>(statusBox_Tap)));
             }
         }
 

@@ -36,17 +36,13 @@ namespace windows_client.utils
             }
         }
 
-        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap,
-            EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap)
+        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap)
         {
             BitmapImage userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
             string userName = "Madhur";//need to extract name for msisdn, try to use some cache instead querying db
             StatusUpdateBox statusUpdateBox = null;
             switch (status.Status_Type)
             {
-                case StatusMessage.StatusType.ADD_FRIEND:
-                    statusUpdateBox = new FriendRequestStatus(userName, userProfileThumbnail, status.Msisdn, yesTap, noTap);
-                    break;
                 case StatusMessage.StatusType.PHOTO_UPDATE:
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
