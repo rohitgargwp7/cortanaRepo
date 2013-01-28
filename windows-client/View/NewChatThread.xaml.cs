@@ -1744,7 +1744,8 @@ namespace windows_client.View
                 #region STATUS UPDATE
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
-                    JObject data = JObject.Parse(convMessage.MetaDataString);
+                    JObject jsonObj = JObject.Parse(convMessage.MetaDataString);
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
                     #region HANDLE PIC UPDATE
                     //if (data.TryGetValue(HikeConstants.UPDATE_ID, out val) && val != null) // shows picture update is there
