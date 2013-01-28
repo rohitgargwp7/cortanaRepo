@@ -705,8 +705,6 @@ namespace windows_client
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
             IS_VIEWMODEL_LOADED = true;
             #endregion
-            
-
         }
 
         public static void createDatabaseAsync()

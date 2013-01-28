@@ -102,6 +102,10 @@ namespace windows_client.Model
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                return ParticipantInfoState.STATUS_UPDATE;
+            }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
             {
                 return ParticipantInfoState.GROUP_END;
@@ -952,8 +956,9 @@ namespace windows_client.Model
                     this.Message = AppResources.SMS_INDIA;
                     break;
                 case ParticipantInfoState.STATUS_UPDATE:
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
-                    if (jsonObj.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
                         this.Message = val.ToString();
                     break;
                 default: break;
