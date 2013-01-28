@@ -951,6 +951,11 @@ namespace windows_client.Model
                 case ParticipantInfoState.INTERNATIONAL_USER:
                     this.Message = AppResources.SMS_INDIA;
                     break;
+                case ParticipantInfoState.STATUS_UPDATE:
+                    JToken val;
+                    if (jsonObj.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
+                        this.Message = val.ToString();
+                    break;
                 default: break;
             }
         }
