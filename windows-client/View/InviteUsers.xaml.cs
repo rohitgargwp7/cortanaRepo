@@ -253,7 +253,7 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
                 App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
             }
-#endregion
+            #endregion
             #region INVITE
             else
             {
