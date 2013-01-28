@@ -211,7 +211,7 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
-           
+
         }
 
         private void ManagePage()
@@ -1774,7 +1774,7 @@ namespace windows_client.View
                             Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
                         }
                     }
-                    #endregion                    
+                    #endregion
                 }
                 #endregion
                 ScrollToBottom();
@@ -2478,7 +2478,8 @@ namespace windows_client.View
                     {
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                     }
-                    updateLastMsgColor(convMessage.Msisdn);
+                    if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                        updateLastMsgColor(convMessage.Msisdn);
                     // Update UI
                     HideTypingNotification();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
