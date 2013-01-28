@@ -376,6 +376,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
+            mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
         }
 
         private void removeListeners()
@@ -390,6 +391,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
+                mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
             }
             catch { }
         }
@@ -864,6 +866,18 @@ namespace windows_client.View
                 }
                 catch (Exception e)
                 {
+                }
+            }
+            #endregion
+            #region STATUS UPDATE RECEIVED
+            else if (HikePubSub.STATUS_RECEIVED == type)
+            {
+                StatusMessage sm = obj as StatusMessage;
+                if (isStatusMessagesLoaded)
+                {
+                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(yes_Click),
+                        new EventHandler<GestureEventArgs>(no_Click)));
                 }
             }
             #endregion
