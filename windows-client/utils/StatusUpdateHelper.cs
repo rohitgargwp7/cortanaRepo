@@ -50,7 +50,7 @@ namespace windows_client.utils
                 case StatusMessage.StatusType.PHOTO_UPDATE:
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
-                    MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.MessageId, out statusImageBytes, out isThumbnail);
+                    MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
                     statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, 
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp);
                     if (isThumbnail)
@@ -79,7 +79,7 @@ namespace windows_client.utils
             if (fileBytes != null && fileBytes.Length > 0)
             {
                 //TODO move to background thread
-                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.MessageId, fileBytes);
+                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
