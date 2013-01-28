@@ -14,6 +14,7 @@ using System.Runtime.Serialization;
 using windows_client.Misc;
 using System.Text;
 using windows_client.Languages;
+using windows_client.Controls;
 
 namespace windows_client.Model
 {
@@ -35,6 +36,7 @@ namespace windows_client.Model
         private int _muteVal = -1; // this is used to track mute (added in version 1.5.0.0)
         private BitmapImage empImage = null;
         private bool _isFav;
+        private ConversationBox cBoxObj;
 
         #endregion
 
@@ -53,6 +55,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("ContactName");
                     _contactName = value;
+                    UpdateConversationBox();
                     NotifyPropertyChanged("ContactName");
                     NotifyPropertyChanged("NameToShow");
                 }
@@ -72,6 +75,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
+                    UpdateConversationBox();
                     NotifyPropertyChanged("LastMessage");
                 }
             }
@@ -90,6 +94,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
+                    UpdateConversationBox();
                     NotifyPropertyChanged("TimeStamp");
                     NotifyPropertyChanged("FormattedTimeStamp");
                 }
@@ -109,6 +114,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Msisdn");
                     _msisdn = value.Trim();
+                    UpdateConversationBox();
                     NotifyPropertyChanged("Msisdn");
                 }
             }
@@ -127,6 +133,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
+                    UpdateConversationBox();
                     NotifyPropertyChanged("IsOnhike");
                     NotifyPropertyChanged("ShowOnHikeImage");
                 }
@@ -146,6 +153,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
+                    UpdateConversationBox();
                     NotifyPropertyChanged("MessageStatus");
                     NotifyPropertyChanged("LastMessageColor");
                     NotifyPropertyChanged("SDRStatusImage");
@@ -276,6 +284,7 @@ namespace windows_client.Model
                 {
                     _avatar = value;
                     empImage = null; // reset to null whenever avatar changes
+                    UpdateConversationBox();
                     NotifyPropertyChanged("Avatar");
                     NotifyPropertyChanged("AvatarImage");
                 }
@@ -363,6 +372,7 @@ namespace windows_client.Model
                 if (value != _isFav)
                 {
                     _isFav = value;
+                    UpdateConvBoxFavMenu();
                     NotifyPropertyChanged("IsFav");
                     NotifyPropertyChanged("FavMsg");
                 }
@@ -380,16 +390,29 @@ namespace windows_client.Model
             }
         }
 
-        public Visibility IsGroupChat
+        public bool IsGroupChat
         {
             get
             {
                 if (Utils.isGroupConversation(_msisdn))
-                    return Visibility.Collapsed;
-                return Visibility.Visible;
+                    return true;
+                return false;
             }
         }
 
+        public ConversationBox ConvBoxObj
+        {
+            get
+            {
+                return cBoxObj;
+            }
+            set
+            {
+                if (value != cBoxObj)
+                    cBoxObj = value;
+            }
+
+        }
         public ConversationListObject(string msisdn, string contactName, string lastMessage, bool isOnhike, long timestamp, byte[] avatar, ConvMessage.State msgStatus, long lastMsgId)
         {
             this._msisdn = msisdn;
@@ -447,7 +470,6 @@ namespace windows_client.Model
         }
 
         #endregion
-
         public void Write(BinaryWriter writer)
         {
             try
@@ -488,7 +510,7 @@ namespace windows_client.Model
             else  //current_ver >= 1.5.0.0
             {
                 ReadVer_Latest(reader);
-            }           
+            }
         }
 
         public void ReadVer_1_4_0_0(BinaryReader reader)
@@ -599,6 +621,28 @@ namespace windows_client.Model
         }
         #endregion
 
+        public void UpdateConversationBox()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+              {
+                  cBoxObj.update(this);
+              });
+            }
+        }
+
+        public void UpdateConvBoxFavMenu()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    cBoxObj.UpdateContextMenuFavourites(_isFav);
+                });
+            }
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -612,7 +656,7 @@ namespace windows_client.Model
                 {
                     try
                     {
-                        if(propertyName != null)
+                        if (propertyName != null)
                             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                     }
                     catch (Exception)
@@ -637,17 +681,19 @@ namespace windows_client.Model
             if (PropertyChanging != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    try
                     {
-                        try
-                        {
-                            if (propertyName != null)
-                                PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
-                        }
-                        catch (Exception)
-                        { }
-                    });
+                        if (propertyName != null)
+                            PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+                    }
+                    catch (Exception)
+                    { }
+                });
             }
         }
         #endregion
+
+
     }
 }
