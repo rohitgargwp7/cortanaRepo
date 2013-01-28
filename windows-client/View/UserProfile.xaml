@@ -70,9 +70,12 @@
             <Button Name="btnInvite" Grid.Row="2" Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="Invite_Tap"/>
         </Grid>
         <Grid Name="gridHikeUser" Grid.Row="1" >
-            <ListBox Name="listBoxStatus">
-
-            </ListBox>
+            <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" IsGroupingEnabled="False" LayoutMode="List">
+                <phone:LongListSelector.ItemTemplate>
+                    <DataTemplate>
+                    </DataTemplate>
+                </phone:LongListSelector.ItemTemplate>
+            </phone:LongListSelector>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

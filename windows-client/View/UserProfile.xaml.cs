@@ -18,6 +18,8 @@ using System.Windows.Documents;
 using Microsoft.Phone.Tasks;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json.Linq;
+using windows_client.ViewModel;
+using System.Collections.ObjectModel;
 
 namespace windows_client.View
 {
@@ -184,30 +186,7 @@ namespace windows_client.View
                 txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                 if (isFriend)
                 {
-                    List<StatusMessage> listMsgs = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-                    if (listMsgs != null)
-                    {
-                        List<StatusUpdateBox> listStatus = new List<StatusUpdateBox>();
-                        foreach (StatusMessage stsMessage in listMsgs)
-                        {
-                            StatusUpdateBox stsBox = null;
-                            // stsMessage.Msisdn
-                            switch (stsMessage.Status_Type)
-                            {
-                                case StatusMessage.StatusType.ADD_FRIEND:
-                                    // stsBox = new FriendRequestStatus()
-                                    break;
-                                case StatusMessage.StatusType.PHOTO_UPDATE:
-                                    //stsBox = new ImageStatusUpdate();
-                                    break;
-                                case StatusMessage.StatusType.TEXT_UPDATE:
-                                    //        stsBox = new LocationOrText(
-                                    break;
-                            }
-                            listStatus.Add(new StatusUpdateBox());//todo:change
-                        }
-                        listBoxStatus.ItemsSource = listStatus;
-                    }
+                   loadStatuses();
                     gridSmsUser.Visibility = Visibility.Collapsed;
 
                 }
@@ -321,6 +300,75 @@ namespace windows_client.View
                 isProfilePicTapped = false;
             });
         }
+        #endregion
+
+        #region status messages
+
+        private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
+            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+
+            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
+                return;
+
+            App.ViewModel.PendingRequests.Remove(fObj);
+            App.ViewModel.FavList.Insert(0, fObj);
+
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+
+            MiscDBUtil.SaveFavourites();
+            MiscDBUtil.SaveFavourites(fObj);
+            MiscDBUtil.SavePendingRequests();
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+            //if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+            //{
+            //    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+            //    favourites.Visibility = System.Windows.Visibility.Visible;
+            //    addFavsPanel.Opacity = 1;
+            //}
+        }
+
+        private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+            JObject data = new JObject();
+            data["id"] = fObj.Msisdn;
+            JObject obj = new JObject();
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+            obj[HikeConstants.DATA] = data;
+            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
+            App.ViewModel.PendingRequests.Remove(fObj);
+            MiscDBUtil.SavePendingRequests();
+            //if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+            //{
+            //    emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
+            //    favourites.Visibility = System.Windows.Visibility.Collapsed;
+            //    addFavsPanel.Opacity = 0;
+            //}
+        }
+
+        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+        private void loadStatuses()
+        {
+            this.statusLLS.ItemsSource = statusList;
+            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+            if (statusMessagesFromDB == null)
+                return;
+            for (int i = 0; i < statusMessagesFromDB.Count; i++)
+            {
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                    new EventHandler<GestureEventArgs>(yes_Click), new EventHandler<GestureEventArgs>(no_Click)));
+            }
+        }
+
         #endregion
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
