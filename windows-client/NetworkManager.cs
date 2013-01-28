@@ -943,25 +943,9 @@ namespace windows_client
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     StatusMessage sm = null;
                     JToken val;
-                    #region HANDLE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.UPDATE_ID, out val) && val != null) // shows picture update is there
-                    {
-                        string mesg = null;
-                        JToken msgToken;
-                        if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out msgToken) && msgToken != null)
-                            mesg = msgToken.ToString(); 
-                        try
-                        {
-                            sm = new StatusMessage(msisdn, mesg, StatusMessage.StatusType.PHOTO_UPDATE,msgToken.ToString());
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine("Exception while inserting Pic Update msg : " + e.StackTrace);
-                        }
-                    }
-                    #endregion
+                    
                     #region HANDLE TEXT UPDATE
-                    else if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
                     {
                         string id = null;
                         JToken idToken;
@@ -979,14 +963,15 @@ namespace windows_client
                     #endregion
                     // store the msg in STATUS TABLE
                     StatusMsgsTable.InsertStatusMsg(sm);
-                    JToken imgToken;
-                    if (data.TryGetValue(HikeConstants.IMG, out imgToken) && imgToken != null)
-                    {
-                        string iconBase64 = imgToken.ToString();
-                        byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                        MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.MessageId);
-                    }
-                                               
+                    //JToken imgToken;
+                    //if (data.TryGetValue(HikeConstants.IMG, out imgToken) && imgToken != null)
+                    //{
+                    //    string iconBase64 = imgToken.ToString();
+                    //    byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                    //    MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.StatusId);
+                    //}
+                          
+                     
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
                     {
@@ -995,6 +980,7 @@ namespace windows_client
                         vals[1] = null; // always send null as we dont want any activity on conversation page
                         pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     }
+                    pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
                 catch (Exception e)
                 {
