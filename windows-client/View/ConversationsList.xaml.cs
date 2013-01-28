@@ -120,9 +120,9 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
-//            this.pendingRequests.SelectedIndex = -1;
-            if(App.ViewModel.MessageListPageCollection.Count>0)
-            myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
+            //            this.pendingRequests.SelectedIndex = -1;
+            if (App.ViewModel.MessageListPageCollection.Count > 0)
+                myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -750,7 +750,7 @@ namespace windows_client.View
                         emptyScreenTip.Opacity = 0;
                         emptyScreenImage.Opacity = 0;
                     }
-//                    convScroller.ScrollToVerticalOffset(0);
+                    //                    convScroller.ScrollToVerticalOffset(0);
                     myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
 
                 });
@@ -1342,18 +1342,25 @@ namespace windows_client.View
             }
         }
 
+        private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+        }
+
+
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private void loadStatuses()
         {
+            isStatusMessagesLoaded = true;
             this.statusLLS.ItemsSource = statusList;
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             if (statusMessagesFromDB == null)
                 return;
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
-            { 
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], 
-                    new EventHandler<GestureEventArgs>(yes_Click), new EventHandler<GestureEventArgs>(no_Click)));
+            {
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                    new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(yes_Click),
+                    new EventHandler<GestureEventArgs>(no_Click)));
             }
         }
 
