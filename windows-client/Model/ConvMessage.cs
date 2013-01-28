@@ -952,8 +952,9 @@ namespace windows_client.Model
                     this.Message = AppResources.SMS_INDIA;
                     break;
                 case ParticipantInfoState.STATUS_UPDATE:
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
-                    if (jsonObj.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
                         this.Message = val.ToString();
                     break;
                 default: break;
