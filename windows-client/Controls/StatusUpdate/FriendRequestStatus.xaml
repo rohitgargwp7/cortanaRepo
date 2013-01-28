@@ -10,9 +10,7 @@
 	d:DesignWidth="372" d:DesignHeight="86"
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
-    <!--<Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right">-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-
+    <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,15,0,15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -32,6 +30,5 @@
             <Button x:Name="yesBtn" Background="#2e91d3" Height="65" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Foreground="White"></Button>
             <Button x:Name="noBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959"></Button>
         </StackPanel>
-
     </Grid>
 </status:StatusUpdateBox>
