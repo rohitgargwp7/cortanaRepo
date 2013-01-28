@@ -235,6 +235,10 @@ namespace windows_client.DbUtils
 
         public static byte[] getThumbNailForMsisdn(string msisdn)
         {
+            if (msisdn == App.MSISDN)
+            {
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+            }
             msisdn = msisdn.Replace(":", "_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())

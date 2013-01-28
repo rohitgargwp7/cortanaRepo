@@ -387,8 +387,7 @@ namespace windows_client.View
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
                 statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                      new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(yes_Click),
-                      new EventHandler<GestureEventArgs>(no_Click)));
+                      new EventHandler<GestureEventArgs>(statusBox_Tap)));
             }
         }
 
