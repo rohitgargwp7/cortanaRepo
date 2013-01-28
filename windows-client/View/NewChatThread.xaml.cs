@@ -1766,7 +1766,7 @@ namespace windows_client.View
                     {
                         try
                         {
-                            MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.TEXT_UPDATE, val.ToString());
+                            MyChatBubble chatBubble = new StatusChatBubble(convMessage);
                             this.MessageList.Children.Add(chatBubble);
                         }
                         catch (Exception e)
