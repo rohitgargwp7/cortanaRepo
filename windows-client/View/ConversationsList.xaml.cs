@@ -1326,6 +1326,7 @@ namespace windows_client.View
                 statusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
+            statusMessagesFromDB.Reverse(); //TODO - GK - return sorted list from db
             if (statusMessagesFromDB == null)
                 return;
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
