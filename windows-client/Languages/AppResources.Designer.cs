@@ -187,15 +187,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RECENT UPDATES.
-        /// </summary>
-        public static string CentralTimeLine_Header {
-            get {
-                return ResourceManager.GetString("CentralTimeLine_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This group chat is muted.
         /// </summary>
         public static string ChatThread_GCMute {
@@ -408,6 +399,15 @@ namespace windows_client.Languages {
         public static string Conversations_Pivot_Timeline_Header_Txt {
             get {
                 return ResourceManager.GetString("Conversations_Pivot_Timeline_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post Status.
+        /// </summary>
+        public static string Conversations_PostStatus_AppBar {
+            get {
+                return ResourceManager.GetString("Conversations_PostStatus_AppBar", resourceCulture);
             }
         }
         

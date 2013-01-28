@@ -189,7 +189,6 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-
                             <!--<Rectangle x:Name="favsBar" Height="1" Grid.Row="3" Margin="0,20,0,0"/>-->
                             <!--<TextBlock Margin="0,20,0,0" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="4" Tap="Button_Tap_1"/>-->
                             <StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="1" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
@@ -204,11 +203,9 @@
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Timeline_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid Background="Transparent">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="{Binding Path= LocalizedResources.CentralTimeLine_Header, Source={StaticResource LocalizedStrings}}"/>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="1" IsGroupingEnabled="False" LayoutMode="List">
+                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="0" IsGroupingEnabled="False" LayoutMode="List">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <status:StatusUpdateBox></status:StatusUpdateBox>
