@@ -398,6 +398,9 @@ namespace windows_client.View
             if (stsBox == null)
                 return;
 
+            if (stsBox.Msisdn == App.MSISDN)
+                return;
+
             ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
             if (contactInfo == null)
             {
@@ -407,7 +410,7 @@ namespace windows_client.View
             }
 
             PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contactInfo;
-            NavigationService.Navigate(new Uri( "/View/NewChatThread.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
         #endregion

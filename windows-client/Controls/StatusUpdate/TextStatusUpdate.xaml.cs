@@ -11,7 +11,7 @@ namespace windows_client.Controls.StatusUpdate
         {
             InitializeComponent();
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
-            this.statusTextTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, textOrLocationName);
+            this.statusTextTxtBlk.Text = textOrLocationName;
         }
     }
 }

@@ -142,7 +142,7 @@ namespace windows_client.utils
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -293,6 +293,17 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage, 
                 chatbubble });
         }
+
+        public static void postStatus(string statusText, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "PUT";
+            req.ContentType = "";
+            req.Headers["hike-status-message"] = statusText;
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, finalCallbackFunction });
+        }
+
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
@@ -458,6 +469,11 @@ namespace windows_client.utils
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
                     return;
+                #endregion
+                #region POST STATUS
+                case RequestType.POST_STATUS:
+                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    break;
                 #endregion
                 #region DEFAULT
                 default:

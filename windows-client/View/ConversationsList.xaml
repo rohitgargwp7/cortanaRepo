@@ -204,13 +204,21 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="0" IsGroupingEnabled="False" LayoutMode="List">
+                    <!--<phone:LongListSelector x:Name="statusLLS" Grid.Row="0" IsGroupingEnabled="False" LayoutMode="List">
                         <phone:LongListSelector.ItemTemplate>
                             <DataTemplate>
                                 <status:StatusUpdateBox></status:StatusUpdateBox>
                             </DataTemplate>
                         </phone:LongListSelector.ItemTemplate>
-                    </phone:LongListSelector>
+                    </phone:LongListSelector>-->
+                    <ListBox x:Name="statusLLS" Grid.Row="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <status:StatusUpdateBox></status:StatusUpdateBox>
+                            </DataTemplate>
+                            </ListBox.ItemTemplate>
+                    </ListBox>
+
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
