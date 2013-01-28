@@ -44,6 +44,11 @@ namespace windows_client.utils
             {
                 userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
             }
+            else if (App.MSISDN == status.Msisdn)
+            {
+                if (!App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName))
+                    userName = App.MSISDN;
+            }
             else
             {
                 userName = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn).Name;

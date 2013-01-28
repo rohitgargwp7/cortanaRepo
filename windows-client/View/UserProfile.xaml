@@ -28,7 +28,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" Margin="-4,5,4,-5" />
+            <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" />
 
             <Grid Grid.Row="0" Margin="24,22,24,0">
                 <Grid.ColumnDefinitions>
