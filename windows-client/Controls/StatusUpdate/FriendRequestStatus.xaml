@@ -31,8 +31,8 @@
         <TextBlock x:Name="seeUpdatesTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="2" Margin="16,0,5,0"/>
 
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="5,0,0,0">
-            <Button x:Name="noBtn" Background="#2e91d3" Height="65" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="{Binding YesTap}" Foreground="White"></Button>
-            <Button x:Name="yesBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="{Binding NoTap}" Foreground="#595959"></Button>
+            <Button x:Name="noBtn" Background="#2e91d3" Height="65" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Foreground="White"></Button>
+            <Button x:Name="yesBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959"></Button>
         </StackPanel>
 
     </Grid>
