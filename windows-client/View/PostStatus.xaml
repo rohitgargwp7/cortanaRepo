@@ -19,6 +19,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+
         <TextBlock x:Name="txtStatusHeader" Margin="24, 35, 24, 0" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Row="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP Regular"  />
         <TextBox VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Margin="24,35,24,0" Width="436" Height="200" Grid.Row="1"/>
 
