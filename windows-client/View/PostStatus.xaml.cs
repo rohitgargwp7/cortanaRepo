@@ -65,10 +65,9 @@ namespace windows_client.View
                 obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
                 try
                 {
-                    string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
                     string statusId = statusData["statusid"].ToString();
                     string message = statusData["msg"].ToString();
-                    StatusMessage sm = new StatusMessage(msisdn, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
+                    StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
                         TimeUtils.getCurrentTimeStamp());
                     StatusMsgsTable.InsertStatusMsg(sm);
                 }
