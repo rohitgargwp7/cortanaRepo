@@ -3049,6 +3049,8 @@ namespace windows_client.View
                     break;
             }
         }
+
+        //TODO - MG try to use sametap event for header n statusBubble
         private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             if (!isGroupChat)
