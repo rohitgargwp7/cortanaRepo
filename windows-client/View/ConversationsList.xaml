@@ -211,7 +211,7 @@
                             </DataTemplate>
                         </phone:LongListSelector.ItemTemplate>
                     </phone:LongListSelector>-->
-                    <ListBox x:Name="statusLLS" Grid.Row="0">
+                    <ListBox x:Name="statusLLS" Margin="18,0,0,0" Grid.Row="0">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <status:StatusUpdateBox></status:StatusUpdateBox>
