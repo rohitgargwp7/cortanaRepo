@@ -369,6 +369,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
             mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+            mPubSub.addListener(HikePubSub.ADD_TO_PENDING, this);
             mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
@@ -384,6 +385,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
                 mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+                mPubSub.removeListener(HikePubSub.ADD_TO_PENDING, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
@@ -716,6 +718,17 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
                         addFavsPanel.Opacity = 0;
                     }
+                });
+            }
+            #endregion
+            #region ADD TO PENDING
+            else if (HikePubSub.ADD_TO_PENDING == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    ConversationListObject co = (ConversationListObject)obj;
+                    FriendRequestStatus frs = new FriendRequestStatus(co.NameToShow, co.AvatarImage,co.Msisdn, new EventHandler<GestureEventArgs>(yes_Click),new EventHandler<GestureEventArgs>(no_Click));
+                    statusList.Add(frs);
                 });
             }
             #endregion

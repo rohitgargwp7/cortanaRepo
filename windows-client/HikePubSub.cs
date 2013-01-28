@@ -135,6 +135,8 @@ namespace windows_client
 
         public static readonly string ADD_REMOVE_FAV_OR_PENDING = "addRemFP";
 
+        public static readonly string ADD_TO_PENDING = "addToPending";
+
         public static readonly string REWARDS_TOGGLE = "rew_tog";
 
         public static readonly string REWARDS_CHANGED = "rew_changed";

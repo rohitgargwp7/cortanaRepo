@@ -16,6 +16,8 @@ using System.Collections.ObjectModel;
 using windows_client.Languages;
 using System.Windows.Threading;
 using windows_client.ViewModel;
+using windows_client.Controls.StatusUpdate;
+using Microsoft.Phone.Controls;
 
 namespace windows_client
 {
@@ -901,6 +903,7 @@ namespace windows_client
                             App.ViewModel.PendingRequests.Add(favObj);
                             MiscDBUtil.SavePendingRequests();
                             this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                            this.pubSub.publish(HikePubSub.ADD_TO_PENDING,favObj);
                         }
                         catch (Exception e)
                         {
