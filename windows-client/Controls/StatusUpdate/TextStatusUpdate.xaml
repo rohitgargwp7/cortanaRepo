@@ -22,9 +22,9 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Image x:Name="userProfileImage" Source="{Binding UserImage}" Margin="0,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Height="69" ></Image>
+        <Image x:Name="userProfileImage" Source="{Binding UserImage}" Margin="0,5,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Height="69" ></Image>
         <TextBlock Text="{Binding UserName}" FontSize="16" Margin="21,0,0,0"  Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
-        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="16,0,5,0" Foreground="#4f4f4f"/>
-        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="16,0,5,0" Foreground="#888888"/>
+        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="21,0,5,0" Foreground="#4f4f4f"/>
+        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="21,0,5,0" Foreground="#888888"/>
     </Grid>
 </status:StatusUpdateBox>
