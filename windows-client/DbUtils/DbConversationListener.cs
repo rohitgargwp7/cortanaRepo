@@ -155,7 +155,7 @@ namespace windows_client.DbUtils
                     {
                         convObj.ConvBoxObj = new ConversationBox(convObj);
                         if (App.ViewModel.ConversationListPage != null)
-                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(convObj));
+                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(convObj));
                     }
                     else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))//cannot use convMap here because object has pushed to map but not to ui
                     {
@@ -190,7 +190,7 @@ namespace windows_client.DbUtils
                     {
                         convObj.ConvBoxObj = new ConversationBox(convObj);
                         if (App.ViewModel.ConversationListPage != null)
-                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(convObj));
+                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(convObj));
 
                     }
                     else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))//cannot use convMap here because object has pushed to map but not to ui
@@ -230,7 +230,7 @@ namespace windows_client.DbUtils
                     {
                         convObj.ConvBoxObj = new ConversationBox(convObj);
                         if (App.ViewModel.ConversationListPage != null)
-                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(convObj));
+                            ContextMenuService.SetContextMenu(convObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(convObj));
 
                     }
                     else if (App.ViewModel.MessageListPageCollection.Contains(convObj.ConvBoxObj))
