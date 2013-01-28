@@ -41,13 +41,13 @@ namespace windows_client.utils
         private BitmapImage read;
         private BitmapImage trying;
         private BitmapImage unread;
-        //private BitmapImage defaultAvatarBitmapImage;
-        //private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
         private BitmapImage reward;
         private BitmapImage participantLeft;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage textStatusImage;
+        private BitmapImage friendRequestImage;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -520,6 +520,25 @@ namespace windows_client.utils
                 if (nudgeReceived == null)
                     nudgeReceived = new BitmapImage(new Uri("/View/images/nudge_received.png", UriKind.Relative));
                 return nudgeReceived;
+            }
+        }
+
+        public BitmapImage TextStatusImage
+        {
+            get
+            {
+                if (textStatusImage == null)
+                    textStatusImage = new BitmapImage(new Uri("/View/images/timeline_status.png", UriKind.Relative));
+                return textStatusImage;
+            }
+        }
+        public BitmapImage FriendRequestImage
+        {
+            get
+            {
+                if (friendRequestImage == null)
+                    friendRequestImage = new BitmapImage(new Uri("/View/images/timeline_friend.png", UriKind.Relative));
+                return friendRequestImage;
             }
         }
 

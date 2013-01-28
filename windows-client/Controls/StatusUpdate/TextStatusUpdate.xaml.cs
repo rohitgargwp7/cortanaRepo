@@ -6,8 +6,8 @@ namespace windows_client.Controls.StatusUpdate
 {
     public partial class TextStatusUpdate : StatusUpdateBox
     {
-        public TextStatusUpdate(string userName, BitmapImage userImage, string textOrLocationName, long timestamp)
-            : base(userName, userImage)
+        public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string textOrLocationName, long timestamp)
+            : base(userName, userImage, msisdn)
         {
             InitializeComponent();
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);

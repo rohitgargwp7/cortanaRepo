@@ -45,13 +45,13 @@ namespace windows_client.utils
             switch (status.Status_Type)
             {
                 case StatusMessage.StatusType.ADD_FRIEND:
-                    statusUpdateBox = new FriendRequestStatus(userName, userProfileThumbnail, yesTap, noTap);
+                    statusUpdateBox = new FriendRequestStatus(userName, userProfileThumbnail, status.Msisdn, yesTap, noTap);
                     break;
                 case StatusMessage.StatusType.PHOTO_UPDATE:
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.MessageId, out statusImageBytes, out isThumbnail);
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, 
+                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, 
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp);
                     if (isThumbnail)
                     {
@@ -65,7 +65,7 @@ namespace windows_client.utils
 
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Message, status.Timestamp);
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp);
                     break;
             }
             return statusUpdateBox;
