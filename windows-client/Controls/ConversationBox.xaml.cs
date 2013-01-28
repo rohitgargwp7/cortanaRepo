@@ -113,22 +113,22 @@ namespace windows_client.Controls
                     switch (_messageState)
                     {
                         case ConvMessage.State.SENT_CONFIRMED:
-                            lastMessageTxtBlck.Foreground = (new SolidColorBrush(Colors.Gray));
+                            lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Sent;
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         case ConvMessage.State.SENT_DELIVERED:
-                            lastMessageTxtBlck.Foreground = (new SolidColorBrush(Colors.Gray));
+                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Delivered;
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         case ConvMessage.State.SENT_DELIVERED_READ:
-                            lastMessageTxtBlck.Foreground = (new SolidColorBrush(Colors.Gray));
+                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Read;
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         case ConvMessage.State.SENT_UNCONFIRMED:
-                            lastMessageTxtBlck.Foreground = (new SolidColorBrush(Colors.Gray));
+                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Trying;
                             sdrImage.Visibility = Visibility.Visible;
                             break;
@@ -138,7 +138,7 @@ namespace windows_client.Controls
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         default:
-                            lastMessageTxtBlck.Foreground = (new SolidColorBrush(Colors.Gray));
+                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Visibility = Visibility.Collapsed;
                             break;
                     }

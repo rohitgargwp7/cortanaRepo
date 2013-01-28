@@ -9,6 +9,7 @@ namespace windows_client.utils
     {
         #region private variables
         private SolidColorBrush textBoxBackground;
+        private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
         private SolidColorBrush hikeMsgBackground;
         private SolidColorBrush walkThroughSelectedColumn;
@@ -107,6 +108,16 @@ namespace windows_client.utils
                 if (textBoxBackground == null)
                     textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
                 return textBoxBackground;
+            }
+        }
+
+        public SolidColorBrush LastMsgForeground
+        {
+            get
+            {
+                if (lastMsgForeground == null)
+                    lastMsgForeground = new SolidColorBrush(Colors.Gray);
+                return lastMsgForeground;
             }
         }
 
