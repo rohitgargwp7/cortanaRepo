@@ -8,8 +8,8 @@ namespace windows_client.Controls.StatusUpdate
     {
         private BitmapImage _statusImageSource;
 
-        public ImageStatusUpdate(string userName, BitmapImage userImage, BitmapImage statusImageBitmap, long timestamp)
-            : base(userName, userImage)
+        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, long timestamp)
+            : base(userName, userImage, msisdn)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
@@ -18,8 +18,8 @@ namespace windows_client.Controls.StatusUpdate
                 this._statusImageSource = statusImageBitmap;
         }
 
-        public ImageStatusUpdate(string userName, BitmapImage userImage, BitmapImage statusImageBitmap, string updateText, long timestamp)
-            : base(userName, userImage)
+        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, string updateText, long timestamp)
+            : base(userName, userImage, msisdn)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = updateText;

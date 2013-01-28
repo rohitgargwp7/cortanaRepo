@@ -10,6 +10,7 @@ namespace windows_client.Controls.StatusUpdate
     {
         private string _userName;
         private BitmapImage _userImage;
+        private string _msisdn;
 
         public string UserName
         {
@@ -41,36 +42,30 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public StatusUpdateBox(string userName, BitmapImage userImage)
+        public string Msisdn
+        {
+            get
+            {
+                return _msisdn;
+            }
+            set
+            {
+                if (value != _msisdn)
+                {
+                    _msisdn = value;
+                }
+            }
+        }
+        
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn)
         {
             this.UserName = userName;
             this.UserImage = userImage;
+            this.Msisdn = msisdn;
         }
 
         public StatusUpdateBox()
         {
         }
-
-        public static StatusUpdateBox statusUpdateBoxFactory(StatusMessage status, BitmapImage userImage, string userName, 
-            long timestamp)
-        {
-            StatusUpdateBox statusUpdateBox = null;
-            switch (status.Status_Type)
-            { 
-                case StatusMessage.StatusType.ADD_FRIEND:
-                    statusUpdateBox = new FriendRequestStatus(userName, userImage, null, null);
-                    break;
-                case StatusMessage.StatusType.PHOTO_UPDATE:
-                    statusUpdateBox = new ImageStatusUpdate(userName, userImage, null, timestamp);
-                    break;
-                case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userImage, status.Message, timestamp);
-
-                    break;
-            
-            }
-            return statusUpdateBox;
-        }
-             
     }
 }
