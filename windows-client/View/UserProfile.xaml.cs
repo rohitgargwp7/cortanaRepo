@@ -165,7 +165,7 @@ namespace windows_client.View
                 this.ApplicationBar.IsMenuEnabled = true;
                 //add icon for send
                 ApplicationBarIconButton chatIconButton = new ApplicationBarIconButton();
-                chatIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);//todo:change
+                chatIconButton.IconUri = new Uri("/View/images/icon_message.png", UriKind.Relative);//todo:change
                 chatIconButton.Text = AppResources.Send_Txt;
                 chatIconButton.Click += new EventHandler(GoToChat_Tap);
                 chatIconButton.IsEnabled = true;
@@ -186,13 +186,14 @@ namespace windows_client.View
                 txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                 if (isFriend)
                 {
-                   loadStatuses();
+                    loadStatuses();
                     gridSmsUser.Visibility = Visibility.Collapsed;
 
                 }
                 else
                 {
-                    //todo:add lock image  imgInviteLock.Source=
+                    BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+                    imgInviteLock.Source = locked;
                     txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
                     txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
                     txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;

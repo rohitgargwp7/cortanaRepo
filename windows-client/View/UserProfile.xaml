@@ -26,7 +26,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Image Name="imgBackgrund" Opacity="0.6"  Source="images/trial.jpg" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" Margin="-4,5,4,-5" />
+            <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" Margin="-4,5,4,-5" />
 
             <Grid Grid.Row="0" Margin="24,22,24,0">
                 <Grid.ColumnDefinitions>
@@ -58,7 +58,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Image x:Name="imgInviteLock" Grid.Row="0" Source="images/tick.png" HorizontalAlignment="Center" MaxHeight="30" MaxWidth="30" Margin="0,30,0,0"></Image>
+            <Image x:Name="imgInviteLock" Grid.Row="0" Source="images/user_invite.png" HorizontalAlignment="Center" MaxHeight="30" MaxWidth="30" Margin="0,30,0,0"></Image>
             <TextBlock Grid.Row="1" FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center" >
                 <TextBlock.Inlines>
                     <Run x:Name="txtSmsUserNameBlk1" FontFamily="Segoe WP" FontWeight="SemiBold"/>
