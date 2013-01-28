@@ -107,8 +107,9 @@ namespace windows_client.ViewModel
 
             List<ConversationBox> listConversationBox = new List<ConversationBox>();
             // this order should be maintained as _convMap should be populated before loading fav list
-            foreach (ConversationListObject convListObj in convList)
+            for (int i = 0; i < convList.Count; i++)
             {
+                ConversationListObject convListObj = convList[i];
                 _convMap[convListObj.Msisdn] = convListObj;
                 convListObj.ConvBoxObj = new ConversationBox(convListObj);//context menu wil bind on page load
                 listConversationBox.Add(convListObj.ConvBoxObj);
@@ -246,7 +247,7 @@ namespace windows_client.ViewModel
                         {
                             mObj.ConvBoxObj = new ConversationBox(mObj);
                             if (App.ViewModel.ConversationListPage != null)
-                                ContextMenuService.SetContextMenu(mObj.ConvBoxObj, App.ViewModel.ConversationListPage.createAttachmentContextMenu(mObj));
+                                ContextMenuService.SetContextMenu(mObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(mObj));
                         }
                         else
                             App.ViewModel.MessageListPageCollection.Remove(mObj.ConvBoxObj);

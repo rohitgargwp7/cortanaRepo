@@ -93,7 +93,7 @@ namespace windows_client.Controls
             }
             set
             {
-                if (_msisdn != value)
+                if (_msisdn != value.Trim())
                 {
                     _msisdn = value.Trim();
                 }
@@ -118,17 +118,17 @@ namespace windows_client.Controls
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         case ConvMessage.State.SENT_DELIVERED:
-                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
+                            lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Delivered;
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         case ConvMessage.State.SENT_DELIVERED_READ:
-                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
+                            lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Read;
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         case ConvMessage.State.SENT_UNCONFIRMED:
-                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
+                            lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Trying;
                             sdrImage.Visibility = Visibility.Visible;
                             break;
@@ -138,7 +138,7 @@ namespace windows_client.Controls
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         default:
-                            lastMessageTxtBlck.Foreground =  UI_Utils.Instance.LastMsgForeground;
+                            lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Visibility = Visibility.Collapsed;
                             break;
                     }
