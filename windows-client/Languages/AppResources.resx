@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -730,7 +730,7 @@
     <comment>Constants General Text</comment>
   </data>
   <data name="sms_invite_message" xml:space="preserve">
-    <value>Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <value>Hi! I�m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
     <comment>Constants General Text</comment>
   </data>
   <data name="UnBlock_Txt" xml:space="preserve">
@@ -792,7 +792,7 @@
     <value>To continue using hike, an update is required.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <value>Hi! I've started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren�t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -913,7 +913,7 @@
     <comment>cs</comment>
   </data>
   <data name="Social_Invite_Txt" xml:space="preserve">
-    <value>I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
+    <value>I�m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp</value>
     <comment>This is used in case of Facebook and Twitter</comment>
   </data>
   <data name="Social_Txt" xml:space="preserve">
@@ -1289,5 +1289,35 @@
   </data>
   <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
     <value>Timeline</value>
+</data>
+  <data name="OthersProfile_Txt" xml:space="preserve">
+    <value>profile</value>
+  </data>
+  <data name="OnHIkeSince_Txt" xml:space="preserve">
+    <value>on hike since {0}</value>
+  </data>
+  <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
+    <value>Invite to hike</value>
+  </data>
+  <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
+    <value>Help him upgrade to hike!</value>
+  </data>
+  <data name="InviteOnHike_Txt" xml:space="preserve">
+    <value> is missing all the fun.</value>
+  </data>
+  <data name="OnSms_Txt" xml:space="preserve">
+    <value>on SMS</value>
+  </data>
+  <data name="MyProfileheader_Txt" xml:space="preserve">
+    <value>my profile</value>
+  </data>
+  <data name="ProfileToBeFriendBlk1" xml:space="preserve">
+    <value>You need to be friends with</value>
+  </data>
+  <data name="ProfileToBeFriendBlk3" xml:space="preserve">
+    <value>to be able to get status updates.</value>
+  </data>
+  <data name="btnAddAsFriend_Txt" xml:space="preserve">
+    <value>Add as a friend</value>
   </data>
 </root>

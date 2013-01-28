@@ -133,6 +133,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add as a friend.
+        /// </summary>
+        public static string btnAddAsFriend_Txt {
+            get {
+                return ResourceManager.GetString("btnAddAsFriend_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to call.
         /// </summary>
         public static string Call_Txt {
@@ -646,7 +655,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! I&apos;ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren�t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -1537,6 +1546,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  is missing all the fun..
+        /// </summary>
+        public static string InviteOnHike_Txt {
+            get {
+                return ResourceManager.GetString("InviteOnHike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite to hike.
+        /// </summary>
+        public static string InviteOnHikeBtn_Txt {
+            get {
+                return ResourceManager.GetString("InviteOnHikeBtn_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help him upgrade to hike!.
+        /// </summary>
+        public static string InviteOnHikeUpgrade_Txt {
+            get {
+                return ResourceManager.GetString("InviteOnHikeUpgrade_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friends Invited.
         /// </summary>
         public static string InviteUsers_FriendsInvited_Txt {
@@ -1578,6 +1614,15 @@ namespace windows_client.Languages {
         public static string MORE_THAN_1_CONTACT_FOUND {
             get {
                 return ResourceManager.GetString("MORE_THAN_1_CONTACT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to my profile.
+        /// </summary>
+        public static string MyProfileheader_Txt {
+            get {
+                return ResourceManager.GetString("MyProfileheader_Txt", resourceCulture);
             }
         }
         
@@ -1695,6 +1740,33 @@ namespace windows_client.Languages {
         public static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on hike since {0}.
+        /// </summary>
+        public static string OnHIkeSince_Txt {
+            get {
+                return ResourceManager.GetString("OnHIkeSince_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on SMS.
+        /// </summary>
+        public static string OnSms_Txt {
+            get {
+                return ResourceManager.GetString("OnSms_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to profile.
+        /// </summary>
+        public static string OthersProfile_Txt {
+            get {
+                return ResourceManager.GetString("OthersProfile_Txt", resourceCulture);
             }
         }
         
@@ -1857,6 +1929,24 @@ namespace windows_client.Languages {
         public static string Privacy_UnlinkErrMsgBxText {
             get {
                 return ResourceManager.GetString("Privacy_UnlinkErrMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to be friends with.
+        /// </summary>
+        public static string ProfileToBeFriendBlk1 {
+            get {
+                return ResourceManager.GetString("ProfileToBeFriendBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to be able to get status updates..
+        /// </summary>
+        public static string ProfileToBeFriendBlk3 {
+            get {
+                return ResourceManager.GetString("ProfileToBeFriendBlk3", resourceCulture);
             }
         }
         
@@ -2365,7 +2455,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! I�m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
         public static string sms_invite_message {
             get {
@@ -2392,7 +2482,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
+        ///   Looks up a localized string similar to I�m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
         /// </summary>
         public static string Social_Invite_Txt {
             get {

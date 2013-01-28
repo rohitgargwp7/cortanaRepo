@@ -91,7 +91,7 @@
 
                         <StackPanel Grid.Column="1" Name="accountStackPanel" Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
                             <TextBlock x:Name="accountName" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Conversations_ProfileName_Default_Txt, Source={StaticResource LocalizedStrings}}"/>
-                            <TextBlock x:Name="editProfileTextBlck" Text="{Binding Path= LocalizedResources.Conversations_EditProfile_Txt, Source={StaticResource LocalizedStrings}}"/>
+                            <TextBlock x:Name="editProfileTextBlck" Text="{Binding Path= LocalizedResources.MyProfileheader_Txt, Source={StaticResource LocalizedStrings}}"/>
                         </StackPanel>
                     </Grid>
 
