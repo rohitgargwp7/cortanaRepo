@@ -403,7 +403,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Timeline.
+        ///   Looks up a localized string similar to timeline.
         /// </summary>
         public static string Conversations_Pivot_Timeline_Header_Txt {
             get {

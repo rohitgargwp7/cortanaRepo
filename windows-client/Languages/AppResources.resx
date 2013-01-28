@@ -1285,7 +1285,7 @@
     <value>at {0}</value>
   </data>
   <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
-    <value>Timeline</value>
+    <value>timeline</value>
   </data>  <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
     <value>Post Status</value>
 </data>
