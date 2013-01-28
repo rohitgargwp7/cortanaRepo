@@ -16,6 +16,7 @@ namespace windows_client.Model
         string _msisdn;
         string _message; // this will be stored in JSON format
         StatusType _type;
+        string _mappedId;
 
         public enum StatusType
         {
@@ -24,11 +25,20 @@ namespace windows_client.Model
             PHOTO_UPDATE
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type)
+        public StatusMessage(string msisdn, string msg, StatusType type,string mappedId)
         {
             _msisdn = msisdn;
             _message = msg;
             _type = type;
+            _mappedId = mappedId;
+        }
+
+        public StatusMessage(string msisdn, StatusType type, string mappedId)
+        {
+            _msisdn = msisdn;
+            _message = null;
+            _type = type;
+            _mappedId = mappedId;
         }
 
         public StatusMessage()
@@ -39,7 +49,7 @@ namespace windows_client.Model
         private Binary version;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "int Not Null IDENTITY")]
-        public long MessageId
+        public long StatusId
         {
             get;
             set;
@@ -92,6 +102,23 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Status_Type");
                     _type = value;
+                }
+            }
+        }
+
+        [Column]
+        public string MappedId
+        {
+            get
+            {
+                return _mappedId;
+            }
+            set
+            {
+                if (_mappedId != value)
+                {
+                    NotifyPropertyChanging("MappedId");
+                    _mappedId = value;
                 }
             }
         }

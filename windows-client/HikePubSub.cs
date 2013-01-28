@@ -50,6 +50,8 @@ namespace windows_client
          * Status is RECEIVED_UNREAD */
         public static readonly string MESSAGE_RECEIVED = "messagereceived";
 
+        public static readonly string STATUS_RECEIVED = "statusReceived";
+
         public static readonly string NEW_ACTIVITY = "new_activity";
 
         public static readonly string END_TYPING_CONVERSATION = "endtypingconv";

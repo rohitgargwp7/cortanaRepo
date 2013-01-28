@@ -1744,22 +1744,22 @@ namespace windows_client.View
                     JObject data = JObject.Parse(convMessage.MetaDataString);
                     JToken val;
                     #region HANDLE PIC UPDATE
-                    if (data.TryGetValue(HikeConstants.PIC_UPDATE, out val) && val != null) // shows picture update is there
-                    {
-                        try
-                        {
-                            MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PIC_UPDATE, AppResources.PicUpdate_StatusTxt);
-                            this.MessageList.Children.Add(chatBubble);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine("Exception while inserting Pic Update msg : " + e.StackTrace);
-                        }
-                    }
+                    //if (data.TryGetValue(HikeConstants.UPDATE_ID, out val) && val != null) // shows picture update is there
+                    //{
+                    //    try
+                    //    {
+                    //        MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PIC_UPDATE, AppResources.PicUpdate_StatusTxt);
+                    //        this.MessageList.Children.Add(chatBubble);
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        Debug.WriteLine("Exception while inserting Pic Update msg : " + e.StackTrace);
+                    //    }
+                    //}
                     #endregion
                     #region HANDLE TEXT UPDATE
                     val = null;
-                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
                     {
                         try
                         {
