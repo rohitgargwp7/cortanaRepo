@@ -801,8 +801,11 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 if (isStatusMessagesLoaded)
                 {
-                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
-                        new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    });
                 }
             }
             #endregion
@@ -1241,23 +1244,32 @@ namespace windows_client.View
         private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
-
+            FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
             if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
                 return;
 
-            App.ViewModel.PendingRequests.Remove(fObj);
-            App.ViewModel.FavList.Insert(0, fObj);
-
+            statusList.Remove(fObj);
+            bool onHike;
+            //TODO - GK avoid db hit
+            if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
+            {
+                onHike = App.ViewModel.ConvMap[fObj.Msisdn].IsOnhike;
+            }
+            else
+            {
+                onHike = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn).OnHike;
+            }
+            ConversationListObject cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, 
+                MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
+            App.ViewModel.FavList.Insert(0, cObj);
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
             obj[HikeConstants.DATA] = data;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-
             MiscDBUtil.SaveFavourites();
-            MiscDBUtil.SaveFavourites(fObj);
+            MiscDBUtil.SaveFavourites(cObj);
             MiscDBUtil.SavePendingRequests();
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
@@ -1272,14 +1284,14 @@ namespace windows_client.View
 
         private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
+            FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
             obj[HikeConstants.DATA] = data;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            App.ViewModel.PendingRequests.Remove(fObj);
+            statusList.Remove(fObj);
             MiscDBUtil.SavePendingRequests();
             if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
             {

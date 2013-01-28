@@ -38,8 +38,16 @@ namespace windows_client.utils
 
         public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap)
         {
+            string userName;            //TODO - GK avoid db hit
             BitmapImage userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
-            string userName = "Madhur";//need to extract name for msisdn, try to use some cache instead querying db
+            if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
+            {
+                userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
+            }
+            else
+            {
+                userName = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn).Name;
+            }
             StatusUpdateBox statusUpdateBox = null;
             switch (status.Status_Type)
             {

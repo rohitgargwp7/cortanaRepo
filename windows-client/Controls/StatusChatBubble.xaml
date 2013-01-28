@@ -26,7 +26,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Image x:Name="statusTypeImage" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" MaxHeight="70"/>
+            <Image x:Name="statusTypeImage" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" MaxHeight="30"/>
             <TextBlock x:Name="statusMessageTxtBlk" Grid.Row="0" Grid.Column="1" FontSize="31" Foreground="#4f4f4f"/>
             <TextBlock x:Name="statusTimestampTxtBlk" Grid.Row="1" Grid.Column="1" FontSize="21" Foreground="#888888"/>
         </Grid>
