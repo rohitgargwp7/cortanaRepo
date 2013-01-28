@@ -720,6 +720,17 @@ namespace windows_client.View
             });
         }
 
+        private void groupMemberImg_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            GroupParticipant gp = groupChatParticipants.SelectedItem as GroupParticipant;
+            if (gp.Msisdn == App.MSISDN)
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = gp.Msisdn;
+            else
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp.Msisdn;
+
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
         private void MenuItem_Tap_AddUser(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
