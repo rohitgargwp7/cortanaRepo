@@ -211,6 +211,7 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
+           
         }
 
         private void ManagePage()
@@ -3046,13 +3047,16 @@ namespace windows_client.View
             }
         }
 
-        private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void userHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
-            object[] fileTapped = new object[1];
-            fileTapped[0] = mContactNumber;
-            PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
-            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+            //App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
+            //object[] fileTapped = new object[1];
+            //fileTapped[0] = mContactNumber;
+            if (!isGroupChat)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = mContactNumber;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            }
         }
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
