@@ -803,7 +803,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        statusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             new EventHandler<GestureEventArgs>(statusBox_Tap)));
                     });
                 }
@@ -1259,7 +1259,7 @@ namespace windows_client.View
             {
                 onHike = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn).OnHike;
             }
-            ConversationListObject cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, 
+            ConversationListObject cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike,
                 MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             App.ViewModel.FavList.Insert(0, cObj);
             JObject data = new JObject();

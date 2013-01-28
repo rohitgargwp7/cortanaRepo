@@ -21,9 +21,7 @@ namespace windows_client.View
         public PostStatus()
         {
             InitializeComponent();
-            
             this.Loaded += new RoutedEventHandler(PostStatusPage_Loaded);
-
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
@@ -70,6 +68,7 @@ namespace windows_client.View
                     StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
                         TimeUtils.getCurrentTimeStamp());
                     StatusMsgsTable.InsertStatusMsg(sm);
+                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm); 
                 }
                 catch
                 {
