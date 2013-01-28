@@ -239,14 +239,9 @@ namespace windows_client.ViewModel
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         object[] vals = (object[])obj;
-                        ConvMessage convMessage = (ConvMessage)vals[0];
                         ConversationListObject mObj = (ConversationListObject)vals[1];
                         if (mObj == null)
                             return;
-
-                        if (convMessage != null && convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
-                            return;
-
 
                         if (mObj.ConvBoxObj == null)
                         {
