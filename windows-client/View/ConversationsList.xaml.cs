@@ -19,7 +19,6 @@ using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
 using windows_client.Misc;
-using System.Windows.Media;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
@@ -46,6 +45,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
+        ApplicationBarIconButton postStatusIconButton;
         BitmapImage profileImage = null;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
@@ -113,7 +113,6 @@ namespace windows_client.View
                 App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
             }
         }
-
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -318,8 +317,12 @@ namespace windows_client.View
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
 
-            /* Add Menu Items*/
-            //convListPagePivot.ApplicationBar = appBar;
+            postStatusIconButton = new ApplicationBarIconButton();
+            postStatusIconButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
+            postStatusIconButton.Text = AppResources.Conversations_PostStatus_AppBar;
+            postStatusIconButton.Click += new EventHandler(postStatusBtn_Click);
+            postStatusIconButton.IsEnabled = true;
+            //appBar.Buttons.Add(composeIconButton);
 
             ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
             groupChatIconButton.Text = AppResources.GrpChat_Txt;
@@ -614,8 +617,6 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
-
-
         private void deleteConversation(ConversationBox convObj)
         {
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
@@ -725,8 +726,19 @@ namespace windows_client.View
             }
             else if (selectedIndex == 3)
             {
+                if (appBar.Buttons.Contains(composeIconButton))
+                    appBar.Buttons.Remove(composeIconButton);
+                if(!appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Add(postStatusIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
+            }
+            if (selectedIndex != 3)
+            {
+                if (!appBar.Buttons.Contains(composeIconButton))
+                    appBar.Buttons.Add(composeIconButton);
+                if (appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Remove(postStatusIconButton);
             }
         }
 
@@ -1304,6 +1316,12 @@ namespace windows_client.View
 
         #region TIMELINE
 
+        private void postStatusBtn_Click(object sender, EventArgs e)
+        {
+            Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+
+        }
         private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
