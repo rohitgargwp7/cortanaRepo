@@ -475,7 +475,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You’ve just earned {0} free SMS.
+        ///   Looks up a localized string similar to You&apos;ve just earned {0} free SMS.
         /// </summary>
         public static string CREDITS_EARNED {
             get {
@@ -655,7 +655,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren�t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! I&apos;ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -736,7 +736,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You’re all set on .
+        ///   Looks up a localized string similar to You&apos;re all set on .
         /// </summary>
         public static string EnterName_YourMsisdn_TxtBlk {
             get {
@@ -799,7 +799,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn’t call you. Try again later..
+        ///   Looks up a localized string similar to Couldn&apos;t call you. Try again later..
         /// </summary>
         public static string EnterPin_CallErrorMsg_MsgBox {
             get {
@@ -853,7 +853,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Didn’t receive an SMS?.
+        ///   Looks up a localized string similar to Didn&apos;t receive an SMS?.
         /// </summary>
         public static string EnterPin_SMSError_TxtBlk {
             get {
@@ -1249,7 +1249,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group name will be changed to ’{0}’.
+        ///   Looks up a localized string similar to Group name will be changed to &apos;{0}&apos;.
         /// </summary>
         public static string GroupInfo_GrpNameChangedTo_Txt {
             get {
@@ -1933,7 +1933,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hike couldn’t unlink your account. Please try again..
+        ///   Looks up a localized string similar to hike couldn&apos;t unlink your account. Please try again..
         /// </summary>
         public static string Privacy_UnlinkErrMsgBxText {
             get {
@@ -2464,7 +2464,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I�m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
         public static string sms_invite_message {
             get {
@@ -2491,7 +2491,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I�m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
+        ///   Looks up a localized string similar to I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
         /// </summary>
         public static string Social_Invite_Txt {
             get {
@@ -2806,7 +2806,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to let’s hike.
+        ///   Looks up a localized string similar to let&apos;s hike.
         /// </summary>
         public static string Walkthrough_LetsHike_Txt {
             get {
