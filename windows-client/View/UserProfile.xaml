@@ -34,10 +34,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="txtProfileHeader" Text="{Binding Path= LocalizedResources.OthersProfile_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Column="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP"  />
-                <Grid x:Name="gridOnlineBusyIcon" Grid.Column="1" HorizontalAlignment="Right" >
+                <!--<Grid x:Name="gridOnlineBusyIcon" Grid.Column="1" HorizontalAlignment="Right" >
                     <Ellipse Fill="#3D3b36" Width="18" Height="18" HorizontalAlignment="Center" />
                     <Ellipse  Fill="#4CB700" Width="10" Height="10"  HorizontalAlignment="Center" />
-                </Grid>
+                </Grid>-->
             </Grid>
             <Grid Grid.Row="1" Margin="24,55,24,0">
                 <Grid.ColumnDefinitions>
@@ -45,6 +45,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" MaxHeight="96" MaxWidth="96"   />
+                <Image Name="changePic" Visibility="Collapsed" Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
             </Grid>
             <StackPanel Grid.Row="2" Margin="24,24,24,0" Orientation="Vertical" >
                 <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="30" FontFamily="Segoe WP"/>

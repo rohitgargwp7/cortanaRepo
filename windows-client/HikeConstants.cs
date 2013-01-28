@@ -203,7 +203,6 @@ namespace windows_client
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
-        public static string OBJ_FROM_USERPROFILE_PAGE = "objFromProfilePage";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
