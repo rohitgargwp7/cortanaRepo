@@ -120,7 +120,6 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
-            //            this.pendingRequests.SelectedIndex = -1;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
                 myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
             App.IS_TOMBSTONED = false;
@@ -212,7 +211,7 @@ namespace windows_client.View
             foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
             {
                 if (convObj.ConvBoxObj != null)
-                    ContextMenuService.SetContextMenu(convObj.ConvBoxObj, createAttachmentContextMenu(convObj));
+                    ContextMenuService.SetContextMenu(convObj.ConvBoxObj, createConversationContextMenu(convObj));
             }
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -975,7 +974,7 @@ namespace windows_client.View
             }
         }
 
-        public ContextMenu createAttachmentContextMenu(ConversationListObject convObj)
+        public ContextMenu createConversationContextMenu(ConversationListObject convObj)
         {
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = true;
@@ -994,8 +993,8 @@ namespace windows_client.View
                 else
                     menuItemFavourite.Header = AppResources.Add_To_Fav_Txt;
 
-                var glCancel = GestureService.GetGestureListener(menuItemFavourite);
-                glCancel.Tap += MenuItem_Tap_AddRemoveFav;
+                var glFavourites = GestureService.GetGestureListener(menuItemFavourite);
+                glFavourites.Tap += MenuItem_Tap_AddRemoveFav;
                 menu.Items.Add(menuItemFavourite);
 
                 if (convObj.ConvBoxObj != null)
