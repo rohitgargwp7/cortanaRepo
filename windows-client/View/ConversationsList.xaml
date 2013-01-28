@@ -66,15 +66,14 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0">
+                    <Grid Grid.Row="0" Tap="EditProfile_Tap">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Image x:Name="avatarImage" Grid.Column="0" MaxHeight="83" MaxWidth="83" Margin="15,0,5,0" Tap="onProfilePicButtonTap" />
-                        <Image Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0" Source="images\change_pic.png" />
+                        <Image x:Name="avatarImage" Grid.Column="0" MaxHeight="83" MaxWidth="83" Margin="15,0,5,0"  />
 
-                        <StackPanel Grid.Column="1" Name="accountStackPanel" Orientation="Vertical" Tap="EditProfile_Tap" Margin="20, 0,0,0">
+                        <StackPanel Grid.Column="1" Name="accountStackPanel" Orientation="Vertical"  Margin="20, 0,0,0">
                             <TextBlock x:Name="accountName" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Conversations_ProfileName_Default_Txt, Source={StaticResource LocalizedStrings}}"/>
                             <TextBlock x:Name="editProfileTextBlck" Text="{Binding Path= LocalizedResources.MyProfileheader_Txt, Source={StaticResource LocalizedStrings}}"/>
                         </StackPanel>

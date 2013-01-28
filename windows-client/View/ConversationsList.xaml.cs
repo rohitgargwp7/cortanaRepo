@@ -33,20 +33,14 @@ namespace windows_client.View
         #region Instances
 
         bool _isFavListBound = false;
-        bool _isPendingListBound = false;
-        bool isProfilePicTapped = false;
-        byte[] fullViewImageBytes = null;
-        byte[] largeImageBytes = null;
         private bool firstLoad = true;
         private bool showFreeSMS = false;
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
-        private PhotoChooserTask photoChooserTask;
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
-        BitmapImage profileImage = null;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
         #endregion
@@ -445,11 +439,6 @@ namespace windows_client.View
             if (name != null)
                 accountName.Text = name;
             creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, (int)App.appSettings[App.SMS_SETTING]);
-            photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.ShowCamera = true;
-            photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
-            photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
             Stopwatch st = Stopwatch.StartNew();
             byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
@@ -469,93 +458,6 @@ namespace windows_client.View
             {
                 avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
             }
-        }
-
-        private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            try
-            {
-                if (!isProfilePicTapped)
-                {
-                    photoChooserTask.Show();
-                    isProfilePicTapped = true;
-                }
-            }
-            catch
-            {
-
-            }
-        }
-
-        void photoChooserTask_Completed(object sender, PhotoResult e)
-        {
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
-                isProfilePicTapped = false;
-                return;
-            }
-            //progressBarTop.IsEnabled = true;
-            shellProgress.IsVisible = true;
-            if (e.TaskResult == TaskResult.OK)
-            {
-                Uri uri = new Uri(e.OriginalFileName);
-                profileImage = new BitmapImage(uri);
-                profileImage.CreateOptions = BitmapCreateOptions.None;
-                profileImage.UriSource = uri;
-                profileImage.ImageOpened += imageOpenedHandler;
-            }
-            else if (e.TaskResult == TaskResult.Cancel)
-            {
-                isProfilePicTapped = false;
-                //progressBarTop.IsEnabled = false;
-                shellProgress.IsVisible = false;
-                if (e.Error != null)
-                    MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
-            }
-        }
-
-        void imageOpenedHandler(object sender, RoutedEventArgs e)
-        {
-            BitmapImage image = (BitmapImage)sender;
-            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            using (var msLargeImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-                largeImageBytes = msLargeImage.ToArray();
-            }
-            using (var msSmallImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
-                fullViewImageBytes = msSmallImage.ToArray();
-            }
-            //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
-        }
-
-        public void updateProfile_Callback(JObject obj)
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
-                {
-                    avatarImage.Source = profileImage;
-                    avatarImage.MaxHeight = 83;
-                    avatarImage.MaxWidth = 83;
-                    object[] vals = new object[3];
-                    vals[0] = App.MSISDN;
-                    vals[1] = fullViewImageBytes;
-                    vals[2] = largeImageBytes;
-                    mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
-                }
-                else
-                {
-                    MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
-                }
-                //progressBarTop.IsEnabled = false;
-                shellProgress.IsVisible = false;
-                isProfilePicTapped = false;
-            });
         }
 
         #endregion
@@ -1377,6 +1279,20 @@ namespace windows_client.View
 
         private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
+            StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
+            if (stsBox == null)
+                return;
+
+            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
+            if (contactInfo == null)
+            {
+                contactInfo = new ContactInfo();
+                contactInfo.Msisdn = stsBox.Msisdn;
+                contactInfo.OnHike = true;
+            }
+
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contactInfo;
+            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
 
