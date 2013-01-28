@@ -1302,6 +1302,8 @@ namespace windows_client.View
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private void loadStatuses()
         {
+            MiscDBUtil.LoadPendingRequests();
+            App.ViewModel.IsPendingListLoaded = true;
             isStatusMessagesLoaded = true;
             this.statusLLS.ItemsSource = statusList;
             for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
