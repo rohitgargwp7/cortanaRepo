@@ -296,7 +296,7 @@ namespace windows_client.utils
 
         public static void postStatus(string statusText, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status?status-message=FuckPython")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status")) as HttpWebRequest;
             addToken(req);
             req.Method = "PUT";
             req.ContentType = "";
