@@ -788,8 +788,11 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 if (isStatusMessagesLoaded)
                 {
-                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
-                        new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    });
                 }
             }
             #endregion
