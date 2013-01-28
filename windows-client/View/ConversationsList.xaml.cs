@@ -1237,6 +1237,7 @@ namespace windows_client.View
 
             statusList.Remove(fObj);
             bool onHike;
+            //TODO - GK avoid db hit
             if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
             {
                 onHike = App.ViewModel.ConvMap[fObj.Msisdn].IsOnhike;

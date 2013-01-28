@@ -38,7 +38,7 @@ namespace windows_client.utils
 
         public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap)
         {
-            string userName;//should have more optimized way to fetch user name
+            string userName;            //TODO - GK avoid db hit
             BitmapImage userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
             if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
             {
