@@ -1645,6 +1645,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NEW STATUS.
+        /// </summary>
+        public static string NewStatus_Txt {
+            get {
+                return ResourceManager.GetString("NewStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Contact is saved..
         /// </summary>
         public static string NO_CONTACT_SAVED {

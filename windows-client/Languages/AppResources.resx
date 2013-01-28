@@ -1289,7 +1289,7 @@
   </data>
   <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
     <value>Timeline</value>
-</data>
+  </data>
   <data name="OthersProfile_Txt" xml:space="preserve">
     <value>profile</value>
   </data>
@@ -1319,5 +1319,8 @@
   </data>
   <data name="btnAddAsFriend_Txt" xml:space="preserve">
     <value>Add as a friend</value>
+  </data>
+  <data name="NewStatus_Txt" xml:space="preserve">
+    <value>NEW STATUS</value>
   </data>
 </root>
