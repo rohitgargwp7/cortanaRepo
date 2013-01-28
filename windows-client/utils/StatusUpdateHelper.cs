@@ -36,8 +36,8 @@ namespace windows_client.utils
             }
         }
 
-        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> yesTap,
-            EventHandler<GestureEventArgs> noTap)
+        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap,
+            EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap)
         {
             BitmapImage userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
             string userName = "Madhur";//need to extract name for msisdn, try to use some cache instead querying db
@@ -51,7 +51,7 @@ namespace windows_client.utils
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, 
+                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn,
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp);
                     if (isThumbnail)
                     {
@@ -67,6 +67,12 @@ namespace windows_client.utils
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp);
                     break;
+            }
+            if (statusBoxTap != null)
+            {
+                var gl = GestureService.GetGestureListener(statusUpdateBox);
+                gl.Tap += statusBoxTap;
+
             }
             return statusUpdateBox;
         }

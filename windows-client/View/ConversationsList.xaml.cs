@@ -19,7 +19,6 @@ using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
 using Phone.Controls;
 using windows_client.Misc;
-using System.Windows.Media;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using Microsoft.Phone.Net.NetworkInformation;
@@ -46,6 +45,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
+        ApplicationBarIconButton postStatusIconButton;
         BitmapImage profileImage = null;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
@@ -114,15 +114,13 @@ namespace windows_client.View
             }
         }
 
-
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
-//            this.pendingRequests.SelectedIndex = -1;
-            if(App.ViewModel.MessageListPageCollection.Count>0)
-            myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
+            if (App.ViewModel.MessageListPageCollection.Count > 0)
+                myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -212,7 +210,7 @@ namespace windows_client.View
             foreach (ConversationListObject convObj in App.ViewModel.ConvMap.Values)
             {
                 if (convObj.ConvBoxObj != null)
-                    ContextMenuService.SetContextMenu(convObj.ConvBoxObj, createAttachmentContextMenu(convObj));
+                    ContextMenuService.SetContextMenu(convObj.ConvBoxObj, createConversationContextMenu(convObj));
             }
 
             if (App.ViewModel.MessageListPageCollection.Count == 0)
@@ -319,8 +317,12 @@ namespace windows_client.View
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
 
-            /* Add Menu Items*/
-            //convListPagePivot.ApplicationBar = appBar;
+            postStatusIconButton = new ApplicationBarIconButton();
+            postStatusIconButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
+            postStatusIconButton.Text = AppResources.Conversations_PostStatus_AppBar;
+            postStatusIconButton.Click += new EventHandler(postStatusBtn_Click);
+            postStatusIconButton.IsEnabled = true;
+            //appBar.Buttons.Add(composeIconButton);
 
             ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
             groupChatIconButton.Text = AppResources.GrpChat_Txt;
@@ -376,6 +378,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
+            mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
         }
 
         private void removeListeners()
@@ -390,6 +393,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
+                mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
             }
             catch { }
         }
@@ -613,8 +617,6 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
-
-
         private void deleteConversation(ConversationBox convObj)
         {
             App.ViewModel.ConvMap.Remove(convObj.Msisdn); // removed entry from map for UI
@@ -724,8 +726,19 @@ namespace windows_client.View
             }
             else if (selectedIndex == 3)
             {
+                if (appBar.Buttons.Contains(composeIconButton))
+                    appBar.Buttons.Remove(composeIconButton);
+                if(!appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Add(postStatusIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
+            }
+            if (selectedIndex != 3)
+            {
+                if (!appBar.Buttons.Contains(composeIconButton))
+                    appBar.Buttons.Add(composeIconButton);
+                if (appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Remove(postStatusIconButton);
             }
         }
 
@@ -750,7 +763,7 @@ namespace windows_client.View
                         emptyScreenTip.Opacity = 0;
                         emptyScreenImage.Opacity = 0;
                     }
-//                    convScroller.ScrollToVerticalOffset(0);
+                    //                    convScroller.ScrollToVerticalOffset(0);
                     myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
 
                 });
@@ -867,6 +880,18 @@ namespace windows_client.View
                 }
             }
             #endregion
+            #region STATUS UPDATE RECEIVED
+            else if (HikePubSub.STATUS_RECEIVED == type)
+            {
+                StatusMessage sm = obj as StatusMessage;
+                if (isStatusMessagesLoaded)
+                {
+                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(yes_Click),
+                        new EventHandler<GestureEventArgs>(no_Click)));
+                }
+            }
+            #endregion
         }
 
         #endregion
@@ -961,7 +986,7 @@ namespace windows_client.View
             }
         }
 
-        public ContextMenu createAttachmentContextMenu(ConversationListObject convObj)
+        public ContextMenu createConversationContextMenu(ConversationListObject convObj)
         {
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = true;
@@ -980,8 +1005,8 @@ namespace windows_client.View
                 else
                     menuItemFavourite.Header = AppResources.Add_To_Fav_Txt;
 
-                var glCancel = GestureService.GetGestureListener(menuItemFavourite);
-                glCancel.Tap += MenuItem_Tap_AddRemoveFav;
+                var glFavourites = GestureService.GetGestureListener(menuItemFavourite);
+                glFavourites.Tap += MenuItem_Tap_AddRemoveFav;
                 menu.Items.Add(menuItemFavourite);
 
                 if (convObj.ConvBoxObj != null)
@@ -1291,6 +1316,12 @@ namespace windows_client.View
 
         #region TIMELINE
 
+        private void postStatusBtn_Click(object sender, EventArgs e)
+        {
+            Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+
+        }
         private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
@@ -1342,18 +1373,25 @@ namespace windows_client.View
             }
         }
 
+        private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+        }
+
+
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private void loadStatuses()
         {
+            isStatusMessagesLoaded = true;
             this.statusLLS.ItemsSource = statusList;
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             if (statusMessagesFromDB == null)
                 return;
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
-            { 
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], 
-                    new EventHandler<GestureEventArgs>(yes_Click), new EventHandler<GestureEventArgs>(no_Click)));
+            {
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                    new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(yes_Click),
+                    new EventHandler<GestureEventArgs>(no_Click)));
             }
         }
 
