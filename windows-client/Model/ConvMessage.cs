@@ -102,6 +102,10 @@ namespace windows_client.Model
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
             }
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                return ParticipantInfoState.STATUS_UPDATE;
+            }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
             {
                 return ParticipantInfoState.GROUP_END;
