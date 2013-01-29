@@ -34,7 +34,6 @@ namespace windows_client.DbUtils
             ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
-            DeleteAllPicUpdates();
             GroupManager.Instance.DeleteAllGroups();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
@@ -275,30 +274,6 @@ namespace windows_client.DbUtils
                     catch
                     {
                         Debug.WriteLine("File {0} does not exist.", THUMBNAILS + "\\" + fileName);
-                    }
-                }
-            }
-        }
-
-        public static void DeleteAllPicUpdates()
-        {
-            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                string[] dirs = store.GetFileNames(PROFILE_PICS + "\\*");
-                foreach (string dir in dirs)
-                {
-                    string[] files = store.GetFileNames(PROFILE_PICS + "\\" + dir + "\\*");
-
-                    foreach (string file in files)
-                    {
-                        try
-                        {
-                            store.DeleteFile(PROFILE_PICS + "\\" + dir + "\\" + file);
-                        }
-                        catch
-                        {
-                            Debug.WriteLine("File {0} does not exist.", PROFILE_PICS + "\\" + dir + "\\" + file);
-                        }
                     }
                 }
             }
