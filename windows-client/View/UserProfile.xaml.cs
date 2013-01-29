@@ -20,6 +20,7 @@ using System.Net.NetworkInformation;
 using Newtonsoft.Json.Linq;
 using windows_client.ViewModel;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -165,7 +166,7 @@ namespace windows_client.View
                 }
                 #endregion
 
-                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+                byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
 
                 if (_avatar != null)
                 {
@@ -266,11 +267,28 @@ namespace windows_client.View
             //   shellProgress.IsVisible = true;
             if (e.TaskResult == TaskResult.OK)
             {
-                Uri uri = new Uri(e.OriginalFileName);
-                profileImage = new BitmapImage(uri);
-                profileImage.CreateOptions = BitmapCreateOptions.None;
-                profileImage.UriSource = uri;
-                profileImage.ImageOpened += imageOpenedHandler;
+                profileImage = new BitmapImage();
+                profileImage.SetSource(e.ChosenPhoto);
+                try
+                {
+                    WriteableBitmap writeableBitmap = new WriteableBitmap(profileImage);
+                    using (var msLargeImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                        largeImageBytes = msLargeImage.ToArray();
+                    }
+                    using (var msSmallImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
+                        fullViewImageBytes = msSmallImage.ToArray();
+                    }
+                    //send image to server here and insert in db after getting response
+                    AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("USER PROFILE :: Exception in photochooser task " + ex.StackTrace);
+                }
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
@@ -313,7 +331,7 @@ namespace windows_client.View
                     vals[0] = App.MSISDN;
                     vals[1] = fullViewImageBytes;
                     vals[2] = largeImageBytes;
-                    mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                 }
                 else
                 {

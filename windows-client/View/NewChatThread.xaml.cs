@@ -1867,10 +1867,17 @@ namespace windows_client.View
             {
                 isReleaseMode = true;
                 Uri uri = new Uri(e.OriginalFileName);
-                BitmapImage image = new BitmapImage(uri);
+                BitmapImage image = new BitmapImage();
                 image.CreateOptions = BitmapCreateOptions.None;
-                image.UriSource = uri;
-                image.ImageOpened += imageOpenedHandler;
+                image.SetSource(e.ChosenPhoto);
+                try
+                {
+                    SendImage(image, image.UriSource.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
+                }
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
