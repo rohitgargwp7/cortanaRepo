@@ -28,7 +28,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" Margin="-4,5,4,-5" />
+            <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" />
 
             <Grid Grid.Row="0" Margin="24,22,24,0">
                 <Grid.ColumnDefinitions>
@@ -72,9 +72,13 @@
             <Button Name="btnInvite" Grid.Row="2" Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="Invite_Tap"/>
         </Grid>
         <Grid Name="gridHikeUser" Grid.Row="1" >
-            <phone:LongListSelector Name="statusLLS" Grid.Row="0" Grid.Column="0" LayoutMode="List" IsGroupingEnabled="False"  >
-               
-            </phone:LongListSelector>
+            <ListBox x:Name="statusLLS" Margin="24,10,24,0" Grid.Row="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <status:StatusUpdateBox></status:StatusUpdateBox>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>

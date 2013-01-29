@@ -9,6 +9,7 @@ namespace windows_client.Controls
     {
         public StatusChatBubble(ConvMessage cm)
         {
+            InitializeComponent();
             this.statusMessageTxtBlk.Text = this.Text = cm.Message;
             this.statusTimestampTxtBlk.Text = this.TimeStamp = TimeUtils.getRelativeTime(cm.Timestamp);
             this.statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;

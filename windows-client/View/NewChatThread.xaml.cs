@@ -1768,6 +1768,7 @@ namespace windows_client.View
                         try
                         {
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage);
+                            chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(statusBubble_Tap));
                             this.MessageList.Children.Add(chatBubble);
                         }
                         catch (Exception e)
@@ -3046,6 +3047,16 @@ namespace windows_client.View
                     emotHeaderBorder2.Opacity = 1;
                     emotHeaderRect2.Opacity = 1;
                     break;
+            }
+        }
+
+        //TODO - MG try to use sametap event for header n statusBubble
+        private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            if (!isGroupChat)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = mContactNumber;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }
 

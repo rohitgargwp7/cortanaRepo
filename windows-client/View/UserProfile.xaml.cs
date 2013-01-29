@@ -33,6 +33,8 @@ namespace windows_client.View
         byte[] fullViewImageBytes = null;
         byte[] largeImageBytes = null;
         bool isFirstLoad = true;
+        bool isOwnProfile = false;
+
         public UserProfile()
         {
             InitializeComponent();
@@ -71,7 +73,6 @@ namespace windows_client.View
                 string nameToShow = null;
                 bool isOnHike = false;
                 bool isFriend = false;
-                bool isOwnProfile = false;
                 Object objMsisdn;
 
                 #region UserInfoFromChatThread
@@ -206,9 +207,10 @@ namespace windows_client.View
                         this.txtProfileHeader.Text = AppResources.MyProfileheader_Txt;
 
                     txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
-                    if (isFriend)
+                    loadStatuses();
+                    //todo:do on basis of friend invite
+                    if (statusList.Count > 0 || isOwnProfile)
                     {
-                        loadStatuses();
                         gridSmsUser.Visibility = Visibility.Collapsed;
                     }
                     else
@@ -378,16 +380,28 @@ namespace windows_client.View
         }
 
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+
         private void loadStatuses()
         {
             this.statusLLS.ItemsSource = statusList;
+            if (isOwnProfile)
+            {
+                for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
+                {
+                    FriendRequestStatus frs = new FriendRequestStatus(App.ViewModel.PendingRequests[i].NameToShow, App.ViewModel.PendingRequests[i].AvatarImage,
+                        App.ViewModel.PendingRequests[i].Msisdn, new EventHandler<GestureEventArgs>(yes_Click),
+                        new EventHandler<GestureEventArgs>(no_Click));
+                    statusList.Add(frs);
+                }
+            }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
             if (statusMessagesFromDB == null)
                 return;
+            statusMessagesFromDB.Reverse(); //TODO - GK - return sorted list from db
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
                 statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                      new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    new EventHandler<GestureEventArgs>(statusBox_Tap)));
             }
         }
 
