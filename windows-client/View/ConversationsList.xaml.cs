@@ -727,7 +727,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
-                    FriendRequestStatus frs = new FriendRequestStatus(co.NameToShow, co.AvatarImage,co.Msisdn, new EventHandler<GestureEventArgs>(yes_Click),new EventHandler<GestureEventArgs>(no_Click));
+                    FriendRequestStatus frs = new FriendRequestStatus(co.NameToShow, co.AvatarImage, co.Msisdn, new EventHandler<GestureEventArgs>(yes_Click), new EventHandler<GestureEventArgs>(no_Click));
                     statusList.Add(frs);
                 });
             }
@@ -1339,9 +1339,9 @@ namespace windows_client.View
                 statusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
-            statusMessagesFromDB.Reverse(); //TODO - GK - return sorted list from db
             if (statusMessagesFromDB == null)
                 return;
+            statusMessagesFromDB.Reverse(); //TODO - GK - return sorted list from db
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
                 statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
