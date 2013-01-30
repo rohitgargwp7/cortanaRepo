@@ -36,10 +36,9 @@ namespace windows_client.utils
             }
         }
 
-        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap)
+        public StatusUpdateBox createStatusUIObject(BitmapImage img,StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap)
         {
-            string userName;            //TODO - GK avoid db hit
-            BitmapImage userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
+            string userName;          
             if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
             {
                 userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
@@ -51,7 +50,62 @@ namespace windows_client.utils
             }
             else
             {
-                userName = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn).Name;
+                ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                userName = cn != null ? cn.Name : status.Msisdn;
+            }
+            StatusUpdateBox statusUpdateBox = null;
+            switch (status.Status_Type)
+            {
+                case StatusMessage.StatusType.PHOTO_UPDATE:
+                    byte[] statusImageBytes = null;
+                    bool isThumbnail;
+                    MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
+                    statusUpdateBox = new ImageStatusUpdate(userName, img, status.Msisdn,
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp);
+                    if (isThumbnail)
+                    {
+                        object[] statusObjects = new object[2];
+                        statusObjects[0] = status;
+                        statusObjects[1] = statusUpdateBox;
+                        //url for downloading status image??
+                        //string relativeUrl;
+                        //AccountUtils.createGetRequest(AccountUtils.BASE + "/" + relativeUrl, onStatusImageDownloaded, true, statusUpdateBox);
+                    }
+
+                    break;
+                case StatusMessage.StatusType.TEXT_UPDATE:
+                    statusUpdateBox = new TextStatusUpdate(userName, img, status.Msisdn, status.Message, status.Timestamp);
+                    break;
+            }
+            if (statusBoxTap != null)
+            {
+                var gl = GestureService.GetGestureListener(statusUpdateBox);
+                gl.Tap += statusBoxTap;
+
+            }
+            return statusUpdateBox;
+        }
+
+        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap)
+        {
+            string userName;            //TODO - GK avoid db hit
+            BitmapImage userProfileThumbnail = null; 
+            if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
+            {
+                userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
+                userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
+            }
+            else if (App.MSISDN == status.Msisdn)
+            {
+                if (!App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName))
+                    userName = App.MSISDN;
+                userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(HikeConstants.MY_PROFILE_PIC);
+            }
+            else
+            {
+                ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                userName = cn != null ? cn.Name : status.Msisdn;
+                userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
             }
             StatusUpdateBox statusUpdateBox = null;
             switch (status.Status_Type)
