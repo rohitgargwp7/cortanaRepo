@@ -78,6 +78,13 @@ namespace windows_client.DbUtils
             return (res == null || res.Count == 0) ? null : res;
         }
 
+        //to fetch messages acc to paging
+        public static List<ConvMessage> getMessagesForMsisdnForPaging(string msisdn,long lastMessageId,int count)
+        {
+            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdnForPaging(DbCompiledQueries.chatsDbContext, msisdn,lastMessageId,count).ToList<ConvMessage>();
+            return (res == null || res.Count == 0) ? null : res;
+        }
+
         /* This queries messages table and get the last message for given msisdn*/
         public static ConvMessage getLastMessageForMsisdn(string msisdn)
         {
