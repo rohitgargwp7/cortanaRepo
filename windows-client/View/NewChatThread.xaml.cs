@@ -403,7 +403,6 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
-
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)

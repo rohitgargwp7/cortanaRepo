@@ -287,7 +287,7 @@ namespace windows_client
                 {
                     return;
                 }
-                if (msgIds == null)
+                if (msgIds == null || msgIds.Count == 0)
                 {
                     Debug.WriteLine("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
                     return;
