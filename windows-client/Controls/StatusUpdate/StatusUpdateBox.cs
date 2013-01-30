@@ -64,6 +64,13 @@ namespace windows_client.Controls.StatusUpdate
             this.Msisdn = msisdn;
         }
 
+        public StatusUpdateBox(ConversationListObject c)
+        {
+            this.UserName = c.NameToShow;
+            this.UserImage = c.AvatarImage;
+            this.Msisdn = c.Msisdn;
+        }
+
         public StatusUpdateBox()
         {
         }
