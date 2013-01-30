@@ -688,6 +688,8 @@ namespace windows_client.DbUtils
         {
             lock (pendingReadWriteLock)
             {
+                if (App.ViewModel.IsPendingListLoaded)
+                    return;
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(MISC_DIR))
@@ -717,11 +719,11 @@ namespace windows_client.DbUtils
                                     {
                                         item.ReadFavOrPending(reader);
                                         if (App.ViewModel.ConvMap.ContainsKey(item.Msisdn))
-                                            App.ViewModel.PendingRequests.Add(App.ViewModel.ConvMap[item.Msisdn]);
+                                            App.ViewModel.PendingRequests[item.Msisdn] = App.ViewModel.ConvMap[item.Msisdn];
                                         else
                                         {
                                             item.Avatar = MiscDBUtil.getThumbNailForMsisdn(item.Msisdn);
-                                            App.ViewModel.PendingRequests.Add(item);
+                                            App.ViewModel.PendingRequests[item.Msisdn]= item;
                                         }
 
                                     }
@@ -741,6 +743,7 @@ namespace windows_client.DbUtils
                         catch { }
                     }
                 }
+                App.ViewModel.IsPendingListLoaded = true;
             }
         }
 
@@ -761,9 +764,9 @@ namespace windows_client.DbUtils
                         {
                             writer.Seek(0, SeekOrigin.Begin);
                             writer.Write(App.ViewModel.PendingRequests.Count);
-                            for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
+                            foreach (string ms in App.ViewModel.PendingRequests.Keys)
                             {
-                                ConversationListObject item = App.ViewModel.PendingRequests[i];
+                                ConversationListObject item = App.ViewModel.PendingRequests[ms];
                                 item.WriteFavOrPending(writer);
                             }
                             writer.Flush();
