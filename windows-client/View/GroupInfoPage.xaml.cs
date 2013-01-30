@@ -834,7 +834,7 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
 
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.DeleteFavourite(gp.Msisdn);
                     int count = 0;
@@ -856,7 +856,7 @@ namespace windows_client.View
                     App.ViewModel.FavList.Insert(0, favObj);
                     if (App.ViewModel.IsPending(gp.Msisdn))
                     {
-                        App.ViewModel.PendingRequests.Remove(favObj);
+                        App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
                     }
                     MiscDBUtil.SaveFavourites();
@@ -870,7 +870,7 @@ namespace windows_client.View
                     obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
                 }
             }

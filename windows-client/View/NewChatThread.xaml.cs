@@ -1160,12 +1160,12 @@ namespace windows_client.View
                 MiscDBUtil.SaveFavourites(favObj);
                 if (App.ViewModel.IsPending(favObj.Msisdn))
                 {
-                    App.ViewModel.PendingRequests.Remove(favObj);
+                    App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
                 }
                 addToFavMenuItem.Text = AppResources.RemFromFav_Txt;
 
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
                 JObject data = new JObject();
                 data["id"] = mContactNumber;
                 JObject obj = new JObject();
@@ -1193,7 +1193,7 @@ namespace windows_client.View
                     App.ViewModel.ConvMap[mContactNumber].IsFav = false;
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.DeleteFavourite(mContactNumber);
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
 
                 JObject data = new JObject();
                 data["id"] = mContactNumber;

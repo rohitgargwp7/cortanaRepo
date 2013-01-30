@@ -179,7 +179,7 @@ namespace windows_client.View
                         App.ViewModel.FavList.Insert(0, favObj);
                         if (App.ViewModel.IsPending(favObj.Msisdn)) // if this is in pending already , remove from pending and add to fav
                         {
-                            App.ViewModel.PendingRequests.Remove(favObj);
+                            App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                             isPendingRemoved = true;
                         }
                         int count = 0;
@@ -199,7 +199,7 @@ namespace windows_client.View
                 MiscDBUtil.SaveFavourites();
                 if (isPendingRemoved)
                     MiscDBUtil.SavePendingRequests();
-                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
             }
             #endregion
             #region INVITE

@@ -43,6 +43,7 @@ namespace windows_client.View
         ApplicationBarIconButton postStatusIconButton;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
+        private bool isStatusMessagesLoaded = false;
         #endregion
 
         #region Page Based Functions
@@ -368,7 +369,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.SMS_CREDIT_CHANGED, this);
             mPubSub.addListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
             mPubSub.addListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
-            mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+            mPubSub.addListener(HikePubSub.ADD_REMOVE_FAV, this);
             mPubSub.addListener(HikePubSub.ADD_TO_PENDING, this);
             mPubSub.addListener(HikePubSub.REWARDS_TOGGLE, this);
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
@@ -384,7 +385,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.SMS_CREDIT_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.DELETED_ALL_CONVERSATIONS, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_ACCOUNT_NAME, this);
-                mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, this);
+                mPubSub.removeListener(HikePubSub.ADD_REMOVE_FAV, this);
                 mPubSub.removeListener(HikePubSub.ADD_TO_PENDING, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
@@ -575,7 +576,7 @@ namespace windows_client.View
 
                 // there will be two background workers that will independently load three sections
 
-                #region Favourites
+                #region FAVOURITES
 
                 if (!_isFavListBound)
                 {
@@ -597,35 +598,16 @@ namespace windows_client.View
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
                         favourites.ItemsSource = App.ViewModel.FavList;
+                        if (App.ViewModel.FavList.Count > 0)
+                        {
+                            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                            favourites.Visibility = System.Windows.Visibility.Visible;
+                            addFavsPanel.Opacity = 1;
+                        }
                     };
                 }
 
                 #endregion
-
-                //#region Pending Requests
-                //if (!_isPendingListBound)
-                //{
-                //    _isPendingListBound = true;
-                //    BackgroundWorker pendingBw = new BackgroundWorker();
-                //    pendingBw.DoWork += (sf, ef) =>
-                //    {
-                //        if (!App.ViewModel.IsPendingListLoaded) // if list is not loaded
-                //            MiscDBUtil.LoadPendingRequests();
-                //        App.ViewModel.IsPendingListLoaded = true;
-                //    };
-                //    pendingBw.RunWorkerAsync();
-                //    pendingBw.RunWorkerCompleted += (sf, ef) =>
-                //    {
-                //        pendingRequests.ItemsSource = App.ViewModel.PendingRequests;
-                //        if (App.ViewModel.FavList.Count > 0 || App.ViewModel.PendingRequests.Count > 0)
-                //        {
-                //            emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
-                //            favourites.Visibility = System.Windows.Visibility.Visible;
-                //            addFavsPanel.Opacity = 1;
-                //        }
-                //    };
-                //}
-                //#endregion
 
             }
             else if (selectedIndex == 3)
@@ -701,8 +683,8 @@ namespace windows_client.View
                 });
             }
             #endregion
-            #region ADD TO FAV OR PENDING
-            else if (HikePubSub.ADD_REMOVE_FAV_OR_PENDING == type)
+            #region ADD OR REMOVE FAV
+            else if (HikePubSub.ADD_REMOVE_FAV == type)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -712,7 +694,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         addFavsPanel.Opacity = 1;
                     }
-                    else if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0) // remove fav
+                    else if (App.ViewModel.FavList.Count == 0) // remove fav
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
@@ -727,8 +709,11 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
-                    FriendRequestStatus frs = new FriendRequestStatus(co.NameToShow, co.AvatarImage, co.Msisdn, new EventHandler<GestureEventArgs>(yes_Click), new EventHandler<GestureEventArgs>(no_Click));
-                    statusList.Add(frs);
+                    if (co != null)
+                    {
+                        FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                        App.ViewModel.StatusList.Insert(0, frs);
+                    }
                 });
             }
             #endregion
@@ -803,7 +788,7 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        statusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             new EventHandler<GestureEventArgs>(statusBox_Tap)));
                     });
                 }
@@ -862,7 +847,7 @@ namespace windows_client.View
                     int count = 0;
                     App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                    if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+                    if (App.ViewModel.FavList.Count == 0)
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
@@ -877,7 +862,7 @@ namespace windows_client.View
                     App.ViewModel.FavList.Insert(0, convObj);
                     if (App.ViewModel.IsPending(convObj.Msisdn))
                     {
-                        App.ViewModel.PendingRequests.Remove(convObj);
+                        App.ViewModel.PendingRequests.Remove(convObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
                     }
                     MiscDBUtil.SaveFavourites();
@@ -934,6 +919,7 @@ namespace windows_client.View
 
 
         #endregion
+
         #region Emoticons
         private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
 
@@ -1223,7 +1209,7 @@ namespace windows_client.View
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
             }
-            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
+            if (App.ViewModel.FavList.Count == 0)
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
@@ -1245,23 +1231,23 @@ namespace windows_client.View
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
+            App.ViewModel.StatusList.Remove(fObj);
             if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
                 return;
 
-            statusList.Remove(fObj);
-            bool onHike;
-            //TODO - GK avoid db hit
+            ConversationListObject cObj = null;
             if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
             {
-                onHike = App.ViewModel.ConvMap[fObj.Msisdn].IsOnhike;
+                cObj = App.ViewModel.ConvMap[fObj.Msisdn];
             }
             else
             {
-                onHike = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn).OnHike;
+                bool onHike = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn).OnHike;
+                cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
-            ConversationListObject cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike,
-                MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
+
             App.ViewModel.FavList.Insert(0, cObj);
+            App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
@@ -1291,14 +1277,9 @@ namespace windows_client.View
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
             obj[HikeConstants.DATA] = data;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            statusList.Remove(fObj);
+            App.ViewModel.StatusList.Remove(fObj);
+            App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
             MiscDBUtil.SavePendingRequests();
-            if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
-            {
-                emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
-                favourites.Visibility = System.Windows.Visibility.Collapsed;
-                addFavsPanel.Opacity = 0;
-            }
         }
 
         private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
@@ -1322,31 +1303,27 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
-
-        private bool isStatusMessagesLoaded = false;
-        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private void loadStatuses()
         {
             MiscDBUtil.LoadPendingRequests();
             App.ViewModel.IsPendingListLoaded = true;
-            isStatusMessagesLoaded = true;
-            this.statusLLS.ItemsSource = statusList;
-            for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
+            foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                FriendRequestStatus frs = new FriendRequestStatus(App.ViewModel.PendingRequests[i].NameToShow, App.ViewModel.PendingRequests[i].AvatarImage,
-                    App.ViewModel.PendingRequests[i].Msisdn, new EventHandler<GestureEventArgs>(yes_Click),
-                    new EventHandler<GestureEventArgs>(no_Click));
-                statusList.Add(frs);
+                FriendRequestStatus frs = new FriendRequestStatus(co,yes_Click,no_Click);
+                App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
-            if (statusMessagesFromDB == null)
-                return;
-            statusMessagesFromDB.Reverse(); //TODO - GK - return sorted list from db
-            for (int i = 0; i < statusMessagesFromDB.Count; i++)
+            if (statusMessagesFromDB != null)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                    new EventHandler<GestureEventArgs>(statusBox_Tap)));
+
+                for (int i = statusMessagesFromDB.Count - 1; i > 0; i--)
+                {
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                        new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                }
             }
+            this.statusLLS.ItemsSource = App.ViewModel.StatusList;
+            isStatusMessagesLoaded = true;
         }
 
         #endregion
