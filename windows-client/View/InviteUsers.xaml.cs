@@ -217,7 +217,7 @@ namespace windows_client.View
                 bool isPendingRemoved = false;
                 for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count);i++ )
                 {
-                    if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn)) // if not already favourite then only add to fav
+                    if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn) && hikeFavList[i].Msisdn != App.MSISDN) // if not already favourite then only add to fav
                     {
                         ConversationListObject favObj = null;
                         if (App.ViewModel.ConvMap.ContainsKey(hikeFavList[i].Msisdn))
@@ -253,7 +253,7 @@ namespace windows_client.View
                     MiscDBUtil.SavePendingRequests();
                 App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
             }
-#endregion
+            #endregion
             #region INVITE
             else
             {
@@ -262,6 +262,8 @@ namespace windows_client.View
                 int count = 0;
                 foreach (string key in contactsList.Keys)
                 {
+                    if (key == App.MSISDN)
+                        continue;
                     JObject obj = new JObject();
                     JObject data = new JObject();
                     data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
