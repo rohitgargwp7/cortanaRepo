@@ -77,32 +77,29 @@ namespace windows_client.View
 
             //add icon for send
             sendIconButton = new ApplicationBarIconButton();
-            sendIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            sendIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             sendIconButton.Text = AppResources.Send_Txt;
             sendIconButton.Click += new EventHandler(send_Click);
             sendIconButton.IsEnabled = true;
-            //            appBar.Buttons.Add(sendIconButton);
 
             playIconButton = new ApplicationBarIconButton();
-            playIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            playIconButton.IconUri = new Uri("/View/images/appbar_icon_play.png", UriKind.Relative);
             playIconButton.Text = AppResources.Play_Txt;
             playIconButton.Click += new EventHandler(StartPlayback_Click);
             playIconButton.IsEnabled = true;
-            //            appBar.Buttons.Add(playIconButton);
 
             pauseIconButton = new ApplicationBarIconButton();
-            pauseIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            pauseIconButton.IconUri = new Uri("/View/images/icon_pause.png", UriKind.Relative);
             pauseIconButton.Text = AppResources.Pause_Txt;
             pauseIconButton.Click += new EventHandler(PausePlayback_Click);
             pauseIconButton.IsEnabled = true;
             appBar.Buttons.Add(pauseIconButton);
 
             stopIconButton = new ApplicationBarIconButton();
-            stopIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            stopIconButton.IconUri = new Uri("/View/images/icon_stop.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
             stopIconButton.Click += new EventHandler(StopPlaybackRecording_Click);
             stopIconButton.IsEnabled = true;
-            //            appBar.Buttons.Add(stopIconButton);
 
             recordIconButton = new ApplicationBarIconButton();
             recordIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
