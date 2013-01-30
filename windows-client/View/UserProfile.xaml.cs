@@ -35,6 +35,7 @@ namespace windows_client.View
         byte[] largeImageBytes = null;
         bool isFirstLoad = true;
         bool isOwnProfile = false;
+        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
 
         public UserProfile()
         {
@@ -46,20 +47,32 @@ namespace windows_client.View
 
         private void registerListeners()
         {
-            //new sattus
-            //user changed from sms to hike
+            App.HikePubSubInstance.addListener(HikePubSub.STATUS_RECEIVED, this);
         }
 
         private void removeListeners()
         {
             try
             {
+                App.HikePubSubInstance.removeListener(HikePubSub.STATUS_RECEIVED, this);
             }
             catch { }
         }
 
         public void onEventReceived(string type, object obj)
         {
+            #region STATUS UPDATE RECEIVED
+            if (HikePubSub.STATUS_RECEIVED == type)
+            {
+                StatusMessage sm = obj as StatusMessage;
+                if (sm.Msisdn != App.MSISDN) // only add status msg if its from self
+                    return;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(profileImage, sm, statusBox_Tap));
+                });
+            }
+            #endregion
         }
         #endregion
 
@@ -175,10 +188,11 @@ namespace windows_client.View
                     BitmapImage empImage = new BitmapImage();
                     empImage.SetSource(memStream);
                     avatarImage.Source = empImage;
+                    profileImage = empImage;
                 }
                 else
                 {
-                    avatarImage.Source = UI_Utils.Instance.getDefaultAvatar(msisdn);
+                    avatarImage.Source = profileImage = UI_Utils.Instance.getDefaultAvatar(msisdn);
                 }
                 txtUserName.Text = nameToShow;
                 if (!fromChatThread)
@@ -237,7 +251,7 @@ namespace windows_client.View
             removeListeners();
         }
 
-        #region ChangeProfilePic
+        #region CHANGE PROFILE PIC
 
         private void onProfilePicButtonTap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -300,24 +314,6 @@ namespace windows_client.View
             }
         }
 
-        void imageOpenedHandler(object sender, RoutedEventArgs e)
-        {
-            BitmapImage image = (BitmapImage)sender;
-            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            using (var msLargeImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-                largeImageBytes = msLargeImage.ToArray();
-            }
-            using (var msSmallImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
-                fullViewImageBytes = msSmallImage.ToArray();
-            }
-            //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
-        }
-
         public void updateProfile_Callback(JObject obj)
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -342,85 +338,23 @@ namespace windows_client.View
                 isProfilePicTapped = false;
             });
         }
+
         #endregion
 
-        #region status messages
-
-        private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
-        {
-            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
-
-            if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
-                return;
-
-            App.ViewModel.PendingRequests.Remove(fObj);
-            App.ViewModel.FavList.Insert(0, fObj);
-
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-
-            MiscDBUtil.SaveFavourites();
-            MiscDBUtil.SaveFavourites(fObj);
-            MiscDBUtil.SavePendingRequests();
-            int count = 0;
-            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-            //if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
-            //{
-            //    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
-            //    favourites.Visibility = System.Windows.Visibility.Visible;
-            //    addFavsPanel.Opacity = 1;
-            //}
-        }
-
-        private void no_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
-        {
-            ConversationListObject fObj = (sender as Button).DataContext as ConversationListObject;
-            JObject data = new JObject();
-            data["id"] = fObj.Msisdn;
-            JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-            obj[HikeConstants.DATA] = data;
-            mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-            App.ViewModel.PendingRequests.Remove(fObj);
-            MiscDBUtil.SavePendingRequests();
-            //if (App.ViewModel.FavList.Count == 0 && App.ViewModel.PendingRequests.Count == 0)
-            //{
-            //    emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
-            //    favourites.Visibility = System.Windows.Visibility.Collapsed;
-            //    addFavsPanel.Opacity = 0;
-            //}
-        }
-
-        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+        #region STATUS MESSAGES
 
         private void loadStatuses()
         {
-            this.statusLLS.ItemsSource = statusList;
-            if (isOwnProfile)
-            {
-                for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
-                {
-                    FriendRequestStatus frs = new FriendRequestStatus(App.ViewModel.PendingRequests[i].NameToShow, App.ViewModel.PendingRequests[i].AvatarImage,
-                        App.ViewModel.PendingRequests[i].Msisdn, new EventHandler<GestureEventArgs>(yes_Click),
-                        new EventHandler<GestureEventArgs>(no_Click));
-                    statusList.Add(frs);
-                }
-            }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
             if (statusMessagesFromDB == null)
                 return;
-            statusMessagesFromDB.Reverse(); //TODO - GK - return sorted list from db
-            for (int i = 0; i < statusMessagesFromDB.Count; i++)
+
+            for (int i = statusMessagesFromDB.Count - 1; i > 0; i--)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(profileImage, statusMessagesFromDB[i],
                     new EventHandler<GestureEventArgs>(statusBox_Tap)));
             }
+            this.statusLLS.ItemsSource = statusList;
         }
 
         private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
