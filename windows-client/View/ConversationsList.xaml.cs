@@ -434,8 +434,8 @@ namespace windows_client.View
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
             }
 
             string name;
