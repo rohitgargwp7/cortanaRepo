@@ -480,7 +480,7 @@ namespace windows_client.DbUtils
             {
                 if (string.IsNullOrWhiteSpace(item.Msisdn))
                     return false;
-                else if(item.Msisdn == "+hike+")
+                else if (item.Msisdn == "+hike+")
                     return true;
                 else if (item.Msisdn.Contains(":"))
                 {
