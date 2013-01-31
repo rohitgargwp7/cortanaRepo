@@ -283,7 +283,9 @@ namespace windows_client.View
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
-                if (Char.IsDigit(msisdn[0]))
+                if (msisdn.Contains("hike"))
+                    msisdn = "+hike+";
+                else if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
