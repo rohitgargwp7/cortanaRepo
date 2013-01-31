@@ -3075,7 +3075,10 @@ namespace windows_client.View
             //fileTapped[0] = mContactNumber;
             if (!isGroupChat)
             {
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = mContactNumber;
+                Object[] objArr=new Object[2];
+                objArr[0] = avatarImage;
+                objArr[1] = mContactNumber;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = objArr;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }

@@ -401,7 +401,7 @@ namespace windows_client.View
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task "+ex.StackTrace);
+                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
                 }
             }
             else if (e.TaskResult == TaskResult.Cancel)
@@ -721,12 +721,32 @@ namespace windows_client.View
         private void groupMemberImg_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             GroupParticipant gp = groupChatParticipants.SelectedItem as GroupParticipant;
+
             if (gp == null)
                 return;
-            if (gp.Msisdn == App.MSISDN)
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = gp.Msisdn;
+
+            string msisdn = gp.Msisdn == App.MSISDN ? HikeConstants.MY_PROFILE_PIC : gp.Msisdn;
+            BitmapImage avatarImage = new BitmapImage();
+
+            byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+            if (_avatar != null)
+            {
+                MemoryStream memStream = new MemoryStream(_avatar);
+                memStream.Seek(0, SeekOrigin.Begin);
+                avatarImage.SetSource(memStream);
+            }
             else
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp.Msisdn;
+            {
+                avatarImage = UI_Utils.Instance.getDefaultAvatar(msisdn);
+            }
+            Object[] objArray = new Object[2];
+            objArray[0] = avatarImage;
+            objArray[1] = gp.Msisdn;
+
+            if (gp.Msisdn == App.MSISDN)
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArray;
+            else
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = objArray;
 
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }

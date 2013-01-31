@@ -38,6 +38,7 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private ApplicationBar appBar;
+        private BitmapImage _avatarImageBitmap=new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
@@ -453,13 +454,14 @@ namespace windows_client.View
             {
                 MemoryStream memStream = new MemoryStream(_avatar);
                 memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage empImage = new BitmapImage();
-                empImage.SetSource(memStream);
-                avatarImage.Source = empImage;
+                _avatarImageBitmap.SetSource(memStream);
+                avatarImage.Source = _avatarImageBitmap;
+
             }
             else
             {
-                avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                _avatarImageBitmap=UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                avatarImage.Source = _avatarImageBitmap;
             }
         }
 
@@ -956,7 +958,10 @@ namespace windows_client.View
 
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = App.MSISDN;
+            Object[] objArr = new Object[2];
+            objArr[0] = _avatarImageBitmap;
+            objArr[1] = App.MSISDN;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArr;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             //App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
             //NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
