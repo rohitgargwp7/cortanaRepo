@@ -138,10 +138,10 @@ namespace windows_client.utils
                 obj.TryGetValue(HikeConstants.STAT, out statusToken);
                 stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.OK)
-            {
-                this.closePushnotifications();//if server did not ack push token, close it
-            }
+            //if (stat != HikeConstants.OK)
+            //{
+            //    this.closePushnotifications();//if server did not ack push token, close it
+            //}
         }
 
 
