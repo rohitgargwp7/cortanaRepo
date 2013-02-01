@@ -424,13 +424,13 @@ namespace windows_client.Misc
                 if (gp != null) // represents this contact lies in the group
                 {
                     gp.Name = cn.Name;
+                    GetParticipantList(grpId).Sort();
                     App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId); // update groupname
                     // update chat thread and group info page
                     object [] o = new object[2];
                     o[0] = grpId;
                     o[1] = App.ViewModel.ConvMap[grpId].ContactName;
-                    App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED,grpId);
-                    GetParticipantList(grpId).Sort();
+                    App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED,o);                    
                     SaveGroupCache(grpId); // save the cache
                 }
             }
