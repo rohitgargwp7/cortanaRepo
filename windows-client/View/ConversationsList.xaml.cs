@@ -38,7 +38,7 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private ApplicationBar appBar;
-        private BitmapImage _avatarImageBitmap=new BitmapImage();
+        private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
@@ -376,6 +376,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
+            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
         }
 
         private void removeListeners()
@@ -460,7 +461,7 @@ namespace windows_client.View
             }
             else
             {
-                _avatarImageBitmap=UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                _avatarImageBitmap = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
                 avatarImage.Source = _avatarImageBitmap;
             }
         }
@@ -793,6 +794,25 @@ namespace windows_client.View
                         App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             new EventHandler<GestureEventArgs>(statusBox_Tap)));
                     });
+                }
+            }
+            #endregion
+            #region ADD_OR_UPDATE_PROFILE
+            else if (HikePubSub.ADD_OR_UPDATE_PROFILE == type)
+            {
+                object[] vals = (object[])obj;
+                string msisdn = (string)vals[0];
+                byte[] fullViewBytes = (byte[])vals[1];
+                byte[] thumbnailBytes = (byte[])vals[2];
+                if (msisdn == App.MSISDN)
+                {
+                    MemoryStream memStream = new MemoryStream(thumbnailBytes);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                   {
+                       _avatarImageBitmap.SetSource(memStream);
+                       avatarImage.Source = _avatarImageBitmap;
+                   });
                 }
             }
             #endregion
