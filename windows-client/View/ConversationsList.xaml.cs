@@ -1324,7 +1324,7 @@ namespace windows_client.View
                 contactInfo.OnHike = true;
             }
 
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contactInfo;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
             NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
