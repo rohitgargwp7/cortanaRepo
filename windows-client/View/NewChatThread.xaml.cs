@@ -3525,6 +3525,7 @@ namespace windows_client.View
         //http://www.c-sharpcorner.com/blogs/3703/how-to-detect-the-scrollbar-has-changed-in-a-scrollviewer-in.aspx
         private void MessageListPanel_Loaded(object sender, RoutedEventArgs e)
         {
+            this.MessageList.Loaded -= MessageListPanel_Loaded;
             ScrollBar verticalScrollBar = ((FrameworkElement)VisualTreeHelper.GetChild(Scroller, 0)).FindName("VerticalScrollBar") as ScrollBar;
             verticalScrollBar.ValueChanged += (s, ev) =>
                 {
