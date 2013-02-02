@@ -457,6 +457,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} new update.
+        /// </summary>
+        public static string Conversations_Timeline_Refresh_SingleStatus {
+            get {
+                return ResourceManager.GetString("Conversations_Timeline_Refresh_SingleStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} new updates.
+        /// </summary>
+        public static string Conversations_Timeline_Refresh_Status {
+            get {
+                return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your favorites.
         /// </summary>
         public static string Conversations_YourFav_Txt {

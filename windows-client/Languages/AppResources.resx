@@ -1286,9 +1286,10 @@
   </data>
   <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
     <value>timeline</value>
-  </data>  <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
+  </data>
+  <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
     <value>Post Status</value>
-</data>
+  </data>
   <data name="OthersProfile_Txt" xml:space="preserve">
     <value>profile</value>
   </data>
@@ -1321,5 +1322,12 @@
   </data>
   <data name="NewStatus_Txt" xml:space="preserve">
     <value>NEW STATUS</value>
+  </data>
+  <data name="Conversations_Timeline_Refresh_Status" xml:space="preserve">
+    <value>{0} new updates</value>
+    <comment>text on top on timeline to show # of fresh status updates</comment>
+  </data>
+  <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
+    <value>{0} new update</value>
   </data>
 </root>
