@@ -9,6 +9,7 @@ namespace windows_client.utils
     {
         #region private variables
         private SolidColorBrush textBoxBackground;
+        private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
         private SolidColorBrush hikeMsgBackground;
         private SolidColorBrush walkThroughSelectedColumn;
@@ -107,6 +108,16 @@ namespace windows_client.utils
                 if (textBoxBackground == null)
                     textBoxBackground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 236));
                 return textBoxBackground;
+            }
+        }
+
+        public SolidColorBrush LastMsgForeground
+        {
+            get
+            {
+                if (lastMsgForeground == null)
+                    lastMsgForeground = new SolidColorBrush(Colors.Gray);
+                return lastMsgForeground;
             }
         }
 
@@ -588,8 +599,9 @@ namespace windows_client.utils
         #region DEFAULT AVATARS
         private int computeHash(string msisdn)
         {
-            int last3Digits = Convert.ToInt32(msisdn.Substring(msisdn.Length - 3));
-            return last3Digits % 7;
+            string last3Digits = msisdn.Substring(msisdn.Length - 3);
+            int sumOfCodes = last3Digits[0] + last3Digits[1] + last3Digits[2];
+            return sumOfCodes % 7;
         }
 
         public string getDefaultAvatarFileName(string msisdn, bool isGroup)

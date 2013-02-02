@@ -814,7 +814,10 @@ namespace windows_client.View
                     gp.IsFav = false;
                     ConversationListObject favObj = App.ViewModel.GetFav(gp.Msisdn);
                     App.ViewModel.FavList.Remove(favObj);
-
+                    if (App.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
+                    {
+                        (App.ViewModel.ConvMap[gp.Msisdn]).IsFav = false;
+                    }
                     JObject data = new JObject();
                     data["id"] = gp.Msisdn;
                     JObject obj = new JObject();
