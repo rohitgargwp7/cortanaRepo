@@ -2,6 +2,8 @@
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
+using windows_client.DbUtils;
 
 namespace windows_client.utils
 {
@@ -40,13 +42,13 @@ namespace windows_client.utils
         private BitmapImage read;
         private BitmapImage trying;
         private BitmapImage unread;
-        //private BitmapImage defaultAvatarBitmapImage;
-        //private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
         private BitmapImage reward;
         private BitmapImage participantLeft;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage textStatusImage;
+        private BitmapImage friendRequestImage;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -532,6 +534,25 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage TextStatusImage
+        {
+            get
+            {
+                if (textStatusImage == null)
+                    textStatusImage = new BitmapImage(new Uri("/View/images/timeline_status.png", UriKind.Relative));
+                return textStatusImage;
+            }
+        }
+        public BitmapImage FriendRequestImage
+        {
+            get
+            {
+                if (friendRequestImage == null)
+                    friendRequestImage = new BitmapImage(new Uri("/View/images/timeline_friend.png", UriKind.Relative));
+                return friendRequestImage;
+            }
+        }
+
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -677,5 +698,27 @@ namespace windows_client.utils
             return defaultGroupAvatars[index];
         }
         #endregion
+
+        public BitmapImage createImageFromBytes(byte[] imagebytes)
+        {
+            BitmapImage bitmapImage = null;
+            using (var memStream = new MemoryStream(imagebytes))
+            {
+                memStream.Seek(0, SeekOrigin.Begin);
+                bitmapImage = new BitmapImage();
+                bitmapImage.SetSource(memStream);
+            }
+            return bitmapImage;
+        }
+
+        public BitmapImage getUserProfileThumbnail(string msisdn)
+        {
+            byte[] profileImageBytes = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+            if (profileImageBytes != null && profileImageBytes.Length > 0)
+                return createImageFromBytes(profileImageBytes);
+            if (Utils.isGroupConversation(msisdn))
+                return getDefaultGroupAvatar(msisdn);
+            return getDefaultAvatar(msisdn);
+        }
     }
 }

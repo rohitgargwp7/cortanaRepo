@@ -19,6 +19,55 @@
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="True" />
     </shell:SystemTray.ProgressIndicator>
 
+    <phone:PhoneApplicationPage.Resources>
+        <phone:JumpListItemBackgroundConverter x:Key="BackgroundConverter"/>
+        <phone:JumpListItemForegroundConverter x:Key="ForegroundConverter"/>
+        <Style x:Key="LongListSelectorJumpListStyle" TargetType="phone:LongListSelector">
+            <Setter Property="GridCellSize"  Value="113,113"/>
+            <Setter Property="LayoutMode" Value="Grid" />
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border Background="{Binding Converter={StaticResource BackgroundConverter}}"
+                                        Width="113" Height="113" Margin="6" >
+                            <TextBlock Text="{Binding Title}"
+                                               FontFamily="{StaticResource PhoneFontFamilySemiBold}"
+                                               FontSize="48" Padding="6"
+                                               Foreground="{Binding Converter={StaticResource ForegroundConverter}}"
+                                               VerticalAlignment="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="GroupHeaderTemplate">
+            <Border Background="Transparent">
+                <Border Background="{StaticResource PhoneAccentBrush}" 
+                        Width="55" Height="55" HorizontalAlignment="Left">
+                    <TextBlock Text="{Binding Title}" 
+                                Foreground="{StaticResource PhoneForegroundBrush}" 
+                                Style="{StaticResource PhoneTextLargeStyle}"
+                                VerticalAlignment="Bottom"/>
+                </Border>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ItemTemplate">
+            <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel">
+                <CheckBox IsChecked="{Binding IsFav}" IsEnabled="{Binding IsEnabled}" Tap="CheckBox_Tap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2">
+                    <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
+                        <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+
+    </phone:PhoneApplicationPage.Resources>
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -44,59 +93,14 @@
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
 
-            <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,56"
+            <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="24,15,0,56"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
-                          IsBouncy="True"
-                          IsFlatList="False">
-                <toolkit:LongListSelector.GroupItemsPanel>
-                    <ItemsPanelTemplate>
-                        <toolkit:WrapPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </toolkit:LongListSelector.GroupItemsPanel>
-
-                <toolkit:LongListSelector.GroupItemTemplate>
-                    <DataTemplate>
-                        <Border Background="{Binding GroupBackgroundBrush}" Width="99" Height="99" Margin="6" 
-                                IsHitTestVisible="{Binding HasItems}">
-                            <TextBlock Text="{Binding Title}" 
-                            Style="{StaticResource PhoneTextExtraLargeStyle}"
-                            Margin="{StaticResource PhoneTouchTargetOverhang}"
-                            Foreground="{StaticResource PhoneForegroundBrush}"                                        
-                            VerticalAlignment="Bottom"/>
-                        </Border>
-                    </DataTemplate>
-                </toolkit:LongListSelector.GroupItemTemplate>
-
-                <toolkit:LongListSelector.GroupHeaderTemplate>
-                    <DataTemplate>
-                        <Border Background="Transparent">
-                            <Border Background="{StaticResource PhoneAccentBrush}" 
-                        Width="55" Height="55" HorizontalAlignment="Left">
-                                <TextBlock Text="{Binding Title}" 
-                                Foreground="{StaticResource PhoneForegroundBrush}" 
-                                Style="{StaticResource PhoneTextLargeStyle}"
-                                VerticalAlignment="Bottom"/>
-                            </Border>
-                        </Border>
-                    </DataTemplate>
-                </toolkit:LongListSelector.GroupHeaderTemplate>
-                <toolkit:LongListSelector.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="-14,0,0,0" Name="ItemStackPanel">
-                            <CheckBox IsChecked="{Binding IsFav}" IsEnabled="{Binding IsEnabled}" Tap="CheckBox_Tap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                            <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="-5,6,0,2">
-                                <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="42" />
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
-                                    <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </DataTemplate>
-                </toolkit:LongListSelector.ItemTemplate>
-            </toolkit:LongListSelector>
-            <TextBlock x:Name="emptyHikeFriendsTxt" Visibility="Collapsed" Text="Bummer! None of your friends are on hike." FontSize="26" TextWrapping="Wrap" Grid.Row="2" Margin="24,20,24,0" />
+                          IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
+                          ItemTemplate="{StaticResource ItemTemplate}"
+                          GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
+                          JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"/>
+                <TextBlock x:Name="emptyHikeFriendsTxt" Visibility="Collapsed" Text="Bummer! None of your friends are on hike." FontSize="26" TextWrapping="Wrap" Grid.Row="2" Margin="24,20,24,0" />
 
         </Grid>
     </Grid>

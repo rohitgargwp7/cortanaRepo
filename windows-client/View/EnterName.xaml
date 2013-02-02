@@ -80,7 +80,7 @@
                            Opacity="0" Margin="24,0,0,0">
 
                 </TextBlock>
-                <toolkit:PerformanceProgressBar x:Name="progressBar" Background="Transparent" 
+                <ProgressBar x:Name="progressBar" Background="Transparent" 
                                                 IsIndeterminate="True" 
                                                 VerticalAlignment="Center" 
                                                 VerticalContentAlignment="Center" 

@@ -74,7 +74,8 @@ namespace windows_client.Model
             GROUP_JOINED_OR_WAITING,
             CREDITS_GAINED,
             INTERNATIONAL_USER,
-            INTERNATIONAL_GROUP_USER
+            INTERNATIONAL_GROUP_USER,
+            STATUS_UPDATE
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -100,6 +101,10 @@ namespace windows_client.Model
                 if (obj.TryGetValue("st", out jt))
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
+            }
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                return ParticipantInfoState.STATUS_UPDATE;
             }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
             {
@@ -936,6 +941,12 @@ namespace windows_client.Model
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
                     this.Message = AppResources.SMS_INDIA;
+                    break;
+                case ParticipantInfoState.STATUS_UPDATE:
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken val;
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
+                        this.Message = val.ToString();
                     break;
                 default: break;
             }

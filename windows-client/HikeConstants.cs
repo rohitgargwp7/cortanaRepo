@@ -179,6 +179,9 @@ namespace windows_client
         public static readonly string ACCOUNTS = "accounts";
         public static readonly string TWITTER = "twitter";
         public static readonly string FACEBOOK = "fb";
+        public static readonly string TEXT_UPDATE_MSG = "msg";
+        public static readonly string UPDATE_ID = "statusid";
+        public static readonly string IMG = "img";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -212,7 +215,9 @@ namespace windows_client
         public static string FB_LOGGED_IN = "FbLoggedIn";
         public static string TW_LOGGED_IN = "TwLoggedIn";
         public static string ACCOUNT = "account";
-
+        public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
+        public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
+        public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";
@@ -262,17 +267,17 @@ namespace windows_client
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string DND_USER_IN_GROUP = "dugc";
-            public static string ACCOUNT_INFO = "ai";
-            public static string ACCOUNT_CONFIG = "ac";
-            public static string GROUP_USER_JOINED_OR_WAITING = "gujow";
-            public static string USER_OPT_IN = "uo";
-            public static string USER_JOIN = "uj";
-            public static string SMS_USER = "sms_user";
-            public static string HIKE_USER = "hike_user";
-            public static string ADD_FAVOURITE = "af";
-            public static string REMOVE_FAVOURITE = "rf";
-            public static string REWARDS = "rewards";
-
+            public static readonly string ACCOUNT_INFO = "ai";
+            public static readonly string ACCOUNT_CONFIG = "ac";
+            public static readonly string GROUP_USER_JOINED_OR_WAITING = "gujow";
+            public static readonly string USER_OPT_IN = "uo";
+            public static readonly string USER_JOIN = "uj";
+            public static readonly string SMS_USER = "sms_user";
+            public static readonly string HIKE_USER = "hike_user";
+            public static readonly string ADD_FAVOURITE = "af";
+            public static readonly string REMOVE_FAVOURITE = "rf";
+            public static readonly string REWARDS = "rewards";
+            public static readonly string STATUS_UPDATE = "su";
         }
 
         public static class AppSettings

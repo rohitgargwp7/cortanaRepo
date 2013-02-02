@@ -134,14 +134,15 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
-        public delegate void getProfilePicFunction(byte[] data);
+        //public delegate void getProfilePicFunction(byte[] data);
+        public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
 
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -292,6 +293,17 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage, 
                 chatbubble });
         }
+
+        public static void postStatus(string statusText, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "PUT";
+            req.ContentType = "";
+            req.Headers["hike-status-message"] = statusText;
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, finalCallbackFunction });
+        }
+
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
@@ -458,6 +470,11 @@ namespace windows_client.utils
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
                     return;
                 #endregion
+                #region POST STATUS
+                case RequestType.POST_STATUS:
+                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    break;
+                #endregion
                 #region DEFAULT
                 default:
                     break;
@@ -485,24 +502,32 @@ namespace windows_client.utils
             {
                 request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             }
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
         //GET request
-        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
+        //public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
+        //{
+        //    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+        //    if(setCookie)
+        //        addToken(request);
+        //    request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString(); 
+        //    request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        //}
+
+        public static void createGetRequest(string requestUrl, downloadFile callback, bool setCookie, object metadata)
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
-            if(setCookie)
+            if (setCookie)
                 addToken(request);
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString(); 
-            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback, metadata });
         }
 
         static void GetRequestCallback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
-
             HttpWebRequest request = vars[0] as HttpWebRequest;
             JObject jObject = null;
             string data = "";
@@ -527,7 +552,7 @@ namespace windows_client.utils
                             }
                             jObject = JObject.Parse(data);
                         }
-                        else if (vars[1] is getProfilePicFunction)
+                        else// if (vars[1] is getProfilePicFunction)
                         {
                             using (BinaryReader br = new BinaryReader(responseStream))
                             {
@@ -555,10 +580,10 @@ namespace windows_client.utils
                         postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
                         finalCallbackFunction(jObject);
                     }
-                    else if (vars[1] is getProfilePicFunction)
+                    else if (vars[1] is downloadFile)
                     {
-                        getProfilePicFunction finalCallbackFunction = vars[1] as getProfilePicFunction;
-                        finalCallbackFunction(fileBytes);
+                        downloadFile downloadFileCallback = vars[1] as downloadFile;
+                        downloadFileCallback(fileBytes, vars[2] as object);
                     }
 
                 }

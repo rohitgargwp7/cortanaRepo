@@ -211,6 +211,7 @@ namespace windows_client.View
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
+
         }
 
         private void ManagePage()
@@ -404,7 +405,6 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
-
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -1162,12 +1162,12 @@ namespace windows_client.View
                 MiscDBUtil.SaveFavourites(favObj);
                 if (App.ViewModel.IsPending(favObj.Msisdn))
                 {
-                    App.ViewModel.PendingRequests.Remove(favObj);
+                    App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
                 }
                 addToFavMenuItem.Text = AppResources.RemFromFav_Txt;
 
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
                 JObject data = new JObject();
                 data["id"] = mContactNumber;
                 JObject obj = new JObject();
@@ -1195,7 +1195,7 @@ namespace windows_client.View
                     App.ViewModel.ConvMap[mContactNumber].IsFav = false;
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.DeleteFavourite(mContactNumber);
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
 
                 JObject data = new JObject();
                 data["id"] = mContactNumber;
@@ -1742,7 +1742,44 @@ namespace windows_client.View
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
-                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                #region STATUS UPDATE
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    JObject jsonObj = JObject.Parse(convMessage.MetaDataString);
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken val;
+                    #region HANDLE PIC UPDATE
+                    //if (data.TryGetValue(HikeConstants.UPDATE_ID, out val) && val != null) // shows picture update is there
+                    //{
+                    //    try
+                    //    {
+                    //        MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PIC_UPDATE, AppResources.PicUpdate_StatusTxt);
+                    //        this.MessageList.Children.Add(chatBubble);
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        Debug.WriteLine("Exception while inserting Pic Update msg : " + e.StackTrace);
+                    //    }
+                    //}
+                    #endregion
+                    #region HANDLE TEXT UPDATE
+                    val = null;
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    {
+                        try
+                        {
+                            MyChatBubble chatBubble = new StatusChatBubble(convMessage);
+                            chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(statusBubble_Tap));
+                            this.MessageList.Children.Add(chatBubble);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion
+                }
+                #endregion
                 ScrollToBottom();
             }
             catch (Exception e)
@@ -1831,10 +1868,17 @@ namespace windows_client.View
             {
                 isReleaseMode = true;
                 Uri uri = new Uri(e.OriginalFileName);
-                BitmapImage image = new BitmapImage(uri);
+                BitmapImage image = new BitmapImage();
                 image.CreateOptions = BitmapCreateOptions.None;
-                image.UriSource = uri;
-                image.ImageOpened += imageOpenedHandler;
+                image.SetSource(e.ChosenPhoto);
+                try
+                {
+                    SendImage(image, image.UriSource.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
+                }
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
@@ -2444,7 +2488,8 @@ namespace windows_client.View
                     {
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                     }
-                    updateLastMsgColor(convMessage.Msisdn);
+                    if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                        updateLastMsgColor(convMessage.Msisdn);
                     // Update UI
                     HideTypingNotification();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -2464,6 +2509,8 @@ namespace windows_client.View
                     if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted conv, ignore msg
                         return;
                     ConversationListObject cObj = vals[1] as ConversationListObject;
+                    if (cObj == null) // this will happen in status update msg
+                        return;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ToastPrompt toast = new ToastPrompt();
@@ -3011,13 +3058,26 @@ namespace windows_client.View
             }
         }
 
-        private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //TODO - MG try to use sametap event for header n statusBubble
+        private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
-            object[] fileTapped = new object[1];
-            fileTapped[0] = mContactNumber;
-            PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
-            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+            if (!isGroupChat)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = mContactNumber;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            }
+        }
+
+        private void userHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
+            //object[] fileTapped = new object[1];
+            //fileTapped[0] = mContactNumber;
+            if (!isGroupChat)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = mContactNumber;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            }
         }
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)

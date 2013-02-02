@@ -614,7 +614,7 @@ namespace windows_client.Model
 
         public void UpdateConversationBox()
         {
-            if (cBoxObj != null)
+            if (cBoxObj != null )
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
               {

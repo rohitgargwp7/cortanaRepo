@@ -1,0 +1,31 @@
+﻿<status:StatusUpdateBox
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:status="clr-namespace:windows_client.Controls.StatusUpdate"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	x:Class="windows_client.Controls.StatusUpdate.TextStatusUpdate"
+	d:DesignWidth="372" d:DesignHeight="86"
+    DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
+
+    <!--<Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right">-->
+    <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right" Margin="0,15,0,15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="userProfileImage" Source="{Binding UserImage}" Margin="0,5,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Top" Height="69" ></Image>
+        <Image Source="/View/images/timeline_status.png" Margin="53,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31" ></Image>
+        <TextBlock Text="{Binding UserName}" FontSize="16" Margin="21,0,0,0"  Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
+        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="21,0,5,0" Foreground="#4f4f4f"/>
+        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="21,0,5,0" Foreground="#888888"/>
+    </Grid>
+</status:StatusUpdateBox>

@@ -16,6 +16,8 @@ using System.Collections.ObjectModel;
 using windows_client.Languages;
 using System.Windows.Threading;
 using windows_client.ViewModel;
+using windows_client.Controls.StatusUpdate;
+using Microsoft.Phone.Controls;
 
 namespace windows_client
 {
@@ -87,7 +89,7 @@ namespace windows_client
             {
                 Thread.Sleep(500);
             }
-           
+
             JObject jsonObj = null;
             try
             {
@@ -285,7 +287,7 @@ namespace windows_client
                 {
                     return;
                 }
-                if (msgIds == null)
+                if (msgIds == null || msgIds.Count == 0)
                 {
                     Debug.WriteLine("NETWORK MANAGER", "Update Error : Message id Array is empty or null . Check problem");
                     return;
@@ -323,7 +325,7 @@ namespace windows_client
                 if (joined)
                 {
                     // if user is in contact list then only show the joined msg
-                    ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn); 
+                    ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(uMsisdn);
                     bool isUserInContactList = c != null ? true : false;
                     if (isUserInContactList && c.OnHike) // if user exists and is already on hike , do nothing
                         return;
@@ -506,7 +508,7 @@ namespace windows_client
                                                         thrAreFavs = true;
                                                     }
                                                     if (thrAreFavs)
-                                                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                                                        this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
                                                 });
                                             }
                                         }
@@ -876,37 +878,33 @@ namespace windows_client
             {
                 try
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    string ms = (string)jsonObj[HikeConstants.FROM];
+                    if (ms == null)
+                        return;
+                    if (App.ViewModel.Isfavourite(ms)) // already favourite
+                        return;
+                    if (App.ViewModel.IsPending(ms))
+                        return;
+
+                    try
                     {
-                        string ms = (string)jsonObj[HikeConstants.FROM];
-                        if (ms == null)
-                            return;
-                        if (App.ViewModel.Isfavourite(ms)) // already favourite
-                            return;
-                        if (App.ViewModel.IsPending(ms))
-                            return;
-
-                        try
+                        ConversationListObject favObj;
+                        if (App.ViewModel.ConvMap.ContainsKey(ms))
+                            favObj = App.ViewModel.ConvMap[ms];
+                        else // user not saved in address book
                         {
-
-                            ConversationListObject favObj;
-                            if (App.ViewModel.ConvMap.ContainsKey(ms))
-                                favObj = App.ViewModel.ConvMap[ms];
-                            else // user not saved in address book
-                            {
-                                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                                favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
-                            }
-
-                            App.ViewModel.PendingRequests.Add(favObj);
-                            MiscDBUtil.SavePendingRequests();
-                            this.pubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                            favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
                         }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
-                        }
-                    });
+
+                        App.ViewModel.PendingRequests.Add(ms,favObj);
+                        MiscDBUtil.SavePendingRequests();
+                        this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -931,6 +929,63 @@ namespace windows_client
                 }
             }
             #endregion
+            #region STATUS UPDATE
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
+                    cm.Msisdn = msisdn;
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                    StatusMessage sm = null;
+                    JToken val;
+
+                    #region HANDLE TEXT UPDATE
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    {
+                        string id = null;
+                        JToken idToken;
+                        if (data.TryGetValue(HikeConstants.UPDATE_ID, out idToken) && idToken != null)
+                            id = idToken.ToString();
+                        try
+                        {
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp());
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion
+                    // store the msg in STATUS TABLE
+                    StatusMsgsTable.InsertStatusMsg(sm);
+                    //JToken imgToken;
+                    //if (data.TryGetValue(HikeConstants.IMG, out imgToken) && imgToken != null)
+                    //{
+                    //    string iconBase64 = imgToken.ToString();
+                    //    byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                    //    MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.StatusId);
+                    //}
+
+
+                    // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
+                    if (obj != null)
+                    {
+                        object[] vals = new object[2];
+                        vals[0] = cm;
+                        vals[1] = null; // always send null as we dont want any activity on conversation page
+                        pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                    }
+                    pubSub.publish(HikePubSub.STATUS_RECEIVED, sm);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in REWARDS : " + e.StackTrace);
+                }
+            }
+            #endregion
             #region OTHER
             else
             {
@@ -943,46 +998,45 @@ namespace windows_client
         {
             if (msisdn == null)
                 return;
-            ObservableCollection<ConversationListObject> l;
-            if (isFav)
-                l = App.ViewModel.FavList;
-            else
-                l = App.ViewModel.PendingRequests;
 
             if (isFav)
             {
                 if (App.ViewModel.Isfavourite(msisdn))
                     return;
-            }
-            else
-            {
-                if (App.ViewModel.IsPending(msisdn))
-                    return;
-            }
-
-            ConversationListObject favObj = null;
-            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-            {
-                favObj = App.ViewModel.ConvMap[msisdn];
-                if (favObj != null)
-                    l.Add(favObj);
-            }
-            else
-            {
-                ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
-                l.Add(favObj);
-            }
-            if (isFav)
-            {
+                ConversationListObject favObj = null;
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                {
+                    favObj = App.ViewModel.ConvMap[msisdn];                  
+                }
+                else
+                {
+                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);                   
+                }
+                App.ViewModel.FavList.Add(favObj);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
             }
-            else
+            else // pending case
+            {
+                if (App.ViewModel.IsPending(msisdn))
+                    return;
+                ConversationListObject favObj = null;
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                {
+                    favObj = App.ViewModel.ConvMap[msisdn];
+                }
+                else
+                {
+                    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);                   
+                }
+                App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
                 MiscDBUtil.SavePendingRequests();
+            }   
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
