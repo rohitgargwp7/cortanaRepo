@@ -163,40 +163,40 @@ namespace windows_client.utils
             if (yearsDifference > 0)
             {
                 if (yearsDifference == 1)
-                    return "1 year ago";
+                    return AppResources.TimeUtils_One_Year_Ago_Txt;
                 else
-                    return yearsDifference.ToString() + " years ago";
+                    return string.Format(AppResources.TimeUtils_X_Years_Ago_Txt, yearsDifference);
             }
             else if (monthsDifference > 0)
             {
                 if (monthsDifference == 1)
-                    return "1 month ago";
+                    return AppResources.TimeUtils_One_Month_Ago_Txt;
                 else
-                    return monthsDifference + " months ago";
+                    return string.Format(AppResources.TimeUtils_X_Month_Ago_Txt, monthsDifference);
             }
             else if (t.TotalDays > 0)
             {
                 if (t.TotalDays == 1)
-                    return "yesterday";
+                    return AppResources.Yesterday_Txt;
                 else
-                    return t.TotalDays + " days ago";
+                    return string.Format(AppResources.TimeUtils_X_Days_Ago_Txt, t.TotalDays);
             }
             else if (t.TotalHours > 0)
             {
                 if (t.Hours == 1 && t.Minutes < 30)
-                    return "1 hour ago";
+                    return AppResources.TimeUtils_An_hour_Ago_Txt;
                 if (t.Minutes < 30)
-                    return t.Hours.ToString() + " hours ago";
+                    return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, t.Hours);
                 else
-                    return t.Hours.ToString() + ".5 hours ago";
+                    return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, t.Hours.ToString() + ".5");
             }
             else if (t.Minutes > 5)
             {
-                return t.Minutes + " minutes ago";
+                return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, t.Minutes);
             }
             else
             {
-                return "moments ago";
+                return AppResources.TimeUtils_Moments_Ago;
             }
         }
 
