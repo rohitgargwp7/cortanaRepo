@@ -28,6 +28,7 @@ using windows_client.Languages;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
 using System.Windows.Data;
+using System.Windows.Controls.Primitives;
 
 namespace windows_client.View
 {
@@ -928,7 +929,7 @@ namespace windows_client.View
             {
                 JObject obj = new JObject();
                 obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
-                obj.Add(HikeConstants.TO, mContactNumber);
+                obj.Add(HikeConstants.TO, mContactNumber);  
                 obj.Add(HikeConstants.DATA, ids);
 
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
@@ -955,7 +956,7 @@ namespace windows_client.View
                 progressBar.IsEnabled = false;
                 if (!IsMute)
                 {
-                   // ScrollToBottom();
+                    // ScrollToBottom();
                     //scheduler.Schedule(ScrollToBottomFromUI, TimeSpan.FromMilliseconds(5));
                 }
                 NetworkManager.turnOffNetworkManager = false;
@@ -3521,70 +3522,34 @@ namespace windows_client.View
         #endregion
 
         #region ScrollViewer On Scroll call Back events handling
-
-
-        public static readonly DependencyProperty ListVerticalOffsetProperty = DependencyProperty.Register(
-                                                  "ListVerticalOffset",
-                                                  typeof(double),
-                                                  typeof(NewChatThread),
-                                                  new PropertyMetadata(new PropertyChangedCallback(OnListVerticalOffsetChanged)));
-
-        public double ListVerticalOffset
+        //http://www.c-sharpcorner.com/blogs/3703/how-to-detect-the-scrollbar-has-changed-in-a-scrollviewer-in.aspx
+        private void MessageListPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            get { return (double)this.GetValue(ListVerticalOffsetProperty); }
-            set { this.SetValue(ListVerticalOffsetProperty, value); }
-        }
-
-        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
-        {
-            ScrollViewer _listScrollViewer = sender as ScrollViewer;
-
-            Binding binding = new Binding();
-            binding.Source = _listScrollViewer;
-            binding.Path = new PropertyPath("VerticalOffset");
-            binding.Mode = BindingMode.OneWay;
-            this.SetBinding(ListVerticalOffsetProperty, binding);
-        }
-
-        private static void OnListVerticalOffsetChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-        {
-            NewChatThread page = obj as NewChatThread;
-
-
-            if (page.Scroller != null)
-            {
-
-                if (page.Scroller.VerticalOffset == 0 && page.hasMoreMessages)
+            ScrollBar verticalScrollBar = ((FrameworkElement)VisualTreeHelper.GetChild(Scroller, 0)).FindName("VerticalScrollBar") as ScrollBar;
+            verticalScrollBar.ValueChanged += (s, ev) =>
                 {
-                    double currentScrollSize = page.Scroller.ScrollableHeight;
-                    page.progressBar.Opacity = 1;
-                    page.progressBar.IsEnabled = true;
-                    BackgroundWorker bw = new BackgroundWorker();
-                    bw.DoWork += (s, ev) =>
+                    if (this.Scroller.VerticalOffset == 0 && this.hasMoreMessages)
                     {
-                        page.loadMessages();
-
-                    };
-                    bw.RunWorkerAsync();
-                    bw.RunWorkerCompleted += (s, ev) =>
-                    {
-                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        double currentScrollSize = Scroller.ScrollableHeight;
+                        BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += (s1, ev1) =>
                         {
-                            double offset = page.Scroller.ScrollableHeight - currentScrollSize;
-
-                            page.MessageList.UpdateLayout();
-                            page.Scroller.UpdateLayout();
-                            page.Scroller.ScrollToVerticalOffset(offset);
-                            Debug.WriteLine(page.Scroller.ScrollableHeight);
-
-                        });
-                    };
-
-                }
-            }
+                            loadMessages();
+                        };
+                        bw.RunWorkerAsync();
+                        bw.RunWorkerCompleted += (s1, ev1) =>
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                double offset = Scroller.ScrollableHeight - currentScrollSize;
+                                MessageList.UpdateLayout();
+                                Scroller.UpdateLayout();
+                                Scroller.ScrollToVerticalOffset(offset);
+                            });
+                        };
+                    }
+                };
         }
     }
-
         #endregion
-
 }

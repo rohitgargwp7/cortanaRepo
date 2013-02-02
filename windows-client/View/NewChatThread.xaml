@@ -57,8 +57,8 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Loaded="ScrollViewer_Loaded" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
-            <StackPanel Name="MessageList" Margin="0,0,26,0" VerticalAlignment="Bottom">
+        <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
+            <StackPanel  Name="MessageList" Margin="0,0,26,0" VerticalAlignment="Bottom" Loaded="MessageListPanel_Loaded">
 
             </StackPanel>
         </ScrollViewer>
