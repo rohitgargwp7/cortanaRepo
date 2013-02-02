@@ -929,15 +929,15 @@
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Month_Ago_Txt" xml:space="preserve">
-    <value>one month ago</value>
+    <value>1 month ago</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Sec_Ago_Txt" xml:space="preserve">
-    <value>one second ago</value>
+    <value>1 second ago</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_One_Year_Ago_Txt" xml:space="preserve">
-    <value>one year ago</value>
+    <value>1 year ago</value>
     <comment>TimeUtils</comment>
   </data>
   <data name="TimeUtils_X_Days_Ago_Txt" xml:space="preserve">
@@ -1329,5 +1329,8 @@
   </data>
   <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
     <value>{0} new update</value>
+  </data>
+  <data name="TimeUtils_Moments_Ago" xml:space="preserve">
+    <value>moments ago</value>
   </data>
 </root>
