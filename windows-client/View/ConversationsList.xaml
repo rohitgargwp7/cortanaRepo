@@ -201,7 +201,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Rectangle x:Name="refreshStatusBackground" Grid.Row="0" Visibility="Collapsed" Fill="#e9ecee" Height="45" Margin="12,0,0,0" Tap="refreshStatuses_Tap"/>
-                    <TextBlock x:Name="refreshStatusText" Grid.Row="0" Visibility="Collapsed" Text="2 new updates" FontSize="19" Foreground="#4a4a44" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="refreshStatusText" Grid.Row="0" Visibility="Collapsed" Text="2 new updates" FontSize="19" Foreground="#4a4a44" Tap="refreshStatuses_Tap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <!--<phone:LongListSelector x:Name="statusLLS" Grid.Row="1" Margin="12,0,0,0" LayoutMode="List" IsGroupingEnabled="False">
                     </phone:LongListSelector>-->
                     <ListBox x:Name="statusLLS" Margin="18,0,0,0" Grid.Row="1">
