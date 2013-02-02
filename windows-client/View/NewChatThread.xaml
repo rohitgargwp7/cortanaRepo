@@ -23,6 +23,11 @@
         </Style>
     </phone:PhoneApplicationPage.Resources>
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
+    </shell:SystemTray.ProgressIndicator>
+
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
 

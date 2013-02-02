@@ -3530,6 +3530,7 @@ namespace windows_client.View
                 {
                     if (this.Scroller.VerticalOffset == 0 && this.hasMoreMessages)
                     {
+                        shellProgress.IsVisible = true;
                         double currentScrollSize = Scroller.ScrollableHeight;
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
@@ -3541,6 +3542,7 @@ namespace windows_client.View
                         {
                             Deployment.Current.Dispatcher.BeginInvoke(() =>
                             {
+                                shellProgress.IsVisible = false;
                                 double offset = Scroller.ScrollableHeight - currentScrollSize;
                                 MessageList.UpdateLayout();
                                 Scroller.UpdateLayout();
