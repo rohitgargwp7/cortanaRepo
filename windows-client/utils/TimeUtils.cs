@@ -21,7 +21,7 @@ namespace windows_client.utils
             StringBuilder messageTimeString = new StringBuilder();
             if (span.Days < 1)
             {
-                messageTimeString.Append(String.Format("{0:00}",(messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}",(messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
+                messageTimeString.Append(String.Format("{0:00}", (messageTime.Hour % 12))).Append(":").Append(String.Format("{0:00}", (messageTime.Minute))).Append((messageTime.Hour / 12) == 0 ? "a" : "p");
                 return messageTimeString.ToString();
             }
             else if (span.Days < 7)
@@ -35,7 +35,7 @@ namespace windows_client.utils
             }
             else
             {
-                messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month).Append("/").Append(messageTime.Year%100);
+                messageTimeString.Append(messageTime.Day).Append("/").Append(messageTime.Month).Append("/").Append(messageTime.Year % 100);
                 return messageTimeString.ToString();
             }
         }
@@ -46,11 +46,8 @@ namespace windows_client.utils
             ticks += DateTime.Parse("01/01/1970 00:00:00").Ticks;
             DateTime messageTime = new DateTime(ticks);
             DateTime now = DateTime.UtcNow;
-
             TimeSpan span = now.Subtract(messageTime);
-
             messageTime = messageTime.ToLocalTime();
-
             StringBuilder messageTimeString = new StringBuilder();
             if (span.Days < 1)
             {
@@ -100,18 +97,15 @@ namespace windows_client.utils
                 return span.Minutes > HikeConstants.ANALYTICS_POST_TIME;
         }
 
-
-
         public static string getRelativeTime(long timestamp)
         {
-//            TimeSpan.FromMilliseconds(milliseconds);
             long timespanMilliSeconds = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds - timestamp * 1000;
-            TimeSpan ts = TimeSpan.FromMilliseconds(timespanMilliSeconds );
+            TimeSpan ts = TimeSpan.FromMilliseconds(timespanMilliSeconds);
             double delta = Math.Abs(ts.TotalSeconds);
 
             if (delta < 60)
             {
-                return ts.Seconds == 1 ? AppResources.TimeUtils_One_Sec_Ago_Txt : string.Format(AppResources.TimeUtils_X_Secs_Ago_Txt,ts.Seconds);
+                return ts.Seconds == 1 ? AppResources.TimeUtils_One_Sec_Ago_Txt : string.Format(AppResources.TimeUtils_X_Secs_Ago_Txt, ts.Seconds);
             }
             if (delta < 120)
             {
@@ -119,7 +113,7 @@ namespace windows_client.utils
             }
             if (delta < 2700) // 45 * 60
             {
-                return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt,ts.Minutes);
+                return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, ts.Minutes);
             }
             if (delta < 5400) // 90 * 60
             {
@@ -127,7 +121,7 @@ namespace windows_client.utils
             }
             if (delta < 86400) // 24 * 60 * 60
             {
-                return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt,ts.Hours);
+                return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, ts.Hours);
             }
             if (delta < 172800) // 48 * 60 * 60
             {
@@ -143,22 +137,72 @@ namespace windows_client.utils
                 return months <= 1 ? AppResources.TimeUtils_One_Month_Ago_Txt : string.Format(AppResources.TimeUtils_X_Month_Ago_Txt, months);
             }
             int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
-            return years <= 1 ? AppResources.TimeUtils_One_Year_Ago_Txt :string.Format(AppResources.TimeUtils_X_Years_Ago_Txt,years);
+            return years <= 1 ? AppResources.TimeUtils_One_Year_Ago_Txt : string.Format(AppResources.TimeUtils_X_Years_Ago_Txt, years);
         }
 
         public static long getCurrentTimeStamp()
         {
             long ticks = DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks;
             ticks /= 10000000; //Convert windows ticks to seconds
-            return ticks;        
+            return ticks;
         }
 
         public static long getCurrentTimeTicks()
         {
             long ticks = DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks;
-            ticks /= 10000; //Convert windows ticks to seconds
+            ticks /= 10000; //presicion increased to avoid conflicts in timestamps of failed messages
             return ticks;
         }
 
+        public static string getRelativeTimeForStatuses(long epochtimestamp)
+        {
+            DateTime startDateTime = new DateTime(1970, 1, 1);
+            TimeSpan t = DateTime.UtcNow - startDateTime;
+            int monthsDifference = MonthsDifference(startDateTime, DateTime.UtcNow);
+            int yearsDifference = monthsDifference / 12;
+            if (yearsDifference > 0)
+            {
+                if (yearsDifference == 1)
+                    return "1 year ago";
+                else
+                    return yearsDifference.ToString() + " years ago";
+            }
+            else if (monthsDifference > 0)
+            {
+                if (monthsDifference == 1)
+                    return "1 month ago";
+                else
+                    return monthsDifference + " months ago";
+            }
+            else if (t.TotalDays > 0)
+            {
+                if (t.TotalDays == 1)
+                    return "yesterday";
+                else
+                    return t.TotalDays + " days ago";
+            }
+            else if (t.TotalHours > 0)
+            {
+                if (t.Hours == 1 && t.Minutes < 30)
+                    return "1 hour ago";
+                if (t.Minutes < 30)
+                    return t.Hours.ToString() + " hours ago";
+                else
+                    return t.Hours.ToString() + ".5 hours ago";
+            }
+            else if (t.Minutes > 5)
+            {
+                return t.Minutes + " minutes ago";
+            }
+            else
+            {
+                return "moments ago";
+            }
+        }
+
+        public static int MonthsDifference(DateTime start, DateTime end)
+        {
+            return (start.Year * 12 + start.Month) - (end.Year * 12 + end.Month);
+        }
     }
 }
