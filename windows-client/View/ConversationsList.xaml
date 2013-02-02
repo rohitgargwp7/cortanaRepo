@@ -22,9 +22,7 @@
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
     </shell:SystemTray.ProgressIndicator>
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <!--Pivot Control-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -199,10 +197,20 @@
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Timeline_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid Background="Transparent">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <phone:LongListSelector x:Name="statusLLS" Grid.Row="0" Margin="18,0,0,0">
-                    </phone:LongListSelector>
+                    <Rectangle x:Name="refreshStatusBackground" Grid.Row="0" Visibility="Collapsed" Fill="#e9ecee" Height="45" Margin="12,0,0,0" Tap="refreshStatuses_Tap"/>
+                    <TextBlock x:Name="refreshStatusText" Grid.Row="0" Visibility="Collapsed" Text="2 new updates" FontSize="19" Foreground="#4a4a44" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <!--<phone:LongListSelector x:Name="statusLLS" Grid.Row="1" Margin="12,0,0,0" LayoutMode="List" IsGroupingEnabled="False">
+                    </phone:LongListSelector>-->
+                    <ListBox x:Name="statusLLS" Margin="18,0,0,0" Grid.Row="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <status:StatusUpdateBox></status:StatusUpdateBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </controls:PivotItem>
         </controls:Pivot>
