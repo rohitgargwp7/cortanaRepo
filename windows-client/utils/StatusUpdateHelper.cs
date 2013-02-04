@@ -43,6 +43,8 @@ namespace windows_client.utils
             if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
             {
                 userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
+                if (userProfileThumbnail == null)
+                    userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
             }
             else if (App.MSISDN == status.Msisdn)
             {
@@ -79,7 +81,7 @@ namespace windows_client.utils
 
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp, null);
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp, statusBubbleImageTap);
                     break;
             }
             if (statusBoxTap != null)
