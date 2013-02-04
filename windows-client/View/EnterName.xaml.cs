@@ -129,7 +129,8 @@ namespace windows_client
             {
                 App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
             }
-            if ("+91" != country_code)
+         
+                if ("+91" != country_code)
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 nextPage = nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);

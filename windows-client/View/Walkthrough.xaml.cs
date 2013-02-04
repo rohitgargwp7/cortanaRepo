@@ -4,6 +4,8 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.utils;
 using windows_client.Languages;
+using windows_client.Model;
+using System.Collections.Generic;
 
 namespace windows_client.View
 {
@@ -57,8 +59,17 @@ namespace windows_client.View
             isClicked = true;
             if (PhoneApplicationService.Current.State.ContainsKey("FromNameScreen") || App.PageState.WALKTHROUGH_SCREEN == (App.PageState)App.appSettings[App.PAGE_STATE])
             {
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                List<ContactInfo> listContactInfo;
+                if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 2)
+                {
+                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+                    NavigationService.Navigate(new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative));
+                }
+                else
+                {
+                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                    NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                }
             }
             else // this shows this page is from help page
             {
