@@ -433,7 +433,7 @@ namespace windows_client.View
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
             }
 
@@ -1309,17 +1309,15 @@ namespace windows_client.View
             App.ViewModel.IsPendingListLoaded = true;
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                FriendRequestStatus frs = new FriendRequestStatus(co,yes_Click,no_Click);
+                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             if (statusMessagesFromDB != null)
             {
-
-                for (int i = statusMessagesFromDB.Count - 1; i > 0; i--)
+                for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                        new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],statusBox_Tap));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
