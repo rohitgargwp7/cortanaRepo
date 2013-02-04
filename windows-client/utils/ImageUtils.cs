@@ -27,6 +27,8 @@ namespace windows_client.utils
         private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
+        private SolidColorBrush statusTextBlackTheme;
+        private SolidColorBrush statusTextWhiteTheme;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -299,6 +301,30 @@ namespace windows_client.utils
                     phoneThemeColor = new SolidColorBrush((Color)Application.Current.Resources["PhoneAccentColor"]); ;
                 }
                 return phoneThemeColor;
+            }
+        }
+
+        public SolidColorBrush StatusTextBlackTheme
+        {
+            get
+            {
+                if (statusTextBlackTheme == null)
+                {
+                    statusTextBlackTheme = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
+                }
+                return statusTextBlackTheme;
+            }
+        }
+
+        public SolidColorBrush StatusTextWhiteTheme
+        {
+            get
+            {
+                if (statusTextWhiteTheme == null)
+                {
+                    statusTextWhiteTheme = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
+                }
+                return statusTextWhiteTheme;
             }
         }
 
