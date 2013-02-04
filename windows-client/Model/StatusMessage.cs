@@ -23,7 +23,7 @@ namespace windows_client.Model
         {
             ADD_FRIEND,
             TEXT_UPDATE,
-            PHOTO_UPDATE
+            PROFILE_PIC_UPDATE
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type,string mappedId,long ts)

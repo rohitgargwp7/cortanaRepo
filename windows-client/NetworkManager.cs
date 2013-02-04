@@ -942,34 +942,40 @@ namespace windows_client
                     StatusMessage sm = null;
                     JToken val;
 
-                    #region HANDLE TEXT UPDATE
-                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    #region HANDLE PROFILE PIC UPDATE
+                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
                         string id = null;
                         JToken idToken;
-                        if (data.TryGetValue(HikeConstants.UPDATE_ID, out idToken) && idToken != null)
+                        if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
-                        try
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp());
+                        idToken = null;
+                        if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
                         {
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp());
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                            string iconBase64 = idToken.ToString();
+                            byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                            StatusMsgsTable.InsertStatusMsg(sm);
+                            MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.StatusId);
                         }
                     }
                     #endregion
-                    // store the msg in STATUS TABLE
-                    StatusMsgsTable.InsertStatusMsg(sm);
-                    //JToken imgToken;
-                    //if (data.TryGetValue(HikeConstants.IMG, out imgToken) && imgToken != null)
-                    //{
-                    //    string iconBase64 = imgToken.ToString();
-                    //    byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                    //    MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.StatusId);
-                    //}
 
+                    #region HANDLE TEXT UPDATE
+                    else if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    {
+                        string id = null;
+                        JToken idToken;
+                        if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
+                            id = idToken.ToString();
+                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp());
+                        StatusMsgsTable.InsertStatusMsg(sm);
+                    }
+                    #endregion
 
+                    int count = 0;
+                    App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out count);
+                    App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, (count+1));
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
                     {

@@ -1357,11 +1357,9 @@ namespace windows_client.View
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             if (statusMessagesFromDB != null)
             {
-
-                for (int i = statusMessagesFromDB.Count - 1; i > 0; i--)
+                for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                        new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],statusBox_Tap));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;

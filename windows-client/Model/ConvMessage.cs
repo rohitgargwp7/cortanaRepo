@@ -947,6 +947,8 @@ namespace windows_client.Model
                     JToken val;
                     if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
                         this.Message = val.ToString();
+                    else // this is to handle profile pic update
+                        this.Message = "pu";
                     break;
                 default: break;
             }

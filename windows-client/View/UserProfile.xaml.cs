@@ -349,10 +349,9 @@ namespace windows_client.View
             if (statusMessagesFromDB == null)
                 return;
 
-            for (int i = statusMessagesFromDB.Count - 1; i > 0; i--)
+            for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(profileImage, statusMessagesFromDB[i],
-                    new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(profileImage, statusMessagesFromDB[i], statusBox_Tap));
             }
             this.statusLLS.ItemsSource = statusList;
         }

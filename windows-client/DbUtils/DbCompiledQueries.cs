@@ -179,7 +179,8 @@ namespace windows_client.DbUtils
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<ConvMessage>>
                 ((HikeChatsDb hdc, string myMsisdn) =>
                     from o in hdc.messages
-                    where o.Msisdn == myMsisdn orderby o.MessageId
+                    where o.Msisdn == myMsisdn
+                    orderby o.MessageId
                     select o);
                 return q;
             }
@@ -243,14 +244,44 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeChatsDb,IQueryable<StatusMessage>> GetAllStatusMsgs
+        public static Func<HikeChatsDb, string, int, IQueryable<StatusMessage>> GetUnReadStatusMsgsForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, int, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, int, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, string myMsisdn, int count) =>
+                    from o in hdc.statusMessage.Take(count)
+                    orderby o.StatusId descending
+                    where o.Msisdn == myMsisdn
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, IQueryable<StatusMessage>> GetAllStatusMsgs
         {
             get
             {
                 Func<HikeChatsDb, IQueryable<StatusMessage>> q =
-                CompiledQuery.Compile<HikeChatsDb,IQueryable<StatusMessage>>
+                CompiledQuery.Compile<HikeChatsDb, IQueryable<StatusMessage>>
                 ((HikeChatsDb hdc) =>
                     from o in hdc.statusMessage
+                    orderby o.StatusId descending
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, int, IQueryable<StatusMessage>> GetUnReadStatusMsgs
+        {
+            get
+            {
+                Func<HikeChatsDb, int, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, int, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, int count) =>
+                    from o in hdc.statusMessage.Take(count)
+                    orderby o.StatusId descending
                     select o);
                 return q;
             }
