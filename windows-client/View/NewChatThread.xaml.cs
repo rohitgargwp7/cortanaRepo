@@ -1523,6 +1523,7 @@ namespace windows_client.View
       */
         private MyChatBubble AddMessageToUI(ConvMessage convMessage, bool readFromDB, bool insertAtTop)
         {
+            MyChatBubble addedChatBubble = null;
             int insertPosition = 0;
             if (!insertAtTop)
                 insertPosition = this.MessageList.Children.Count;
