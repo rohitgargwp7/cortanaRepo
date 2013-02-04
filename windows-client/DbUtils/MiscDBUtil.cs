@@ -18,6 +18,7 @@ namespace windows_client.DbUtils
         private static object lockObj = new object();
         private static object favReadWriteLock = new object();
         private static object pendingReadWriteLock = new object();
+        private static object profilePicLock = new object();
 
         public static string FAVOURITES_FILE = "favFile";
         public static string MISC_DIR = "Misc_Dir";
@@ -34,6 +35,7 @@ namespace windows_client.DbUtils
             ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
+            DeleteAllPicUpdates();
             GroupManager.Instance.DeleteAllGroups();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
@@ -125,26 +127,29 @@ namespace windows_client.DbUtils
             storeFileInIsolatedStorage(fullFilePath, imageBytes);
         }
 
-        public static void getStatusUpdateImageThumbnailBytes(string msisdn, long statusUpdateId, out byte[] imageBytes)
-        { 
-            msisdn = msisdn.Replace(":", "_");
-            string filePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
-            readFileFromIsolatedStorage(filePath, out imageBytes);
-        }
-
-        public static void getStatusUpdateImage(string msisdn, long statusUpdateId, out byte[] imageBytes, out bool isThumbnail)
+        public static byte[] GetProfilePicUpdateForID(string msisdn, long statusId)
         {
-            isThumbnail = false;
             msisdn = msisdn.Replace(":", "_");
-            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
-            readFileFromIsolatedStorage(fullFilePath, out imageBytes);
-            if (fullFilePath == null || fullFilePath.Length == 0)
+            string filePath = PROFILE_PICS + "/" + msisdn + "/" + statusId.ToString();
+            byte[] data = null;
+            lock (profilePicLock)
             {
-                isThumbnail = true;
-                string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
-                readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (myIsolatedStorage.FileExists(filePath))
+                    {
+                        using (IsolatedStorageFileStream stream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+                        {
+                            data = new byte[stream.Length];
+                            stream.Read(data, 0, data.Length);
+                            stream.Close();
+                        }
+                    }
+                }
+                return data;
             }
         }
+
         /// <summary>
         /// This function is used to store profile pics (small) so that same can be used in timelines
         /// </summary>
@@ -157,7 +162,7 @@ namespace windows_client.DbUtils
                 return;
             msisdn = msisdn.Replace(":", "_");
             string FileName = PROFILE_PICS + "\\" + msisdn + "\\" + picId.ToString();
-            lock (lockObj)
+            lock (profilePicLock)
             {
                 try
                 {
@@ -178,6 +183,49 @@ namespace windows_client.DbUtils
                 catch (Exception e)
                 {
                     Debug.WriteLine(e);
+                }
+            }
+        }
+
+        public static void getStatusUpdateImage(string msisdn, long statusUpdateId, out byte[] imageBytes, out bool isThumbnail)
+        {
+            isThumbnail = false;
+            msisdn = msisdn.Replace(":", "_");
+            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+            readFileFromIsolatedStorage(fullFilePath, out imageBytes);
+            if (fullFilePath == null || fullFilePath.Length == 0)
+            {
+                isThumbnail = true;
+                string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
+                readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
+            }
+        }
+
+        public static void DeleteAllPicUpdates()
+        {
+            lock (profilePicLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(PROFILE_PICS))
+                        return;
+                    string[] dirs = store.GetFileNames(PROFILE_PICS + "\\*");
+                    foreach (string dir in dirs)
+                    {
+                        string[] files = store.GetFileNames(PROFILE_PICS + "\\" + dir + "\\*");
+
+                        foreach (string file in files)
+                        {
+                            try
+                            {
+                                store.DeleteFile(PROFILE_PICS + "\\" + dir + "\\" + file);
+                            }
+                            catch
+                            {
+                                Debug.WriteLine("File {0} does not exist.", PROFILE_PICS + "\\" + dir + "\\" + file);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -249,7 +297,6 @@ namespace windows_client.DbUtils
                         using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn, FileMode.Open, FileAccess.Read))
                         {
                             data = new byte[isfs.Length];
-                            // Read the entire file and then close it
                             isfs.Read(data, 0, data.Length);
                             isfs.Close();
                         }
@@ -723,7 +770,7 @@ namespace windows_client.DbUtils
                                         else
                                         {
                                             item.Avatar = MiscDBUtil.getThumbNailForMsisdn(item.Msisdn);
-                                            App.ViewModel.PendingRequests[item.Msisdn]= item;
+                                            App.ViewModel.PendingRequests[item.Msisdn] = item;
                                         }
 
                                     }
