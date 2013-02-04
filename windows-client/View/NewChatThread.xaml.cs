@@ -878,7 +878,7 @@ namespace windows_client.View
             bool isPublish = false;
             hasMoreMessages = false;
 
-            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdnForPaging(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, FETCHCOUNT);
+            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, FETCHCOUNT);
             //List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {
@@ -921,7 +921,7 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToUIOnLoad(cm, true);
+                    AddMessageToUI(cm, true,true);
                 });
             }
 
@@ -929,7 +929,7 @@ namespace windows_client.View
             {
                 JObject obj = new JObject();
                 obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
-                obj.Add(HikeConstants.TO, mContactNumber);  
+                obj.Add(HikeConstants.TO, mContactNumber);
                 obj.Add(HikeConstants.DATA, ids);
 
                 mPubSub.publish(HikePubSub.MESSAGE_RECEIVED_READ, dbIds.ToArray()); // this is to notify DB
@@ -1515,263 +1515,17 @@ namespace windows_client.View
             ScrollToBottom();
         }
 
-        /*
-         * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
-         * it is scheduled
-         */
-        private MyChatBubble AddMessageToUI(ConvMessage convMessage, bool readFromDB)
-        {
-            MyChatBubble addedChatBubble = null;
-            try
-            {
-                #region NO_INFO
-                //TODO : Create attachment object if it requires one
-                if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
-                {
-                    MyChatBubble chatBubble = null;
-                    if (convMessage.HasAttachment)
-                    {
-                        if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
-                        {
-                            convMessage.FileAttachment = attachments[convMessage.MessageId];
-                            attachments.Remove(convMessage.MessageId);
-                        }
-                        if (convMessage.FileAttachment == null)
-                        {
-                            //Done to avoid crash. Code should never reach here
-                            Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
-                            return null;
-                        }
-                        chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
-                    }
-
-                    if (chatBubble == null)
-                    {
-                        if (convMessage.IsSent)
-                        {
-                            chatBubble = SentChatBubble.getSplitChatBubbles(convMessage, readFromDB);
-                            if (convMessage.MessageId > 0 && ((!convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_DELIVERED_READ)
-                                || (convMessage.IsSms && convMessage.MessageStatus < ConvMessage.State.SENT_CONFIRMED)))
-                                msgMap.Add(convMessage.MessageId, (SentChatBubble)chatBubble);
-                        }
-                        else
-                        {
-                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
-                        }
-                    }
-                    this.MessageList.Children.Add(chatBubble);
-                    //this.messagesCollection.Add(chatBubble);
-                    if (chatBubble.splitChatBubbles != null && chatBubble.splitChatBubbles.Count > 0)
-                    {
-                        for (int i = 0; i < chatBubble.splitChatBubbles.Count; i++)
-                        {
-                            this.MessageList.Children.Add(chatBubble.splitChatBubbles[i]);
-                            //this.messagesCollection.Add(chatBubble.splitChatBubbles[i]);
-                        }
-                    }
-                    if (convMessage.FileAttachment != null)
-                    {
-                        chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(FileAttachmentMessage_Tap));
-                    }
-                    addedChatBubble = chatBubble;
-                }
-                #endregion
-                #region MEMBERS JOINED GROUP CHAT
-
-                // SHOW Group Chat joined / Added msg along with DND msg 
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.MEMBERS_JOINED)
-                {
-                    string[] vals = convMessage.Message.Split(';');
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED, vals[0]);
-                    this.MessageList.Children.Add(chatBubble);
-                    if (vals.Length == 2)
-                    {
-                        MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
-                        this.MessageList.Children.Add(dndChatBubble);
-                    }
-                }
-                #endregion
-                #region PARTICIPANT_JOINED
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_JOINED)
-                {
-                    string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
-                    if (vals == null || vals.Length == 0)
-                        return null;
-                    for (int i = 0; i < vals.Length; i++)
-                    {
-                        string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
-
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, vars[0], convMessage.Msisdn);
-                        string text = AppResources.USER_JOINED_GROUP_CHAT;
-                        NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED;
-                        if (vars[1] == "0" && !gp.IsOnHike)
-                        {
-                            text = AppResources.USER_INVITED;
-                            type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED;
-                        }
-                        MyChatBubble chatBubble = new NotificationChatBubble(type, gp.FirstName + text);
-                        this.MessageList.Children.Add(chatBubble);
-                    }
-                }
-                #endregion
-                #region GROUP_JOINED_OR_WAITING
-
-                // This function is called after first normal message of Group Creation
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_JOINED_OR_WAITING)
-                {
-                    string[] vals = Utils.splitUserJoinedMessage(convMessage.Message);
-                    if (vals == null || vals.Length == 0)
-                        return null;
-                    List<string> waitingParticipants = null;
-                    for (int i = 0; i < vals.Length; i++)
-                    {
-                        string[] vars = vals[i].Split(HikeConstants.DELIMITERS, StringSplitOptions.RemoveEmptyEntries); // msisdn:0 or msisdn:1
-                        string msisdn = vars[0];
-                        string showIcon = vars[1];
-                        // every participant is either on DND or not on DND
-                        GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, msisdn, convMessage.Msisdn);
-
-                        string text = gp.FirstName + AppResources.USER_JOINED_GROUP_CHAT;
-                        NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
-                        if (showIcon == "0") // DND USER and not OPTED IN add to custom msg i.e waiting etc
-                        {
-                            if (waitingParticipants == null)
-                                waitingParticipants = new List<string>();
-                            waitingParticipants.Add(gp.FirstName);
-                        }
-                        else // if not DND show joined 
-                        {
-                            MyChatBubble chatBubble = new NotificationChatBubble(type, text);
-                            this.MessageList.Children.Add(chatBubble);
-                        }
-                    }
-                    if (waitingParticipants == null)
-                        return null;
-                    StringBuilder msgText = new StringBuilder();
-                    if (waitingParticipants.Count == 1)
-                        msgText.Append(waitingParticipants[0]);
-                    else if (waitingParticipants.Count == 2)
-                        msgText.Append(waitingParticipants[0] + AppResources.And_txt + waitingParticipants[1]);
-                    else
-                    {
-                        for (int i = 0; i < waitingParticipants.Count; i++)
-                        {
-                            msgText.Append(waitingParticipants[i]);
-                            if (i == waitingParticipants.Count - 2)
-                                msgText.Append(AppResources.And_txt);
-                            else if (i < waitingParticipants.Count - 2)
-                                msgText.Append(",");
-                        }
-                    }
-                    MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString()));
-                    this.MessageList.Children.Add(wchatBubble);
-                }
-                #endregion
-                #region USER_JOINED
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region HIKE_USER
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.HIKE_USER)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region SMS_USER
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.SMS_USER)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region USER_OPT_IN
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_OPT_IN)
-                {
-                    NotificationChatBubble.MessageType type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
-                    if (Utils.isGroupConversation(mContactNumber))
-                    {
-                        type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
-                    }
-                    MyChatBubble chatBubble = new NotificationChatBubble(type, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region DND_USER
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.DND_USER)
-                {
-                    //if (!Utils.isGroupConversation(mContactNumber))
-                    {
-                        MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, convMessage.Message);
-                        this.MessageList.Children.Add(chatBubble);
-                    }
-                }
-                #endregion
-                #region PARTICIPANT_LEFT
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.PARTICIPANT_LEFT)
-                {
-                    string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + AppResources.USER_LEFT);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region GROUP END
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_END)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.GROUP_END, AppResources.GROUP_CHAT_END);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region CREDITS REWARDS
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region INTERNATIONAL_USER
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_USER)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                #region INTERNATIONAL_GROUPCHAT_USER
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_GROUP_USER)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, AppResources.SMS_INDIA);
-                    this.MessageList.Children.Add(chatBubble);
-                    string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
-                    MyChatBubble chatBubbleLeft = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + AppResources.USER_LEFT);
-                    this.MessageList.Children.Add(chatBubbleLeft);
-                }
-                #endregion
-                #region GROUP NAME CHANGED
-                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
-                {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
-                    this.MessageList.Children.Add(chatBubble);
-                }
-                #endregion
-                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
-                ScrollToBottom();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("NEW CHAT THREAD :: " + e.StackTrace);
-            }
-            return addedChatBubble;
-        }
+     
 
         /*
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
       * it is scheduled
       */
-        private MyChatBubble AddMessageToUIOnLoad(ConvMessage convMessage, bool readFromDB)
+        private MyChatBubble AddMessageToUI(ConvMessage convMessage, bool readFromDB, bool insertAtTop)
         {
+            int insertPosition = 0;
+            if (!insertAtTop)
+                insertPosition = this.MessageList.Children.Count;
             MyChatBubble addedChatBubble = null;
             try
             {
@@ -1807,13 +1561,15 @@ namespace windows_client.View
                     {
                         chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
                     }
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                     //this.messagesCollection.Add(chatBubble);
                     if (chatBubble.splitChatBubbles != null && chatBubble.splitChatBubbles.Count > 0)
                     {
-                        for (int i = chatBubble.splitChatBubbles.Count - 1; i > 0; i--)
+                        for (int i = 0; i < chatBubble.splitChatBubbles.Count; i--)
                         {
-                            this.MessageList.Children.Insert(0, chatBubble.splitChatBubbles[i]);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble.splitChatBubbles[i]);
+                            insertPosition++;
                             //this.messagesCollection.Add(chatBubble.splitChatBubbles[i]);
                         }
                     }
@@ -1831,11 +1587,13 @@ namespace windows_client.View
                 {
                     string[] vals = convMessage.Message.Split(';');
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.HIKE_PARTICIPANT_JOINED, vals[0]);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                     if (vals.Length == 2)
                     {
                         MyChatBubble dndChatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, vals[1]);
-                        this.MessageList.Children.Insert(0, dndChatBubble);
+                        this.MessageList.Children.Insert(insertPosition, dndChatBubble);
+                        insertPosition++;
                     }
                 }
                 #endregion
@@ -1858,7 +1616,8 @@ namespace windows_client.View
                             type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED;
                         }
                         MyChatBubble chatBubble = new NotificationChatBubble(type, gp.FirstName + text);
-                        this.MessageList.Children.Insert(0, chatBubble);
+                        this.MessageList.Children.Insert(insertPosition, chatBubble);
+                        insertPosition++;
                     }
                 }
                 #endregion
@@ -1890,7 +1649,8 @@ namespace windows_client.View
                         else // if not DND show joined 
                         {
                             MyChatBubble chatBubble = new NotificationChatBubble(type, text);
-                            this.MessageList.Children.Insert(0, chatBubble);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble);
+                            insertPosition++;
                         }
                     }
                     if (waitingParticipants == null)
@@ -1919,21 +1679,24 @@ namespace windows_client.View
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.USER_JOINED)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region HIKE_USER
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.HIKE_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.USER_JOINED_HIKE, convMessage.Message);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region SMS_USER
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.SMS_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.SMS_PARTICIPANT_INVITED, convMessage.Message);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region USER_OPT_IN
@@ -1945,7 +1708,8 @@ namespace windows_client.View
                         type = NotificationChatBubble.MessageType.SMS_PARTICIPANT_OPTED_IN;
                     }
                     MyChatBubble chatBubble = new NotificationChatBubble(type, convMessage.Message);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region DND_USER
@@ -1954,7 +1718,8 @@ namespace windows_client.View
                     //if (!Utils.isGroupConversation(mContactNumber))
                     {
                         MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, convMessage.Message);
-                        this.MessageList.Children.Insert(0, chatBubble);
+                        this.MessageList.Children.Insert(insertPosition, chatBubble);
+                        insertPosition++;
                     }
                 }
                 #endregion
@@ -1963,49 +1728,57 @@ namespace windows_client.View
                 {
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + AppResources.USER_LEFT);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region GROUP END
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_END)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.GROUP_END, AppResources.GROUP_CHAT_END);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region CREDITS REWARDS
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.CREDITS_GAINED)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region INTERNATIONAL_USER
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, convMessage.Message);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region INTERNATIONAL_GROUPCHAT_USER
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.INTERNATIONAL_GROUP_USER)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.INTERNATIONAL_USER_BLOCKED, AppResources.SMS_INDIA);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                     string name = convMessage.Message.Substring(0, convMessage.Message.IndexOf(' '));
                     MyChatBubble chatBubbleLeft = new NotificationChatBubble(NotificationChatBubble.MessageType.PARTICIPANT_LEFT, name + AppResources.USER_LEFT);
-                    this.MessageList.Children.Insert(0, chatBubbleLeft);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 #region GROUP NAME CHANGED
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
                     MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
-                    this.MessageList.Children.Insert(0, chatBubble);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
                 }
                 #endregion
                 //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
-                //ScrollToBottom();
+                if (!insertAtTop)
+                    ScrollToBottom();
             }
             catch (Exception e)
             {
@@ -2211,7 +1984,7 @@ namespace windows_client.View
                 HideTypingNotification();
                 isReshowTypingNotification = true;
             }
-            MyChatBubble chatBubble = AddMessageToUI(convMessage, false);
+            MyChatBubble chatBubble = AddMessageToUI(convMessage, false,false);
             if (isReshowTypingNotification)
             {
                 ShowTypingNotification();
@@ -2711,12 +2484,12 @@ namespace windows_client.View
                     HideTypingNotification();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        AddMessageToUI(convMessage, false);
+                        AddMessageToUI(convMessage, false,false);
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
-                                AddMessageToUI(cm, false);
+                                AddMessageToUI(cm, false,false);
                         }
                     });
                 }
@@ -3531,7 +3304,10 @@ namespace windows_client.View
                 {
                     if (this.Scroller.VerticalOffset == 0 && this.hasMoreMessages)
                     {
-                        shellProgress.IsVisible = true;
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            shellProgress.IsVisible = true;
+                        });
                         double currentScrollSize = Scroller.ScrollableHeight;
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
@@ -3547,7 +3323,7 @@ namespace windows_client.View
                                 double offset = Scroller.ScrollableHeight - currentScrollSize;
                                 MessageList.UpdateLayout();
                                 Scroller.UpdateLayout();
-                                Scroller.ScrollToVerticalOffset(offset);
+                                Scroller.ScrollToVerticalOffset(0.7 * offset);
                             });
                         };
                     }
