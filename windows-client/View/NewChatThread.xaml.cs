@@ -921,7 +921,7 @@ namespace windows_client.View
                 }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    AddMessageToUI(cm, true,true);
+                    AddMessageToUI(cm, true, true);
                 });
             }
 
@@ -1515,7 +1515,7 @@ namespace windows_client.View
             ScrollToBottom();
         }
 
-     
+
 
         /*
       * If readFromDB is true & message state is SENT_UNCONFIRMED, then trying image is set else 
@@ -1526,13 +1526,13 @@ namespace windows_client.View
             int insertPosition = 0;
             if (!insertAtTop)
                 insertPosition = this.MessageList.Children.Count;
-            MyChatBubble addedChatBubble = null;
             try
             {
                 #region NO_INFO
                 //TODO : Create attachment object if it requires one
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
+                    MyChatBubble addedChatBubble = null;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1540,7 +1540,6 @@ namespace windows_client.View
                             convMessage.FileAttachment = attachments[convMessage.MessageId];
                             attachments.Remove(convMessage.MessageId);
                         }
-
                         if (convMessage.FileAttachment == null)
                         {
                             //Done to avoid crash. Code should never reach here
@@ -1984,7 +1983,7 @@ namespace windows_client.View
                 HideTypingNotification();
                 isReshowTypingNotification = true;
             }
-            MyChatBubble chatBubble = AddMessageToUI(convMessage, false,false);
+            MyChatBubble chatBubble = AddMessageToUI(convMessage, false, false);
             if (isReshowTypingNotification)
             {
                 ShowTypingNotification();
@@ -2484,12 +2483,12 @@ namespace windows_client.View
                     HideTypingNotification();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        AddMessageToUI(convMessage, false,false);
+                        AddMessageToUI(convMessage, false, false);
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
                             if (cm != null)
-                                AddMessageToUI(cm, false,false);
+                                AddMessageToUI(cm, false, false);
                         }
                     });
                 }
