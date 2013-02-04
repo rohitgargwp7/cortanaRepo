@@ -1259,7 +1259,7 @@ namespace windows_client.View
             for (int i = 0; i < freshStatusUpdates.Count; i++)
             {
                 App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
-                    new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(statusBubblePhoto_Tap), null));
             }
             FreshStatusCount = 0;
         }
@@ -1324,6 +1324,14 @@ namespace windows_client.View
             MiscDBUtil.SavePendingRequests();
         }
 
+        //tap event of photo in status bubble
+        private void statusBubblePhoto_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = (statusLLS.SelectedItem as 
+                StatusUpdateBox).Msisdn;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
         private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
@@ -1359,7 +1367,8 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],statusBox_Tap));
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap,
+                        statusBubblePhoto_Tap, null));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
