@@ -478,6 +478,7 @@
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
+    <Content Include="View\images\icon_editprofile.png" />
     <Content Include="View\images\icon_message.png" />
     <Content Include="View\images\icon_play.png" />
     <Content Include="View\images\icon_play_stop.png" />
