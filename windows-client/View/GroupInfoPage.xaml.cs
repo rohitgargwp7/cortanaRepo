@@ -727,8 +727,7 @@ namespace windows_client.View
 
             string msisdn = gp.Msisdn == App.MSISDN ? HikeConstants.MY_PROFILE_PIC : gp.Msisdn;
 
-            byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-            BitmapImage avatarImage = _avatar != null ? UI_Utils.Instance.createImageFromBytes(_avatar) : UI_Utils.Instance.getDefaultAvatar(msisdn);
+            BitmapImage avatarImage = UI_Utils.Instance.getUserProfileThumbnail(msisdn);
 
             Object[] objArray = new Object[2];
             objArray[0] = avatarImage;
