@@ -66,7 +66,7 @@ namespace windows_client.View
             if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
-                if (sm.Msisdn != msisdn) // only add status msg if its from self
+                if (sm.Msisdn != msisdn) // only add status msg if user is viewing the profile of the same person whose atatus has been updated
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -167,7 +167,7 @@ namespace windows_client.View
                     this.ApplicationBar.Buttons.Add(postStatusButton);
 
                     ApplicationBarIconButton editProfile_button = new ApplicationBarIconButton();
-                    editProfile_button.IconUri = new Uri("/View/images/settings.png", UriKind.Relative);
+                    editProfile_button.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
                     editProfile_button.Text = AppResources.Conversations_EditProfile_Txt;
                     editProfile_button.Click += new EventHandler(EditProfile_Tap);
                     editProfile_button.IsEnabled = true;
@@ -275,7 +275,7 @@ namespace windows_client.View
                 return;
             }
             //progressBarTop.IsEnabled = true;
-            //   shellProgress.IsVisible = true;
+            shellProgress.IsVisible = true;
             if (e.TaskResult == TaskResult.OK)
             {
                 profileImage = new BitmapImage();
@@ -305,7 +305,7 @@ namespace windows_client.View
             {
                 isProfilePicTapped = false;
                 //progressBarTop.IsEnabled = false;
-                //  shellProgress.IsVisible = false;
+                shellProgress.IsVisible = false;
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
@@ -331,7 +331,7 @@ namespace windows_client.View
                     MessageBox.Show(AppResources.Cannot_Change_Img_Error_Txt, AppResources.Something_Wrong_Txt, MessageBoxButton.OK);
                 }
                 //progressBarTop.IsEnabled = false;
-                //shellProgress.IsVisible = false;
+                shellProgress.IsVisible = false;
                 isProfilePicTapped = false;
             });
         }
@@ -466,7 +466,7 @@ namespace windows_client.View
 
         private void UserImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
+            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE);
             object[] fileTapped = new object[1];
             fileTapped[0] = msisdn;
             PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;

@@ -806,11 +806,9 @@ namespace windows_client.View
                 byte[] thumbnailBytes = (byte[])vals[2];
                 if (msisdn == App.MSISDN)
                 {
-                    MemoryStream memStream = new MemoryStream(thumbnailBytes);
-                    memStream.Seek(0, SeekOrigin.Begin);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                    {
-                       _avatarImageBitmap.SetSource(memStream);
+                       _avatarImageBitmap = App.UI_UtilsInstance.createImageFromBytes(thumbnailBytes);
                        avatarImage.Source = _avatarImageBitmap;
                    });
                 }
@@ -1342,7 +1340,7 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],statusBox_Tap));
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
