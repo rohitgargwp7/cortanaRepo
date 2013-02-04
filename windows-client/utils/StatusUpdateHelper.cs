@@ -56,7 +56,7 @@ namespace windows_client.utils
             StatusUpdateBox statusUpdateBox = null;
             switch (status.Status_Type)
             {
-                case StatusMessage.StatusType.PHOTO_UPDATE:
+                case StatusMessage.StatusType.PROFILE_PIC_UPDATE:
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
@@ -110,7 +110,7 @@ namespace windows_client.utils
             StatusUpdateBox statusUpdateBox = null;
             switch (status.Status_Type)
             {
-                case StatusMessage.StatusType.PHOTO_UPDATE:
+                case StatusMessage.StatusType.PROFILE_PIC_UPDATE:
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
