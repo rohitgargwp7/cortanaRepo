@@ -12,6 +12,14 @@ namespace windows_client.Controls.StatusUpdate
             InitializeComponent();
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             this.statusTextTxtBlk.Text = textOrLocationName;
+            if (Utils.isDarkTheme())
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
+            }
+            else
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
+            }
         }
     }
 }
