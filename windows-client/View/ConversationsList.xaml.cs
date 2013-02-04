@@ -57,6 +57,7 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
+            lastStatusTxtBlk.Text = "Hey..!! I am very excited about ongoing milestones F1 and F2. Looking forward to F3.";
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -787,6 +788,10 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 freshStatusUpdates.Add(sm);
                 FreshStatusCount++;
+                if (sm.Msisdn == App.MSISDN)
+                {
+                    lastStatusTxtBlk.Text = sm.Message;
+                }
             }
             #endregion
         }
