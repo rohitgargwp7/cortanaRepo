@@ -726,19 +726,10 @@ namespace windows_client.View
                 return;
 
             string msisdn = gp.Msisdn == App.MSISDN ? HikeConstants.MY_PROFILE_PIC : gp.Msisdn;
-            BitmapImage avatarImage = new BitmapImage();
 
             byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-            if (_avatar != null)
-            {
-                MemoryStream memStream = new MemoryStream(_avatar);
-                memStream.Seek(0, SeekOrigin.Begin);
-                avatarImage.SetSource(memStream);
-            }
-            else
-            {
-                avatarImage = UI_Utils.Instance.getDefaultAvatar(msisdn);
-            }
+            BitmapImage avatarImage = _avatar != null ? UI_Utils.Instance.createImageFromBytes(_avatar) : UI_Utils.Instance.getDefaultAvatar(msisdn);
+
             Object[] objArray = new Object[2];
             objArray[0] = avatarImage;
             objArray[1] = gp.Msisdn;
