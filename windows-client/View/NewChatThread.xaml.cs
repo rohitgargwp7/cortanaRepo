@@ -1568,7 +1568,7 @@ namespace windows_client.View
                     //this.messagesCollection.Add(chatBubble);
                     if (chatBubble.splitChatBubbles != null && chatBubble.splitChatBubbles.Count > 0)
                     {
-                        for (int i = 0; i < chatBubble.splitChatBubbles.Count; i--)
+                        for (int i = 0; i < chatBubble.splitChatBubbles.Count; i++)
                         {
                             this.MessageList.Children.Insert(insertPosition, chatBubble.splitChatBubbles[i]);
                             insertPosition++;
