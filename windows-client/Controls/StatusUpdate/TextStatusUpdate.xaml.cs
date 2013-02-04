@@ -6,12 +6,13 @@ namespace windows_client.Controls.StatusUpdate
 {
     public partial class TextStatusUpdate : StatusUpdateBox
     {
+        private long timestamp;
         public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string textOrLocationName, long timestamp)
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
-            this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             this.statusTextTxtBlk.Text = textOrLocationName;
+            this.timestamp = timestamp;
             if (Utils.isDarkTheme())
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
@@ -20,6 +21,11 @@ namespace windows_client.Controls.StatusUpdate
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
             }
+        }
+
+        void timestampTxtBlk_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
         }
     }
 }

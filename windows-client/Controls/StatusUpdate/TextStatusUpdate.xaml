@@ -26,6 +26,6 @@
         <Image Source="/View/images/timeline_status.png" Margin="53,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31" ></Image>
         <TextBlock Text="{Binding UserName}" FontSize="16" Margin="21,0,0,0"  Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
         <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="21,0,5,0"/>
-        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="21,0,5,0" Foreground="#888888"/>
+        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="21,0,5,0" Foreground="#888888" Loaded="timestampTxtBlk_Loaded"/>
     </Grid>
 </status:StatusUpdateBox>
