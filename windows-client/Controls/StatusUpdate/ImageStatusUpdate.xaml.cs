@@ -15,7 +15,7 @@ namespace windows_client.Controls.StatusUpdate
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             if (statusImageBitmap != null)
-                this._statusImageSource = statusImageBitmap;
+                this.StatusImage = statusImageBitmap;
         }
 
         public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, string updateText, long timestamp)
@@ -24,7 +24,7 @@ namespace windows_client.Controls.StatusUpdate
             InitializeComponent();
             this.statusTextTxtBlk.Text = updateText;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
-            this._statusImageSource = statusImageBitmap;
+            this.StatusImage = statusImageBitmap;
         }
 
         public BitmapImage StatusImage
