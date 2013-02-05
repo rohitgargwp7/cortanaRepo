@@ -1279,7 +1279,7 @@
     <comment>Text used in profile picture update</comment>
   </data>
   <data name="StatusUpdate_Photo" xml:space="preserve">
-    <value>Chaanged profile picture</value>
+    <value>Changed profile picture</value>
   </data>
   <data name="StatuUpdate_Location" xml:space="preserve">
     <value>at {0}</value>
