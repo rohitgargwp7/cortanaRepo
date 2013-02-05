@@ -139,6 +139,8 @@ namespace windows_client.DbUtils
                 bool isNewGroup = (bool)vals[1];
                 SentChatBubble chatBubble = (SentChatBubble)vals[2];
                 ConversationListObject convObj = MessagesTableUtils.addChatMessage(convMessage, isNewGroup);
+                if (convObj == null)
+                    return;
                 if (chatBubble != null)
                 {
                     chatBubble.MessageId = convMessage.MessageId;
