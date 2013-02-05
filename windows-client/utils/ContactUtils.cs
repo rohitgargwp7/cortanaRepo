@@ -73,7 +73,7 @@ namespace windows_client.utils
                             if (enterNamePage.isClicked)
                             {
                                 enterNamePage.msgTxtBlk.Opacity = 0;
-                                enterNamePage.nameErrorTxt.Text = AppResources.No_Network_Txt+" "+AppResources.Please_Try_Again_Txt;
+                                enterNamePage.nameErrorTxt.Text = AppResources.No_Network_Txt + " " + AppResources.Please_Try_Again_Txt;
                                 enterNamePage.nameErrorTxt.Visibility = Visibility.Visible;
                                 enterNamePage.progressBar.IsEnabled = false;
                                 enterNamePage.progressBar.Opacity = 0;
@@ -154,17 +154,26 @@ namespace windows_client.utils
 
         public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
-            
             int count = 0;
             int duplicates = 0;
             Dictionary<string, List<ContactInfo>> contactListMap = null;
             if (contacts == null)
                 return null;
             contactListMap = new Dictionary<string, List<ContactInfo>>();
+
             foreach (Contact cn in contacts)
-            { 
+            {
                 CompleteName cName = cn.CompleteName;
 
+                bool hasFacebookAccount = false;
+                byte accNumber = 0;
+                foreach (Account acc in cn.Accounts)
+                {
+                    if (acc.Kind == StorageKind.Facebook)
+                        hasFacebookAccount = true;
+                    accNumber++;
+
+                }
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
                     if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
@@ -175,6 +184,8 @@ namespace windows_client.utils
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
+                    cInfo.IsCloseFriendFamily = hasFacebookAccount || accNumber > 1;
+
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -197,6 +208,10 @@ namespace windows_client.utils
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
             return contactListMap;
         }
+
+
+
+
 
         /* This is the callback function which is called when server returns the addressbook*/
         public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
@@ -228,8 +243,9 @@ namespace windows_client.utils
                 });
                 return;
             }
-            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap,false);
+            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap, false);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
+
             int count = 1;
             // waiting for DB to be created
             while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 30)
@@ -298,5 +314,6 @@ namespace windows_client.utils
             }
             catch { }
         }
+
     }
 }
