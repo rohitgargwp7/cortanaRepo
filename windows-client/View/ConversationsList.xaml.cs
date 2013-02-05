@@ -376,7 +376,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.CHANGE_USER_PROFILE_PIC, this);
         }
 
         private void removeListeners()
@@ -392,7 +392,9 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
-                mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
+                mPubSub.removeListener(HikePubSub.STATUS_RECEIVED, this);
+                mPubSub.removeListener(HikePubSub.CHANGE_USER_PROFILE_PIC, this);
+
             }
             catch { }
         }
@@ -798,17 +800,14 @@ namespace windows_client.View
             }
             #endregion
             #region ADD_OR_UPDATE_PROFILE
-            else if (HikePubSub.ADD_OR_UPDATE_PROFILE == type)
+            else if (HikePubSub.CHANGE_USER_PROFILE_PIC == type)
             {
-                object[] vals = (object[])obj;
-                string msisdn = (string)vals[0];
-                byte[] fullViewBytes = (byte[])vals[1];
-                byte[] thumbnailBytes = (byte[])vals[2];
-                if (msisdn == App.MSISDN)
+                BitmapImage img = obj as BitmapImage;
+                if (img != null)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                    {
-                       _avatarImageBitmap = App.UI_UtilsInstance.createImageFromBytes(thumbnailBytes);
+                       _avatarImageBitmap = img;
                        avatarImage.Source = _avatarImageBitmap;
                    });
                 }

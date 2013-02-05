@@ -325,6 +325,8 @@ namespace windows_client.View
                     vals[1] = fullViewImageBytes;
                     vals[2] = largeImageBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
+
+                    App.HikePubSubInstance.publish(HikePubSub.CHANGE_USER_PROFILE_PIC,profileImage);
                 }
                 else
                 {
