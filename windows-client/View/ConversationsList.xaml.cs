@@ -1281,6 +1281,7 @@ namespace windows_client.View
                                 freshStatusUpdates.Clear();
                                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
                                 notificationCountTxtBlk.Text = "";
+                                App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, 0);
                             }
                             if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
                             {
