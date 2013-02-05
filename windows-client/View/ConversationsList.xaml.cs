@@ -38,6 +38,7 @@ namespace windows_client.View
         private HikePubSub mPubSub;
         private IsolatedStorageSettings appSettings = App.appSettings;
         private ApplicationBar appBar;
+        private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton postStatusIconButton;
@@ -383,6 +384,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
+            mPubSub.addListener(HikePubSub.CHANGE_USER_PROFILE_PIC, this);
         }
 
         private void removeListeners()
@@ -398,7 +400,9 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REWARDS_TOGGLE, this);
                 mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
-                mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
+                mPubSub.removeListener(HikePubSub.STATUS_RECEIVED, this);
+                mPubSub.removeListener(HikePubSub.CHANGE_USER_PROFILE_PIC, this);
+
             }
             catch { }
         }
@@ -461,13 +465,14 @@ namespace windows_client.View
             {
                 MemoryStream memStream = new MemoryStream(_avatar);
                 memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage empImage = new BitmapImage();
-                empImage.SetSource(memStream);
-                avatarImage.Source = empImage;
+                _avatarImageBitmap.SetSource(memStream);
+                avatarImage.Source = _avatarImageBitmap;
+
             }
             else
             {
-                avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                _avatarImageBitmap = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                avatarImage.Source = _avatarImageBitmap;
             }
         }
 
@@ -804,6 +809,20 @@ namespace windows_client.View
                 }
             }
             #endregion
+            #region ADD_OR_UPDATE_PROFILE
+            else if (HikePubSub.CHANGE_USER_PROFILE_PIC == type)
+            {
+                BitmapImage img = obj as BitmapImage;
+                if (img != null)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                   {
+                       _avatarImageBitmap = img;
+                       avatarImage.Source = _avatarImageBitmap;
+                   });
+                }
+            }
+            #endregion
         }
 
         #endregion
@@ -966,7 +985,10 @@ namespace windows_client.View
 
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = App.MSISDN;
+            Object[] objArr = new Object[2];
+            objArr[0] = _avatarImageBitmap;
+            objArr[1] = App.MSISDN;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArr;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             //App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
             //NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
@@ -1376,7 +1398,7 @@ namespace windows_client.View
                 contactInfo.OnHike = true;
             }
 
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = contactInfo;
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
             NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
@@ -1394,6 +1416,7 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
+
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap,
                         statusBubblePhoto_Tap, null));
                 }
