@@ -1802,18 +1802,27 @@ namespace windows_client.View
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
                     JToken val;
                     #region HANDLE PIC UPDATE
-                    //if (data.TryGetValue(HikeConstants.UPDATE_ID, out val) && val != null) // shows picture update is there
-                    //{
-                    //    try
-                    //    {
-                    //        MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.PIC_UPDATE, AppResources.PicUpdate_StatusTxt);
-                    //        this.MessageList.Children.Add(chatBubble);
-                    //    }
-                    //    catch (Exception e)
-                    //    {
-                    //        Debug.WriteLine("Exception while inserting Pic Update msg : " + e.StackTrace);
-                    //    }
-                    //}
+                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                    {
+                        try
+                        {
+                            JToken idToken;
+                            BitmapImage img = null;
+                            if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
+                            {
+                                string iconBase64 = idToken.ToString();
+                                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                                img = UI_Utils.Instance.createImageFromBytes(imageBytes);
+                            }
+                            MyChatBubble chatBubble = new StatusChatBubble(convMessage,img);
+                            chatBubble.setTapEvent(statusBubble_Tap);
+                            this.MessageList.Children.Add(chatBubble);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                        }
+                    }
                     #endregion
                     #region HANDLE TEXT UPDATE
                     val = null;
@@ -1822,7 +1831,7 @@ namespace windows_client.View
                         try
                         {
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage);
-                            chatBubble.setTapEvent(new EventHandler<GestureEventArgs>(statusBubble_Tap));
+                            chatBubble.setTapEvent(statusBubble_Tap);
                             this.MessageList.Children.Add(chatBubble);
                         }
                         catch (Exception e)
