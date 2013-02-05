@@ -70,7 +70,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(profileImage, sm, statusBox_Tap));
+                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, statusBox_Tap, null, profileImage));
                 });
             }
             #endregion
@@ -350,7 +350,7 @@ namespace windows_client.View
 
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(profileImage, statusMessagesFromDB[i], statusBox_Tap));
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap, null, profileImage));
             }
             this.statusLLS.ItemsSource = statusList;
         }

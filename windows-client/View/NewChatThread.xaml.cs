@@ -1873,11 +1873,10 @@ namespace windows_client.View
                 isReleaseMode = true;
                 Uri uri = new Uri(e.OriginalFileName);
                 BitmapImage image = new BitmapImage();
-                image.CreateOptions = BitmapCreateOptions.None;
                 image.SetSource(e.ChosenPhoto);
                 try
                 {
-                    SendImage(image, image.UriSource.ToString());
+                    SendImage(image, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
                 }
                 catch (Exception ex)
                 {
@@ -1919,17 +1918,6 @@ namespace windows_client.View
                 adjustedWidth = maxWidth;
                 adjustedHeight = (height * adjustedWidth) / width;
             }
-        }
-
-
-        void imageOpenedHandler(object sender, RoutedEventArgs e)
-        {
-            if (isReleaseMode || abc)
-            {
-                BitmapImage image = (BitmapImage)sender;
-                SendImage(image, image.UriSource.ToString());
-            }
-            abc = !abc;
         }
 
         private void SendImage(BitmapImage image, string fileName)

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -446,6 +446,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_user_icon.png" />
+    <Content Include="View\images\appbar_icon_play.png" />
     <Content Include="View\images\audio_file_icon_white.png" />
     <Content Include="View\images\avatars\Beach.png" />
     <Content Include="View\images\avatars\BluePeople.png" />
@@ -478,7 +479,10 @@
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
+
     <Content Include="View\images\icon_editprofile.png" />
+
+    <Content Include="View\images\icon_pause.png" />
     <Content Include="View\images\icon_message.png" />
     <Content Include="View\images\icon_play.png" />
     <Content Include="View\images\icon_play_stop.png" />
