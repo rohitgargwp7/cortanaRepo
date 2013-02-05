@@ -351,12 +351,13 @@ namespace windows_client.View
 
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap, null, profileImage));
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), null, profileImage));
             }
             this.statusLLS.ItemsSource = statusList;
         }
 
-        private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        private void statusBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
             if (stsBox == null)

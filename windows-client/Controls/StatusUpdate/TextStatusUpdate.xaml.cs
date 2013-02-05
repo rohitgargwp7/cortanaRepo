@@ -10,7 +10,7 @@ namespace windows_client.Controls.StatusUpdate
     {
         private long timestamp;
         public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string textOrLocationName, long timestamp,
-            EventHandler<GestureEventArgs> statusBubbleImageTap)
+            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
@@ -26,8 +26,7 @@ namespace windows_client.Controls.StatusUpdate
             }
             if (statusBubbleImageTap != null)
             {
-                    var gl = GestureService.GetGestureListener(this.userProfileImage);
-                    gl.Tap += statusBubbleImageTap;
+                this.userProfileImage.Tap += statusBubbleImageTap;
             }
         }
 
