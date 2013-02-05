@@ -468,7 +468,7 @@ namespace windows_client
 			"/View/images/emoticons/emo_im_147_ninja.png",
 			"/View/images/emoticons/emo_im_148_yuush.png",
 			"/View/images/emoticons/emo_im_149_brains.png",
-			"/View/images/emoticons/emo_im_150_sleeping",
+			"/View/images/emoticons/emo_im_150_sleeping.png",
         };
 
 

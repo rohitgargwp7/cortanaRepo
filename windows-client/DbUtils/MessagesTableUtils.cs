@@ -119,8 +119,9 @@ namespace windows_client.DbUtils
                 {
                     context.SubmitChanges();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Exception while inserting msg in CHATS DB : " + ex.StackTrace);
                     return false;
                 }
                 //if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
