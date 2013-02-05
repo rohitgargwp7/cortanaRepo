@@ -790,7 +790,10 @@ namespace windows_client.View
                 FreshStatusCount++;
                 if (sm.Msisdn == App.MSISDN)
                 {
-                    lastStatusTxtBlk.Text = sm.Message;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        lastStatusTxtBlk.Text = sm.Message;
+                    });
                 }
             }
             #endregion
