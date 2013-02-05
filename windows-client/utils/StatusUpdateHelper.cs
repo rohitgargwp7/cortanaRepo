@@ -36,8 +36,8 @@ namespace windows_client.utils
             }
         }
 
-        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap,
-            EventHandler<GestureEventArgs> statusBubbleImageTap, BitmapImage userProfileThumbnail)
+        public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
+            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap, BitmapImage userProfileThumbnail)
         {
             string userName;         //TODO - GK avoid db hit 
             if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
@@ -68,7 +68,7 @@ namespace windows_client.utils
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
                     statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp);
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, statusBubbleImageTap);
                     if (isThumbnail)
                     {
                         object[] statusObjects = new object[2];
@@ -78,7 +78,6 @@ namespace windows_client.utils
                         //string relativeUrl;
                         //AccountUtils.createGetRequest(AccountUtils.BASE + "/" + relativeUrl, onStatusImageDownloaded, true, statusUpdateBox);
                     }
-
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp, statusBubbleImageTap);
@@ -86,8 +85,7 @@ namespace windows_client.utils
             }
             if (statusBoxTap != null)
             {
-                var gl = GestureService.GetGestureListener(statusUpdateBox);
-                gl.Tap += statusBoxTap;
+                statusUpdateBox.Tap += statusBoxTap;
 
             }
             return statusUpdateBox;

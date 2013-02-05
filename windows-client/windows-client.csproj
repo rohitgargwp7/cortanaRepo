@@ -488,6 +488,8 @@
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Content Include="View\images\notification_read.png" />
+    <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
     <Resource Include="View\images\logo_main_white.png" />

@@ -51,6 +51,8 @@ namespace windows_client.utils
         private BitmapImage nudgeReceived;
         private BitmapImage textStatusImage;
         private BitmapImage friendRequestImage;
+        private BitmapImage noNewNotificationImage;
+        private BitmapImage newNotificationImage;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -569,6 +571,7 @@ namespace windows_client.utils
                 return textStatusImage;
             }
         }
+
         public BitmapImage FriendRequestImage
         {
             get
@@ -579,6 +582,26 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage NoNewNotificationImage
+        {
+            get
+            {
+                if (noNewNotificationImage == null)
+                    noNewNotificationImage = new BitmapImage(new Uri("/View/images/notification_read.png", UriKind.Relative));
+                return noNewNotificationImage;
+            }
+        }
+
+        public BitmapImage NewNotificationImage
+        {
+            get
+            {
+                if (newNotificationImage == null)
+                    newNotificationImage = new BitmapImage(new Uri("/View/images/notification_unread.png", UriKind.Relative));
+                return newNotificationImage;
+            }
+        }
+        
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -727,6 +750,8 @@ namespace windows_client.utils
 
         public BitmapImage createImageFromBytes(byte[] imagebytes)
         {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
             BitmapImage bitmapImage = null;
             using (var memStream = new MemoryStream(imagebytes))
             {
