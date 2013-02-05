@@ -102,7 +102,7 @@ namespace windows_client.View
             stopIconButton.IsEnabled = true;
 
             recordIconButton = new ApplicationBarIconButton();
-            recordIconButton.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
+            recordIconButton.IconUri = new Uri("/View/images/icon_record_appbar.png", UriKind.Relative);
             recordIconButton.Text = AppResources.Record_Txt;
             recordIconButton.Click += new EventHandler(StartRecording_Click);
             recordIconButton.IsEnabled = true;
