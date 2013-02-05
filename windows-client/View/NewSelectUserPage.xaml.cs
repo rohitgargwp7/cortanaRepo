@@ -415,7 +415,7 @@ namespace windows_client.View
             contactInfoObj = contactsListBox.SelectedItem as ContactInfo;
             if (contactInfoObj == null)
                 return;
-            MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, contactInfoObj.Name),AppResources.ShareContact_ConfirmationCaption, MessageBoxButton.OKCancel);
+            MessageBoxResult mr = MessageBox.Show(string.Format(AppResources.ShareContact_ConfirmationText, contactInfoObj.Name), AppResources.ShareContact_ConfirmationCaption, MessageBoxButton.OKCancel);
             if (mr == MessageBoxResult.OK)
             {
                 string searchNumber = contactInfoObj.Msisdn;
@@ -459,7 +459,7 @@ namespace windows_client.View
             ContactInfo contact = contactsListBox.SelectedItem as ContactInfo;
             if (contact == null || contact.Msisdn == AppResources.SelectUser_EnterValidNo_Txt || contact.Msisdn == App.MSISDN)
                 return;
-            
+
             if (contact.Msisdn.Equals(TAP_MSG)) // represents this is for unadded number
             {
                 contact.Msisdn = Utils.NormalizeNumber(contact.Name);
@@ -604,6 +604,8 @@ namespace windows_client.View
                     }
                 }
             }
+            if (isContactShared)
+                areCharsNumber = false;
             List<Group<ContactInfo>> list = null;
             if (areCharsNumber)
             {
@@ -635,6 +637,7 @@ namespace windows_client.View
             }
             if (!areCharsNumber && createNewFilteredList)
                 return null;
+
             if (areCharsNumber)
                 return list;
             return glistFiltered;
