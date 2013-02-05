@@ -5,7 +5,7 @@ using windows_client.utils;
 
 namespace windows_client
 {
-    public class HikePubSub
+    public class    HikePubSub
     {
         public class Operation
         {
@@ -104,6 +104,8 @@ namespace windows_client
         public static readonly string UPDATE_UI = "udpateUI";
 
         public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
+
+        public static string CHANGE_USER_PROFILE_PIC = "changeProfilePic";
 
         public static readonly string ACCOUNT_DELETED = "accountDeleted";
 

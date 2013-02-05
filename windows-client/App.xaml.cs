@@ -274,7 +274,7 @@ namespace windows_client
             PIN_SCREEN,     // EnterPin Screen
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
-            WALKTHROUGH_SCREEN // Walkthrough Screen
+            NUX_SCREEN// Nux Screen
         }
 
         #endregion
@@ -576,11 +576,11 @@ namespace windows_client
                     createDatabaseAsync();
                     nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
                     break;
-                case PageState.WALKTHROUGH_SCREEN:
-                    nUri = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
-                    break;
                 case PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
+                    break;
+                case PageState.NUX_SCREEN:
+                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
                     break;
                 default:
                     nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);

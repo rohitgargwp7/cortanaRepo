@@ -207,6 +207,7 @@ namespace windows_client
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
+        public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
@@ -217,9 +218,13 @@ namespace windows_client
         public static string FB_LOGGED_IN = "FbLoggedIn";
         public static string TW_LOGGED_IN = "TwLoggedIn";
         public static string ACCOUNT = "account";
+
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
+
+        public static string CLOSE_FRIENDS_NUX = "closeFriends";
+
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";
