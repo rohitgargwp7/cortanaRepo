@@ -39,26 +39,37 @@ namespace windows_client.utils
         public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<GestureEventArgs> statusBoxTap,
             EventHandler<GestureEventArgs> statusBubbleImageTap, BitmapImage userProfileThumbnail)
         {
-            string userName;         //TODO - GK avoid db hit 
-            if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
-            {
-                userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
-                if (userProfileThumbnail == null)
-                    userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
-            }
-            else if (App.MSISDN == status.Msisdn)
+            string userName;  
+            
+            if (App.MSISDN == status.Msisdn)
             {
                 if (!App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName))
                     userName = App.MSISDN;
                 if (userProfileThumbnail == null)
                     userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(HikeConstants.MY_PROFILE_PIC);
             }
+            else if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
+            {
+                userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
+                if (userProfileThumbnail == null)
+                    userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
+            }
             else
             {
-                ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
-                userName = cn != null ? cn.Name : status.Msisdn;
-                if (userProfileThumbnail == null)
-                    userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(cn.Msisdn);
+                // check in favs too
+                ConversationListObject cFav = App.ViewModel.GetFav(status.Msisdn);
+                if (cFav != null)
+                {
+                    userName = cFav.NameToShow;
+                    userProfileThumbnail = cFav.AvatarImage;
+                }
+                else
+                {
+                    ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                    userName = cn != null ? cn.Name : status.Msisdn;
+                    if (userProfileThumbnail == null)
+                        userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
+                }
             }
             StatusUpdateBox statusUpdateBox = null;
             switch (status.Status_Type)
