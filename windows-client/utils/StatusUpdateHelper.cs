@@ -97,10 +97,10 @@ namespace windows_client.utils
             if (fileBytes != null && fileBytes.Length > 0)
             {
                 //TODO move to background thread
-                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
+//                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
+//                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
                 });
             }
         }
