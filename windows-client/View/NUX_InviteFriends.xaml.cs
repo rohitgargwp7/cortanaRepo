@@ -21,11 +21,6 @@ namespace windows_client.View
         public NUX_InviteFriends()
         {
             InitializeComponent();
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
             List<ContactInfo> listContactInfo;
             if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 2)
             {
@@ -34,6 +29,7 @@ namespace windows_client.View
             else
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                if(NavigationService!=null)
                 NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
             }
 
@@ -50,7 +46,11 @@ namespace windows_client.View
             sendInviteIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendInviteIconButton);
             this.ApplicationBar = appBar;
+        }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
         }
 
         private void btnInvite_Click(object sender, EventArgs e)
@@ -107,7 +107,6 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            App.RemoveKeyFromAppSettings(HikeConstants.CLOSE_FRIENDS_NUX);
         }
     }
 }

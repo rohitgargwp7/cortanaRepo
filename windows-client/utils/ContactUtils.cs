@@ -204,27 +204,24 @@ namespace windows_client.utils
                         contactListMap.Add(cInfo.Id, contactList);
                     }
                 }
-                if (cInfo != null && (hasFacebookAccount || accNumber > 1) && !closeFriends.Contains(cInfo))
-                    closeFriends.Add(cInfo);
-
-                if (isLastNameCheckApplicable)
+                if (cInfo != null)
                 {
-                    if (cName.LastName.Trim().ToLower() == lastName && !closeFriends.Contains(cInfo))
+                    if ((hasFacebookAccount || accNumber > 1) && !closeFriends.Contains(cInfo))
+                        closeFriends.Add(cInfo);
+
+                    if (isLastNameCheckApplicable)
+                    {
+                        if (cName.LastName.Trim().ToLower() == lastName && !closeFriends.Contains(cInfo))
+                        {
+                            closeFriends.Add(cInfo);
+                        }
+                    }
+
+                    if (MatchFromFamilyVocab(cn.CompleteName) && !closeFriends.Contains(cInfo))
                     {
                         closeFriends.Add(cInfo);
                     }
                 }
-
-                string displayName = cn.DisplayName.Trim().ToLower();
-                if ((displayName.Contains("aunty")
-                    || displayName.Contains("uncle")
-                    || displayName.Contains("mom")
-                    || displayName.Contains("dad")
-                    || displayName.Contains("mummy")) && !closeFriends.Contains(cInfo))
-                {
-                    closeFriends.Add(cInfo);
-                }
-
 
             }
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
@@ -246,6 +243,41 @@ namespace windows_client.utils
             return nameArray[nameArray.Length].ToLower();
         }
 
+
+        private static string[] familyVocab = new string[] { "aunty", "uncle", "mom", "dad", "daddy" };
+     
+        public static bool MatchFromFamilyVocab(CompleteName cn)
+        {
+            if (cn == null)
+                return false;
+            if (!string.IsNullOrEmpty(cn.FirstName))
+            {
+                foreach (string vocab in familyVocab)
+                {
+                    if (cn.FirstName == vocab)
+                        return true;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(cn.MiddleName))
+            {
+                foreach (string vocab in familyVocab)
+                {
+                    if (cn.MiddleName == vocab)
+                        return true;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(cn.LastName))
+            {
+                foreach (string vocab in familyVocab)
+                {
+                    if (cn.LastName == vocab)
+                        return true;
+                }
+            }
+            return false;
+        }
         /* This is the callback function which is called when server returns the addressbook*/
         public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
         {
