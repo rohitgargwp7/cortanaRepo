@@ -20,6 +20,14 @@ namespace windows_client.Controls.StatusUpdate
                 this.StatusImage = statusImageBitmap;
             if (imageTap != null)
                 this.userProfileImage.Tap += imageTap;
+            if (Utils.isDarkTheme())
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
+            }
+            else
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
+            }
         }
 
         public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, string updateText,
