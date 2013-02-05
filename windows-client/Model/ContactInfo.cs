@@ -26,7 +26,7 @@ namespace windows_client.Model
         private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
-
+        private bool _isCloseFriendFamily;
         //it significantly improves update performance
 
         # region Users Table Members
@@ -216,6 +216,18 @@ namespace windows_client.Model
                     return Visibility.Collapsed;
                 else
                     return Visibility.Visible;
+            }
+        }
+
+        public bool IsCloseFriendFamily
+        {
+            get
+            {
+                return _isCloseFriendFamily;
+            }
+            set
+            {
+                _isCloseFriendFamily = value;
             }
         }
 
