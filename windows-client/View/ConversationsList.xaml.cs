@@ -62,7 +62,6 @@ namespace windows_client.View
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
             lastStatusTxtBlk.Text = lastStatus;
             int notificationCount = 0;
-            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
             FreshStatusCount = notificationCount;
             if (notificationCount == 0)
             {
@@ -989,8 +988,8 @@ namespace windows_client.View
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Object[] objArr = new Object[2];
-            objArr[0] = _avatarImageBitmap;
-            objArr[1] = App.MSISDN;
+            objArr[0] = App.MSISDN;
+            objArr[1] = _avatarImageBitmap;
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArr;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             //App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
@@ -1284,7 +1283,6 @@ namespace windows_client.View
                                 freshStatusUpdates.Clear();
                                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
                                 notificationCountTxtBlk.Text = "";
-                                App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, 0);
                             }
                             if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
                             {

@@ -37,10 +37,35 @@ namespace windows_client.View
         string nameToShow = null;
         bool isOnHike = false;
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
-
+        private ApplicationBar appBar;
         public UserProfile()
         {
             InitializeComponent();
+            this.appBar = new ApplicationBar();
+            this.appBar.Mode = ApplicationBarMode.Default;
+            this.appBar.IsVisible = true;
+            this.appBar.IsMenuEnabled = true;
+
+            ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
+            postStatusButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
+            postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
+            postStatusButton.Click += new EventHandler(AddStatus_Tap);
+            postStatusButton.IsEnabled = true;
+            this.appBar.Buttons.Add(postStatusButton);
+
+            ApplicationBarIconButton editProfile_button = new ApplicationBarIconButton();
+            editProfile_button.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
+            editProfile_button.Text = AppResources.Conversations_EditProfile_Txt;
+            editProfile_button.Click += new EventHandler(EditProfile_Tap);
+            editProfile_button.IsEnabled = true;
+            this.appBar.Buttons.Add(editProfile_button);
+
+            photoChooserTask = new PhotoChooserTask();
+            photoChooserTask.ShowCamera = true;
+            photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
+            photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
+            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+
             registerListeners();
         }
 
@@ -84,131 +109,86 @@ namespace windows_client.View
             if (isFirstLoad)
             {
                 isFirstLoad = false;
-                bool fromChatThread = false;
-
                 bool isFriend = false;
-                Object objMsisdn;
-
-                #region UserInfoFromChatThread
-                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE, out objMsisdn))
+                bool fromChatThread = false;
+                object o;
+                #region USER INFO FROM CHAT THREAD
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE, out o))
                 {
-                    Object[] objArray = objMsisdn as Object[];
-                    profileImage = objArray[0] as BitmapImage;
-                    msisdn = objArray[1] as string;
-                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    if (contactInfo == null || string.IsNullOrEmpty(contactInfo.Name))
-                        nameToShow = msisdn;
-                    else
-                        nameToShow = contactInfo.Name;
-
-                    if (contactInfo != null)
-                        isOnHike = contactInfo.OnHike;
-                    else
+                    object[] vals = (object[])o;
+                    if (vals[0] is ConversationListObject)
                     {
-                        ConversationListObject convList;
-                        if (App.ViewModel.ConvMap.TryGetValue(msisdn, out convList))
-                            isOnHike = convList.IsOnhike;
+                        ConversationListObject co = (ConversationListObject)vals[0];
+                        nameToShow = co.NameToShow;
+                        isOnHike = co.IsOnhike;
+                        profileImage = co.AvatarImage;
+                    }
+                    else if (vals[0] is ContactInfo)
+                    {
+                        ContactInfo cn = (ContactInfo)vals[0];
+                        if (cn.Name != null)
+                            nameToShow = cn.Name;
                         else
-                            isOnHike = false;
+                            nameToShow = cn.Msisdn;
+                        isOnHike = cn.OnHike;
+                        profileImage = (BitmapImage)vals[1];
                     }
 
                     fromChatThread = true;
-                    avatarImage.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(UserImage_Tap);
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE);
                 }
                 #endregion
-                #region UserInfoFromGroupChat
-
-                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out objMsisdn))
+                #region USER INFO FROM GROUP CHAT
+                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
-                    Object[] objArray = objMsisdn as Object[];
-                    profileImage = objArray[0] as BitmapImage;
-                    msisdn = objArray[1] as string;
-                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    if (contactInfo == null || string.IsNullOrEmpty(contactInfo.Name))
-                        nameToShow = msisdn;
-                    else
-                        nameToShow = contactInfo.Name;
-
-                    if (contactInfo != null)
-                        isOnHike = contactInfo.OnHike;
+                    object[] objArray = o as object[];
+                    GroupParticipant gp = objArray[0] as GroupParticipant;
+                    profileImage = objArray[1] as BitmapImage;
+                    nameToShow = gp.Name;
+                    isOnHike = gp.IsOnHike;
+                    avatarImage.Tap += UserImage_Tap;
+                }
+                #endregion
+                #region USER OWN PROFILE
+                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_PROFILE, out o))
+                {
+                    GroupParticipant gp = null;
+                    object[] objArray = o as object[];
+                    if (objArray[0] is string)
+                        msisdn = objArray[0] as string;
                     else
                     {
-                        ConversationListObject convList;
-                        if (App.ViewModel.ConvMap.TryGetValue(msisdn, out convList))
-                            isOnHike = convList.IsOnhike;
-                        else
-                            isOnHike = false;
+                        gp = objArray[0] as GroupParticipant;
+                        msisdn = gp.Msisdn;
                     }
-                    avatarImage.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(UserImage_Tap);
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE);
-                }
-                #endregion
-                #region userOwnProfile
-                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_PROFILE, out objMsisdn))
-                {
-                    Object[] objArray = objMsisdn as Object[];
-                    profileImage = objArray[0] as BitmapImage;
-                    msisdn = objArray[1] as string;
 
+                    profileImage = objArray[1] as BitmapImage;                    
                     App.appSettings.TryGetValue(App.ACCOUNT_NAME, out nameToShow);
                     changePic.Visibility = Visibility.Visible;
-
-                    this.ApplicationBar = new ApplicationBar();
-                    this.ApplicationBar.Mode = ApplicationBarMode.Default;
-                    this.ApplicationBar.IsVisible = true;
-                    this.ApplicationBar.IsMenuEnabled = true;
-
-                    ApplicationBarIconButton postStatusButton = new ApplicationBarIconButton();
-                    postStatusButton.IconUri = new Uri("/View/images/icon_status.png", UriKind.Relative);
-                    postStatusButton.Text = AppResources.Conversations_PostStatus_AppBar;
-                    postStatusButton.Click += new EventHandler(AddStatus_Tap);
-                    postStatusButton.IsEnabled = true;
-                    this.ApplicationBar.Buttons.Add(postStatusButton);
-
-                    ApplicationBarIconButton editProfile_button = new ApplicationBarIconButton();
-                    editProfile_button.IconUri = new Uri("/View/images/icon_editprofile.png", UriKind.Relative);
-                    editProfile_button.Text = AppResources.Conversations_EditProfile_Txt;
-                    editProfile_button.Click += new EventHandler(EditProfile_Tap);
-                    editProfile_button.IsEnabled = true;
-                    this.ApplicationBar.Buttons.Add(editProfile_button);
-
-                    photoChooserTask = new PhotoChooserTask();
-                    photoChooserTask.ShowCamera = true;
-                    photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
-                    photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
-                    photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
                     avatarImage.Tap += onProfilePicButtonTap;
                     isOwnProfile = true;
                     isOnHike = true;
                     isFriend = true;
                     fromChatThread = true;
-                    PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);
                 }
                 #endregion
 
                 avatarImage.Source = profileImage;
-
+                avatarImage.Tap += UserImage_Tap;
                 txtUserName.Text = nameToShow;
+
                 if (!fromChatThread)
                 {
-                    this.ApplicationBar = new ApplicationBar();
-                    this.ApplicationBar.Mode = ApplicationBarMode.Default;
-                    this.ApplicationBar.IsVisible = true;
-                    this.ApplicationBar.IsMenuEnabled = true;
-
                     ApplicationBarIconButton chatIconButton = new ApplicationBarIconButton();
                     chatIconButton.IconUri = new Uri("/View/images/icon_message.png", UriKind.Relative);
                     chatIconButton.Text = AppResources.Send_Txt;
                     chatIconButton.Click += new EventHandler(GoToChat_Tap);
                     chatIconButton.IsEnabled = true;
-                    this.ApplicationBar.Buttons.Add(chatIconButton);
+                    this.appBar.Buttons.Add(chatIconButton);
                 }
                 if (!isOnHike)
                 {
                     txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
-                    // gridOnlineBusyIcon.Visibility = Visibility.Collapsed;
                     txtSmsUserNameBlk1.Text = nameToShow;
                     gridHikeUser.Visibility = Visibility.Collapsed;
                 }
@@ -245,6 +225,9 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(System.Windows.Navigation.JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);
             removeListeners();
         }
 
@@ -326,7 +309,7 @@ namespace windows_client.View
                     vals[2] = largeImageBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
 
-                    App.HikePubSubInstance.publish(HikePubSub.CHANGE_USER_PROFILE_PIC,profileImage);
+                    App.HikePubSubInstance.publish(HikePubSub.CHANGE_USER_PROFILE_PIC, profileImage);
                 }
                 else
                 {

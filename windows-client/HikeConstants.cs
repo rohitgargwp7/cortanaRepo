@@ -183,7 +183,7 @@ namespace windows_client
         public static readonly string STATUS_ID = "statusid";
         public static readonly string PROFILE_UPDATE = "profile";
         public static readonly string THUMBNAIL = "tn";
-        public static readonly string UNREAD_UPDATES = "un_up";
+        public static readonly string PROFILE_PIC_ID = "ppid";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";

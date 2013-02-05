@@ -86,6 +86,7 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         private BingMapsTask bingMapsTask = null;
         private bool isShowNudgeTute = true;
+        private object statusObject = null;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -193,26 +194,26 @@ namespace windows_client.View
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
             {
-                this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
             {
-                this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
-                this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                statusObject = this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
             {
-                this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
             }
         }
@@ -1806,14 +1807,10 @@ namespace windows_client.View
                     {
                         try
                         {
-                            JToken idToken;
+                            long picId = (long)jsonObj[HikeConstants.PROFILE_PIC_ID];
                             BitmapImage img = null;
-                            if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
-                            {
-                                string iconBase64 = idToken.ToString();
-                                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
-                                img = UI_Utils.Instance.createImageFromBytes(imageBytes);
-                            }
+                            byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn,picId);
+                            img = UI_Utils.Instance.createImageFromBytes(imageBytes);
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage,img);
                             chatBubble.setTapEvent(statusBubble_Tap);
                             this.MessageList.Children.Add(chatBubble);
@@ -2707,6 +2704,11 @@ namespace windows_client.View
                     return;
                 }
                 isOnHike = HikePubSub.USER_JOINED == type;
+                if (statusObject is ContactInfo) // this is done to update user profile
+                {
+                    ContactInfo cn = (ContactInfo)statusObject;
+                    cn.OnHike = isOnHike;
+                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     changeInviteButtonVisibility();
@@ -3113,7 +3115,10 @@ namespace windows_client.View
         {
             if (!isGroupChat)
             {
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = mContactNumber;
+                object[] vals = new object[2];
+                vals[0] = statusObject;
+                vals[1] = avatarImage;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = vals;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }

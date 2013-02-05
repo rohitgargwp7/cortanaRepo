@@ -730,8 +730,8 @@ namespace windows_client.View
             BitmapImage avatarImage = UI_Utils.Instance.getUserProfileThumbnail(msisdn);
 
             Object[] objArray = new Object[2];
-            objArray[0] = avatarImage;
-            objArray[1] = gp.Msisdn;
+            objArray[0] = gp;
+            objArray[1] = avatarImage;
 
             if (gp.Msisdn == App.MSISDN)
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArray;
