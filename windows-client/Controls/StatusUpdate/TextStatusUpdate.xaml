@@ -11,7 +11,7 @@
     DataContext="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime}">
 
     <!--<Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right">-->
-    <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Right" Margin="0,15,0,15">
+    <Grid x:Name="LayoutRoot" Background="Transparent" HorizontalAlignment="Left" Margin="0,15,0,15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -25,7 +25,7 @@
         <Image x:Name="userProfileImage" Source="{Binding UserImage}" Margin="0,5,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Top" Height="69" ></Image>
         <Image Source="/View/images/timeline_status.png" Margin="53,0,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31" ></Image>
         <TextBlock Text="{Binding UserName}" FontSize="16" Margin="21,0,0,0"  Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
-        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="21,0,5,0" Foreground="#4f4f4f"/>
-        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="21,0,5,0" Foreground="#888888"/>
+        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="21,0,5,0"/>
+        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="21,0,5,0" Foreground="#888888" Loaded="timestampTxtBlk_Loaded"/>
     </Grid>
 </status:StatusUpdateBox>
