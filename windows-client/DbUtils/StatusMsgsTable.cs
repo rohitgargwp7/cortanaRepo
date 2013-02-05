@@ -50,12 +50,32 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static List<StatusMessage> GetUnReadStatusMsgsForMsisdn(string msisdn,int count)
+        {
+            List<StatusMessage> res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetUnReadStatusMsgsForMsisdn(context, msisdn,count).ToList<StatusMessage>();
+                return (res == null || res.Count == 0) ? null : res;
+            }
+        }
+
         public static List<StatusMessage> GetAllStatusMsgs()
         {
             List<StatusMessage> res;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 res = DbCompiledQueries.GetAllStatusMsgs(context).ToList<StatusMessage>();
+                return (res == null || res.Count == 0) ? null : res;
+            }
+        }
+
+        public static List<StatusMessage> GetUnReadStatusMsgs(int count)
+        {
+            List<StatusMessage> res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetUnReadStatusMsgs(context,count).ToList<StatusMessage>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }

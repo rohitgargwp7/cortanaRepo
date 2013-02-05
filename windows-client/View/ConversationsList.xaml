@@ -22,9 +22,7 @@
         <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
     </shell:SystemTray.ProgressIndicator>
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <!--Pivot Control-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -45,10 +43,8 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100">
-                    </Image>
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" Width="295" Height="76" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10">
-                    </Image>
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" Width="295" Height="76" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10"/>
                     <ListBox Grid.Row="0" Grid.Column="0" Height="530" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,10,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -121,50 +117,25 @@
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Favourites_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <ScrollViewer Grid.Row="0" Margin="0,-10,0,0" >
+                    <Grid Grid.Row="0" Margin="16,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Source="/View/images/timeline_status.png" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31"/>
+                        <TextBlock x:Name="lastStatusTxtBlk" Grid.Column="1" Margin="12,0,0,0" TextWrapping="Wrap" FontSize="21" Foreground="#4f4f4f"/>
+                    </Grid>
+                    <Rectangle Grid.Row="1" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
+                    <ScrollViewer Grid.Row="2" Margin="0,10,0,0" >
                         <Grid Margin="16,0,0,0">
                             <Grid.RowDefinitions>
-                                <!--<RowDefinition Height="Auto"/>-->
-                                <!--<RowDefinition Height="Auto"/>-->
                                 <RowDefinition Height="Auto"/>
-
                                 <RowDefinition Height="Auto"/>
-                                <!--<RowDefinition Height="Auto"/>-->
-                                <!--<RowDefinition Height="Auto"/>-->
                             </Grid.RowDefinitions>
-
-                            <!--<TextBlock Grid.Row="0" FontSize="24" Text="{Binding Path= LocalizedResources.Conversations_YourFav_Txt, Source={StaticResource LocalizedStrings}}" Visibility="Collapsed"/>-->
-
-                            <!--<ListBox x:Name="pendingRequests" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="0,0,0,0" Grid.Row="0">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,0,0,10">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"></RowDefinition>
-                                                <RowDefinition Height="Auto"></RowDefinition>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="69"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Source="{Binding AvatarImage}" Margin="0,10,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top"></Image>
-                                            <TextBlock TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="0" Margin="16,0,5,0">
-                                                <TextBlock.Inlines>
-                                                    <Run FontWeight="Bold" Text="{Binding NameToShow}"/>
-                                                    <Run FontWeight="Light" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt, Source={StaticResource LocalizedStrings}}"/>
-                                                </TextBlock.Inlines>
-                                            </TextBlock>
-                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Margin="5,0,0,0">
-                                                <Button Background="#2e91d3" Height="65" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Tap="yes_Click" Foreground="White"></Button>
-                                                <Button Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Tap="no_Click" Foreground="#595959"></Button>
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>-->
-
                             <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Tap="Button_Tap_2" Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Center">
                                 <Image Source="images/favorites_heart.png" Height="90"></Image>
                                 <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
@@ -176,7 +147,6 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
                                             <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0"></Image>
-                                            <!--<Image Source="images/hike_favorite.png" Height="30" Margin="10,10,0,0" VerticalAlignment="Center" Visibility="{Binding ShowOnHikeImage}"></Image>-->
                                             <TextBlock Text="{Binding NameToShow}" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0"></TextBlock>
                                             <toolkit:ContextMenuService.ContextMenu>
                                                 <toolkit:ContextMenu Name="favCtxMenu" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -187,8 +157,6 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                            <!--<Rectangle x:Name="favsBar" Height="1" Grid.Row="3" Margin="0,20,0,0"/>-->
-                            <!--<TextBlock Margin="0,20,0,0" FontSize="42" FontFamily="Segoe WP SemiLight" Text="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" Grid.Row="4" Tap="Button_Tap_1"/>-->
                             <StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="1" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
                                 <Image Source="images/add_favorites.png" Height="69" VerticalAlignment="Center"></Image>
                                 <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Favorites_AddMore, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"/>
@@ -201,18 +169,14 @@
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Timeline_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid Background="Transparent">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <!--<phone:LongListSelector x:Name="statusLLS" Grid.Row="0" IsGroupingEnabled="False" LayoutMode="List">
-                        <phone:LongListSelector.ItemTemplate>
-                            <DataTemplate>
-                                <status:StatusUpdateBox></status:StatusUpdateBox>
-                            </DataTemplate>
-                        </phone:LongListSelector.ItemTemplate>
+                    <Rectangle x:Name="refreshStatusBackground" Grid.Row="0" Visibility="Collapsed" Fill="#e9ecee" Height="45" Margin="12,0,0,0" Tap="refreshStatuses_Tap"/>
+                    <TextBlock x:Name="refreshStatusText" Grid.Row="0" Visibility="Collapsed" Text="2 new updates" FontSize="19" Foreground="#4a4a44" Tap="refreshStatuses_Tap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <!--<phone:LongListSelector x:Name="statusLLS" Grid.Row="1" Margin="12,0,0,0" LayoutMode="List" IsGroupingEnabled="False">
                     </phone:LongListSelector>-->
-                    <!--<phone:LongListSelector Name="statusLLS" Grid.Row="0" LayoutMode="List" IsGroupingEnabled="False"  >
-                    </phone:LongListSelector>-->
-                    <ListBox x:Name="statusLLS" Margin="18,0,0,0" Grid.Row="0">
+                    <ListBox x:Name="statusLLS" Margin="18,0,0,0" Grid.Row="1">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <status:StatusUpdateBox></status:StatusUpdateBox>

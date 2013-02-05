@@ -57,6 +57,7 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
+            lastStatusTxtBlk.Text = "Hey..!! I am very excited about ongoing milestones F1 and F2. Looking forward to F3.";
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -433,7 +434,7 @@ namespace windows_client.View
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
             }
 
@@ -785,13 +786,11 @@ namespace windows_client.View
             else if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
-                if (isStatusMessagesLoaded)
+                freshStatusUpdates.Add(sm);
+                FreshStatusCount++;
+                if (sm.Msisdn == App.MSISDN)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
-                            new EventHandler<GestureEventArgs>(statusBox_Tap)));
-                    });
+                    lastStatusTxtBlk.Text = sm.Message;
                 }
             }
             #endregion
@@ -1222,12 +1221,59 @@ namespace windows_client.View
 
         #region TIMELINE
 
+        private List<StatusMessage> freshStatusUpdates = new List<StatusMessage>();
+        private int _freshStatusCount = 0;
+        private int FreshStatusCount
+        {
+            get
+            {
+                return _freshStatusCount;
+            }
+            set
+            {
+                if (value != _freshStatusCount)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (_freshStatusCount == 0 && value > 0)
+                            {
+                                refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
+                                refreshStatusText.Visibility = System.Windows.Visibility.Visible;
+                            }
+                            else if (_freshStatusCount > 0 && value == 0)
+                            {
+                                refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
+                                refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
+                                freshStatusUpdates.Clear();
+                            }
+                            if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
+                            {
+                                if (value == 1)
+                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
+                                else
+                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
+                            }
+                            _freshStatusCount = value;
+                        });
+                }
+            }
+        }
+
+        private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            for (int i = 0; i < freshStatusUpdates.Count; i++)
+            {
+                App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
+                    new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(statusBubblePhoto_Tap), null));
+            }
+            FreshStatusCount = 0;
+        }
         private void postStatusBtn_Click(object sender, EventArgs e)
         {
             Uri nextPage = new Uri("/View/PostStatus.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
-
         }
+
         private void yes_Click(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
@@ -1283,6 +1329,14 @@ namespace windows_client.View
             MiscDBUtil.SavePendingRequests();
         }
 
+        //tap event of photo in status bubble
+        private void statusBubblePhoto_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = (statusLLS.SelectedItem as 
+                StatusUpdateBox).Msisdn;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
         private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
@@ -1310,17 +1364,16 @@ namespace windows_client.View
             App.ViewModel.IsPendingListLoaded = true;
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                FriendRequestStatus frs = new FriendRequestStatus(co,yes_Click,no_Click);
+                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             if (statusMessagesFromDB != null)
             {
-
-                for (int i = statusMessagesFromDB.Count - 1; i > 0; i--)
+                for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                        new EventHandler<GestureEventArgs>(statusBox_Tap)));
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap,
+                        statusBubblePhoto_Tap, null));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;

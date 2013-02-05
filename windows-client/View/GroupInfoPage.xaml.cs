@@ -721,6 +721,8 @@ namespace windows_client.View
         private void groupMemberImg_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             GroupParticipant gp = groupChatParticipants.SelectedItem as GroupParticipant;
+            if (gp == null)
+                return;
             if (gp.Msisdn == App.MSISDN)
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = gp.Msisdn;
             else
