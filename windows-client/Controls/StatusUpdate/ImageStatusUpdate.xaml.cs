@@ -1,6 +1,7 @@
 ﻿using windows_client.utils;
 using System.Windows.Media.Imaging;
 using windows_client.Languages;
+using System;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -8,7 +9,8 @@ namespace windows_client.Controls.StatusUpdate
     {
         private BitmapImage _statusImageSource;
 
-        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, long timestamp)
+        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, long timestamp,
+            EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
@@ -16,15 +18,20 @@ namespace windows_client.Controls.StatusUpdate
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             if (statusImageBitmap != null)
                 this.StatusImage = statusImageBitmap;
+            if (imageTap != null)
+                this.userProfileImage.Tap += imageTap;
         }
 
-        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, string updateText, long timestamp)
+        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, string updateText,
+            long timestamp, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = updateText;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
             this.StatusImage = statusImageBitmap;
+            if (imageTap != null)
+                this.userProfileImage.Tap += imageTap;
         }
 
         public BitmapImage StatusImage
@@ -38,7 +45,7 @@ namespace windows_client.Controls.StatusUpdate
                 if (value != _statusImageSource)
                 {
                     this.statusImage.Source = _statusImageSource = value;
-                }   
+                }
             }
         }
 
