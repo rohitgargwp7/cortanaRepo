@@ -11,6 +11,8 @@ using Microsoft.Phone.Shell;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
 using windows_client.Languages;
+using windows_client.Model;
+using System.Collections.Generic;
 
 namespace windows_client
 {
@@ -117,7 +119,7 @@ namespace windows_client
 
             App.WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
             App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
-            
+
             Uri nextPage;
             string country_code = null;
             App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
@@ -129,18 +131,20 @@ namespace windows_client
             {
                 App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
             }
-         
-                if ("+91" != country_code)
+
+            List<ContactInfo> listContactInfo;
+            SmileyParser.Instance.initializeSmileyParser();
+            if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 2)
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+                nextPage = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+            }
+            else
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                 nextPage = nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
             }
-            else
-            {
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WALKTHROUGH_SCREEN);
-                nextPage = new Uri("/View/Walkthrough.xaml", UriKind.Relative);
-                PhoneApplicationService.Current.State["FromNameScreen"] = true;
-            }
+
             App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
@@ -151,7 +155,7 @@ namespace windows_client
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine("Exception handled in page EnterName Screen : " + e.StackTrace);
             }

@@ -20,7 +20,6 @@ namespace windows_client.utils
         private static Stopwatch st;
         public static Dictionary<string, List<ContactInfo>> contactsMap = null;
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
-        public static List<ContactInfo> closeFriends = null;
 
         public delegate void contacts_Callback(object sender, ContactsSearchEventArgs e);
         public delegate void contactSearch_Callback(object sender, SaveContactResult e);
@@ -161,12 +160,11 @@ namespace windows_client.utils
             if (contacts == null)
                 return null;
             contactListMap = new Dictionary<string, List<ContactInfo>>();
-            closeFriends = new List<ContactInfo>();
-            string lastName = GetLastName();
-            bool isLastNameCheckApplicable = lastName != null;
+
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
+
                 bool hasFacebookAccount = false;
                 byte accNumber = 0;
                 foreach (Account acc in cn.Accounts)
@@ -176,7 +174,6 @@ namespace windows_client.utils
                     accNumber++;
 
                 }
-                ContactInfo cInfo = null;
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
                     if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
@@ -184,9 +181,11 @@ namespace windows_client.utils
                         count++;
                         continue;
                     }
-                    cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
+                    cInfo.IsCloseFriendFamily = hasFacebookAccount || accNumber > 1;
+
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
                         if (!contactListMap[cInfo.Id].Contains(cInfo))
@@ -204,80 +203,16 @@ namespace windows_client.utils
                         contactListMap.Add(cInfo.Id, contactList);
                     }
                 }
-                if (cInfo != null)
-                {
-                    if ((hasFacebookAccount || accNumber > 1) && !closeFriends.Contains(cInfo))
-                        closeFriends.Add(cInfo);
-
-                    if (isLastNameCheckApplicable)
-                    {
-                        if (cName.LastName.Trim().ToLower() == lastName && !closeFriends.Contains(cInfo))
-                        {
-                            closeFriends.Add(cInfo);
-                        }
-                    }
-
-                    if (MatchFromFamilyVocab(cn.CompleteName) && !closeFriends.Contains(cInfo))
-                    {
-                        closeFriends.Add(cInfo);
-                    }
-                }
-
             }
             Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
             return contactListMap;
         }
 
-        public static string GetLastName()
-        {
-            string name;
-            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            if (name == null)
-                return null;
-
-            string[] nameArray = name.Trim().Split(' ');
-            if (nameArray.Length == 1)
-                return null;
-
-            return nameArray[nameArray.Length].ToLower();
-        }
 
 
-        private static string[] familyVocab = new string[] { "aunty", "uncle", "mom", "dad", "daddy" };
-     
-        public static bool MatchFromFamilyVocab(CompleteName cn)
-        {
-            if (cn == null)
-                return false;
-            if (!string.IsNullOrEmpty(cn.FirstName))
-            {
-                foreach (string vocab in familyVocab)
-                {
-                    if (cn.FirstName == vocab)
-                        return true;
-                }
-            }
 
-            if (!string.IsNullOrEmpty(cn.MiddleName))
-            {
-                foreach (string vocab in familyVocab)
-                {
-                    if (cn.MiddleName == vocab)
-                        return true;
-                }
-            }
 
-            if (!string.IsNullOrEmpty(cn.LastName))
-            {
-                foreach (string vocab in familyVocab)
-                {
-                    if (cn.LastName == vocab)
-                        return true;
-                }
-            }
-            return false;
-        }
         /* This is the callback function which is called when server returns the addressbook*/
         public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
         {
@@ -311,8 +246,6 @@ namespace windows_client.utils
             List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, contactsMap, false);
             List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
 
-            UpdateCloseFriendListHikeStatus(addressbook);
-            App.WriteToIsoStorageSettings(HikeConstants.CLOSE_FRIENDS_NUX, closeFriends);
             int count = 1;
             // waiting for DB to be created
             while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 30)
@@ -382,26 +315,5 @@ namespace windows_client.utils
             catch { }
         }
 
-        public static void UpdateCloseFriendListHikeStatus(List<ContactInfo> listAddressBook)
-        {
-            if (listAddressBook == null)
-                return;
-            if (closeFriends == null)
-                return;
-
-            for (int i = closeFriends.Count - 1; i >= 0; i--)
-            {
-                ContactInfo cinfo = closeFriends[i];
-                int index = listAddressBook.IndexOf(cinfo);
-                if (index >= 0)
-                {
-                    ContactInfo cInfoFromAddressBook = listAddressBook[index];
-                    if (cInfoFromAddressBook.OnHike)
-                    {
-                        closeFriends.RemoveAt(i);
-                    }
-                }
-            }
-        }
     }
 }
