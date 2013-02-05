@@ -85,9 +85,8 @@ namespace windows_client.utils
                         object[] statusObjects = new object[2];
                         statusObjects[0] = status;
                         statusObjects[1] = statusUpdateBox;
-                        //url for downloading status image??
-                        //string relativeUrl;
-                        //AccountUtils.createGetRequest(AccountUtils.BASE + "/" + relativeUrl, onStatusImageDownloaded, true, statusUpdateBox);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + status.Message + "?only_image=true",
+                            onStatusImageDownloaded, true, statusObjects);
                     }
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
@@ -97,7 +96,6 @@ namespace windows_client.utils
             if (statusBoxTap != null)
             {
                 statusUpdateBox.Tap += statusBoxTap;
-
             }
             return statusUpdateBox;
         }

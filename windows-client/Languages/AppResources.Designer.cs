@@ -2545,7 +2545,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chaanged profile picture.
+        ///   Looks up a localized string similar to Changed profile picture.
         /// </summary>
         public static string StatusUpdate_Photo {
             get {
