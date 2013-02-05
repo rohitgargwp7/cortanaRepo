@@ -101,7 +101,6 @@ namespace windows_client.View
         private Image typingNotificationImage;
         private Image emptyImage;
 
-        private ApplicationBarMenuItem groupInfoMenuItem;
         #endregion
 
         private BitmapImage[] imagePathsForList0
@@ -837,10 +836,7 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                groupInfoMenuItem = new ApplicationBarMenuItem();
-                groupInfoMenuItem.Text = AppResources.GroupInfo_Txt;
-                groupInfoMenuItem.Click += new EventHandler(groupInfo_Click);
-                appBar.MenuItems.Add(groupInfoMenuItem);
+                userName.Tap +=userName_Tap;
 
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
@@ -859,7 +855,6 @@ namespace windows_client.View
                         blockUnblockMenuItem = new ApplicationBarMenuItem();
                         if (mUserIsBlocked)
                         {
-                            groupInfoMenuItem.IsEnabled = false;
                             blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
                         }
                         else
@@ -1344,8 +1339,10 @@ namespace windows_client.View
             }
         }
 
-        private void groupInfo_Click(object sender, EventArgs e)
+        private void userName_Tap(object sender, EventArgs e)
         {
+            if (mUserIsBlocked || !isGroupAlive)
+                return;
             App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
             PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
@@ -1360,7 +1357,6 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                     blockUnblockMenuItem.Text = BLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                    groupInfoMenuItem.IsEnabled = true;
                 }
                 else
                 {
@@ -1383,7 +1379,6 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
                     blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                    groupInfoMenuItem.IsEnabled = false;
                 }
                 else
                 {
