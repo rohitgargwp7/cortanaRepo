@@ -102,22 +102,24 @@ namespace windows_client.utils
             long timespanMilliSeconds = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds - timestamp * 1000;
             TimeSpan ts = TimeSpan.FromMilliseconds(timespanMilliSeconds);
             double delta = Math.Abs(ts.TotalSeconds);
-
-            if (delta < 60)
+            if (delta < 300) // 60 * 5 
             {
-                return ts.Seconds == 1 ? AppResources.TimeUtils_One_Sec_Ago_Txt : string.Format(AppResources.TimeUtils_X_Secs_Ago_Txt, ts.Seconds);
+                return AppResources.TimeUtils_Moments_Ago;
             }
-            if (delta < 120)
-            {
-                return AppResources.TimeUtils_A_Min_Ago_Txt;
-            }
-            if (delta < 2700) // 45 * 60
+            if (delta < 3600) //60 * 60
             {
                 return string.Format(AppResources.TimeUtils_X_Mins_Ago_Txt, ts.Minutes);
             }
-            if (delta < 5400) // 90 * 60
+            if (delta < 5400) // 1.5 * 60 * 60
             {
                 return AppResources.TimeUtils_An_hour_Ago_Txt;
+            }
+            if (delta < 10800) //3 * 60 * 60
+            {
+                int minuteOfHour = ts.Minutes % 60;
+                if (minuteOfHour < 30)
+                    return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, ts.Hours);
+                return string.Format(AppResources.TimeUtils_X_hours_Ago_Txt, ts.Hours.ToString() + ".5");
             }
             if (delta < 86400) // 24 * 60 * 60
             {
@@ -152,52 +154,6 @@ namespace windows_client.utils
             long ticks = DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks;
             ticks /= 10000; //presicion increased to avoid conflicts in timestamps of failed messages
             return ticks;
-        }
-
-        public static string getRelativeTimeForStatuses(long epochtimestamp)
-        {
-            DateTime startDateTime = new DateTime(1970, 1, 1);
-            TimeSpan t = DateTime.UtcNow - startDateTime;
-            int monthsDifference = MonthsDifference(startDateTime, DateTime.UtcNow);
-            int yearsDifference = monthsDifference / 12;
-            if (yearsDifference > 0)
-            {
-                if (yearsDifference == 1)
-                    return "1 year ago";
-                else
-                    return yearsDifference.ToString() + " years ago";
-            }
-            else if (monthsDifference > 0)
-            {
-                if (monthsDifference == 1)
-                    return "1 month ago";
-                else
-                    return monthsDifference + " months ago";
-            }
-            else if (t.TotalDays > 0)
-            {
-                if (t.TotalDays == 1)
-                    return "yesterday";
-                else
-                    return t.TotalDays + " days ago";
-            }
-            else if (t.TotalHours > 0)
-            {
-                if (t.Hours == 1 && t.Minutes < 30)
-                    return "1 hour ago";
-                if (t.Minutes < 30)
-                    return t.Hours.ToString() + " hours ago";
-                else
-                    return t.Hours.ToString() + ".5 hours ago";
-            }
-            else if (t.Minutes > 5)
-            {
-                return t.Minutes + " minutes ago";
-            }
-            else
-            {
-                return "moments ago";
-            }
         }
 
         public static int MonthsDifference(DateTime start, DateTime end)
