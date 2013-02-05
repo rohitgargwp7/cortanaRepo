@@ -1264,7 +1264,7 @@ namespace windows_client.View
             for (int i = 0; i < freshStatusUpdates.Count; i++)
             {
                 App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
-                    new EventHandler<GestureEventArgs>(statusBox_Tap), new EventHandler<GestureEventArgs>(statusBubblePhoto_Tap), null));
+                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), new EventHandler<System.Windows.Input.GestureEventArgs>(statusBubblePhoto_Tap), null));
             }
             FreshStatusCount = 0;
         }
@@ -1330,14 +1330,14 @@ namespace windows_client.View
         }
 
         //tap event of photo in status bubble
-        private void statusBubblePhoto_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = (statusLLS.SelectedItem as 
                 StatusUpdateBox).Msisdn;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
-        private void statusBox_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
+        private void statusBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
             if (stsBox == null)
