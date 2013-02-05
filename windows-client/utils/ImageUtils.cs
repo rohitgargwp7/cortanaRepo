@@ -727,6 +727,8 @@ namespace windows_client.utils
 
         public BitmapImage createImageFromBytes(byte[] imagebytes)
         {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
             BitmapImage bitmapImage = null;
             using (var memStream = new MemoryStream(imagebytes))
             {
