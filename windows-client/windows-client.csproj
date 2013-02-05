@@ -409,6 +409,7 @@
     <Content Include="View\images\icon_play.png" />
     <Content Include="View\images\icon_play_stop.png" />
     <Content Include="View\images\icon_record.png" />
+    <Content Include="View\images\icon_record_appbar.png" />
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
