@@ -58,6 +58,13 @@ namespace windows_client.View
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
             lastStatusTxtBlk.Text = "Hey..!! I am very excited about ongoing milestones F1 and F2. Looking forward to F3.";
+            int notificationCount = 0;
+            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
+            FreshStatusCount = notificationCount;
+            if (notificationCount == 0)
+            {
+                notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
+            }
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1242,12 +1249,16 @@ namespace windows_client.View
                             {
                                 refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
                                 refreshStatusText.Visibility = System.Windows.Visibility.Visible;
+                                notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
+                                notificationCountTxtBlk.Text = value.ToString();
                             }
                             else if (_freshStatusCount > 0 && value == 0)
                             {
                                 refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
                                 refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
                                 freshStatusUpdates.Clear();
+                                notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
+                                notificationCountTxtBlk.Text = "";
                             }
                             if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
                             {
@@ -1332,10 +1343,18 @@ namespace windows_client.View
             MiscDBUtil.SavePendingRequests();
         }
 
+        private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (FreshStatusCount != 0 && launchPagePivot.SelectedIndex != 3)
+            {
+                launchPagePivot.SelectedIndex = 3;
+            }
+        }
+
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = (statusLLS.SelectedItem as 
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = (statusLLS.SelectedItem as
                 StatusUpdateBox).Msisdn;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }

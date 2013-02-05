@@ -28,11 +28,15 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
-            <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Left" Margin="20,-10,0, 0">
-                <Image x:Name="icon" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-            </StackPanel>
-        </StackPanel>
+        <Grid Grid.Row="0" HorizontalAlignment="Left" Margin="20,-10,0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
+            <Image x:Name="notificationIndicator" Grid.Column="1" Source="images\notification_read.png" Height="36" Margin="4,25,0,0" Tap="notification_Tap"/>
+            <TextBlock x:Name="notificationCountTxtBlk" Grid.Column="1" HorizontalAlignment="Center" Margin="8,34,0,0" FontSize="16" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
+        </Grid>
 
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Chats_Header_Txt, Source={StaticResource LocalizedStrings}}">
