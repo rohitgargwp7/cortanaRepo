@@ -224,6 +224,7 @@ namespace windows_client
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
 
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
+        public static string LAST_STATUS = "lastStatus";
 
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";

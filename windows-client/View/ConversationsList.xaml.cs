@@ -58,7 +58,9 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
-            lastStatusTxtBlk.Text = "Hey..!! I am very excited about ongoing milestones F1 and F2. Looking forward to F3.";
+            string lastStatus = "";
+            App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
+            lastStatusTxtBlk.Text = lastStatus;
             int notificationCount = 0;
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
             FreshStatusCount = notificationCount;
@@ -802,6 +804,7 @@ namespace windows_client.View
                 FreshStatusCount++;
                 if (sm.Msisdn == App.MSISDN)
                 {
+                    App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         lastStatusTxtBlk.Text = sm.Message;
