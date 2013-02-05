@@ -1378,8 +1378,10 @@ namespace windows_client.View
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = (statusLLS.SelectedItem as
-                StatusUpdateBox).Msisdn;
+            StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
+            if(sb == null)
+                return;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
