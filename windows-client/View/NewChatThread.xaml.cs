@@ -213,7 +213,7 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
             {
-                this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
             }
         }
@@ -569,7 +569,61 @@ namespace windows_client.View
                 userImage.Source = avatarImage;
             }
             #endregion
+            #region OBJECT FROM STATUS PAGE
+            else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
+            {
+                object obj = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                if (obj is ConversationListObject)
+                {
+                    ConversationListObject co = (ConversationListObject)obj;
+                    mContactNumber = co.Msisdn;
+                    if (co.ContactName != null)
+                        mContactName = co.ContactName;
+                    else
+                    {
+                        mContactName = co.Msisdn;
+                        isAddUser = true;
+                    }
 
+                    isOnHike = co.IsOnhike;
+                    if (App.IS_TOMBSTONED) // in this case avatar needs to be re calculated
+                    {
+                        co.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
+                    }
+                    avatarImage = co.AvatarImage;
+                    userImage.Source = co.AvatarImage;
+                }
+                else
+                {
+                    ContactInfo cn = (ContactInfo)obj;
+                    mContactNumber = cn.Msisdn;
+                    if (cn.Name != null)
+                        mContactName = cn.Name;
+                    else
+                    {
+                        mContactName = cn.Msisdn;
+                        isAddUser = true;
+                    }
+
+                    isOnHike = cn.OnHike;
+                    avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
+
+                    if (avatar == null)
+                    {
+                        avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
+                    }
+                    else
+                    {
+                        MemoryStream memStream = new MemoryStream(avatar);
+                        memStream.Seek(0, SeekOrigin.Begin);
+                        BitmapImage empImage = new BitmapImage();
+                        empImage.SetSource(memStream);
+                        avatarImage = empImage;
+                    }
+                    userImage.Source = avatarImage;
+                }
+            }
+            #endregion
             if (isGroupChat || !isOnHike)
             {
                 spContactTransfer.Visibility = Visibility.Collapsed;
@@ -3067,7 +3121,7 @@ namespace windows_client.View
             //fileTapped[0] = mContactNumber;
             if (!isGroupChat)
             {
-                Object[] objArr=new Object[2];
+                Object[] objArr = new Object[2];
                 objArr[0] = avatarImage;
                 objArr[1] = mContactNumber;
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = objArr;

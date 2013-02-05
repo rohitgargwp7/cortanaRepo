@@ -1389,16 +1389,25 @@ namespace windows_client.View
 
             if (stsBox.Msisdn == App.MSISDN)
                 return;
-
-            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
-            if (contactInfo == null)
+            if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
+            else
             {
-                contactInfo = new ContactInfo();
-                contactInfo.Msisdn = stsBox.Msisdn;
-                contactInfo.OnHike = true;
-            }
-
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
+                ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
+                if (cFav != null)
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                else
+                {
+                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
+                    if (contactInfo == null)
+                    {
+                        contactInfo = new ContactInfo();
+                        contactInfo.Msisdn = stsBox.Msisdn;
+                        contactInfo.OnHike = true;
+                    }
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
+                }
+            }            
             NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
