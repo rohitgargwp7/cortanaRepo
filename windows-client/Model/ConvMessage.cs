@@ -498,7 +498,7 @@ namespace windows_client.Model
                 metadata[HikeConstants.FILES_DATA] = filesData;
                 data[HikeConstants.METADATA] = metadata;
             }
-            else if (this.MetaDataString !=null && this.MetaDataString.Contains("poke"))
+            else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
             {
                 //metadata = new JObject();
                 //metadata["poke"] = true;
@@ -554,13 +554,7 @@ namespace windows_client.Model
             result = prime * result + ((Msisdn == null) ? 0 : Msisdn.GetHashCode());
             result = prime * result + MessageStatus.GetHashCode();
             result = prime * result + (int)(Timestamp ^ (Convert.ToUInt32(Timestamp) >> 32));
-
             return result;
-        }
-
-        public string getTimestampFormatted()
-        {
-            return TimeUtils.getRelativeTime(Timestamp);
         }
 
         #region ChatThread Page Bindings for Converters
@@ -642,13 +636,6 @@ namespace windows_client.Model
             }
         }
 
-        public string ChatTimeFormat
-        {
-            get
-            {
-                return TimeUtils.getTimeString(_timestamp);
-            }
-        }
         #endregion
 
         #endregion
@@ -753,7 +740,7 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName==null?"":fileName.ToString(), fileKey.ToString(), base64Decoded,
+                        this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
@@ -939,7 +926,7 @@ namespace windows_client.Model
                     return string.Format(msg, groupList[0].FirstName + AppResources.And_txt
                     + groupList[1].FirstName);
                 default:
-                    return string.Format(msg, string.Format(AppResources.NamingConvention_Txt,groupList[0].FirstName ,groupList.Count - 1));
+                    return string.Format(msg, string.Format(AppResources.NamingConvention_Txt, groupList[0].FirstName, groupList.Count - 1));
             }
         }
 

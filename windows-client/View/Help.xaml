@@ -13,7 +13,6 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -22,15 +21,13 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="HikeTitle" Orientation="Vertical" Margin="0,0,0,0" Height="Auto">
-            <!--<Image Source="images\hike_header.png" Margin="23,25,0,0" HorizontalAlignment="Left" Height="40" Width="127"></Image>-->
             <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" FontSize="68" FontStretch="Expanded"  Margin="22,0,0,0" />
         </StackPanel>
-
         <ScrollViewer Grid.Row="1" Margin="4,0,0,0">
-            <!--ContentPanel - place additional content here-->
             <Grid x:Name="ContentPanel"  Background="Transparent">
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -59,8 +56,11 @@
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}" FontSize="20" TextWrapping="Wrap"/>
                 </StackPanel>
-
-                <StackPanel Grid.Row="5" Grid.Column="1" Margin="20,30,0,0">
+                <StackPanel Grid.Row="5" Grid.Column="1" Margin="20,30,0,0" Tap="SystemHealth_Tap">
+                    <TextBlock Text="System Health" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock x:Name="systemHealth" Text="See hike service health" FontSize="20"/>
+                </StackPanel>
+                <StackPanel Grid.Row="6" Grid.Column="1" Margin="20,30,0,0">
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_AppVersionTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
                     <TextBlock x:Name="applicationVersion" Text="1.1.0.0" FontSize="20"/>
                 </StackPanel>

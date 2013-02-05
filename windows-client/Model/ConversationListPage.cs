@@ -96,7 +96,6 @@ namespace windows_client.Model
                     _timeStamp = value;
                     UpdateConversationBox();
                     NotifyPropertyChanged("TimeStamp");
-                    NotifyPropertyChanged("FormattedTimeStamp");
                 }
             }
         }
@@ -261,14 +260,6 @@ namespace windows_client.Model
                     return _contactName;
                 else
                     return _msisdn;
-            }
-        }
-
-        public string FormattedTimeStamp
-        {
-            get
-            {
-                return TimeUtils.getTimeString(_timeStamp);
             }
         }
 

@@ -39,17 +39,16 @@
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
             <controls:PivotItem Header="{Binding Path= LocalizedResources.Conversations_Pivot_Chats_Header_Txt, Source={StaticResource LocalizedStrings}}">
                 <Grid x:Name="ConversationList">
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" Width="295" Height="76" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10"/>
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100">
+                    </Image>
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" Width="295" Height="76" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10">
+                    </Image>
                     <ListBox Grid.Row="0" Grid.Column="0" Height="530" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,10,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>

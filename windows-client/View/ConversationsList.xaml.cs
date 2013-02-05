@@ -533,6 +533,7 @@ namespace windows_client.View
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
+                emptyScreenTip.Opacity = 1;
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
