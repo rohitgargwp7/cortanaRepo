@@ -27,9 +27,12 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            //TODO - use constants rather hard coded strings - MG
             if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
             {
                 object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
+                PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
+
                 long messsageId = (long)fileTapped[0];
                 msisdn = (string)fileTapped[1];
                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
@@ -43,6 +46,8 @@ namespace windows_client.View
                 msisdn = (string)profilePicTapped[0];
                 string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
                 string fileName;
+                PhoneApplicationService.Current.State.Remove("displayProfilePic");
+
                 //check if image is already stored
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
@@ -77,6 +82,12 @@ namespace windows_client.View
                         setImage(defaultImageBytes);
                     }
                 }
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+            {
+                BitmapImage imageToDisplay = (BitmapImage)PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
+                this.FileImage.Source = imageToDisplay;
             }
         }
 
@@ -118,6 +129,7 @@ namespace windows_client.View
 
         private void setImage(byte[] imageBytes)
         {
+            UI_Utils.Instance.createImageFromBytes(imageBytes
             MemoryStream memStream = new MemoryStream(imageBytes);
             memStream.Seek(0, SeekOrigin.Begin);
             BitmapImage fileImage = new BitmapImage();
