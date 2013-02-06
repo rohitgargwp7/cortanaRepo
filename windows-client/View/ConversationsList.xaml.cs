@@ -1300,8 +1300,9 @@ namespace windows_client.View
         {
             for (int i = 0; i < freshStatusUpdates.Count; i++)
             {
-                App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
-                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), new EventHandler<System.Windows.Input.GestureEventArgs>(statusBubblePhoto_Tap), null));
+                App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
+                    StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
+                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
             }
             FreshStatusCount = 0;
         }
@@ -1374,6 +1375,15 @@ namespace windows_client.View
             }
         }
 
+        private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
+                ImageStatusUpdate).StatusImage;
+            Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
+        }
+
+
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -1417,9 +1427,8 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap,
-                        statusBubblePhoto_Tap, null));
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                        statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
