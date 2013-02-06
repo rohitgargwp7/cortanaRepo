@@ -61,7 +61,7 @@ namespace windows_client.View
             lastStatusTxtBlk.Text = "Hey..!! I am very excited about ongoing milestones F1 and F2. Looking forward to F3.";
             int notificationCount = 0;
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
-            FreshStatusCount = notificationCount;
+            RefreshBarCount = notificationCount;
             if (notificationCount == 0)
             {
                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
@@ -799,7 +799,7 @@ namespace windows_client.View
             {
                 StatusMessage sm = obj as StatusMessage;
                 freshStatusUpdates.Add(sm);
-                FreshStatusCount++;
+                RefreshBarCount++;
                 if (sm.Msisdn == App.MSISDN)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -1254,27 +1254,27 @@ namespace windows_client.View
         #region TIMELINE
 
         private List<StatusMessage> freshStatusUpdates = new List<StatusMessage>();
-        private int _freshStatusCount = 0;
-        private int FreshStatusCount
+        private int _refreshBarCount = 0;
+        private int RefreshBarCount
         {
             get
             {
-                return _freshStatusCount;
+                return _refreshBarCount;
             }
             set
             {
-                if (value != _freshStatusCount)
+                if (value != _refreshBarCount)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            if (_freshStatusCount == 0 && value > 0)
+                            if (_refreshBarCount == 0 && value > 0)
                             {
                                 refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
                                 refreshStatusText.Visibility = System.Windows.Visibility.Visible;
                                 notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
                                 notificationCountTxtBlk.Text = value.ToString();
                             }
-                            else if (_freshStatusCount > 0 && value == 0)
+                            else if (_refreshBarCount > 0 && value == 0)
                             {
                                 refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
                                 refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
@@ -1290,7 +1290,7 @@ namespace windows_client.View
                                 else
                                     refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
                             }
-                            _freshStatusCount = value;
+                            _refreshBarCount = value;
                         });
                 }
             }
@@ -1304,7 +1304,7 @@ namespace windows_client.View
                     StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
             }
-            FreshStatusCount = 0;
+            RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
         {
@@ -1369,7 +1369,7 @@ namespace windows_client.View
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (FreshStatusCount != 0 && launchPagePivot.SelectedIndex != 3)
+            if (RefreshBarCount != 0 && launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
             }
