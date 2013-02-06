@@ -726,7 +726,7 @@ namespace windows_client.View
             if (e.Key == Key.Back)
             {
                 int cursorPosition = enterNameTxt.SelectionStart;
-                if (cursorPosition == 0 || cursorPosition >= stringBuilderForContactNames.Length)
+                if (cursorPosition <= 0 || cursorPosition >= stringBuilderForContactNames.Length)
                     return;
 
                 ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
