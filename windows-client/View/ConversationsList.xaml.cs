@@ -803,18 +803,23 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (launchPagePivot.SelectedIndex == 3)
-                    {
-                        freshStatusUpdates.Add(sm);
-                        RefreshBarCount++;
-                    }
-                    else
-                    {
-                        NotificationCount++;
-                    }
                     if (sm.Msisdn == App.MSISDN)
                     {
                         lastStatusTxtBlk.Text = sm.Message;
+                        App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
+                    }
+                    else
+                    {
+                        if (launchPagePivot.SelectedIndex == 3)
+                        {
+                            freshStatusUpdates.Add(sm);
+                            RefreshBarCount++;
+                        }
+                        else
+                        {
+                            NotificationCount++;
+                        }
                     }
                 });
             }
