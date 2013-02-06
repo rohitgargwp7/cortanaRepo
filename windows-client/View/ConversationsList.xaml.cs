@@ -61,8 +61,8 @@ namespace windows_client.View
             lastStatusTxtBlk.Text = "Hey..!! I am very excited about ongoing milestones F1 and F2. Looking forward to F3.";
             int notificationCount = 0;
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
-            RefreshBarCount = notificationCount;
-            if (notificationCount == 0)
+            NotificationCount = notificationCount;
+            if (NotificationCount == 0)
             {
                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
             }
@@ -121,6 +121,8 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            if (launchPagePivot.SelectedIndex == 3)
+                NotificationCount = 0;
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
@@ -632,6 +634,7 @@ namespace windows_client.View
                     appBar.Buttons.Add(postStatusIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
+                NotificationCount = 0;
             }
             if (selectedIndex != 3)
             {
@@ -798,15 +801,22 @@ namespace windows_client.View
             else if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
-                freshStatusUpdates.Add(sm);
-                RefreshBarCount++;
-                if (sm.Msisdn == App.MSISDN)
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    if (launchPagePivot.SelectedIndex == 3)
+                    {
+                        freshStatusUpdates.Add(sm);
+                        RefreshBarCount++;
+                    }
+                    else
+                    {
+                        NotificationCount++;
+                    }
+                    if (sm.Msisdn == App.MSISDN)
                     {
                         lastStatusTxtBlk.Text = sm.Message;
-                    });
-                }
+                    }
+                });
             }
             #endregion
             #region ADD_OR_UPDATE_PROFILE
@@ -1266,32 +1276,57 @@ namespace windows_client.View
                 if (value != _refreshBarCount)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (_refreshBarCount == 0 && value > 0)
                         {
-                            if (_refreshBarCount == 0 && value > 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
-                                refreshStatusText.Visibility = System.Windows.Visibility.Visible;
-                                notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
-                                notificationCountTxtBlk.Text = value.ToString();
-                            }
-                            else if (_refreshBarCount > 0 && value == 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
-                                refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
-                                freshStatusUpdates.Clear();
-                                notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
-                                notificationCountTxtBlk.Text = "";
-                                App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, 0);
-                            }
-                            if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
-                            {
-                                if (value == 1)
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
-                                else
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
-                            }
-                            _refreshBarCount = value;
-                        });
+                            refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
+                            refreshStatusText.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        else if (_refreshBarCount > 0 && value == 0)
+                        {
+                            refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
+                            refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
+                            freshStatusUpdates.Clear();
+                        }
+                        if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
+                        {
+                            if (value == 1)
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
+                            else
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
+                        }
+                        _refreshBarCount = value;
+                    });
+                }
+            }
+        }
+
+        private int _notificationCount = 0;
+        private int NotificationCount
+        {
+            get
+            {
+                return _notificationCount;
+            }
+            set
+            {
+                if (value != _notificationCount)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (_notificationCount == 0 && value > 0)
+                        {
+                            notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
+                            notificationCountTxtBlk.Text = value.ToString();
+                        }
+                        else if (_notificationCount > 0 && value == 0)
+                        {
+                            notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
+                            notificationCountTxtBlk.Text = "";
+                            App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, 0);
+                        }
+                        _notificationCount = value;
+                    });
                 }
             }
         }
@@ -1369,7 +1404,7 @@ namespace windows_client.View
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (RefreshBarCount != 0 && launchPagePivot.SelectedIndex != 3)
+            if (NotificationCount != 0 && launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
             }
