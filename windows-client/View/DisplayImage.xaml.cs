@@ -129,12 +129,7 @@ namespace windows_client.View
 
         private void setImage(byte[] imageBytes)
         {
-            UI_Utils.Instance.createImageFromBytes(imageBytes
-            MemoryStream memStream = new MemoryStream(imageBytes);
-            memStream.Seek(0, SeekOrigin.Begin);
-            BitmapImage fileImage = new BitmapImage();
-            fileImage.SetSource(memStream);
-            this.FileImage.Source = fileImage;
+            this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(imageBytes);
         }
 
         //private void OnPinchStarted(object sender, PinchStartedGestureEventArgs e)
