@@ -58,7 +58,9 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
-            lastStatusTxtBlk.Text = "Hey..!! I am very excited about ongoing milestones F1 and F2. Looking forward to F3.";
+            string lastStatus = "";
+            App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
+            lastStatusTxtBlk.Text = lastStatus;
             int notificationCount = 0;
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
             NotificationCount = notificationCount;
@@ -805,6 +807,7 @@ namespace windows_client.View
                 {
                     if (sm.Msisdn == App.MSISDN)
                     {
+                        App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                         lastStatusTxtBlk.Text = sm.Message;
                         App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
@@ -818,6 +821,8 @@ namespace windows_client.View
                         }
                         else
                         {
+                            App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
                             NotificationCount++;
                         }
                     }
@@ -1001,8 +1006,8 @@ namespace windows_client.View
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Object[] objArr = new Object[2];
-            objArr[0] = _avatarImageBitmap;
-            objArr[1] = App.MSISDN;
+            objArr[0] = App.MSISDN;
+            objArr[1] = _avatarImageBitmap;
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArr;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             //App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
@@ -1427,8 +1432,10 @@ namespace windows_client.View
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = (statusLLS.SelectedItem as
-                StatusUpdateBox).Msisdn;
+            StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
+            if (sb == null)
+                return;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 
@@ -1440,16 +1447,25 @@ namespace windows_client.View
 
             if (stsBox.Msisdn == App.MSISDN)
                 return;
-
-            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
-            if (contactInfo == null)
+            if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
+            else
             {
-                contactInfo = new ContactInfo();
-                contactInfo.Msisdn = stsBox.Msisdn;
-                contactInfo.OnHike = true;
+                ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
+                if (cFav != null)
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                else
+                {
+                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
+                    if (contactInfo == null)
+                    {
+                        contactInfo = new ContactInfo();
+                        contactInfo.Msisdn = stsBox.Msisdn;
+                        contactInfo.OnHike = true;
+                    }
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
+                }
             }
-
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
             NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 

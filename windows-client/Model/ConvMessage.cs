@@ -934,12 +934,12 @@ namespace windows_client.Model
         {
             this.MessageId = -1;
             this.participantInfoState = participantInfoState;
-            this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
             this.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
             this.Timestamp = TimeUtils.getCurrentTimeStamp();
             switch (this.participantInfoState)
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     this.Message = AppResources.SMS_INDIA;
                     break;
                 case ParticipantInfoState.STATUS_UPDATE:
@@ -949,6 +949,8 @@ namespace windows_client.Model
                         this.Message = val.ToString();
                     else // this is to handle profile pic update
                         this.Message = "pu";
+                    data.Remove(HikeConstants.THUMBNAIL);
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 default: break;
             }

@@ -183,7 +183,7 @@ namespace windows_client
         public static readonly string STATUS_ID = "statusid";
         public static readonly string PROFILE_UPDATE = "profile";
         public static readonly string THUMBNAIL = "tn";
-        public static readonly string UNREAD_UPDATES = "un_up";
+        public static readonly string PROFILE_PIC_ID = "ppid";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -223,8 +223,11 @@ namespace windows_client
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
+        public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
+        public static string UNREAD_UPDATES = "unUp";
 
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
+        public static string LAST_STATUS = "lastStatus";
 
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";

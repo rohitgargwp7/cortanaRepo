@@ -936,9 +936,6 @@ namespace windows_client
                 try
                 {
                     data = (JObject)jsonObj[HikeConstants.DATA];
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
-                    cm.Msisdn = msisdn;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
                     StatusMessage sm = null;
                     JToken val;
 
@@ -957,6 +954,7 @@ namespace windows_client
                             byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                             StatusMsgsTable.InsertStatusMsg(sm);
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.StatusId);
+                            jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.StatusId;
                         }
                     }
                     #endregion
@@ -973,9 +971,10 @@ namespace windows_client
                     }
                     #endregion
 
-                    int count = 0;
-                    App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out count);
-                    App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, (count+1));
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
+                    cm.Msisdn = msisdn;
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                    
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
                     {

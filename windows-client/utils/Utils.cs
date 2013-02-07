@@ -348,5 +348,13 @@ namespace windows_client.utils
                 return (country_code2 == null ? "+91" : country_code2) + msisdn;
             }
         }
+
+        public static ConversationListObject GetConvlistObj(string msisdn)
+        {
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                return App.ViewModel.ConvMap[msisdn];
+            else
+                return App.ViewModel.GetFav(msisdn);
+        }
     }
 }

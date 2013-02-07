@@ -675,7 +675,7 @@ namespace windows_client.View
             {
                 /* Here -1 is used only for WP8. Somehow in wp8 Selection start gives extra count so manually using -1 in it*/
                 int cursorPosition = enterNameTxt.SelectionStart -1;
-                if (cursorPosition == 0 || cursorPosition >= stringBuilderForContactNames.Length)
+                if (cursorPosition <= 0 || cursorPosition >= stringBuilderForContactNames.Length)
                     return;
 
                 ContactInfo cn = contactsForgroup[contactsForgroup.Count - 1];
