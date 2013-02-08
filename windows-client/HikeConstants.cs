@@ -222,7 +222,7 @@ namespace windows_client
         public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
-            public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
+        public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
 
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
         public static string LAST_STATUS = "lastStatus";

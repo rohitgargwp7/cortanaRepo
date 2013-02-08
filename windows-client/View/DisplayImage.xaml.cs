@@ -35,7 +35,7 @@ namespace windows_client.View
                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
                 byte[] filebytes;
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-                setImage(filebytes);
+                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("displayProfilePic"))
             {
@@ -47,7 +47,7 @@ namespace windows_client.View
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
                 {
-                    setImage(fullViewBytes);
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
                 }
                 else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                 {
@@ -74,7 +74,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        setImage(defaultImageBytes);
+                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(defaultImageBytes);
                     }
                 }
             }
@@ -89,41 +89,12 @@ namespace windows_client.View
             {
                 shellProgress.IsVisible = false;
                 if (fullBytes != null && fullBytes.Length > 0)
-                {
-                    setImage(fullBytes);
-                }
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
                 else
-                {
-                    byte[] smallThumbnailImage = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-                    if (smallThumbnailImage != null && smallThumbnailImage.Length > 0)
-                    {
-                        setImage(smallThumbnailImage);
-                    }
-                    else
-                    {
-                        BitmapImage defaultImage = null;
-                        if (Utils.isGroupConversation(msisdn))
-                        {
-                            defaultImage = UI_Utils.Instance.getDefaultGroupAvatar(msisdn);
-                        }
-                        else
-                        {
-                            defaultImage = UI_Utils.Instance.getDefaultAvatar(msisdn);
-                        }
-                        this.FileImage.Source = defaultImage;
-                    }
-                }
+                    this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
         }
 
-        private void setImage(byte[] imageBytes)
-        {
-            MemoryStream memStream = new MemoryStream(imageBytes);
-            memStream.Seek(0, SeekOrigin.Begin);
-            BitmapImage fileImage = new BitmapImage();
-            fileImage.SetSource(memStream);
-            this.FileImage.Source = fileImage;
-        }
 
         //private void OnPinchStarted(object sender, PinchStartedGestureEventArgs e)
         //{

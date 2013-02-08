@@ -457,24 +457,10 @@ namespace windows_client.View
             creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, (int)App.appSettings[App.SMS_SETTING]);
 
             Stopwatch st = Stopwatch.StartNew();
-            byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
+            avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to fetch profile image : {0}", msec);
-
-            if (_avatar != null)
-            {
-                MemoryStream memStream = new MemoryStream(_avatar);
-                memStream.Seek(0, SeekOrigin.Begin);
-                _avatarImageBitmap.SetSource(memStream);
-                avatarImage.Source = _avatarImageBitmap;
-
-            }
-            else
-            {
-                _avatarImageBitmap = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
-                avatarImage.Source = _avatarImageBitmap;
-            }
         }
 
         #endregion
@@ -987,10 +973,7 @@ namespace windows_client.View
 
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Object[] objArr = new Object[2];
-            objArr[0] = App.MSISDN;
-            objArr[1] = _avatarImageBitmap;
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArr;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             //App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
             //NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
@@ -1302,7 +1285,7 @@ namespace windows_client.View
             for (int i = 0; i < freshStatusUpdates.Count; i++)
             {
                 App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
-                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), new EventHandler<System.Windows.Input.GestureEventArgs>(statusBubblePhoto_Tap), null));
+                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), new EventHandler<System.Windows.Input.GestureEventArgs>(statusBubblePhoto_Tap)));
             }
             FreshStatusCount = 0;
         }
@@ -1431,7 +1414,7 @@ namespace windows_client.View
                 {
 
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap,
-                        statusBubblePhoto_Tap, null));
+                        statusBubblePhoto_Tap));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
