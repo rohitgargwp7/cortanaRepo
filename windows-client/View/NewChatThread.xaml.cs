@@ -167,19 +167,6 @@ namespace windows_client.View
             }
         }
 
-        //public ObservableCollection<MyChatBubble> ChatThreadPageCollection
-        //{
-        //    get
-        //    {
-        //        return chatThreadPageCollection;
-        //    }
-        //    set
-        //    {
-        //        chatThreadPageCollection = value;
-        //        NotifyPropertyChanged("ChatThreadPageCollection");
-        //    }
-        //}
-
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;

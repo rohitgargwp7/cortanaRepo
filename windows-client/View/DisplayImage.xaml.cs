@@ -23,10 +23,12 @@ namespace windows_client.View
             base.OnRemovedFromJournal(e);
             PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
             PhoneApplicationService.Current.State.Remove("displayProfilePic");
+            PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
         }
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            //TODO - use constants rather hard coded strings - MG
             if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
             {
                 object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
@@ -78,6 +80,11 @@ namespace windows_client.View
                     }
                 }
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+            {
+                BitmapImage imageToDisplay = (BitmapImage)PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY];
+                this.FileImage.Source = imageToDisplay;
+            }
         }
 
         public void getProfilePic_Callback(byte[] fullBytes, object fName)
@@ -118,11 +125,7 @@ namespace windows_client.View
 
         private void setImage(byte[] imageBytes)
         {
-            MemoryStream memStream = new MemoryStream(imageBytes);
-            memStream.Seek(0, SeekOrigin.Begin);
-            BitmapImage fileImage = new BitmapImage();
-            fileImage.SetSource(memStream);
-            this.FileImage.Source = fileImage;
+            this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(imageBytes);
         }
 
         //private void OnPinchStarted(object sender, PinchStartedGestureEventArgs e)

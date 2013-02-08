@@ -62,8 +62,9 @@ namespace windows_client.View
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
             lastStatusTxtBlk.Text = lastStatus;
             int notificationCount = 0;
-            FreshStatusCount = notificationCount;
-            if (notificationCount == 0)
+            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
+            NotificationCount = notificationCount;
+            if (NotificationCount == 0)
             {
                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
             }
@@ -122,6 +123,8 @@ namespace windows_client.View
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            if (launchPagePivot.SelectedIndex == 3)
+                NotificationCount = 0;
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
@@ -633,6 +636,7 @@ namespace windows_client.View
                     appBar.Buttons.Add(postStatusIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
+                NotificationCount = 0;
             }
             if (selectedIndex != 3)
             {
@@ -799,16 +803,30 @@ namespace windows_client.View
             else if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
-                freshStatusUpdates.Add(sm);
-                FreshStatusCount++;
-                if (sm.Msisdn == App.MSISDN)
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    if (sm.Msisdn == App.MSISDN)
                     {
+                        App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                         lastStatusTxtBlk.Text = sm.Message;
-                    });
-                }
+                        App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
+                    }
+                    else
+                    {
+                        if (launchPagePivot.SelectedIndex == 3)
+                        {
+                            freshStatusUpdates.Add(sm);
+                            RefreshBarCount++;
+                        }
+                        else
+                        {
+                            App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
+                            NotificationCount++;
+                        }
+                    }
+                });
             }
             #endregion
             #region ADD_OR_UPDATE_PROFILE
@@ -1213,12 +1231,15 @@ namespace windows_client.View
         #region FAVOURITE ZONE
         private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
-            if (obj == null)
-                return;
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-            string uri = "/View/NewChatThread.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            if (favourites.SelectedItem != null)
+            {
+                ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
+                if (obj == null)
+                    return;
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
+                string uri = "/View/NewChatThread.xaml";
+                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
         }
 
         private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1256,43 +1277,69 @@ namespace windows_client.View
         #region TIMELINE
 
         private List<StatusMessage> freshStatusUpdates = new List<StatusMessage>();
-        private int _freshStatusCount = 0;
-        private int FreshStatusCount
+        private int _refreshBarCount = 0;
+        private int RefreshBarCount
         {
             get
             {
-                return _freshStatusCount;
+                return _refreshBarCount;
             }
             set
             {
-                if (value != _freshStatusCount)
+                if (value != _refreshBarCount)
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (_refreshBarCount == 0 && value > 0)
                         {
-                            if (_freshStatusCount == 0 && value > 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
-                                refreshStatusText.Visibility = System.Windows.Visibility.Visible;
-                                notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
-                                notificationCountTxtBlk.Text = value.ToString();
-                            }
-                            else if (_freshStatusCount > 0 && value == 0)
-                            {
-                                refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
-                                refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
-                                freshStatusUpdates.Clear();
-                                notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
-                                notificationCountTxtBlk.Text = "";
-                            }
-                            if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
-                            {
-                                if (value == 1)
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
-                                else
-                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
-                            }
-                            _freshStatusCount = value;
-                        });
+                            refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
+                            refreshStatusText.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        else if (_refreshBarCount > 0 && value == 0)
+                        {
+                            refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
+                            refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
+                            freshStatusUpdates.Clear();
+                        }
+                        if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
+                        {
+                            if (value == 1)
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
+                            else
+                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
+                        }
+                        _refreshBarCount = value;
+                    });
+                }
+            }
+        }
+
+        private int _notificationCount = 0;
+        private int NotificationCount
+        {
+            get
+            {
+                return _notificationCount;
+            }
+            set
+            {
+                if (value != _notificationCount)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (_notificationCount == 0 && value > 0)
+                        {
+                            notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
+                            notificationCountTxtBlk.Text = value.ToString();
+                        }
+                        else if (_notificationCount > 0 && value == 0)
+                        {
+                            notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
+                            notificationCountTxtBlk.Text = "";
+                            App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, 0);
+                        }
+                        _notificationCount = value;
+                    });
                 }
             }
         }
@@ -1301,10 +1348,11 @@ namespace windows_client.View
         {
             for (int i = 0; i < freshStatusUpdates.Count; i++)
             {
-                App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
-                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), new EventHandler<System.Windows.Input.GestureEventArgs>(statusBubblePhoto_Tap), null));
+                App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
+                    StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
+                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
             }
-            FreshStatusCount = 0;
+            RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
         {
@@ -1369,50 +1417,68 @@ namespace windows_client.View
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (FreshStatusCount != 0 && launchPagePivot.SelectedIndex != 3)
+            if (NotificationCount != 0 && launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
             }
         }
 
+        private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is ImageStatusUpdate)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
+                    ImageStatusUpdate).StatusImage;
+                Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
+                NavigationService.Navigate(nextPage);
+            }
+        }
+
+
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
-            if(sb == null)
-                return;
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
-            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
+            {
+                StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
+                if (sb == null)
+                    return;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            }
         }
 
         private void statusBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
-            if (stsBox == null)
-                return;
-
-            if (stsBox.Msisdn == App.MSISDN)
-                return;
-            if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
-            else
+            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
             {
-                ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
-                if (cFav != null)
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
+                if (stsBox == null)
+                    return;
+
+                if (stsBox.Msisdn == App.MSISDN)
+                    return;
+                if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
                 else
                 {
-                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
-                    if (contactInfo == null)
+                    ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
+                    if (cFav != null)
+                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                    else
                     {
-                        contactInfo = new ContactInfo();
-                        contactInfo.Msisdn = stsBox.Msisdn;
-                        contactInfo.OnHike = true;
+                        ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
+                        if (contactInfo == null)
+                        {
+                            contactInfo = new ContactInfo();
+                            contactInfo.Msisdn = stsBox.Msisdn;
+                            contactInfo.OnHike = true;
+                        }
+                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
                     }
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
                 }
-            }            
-            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+                NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
+            }
         }
 
         private void loadStatuses()
@@ -1429,9 +1495,8 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap,
-                        statusBubblePhoto_Tap, null));
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                        statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
