@@ -43,6 +43,7 @@ namespace windows_client.View
         {
             InitializeComponent();
 
+            // TODO : ROHIT :: Move this to approproiate pos
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
@@ -114,7 +115,7 @@ namespace windows_client.View
                         else
                             nameToShow = cn.Msisdn;
                         isOnHike = cn.OnHike;
-                        profileImage = (BitmapImage)vals[1];
+                        profileImage = UI_Utils.Instance.GetBitmapImage(cn.Msisdn);
                         msisdn = cn.Msisdn;
                     }
                 }
@@ -132,7 +133,7 @@ namespace windows_client.View
                         profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
                         isOnHike = true;
                         changePic.Visibility = Visibility.Visible;
-                        avatarImage.Tap += onProfilePicButtonTap;
+                        avatarImage.Tap += onProfilePicButtonTap; // TODO:// make just one tap event and handle self, user case in that
                         isOwnProfile = true;
                         isFriend = true;
                     }
@@ -152,9 +153,9 @@ namespace windows_client.View
                     msisdn = App.MSISDN;
                     profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
                     isOnHike = true;
-
                 }
                 #endregion
+                // TODO  ROHIT :: pass statusBox here as it will give u all values
                 #region USER INFO FROM TIMELINE
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_TIMELINE, out o))
                 {
@@ -319,6 +320,7 @@ namespace windows_client.View
             {
                 if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
                 {
+                    UI_Utils.Instance.BitmapImageCache[HikeConstants.MY_PROFILE_PIC] = profileImage;
                     avatarImage.Source = profileImage;
                     avatarImage.MaxHeight = 83;
                     avatarImage.MaxWidth = 83;
@@ -327,8 +329,6 @@ namespace windows_client.View
                     vals[1] = fullViewImageBytes;
                     vals[2] = largeImageBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
-
-                    App.HikePubSubInstance.publish(HikePubSub.CHANGE_USER_PROFILE_PIC, profileImage);
                 }
                 else
                 {
@@ -355,16 +355,17 @@ namespace windows_client.View
 
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), null, enlargePic_Tap));
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap, null, enlargePic_Tap));
             }
             this.statusLLS.ItemsSource = statusList;
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
-                ImageStatusUpdate).StatusImage;
+            ImageStatusUpdate imgStUp = statusLLS.SelectedItem as ImageStatusUpdate;
+            if(imgStUp == null)
+                return;
+            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = imgStUp.StatusImage;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
