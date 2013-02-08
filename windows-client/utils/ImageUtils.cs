@@ -4,12 +4,15 @@ using System.Windows.Media;
 using System.Windows;
 using System.IO;
 using windows_client.DbUtils;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
     public class UI_Utils
     {
-        #region private variables
+        #region PRIVATE UI VARIABLES
+
         private SolidColorBrush textBoxBackground;
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
@@ -64,6 +67,10 @@ namespace windows_client.utils
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
 
+        #endregion
+
+        private Dictionary<string, BitmapImage> _bitMapImageCache = null;
+
         private static volatile UI_Utils instance = null;
 
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
@@ -85,7 +92,6 @@ namespace windows_client.utils
                 return instance;
             }
         }
-        #endregion
 
         private UI_Utils()
         {
@@ -104,9 +110,25 @@ namespace windows_client.utils
             defaultAvatarFileNames[11] = "EarthyPeople.jpg";
             defaultAvatarFileNames[12] = "GreenPeople.jpg";
             defaultAvatarFileNames[13] = "PinkPeople.jpg";
+
+            _bitMapImageCache = new Dictionary<string, BitmapImage>();
         }
 
         #region public  properties
+
+        public Dictionary<string, BitmapImage> BitmapImageCache
+        {
+            get
+            {
+                return _bitMapImageCache;
+            }
+            set
+            {
+                if (value != _bitMapImageCache)
+                    _bitMapImageCache = value;
+            }
+        }
+
         public SolidColorBrush TextBoxBackground
         {
             get
@@ -551,7 +573,7 @@ namespace windows_client.utils
                 return nudgeSend;
             }
         }
-        
+
         public BitmapImage NudgeReceived
         {
             get
@@ -601,7 +623,7 @@ namespace windows_client.utils
                 return newNotificationImage;
             }
         }
-        
+
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -753,20 +775,61 @@ namespace windows_client.utils
             if (imagebytes == null || imagebytes.Length == 0)
                 return null;
             BitmapImage bitmapImage = null;
-            using (var memStream = new MemoryStream(imagebytes))
+            try
             {
-                memStream.Seek(0, SeekOrigin.Begin);
-                bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(memStream);
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
             return bitmapImage;
         }
 
-        public BitmapImage getUserProfileThumbnail(string msisdn)
+        /// <summary>
+        /// Call this function only if you want to cache the Bitmap Image
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <returns></returns>
+        public BitmapImage GetBitmapImage(string msisdn)
         {
+            return GetBitmap(msisdn, true);
+        }
+
+        /// <summary>
+        /// Call this function if donot want to save in cache
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="shouldSave"></param>
+        /// <returns></returns>
+        public BitmapImage GetBitmapImage(string msisdn,bool shouldSave)
+        {
+            return GetBitmap(msisdn, false);
+        }
+
+        private BitmapImage GetBitmap(string msisdn,bool saveInCache)
+        {
+            if (_bitMapImageCache.ContainsKey(msisdn))
+                return _bitMapImageCache[msisdn];
+            // if no image for this user exists
+
             byte[] profileImageBytes = MiscDBUtil.getThumbNailForMsisdn(msisdn);
             if (profileImageBytes != null && profileImageBytes.Length > 0)
-                return createImageFromBytes(profileImageBytes);
+            {
+                BitmapImage img = createImageFromBytes(profileImageBytes);
+                if (img != null)
+                {
+                    if(saveInCache)
+                        _bitMapImageCache[msisdn] = img;
+                    return img;
+                }
+            }
+            // do not add default avatar images to cache as they are already chached.
             if (Utils.isGroupConversation(msisdn))
                 return getDefaultGroupAvatar(msisdn);
             return getDefaultAvatar(msisdn);
