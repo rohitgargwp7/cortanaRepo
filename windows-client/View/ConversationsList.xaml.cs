@@ -1231,12 +1231,15 @@ namespace windows_client.View
         #region FAVOURITE ZONE
         private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
-            if (obj == null)
-                return;
-            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-            string uri = "/View/NewChatThread.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            if (favourites.SelectedItem != null)
+            {
+                ConversationListObject obj = favourites.SelectedItem as ConversationListObject;
+                if (obj == null)
+                    return;
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
+                string uri = "/View/NewChatThread.xaml";
+                NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+            }
         }
 
         private void RemoveFavourite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -1422,51 +1425,60 @@ namespace windows_client.View
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
-                ImageStatusUpdate).StatusImage;
-            Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
-            NavigationService.Navigate(nextPage);
+            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is ImageStatusUpdate)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
+                    ImageStatusUpdate).StatusImage;
+                Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
+                NavigationService.Navigate(nextPage);
+            }
         }
 
 
         //tap event of photo in status bubble
         private void statusBubblePhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
-            if (sb == null)
-                return;
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
-            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
+            {
+                StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
+                if (sb == null)
+                    return;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            }
         }
 
         private void statusBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
-            if (stsBox == null)
-                return;
-
-            if (stsBox.Msisdn == App.MSISDN)
-                return;
-            if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
-                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
-            else
+            if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is StatusUpdateBox)
             {
-                ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
-                if (cFav != null)
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                StatusUpdateBox stsBox = statusLLS.SelectedItem as StatusUpdateBox;
+                if (stsBox == null)
+                    return;
+
+                if (stsBox.Msisdn == App.MSISDN)
+                    return;
+                if (App.ViewModel.ConvMap.ContainsKey(stsBox.Msisdn))
+                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = App.ViewModel.ConvMap[stsBox.Msisdn];
                 else
                 {
-                    ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
-                    if (contactInfo == null)
+                    ConversationListObject cFav = App.ViewModel.GetFav(stsBox.Msisdn);
+                    if (cFav != null)
+                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = cFav;
+                    else
                     {
-                        contactInfo = new ContactInfo();
-                        contactInfo.Msisdn = stsBox.Msisdn;
-                        contactInfo.OnHike = true;
+                        ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
+                        if (contactInfo == null)
+                        {
+                            contactInfo = new ContactInfo();
+                            contactInfo.Msisdn = stsBox.Msisdn;
+                            contactInfo.OnHike = true;
+                        }
+                        PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
                     }
-                    PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
                 }
+                NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
             }
-            NavigationService.Navigate(new Uri("/View/NewChatThread.xaml", UriKind.Relative));
         }
 
         private void loadStatuses()
