@@ -48,22 +48,17 @@ namespace windows_client.utils
                     userName = App.MSISDN;
                 userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             }
-            else if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
-            {
-                userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
-                userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
-            }
             else
             {
-                // check in favs too
-                ConversationListObject cFav = App.ViewModel.GetFav(status.Msisdn);
-                if (cFav != null)
+                ConversationListObject co = Utils.GetConvlistObj(status.Msisdn);
+                if (co != null)
                 {
-                    userName = cFav.NameToShow;
-                    userProfileThumbnail = cFav.AvatarImage;
+                    userName = co.NameToShow;
+                    userProfileThumbnail = co.AvatarImage;
                 }
                 else
                 {
+                    // TODO : Cache contacts ....... GK
                     ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
                     userName = cn != null ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
