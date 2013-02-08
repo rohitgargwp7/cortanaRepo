@@ -37,22 +37,20 @@ namespace windows_client.utils
         }
 
         public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
-            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap, BitmapImage userProfileThumbnail)
+            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
         {
-            string userName;  
-            
+            string userName;
+            BitmapImage userProfileThumbnail;
             if (App.MSISDN == status.Msisdn)
             {
                 if (!App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName))
                     userName = App.MSISDN;
-                if (userProfileThumbnail == null)
-                    userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(HikeConstants.MY_PROFILE_PIC);
+                userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             }
             else if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
             {
                 userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
-                if (userProfileThumbnail == null)
-                    userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
+                userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
             }
             else
             {
@@ -67,8 +65,7 @@ namespace windows_client.utils
                 {
                     ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
                     userName = cn != null ? cn.Name : status.Msisdn;
-                    if (userProfileThumbnail == null)
-                        userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
+                    userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
             }
             StatusUpdateBox statusUpdateBox = null;
