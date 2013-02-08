@@ -42,7 +42,7 @@ namespace windows_client.View
         public UserProfile()
         {
             InitializeComponent();
-            
+
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
@@ -78,7 +78,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, statusBox_Tap, null, profileImage));
+                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, statusBox_Tap, null));
                 });
             }
             #endregion
@@ -123,38 +123,36 @@ namespace windows_client.View
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE, out o))
                 {
                     InitAppBar();
-                    object[] objArray = o as object[];
-                    GroupParticipant gp = objArray[0] as GroupParticipant;
+                    GroupParticipant gp = o as GroupParticipant;
                     msisdn = gp.Msisdn;
-                    profileImage = objArray[1] as BitmapImage;
                     nameToShow = gp.Name;
-                    isOnHike = gp.IsOnHike;
-                    avatarImage.Tap += UserImage_Tap;
-                    InitChatIconBtn();
+
+                    if (App.MSISDN == gp.Msisdn) // represents self page
+                    {
+                        profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+                        isOnHike = true;
+                        changePic.Visibility = Visibility.Visible;
+                        avatarImage.Tap += onProfilePicButtonTap;
+                        isOwnProfile = true;
+                        isFriend = true;
+                    }
+                    else
+                    {
+                        profileImage = UI_Utils.Instance.GetBitmapImage(gp.Msisdn);
+                        isOnHike = gp.IsOnHike;
+                        avatarImage.Tap += UserImage_Tap;
+                        InitChatIconBtn();
+                    }
                 }
                 #endregion
                 #region USER OWN PROFILE
-                else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_PROFILE, out o))
+                else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
                 {
                     InitAppBar();
-                    GroupParticipant gp = null;
-                    object[] objArray = o as object[];
-                    if (objArray[0] is string)
-                        msisdn = objArray[0] as string;
-                    else
-                    {
-                        gp = objArray[0] as GroupParticipant;
-                        msisdn = gp.Msisdn;
-                    }
-
-                    profileImage = objArray[1] as BitmapImage;                    
-                    App.appSettings.TryGetValue(App.ACCOUNT_NAME, out nameToShow);
-                    changePic.Visibility = Visibility.Visible;
-
-                    avatarImage.Tap += onProfilePicButtonTap;
-                    isOwnProfile = true;
+                    msisdn = App.MSISDN;
+                    profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
                     isOnHike = true;
-                    isFriend = true;
+
                 }
                 #endregion
                 #region USER INFO FROM TIMELINE
@@ -357,8 +355,7 @@ namespace windows_client.View
 
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), null, profileImage));
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap, null));
             }
             this.statusLLS.ItemsSource = statusList;
         }
