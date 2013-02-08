@@ -194,11 +194,13 @@ namespace windows_client.View
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
             {
+                //convlist object
                 statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
             {
+                //contact info object
                 statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
                 if (NavigationService.CanGoBack)
@@ -206,6 +208,7 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
+                //list<Contact Info>
                 statusObject = this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                 if (NavigationService.CanGoBack)
@@ -213,6 +216,7 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
             {
+                //contactInfo
                 statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
             }
@@ -3131,8 +3135,8 @@ namespace windows_client.View
             if (!isGroupChat)
             {
                 Object[] objArr = new Object[2];
-                objArr[0] = avatarImage;
-                objArr[1] = mContactNumber;
+                objArr[0] = statusObject;
+                objArr[1] = avatarImage;
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = objArr;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }

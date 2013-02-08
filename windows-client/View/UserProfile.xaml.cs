@@ -42,7 +42,7 @@ namespace windows_client.View
         public UserProfile()
         {
             InitializeComponent();
-            
+
             photoChooserTask = new PhotoChooserTask();
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
@@ -146,8 +146,9 @@ namespace windows_client.View
                         gp = objArray[0] as GroupParticipant;
                         msisdn = gp.Msisdn;
                     }
-
-                    profileImage = objArray[1] as BitmapImage;                    
+                    BitmapImage bitmapImg = new BitmapImage();
+                    bitmapImg = objArray[1] as BitmapImage;
+                    profileImage = bitmapImg;
                     App.appSettings.TryGetValue(App.ACCOUNT_NAME, out nameToShow);
                     changePic.Visibility = Visibility.Visible;
 
@@ -330,7 +331,9 @@ namespace windows_client.View
                     vals[2] = largeImageBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
 
-                    App.HikePubSubInstance.publish(HikePubSub.CHANGE_USER_PROFILE_PIC, profileImage);
+                    BitmapImage img = new BitmapImage();
+                    img = profileImage;
+                    App.HikePubSubInstance.publish(HikePubSub.CHANGE_USER_PROFILE_PIC, img);
                 }
                 else
                 {
@@ -428,7 +431,7 @@ namespace windows_client.View
                     contactInfo = new ContactInfo();
                     contactInfo.Msisdn = msisdn;
                 }
-
+                PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = contactInfo;
             }
             string uri = "/View/NewChatThread.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
