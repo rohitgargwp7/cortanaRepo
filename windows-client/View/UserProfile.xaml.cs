@@ -78,7 +78,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, statusBox_Tap, null));
+                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, statusBox_Tap, null, enlargePic_Tap));
                 });
             }
             #endregion
@@ -355,9 +355,18 @@ namespace windows_client.View
 
             for (int i = 0; i < statusMessagesFromDB.Count; i++)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], statusBox_Tap, null));
+                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                    new EventHandler<System.Windows.Input.GestureEventArgs>(statusBox_Tap), null, enlargePic_Tap));
             }
             this.statusLLS.ItemsSource = statusList;
+        }
+
+        private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
+                ImageStatusUpdate).StatusImage;
+            Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
+            NavigationService.Navigate(nextPage);
         }
 
         private void statusBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)

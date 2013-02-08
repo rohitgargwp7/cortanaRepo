@@ -201,6 +201,7 @@ namespace windows_client
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
+        public static string IMAGE_TO_DISPLAY = "imageToDisplay";
 
         public static string SOCIAL = "Social_Request";
 
@@ -223,6 +224,7 @@ namespace windows_client
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
         public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
+        public static string UNREAD_UPDATES = "unUp";
 
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
         public static string LAST_STATUS = "lastStatus";

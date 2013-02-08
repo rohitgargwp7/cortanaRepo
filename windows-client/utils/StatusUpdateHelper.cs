@@ -37,7 +37,8 @@ namespace windows_client.utils
         }
 
         public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
-            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
+            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap,
+            EventHandler<System.Windows.Input.GestureEventArgs> enlargePic_Tap)
         {
             string userName;
             BitmapImage userProfileThumbnail;
@@ -85,6 +86,8 @@ namespace windows_client.utils
                         AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + status.Message + "?only_image=true",
                             onStatusImageDownloaded, true, statusObjects);
                     }
+                    if(enlargePic_Tap != null)
+                        (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp, statusBubbleImageTap);
@@ -105,7 +108,7 @@ namespace windows_client.utils
             if (fileBytes != null && fileBytes.Length > 0)
             {
                 //TODO move to background thread
-//                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
+                //                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
 //                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);

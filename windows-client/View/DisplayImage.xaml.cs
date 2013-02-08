@@ -23,10 +23,12 @@ namespace windows_client.View
             base.OnRemovedFromJournal(e);
             PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
             PhoneApplicationService.Current.State.Remove("displayProfilePic");
+            PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
         }
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            //TODO - use constants rather hard coded strings - MG
             if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
             {
                 object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
@@ -78,6 +80,11 @@ namespace windows_client.View
                     }
                 }
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+            {
+                BitmapImage imageToDisplay = (BitmapImage)PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY];
+                this.FileImage.Source = imageToDisplay;
+            }
         }
 
         public void getProfilePic_Callback(byte[] fullBytes, object fName)
@@ -94,49 +101,5 @@ namespace windows_client.View
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
         }
-
-
-        //private void OnPinchStarted(object sender, PinchStartedGestureEventArgs e)
-        //{
-        //    initialAngle = transform.Rotation;
-        //    initialScale = transform.ScaleX;
-        //}
-
-        //private void OnPinchDelta(object sender, PinchGestureEventArgs e)
-        //{
-        //    //transform.Rotation = initialAngle + e.TotalAngleDelta;
-        //    transform.ScaleX = initialScale * e.DistanceRatio;
-        //    transform.ScaleY = initialScale * e.DistanceRatio;
-        //}
-
-
-        //private void GestureListener_DragDelta(object sender, DragDeltaGestureEventArgs e)
-        //{
-        //    // if is not touch enabled or the scale is different than 1 then don’t allow moving
-        //    if (transform.ScaleX <= 1.1)
-        //        return;
-        //    double centerX = transform.CenterX;
-        //    double centerY = transform.CenterY;
-        //    double translateX = transform.TranslateX;
-        //    double translateY = transform.TranslateY;
-        //    double scale = transform.ScaleX;
-        //    double width = FileImage.ActualWidth;
-        //    double height = FileImage.ActualHeight;
-
-        //    // verify limits to not allow the image to get out of area
-
-        //    if (centerX - scale * centerX + translateX + e.HorizontalChange < 0 &&
-        //    centerX + scale * (width - centerX) + translateX + e.HorizontalChange > width)
-        //    {
-        //        transform.TranslateX += e.HorizontalChange;
-        //    }
-
-        //    if (centerY - scale * centerY + translateY + e.VerticalChange < 0 &&
-        //    centerY + scale * (height - centerY) + translateY + e.VerticalChange > height)
-        //    {
-        //        transform.TranslateY += e.VerticalChange;
-        //    }
-        //    return;
-        //}
     }
 }

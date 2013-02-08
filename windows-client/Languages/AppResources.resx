@@ -134,7 +134,7 @@
     <comment>Network issue msg (used in all pages)</comment>
   </data>
   <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
-    <value>added you as favourite. Would you like to do the same?</value>
+    <value>added you as friend. Would you like to do the same?</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
@@ -190,7 +190,7 @@
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
-    <value>favorites</value>
+    <value>friends</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Are you sure about removing this contact from favorites?</value>
+    <value>Are you sure about removing this contact from friends?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from favorites</value>
+    <value>remove from friends</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You have no favorites right now.</value>
+    <value>You have no friends right now.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -218,7 +218,7 @@
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
-    <value>Your favorites</value>
+    <value>Your friends</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Delete_Txt" xml:space="preserve">
@@ -610,7 +610,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>add to favorites</value>
+    <value>add to friends</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -1171,7 +1171,7 @@
     <comment>xaml (below heart image)</comment>
   </data>
   <data name="Favorites_Tute_Screen1" xml:space="preserve">
-    <value>A permanent place for all your favorite friends.</value>
+    <value>A permanent place for all your friend friends.</value>
     <comment>xaml (below tute image)</comment>
   </data>
   <data name="Favorites_Tute_Screen1_2" xml:space="preserve">
@@ -1179,7 +1179,7 @@
     <comment>xaml (below tute image)</comment>
   </data>
   <data name="Favorites_Tute_Screen2" xml:space="preserve">
-    <value>To see all your hike friends and add new to favorites tap the + button</value>
+    <value>To see all your hike friends and add new to friends tap the + button</value>
     <comment>xaml (below tute image)</comment>
   </data>
   <data name="Invited" xml:space="preserve">
@@ -1267,7 +1267,7 @@
     <value>Refresh Contact List</value>
   </data>
   <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
-    <value>Added you as a favorite!</value>
+    <value>Added you as a friend!</value>
     <comment>for friend requests in wp8</comment>
   </data>
   <data name="StatusUpdate_YouCanNowSeeUpdates_TxtBlk" xml:space="preserve">
