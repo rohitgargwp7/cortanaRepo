@@ -497,14 +497,17 @@ namespace windows_client
                                                     IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
                                                     while (kVals.MoveNext())
                                                     {
+                                                        string name = null;
                                                         bool isFav = true; // true for fav , false for pending
                                                         fkkvv = kVals.Current; // kkvv contains favourites MSISDN
                                                         JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
                                                         JToken pToken;
                                                         if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
                                                             isFav = false;
+                                                        if (pendingJSON.TryGetValue(HikeConstants.NAME, out pToken))
+                                                            name = pToken.ToString();
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
+                                                        LoadFavAndPending(isFav, fkkvv.Key,name); // true for favs
                                                         thrAreFavs = true;
                                                     }
                                                     if (thrAreFavs)
@@ -1013,7 +1016,7 @@ namespace windows_client
             #endregion
         }
 
-        private void LoadFavAndPending(bool isFav, string msisdn)
+        private void LoadFavAndPending(bool isFav, string msisdn,string name)
         {
             if (msisdn == null)
                 return;
@@ -1030,7 +1033,7 @@ namespace windows_client
                 else
                 {
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
+                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
                 App.ViewModel.FavList.Add(favObj);
                 MiscDBUtil.SaveFavourites();
@@ -1051,7 +1054,7 @@ namespace windows_client
                 else
                 {
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
+                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
                 App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
                 MiscDBUtil.SavePendingRequests();
