@@ -298,10 +298,8 @@ namespace windows_client.Model
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(_avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
+                        empImage = UI_Utils.Instance.createImageFromBytes(_avatar);
+                        UI_Utils.Instance.BitmapImageCache[_msisdn] = empImage; // update cache
                         return empImage;
                     }
                 }
@@ -614,12 +612,12 @@ namespace windows_client.Model
 
         public void UpdateConversationBox()
         {
-            if (cBoxObj != null )
+            if (cBoxObj != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
-              {
-                  cBoxObj.update(this);
-              });
+                {
+                    cBoxObj.update(this);
+                });
             }
         }
 

@@ -167,19 +167,6 @@ namespace windows_client.View
             }
         }
 
-        //public ObservableCollection<MyChatBubble> ChatThreadPageCollection
-        //{
-        //    get
-        //    {
-        //        return chatThreadPageCollection;
-        //    }
-        //    set
-        //    {
-        //        chatThreadPageCollection = value;
-        //        NotifyPropertyChanged("ChatThreadPageCollection");
-        //    }
-        //}
-
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -563,11 +550,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        avatarImage = empImage;
+                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
                     }
                 }
                 userImage.Source = avatarImage;
@@ -618,11 +601,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        avatarImage = empImage;
+                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
                     }
                     userImage.Source = avatarImage;
                 }

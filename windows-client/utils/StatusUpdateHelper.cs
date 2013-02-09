@@ -37,38 +37,31 @@ namespace windows_client.utils
         }
 
         public StatusUpdateBox createStatusUIObject(StatusMessage status, EventHandler<System.Windows.Input.GestureEventArgs> statusBoxTap,
-            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap, BitmapImage userProfileThumbnail)
+            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap,
+            EventHandler<System.Windows.Input.GestureEventArgs> enlargePic_Tap)
         {
-            string userName;  
-            
+            string userName;
+            BitmapImage userProfileThumbnail;
             if (App.MSISDN == status.Msisdn)
             {
                 if (!App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName))
                     userName = App.MSISDN;
-                if (userProfileThumbnail == null)
-                    userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(HikeConstants.MY_PROFILE_PIC);
-            }
-            else if (App.ViewModel.ConvMap.ContainsKey(status.Msisdn))
-            {
-                userName = App.ViewModel.ConvMap[status.Msisdn].NameToShow;
-                if (userProfileThumbnail == null)
-                    userProfileThumbnail = App.ViewModel.ConvMap[status.Msisdn].AvatarImage;
+                userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             }
             else
             {
-                // check in favs too
-                ConversationListObject cFav = App.ViewModel.GetFav(status.Msisdn);
-                if (cFav != null)
+                ConversationListObject co = Utils.GetConvlistObj(status.Msisdn);
+                if (co != null)
                 {
-                    userName = cFav.NameToShow;
-                    userProfileThumbnail = cFav.AvatarImage;
+                    userName = co.NameToShow;
+                    userProfileThumbnail = co.AvatarImage;
                 }
                 else
                 {
+                    // TODO : Cache contacts ....... GK
                     ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
                     userName = cn != null ? cn.Name : status.Msisdn;
-                    if (userProfileThumbnail == null)
-                        userProfileThumbnail = UI_Utils.Instance.getUserProfileThumbnail(status.Msisdn);
+                    userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }
             }
             StatusUpdateBox statusUpdateBox = null;
@@ -88,6 +81,8 @@ namespace windows_client.utils
                         AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + status.Message + "?only_image=true",
                             onStatusImageDownloaded, true, statusObjects);
                     }
+                    if(enlargePic_Tap != null)
+                        (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp, statusBubbleImageTap);
@@ -108,7 +103,7 @@ namespace windows_client.utils
             if (fileBytes != null && fileBytes.Length > 0)
             {
                 //TODO move to background thread
-//                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
+                //                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
 //                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
