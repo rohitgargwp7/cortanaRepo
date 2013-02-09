@@ -492,6 +492,7 @@ namespace windows_client
                                             {
                                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
+                                                    string name = null;
                                                     bool thrAreFavs = false;
                                                     KeyValuePair<string, JToken> fkkvv;
                                                     IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
@@ -503,8 +504,10 @@ namespace windows_client
                                                         JToken pToken;
                                                         if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
                                                             isFav = false;
+                                                        if (pendingJSON.TryGetValue(HikeConstants.NAME, out pToken))
+                                                            name = pToken.ToString();
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
+                                                        LoadFavAndPending(isFav, fkkvv.Key,name); // true for favs
                                                         thrAreFavs = true;
                                                     }
                                                     if (thrAreFavs)
@@ -999,7 +1002,7 @@ namespace windows_client
             #endregion
         }
 
-        private void LoadFavAndPending(bool isFav, string msisdn)
+        private void LoadFavAndPending(bool isFav, string msisdn,string name)
         {
             if (msisdn == null)
                 return;
@@ -1019,6 +1022,7 @@ namespace windows_client
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);                   
                 }
                 App.ViewModel.FavList.Add(favObj);
+
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
                 int count = 0;
