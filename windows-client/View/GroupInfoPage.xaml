@@ -79,7 +79,7 @@
                 <TextBlock Text="{Binding Path= LocalizedResources.Participants_Txt, Source={StaticResource LocalizedStrings}}" toolkit:TiltEffect.IsTiltEnabled="True" FontSize="42" FontFamily="Segoe WP SemiLight" Margin="20,0,0,0" Tap="AddParticipants_Tap"></TextBlock>
             </StackPanel>
 
-            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="24,15,0,0" Tap="groupMemberImg_Tap">
+            <ListBox x:Name="groupChatParticipants" Grid.Row="2" Margin="24,15,0,0" Tap="groupMember_Tap">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <toolkit:WrapPanel ItemHeight="151" ItemWidth="151"/>

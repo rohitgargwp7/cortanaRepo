@@ -933,13 +933,13 @@ namespace windows_client.Model
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
         {
             this.MessageId = -1;
+            this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
             this.participantInfoState = participantInfoState;
             this.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
             this.Timestamp = TimeUtils.getCurrentTimeStamp();
             switch (this.participantInfoState)
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
-                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     this.Message = AppResources.SMS_INDIA;
                     break;
                 case ParticipantInfoState.STATUS_UPDATE:

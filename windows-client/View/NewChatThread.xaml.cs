@@ -546,11 +546,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        avatarImage = empImage;
+                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
                     }
                 }
                 userImage.Source = avatarImage;
@@ -601,11 +597,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        avatarImage = empImage;
+                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
                     }
                     userImage.Source = avatarImage;
                 }
