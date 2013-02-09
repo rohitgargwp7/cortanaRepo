@@ -112,14 +112,14 @@ namespace windows_client
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
 
-        public static readonly string FIRSTNAME = "fname";
-        public static readonly string MIDDLENAME = "mname";
-        public static readonly string LASTNAME = "lname";
-        public static readonly string MOBILE = "mob";
-        public static readonly string TELEPHONE = "tel";
-        public static readonly string EMAIL = "email";
-        public static readonly string COMPANY = "cmp";
-        public static readonly string JOBTITLE = "jtitle";
+        //CS prefix for contactsharing
+        public static readonly string CS_PHONE_NUMBERS = "phone_numbers";
+        public static readonly string CS_NAME = "name";
+        public static readonly string CS_EMAILS = "emails";
+        public static readonly string CS_ADDRESSES = "addresses";
+        public static readonly string CS_HOME_KEY = "Home";
+        public static readonly string CS_WORK_KEY = "Work";
+        public static readonly string CS_MOBILE_KEY = "Mobile";
 
         public static string FAQS_LINK
         {
@@ -218,7 +218,7 @@ namespace windows_client
         public static readonly string VIDEO = "video";
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
-        public static readonly string CONTACT = "contact";
+        public static readonly string CONTACT = "contact/share";
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";

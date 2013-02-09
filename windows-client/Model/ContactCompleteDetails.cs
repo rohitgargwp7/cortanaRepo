@@ -10,21 +10,23 @@ namespace windows_client.Model
 {
     public class ContactCompleteDetails
     {
-        private string firstName;
-        private string middleName;
-        private string lastName;
-        private string mobile;
-        private string telephone;
-        private string email;
-        private string company;
-        private string jobTitle;
+        private string name;
+        private string homeAddress;
+        private string homePhone;
+        private string mobileNumber;
+        private string personalEmail;
+        private string workAddress;
+        private string workEmail;
+        private string workPhone;
+        private string otherEmail;
+
 
         public JObject SerialiseToJobject()
         {
             JObject jobject = new JObject();
 
-            if (!string.IsNullOrEmpty(firstName))
-                jobject[HikeConstants.FIRSTNAME] = firstName;
+            if (!string.IsNullOrEmpty(name))
+                jobject[HikeConstants.FIRSTNAME] = name;
 
             if (!string.IsNullOrEmpty(middleName))
                 jobject[HikeConstants.MIDDLENAME] = middleName;
@@ -53,48 +55,61 @@ namespace windows_client.Model
         {
             SaveContactTask saveContactTask = new SaveContactTask();
 
-            if (!string.IsNullOrEmpty(firstName))
-                saveContactTask.FirstName = firstName;
+            if (!string.IsNullOrEmpty(name))
+                saveContactTask.FirstName = name;
 
-            if (!string.IsNullOrEmpty(middleName))
-                saveContactTask.MiddleName = middleName;
+            if (!string.IsNullOrEmpty(homeAddress))
+                saveContactTask.HomeAddressCity = homeAddress;
 
-            if (!string.IsNullOrEmpty(lastName))
-                saveContactTask.LastName = lastName;
+            if (!string.IsNullOrEmpty(homePhone))
+                saveContactTask.HomePhone = homePhone;
 
-            if (!string.IsNullOrEmpty(mobile))
-                saveContactTask.MobilePhone = mobile;
+            if (!string.IsNullOrEmpty(mobileNumber))
+                saveContactTask.MobilePhone = mobileNumber;
 
-            if (!string.IsNullOrEmpty(telephone))
-                saveContactTask.HomePhone = telephone;
+            if (!string.IsNullOrEmpty(personalEmail))
+                saveContactTask.PersonalEmail = personalEmail;
 
-            if (!string.IsNullOrEmpty(email))
-                saveContactTask.WorkEmail = email;
+            if (!string.IsNullOrEmpty(workAddress))
+                saveContactTask.WorkAddressCity = workAddress;
 
-            if (!string.IsNullOrEmpty(company))
-                saveContactTask.Company = company;
+            if (!string.IsNullOrEmpty(workEmail))
+                saveContactTask.WorkEmail = workEmail;
 
-            if (!string.IsNullOrEmpty(jobTitle))
-                saveContactTask.JobTitle = jobTitle;
+            if (!string.IsNullOrEmpty(workPhone))
+                saveContactTask.WorkPhone = workPhone;
+
+            if (!string.IsNullOrEmpty(otherEmail))
+                saveContactTask.OtherEmail = otherEmail;
+
             return saveContactTask;
         }
+
         public static ContactCompleteDetails GetContactDetails(Contact c)
         {
             ContactCompleteDetails con = new ContactCompleteDetails();
 
-            con.firstName = c.CompleteName.FirstName;
-            con.middleName = c.CompleteName.MiddleName;
-            con.lastName = c.CompleteName.LastName;
+
+            if (!string.IsNullOrEmpty(c.CompleteName.FirstName))
+                con.name = c.CompleteName.FirstName;
+            if (!string.IsNullOrEmpty(c.CompleteName.MiddleName))
+                con.name += " " + c.CompleteName.MiddleName;
+            if (!string.IsNullOrEmpty(c.CompleteName.LastName))
+                con.name += " " + c.CompleteName.LastName;
 
             foreach (ContactPhoneNumber ph in c.PhoneNumbers)
             {
                 if (ph.Kind == PhoneNumberKind.Mobile)
                 {
-                    con.mobile = ph.PhoneNumber;
+                    con.mobileNumber = ph.PhoneNumber;
                 }
                 if (ph.Kind == PhoneNumberKind.Home)
                 {
-                    con.telephone = ph.PhoneNumber;
+                    con.homePhone = ph.PhoneNumber;
+                }
+                if (ph.Kind == PhoneNumberKind.Work)
+                {
+                    con.workPhone = ph.PhoneNumber;
                 }
             }
 
@@ -102,17 +117,29 @@ namespace windows_client.Model
             {
                 if (email.Kind == EmailAddressKind.Work)
                 {
-                    con.email = email.EmailAddress;
-                    break;
+                    con.workEmail = email.EmailAddress;
+                }
+                if (email.Kind == EmailAddressKind.Personal)
+                {
+                    con.personalEmail = email.EmailAddress;
+                }
+                if (email.Kind == EmailAddressKind.Other)
+                {
+                    con.otherEmail = email.EmailAddress;
                 }
             }
-            foreach (ContactCompanyInformation compInfo in c.Companies)
-            {
-                con.company = compInfo.CompanyName;
-                con.jobTitle = compInfo.JobTitle;
-                break;
-            }
 
+            foreach (ContactAddress address in c.Addresses)
+            {
+                if (address.Kind == AddressKind.Work)
+                {
+                    con.workAddress = address.PhysicalAddress.AddressLine1;
+                }
+                if (address.Kind == AddressKind.Home)
+                {
+                    con.homeAddress = address.PhysicalAddress.AddressLine1;
+                }
+            }
             return con;
         }
 
@@ -122,7 +149,7 @@ namespace windows_client.Model
             JToken jt;
             jsonOnj.TryGetValue(HikeConstants.FIRSTNAME, out jt);
             if (jt != null)
-                con.firstName = jt.ToString();
+                con.name = jt.ToString();
             jsonOnj.TryGetValue(HikeConstants.MIDDLENAME, out jt);
             if (jt != null)
                 con.middleName = jt.ToString();
