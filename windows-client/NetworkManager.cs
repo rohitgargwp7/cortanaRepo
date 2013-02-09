@@ -910,7 +910,6 @@ namespace windows_client
                                 name = ci.Name;
                             favObj = new ConversationListObject(ms, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
                         }
-
                         App.ViewModel.PendingRequests.Add(ms, favObj);
                         MiscDBUtil.SavePendingRequests();
                         this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
