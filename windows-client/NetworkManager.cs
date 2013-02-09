@@ -892,10 +892,24 @@ namespace windows_client
                             ConversationListObject favObj;
                             if (App.ViewModel.ConvMap.ContainsKey(ms))
                                 favObj = App.ViewModel.ConvMap[ms];
-                            else // user not saved in address book
+                            else
                             {
                                 ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                                favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                                string name = null;
+                                if (ci == null)
+                                {
+                                    JToken data;
+                                    if (jsonObj.TryGetValue(HikeConstants.DATA, out data))
+                                    {
+                                        JToken n;
+                                        JObject dobj = data.ToObject<JObject>();
+                                        if (dobj.TryGetValue(HikeConstants.NAME, out n))
+                                            name = n.ToString();
+                                    }
+                                }
+                                else
+                                    name = ci.Name;
+                                favObj = new ConversationListObject(ms, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
                             }
 
                             App.ViewModel.PendingRequests.Add(favObj);
