@@ -90,18 +90,17 @@ namespace windows_client.View
                 #region USER INFO FROM CHAT THREAD
                 if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE, out o))
                 {
-                    object[] vals = (object[])o;
-                    if (vals[0] is ConversationListObject)
+                    if (o is ConversationListObject)
                     {
-                        ConversationListObject co = (ConversationListObject)vals[0];
+                        ConversationListObject co = (ConversationListObject)o;
                         nameToShow = co.NameToShow;
                         isOnHike = co.IsOnhike;
                         profileImage = co.AvatarImage;
                         msisdn = co.Msisdn;
                     }
-                    else if (vals[0] is ContactInfo)
+                    else if (o is ContactInfo)
                     {
-                        ContactInfo cn = (ContactInfo)vals[0];
+                        ContactInfo cn = (ContactInfo)o;
                         if (cn.Name != null)
                             nameToShow = cn.Name;
                         else

@@ -820,7 +820,7 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                userName.Tap +=userName_Tap;
+                userName.Tap += userName_Tap;
 
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
@@ -1792,9 +1792,9 @@ namespace windows_client.View
                         {
                             long picId = (long)jsonObj[HikeConstants.PROFILE_PIC_ID];
                             BitmapImage img = null;
-                            byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn,picId);
+                            byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn, picId);
                             img = UI_Utils.Instance.createImageFromBytes(imageBytes);
-                            MyChatBubble chatBubble = new StatusChatBubble(convMessage,img);
+                            MyChatBubble chatBubble = new StatusChatBubble(convMessage, img);
                             chatBubble.setTapEvent(statusBubble_Tap);
                             this.MessageList.Children.Add(chatBubble);
                         }
@@ -3098,25 +3098,16 @@ namespace windows_client.View
         {
             if (!isGroupChat)
             {
-                object[] vals = new object[2];
-                vals[0] = statusObject;
-                vals[1] = avatarImage;
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = vals;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }
 
         private void userHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
-            //object[] fileTapped = new object[1];
-            //fileTapped[0] = mContactNumber;
             if (!isGroupChat)
             {
-                Object[] objArr = new Object[2];
-                objArr[0] = statusObject;
-                objArr[1] = avatarImage;
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = objArr;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }
