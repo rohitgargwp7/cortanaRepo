@@ -337,9 +337,7 @@ namespace windows_client.DbUtils
                 #region GROUP NAME CHANGED
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, convMsg.GroupParticipant, convMsg.Msisdn);
-                    //convMsg.Message = gp.FirstName + " changed the group name.";
-                    convMsg.Message = AppResources.GroupNameChangedByGrpMember_Txt;
+                    obj.LastMessage = convMsg.Message;
                 }
                 #endregion
                 #region NO_INFO or OTHER MSGS
