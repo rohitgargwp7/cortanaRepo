@@ -240,7 +240,7 @@ namespace windows_client.DbUtils
                     from o in hdc.statusMessage
                     where o.Msisdn == myMsisdn
                     orderby o.StatusId descending
-                    select o );
+                    select o);
                 return q;
             }
         }

@@ -498,9 +498,21 @@ namespace windows_client.View
             {
                 ConversationTableUtils.updateGroupName(groupId, groupName);
                 GroupTableUtils.updateGroupName(groupId, groupName);
-                object[] vals = new object[2];
+
+                string msg = string.Format(AppResources.GroupNameChangedByGrpMember_Txt , AppResources.You_Txt, groupName);
+                ConvMessage cm = new ConvMessage(msg,groupId,TimeUtils.getCurrentTimeStamp(),ConvMessage.State.RECEIVED_READ,-1,-1);
+                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
+                cm.GroupParticipant = App.MSISDN;
+                JObject jo = new JObject();
+                jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME;
+                cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
+                ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
+                if (cobj == null)
+                    return;
+                object[] vals = new object[3];
                 vals[0] = groupId;
                 vals[1] = groupName;
+                vals[2] = cm;
                 isgroupNameSelfChanged = true;
                 mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
