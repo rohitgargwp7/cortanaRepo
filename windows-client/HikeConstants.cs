@@ -120,6 +120,7 @@ namespace windows_client
         public static readonly string CS_HOME_KEY = "Home";
         public static readonly string CS_WORK_KEY = "Work";
         public static readonly string CS_MOBILE_KEY = "Mobile";
+        public static readonly string CS_OTHERS_KEY = "Others";
 
         public static string FAQS_LINK
         {
