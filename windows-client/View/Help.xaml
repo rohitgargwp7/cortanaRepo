@@ -57,8 +57,8 @@
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_RateAppText, Source={StaticResource LocalizedStrings}}" FontSize="20" TextWrapping="Wrap"/>
                 </StackPanel>
                 <StackPanel Grid.Row="5" Grid.Column="1" Margin="20,30,0,0" Tap="SystemHealth_Tap">
-                    <TextBlock Text="System Health" FontSize="42" FontFamily="Segoe WP SemiLight"/>
-                    <TextBlock x:Name="systemHealth" Text="See hike service health" FontSize="20"/>
+                    <TextBlock Text="{Binding Path= LocalizedResources.Help_System_Health_Title, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
+                    <TextBlock x:Name="systemHealth" Text="{Binding Path= LocalizedResources.Help_System_Health_Text, Source={StaticResource LocalizedStrings}}" FontSize="20"/>
                 </StackPanel>
                 <StackPanel Grid.Row="6" Grid.Column="1" Margin="20,30,0,0">
                     <TextBlock Text="{Binding Path= LocalizedResources.Help_AppVersionTitle, Source={StaticResource LocalizedStrings}}" FontSize="42" FontFamily="Segoe WP SemiLight"/>
