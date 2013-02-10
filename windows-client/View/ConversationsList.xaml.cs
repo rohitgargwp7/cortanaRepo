@@ -159,7 +159,8 @@ namespace windows_client.View
 
                 firstLoad = false;
             }
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            // this should be called only if its not first load as it will get called in first load section
+            else if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
                 emptyScreenTip.Opacity = 1;

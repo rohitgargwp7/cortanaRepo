@@ -492,6 +492,7 @@ namespace windows_client
                                             {
                                                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                 {
+                                                    string name = null;
                                                     bool thrAreFavs = false;
                                                     KeyValuePair<string, JToken> fkkvv;
                                                     IEnumerator<KeyValuePair<string, JToken>> kVals = favJSON.GetEnumerator();
@@ -503,8 +504,10 @@ namespace windows_client
                                                         JToken pToken;
                                                         if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
                                                             isFav = false;
+                                                        if (pendingJSON.TryGetValue(HikeConstants.NAME, out pToken))
+                                                            name = pToken.ToString();
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key); // true for favs
+                                                        LoadFavAndPending(isFav, fkkvv.Key,name); // true for favs
                                                         thrAreFavs = true;
                                                     }
                                                     if (thrAreFavs)
@@ -769,13 +772,17 @@ namespace windows_client
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
                     string groupId = (string)jsonObj[HikeConstants.TO];
-
+                    if (msisdn == App.MSISDN)
+                        return;
                     bool groupExist = ConversationTableUtils.updateGroupName(groupId, groupName);
                     if (!groupExist)
                         return;
-                    object[] vals = new object[2];
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                    object[] vals = new object[3];
                     vals[0] = groupId;
                     vals[1] = groupName;
+                    vals[2] = cm;
 
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)
@@ -891,13 +898,26 @@ namespace windows_client
                         ConversationListObject favObj;
                         if (App.ViewModel.ConvMap.ContainsKey(ms))
                             favObj = App.ViewModel.ConvMap[ms];
-                        else // user not saved in address book
+                        else
                         {
                             ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                            favObj = new ConversationListObject(ms, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                            string name = null;
+                            if (ci == null)
+                            {
+                                JToken data;
+                                if (jsonObj.TryGetValue(HikeConstants.DATA, out data))
+                                {
+                                    JToken n;
+                                    JObject dobj = data.ToObject<JObject>();
+                                    if (dobj.TryGetValue(HikeConstants.NAME, out n))
+                                        name = n.ToString();
+                                }
+                            }
+                            else
+                                name = ci.Name;
+                            favObj = new ConversationListObject(ms, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
                         }
-
-                        App.ViewModel.PendingRequests.Add(ms,favObj);
+                        App.ViewModel.PendingRequests.Add(ms, favObj);
                         MiscDBUtil.SavePendingRequests();
                         this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                     }
@@ -929,6 +949,7 @@ namespace windows_client
                 }
             }
             #endregion
+
             #region STATUS UPDATE
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
@@ -974,7 +995,7 @@ namespace windows_client
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
                     cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    
+
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
                     {
@@ -999,7 +1020,7 @@ namespace windows_client
             #endregion
         }
 
-        private void LoadFavAndPending(bool isFav, string msisdn)
+        private void LoadFavAndPending(bool isFav, string msisdn,string name)
         {
             if (msisdn == null)
                 return;
@@ -1011,12 +1032,12 @@ namespace windows_client
                 ConversationListObject favObj = null;
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
-                    favObj = App.ViewModel.ConvMap[msisdn];                  
+                    favObj = App.ViewModel.ConvMap[msisdn];
                 }
                 else
                 {
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);                   
+                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
                 App.ViewModel.FavList.Add(favObj);
                 MiscDBUtil.SaveFavourites();
@@ -1037,11 +1058,11 @@ namespace windows_client
                 else
                 {
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);                   
+                    favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
                 App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
                 MiscDBUtil.SavePendingRequests();
-            }   
+            } 
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)

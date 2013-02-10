@@ -19,6 +19,7 @@ namespace windows_client.Controls
             INTERNATIONAL_USER_BLOCKED,
             TEXT_UPDATE,
             PIC_UPDATE,
+            DEFAULT,
             UNKNOWN
         }
 
@@ -72,6 +73,7 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
                     break;
                 case MessageType.TEXT_UPDATE:
+                default:
                     NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
                     break;
             }
