@@ -1354,7 +1354,15 @@ namespace windows_client.View
             }
             else
             {
-                bool onHike = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn).OnHike;
+                ContactInfo cn = null;
+                if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                else
+                {
+                     cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
+                     App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                }
+                bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
 

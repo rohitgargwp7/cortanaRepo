@@ -169,7 +169,14 @@ namespace windows_client.View
                     }
                     else
                     {
-                        ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                        ContactInfo cn = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                            cn = App.ViewModel.ContactsCache[msisdn];
+                        else
+                        {
+                            cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                            App.ViewModel.ContactsCache[msisdn] = cn;
+                        }
                         profileImage = UI_Utils.Instance.createImageFromBytes(MiscDBUtil.getThumbNailForMsisdn(msisdn));
                     }
                     isFriend = true;
@@ -363,7 +370,7 @@ namespace windows_client.View
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             ImageStatusUpdate imgStUp = statusLLS.SelectedItem as ImageStatusUpdate;
-            if(imgStUp == null)
+            if (imgStUp == null)
                 return;
             PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = imgStUp.StatusImage;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
@@ -379,7 +386,14 @@ namespace windows_client.View
             if (stsBox.Msisdn == App.MSISDN)
                 return;
 
-            ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
+            ContactInfo contactInfo = null;
+            if (App.ViewModel.ContactsCache.ContainsKey(stsBox.Msisdn))
+                contactInfo = App.ViewModel.ContactsCache[stsBox.Msisdn];
+            else
+            {
+                contactInfo = UsersTableUtils.getContactInfoFromMSISDN(stsBox.Msisdn);
+                App.ViewModel.ContactsCache[stsBox.Msisdn] = contactInfo;
+            }
             if (contactInfo == null)
             {
                 contactInfo = new ContactInfo();
@@ -429,7 +443,14 @@ namespace windows_client.View
                 PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE] = co;
             else
             {
-                ContactInfo contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                ContactInfo contactInfo = null;
+                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    contactInfo = App.ViewModel.ContactsCache[msisdn];
+                else
+                {
+                    contactInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    App.ViewModel.ContactsCache[msisdn] = contactInfo;
+                }
                 if (contactInfo == null)
                 {
                     contactInfo = new ContactInfo();

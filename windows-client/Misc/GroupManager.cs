@@ -41,7 +41,7 @@ namespace windows_client.Misc
             if (!isoStore.DirectoryExists(GROUP_DIR))
                 isoStore.CreateDirectory(GROUP_DIR);
         }
-        
+
         public static GroupManager Instance
         {
             get
@@ -66,7 +66,11 @@ namespace windows_client.Misc
                     }
                 }
             }
-            ContactInfo cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+            ContactInfo cInfo = null;
+            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                cInfo = App.ViewModel.ContactsCache[msisdn];
+            else
+                cInfo = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
             GroupParticipant gp = new GroupParticipant(grpId, cInfo != null ? cInfo.Name : string.IsNullOrWhiteSpace(defaultName) ? msisdn : defaultName, msisdn, cInfo != null ? cInfo.OnHike : true);
             if (groupCache.ContainsKey(grpId))
             {
@@ -361,7 +365,7 @@ namespace windows_client.Misc
                     return activeMembers[0].FirstName + AppResources.And_txt
                     + activeMembers[1].FirstName;
                 default:
-                    return string.Format(AppResources.NamingConvention_Txt,activeMembers[0].FirstName,activeMembers.Count - 1);
+                    return string.Format(AppResources.NamingConvention_Txt, activeMembers[0].FirstName, activeMembers.Count - 1);
             }
         }
 
@@ -420,23 +424,23 @@ namespace windows_client.Misc
         {
             foreach (string grpId in groupCache.Keys)
             {
-                GroupParticipant gp = GetParticipant(grpId,cn.Msisdn);
+                GroupParticipant gp = GetParticipant(grpId, cn.Msisdn);
                 if (gp != null) // represents this contact lies in the group
                 {
                     gp.Name = cn.Name;
                     GetParticipantList(grpId).Sort();
                     App.ViewModel.ConvMap[grpId].ContactName = defaultGroupName(grpId); // update groupname
                     // update chat thread and group info page
-                    object [] o = new object[2];
+                    object[] o = new object[2];
                     o[0] = grpId;
                     o[1] = App.ViewModel.ConvMap[grpId].ContactName;
-                    App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED,o);                    
+                    App.HikePubSubInstance.publish(HikePubSub.GROUP_NAME_CHANGED, o);
                     SaveGroupCache(grpId); // save the cache
                 }
             }
         }
 
-        private GroupParticipant GetParticipant(string groupId,string msisdn)
+        private GroupParticipant GetParticipant(string groupId, string msisdn)
         {
             for (int i = 0; i < groupCache[groupId].Count; i++)
             {

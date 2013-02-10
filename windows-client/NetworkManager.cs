@@ -321,6 +321,9 @@ namespace windows_client
                     return;
                 }
                 bool joined = USER_JOINED == type;
+                // update contacts cache
+                if (App.ViewModel.ContactsCache.ContainsKey(uMsisdn))
+                    App.ViewModel.ContactsCache[uMsisdn].OnHike = joined;
                 GroupManager.Instance.LoadGroupCache();
                 if (joined)
                 {
@@ -1036,6 +1039,7 @@ namespace windows_client
                 }
                 else
                 {
+                    // here no need to call cache
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
@@ -1057,6 +1061,7 @@ namespace windows_client
                 }
                 else
                 {
+                    // no need to call cache here
                     ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                     favObj = new ConversationListObject(msisdn, ci != null ? ci.Name : null, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(msisdn) : null);
                 }
