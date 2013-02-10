@@ -68,6 +68,7 @@ namespace windows_client.View
             {
                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
             }
+            TotalUnreadStatuses = NotificationCount;
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -816,8 +817,8 @@ namespace windows_client.View
                     {
                         if (launchPagePivot.SelectedIndex == 3)
                         {
-                            freshStatusUpdates.Add(sm);
-                            RefreshBarCount++;
+                            freshStatusUpdates.Add(sm);//read from db or handling tombstone. freshStatusUpdates will be cleared in tombstone
+                            RefreshBarCount++;//persist in this.State. it will be cleared 
                         }
                         else
                         {
@@ -826,6 +827,7 @@ namespace windows_client.View
                             NotificationCount++;
                         }
                     }
+                    TotalUnreadStatuses++;
                 });
             }
             #endregion
@@ -1314,6 +1316,29 @@ namespace windows_client.View
             }
         }
 
+        private int _totalUnreadStatuses;
+        private int TotalUnreadStatuses
+        {
+            get
+            {
+                return _totalUnreadStatuses;
+            }
+            set
+            {
+                if (value != _totalUnreadStatuses)
+                {
+                    if (value == 0)
+                    {
+                        for (int i = 0; i < _totalUnreadStatuses; i++)
+                        {
+                            App.ViewModel.StatusList[i].IsRead = true;
+                        }
+                    }
+                    _totalUnreadStatuses = value;
+                }
+            }
+        }
+
         private int _notificationCount = 0;
         private int NotificationCount
         {
@@ -1331,6 +1356,7 @@ namespace windows_client.View
                         {
                             notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
                             notificationCountTxtBlk.Text = value.ToString();
+                            App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
                         }
                         else if (_notificationCount > 0 && value == 0)
                         {
@@ -1491,6 +1517,10 @@ namespace windows_client.View
                 App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
+            for (int i = 0; i < NotificationCount; i++)
+            {
+                statusMessagesFromDB[i].IsRead = true;
+            }
             if (statusMessagesFromDB != null)
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
