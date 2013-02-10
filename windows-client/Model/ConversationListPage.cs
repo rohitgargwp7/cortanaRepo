@@ -212,46 +212,6 @@ namespace windows_client.Model
             }
         }
 
-        public BitmapImage SDRStatusImage
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED:
-                        return UI_Utils.Instance.Sent;
-                    case ConvMessage.State.SENT_DELIVERED:
-                        return UI_Utils.Instance.Delivered;
-                    case ConvMessage.State.SENT_DELIVERED_READ:
-                        return UI_Utils.Instance.Read;
-                    case ConvMessage.State.SENT_UNCONFIRMED:
-                        return UI_Utils.Instance.Trying;
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        return UI_Utils.Instance.Unread;
-                    default:
-                        return null;
-                }
-            }
-        }
-
-        public Visibility SDRStatusImageVisible
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED:
-                    case ConvMessage.State.SENT_DELIVERED:
-                    case ConvMessage.State.SENT_DELIVERED_READ:
-                    case ConvMessage.State.SENT_UNCONFIRMED:
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        return Visibility.Visible;
-                    default:
-                        return Visibility.Collapsed;
-                }
-            }
-        }
-
         public string NameToShow
         {
             get
