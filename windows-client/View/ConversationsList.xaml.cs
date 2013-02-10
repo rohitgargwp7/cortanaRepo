@@ -1422,7 +1422,7 @@ namespace windows_client.View
                 StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
                 if (sb == null)
                     return;
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }
