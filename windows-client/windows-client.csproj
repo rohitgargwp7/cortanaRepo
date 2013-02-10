@@ -220,9 +220,6 @@
     <Compile Include="View\ShareLocation.xaml.cs">
       <DependentUpon>ShareLocation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Walkthrough.xaml.cs">
-      <DependentUpon>Walkthrough.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -338,10 +335,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ShareLocation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Walkthrough.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -628,10 +621,6 @@
     <Content Include="View\images\made_with_love.png" />
     <Resource Include="View\images\notifications.png" />
     <Content Include="View\images\logo_main.png" />
-    <Content Include="View\images\phone_hikerewards.jpg" />
-    <Content Include="View\images\phone_hiketohike.jpg" />
-    <Content Include="View\images\phone_hiketosms.jpg" />
-    <Content Include="View\images\phone_number.png" />
     <Resource Include="View\images\privacy.png" />
     <Content Include="View\images\play_icon.png" />
     <Resource Include="View\images\privacy_dark.png" />
