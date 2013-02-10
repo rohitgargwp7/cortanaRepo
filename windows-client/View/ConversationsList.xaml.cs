@@ -796,7 +796,7 @@ namespace windows_client.View
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                         lastStatusTxtBlk.Text = sm.Message;
-                        App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
                     else
@@ -808,7 +808,7 @@ namespace windows_client.View
                         }
                         else
                         {
-                            App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                             NotificationCount++;
                         }
