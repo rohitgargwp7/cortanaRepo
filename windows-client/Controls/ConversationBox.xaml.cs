@@ -133,9 +133,10 @@ namespace windows_client.Controls
                             sdrImage.Visibility = Visibility.Visible;
                             break;
                         case ConvMessage.State.RECEIVED_UNREAD:
-                            lastMessageTxtBlck.Foreground = (Brush)Application.Current.Resources["PhoneAccentBrush"];
-                            sdrImage.Source = UI_Utils.Instance.Unread;
-                            sdrImage.Visibility = Visibility.Visible;
+                            lastMessageTxtBlck.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                            sdrImage.Visibility = Visibility.Collapsed;
+                            unreadCircle.Visibility = Visibility.Visible;
+                            unreadCircle.Fill = UI_Utils.Instance.PhoneThemeColor;
                             break;
                         default:
                             lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
