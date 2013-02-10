@@ -23,14 +23,7 @@ namespace windows_client.Controls.StatusUpdate
                     base.IsRead = value;
                     if (value == true) //read status
                     {
-                        if (Utils.isDarkTheme())
-                        {
-                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
-                        }
-                        else
-                        {
-                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
-                        }
+                        statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                     }
                     else //unread status
                     {
@@ -52,14 +45,7 @@ namespace windows_client.Controls.StatusUpdate
                 this.StatusImage = statusImageBitmap;
             if (imageTap != null)
                 this.userProfileImage.Tap += imageTap;
-            if (Utils.isDarkTheme())
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
-            }
-            else
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
-            }
+            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             if (!isRead)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;

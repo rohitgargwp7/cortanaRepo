@@ -24,14 +24,7 @@ namespace windows_client.Controls.StatusUpdate
                     base.IsRead = value;
                     if (value == true) //read status
                     {
-                        if (Utils.isDarkTheme())
-                        {
-                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
-                        }
-                        else
-                        {
-                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
-                        }
+                        statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                     }
                     else
                     {
@@ -48,14 +41,7 @@ namespace windows_client.Controls.StatusUpdate
             InitializeComponent();
             this.statusTextTxtBlk.Text = textOrLocationName;
             this.timestamp = timestamp;
-            if (Utils.isDarkTheme())
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
-            }
-            else
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
-            }
+            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             if (statusBubbleImageTap != null)
             {
                 this.userProfileImage.Tap += statusBubbleImageTap;
