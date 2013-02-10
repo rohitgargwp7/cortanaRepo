@@ -933,13 +933,13 @@ namespace windows_client.Model
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
         {
             this.MessageId = -1;
+            this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
             this.participantInfoState = participantInfoState;
             this.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
             this.Timestamp = TimeUtils.getCurrentTimeStamp();
             switch (this.participantInfoState)
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
-                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     this.Message = AppResources.SMS_INDIA;
                     break;
                 case ParticipantInfoState.STATUS_UPDATE:
@@ -951,6 +951,15 @@ namespace windows_client.Model
                         this.Message = "pu";
                     data.Remove(HikeConstants.THUMBNAIL);
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                case ParticipantInfoState.GROUP_NAME_CHANGE:
+                    string grpId = (string)jsonObj[HikeConstants.TO];
+                    string from = (string)jsonObj[HikeConstants.FROM];
+                    string grpName = (string)jsonObj[HikeConstants.DATA];
+                    this._groupParticipant = from;
+                    this.Msisdn = grpId;
+                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null,from,grpId);
+                    this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Name, grpName);
                     break;
                 default: break;
             }

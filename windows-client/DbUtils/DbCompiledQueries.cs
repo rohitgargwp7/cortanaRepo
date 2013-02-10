@@ -239,6 +239,7 @@ namespace windows_client.DbUtils
                 ((HikeChatsDb hdc, string myMsisdn) =>
                     from o in hdc.statusMessage
                     where o.Msisdn == myMsisdn
+                    orderby o.StatusId descending
                     select o);
                 return q;
             }

@@ -100,17 +100,7 @@ namespace windows_client.View
             else
             {
                 string grpId = groupId.Replace(":", "_");
-                byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(grpId);
-                if (avatar == null)
-                    groupImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(grpId);
-                else
-                {
-                    MemoryStream memStream = new MemoryStream(avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage();
-                    empImage.SetSource(memStream);
-                    groupImage.Source = empImage;
-                }
+                groupImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
                 if (Utils.isDarkTheme())
                 {
                     addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
@@ -508,9 +498,21 @@ namespace windows_client.View
             {
                 ConversationTableUtils.updateGroupName(groupId, groupName);
                 GroupTableUtils.updateGroupName(groupId, groupName);
-                object[] vals = new object[2];
+
+                string msg = string.Format(AppResources.GroupNameChangedByGrpMember_Txt , AppResources.You_Txt, groupName);
+                ConvMessage cm = new ConvMessage(msg,groupId,TimeUtils.getCurrentTimeStamp(),ConvMessage.State.RECEIVED_READ,-1,-1);
+                cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
+                cm.GroupParticipant = App.MSISDN;
+                JObject jo = new JObject();
+                jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME;
+                cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
+                ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
+                if (cobj == null)
+                    return;
+                object[] vals = new object[3];
                 vals[0] = groupId;
                 vals[1] = groupName;
+                vals[2] = cm;
                 isgroupNameSelfChanged = true;
                 mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -718,26 +720,14 @@ namespace windows_client.View
             });
         }
 
-        private void groupMemberImg_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             GroupParticipant gp = groupChatParticipants.SelectedItem as GroupParticipant;
 
             if (gp == null)
                 return;
 
-            string msisdn = gp.Msisdn == App.MSISDN ? HikeConstants.MY_PROFILE_PIC : gp.Msisdn;
-
-            BitmapImage avatarImage = UI_Utils.Instance.getUserProfileThumbnail(msisdn);
-
-            Object[] objArray = new Object[2];
-            objArray[0] = gp;
-            objArray[1] = avatarImage;
-
-            if (gp.Msisdn == App.MSISDN)
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArray;
-            else
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = objArray;
-
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
         }
 

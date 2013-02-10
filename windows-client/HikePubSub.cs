@@ -105,8 +105,6 @@ namespace windows_client
 
         public static string ADD_OR_UPDATE_PROFILE = "addOrUpdateProfile";
 
-        public static string CHANGE_USER_PROFILE_PIC = "changeProfilePic";
-
         public static readonly string ACCOUNT_DELETED = "accountDeleted";
 
         public static readonly string INVITEE_NUM_CHANGED = "inviteeNoChanged";

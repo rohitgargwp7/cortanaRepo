@@ -30,12 +30,14 @@ namespace windows_client.DbUtils
 
         public static void clearDatabase()
         {
-            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS,SAVED PIC UPDATES
+            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS,SAVED PIC UPDATES, STATUS MSGS
 
             ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
             DeleteAllPicUpdates();
+            DeleteAllLargeStatusImages();
+            StatusMsgsTable.DeleteAllStatusMsgs();
             GroupManager.Instance.DeleteAllGroups();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
@@ -200,6 +202,32 @@ namespace windows_client.DbUtils
                     isThumbnail = true;
                     string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
                     readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
+                }
+            }
+        }
+
+        public static void DeleteAllLargeStatusImages()
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!store.DirectoryExists(STATUS_UPDATE_LARGE))
+                    return;
+                string[] dirs = store.GetFileNames(STATUS_UPDATE_LARGE + "\\*");
+                foreach (string dir in dirs)
+                {
+                    string[] files = store.GetFileNames(STATUS_UPDATE_LARGE + "\\" + dir + "\\*");
+
+                    foreach (string file in files)
+                    {
+                        try
+                        {
+                            store.DeleteFile(STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("File {0} does not exist.", STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
+                        }
+                    }
                 }
             }
         }

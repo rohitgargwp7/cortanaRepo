@@ -160,7 +160,8 @@ namespace windows_client.View
 
                 firstLoad = false;
             }
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            // this should be called only if its not first load as it will get called in first load section
+            else if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
                 emptyScreenTip.Opacity = 1;
@@ -389,7 +390,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.REWARDS_CHANGED, this);
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
-            mPubSub.addListener(HikePubSub.CHANGE_USER_PROFILE_PIC, this);
+            mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
         }
 
         private void removeListeners()
@@ -406,7 +407,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REWARDS_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
                 mPubSub.removeListener(HikePubSub.STATUS_RECEIVED, this);
-                mPubSub.removeListener(HikePubSub.CHANGE_USER_PROFILE_PIC, this);
+                mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
 
             }
             catch { }
@@ -461,24 +462,10 @@ namespace windows_client.View
             creditsTxtBlck.Text = string.Format(AppResources.SMS_Left_Txt, (int)App.appSettings[App.SMS_SETTING]);
 
             Stopwatch st = Stopwatch.StartNew();
-            byte[] _avatar = MiscDBUtil.getThumbNailForMsisdn(HikeConstants.MY_PROFILE_PIC);
+            avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             st.Stop();
             long msec = st.ElapsedMilliseconds;
             Debug.WriteLine("Time to fetch profile image : {0}", msec);
-
-            if (_avatar != null)
-            {
-                MemoryStream memStream = new MemoryStream(_avatar);
-                memStream.Seek(0, SeekOrigin.Begin);
-                _avatarImageBitmap.SetSource(memStream);
-                avatarImage.Source = _avatarImageBitmap;
-
-            }
-            else
-            {
-                _avatarImageBitmap = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
-                avatarImage.Source = _avatarImageBitmap;
-            }
         }
 
         #endregion
@@ -810,8 +797,8 @@ namespace windows_client.View
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                         lastStatusTxtBlk.Text = sm.Message;
-                        App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
-                            statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
+                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
                     else
                     {
@@ -822,8 +809,8 @@ namespace windows_client.View
                         }
                         else
                         {
-                            App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(sm,
-                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
+                            App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                                statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                             NotificationCount++;
                         }
                     }
@@ -832,17 +819,12 @@ namespace windows_client.View
             }
             #endregion
             #region ADD_OR_UPDATE_PROFILE
-            else if (HikePubSub.CHANGE_USER_PROFILE_PIC == type)
+            else if (HikePubSub.ADD_OR_UPDATE_PROFILE == type)
             {
-                BitmapImage img = obj as BitmapImage;
-                if (img != null)
-                {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                   {
-                       _avatarImageBitmap = img;
-                       avatarImage.Source = _avatarImageBitmap;
-                   });
-                }
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
+               });
             }
             #endregion
         }
@@ -1007,10 +989,7 @@ namespace windows_client.View
 
         private void EditProfile_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            Object[] objArr = new Object[2];
-            objArr[0] = App.MSISDN;
-            objArr[1] = _avatarImageBitmap;
-            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = objArr;
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             //App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
             //NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
@@ -1376,7 +1355,7 @@ namespace windows_client.View
             {
                 App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
                     StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
-                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
+                    statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
             RefreshBarCount = 0;
         }
@@ -1401,7 +1380,15 @@ namespace windows_client.View
             }
             else
             {
-                bool onHike = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn).OnHike;
+                ContactInfo cn = null;
+                if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
+                    cn = App.ViewModel.ContactsCache[fObj.Msisdn];
+                else
+                {
+                     cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
+                     App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                }
+                bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
 
@@ -1469,7 +1456,7 @@ namespace windows_client.View
                 StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
                 if (sb == null)
                     return;
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb.Msisdn;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }
@@ -1526,7 +1513,7 @@ namespace windows_client.View
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
-                        statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap, null));
+                        statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }
             }
             this.statusLLS.ItemsSource = App.ViewModel.StatusList;
