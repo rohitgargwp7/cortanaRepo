@@ -836,7 +836,7 @@
     <comment>xaml</comment>
   </data>
   <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
-    <value>Gruppenname wurde durch Gruppenmitglied geändert.</value>
+    <value />
     <comment>MessagesTableUtils</comment>
   </data>
   <data name="GROUP_NAME_TXT" xml:space="preserve">
@@ -1232,7 +1232,11 @@
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
     <value />
   </data>
+
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
+ <value />
+  </data>
+  <data name="You_Txt" xml:space="preserve">
     <value />
   </data>
 </root>

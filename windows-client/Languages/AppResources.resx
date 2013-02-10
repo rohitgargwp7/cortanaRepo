@@ -836,7 +836,7 @@
     <comment>xaml</comment>
   </data>
   <data name="GroupNameChangedByGrpMember_Txt" xml:space="preserve">
-    <value>Group Name changed by a group member.</value>
+    <value>{0} changed the group name to {1}</value>
     <comment>MessagesTableUtils</comment>
   </data>
   <data name="GROUP_NAME_TXT" xml:space="preserve">
@@ -1332,5 +1332,8 @@
   </data>
   <data name="TimeUtils_Moments_Ago" xml:space="preserve">
     <value>moments ago</value>
+  </data>
+  <data name="You_Txt" xml:space="preserve">
+    <value>You</value>
   </data>
 </root>
