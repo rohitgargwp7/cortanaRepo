@@ -619,7 +619,7 @@ namespace windows_client.utils
 
 
 
-        public FontFamily GroupChatMessageHeader
+        public FontFamily SegoeSemiBoldFont
         {
             get
             {
