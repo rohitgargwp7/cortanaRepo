@@ -70,6 +70,7 @@ namespace windows_client.View
             }
             TotalUnreadStatuses = NotificationCount;
         }
+
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (favTutePvt.SelectedIndex == 0)
@@ -632,6 +633,8 @@ namespace windows_client.View
                     appBar.Buttons.Add(composeIconButton);
                 if (appBar.Buttons.Contains(postStatusIconButton))
                     appBar.Buttons.Remove(postStatusIconButton);
+                if (NotificationCount == 0)  //If NotificationCount is 0, it would be safe to change here
+                    TotalUnreadStatuses = 0; //should be reset when user moves away from Timeline. 
             }
         }
 
