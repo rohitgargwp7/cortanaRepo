@@ -22,9 +22,10 @@ namespace windows_client.Model
 
         public enum StatusType
         {
-            ADD_FRIEND,
+            FRIEND_REQUEST,
             TEXT_UPDATE,
-            PROFILE_PIC_UPDATE
+            PROFILE_PIC_UPDATE,
+            IS_NOW_FRIEND
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts)
