@@ -1469,7 +1469,7 @@ namespace windows_client.View
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
 
                 string contactInfoString = Encoding.UTF8.GetString(filebytes, 0, filebytes.Length);
-                JObject contactInfoJobject = JObject.Parse(contactInfoString);
+                JObject contactInfoJobject = JObject.Parse(contactInfoString)[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
 
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
                 SaveContactTask sct = con.GetSaveCotactTask();
