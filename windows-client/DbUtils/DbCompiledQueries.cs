@@ -237,8 +237,9 @@ namespace windows_client.DbUtils
                 Func<HikeChatsDb, string, IQueryable<StatusMessage>> q =
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<StatusMessage>>
                 ((HikeChatsDb hdc, string myMsisdn) =>
-                    from o in hdc.statusMessage 
-                    where o.Msisdn == myMsisdn orderby o.StatusId descending
+                    from o in hdc.statusMessage
+                    where o.Msisdn == myMsisdn
+                    orderby o.StatusId descending
                     select o);
                 return q;
             }
