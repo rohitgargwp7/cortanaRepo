@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using windows_client.Languages;
 using System;
+using System.Windows.Media;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -10,7 +11,7 @@ namespace windows_client.Controls.StatusUpdate
         private BitmapImage _statusImageSource;
 
         public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, long timestamp,
-            EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
+            bool isRead, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
@@ -27,6 +28,10 @@ namespace windows_client.Controls.StatusUpdate
             else
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
+            }
+            if (!isRead)
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
             }
         }
 

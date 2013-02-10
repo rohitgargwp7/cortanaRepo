@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using windows_client.Languages;
 using Microsoft.Phone.Controls;
 using System;
+using System.Windows.Media;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -10,7 +11,7 @@ namespace windows_client.Controls.StatusUpdate
     {
         private long timestamp;
         public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string textOrLocationName, long timestamp,
-            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
+            bool isRead, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
@@ -27,6 +28,10 @@ namespace windows_client.Controls.StatusUpdate
             if (statusBubbleImageTap != null)
             {
                 this.userProfileImage.Tap += statusBubbleImageTap;
+            }
+            if (!isRead)
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
             }
         }
 
