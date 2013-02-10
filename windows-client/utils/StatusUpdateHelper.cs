@@ -40,8 +40,8 @@ namespace windows_client.utils
             EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap,
             EventHandler<System.Windows.Input.GestureEventArgs> enlargePic_Tap, BitmapImage userProfileThumbnail)
         {
-            string userName;  
-            
+            string userName;
+
             if (App.MSISDN == status.Msisdn)
             {
                 if (!App.appSettings.TryGetValue(App.ACCOUNT_NAME, out userName))
@@ -80,7 +80,7 @@ namespace windows_client.utils
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
                     statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, statusBubbleImageTap);
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, status.IsRead, statusBubbleImageTap);
                     if (isThumbnail)
                     {
                         object[] statusObjects = new object[2];
@@ -89,11 +89,12 @@ namespace windows_client.utils
                         AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + status.Message + "?only_image=true",
                             onStatusImageDownloaded, true, statusObjects);
                     }
-                    if(enlargePic_Tap != null)
+                    if (enlargePic_Tap != null)
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp, statusBubbleImageTap);
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message,
+                        status.Timestamp, status.IsRead, statusBubbleImageTap);
                     break;
             }
             if (statusBoxTap != null)
@@ -114,7 +115,7 @@ namespace windows_client.utils
                 //                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-//                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
+                    //                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
                 });
             }
         }
