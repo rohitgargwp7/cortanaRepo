@@ -10,6 +10,37 @@ namespace windows_client.Controls.StatusUpdate
     {
         private BitmapImage _statusImageSource;
 
+        public override bool IsRead
+        {
+            get
+            {
+                return base.IsRead;
+            }
+            set
+            {
+                if (value != base.IsRead)
+                {
+                    base.IsRead = value;
+                    if (value == true) //read status
+                    {
+                        if (Utils.isDarkTheme())
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
+                        }
+                        else
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
+                        }
+                    }
+                    else //unread status
+                    {
+                        statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                    }
+                }
+            }
+        }
+
+
         public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, long timestamp,
             bool isRead, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
             : base(userName, userImage, msisdn)

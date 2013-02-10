@@ -11,6 +11,7 @@ namespace windows_client.Controls.StatusUpdate
         private string _userName;
         private BitmapImage _userImage;
         private string _msisdn;
+        private bool _isRead;
 
         public string UserName
         {
@@ -56,7 +57,22 @@ namespace windows_client.Controls.StatusUpdate
                 }
             }
         }
-        
+
+        public virtual bool IsRead
+        {
+            get
+            {
+                return _isRead;
+            }
+            set
+            {
+                if (value != _isRead)
+                {
+                    _isRead = value;
+                }
+            }
+        }
+
         public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn)
         {
             this.UserName = userName;

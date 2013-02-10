@@ -10,6 +10,37 @@ namespace windows_client.Controls.StatusUpdate
     public partial class TextStatusUpdate : StatusUpdateBox
     {
         private long timestamp;
+
+        public override bool IsRead
+        {
+            get
+            {
+                return base.IsRead;
+            }
+            set
+            {
+                if (value != base.IsRead)
+                {
+                    base.IsRead = value;
+                    if (value == true) //read status
+                    {
+                        if (Utils.isDarkTheme())
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
+                        }
+                        else
+                        {
+                            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
+                        }
+                    }
+                    else
+                    {
+                        statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                    }
+                }
+            }
+        }
+
         public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string textOrLocationName, long timestamp,
             bool isRead, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
             : base(userName, userImage, msisdn)
