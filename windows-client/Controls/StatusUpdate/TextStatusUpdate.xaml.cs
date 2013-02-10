@@ -4,6 +4,7 @@ using windows_client.Languages;
 using Microsoft.Phone.Controls;
 using System;
 using System.Windows.Media;
+using windows_client.Model;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -35,7 +36,7 @@ namespace windows_client.Controls.StatusUpdate
         }
 
         public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string textOrLocationName, long timestamp,
-            bool isRead, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
+            bool isRead, StatusMessage.StatusType statusType, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
             : base(userName, userImage, msisdn)
         {
             InitializeComponent();
@@ -49,6 +50,14 @@ namespace windows_client.Controls.StatusUpdate
             if (!isRead)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+            }
+            if (statusType == StatusMessage.StatusType.IS_NOW_FRIEND)
+            {
+                statusTypeImage.Source = UI_Utils.Instance.FriendRequestImage;
+            }
+            else
+            {
+                statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
             }
         }
 

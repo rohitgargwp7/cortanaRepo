@@ -92,7 +92,7 @@ namespace windows_client.utils
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message,
-                        status.Timestamp, status.IsRead, statusBubbleImageTap);
+                        status.Timestamp, status.IsRead, status.Status_Type, statusBubbleImageTap);
                     break;
             }
             if (statusBoxTap != null)
