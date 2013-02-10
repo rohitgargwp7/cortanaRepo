@@ -58,8 +58,14 @@ namespace windows_client.utils
                 }
                 else
                 {
-                    // TODO : Cache contacts ....... GK
-                    ContactInfo cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                    ContactInfo cn = null;
+                    if (App.ViewModel.ContactsCache.ContainsKey(status.Msisdn))
+                        cn = App.ViewModel.ContactsCache[status.Msisdn];
+                    else
+                    {
+                        cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                        App.ViewModel.ContactsCache[status.Msisdn] = cn;
+                    }
                     userName = cn != null ? cn.Name : status.Msisdn;
                     userProfileThumbnail = UI_Utils.Instance.GetBitmapImage(status.Msisdn);
                 }

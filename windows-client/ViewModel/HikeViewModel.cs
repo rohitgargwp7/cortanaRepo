@@ -55,7 +55,6 @@ namespace windows_client.ViewModel
             }
         }
 
-
         private ObservableCollection<ConversationBox> _messageListPageCollection;
 
         public ObservableCollection<ConversationBox> MessageListPageCollection
@@ -293,7 +292,6 @@ namespace windows_client.ViewModel
         }
         #endregion
 
-
         public void ClearViewModel()
         {
             if (_pendingReq != null)
@@ -306,6 +304,15 @@ namespace windows_client.ViewModel
                 _convMap.Clear();
             if (_statusList != null)
                 _statusList.Clear();
+        }
+
+        private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string,ContactInfo>();
+        public Dictionary<string, ContactInfo> ContactsCache
+        {
+            get
+            {
+                return _contactsCache;
+            }
         }
     }
 }
