@@ -770,13 +770,17 @@ namespace windows_client
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
                     string groupId = (string)jsonObj[HikeConstants.TO];
-
+                    if (msisdn == App.MSISDN)
+                        return;
                     bool groupExist = ConversationTableUtils.updateGroupName(groupId, groupName);
                     if (!groupExist)
                         return;
-                    object[] vals = new object[2];
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                    object[] vals = new object[3];
                     vals[0] = groupId;
                     vals[1] = groupName;
+                    vals[2] = cm;
 
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)

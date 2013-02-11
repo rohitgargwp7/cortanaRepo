@@ -1739,11 +1739,10 @@ namespace windows_client.View
                 #region GROUP NAME CHANGED
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.DEFAULT, convMessage.Message);
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
-                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 ScrollToBottom();
             }
             catch (Exception e)
@@ -2686,12 +2685,14 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 string groupId = (string)vals[0];
                 string groupName = (string)vals[1];
+                ConvMessage convMessage = (ConvMessage)vals[2];
                 if (mContactNumber == groupId)
                 {
                     mContactName = groupName;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         userName.Text = mContactName;
+                        AddMessageToUI(convMessage,false);
                     });
                 }
             }
