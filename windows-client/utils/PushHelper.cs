@@ -152,6 +152,7 @@ namespace windows_client.utils
             else if (stat == HikeConstants.OK && dispatcherTimer != null && dispatcherTimer.IsEnabled)
             {
                 dispatcherTimer.Stop();
+                dispatcherTimer = null; //release strong pointer as it is no longer required
             }
         }
 
