@@ -154,9 +154,6 @@ namespace windows_client.Model
                     _messageStatus = value;
                     UpdateConversationBox();
                     NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("LastMessageColor");
-                    NotifyPropertyChanged("SDRStatusImage");
-                    NotifyPropertyChanged("SDRStatusImageVisible");
                 }
             }
         }
@@ -273,42 +270,13 @@ namespace windows_client.Model
             }
         }
 
-        public string LastMessageColor
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        Color currentAccentColorHex =
-                        (Color)Application.Current.Resources["PhoneAccentColor"];
-                        return currentAccentColorHex.ToString();
-                    default: return "gray";
-                }
-            }
-        }
-
-        public Visibility IsLastMessageUnread
+        public Visibility IsLastMessageUnread // this too should be removed
         {
             get
             {
                 if (ConvMessage.State.RECEIVED_UNREAD == _messageStatus)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public string SdrImage
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
-                    case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
-                    case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
-                    default: return "";
-                }
             }
         }
 
