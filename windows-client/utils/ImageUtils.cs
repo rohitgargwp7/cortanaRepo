@@ -48,6 +48,8 @@ namespace windows_client.utils
         private BitmapImage trying;
         private BitmapImage waiting;
         private BitmapImage reward;
+        private BitmapImage chatSmsError;
+        private BitmapImage grpNameChanged;
         private BitmapImage participantLeft;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
@@ -516,9 +518,19 @@ namespace windows_client.utils
         {
             get
             {
-                if (reward == null)
-                    reward = new BitmapImage(new Uri("/View/images/chat_sms_error.png", UriKind.Relative));
-                return reward;
+                if (chatSmsError == null)
+                    chatSmsError = new BitmapImage(new Uri("/View/images/chat_sms_error.png", UriKind.Relative));
+                return chatSmsError;
+            }
+        }
+
+        public BitmapImage GrpNameChanged
+        {
+            get
+            {
+                if(grpNameChanged == null)
+                    grpNameChanged = new BitmapImage(new Uri("/View/images/group_name_changed.png", UriKind.Relative));
+                return grpNameChanged;
             }
         }
 
