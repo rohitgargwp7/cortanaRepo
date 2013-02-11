@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Notification;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using System.Windows.Threading;
+using System.Net.NetworkInformation;
 
 namespace windows_client.utils
 {
@@ -18,6 +11,9 @@ namespace windows_client.utils
     {
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile PushHelper instance = null;
+        private string latestPushToken;
+        private readonly int pollingTime = 5; //in seconds
+        private DispatcherTimer dispatcherTimer;
 
         public static PushHelper Instance
         {
@@ -99,8 +95,9 @@ namespace windows_client.utils
 
                     if (pushChannel.ChannelUri != null)
                     {
-                        Debug.WriteLine(pushChannel.ChannelUri.ToString());
-                        AccountUtils.postPushNotification(pushChannel.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+                        latestPushToken = pushChannel.ChannelUri.ToString();
+                        Debug.WriteLine(latestPushToken);
+                        AccountUtils.postPushNotification(latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
                     }
                 }
             }
@@ -117,7 +114,10 @@ namespace windows_client.utils
         void PushChannel_ChannelUriUpdated(object sender, NotificationChannelUriEventArgs e)
         {
             if (e.ChannelUri != null)
-                AccountUtils.postPushNotification(e.ChannelUri.ToString(), new AccountUtils.postResponseFunction(postPushNotification_Callback));
+            {
+                latestPushToken = e.ChannelUri.ToString();
+                AccountUtils.postPushNotification(latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
+            }
         }
 
         void PushChannel_ErrorOccurred(object sender, NotificationChannelErrorEventArgs e)
@@ -138,13 +138,27 @@ namespace windows_client.utils
                 obj.TryGetValue(HikeConstants.STAT, out statusToken);
                 stat = statusToken.ToString();
             }
-            //if (stat != HikeConstants.OK)
-            //{
-            //    this.closePushnotifications();//if server did not ack push token, close it
-            //}
+            if (stat != HikeConstants.OK && NetworkInterface.GetIsNetworkAvailable())
+            {
+                if (dispatcherTimer == null)
+                {
+                    dispatcherTimer = new DispatcherTimer();
+                    dispatcherTimer.Tick += postTokenToServer;
+                    dispatcherTimer.Interval = TimeSpan.FromSeconds(pollingTime);
+                }
+                if (!dispatcherTimer.IsEnabled) //ideally we don't need two separate if blocks. added for more safety
+                    dispatcherTimer.Start();
+            }
+            else if (stat == HikeConstants.OK && dispatcherTimer != null && dispatcherTimer.IsEnabled)
+            {
+                dispatcherTimer.Stop();
+            }
         }
 
-
-
+        void postTokenToServer(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(latestPushToken))
+                AccountUtils.postPushNotification(latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
+        }
     }
 }
