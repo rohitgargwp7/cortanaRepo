@@ -20,6 +20,13 @@ namespace windows_client.Model
         private string workPhone;
         private string otherEmail;
 
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+        }
 
         public JObject SerialiseToJobject()
         {
@@ -98,10 +105,13 @@ namespace windows_client.Model
             {
                 jobject[HikeConstants.CS_ADDRESSES] = jarray;
             }
+            
+            jobject[HikeConstants.FILE_NAME] = string.IsNullOrEmpty(name) ? "Contact" : name;
+            jobject[HikeConstants.FILE_CONTENT_TYPE] = HikeConstants.CONTACT;
             filesData.Add(jobject);
 
             metadata[HikeConstants.FILES_DATA] = filesData;
-            return  metadata;
+            return metadata;
         }
 
         public SaveContactTask GetSaveCotactTask()
@@ -227,7 +237,7 @@ namespace windows_client.Model
                     }
                 }
             }
-          
+
 
             if (jsonOnj.TryGetValue(HikeConstants.CS_EMAILS, out jt) && jt != null && jt is JArray)
             {

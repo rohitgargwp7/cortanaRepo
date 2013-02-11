@@ -778,7 +778,7 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                userName.Tap +=userName_Tap;
+                userName.Tap += userName_Tap;
 
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
@@ -1510,6 +1510,7 @@ namespace windows_client.View
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     MyChatBubble chatBubble = null;
+                    string name = string.Empty;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1522,6 +1523,10 @@ namespace windows_client.View
                             //Done to avoid crash. Code should never reach here
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return null;
+                        }
+                        if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        {
+                            name = string.IsNullOrEmpty(convMessage.FileAttachment.FileName) ? "Contact" : convMessage.FileAttachment.FileName;
                         }
                         chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
                     }
@@ -1537,7 +1542,8 @@ namespace windows_client.View
                         }
                         else
                         {
-                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+
+                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, name != string.Empty ? name : GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
                         }
                     }
                     this.MessageList.Children.Add(chatBubble);
@@ -2896,7 +2902,11 @@ namespace windows_client.View
 
             if (contact != null)
             {
-                string fileName = "con_" + TimeUtils.getCurrentTimeStamp().ToString();
+                ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contact);
+                JObject contactJson = con.SerialiseToJobject();
+
+                string fileName = string.IsNullOrEmpty(con.Name) ? "Contact" : con.Name;
+
                 ConvMessage convMessage = new ConvMessage("", mContactNumber, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
                 convMessage.IsSms = !isOnHike;
                 convMessage.HasAttachment = true;
@@ -2904,19 +2914,16 @@ namespace windows_client.View
                 convMessage.FileAttachment = new Attachment(fileName, null, Attachment.AttachmentState.STARTED);
                 convMessage.FileAttachment.ContentType = HikeConstants.CONTACT;
                 convMessage.Message = AppResources.ContactTransfer_Text;
-
+                convMessage.MetaDataString = contactJson.ToString(Newtonsoft.Json.Formatting.None);
                 SentChatBubble chatBubble = new SentChatBubble(convMessage, null);
                 //msgMap.Add(convMessage.MessageId, chatBubble);
 
                 addNewAttachmentMessageToUI(chatBubble);
 
-                ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contact);
-
-                JObject json = con.SerialiseToJobject();
 
                 object[] vals = new object[3];
                 vals[0] = convMessage;
-                vals[1] = Encoding.UTF8.GetBytes(json.ToString(Newtonsoft.Json.Formatting.None));
+                vals[1] = Encoding.UTF8.GetBytes(contactJson.ToString(Newtonsoft.Json.Formatting.None));
                 vals[2] = chatBubble;
                 App.HikePubSubInstance.publish(HikePubSub.ATTACHMENT_SENT, vals);
             }

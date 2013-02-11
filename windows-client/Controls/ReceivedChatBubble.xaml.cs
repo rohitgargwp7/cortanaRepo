@@ -153,6 +153,7 @@ namespace windows_client.Controls
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 12, 0, 0);
+        private static Thickness contactMessageTextMargin = new Thickness(50, 8, 5, 0);
         private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
@@ -225,17 +226,21 @@ namespace windows_client.Controls
                 }
                 else if (isContact)
                 {
-                    this.MessageImage.Source = UI_Utils.Instance.NudgeSent;
-                    this.MessageImage.Height = 35;
-                    this.MessageImage.Width = 48;
-                    this.MessageImage.Margin = nudgeMargin;
-                    MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
-                    MessageText.Width = 330;
-                    MessageText.Margin = messageTextMargin;
-                    MessageText.FontFamily = UI_Utils.Instance.MessageText;
-                    Grid.SetRow(MessageText, 0);
-                    Grid.SetColumn(MessageText, 1);
-                    attachment.Children.Add(MessageText);
+                    this.MessageImage.Source = UI_Utils.Instance.ContactIcon;
+                    this.MessageImage.Height = 20;
+                    this.MessageImage.Width = 30;
+                    TextBlock textBlck = new TextBlock();
+                    textBlck.Text = userName;
+                    textBlck.FontSize = 22;
+                    textBlck.Foreground = UI_Utils.Instance.White;
+                    textBlck.Margin = contactMessageTextMargin;
+                    textBlck.TextWrapping = TextWrapping.Wrap;
+                    textBlck.FontFamily = UI_Utils.Instance.MessageText;
+                    textBlck.MinWidth = 150;
+                    textBlck.MaxWidth = 330;
+                    Grid.SetRow(textBlck, 0);
+                    Grid.SetColumn(textBlck, 1);
+                    attachment.Children.Add(textBlck);
 
                 }
                 Grid.SetRow(MessageImage, 0);

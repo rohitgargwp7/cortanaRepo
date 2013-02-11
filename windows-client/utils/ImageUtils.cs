@@ -532,6 +532,15 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage ContactIcon
+        {
+            get
+            {
+                if (nudgeReceived == null)
+                    nudgeReceived = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                return nudgeReceived;
+            }
+        }
         public SolidColorBrush ReceiveMessageForeground
         {
             get
