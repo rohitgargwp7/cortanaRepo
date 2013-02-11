@@ -52,6 +52,12 @@ namespace windows_client.utils
                     pushChannel.Close();
                     pushChannel.Dispose();
                 }
+                if (dispatcherTimer != null)
+                {
+                    if (dispatcherTimer.IsEnabled)
+                        dispatcherTimer.Stop();
+                    dispatcherTimer = null;
+                }
             }
             catch (InvalidOperationException)
             {
