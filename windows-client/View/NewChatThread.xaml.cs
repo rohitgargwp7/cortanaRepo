@@ -3326,7 +3326,7 @@ namespace windows_client.View
                                 double offset = Scroller.ScrollableHeight - currentScrollSize;
                                 MessageList.UpdateLayout();
                                 Scroller.UpdateLayout();
-                                Scroller.ScrollToVerticalOffset(0.7 * offset);
+                                Scroller.ScrollToVerticalOffset( offset);
                             });
                         };
                     }
