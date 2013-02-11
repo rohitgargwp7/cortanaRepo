@@ -418,6 +418,7 @@
     <Content Include="View\images\made_with_love_dark.png" />
     <Content Include="View\images\map-pin.png" />
     <Content Include="View\images\menu_audio_icon.png" />
+    <Content Include="View\images\menu_contact_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
     <Content Include="View\images\mic_icon.png" />
     <Content Include="View\images\mic_icon_black.png" />
