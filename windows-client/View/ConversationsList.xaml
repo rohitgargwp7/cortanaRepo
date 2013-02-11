@@ -47,9 +47,12 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100"/>
-                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" Width="295" Height="76" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10"/>
-                    <ListBox Grid.Row="0" Grid.Column="0" Height="530" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,10,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
+
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenImage" Width="135" Height="152" Opacity="0" VerticalAlignment="Center" Margin="0,0,0,100">
+                    </Image>
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="emptyScreenTip" Width="295" Height="76" Opacity="0" VerticalAlignment="Bottom" Margin="0,0,4,10">
+                    </Image>
+                    <ListBox Grid.Row="0" Grid.Column="0" Height="500" x:Name="myListBox" Grid.ColumnSpan="1" FontSize="26" Tap="btnGetSelected_Tap" Margin="15,10,5,5" Grid.RowSpan="1" VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                             </DataTemplate>

@@ -342,7 +342,7 @@ namespace windows_client.utils
                     data.Add("devicetype", "windows");
                     data[HikeConstants.DEVICE_ID] = Utils.getHashedDeviceId();
                     //data[HikeConstants.DEVICE_TOKEN] = Utils.getDeviceId();//for push notifications
-                    data[HikeConstants.DEVICE_VERSION] = Utils.getOSVersion();
+                    data[HikeConstants.DEVICE_VERSION] = Utils.getDeviceModel();
                     data[HikeConstants.APP_VERSION] = Utils.getAppVersion();
                     string inviteToken = "";
                     if (!string.IsNullOrEmpty(inviteToken))

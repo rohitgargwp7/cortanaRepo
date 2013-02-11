@@ -46,7 +46,6 @@ namespace windows_client.utils
         private BitmapImage delivered;
         private BitmapImage read;
         private BitmapImage trying;
-        private BitmapImage unread;
         private BitmapImage waiting;
         private BitmapImage reward;
         private BitmapImage participantLeft;
@@ -492,37 +491,6 @@ namespace windows_client.utils
                 return trying;
             }
         }
-
-        public BitmapImage Unread
-        {
-            get
-            {
-                if (unread == null)
-                    unread = new BitmapImage(new Uri("/View/images/new_message.png", UriKind.Relative));
-                return unread;
-            }
-        }
-
-
-        //public BitmapImage DefaultAvatarBitmapImage
-        //{
-        //    get
-        //    {
-        //        if (defaultAvatarBitmapImage == null)
-        //            defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/default_user.png", UriKind.Relative));
-        //        return defaultAvatarBitmapImage;
-        //    }
-        //}
-
-        //public BitmapImage DefaultGroupImage
-        //{
-        //    get
-        //    {
-        //        if (defaultGroupImage == null)
-        //            defaultGroupImage = new BitmapImage(new Uri("/View/images/default_group.png", UriKind.Relative));
-        //        return defaultGroupImage;
-        //    }
-        //}
 
         public BitmapImage Waiting
         {

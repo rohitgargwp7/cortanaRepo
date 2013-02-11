@@ -1336,4 +1336,10 @@
   <data name="You_Txt" xml:space="preserve">
     <value>You</value>
   </data>
+  <data name="Help_System_Health_Text" xml:space="preserve">
+    <value>Check hike status on Twitter</value>
+  </data>
+  <data name="Help_System_Health_Title" xml:space="preserve">
+    <value>System Health</value>
+  </data>
 </root>
