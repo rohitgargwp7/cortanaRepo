@@ -107,7 +107,7 @@ namespace windows_client.Model
             }
             
             jobject[HikeConstants.FILE_NAME] = string.IsNullOrEmpty(name) ? "Contact" : name;
-            jobject[HikeConstants.FILE_CONTENT_TYPE] = HikeConstants.CONTACT;
+            jobject[HikeConstants.FILE_CONTENT_TYPE] = HikeConstants.CT_CONTACT;
             filesData.Add(jobject);
 
             metadata[HikeConstants.FILES_DATA] = filesData;

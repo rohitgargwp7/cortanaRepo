@@ -162,7 +162,7 @@ namespace windows_client.Controls
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            bool isContact = hasAttachment && contentType == HikeConstants.CONTACT;
+            bool isContact = hasAttachment && contentType.Contains( HikeConstants.CT_CONTACT);
 
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED) && !isContact;

@@ -365,7 +365,7 @@ namespace windows_client.Controls
             bool isSMS = cm.IsSms;
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
-            bool isContact = hasAttachment && contentType == HikeConstants.CONTACT;
+            bool isContact = hasAttachment && contentType.Contains( HikeConstants.CT_CONTACT);
 
             if (isContact)
                 messageString = cm.FileAttachment.FileName;

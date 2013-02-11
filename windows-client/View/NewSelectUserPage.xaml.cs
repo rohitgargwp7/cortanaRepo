@@ -180,6 +180,11 @@ namespace windows_client.View
             else
                 hideSmsContacts = false;
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT))
+            {
+                hideSmsContacts = false;
+                isContactShared = true;
+            }
             //case when share contact is called
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {

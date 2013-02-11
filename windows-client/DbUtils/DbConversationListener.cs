@@ -97,7 +97,7 @@ namespace windows_client.DbUtils
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, AppResources.Video_Txt) + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;
                 }
-                else if (contentType.Contains(HikeConstants.CONTACT))
+                else if (contentType.Contains(HikeConstants.CT_CONTACT))
                 {
                     convMessage.Message = String.Format(AppResources.FILES_MESSAGE_PREFIX, "Contact") + HikeConstants.FILE_TRANSFER_BASE_URL +
                         "/" + fileKey;

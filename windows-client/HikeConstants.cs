@@ -219,7 +219,9 @@ namespace windows_client
         public static readonly string VIDEO = "video";
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
-        public static readonly string CONTACT = "contact/share";
+        public static readonly string CONTACT = "contact";
+        public static readonly string CT_CONTACT="contact/share";
+
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
