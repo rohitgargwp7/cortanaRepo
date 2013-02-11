@@ -1258,7 +1258,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Name changed by a group member..
+        ///   Looks up a localized string similar to {0} changed the group name to {1}.
         /// </summary>
         public static string GroupNameChangedByGrpMember_Txt {
             get {
@@ -2428,7 +2428,16 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to one month ago.
+        ///   Looks up a localized string similar to moments ago.
+        /// </summary>
+        public static string TimeUtils_Moments_Ago {
+            get {
+                return ResourceManager.GetString("TimeUtils_Moments_Ago", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 month ago.
         /// </summary>
         public static string TimeUtils_One_Month_Ago_Txt {
             get {
@@ -2437,7 +2446,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to one second ago.
+        ///   Looks up a localized string similar to 1 second ago.
         /// </summary>
         public static string TimeUtils_One_Sec_Ago_Txt {
             get {
@@ -2446,7 +2455,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to one year ago.
+        ///   Looks up a localized string similar to 1 year ago.
         /// </summary>
         public static string TimeUtils_One_Year_Ago_Txt {
             get {
@@ -2712,6 +2721,15 @@ namespace windows_client.Languages {
         public static string Yesterday_Txt {
             get {
                 return ResourceManager.GetString("Yesterday_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string You_Txt {
+            get {
+                return ResourceManager.GetString("You_Txt", resourceCulture);
             }
         }
     }

@@ -103,7 +103,6 @@ namespace windows_client.View
         private Image typingNotificationImage;
         private Image emptyImage;
 
-        private ApplicationBarMenuItem groupInfoMenuItem;
         #endregion
 
         private BitmapImage[] imagePathsForList0
@@ -286,7 +285,9 @@ namespace windows_client.View
             {
                 string msisdn = (this.NavigationContext.QueryString["msisdn"] as string).Trim();
                 this.NavigationContext.QueryString.Clear();
-                if (Char.IsDigit(msisdn[0]))
+                if (msisdn.Contains("hike"))
+                    msisdn = "+hike+";
+                else if (Char.IsDigit(msisdn[0]))
                     msisdn = "+" + msisdn;
 
                 //MessageBox.Show(msisdn, "NEW CHAT", MessageBoxButton.OK);
@@ -780,10 +781,7 @@ namespace windows_client.View
 
             if (isGroupChat)
             {
-                groupInfoMenuItem = new ApplicationBarMenuItem();
-                groupInfoMenuItem.Text = AppResources.GroupInfo_Txt;
-                groupInfoMenuItem.Click += new EventHandler(groupInfo_Click);
-                appBar.MenuItems.Add(groupInfoMenuItem);
+                userName.Tap +=userName_Tap;
 
                 ApplicationBarMenuItem leaveMenuItem = new ApplicationBarMenuItem();
                 leaveMenuItem.Text = AppResources.SelectUser_LeaveGrp_Txt;
@@ -802,7 +800,6 @@ namespace windows_client.View
                         blockUnblockMenuItem = new ApplicationBarMenuItem();
                         if (mUserIsBlocked)
                         {
-                            groupInfoMenuItem.IsEnabled = false;
                             blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
                         }
                         else
@@ -1300,8 +1297,10 @@ namespace windows_client.View
             }
         }
 
-        private void groupInfo_Click(object sender, EventArgs e)
+        private void userName_Tap(object sender, EventArgs e)
         {
+            if (mUserIsBlocked || !isGroupAlive)
+                return;
             App.AnalyticsInstance.addEvent(Analytics.GROUP_INFO);
             PhoneApplicationService.Current.State[HikeConstants.GROUP_ID_FROM_CHATTHREAD] = mContactNumber;
             PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = mContactName;
@@ -1316,7 +1315,6 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
                     blockUnblockMenuItem.Text = BLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                    groupInfoMenuItem.IsEnabled = true;
                 }
                 else
                 {
@@ -1339,7 +1337,6 @@ namespace windows_client.View
                 {
                     mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
                     blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                    groupInfoMenuItem.IsEnabled = false;
                 }
                 else
                 {
@@ -1774,7 +1771,8 @@ namespace windows_client.View
                 #region GROUP NAME CHANGED
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.REWARD, convMessage.Message);
+
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.DEFAULT, convMessage.Message);
                     this.MessageList.Children.Insert(insertPosition, chatBubble);
                     insertPosition++;
                 }
@@ -1782,6 +1780,7 @@ namespace windows_client.View
                 //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
                 if (!insertAtTop)
                     ScrollToBottom();
+
             }
             catch (Exception e)
             {
@@ -2723,12 +2722,14 @@ namespace windows_client.View
                 object[] vals = (object[])obj;
                 string groupId = (string)vals[0];
                 string groupName = (string)vals[1];
+                ConvMessage convMessage = (ConvMessage)vals[2];
                 if (mContactNumber == groupId)
                 {
                     mContactName = groupName;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         userName.Text = mContactName;
+                        AddMessageToUI(convMessage,false,false);
                     });
                 }
             }

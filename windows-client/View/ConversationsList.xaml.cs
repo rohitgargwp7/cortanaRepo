@@ -155,7 +155,8 @@ namespace windows_client.View
 
                 firstLoad = false;
             }
-            if (App.ViewModel.MessageListPageCollection.Count == 0)
+            // this should be called only if its not first load as it will get called in first load section
+            else if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
                 emptyScreenTip.Opacity = 1;
@@ -434,8 +435,8 @@ namespace windows_client.View
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
-                rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
             }
 
             string name;
@@ -628,6 +629,7 @@ namespace windows_client.View
             if (App.ViewModel.MessageListPageCollection.Count == 0)
             {
                 emptyScreenImage.Opacity = 1;
+                emptyScreenTip.Opacity = 1;
             }
 
             if (Utils.isGroupConversation(convObj.Msisdn)) // if group conv , leave the group too.
