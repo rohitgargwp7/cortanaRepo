@@ -1429,6 +1429,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check hike status on Twitter.
+        /// </summary>
+        public static string Help_System_Health_Text {
+            get {
+                return ResourceManager.GetString("Help_System_Health_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Health.
+        /// </summary>
+        public static string Help_System_Health_Title {
+            get {
+                return ResourceManager.GetString("Help_System_Health_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View the meet hike walkthrough.
         /// </summary>
         public static string Help_WalkthroughText {
