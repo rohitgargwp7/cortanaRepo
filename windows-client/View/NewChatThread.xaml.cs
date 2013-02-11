@@ -1733,7 +1733,7 @@ namespace windows_client.View
                 #region GROUP NAME CHANGED
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
                 {
-                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.DEFAULT, convMessage.Message);
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.GROUP_NAME_CHANGED, convMessage.Message);
                     this.MessageList.Children.Add(chatBubble);
                 }
                 #endregion
