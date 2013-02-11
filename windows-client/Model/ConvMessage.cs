@@ -223,7 +223,6 @@ namespace windows_client.Model
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("SdrImage");
                 }
             }
         }
@@ -472,14 +471,6 @@ namespace windows_client.Model
                     singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
                     if (FileAttachment.Thumbnail != null)
                         singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
-                    //if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    //{
-                    //    JObject locationInfo = JObject.Parse(this.MetaDataString);
-                    //    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
-                    //    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
-                    //    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
-                    //    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
-                    //}
                 }
                 else
                 {
@@ -495,8 +486,6 @@ namespace windows_client.Model
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
             {
-                //metadata = new JObject();
-                //metadata["poke"] = true;
                 data["poke"] = true;
             }
 
@@ -664,7 +653,6 @@ namespace windows_client.Model
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
                             this.MetaDataString = locationFile.ToString();
-
                         }
                     }
                     else
