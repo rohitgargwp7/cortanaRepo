@@ -149,9 +149,10 @@ namespace windows_client.utils
                 if (!dispatcherTimer.IsEnabled) //ideally we don't need two separate if blocks. added for more safety
                     dispatcherTimer.Start();
             }
-            else if (stat == HikeConstants.OK && dispatcherTimer != null && dispatcherTimer.IsEnabled)
+            else if (stat == HikeConstants.OK && dispatcherTimer != null)
             {
-                dispatcherTimer.Stop();
+                if (dispatcherTimer.IsEnabled)
+                    dispatcherTimer.Stop();
                 dispatcherTimer = null; //release strong pointer as it is no longer required
             }
         }
