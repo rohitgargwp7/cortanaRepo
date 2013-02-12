@@ -336,6 +336,18 @@ namespace windows_client
                 AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
+            if (!App.IS_MARKETPLACE) // check this only in case its not marketplace
+            {
+                bool isStaging = true;
+                if (App.appSettings.Contains(HikeConstants.STAGING_SERVER))
+                    isStaging = (bool)App.appSettings[HikeConstants.STAGING_SERVER];
+                else // represents first launch
+                    App.WriteToIsoStorageSettings(HikeConstants.STAGING_SERVER,true);
+                if (isStaging)
+                    AccountUtils.IsProd = false;
+                else
+                    AccountUtils.IsProd = true;
+            }
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
         }
 
@@ -343,14 +355,17 @@ namespace windows_client
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            #region SERVER INFO
-            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
-            Debug.WriteLine("SERVER SETTING : " + env);
-            Debug.WriteLine("HOST : " + AccountUtils.HOST);
-            Debug.WriteLine("PORT : " + AccountUtils.PORT);
-            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
-            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
-            #endregion
+            if (ps != PageState.WELCOME_SCREEN)
+            {
+                #region SERVER INFO
+                string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+                Debug.WriteLine("SERVER SETTING : " + env);
+                Debug.WriteLine("HOST : " + AccountUtils.HOST);
+                Debug.WriteLine("PORT : " + AccountUtils.PORT);
+                Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
+                Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+                #endregion
+            }
             _isAppLaunched = true;
         }
 
