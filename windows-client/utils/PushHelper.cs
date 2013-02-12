@@ -12,6 +12,11 @@ namespace windows_client.utils
     {
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile PushHelper instance = null;
+        private readonly int maxPollingTime = 120;
+        private int pollingTime = 3; //in seconds
+        private readonly int minPollingTime = 3;
+        private DispatcherTimer dispatcherTimer;
+
         private string _latestPushToken;
         private string LatestPushToken
         {
@@ -34,12 +39,6 @@ namespace windows_client.utils
                 }
             }
         }
-
-        private readonly int maxPollingTime = 120;
-        private int pollingTime = 3; //in seconds
-        private readonly int minPollingTime = 3;
-
-        private DispatcherTimer dispatcherTimer;
 
         public static PushHelper Instance
         {
