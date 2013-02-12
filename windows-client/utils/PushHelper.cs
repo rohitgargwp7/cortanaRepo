@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Threading;
 using System.Net.NetworkInformation;
 using System.Windows;
+using Microsoft.Phone.Reactive;
 
 namespace windows_client.utils
 {
@@ -16,6 +17,8 @@ namespace windows_client.utils
         private int pollingTime = 3; //in seconds
         private readonly int minPollingTime = 3;
         private DispatcherTimer dispatcherTimer;
+        private IScheduler scheduler = Scheduler.NewThread; //TODO - we should can tryy pooling of scheduler objects
+
 
         private string _latestPushToken;
         private string LatestPushToken
@@ -111,28 +114,25 @@ namespace windows_client.utils
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                     pushChannel.Open();
-                    string s;
-                    if (pushChannel.ChannelUri != null)
-                        s = pushChannel.ChannelUri.ToString();
                     // Bind this new channel for toast events.
                     pushChannel.BindToShellToast();
                     pushChannel.BindToShellTile();
-
                 }
                 else
                 {
-                    if (pushChannel.ChannelUri != null)
-                    {
-                        LatestPushToken = pushChannel.ChannelUri.ToString();
-                    }
-                    else
-                    {
-                        LatestPushToken = null;
-                    }
                     // The channel was already open, so just register for all the events.
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                 }
+                if (pushChannel.ChannelUri != null)
+                {
+                    LatestPushToken = pushChannel.ChannelUri.ToString();
+                }
+                else
+                {
+                    LatestPushToken = null;
+                }
+
             }
             catch (InvalidOperationException ioe)
             {
