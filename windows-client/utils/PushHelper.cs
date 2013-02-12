@@ -175,7 +175,10 @@ namespace windows_client.utils
             {
                 App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, _latestPushToken);
                 if (httpPostScheduled != null)
+                {
                     httpPostScheduled.Dispose();
+                    httpPostScheduled = null;
+                }
                 scheduler = null;
             }
         }
