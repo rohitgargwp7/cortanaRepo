@@ -348,5 +348,10 @@ namespace windows_client.utils
                 return (country_code2 == null ? "+91" : country_code2) + msisdn;
             }
         }
+
+        public static bool IsHikeBotMsg(string msisdn)
+        {
+            return msisdn.Contains("hike");
+        }
     }
 }

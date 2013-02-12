@@ -752,7 +752,6 @@ namespace windows_client.View
                     }
                     //                    convScroller.ScrollToVerticalOffset(0);
                     myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
-
                 });
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
@@ -972,7 +971,7 @@ namespace windows_client.View
             glCopy.Tap += MenuItem_Tap_Delete;
             menu.Items.Add(menuItemDelete);
 
-            if (!convObj.IsGroupChat)
+            if (!convObj.IsGroupChat && !Utils.IsHikeBotMsg(convObj.Msisdn)) // if its not GC and not hike bot msg then only show add to fav 
             {
                 MenuItem menuItemFavourite = new MenuItem();
                 if (convObj.IsFav) // if already favourite
@@ -992,6 +991,7 @@ namespace windows_client.View
 
 
         #endregion
+
         #region Emoticons
         private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
 

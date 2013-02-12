@@ -166,19 +166,6 @@ namespace windows_client.View
             }
         }
 
-        //public ObservableCollection<MyChatBubble> ChatThreadPageCollection
-        //{
-        //    get
-        //    {
-        //        return chatThreadPageCollection;
-        //    }
-        //    set
-        //    {
-        //        chatThreadPageCollection = value;
-        //        NotifyPropertyChanged("ChatThreadPageCollection");
-        //    }
-        //}
-
         #region PAGE BASED FUNCTIONS
 
         //        private ObservableCollection<UIElement> messagesCollection;
@@ -571,6 +558,14 @@ namespace windows_client.View
                 rectContactTransfer.Visibility = Visibility.Collapsed;
             }
             userName.Text = mContactName;
+
+            // if hike bot msg disable appbar, textbox etc
+            if (Utils.IsHikeBotMsg(mContactNumber))
+            {
+                sendMsgTxtbox.IsEnabled = false;
+                return;
+            }
+
             if (groupOwner != null)
                 mUserIsBlocked = UsersTableUtils.isUserBlocked(groupOwner);
             else
