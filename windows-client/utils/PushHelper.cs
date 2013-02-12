@@ -14,9 +14,9 @@ namespace windows_client.utils
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile PushHelper instance = null;
         private readonly int maxPollingTime = 120;
-        private int pollingTime = 3; //in seconds
+        private volatile int pollingTime = 3; //in seconds
         private readonly int minPollingTime = 3;
-        private IScheduler scheduler; //TODO MG - we should can try pooling of scheduler objects
+        private volatile IScheduler scheduler; //TODO MG - we should can try pooling of scheduler objects
         private volatile IDisposable httpPostScheduled;
 
         private string _latestPushToken;
