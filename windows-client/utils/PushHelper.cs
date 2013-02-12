@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Windows.Threading;
 using System.Net.NetworkInformation;
+using System.Windows;
 
 namespace windows_client.utils
 {
@@ -33,7 +34,11 @@ namespace windows_client.utils
                 }
             }
         }
-        private readonly int pollingTime = 5; //in seconds
+
+        private readonly int maxPollingTime = 120;
+        private int pollingTime = 3; //in seconds
+        private readonly int minPollingTime = 3;
+
         private DispatcherTimer dispatcherTimer;
 
         public static PushHelper Instance
@@ -160,24 +165,30 @@ namespace windows_client.utils
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.OK && NetworkInterface.GetIsNetworkAvailable())
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (dispatcherTimer == null)
+                if (stat != HikeConstants.OK && NetworkInterface.GetIsNetworkAvailable())
                 {
-                    dispatcherTimer = new DispatcherTimer();
-                    dispatcherTimer.Tick += postTokenToServer;
+                    if (dispatcherTimer == null)
+                    {
+                        dispatcherTimer = new DispatcherTimer();
+                        dispatcherTimer.Tick += postTokenToServer;
+                    }
                     dispatcherTimer.Interval = TimeSpan.FromSeconds(pollingTime);
+                    pollingTime *= 2;
+                    if (pollingTime > maxPollingTime)
+                        pollingTime = minPollingTime;
+                    if (!dispatcherTimer.IsEnabled)
+                        dispatcherTimer.Start();
                 }
-                if (!dispatcherTimer.IsEnabled)
-                    dispatcherTimer.Start();
-            }
-            else if (stat == HikeConstants.OK && dispatcherTimer != null)
-            {
-                App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, _latestPushToken);
-                if (dispatcherTimer.IsEnabled)
-                    dispatcherTimer.Stop();
-                dispatcherTimer = null; //release strong pointer as it is no longer required
-            }
+                else if (stat == HikeConstants.OK && dispatcherTimer != null)
+                {
+                    App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, _latestPushToken);
+                    if (dispatcherTimer.IsEnabled)
+                        dispatcherTimer.Stop();
+                    dispatcherTimer = null; //release strong pointer as it is no longer required
+                }
+            });
         }
 
         void postTokenToServer(object sender, EventArgs e)
