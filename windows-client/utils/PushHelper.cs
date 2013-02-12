@@ -62,6 +62,7 @@ namespace windows_client.utils
         {
             string pushToken;
             App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
+            LatestPushToken = pushToken;
         }
 
         public void closePushnotifications()
@@ -110,6 +111,9 @@ namespace windows_client.utils
                     pushChannel.ChannelUriUpdated += new EventHandler<NotificationChannelUriEventArgs>(PushChannel_ChannelUriUpdated);
                     pushChannel.ErrorOccurred += new EventHandler<NotificationChannelErrorEventArgs>(PushChannel_ErrorOccurred);
                     pushChannel.Open();
+                    string s;
+                    if (pushChannel.ChannelUri != null)
+                        s = pushChannel.ChannelUri.ToString();
                     // Bind this new channel for toast events.
                     pushChannel.BindToShellToast();
                     pushChannel.BindToShellTile();
