@@ -165,7 +165,7 @@ namespace windows_client.Controls
             bool isContact = hasAttachment && contentType.Contains( HikeConstants.CT_CONTACT);
 
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
-                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED) && !isContact;
+                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
             Rectangle BubbleBg = new Rectangle();
@@ -232,7 +232,7 @@ namespace windows_client.Controls
                     TextBlock textBlck = new TextBlock();
                     textBlck.Text = userName;
                     textBlck.FontSize = 22;
-                    textBlck.Foreground = UI_Utils.Instance.White;
+                    textBlck.Foreground = UI_Utils.Instance.ReceiveMessageForeground;
                     textBlck.Margin = contactMessageTextMargin;
                     textBlck.TextWrapping = TextWrapping.Wrap;
                     textBlck.FontFamily = UI_Utils.Instance.MessageText;
@@ -246,7 +246,8 @@ namespace windows_client.Controls
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if ((contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO) || showDownload) && !contentType.Contains(HikeConstants.LOCATION))
+                if ((contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO) || showDownload) && !contentType.Contains(HikeConstants.LOCATION)
+                    && !contentType.Contains(HikeConstants.CT_CONTACT))
                 {
 
                     PlayIcon = new Image();
