@@ -65,6 +65,17 @@ namespace windows_client.DbUtils
             }
         }
 
+        public static bool IsGroupAlive(string groupId)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                GroupInfo cObj = DbCompiledQueries.GetGroupInfoForID(context, groupId).FirstOrDefault();
+                if (cObj == null)
+                    return false;
+                return cObj.GroupAlive;
+            }
+        }
+
         public static GroupInfo getGroupInfoForId(string groupId)
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
