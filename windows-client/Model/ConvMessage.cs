@@ -464,7 +464,7 @@ namespace windows_client.Model
             {
                 metadata = new JObject();
                 filesData = new JArray();
-                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION) && !FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
                     singleFileInfo = new JObject();
                     singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
@@ -487,7 +487,8 @@ namespace windows_client.Model
                     JObject uploadedJSON = JObject.Parse(this.MetaDataString);
                     singleFileInfo = uploadedJSON[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
                     singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                    singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    if (FileAttachment.Thumbnail != null)
+                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                 }
                 filesData.Add(singleFileInfo.ToObject<JToken>());
                 metadata[HikeConstants.FILES_DATA] = filesData;
@@ -745,8 +746,8 @@ namespace windows_client.Model
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
                             this.MetaDataString = locationFile.ToString();
-
                         }
+                       
                     }
                     else
                     {
@@ -788,7 +789,7 @@ namespace windows_client.Model
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                             messageText = AppResources.Location_Txt;
-                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;
                     }

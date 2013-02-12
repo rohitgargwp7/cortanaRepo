@@ -1278,4 +1278,22 @@
   <data name="Help_System_Health_Title" xml:space="preserve">
     <value>System Health</value>
   </data>
+  <data name="Attachement_Contact_Txt" xml:space="preserve">
+    <value>Contact Info</value>
+  </data>
+  <data name="Attachment_Audio_Txt" xml:space="preserve">
+    <value>Send Audio</value>
+  </data>
+  <data name="Attachment_Camera_Txt" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="Attachment_Location_Txt" xml:space="preserve">
+    <value>Share Location</value>
+  </data>
+  <data name="Attachment_Photo_Txt" xml:space="preserve">
+    <value>Send Photo</value>
+  </data>
+  <data name="Attachment_Video_Txt" xml:space="preserve">
+    <value>Send Video</value>
+  </data>
 </root>

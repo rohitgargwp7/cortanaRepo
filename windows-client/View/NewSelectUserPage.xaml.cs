@@ -180,6 +180,11 @@ namespace windows_client.View
             else
                 hideSmsContacts = false;
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT))
+            {
+                hideSmsContacts = false;
+                isContactShared = true;
+            }
             //case when share contact is called
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
@@ -260,6 +265,7 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
             PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT);
             PhoneApplicationService.Current.State.Remove("Group_GroupId");
             base.OnRemovedFromJournal(e);
         }
