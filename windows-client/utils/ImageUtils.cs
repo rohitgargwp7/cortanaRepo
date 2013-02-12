@@ -46,6 +46,7 @@ namespace windows_client.utils
         private BitmapImage participantLeft;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage contactIcon;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -499,7 +500,7 @@ namespace windows_client.utils
                 return nudgeSend;
             }
         }
-        
+
         public BitmapImage NudgeReceived
         {
             get
@@ -510,6 +511,15 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage ContactIcon
+        {
+            get
+            {
+                if (contactIcon == null)
+                    contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                return contactIcon;
+            }
+        }
         public SolidColorBrush ReceiveMessageForeground
         {
             get
