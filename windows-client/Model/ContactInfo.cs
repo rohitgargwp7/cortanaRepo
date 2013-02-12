@@ -26,7 +26,7 @@ namespace windows_client.Model
         private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
-        private bool _isCloseFriendFamily;
+        private bool _isCloseFriendNux;
         //it significantly improves update performance
 
         # region Users Table Members
@@ -219,15 +219,15 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsCloseFriendFamily
+        public bool IsCloseFriendNux
         {
             get
             {
-                return _isCloseFriendFamily;
+                return _isCloseFriendNux;
             }
             set
             {
-                _isCloseFriendFamily = value;
+                _isCloseFriendNux = value;
             }
         }
 

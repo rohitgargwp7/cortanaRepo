@@ -778,6 +778,7 @@ namespace windows_client.utils
         {
             try
             {
+                List<ContactInfo> listFamilyMembers = new List<ContactInfo>();
                 List<ContactInfo> listCloseFriends = new List<ContactInfo>();
                 if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                 {
@@ -810,6 +811,12 @@ namespace windows_client.utils
                 int totalContacts = 0;
                 string lastName = GetLastName();
                 bool isLastNameCheckApplicable = lastName != null;
+                bool nuxRequired = false;
+                App.PageState ps;
+                if (App.appSettings.TryGetValue(App.PAGE_STATE, out ps))
+                {
+                    nuxRequired = ps != App.PageState.CONVLIST_SCREEN;
+                }
                 while (keyVals.MoveNext())
                 {
                     kv = keyVals.Current;
@@ -826,38 +833,40 @@ namespace windows_client.utils
                         }
                         bool onhike = (bool)entry["onhike"];
                         ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
-                        
-                        #region NUX
 
-                        if (!cn.OnHike)
+                        #region NUX SCANNING
+                        if (nuxRequired)
                         {
-                            bool isCloseFriend = false;
-                            if (cList[i].IsCloseFriendFamily)
+                            if (!cn.OnHike)
                             {
-                                isCloseFriend = true;
-                                listCloseFriends.Add(cn);
-                            }
-                             if (!isCloseFriend && isLastNameCheckApplicable)
-                            {
-                                if (cn.Name != null)
+                                bool markedForNux = false;
+                                if (isLastNameCheckApplicable)
                                 {
-                                    string[] nameArray = cn.Name.Trim().Split(' ');
-                                    if (nameArray.Length > 1)
+                                    if (cn.Name != null)
                                     {
-                                        string curlastName = nameArray[nameArray.Length-1].ToLower();
-                                        if (curlastName.Trim().ToLower() == lastName)
+                                        string[] nameArray = cn.Name.Trim().Split(' ');
+                                        if (nameArray.Length > 1)
                                         {
-                                            listCloseFriends.Add(cn);
-                                            isCloseFriend = true;
+                                            string curlastName = nameArray[nameArray.Length - 1].ToLower();
+                                            if (curlastName.Trim().ToLower() == lastName)
+                                            {
+                                                listFamilyMembers.Add(cn);
+                                                markedForNux = true;
+                                            }
                                         }
                                     }
                                 }
+                                if (!markedForNux && MatchFromFamilyVocab(cn.Name))
+                                {
+                                    listFamilyMembers.Add(cn);
+                                }
+                                if (!markedForNux && cList[i].IsCloseFriendNux)
+                                {
+                                    markedForNux = true;
+                                    listCloseFriends.Add(cn);
+                                }
                             }
-                            if (!isCloseFriend && MatchFromFamilyVocab(cn.Name))
-                            {
-                                listCloseFriends.Add(cn);
-                            }
-                        } 
+                        }
                         #endregion
 
                         if (!isRefresh) // this is case for new installation
@@ -916,7 +925,10 @@ namespace windows_client.utils
                         totalContacts++;
                     }
                 }
-                App.WriteToIsoStorageSettings(HikeConstants.CLOSE_FRIENDS_NUX, listCloseFriends);
+                if (listCloseFriends.Count > 0)
+                    App.WriteToIsoStorageSettings(HikeConstants.CLOSE_FRIENDS_NUX, listCloseFriends);
+                if (listFamilyMembers.Count > 0)
+                    App.WriteToIsoStorageSettings(HikeConstants.FAMILY_MEMBERS_NUX, listFamilyMembers);
 
                 if (isFavSaved)
                     MiscDBUtil.SaveFavourites();
@@ -950,21 +962,67 @@ namespace windows_client.utils
             if (nameArray.Length == 1)
                 return null;
 
-            return nameArray[nameArray.Length-1].ToLower();
+            return nameArray[nameArray.Length - 1].ToLower();
         }
 
-        private static Dictionary<string, bool> familyVocab = new Dictionary<string, bool> {
-        { "mom", true }, { "dad", true },{ "uncle", true }, { "aunty", true } ,{ "mummy", true }, { "mommy", true },{ "daddy", true }};
+        #region FAMILY VOCABULARY
+
+        private static string[] familyVocab = new string[]{
+                            "mother",
+                            "mum",//"mumsy","mummy",
+                            "mom",//"mommy",
+                            "mama","mamma"," oma", "mata", "matri", "amma",
+                            "maternal",
+                            "dad",//"daddy",
+                            "pop",
+                            "sis", //"sister",
+                            "bro ",//(brother),
+                            "uncle",
+                            "aunt ",//(aunty)",
+                            "grandma",
+                            "grandad",
+                            "gramps",
+                            "granny",
+                            "nana",
+
+                            //hindi
+                            "papa",//pa
+                            "bahen ",
+                            "didi",
+                            "bhai",// (Bhaiya)",
+                            "dada",
+                            "chacha",
+                            "phuphaa",
+                            "phoophaa",
+                            "chachi",
+                            "bua",
+                            "dadi",
+                            "dada",
+                            "nani",
+
+                            //German 
+                            "mutter",
+                            "vater",
+                            "schwester",
+                            "bruder",
+                            "onkel ",
+                            "pfandleiher ",
+                            "tante",
+                            "großmutter",
+                            "großpapa",
+                            "omi",
+                            "oma",};
+
+        #endregion
 
         public static bool MatchFromFamilyVocab(string completeName)
         {
             if (string.IsNullOrEmpty(completeName))
                 return false;
-            string[] nameArray = completeName.Trim().Split(' ');
 
-            foreach (string name in nameArray)
+            foreach (string vocabKey in familyVocab)
             {
-                if (familyVocab.ContainsKey(name))
+                if (completeName.ToLower().Contains(vocabKey))
                     return true;
             }
             return false;

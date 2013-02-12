@@ -213,6 +213,7 @@ namespace windows_client
         public static string TW_LOGGED_IN = "TwLoggedIn";
         public static string ACCOUNT = "account";
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
+        public static string FAMILY_MEMBERS_NUX = "familyMembers";
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";

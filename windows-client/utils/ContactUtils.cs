@@ -184,7 +184,7 @@ namespace windows_client.utils
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
-                    cInfo.IsCloseFriendFamily = hasFacebookAccount || accNumber > 1;
+                    cInfo.IsCloseFriendNux = hasFacebookAccount || accNumber > 1;
 
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {

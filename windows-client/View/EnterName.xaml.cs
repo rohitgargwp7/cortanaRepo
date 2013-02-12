@@ -134,7 +134,12 @@ namespace windows_client
 
             List<ContactInfo> listContactInfo;
             SmileyParser.Instance.initializeSmileyParser();
-            if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 2)
+            if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 1)
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+                nextPage = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+            }
+            else if(App.appSettings.TryGetValue(HikeConstants.FAMILY_MEMBERS_NUX, out listContactInfo) && listContactInfo.Count > 1)
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
                 nextPage = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);

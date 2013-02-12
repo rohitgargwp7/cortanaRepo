@@ -22,8 +22,8 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="24,17,24,0">
-            <TextBlock Text="YOUR FRIENDS" FontFamily="Segoe WP SemiLight" FontSize="24"/>
-            <TextBlock Text="Which of your close friends would you like to connect with on hike?" TextWrapping="Wrap" Margin="0,20,0,0" FontFamily="Segoe WP SemiLight" FontSize="22"/>
+            <TextBlock Name="txtHeader" Text="YOUR FRIENDS" FontFamily="Segoe WP SemiLight" FontSize="24"/>
+            <TextBlock Name="txtConnectHike" Text="Which of your close friends would you like to connect with on hike?" TextWrapping="Wrap" Margin="0,20,0,0" FontFamily="Segoe WP SemiLight" FontSize="22"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->

@@ -20,7 +20,7 @@ namespace windows_client.View
         private ApplicationBarIconButton sendInviteIconButton;
         private bool isFirstLaunch = true;
         private bool isClicked = true;
-       
+
         public NUX_InviteFriends()
         {
             InitializeComponent();
@@ -34,7 +34,7 @@ namespace windows_client.View
             sendInviteIconButton = new ApplicationBarIconButton();
             sendInviteIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             sendInviteIconButton.Text = "Invite";
-            sendInviteIconButton.Click += new EventHandler(btnInvite_Click);
+
             sendInviteIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendInviteIconButton);
             this.ApplicationBar = appBar;
@@ -46,13 +46,18 @@ namespace windows_client.View
 
             if (isFirstLaunch)
             {
-                isFirstLaunch = false;
                 SmileyParser.Instance.initializeSmileyParser();
 
                 List<ContactInfo> listContactInfo;
-                if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 2)
+                if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 1)
                 {
                     lstBoxInvite.ItemsSource = listContactInfo;
+                    sendInviteIconButton.Click += new EventHandler(btnInviteFamily_Click);
+                }
+                else if (App.appSettings.TryGetValue(HikeConstants.FAMILY_MEMBERS_NUX, out listContactInfo) && listContactInfo.Count > 1)
+                {
+                    lstBoxInvite.ItemsSource = listContactInfo;
+                    InitialiseFamilyScreen();
                 }
                 else
                 {
@@ -62,10 +67,18 @@ namespace windows_client.View
                 }
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
+
+                isFirstLaunch = false;
             }
         }
+        private void InitialiseFamilyScreen()
+        {
+            txtHeader.Text = "INVITE FAMILY MEMBERS";
+            txtConnectHike.Text = "Which of your family members would you like to connect with on hike?";
+            sendInviteIconButton.Click += btnInviteFamily_Click;
+        }
 
-        private void btnInvite_Click(object sender, EventArgs e)
+        private void btnInviteFriends_Click(object sender, EventArgs e)
         {
             if (isClicked)
             {
@@ -80,7 +93,54 @@ namespace windows_client.View
 
                 App.MqttManagerInstance.connect();
                 NetworkManager.turnOffNetworkManager = false;
-                
+
+                foreach (ContactInfo cinfo in contactsToBeInvited)
+                {
+                    JObject obj = new JObject();
+                    JObject data = new JObject();
+                    data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
+                    data[HikeConstants.TIMESTAMP] = TimeUtils.getCurrentTimeStamp();
+                    data[HikeConstants.MESSAGE_ID] = -1;
+                    obj[HikeConstants.TO] = Utils.NormalizeNumber(cinfo.Name);
+                    obj[HikeConstants.DATA] = data;
+                    obj[HikeConstants.TYPE] = NetworkManager.INVITE;
+                    App.MqttManagerInstance.mqttPublishToServer(obj);
+                    count++;
+                }
+                if (count > 0)
+                {
+                    MessageBoxResult msgBoxResult = MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+                    List<ContactInfo> listContactInfo;
+                    if (App.appSettings.TryGetValue(HikeConstants.FAMILY_MEMBERS_NUX, out listContactInfo) && listContactInfo.Count > 1)
+                    {
+                        lstBoxInvite.ItemsSource = listContactInfo;
+                        InitialiseFamilyScreen();
+                    }
+                    else
+                    {
+                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                    }
+                    App.RemoveKeyFromAppSettings(HikeConstants.CLOSE_FRIENDS_NUX);
+                }
+            }
+        }
+        private void btnInviteFamily_Click(object sender, EventArgs e)
+        {
+            if (isClicked)
+            {
+                isClicked = false;
+                if (contactsToBeInvited.Count == 0)
+                {
+                    sendInviteIconButton.IsEnabled = false;
+                    return;
+                }
+                string inviteToken = "";
+                int count = 0;
+
+                App.MqttManagerInstance.connect();
+                NetworkManager.turnOffNetworkManager = false;
+
                 foreach (ContactInfo cinfo in contactsToBeInvited)
                 {
                     JObject obj = new JObject();
@@ -99,7 +159,7 @@ namespace windows_client.View
                     MessageBoxResult msgBoxResult = MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
                     if (msgBoxResult == MessageBoxResult.OK)
                     {
-                        App.RemoveKeyFromAppSettings(HikeConstants.CLOSE_FRIENDS_NUX);
+                        App.RemoveKeyFromAppSettings(HikeConstants.FAMILY_MEMBERS_NUX);
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                         NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                     }
