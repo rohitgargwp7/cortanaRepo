@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -39,7 +39,14 @@ namespace windows_client.utils
         {
             get
             {
-                return IS_PRODUCTION;
+                return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
+            }
+            set
+            {
+                if (value != IS_PRODUCTION)
+                {
+                    IS_PRODUCTION = value;
+                }
             }
         }
 
@@ -49,7 +56,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return MQTT_HOST_SERVER;
                 return STAGING_HOST;
             }
@@ -59,7 +66,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return STAGING_PORT;
                 return 1883;
             }
@@ -69,7 +76,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
                 return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
             }
@@ -77,9 +84,9 @@ namespace windows_client.utils
 
         #endregion
 
-        public static string HOST = IS_PRODUCTION ? PRODUCTION_HOST : STAGING_HOST;
+        public static string HOST = IsProd ? PRODUCTION_HOST : STAGING_HOST;
 
-        public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
+        public static int PORT = IsProd ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
         public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
@@ -826,7 +833,7 @@ namespace windows_client.utils
                         }
                         bool onhike = (bool)entry["onhike"];
                         ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
-                        
+
                         #region NUX
 
                         if (!cn.OnHike)
@@ -837,14 +844,14 @@ namespace windows_client.utils
                                 isCloseFriend = true;
                                 listCloseFriends.Add(cn);
                             }
-                             if (!isCloseFriend && isLastNameCheckApplicable)
+                            if (!isCloseFriend && isLastNameCheckApplicable)
                             {
                                 if (cn.Name != null)
                                 {
                                     string[] nameArray = cn.Name.Trim().Split(' ');
                                     if (nameArray.Length > 1)
                                     {
-                                        string curlastName = nameArray[nameArray.Length-1].ToLower();
+                                        string curlastName = nameArray[nameArray.Length - 1].ToLower();
                                         if (curlastName.Trim().ToLower() == lastName)
                                         {
                                             listCloseFriends.Add(cn);
@@ -857,7 +864,7 @@ namespace windows_client.utils
                             {
                                 listCloseFriends.Add(cn);
                             }
-                        } 
+                        }
                         #endregion
 
                         if (!isRefresh) // this is case for new installation
@@ -950,7 +957,7 @@ namespace windows_client.utils
             if (nameArray.Length == 1)
                 return null;
 
-            return nameArray[nameArray.Length-1].ToLower();
+            return nameArray[nameArray.Length - 1].ToLower();
         }
 
         private static Dictionary<string, bool> familyVocab = new Dictionary<string, bool> {
