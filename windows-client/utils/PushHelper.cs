@@ -16,9 +16,8 @@ namespace windows_client.utils
         private readonly int maxPollingTime = 120;
         private int pollingTime = 3; //in seconds
         private readonly int minPollingTime = 3;
-        private DispatcherTimer dispatcherTimer;
-        private IScheduler scheduler = Scheduler.NewThread; //TODO - we should can tryy pooling of scheduler objects
-
+        private IScheduler scheduler; //TODO MG - we should can try pooling of scheduler objects
+        private volatile IDisposable httpPostScheduled;
 
         private string _latestPushToken;
         private string LatestPushToken
@@ -32,13 +31,12 @@ namespace windows_client.utils
                 if (value != _latestPushToken)
                 {
                     _latestPushToken = value;
-                    if (dispatcherTimer != null && dispatcherTimer.IsEnabled)
-                        dispatcherTimer.Stop();
-                    if (!string.IsNullOrEmpty(_latestPushToken))
+                    if (httpPostScheduled != null)
                     {
-                        AccountUtils.postPushNotification(_latestPushToken,                        //its async call,
-                            new AccountUtils.postResponseFunction(postPushNotification_Callback)); //so should be ok to call from setter
+                        httpPostScheduled.Dispose();
+                        httpPostScheduled = null;
                     }
+                    postTokenToServer();
                 }
             }
         }
@@ -83,12 +81,8 @@ namespace windows_client.utils
                     pushChannel.Close();
                     pushChannel.Dispose();
                 }
-                if (dispatcherTimer != null)
-                {
-                    if (dispatcherTimer.IsEnabled)
-                        dispatcherTimer.Stop();
-                    dispatcherTimer = null;
-                }
+                LatestPushToken = null;
+                scheduler = null;
             }
             catch (InvalidOperationException)
             {
@@ -97,7 +91,6 @@ namespace windows_client.utils
             {
             }
         }
-
 
         public void registerPushnotifications()
         {
@@ -132,7 +125,6 @@ namespace windows_client.utils
                 {
                     LatestPushToken = null;
                 }
-
             }
             catch (InvalidOperationException ioe)
             {
@@ -168,33 +160,27 @@ namespace windows_client.utils
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            if (stat != HikeConstants.OK && NetworkInterface.GetIsNetworkAvailable())
             {
-                if (stat != HikeConstants.OK && NetworkInterface.GetIsNetworkAvailable())
+                if (scheduler == null)
                 {
-                    if (dispatcherTimer == null)
-                    {
-                        dispatcherTimer = new DispatcherTimer();
-                        dispatcherTimer.Tick += postTokenToServer;
-                    }
-                    dispatcherTimer.Interval = TimeSpan.FromSeconds(pollingTime);
-                    pollingTime *= 2;
-                    if (pollingTime > maxPollingTime)
-                        pollingTime = minPollingTime;
-                    if (!dispatcherTimer.IsEnabled)
-                        dispatcherTimer.Start();
+                    scheduler = Scheduler.NewThread;
                 }
-                else if (stat == HikeConstants.OK && dispatcherTimer != null)
-                {
-                    App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, _latestPushToken);
-                    if (dispatcherTimer.IsEnabled)
-                        dispatcherTimer.Stop();
-                    dispatcherTimer = null; //release strong pointer as it is no longer required
-                }
-            });
+                httpPostScheduled = scheduler.Schedule(postTokenToServer, TimeSpan.FromSeconds(pollingTime));
+                pollingTime *= 2;
+                if (pollingTime > maxPollingTime)
+                    pollingTime = minPollingTime;
+            }
+            else if (stat == HikeConstants.OK)
+            {
+                App.WriteToIsoStorageSettings(App.LATEST_PUSH_TOKEN, _latestPushToken);
+                if (httpPostScheduled != null)
+                    httpPostScheduled.Dispose();
+                scheduler = null;
+            }
         }
 
-        void postTokenToServer(object sender, EventArgs e)
+        private void postTokenToServer()
         {
             if (!string.IsNullOrEmpty(_latestPushToken))
                 AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
