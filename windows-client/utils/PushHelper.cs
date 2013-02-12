@@ -23,10 +23,10 @@ namespace windows_client.utils
                 if (value != _latestPushToken)
                 {
                     _latestPushToken = value;
+                    if (dispatcherTimer != null && dispatcherTimer.IsEnabled)
+                        dispatcherTimer.Stop();
                     if (!string.IsNullOrEmpty(_latestPushToken))
                     {
-                        if (dispatcherTimer.IsEnabled)
-                            dispatcherTimer.Stop();
                         AccountUtils.postPushNotification(_latestPushToken,                        //its async call,
                             new AccountUtils.postResponseFunction(postPushNotification_Callback)); //so should be ok to call from setter
                     }
