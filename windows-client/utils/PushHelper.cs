@@ -2,9 +2,7 @@
 using Microsoft.Phone.Notification;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
-using System.Windows.Threading;
 using System.Net.NetworkInformation;
-using System.Windows;
 using Microsoft.Phone.Reactive;
 
 namespace windows_client.utils
