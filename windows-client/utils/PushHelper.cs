@@ -63,7 +63,7 @@ namespace windows_client.utils
         {
             string pushToken;
             App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
-            LatestPushToken = pushToken;
+            _latestPushToken = pushToken;
         }
 
         public void closePushnotifications()
