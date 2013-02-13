@@ -223,7 +223,6 @@ namespace windows_client.Model
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("SdrImage");
                 }
             }
         }
@@ -472,14 +471,6 @@ namespace windows_client.Model
                     singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
                     if (FileAttachment.Thumbnail != null)
                         singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
-                    //if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    //{
-                    //    JObject locationInfo = JObject.Parse(this.MetaDataString);
-                    //    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
-                    //    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
-                    //    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
-                    //    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
-                    //}
                 }
                 else
                 {
@@ -496,8 +487,6 @@ namespace windows_client.Model
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
             {
-                //metadata = new JObject();
-                //metadata["poke"] = true;
                 data["poke"] = true;
             }
 
@@ -552,87 +541,6 @@ namespace windows_client.Model
             result = prime * result + (int)(Timestamp ^ (Convert.ToUInt32(Timestamp) >> 32));
             return result;
         }
-
-        #region ChatThread Page Bindings for Converters
-
-        public string SdrImage
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
-                    case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
-                    case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
-                    default: return "";
-                }
-            }
-        }
-
-        public string Alignment
-        {
-            get
-            {
-                if (IsSent)
-                    return "right";
-                else
-                    return "left";
-            }
-        }
-
-        public string ChatBubbleDirection
-        {
-            get
-            {
-                if (IsSent)
-                    return "LowerRight";
-                else
-                    return "UpperLeft";
-            }
-        }
-
-        public string BubbleBackground
-        {
-            get
-            {
-                if (ChatBubbleType.RECEIVED == MsgType)
-                {
-                    return "#eeeeec";
-                }
-                else if (ChatBubbleType.HIKE_SENT == MsgType)
-                {
-                    return "#1ba1e2";
-                }
-                else
-                {
-                    return "#a3d250";
-                }
-            }
-        }
-
-        public string ChatBubbleMargin
-        {
-            get
-            {
-                if (IsSent)
-                    return "15,0,10,10";
-                else
-                    return "5,0,10,10";
-            }
-        }
-
-        public string SdrImageVisibility
-        {
-            get
-            {
-                if (IsSent)
-                    return "Visible";
-                else
-                    return "Collapsed";
-            }
-        }
-
-        #endregion
 
         #endregion
 
