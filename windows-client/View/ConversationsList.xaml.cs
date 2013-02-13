@@ -103,11 +103,20 @@ namespace windows_client.View
 
         private static void OnNetworkChange(object sender, EventArgs e)
         {
-            //Microsoft.Phone.Net.NetworkInformation.NetworkInterface inherits from System.Net.NetworkInformation.NetworkInterface 
-            //and adds the GetNetworkInterface static method and the NetworkInterfaceType static property
+            //reconnect mqtt whenever phone is reconnected without relaunch 
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 App.MqttManagerInstance.connect();
+                if (App.PUSH_REGISTERATION_PENDING)
+                {
+                    bool isPushEnabled = true;
+                    App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                    if (isPushEnabled)
+                    {
+                        App.PushHelperInstance.registerPushnotifications();
+                        App.PUSH_REGISTERATION_PENDING = false;
+                    }
+                }
             }
             else
             {
@@ -124,7 +133,6 @@ namespace windows_client.View
             this.pendingRequests.SelectedIndex = -1;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
                 myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
-            //            convScroller.ScrollToVerticalOffset(0);
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -247,9 +255,10 @@ namespace windows_client.View
 
             bool isPushEnabled = true;
             appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-            if (isPushEnabled)
+            if (isPushEnabled && NetworkInterface.GetIsNetworkAvailable() && App.PUSH_REGISTERATION_PENDING)
             {
                 App.PushHelperInstance.registerPushnotifications();
+                App.PUSH_REGISTERATION_PENDING = false;
             }
             #endregion
             #region CHECK UPDATES
