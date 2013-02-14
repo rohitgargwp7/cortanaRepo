@@ -64,6 +64,7 @@ namespace windows_client.View
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
         }
+
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (favTutePvt.SelectedIndex == 0)
@@ -123,7 +124,6 @@ namespace windows_client.View
                 App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
             }
         }
-
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -308,6 +308,8 @@ namespace windows_client.View
                              App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                          }
                          App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                         emptyScreenImage.Opacity = 0;
+                         emptyScreenTip.Opacity = 0;
                      });
                 }
             }
@@ -467,11 +469,18 @@ namespace windows_client.View
 
             if (_avatar != null)
             {
-                MemoryStream memStream = new MemoryStream(_avatar);
-                memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage empImage = new BitmapImage();
-                empImage.SetSource(memStream);
-                avatarImage.Source = empImage;
+                try
+                {
+                    MemoryStream memStream = new MemoryStream(_avatar);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage empImage = new BitmapImage();
+                    empImage.SetSource(memStream);
+                    avatarImage.Source = empImage;
+                }
+                catch
+                {
+                    avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                }
             }
             else
             {
