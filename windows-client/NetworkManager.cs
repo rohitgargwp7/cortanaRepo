@@ -1118,14 +1118,20 @@ namespace windows_client
                 {
                     if (l[i].Msisdn == ms) // if this msisdn exists in group
                     {
+                         ConvMessage convMsg = null;
                         if (!isOptInMsg) // represents UJ event
                         {
                             if (l[i].IsOnHike)  // if this user is already on hike
                                 continue;
                             l[i].IsOnHike = true;
+                            if (!GroupTableUtils.IsGroupAlive(key)) // if group is dead simply dont do anything
+                                continue;
+                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                         }
-                        object[] values = null;
-                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
+                        else
+                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
+
+                        object[] values = null;                        
                         convMsg.Msisdn = key;
                         convMsg.Message = ms;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);

@@ -197,26 +197,6 @@ namespace windows_client.ViewModel
 
         }
 
-        private void RefreshNewConversationObject()
-        {
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                try
-                {
-                    if (App.ViewModel.MessageListPageCollection.Count > 0)
-                    {
-                        ConversationBox c = App.ViewModel.MessageListPageCollection[0];
-                        if (c == null)
-                            return;
-                        App.ViewModel.MessageListPageCollection.RemoveAt(0);
-                        App.ViewModel.MessageListPageCollection.Insert(0, c);
-                    }
-                }
-                catch (ArgumentOutOfRangeException)
-                { }
-            });
-        }
-
         private void RegisterListeners()
         {
             App.HikePubSubInstance.addListener(HikePubSub.MESSAGE_RECEIVED, this);
@@ -249,9 +229,7 @@ namespace windows_client.ViewModel
                             if (App.ViewModel.ConversationListPage != null)
                                 ContextMenuService.SetContextMenu(mObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(mObj));
                         }
-                        else
-                            App.ViewModel.MessageListPageCollection.Remove(mObj.ConvBoxObj);
-
+                        App.ViewModel.MessageListPageCollection.Remove(mObj.ConvBoxObj);
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
                         App.ViewModel.MessageListPageCollection.Insert(0, mObj.ConvBoxObj);
                     });

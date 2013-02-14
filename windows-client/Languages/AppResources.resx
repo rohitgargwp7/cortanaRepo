@@ -433,14 +433,6 @@
     <value>save</value>
     <comment>cs</comment>
   </data>
-  <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Connect and get a</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
-  <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
-    <value>instantly</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
     <value>Earn an extra</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
@@ -1271,5 +1263,32 @@
   </data>
   <data name="You_Txt" xml:space="preserve">
     <value>You</value>
+  </data>
+  <data name="Help_System_Health_Text" xml:space="preserve">
+    <value>Check hike status on Twitter</value>
+  </data>
+  <data name="Help_System_Health_Title" xml:space="preserve">
+    <value>System Health</value>
+  </data>
+  <data name="Attachement_Contact_Txt" xml:space="preserve">
+    <value>Contact Info</value>
+  </data>
+  <data name="Attachment_Audio_Txt" xml:space="preserve">
+    <value>Send Audio</value>
+  </data>
+  <data name="Attachment_Camera_Txt" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="Attachment_Location_Txt" xml:space="preserve">
+    <value>Share Location</value>
+  </data>
+  <data name="Attachment_Photo_Txt" xml:space="preserve">
+    <value>Send Photo</value>
+  </data>
+  <data name="Attachment_Video_Txt" xml:space="preserve">
+    <value>Send Video</value>
+  </data>
+  <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
+    <value>Share on Facebook &amp; Twitter</value>
   </data>
 </root>

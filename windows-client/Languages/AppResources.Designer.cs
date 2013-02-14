@@ -115,6 +115,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact Info.
+        /// </summary>
+        public static string Attachement_Contact_Txt {
+            get {
+                return ResourceManager.GetString("Attachement_Contact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Audio.
+        /// </summary>
+        public static string Attachment_Audio_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Audio_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string Attachment_Camera_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Camera_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share Location.
+        /// </summary>
+        public static string Attachment_Location_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Location_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Photo.
+        /// </summary>
+        public static string Attachment_Photo_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Photo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Video.
+        /// </summary>
+        public static string Attachment_Video_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Audio.
         /// </summary>
         public static string Audio_Txt {
@@ -925,24 +979,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect and get a.
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk1 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to instantly.
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk3 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Earn an extra.
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
@@ -1425,6 +1461,24 @@ namespace windows_client.Languages {
         public static string Help_RateAppTitle {
             get {
                 return ResourceManager.GetString("Help_RateAppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check hike status on Twitter.
+        /// </summary>
+        public static string Help_System_Health_Text {
+            get {
+                return ResourceManager.GetString("Help_System_Health_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Health.
+        /// </summary>
+        public static string Help_System_Health_Title {
+            get {
+                return ResourceManager.GetString("Help_System_Health_Title", resourceCulture);
             }
         }
         
@@ -2352,6 +2406,15 @@ namespace windows_client.Languages {
         public static string SMS_Works_Only_In_India_Txt {
             get {
                 return ResourceManager.GetString("SMS_Works_Only_In_India_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share on Facebook &amp; Twitter.
+        /// </summary>
+        public static string Social_Cnnct_TxtBlk {
+            get {
+                return ResourceManager.GetString("Social_Cnnct_TxtBlk", resourceCulture);
             }
         }
         

@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
 
 namespace windows_client.utils
 {
@@ -39,14 +40,14 @@ namespace windows_client.utils
         private BitmapImage delivered;
         private BitmapImage read;
         private BitmapImage trying;
-        private BitmapImage unread;
-        //private BitmapImage defaultAvatarBitmapImage;
-        //private BitmapImage defaultGroupImage;
         private BitmapImage waiting;
         private BitmapImage reward;
+        private BitmapImage chatSmsError;
+        private BitmapImage grpNameChanged;
         private BitmapImage participantLeft;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage contactIcon;
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -441,37 +442,6 @@ namespace windows_client.utils
             }
         }
 
-        public BitmapImage Unread
-        {
-            get
-            {
-                if (unread == null)
-                    unread = new BitmapImage(new Uri("/View/images/new_message.png", UriKind.Relative));
-                return unread;
-            }
-        }
-
-
-        //public BitmapImage DefaultAvatarBitmapImage
-        //{
-        //    get
-        //    {
-        //        if (defaultAvatarBitmapImage == null)
-        //            defaultAvatarBitmapImage = new BitmapImage(new Uri("/View/images/default_user.png", UriKind.Relative));
-        //        return defaultAvatarBitmapImage;
-        //    }
-        //}
-
-        //public BitmapImage DefaultGroupImage
-        //{
-        //    get
-        //    {
-        //        if (defaultGroupImage == null)
-        //            defaultGroupImage = new BitmapImage(new Uri("/View/images/default_group.png", UriKind.Relative));
-        //        return defaultGroupImage;
-        //    }
-        //}
-
         public BitmapImage Waiting
         {
             get
@@ -496,9 +466,19 @@ namespace windows_client.utils
         {
             get
             {
-                if (reward == null)
-                    reward = new BitmapImage(new Uri("/View/images/chat_sms_error.png", UriKind.Relative));
-                return reward;
+                if (chatSmsError == null)
+                    chatSmsError = new BitmapImage(new Uri("/View/images/chat_sms_error.png", UriKind.Relative));
+                return chatSmsError;
+            }
+        }
+
+        public BitmapImage GrpNameChanged
+        {
+            get
+            {
+                if (grpNameChanged == null)
+                    grpNameChanged = new BitmapImage(new Uri("/View/images/group_name_changed.png", UriKind.Relative));
+                return grpNameChanged;
             }
         }
 
@@ -521,7 +501,7 @@ namespace windows_client.utils
                 return nudgeSend;
             }
         }
-        
+
         public BitmapImage NudgeReceived
         {
             get
@@ -532,6 +512,15 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage ContactIcon
+        {
+            get
+            {
+                if (contactIcon == null)
+                    contactIcon = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                return contactIcon;
+            }
+        }
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -597,6 +586,7 @@ namespace windows_client.utils
         #endregion
 
         #region DEFAULT AVATARS
+
         private int computeHash(string msisdn)
         {
             string last3Digits = msisdn.Substring(msisdn.Length - 3);
@@ -675,6 +665,23 @@ namespace windows_client.utils
                 }
             }
             return defaultGroupAvatars[index];
+        }
+
+        public byte[] BitmapImgToByteArray(BitmapImage image)
+        {
+            try
+            {
+                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+                using (var msLargeImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                    return msLargeImage.ToArray();
+                }
+            }
+            catch 
+            { 
+                return null; 
+            }
         }
         #endregion
     }
