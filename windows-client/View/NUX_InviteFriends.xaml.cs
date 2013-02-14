@@ -11,16 +11,17 @@ using windows_client.utils;
 using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
+using System.Diagnostics;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
     public partial class NUX_InviteFriends : PhoneApplicationPage
     {
-        private List<ContactInfo> contactsToBeInvited = new List<ContactInfo>();
         private ApplicationBarIconButton sendInviteIconButton;
         private bool isFirstLaunch = true;
-        private bool isClicked = true;
-
+        private List<ContactInfo> listContactInfo;
+       
         public NUX_InviteFriends()
         {
             InitializeComponent();
@@ -35,7 +36,6 @@ namespace windows_client.View
             sendInviteIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             sendInviteIconButton.Text = "Invite";
 
-            sendInviteIconButton.IsEnabled = false;
             appBar.Buttons.Add(sendInviteIconButton);
             this.ApplicationBar = appBar;
         }
@@ -48,15 +48,15 @@ namespace windows_client.View
             {
                 SmileyParser.Instance.initializeSmileyParser();
 
-                List<ContactInfo> listContactInfo;
                 if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 1)
                 {
+                    listContactInfo.Sort(new ContactCompare());
+                    MarkDefaultChecked();
                     lstBoxInvite.ItemsSource = listContactInfo;
-                    sendInviteIconButton.Click += new EventHandler(btnInviteFamily_Click);
+                    sendInviteIconButton.Click += btnInviteFriends_Click;
                 }
                 else if (App.appSettings.TryGetValue(HikeConstants.FAMILY_MEMBERS_NUX, out listContactInfo) && listContactInfo.Count > 1)
                 {
-                    lstBoxInvite.ItemsSource = listContactInfo;
                     InitialiseFamilyScreen();
                 }
                 else
@@ -71,30 +71,43 @@ namespace windows_client.View
                 isFirstLaunch = false;
             }
         }
+       
         private void InitialiseFamilyScreen()
         {
-            txtHeader.Text = "INVITE FAMILY MEMBERS";
-            txtConnectHike.Text = "Which of your family members would you like to connect with on hike?";
+            listContactInfo.Sort(new ContactCompare());
+            MarkDefaultChecked();
+            lstBoxInvite.ItemsSource = listContactInfo;
+            txtHeader.Text = AppResources.Nux_YourFamily_Txt;
+            txtConnectHike.Text = AppResources.Nux_FamilyMembersConnect_txt;
+            sendInviteIconButton.IsEnabled = true;
             sendInviteIconButton.Click += btnInviteFamily_Click;
+        }
+
+        private void MarkDefaultChecked()
+        {
+            if (listContactInfo != null)
+            {
+                for (int i = 0; i < listContactInfo.Count; i++)
+                {
+                    if (i == 15)
+                        break;
+                    ContactInfo cn = listContactInfo[i];
+                    cn.IsCloseFriendNux = true;
+                }
+            }
         }
 
         private void btnInviteFriends_Click(object sender, EventArgs e)
         {
-            if (isClicked)
+            sendInviteIconButton.IsEnabled = false;
+
+            string inviteToken = "";
+            int count = 0;
+            App.MqttManagerInstance.connect();
+            NetworkManager.turnOffNetworkManager = false;
+            foreach (ContactInfo cinfo in listContactInfo)
             {
-                isClicked = false;
-                if (contactsToBeInvited.Count == 0)
-                {
-                    sendInviteIconButton.IsEnabled = false;
-                    return;
-                }
-                string inviteToken = "";
-                int count = 0;
-
-                App.MqttManagerInstance.connect();
-                NetworkManager.turnOffNetworkManager = false;
-
-                foreach (ContactInfo cinfo in contactsToBeInvited)
+                if (cinfo.IsCloseFriendNux)
                 {
                     JObject obj = new JObject();
                     JObject data = new JObject();
@@ -107,42 +120,37 @@ namespace windows_client.View
                     App.MqttManagerInstance.mqttPublishToServer(obj);
                     count++;
                 }
-                if (count > 0)
-                {
-                    MessageBoxResult msgBoxResult = MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
-                    List<ContactInfo> listContactInfo;
-                    if (App.appSettings.TryGetValue(HikeConstants.FAMILY_MEMBERS_NUX, out listContactInfo) && listContactInfo.Count > 1)
-                    {
-                        lstBoxInvite.ItemsSource = listContactInfo;
-                        InitialiseFamilyScreen();
-                    }
-                    else
-                    {
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
-                    }
-                    App.RemoveKeyFromAppSettings(HikeConstants.CLOSE_FRIENDS_NUX);
-                }
             }
+            if (count > 0)
+            {
+                MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+            }
+            if (App.appSettings.TryGetValue(HikeConstants.FAMILY_MEMBERS_NUX, out listContactInfo) && listContactInfo.Count > 1)
+            {
+                InitialiseFamilyScreen();
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            }
+            sendInviteIconButton.Click -= btnInviteFriends_Click;
         }
+
         private void btnInviteFamily_Click(object sender, EventArgs e)
         {
-            if (isClicked)
+            sendInviteIconButton.IsEnabled = false;
+            string inviteToken = "";
+            int count = 0;
+
+            App.MqttManagerInstance.connect();
+            NetworkManager.turnOffNetworkManager = false;
+
+            foreach (ContactInfo cinfo in listContactInfo)
             {
-                isClicked = false;
-                if (contactsToBeInvited.Count == 0)
+                if (cinfo.IsCloseFriendNux)
                 {
-                    sendInviteIconButton.IsEnabled = false;
-                    return;
-                }
-                string inviteToken = "";
-                int count = 0;
-
-                App.MqttManagerInstance.connect();
-                NetworkManager.turnOffNetworkManager = false;
-
-                foreach (ContactInfo cinfo in contactsToBeInvited)
-                {
+                    Debug.WriteLine(cinfo.Name + ":" + cinfo.Msisdn + ",invited number");
                     JObject obj = new JObject();
                     JObject data = new JObject();
                     data[HikeConstants.SMS_MESSAGE] = string.Format(AppResources.sms_invite_message, inviteToken);
@@ -154,39 +162,20 @@ namespace windows_client.View
                     App.MqttManagerInstance.mqttPublishToServer(obj);
                     count++;
                 }
-                if (count > 0)
-                {
-                    MessageBoxResult msgBoxResult = MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
-                    if (msgBoxResult == MessageBoxResult.OK)
-                    {
-                        App.RemoveKeyFromAppSettings(HikeConstants.FAMILY_MEMBERS_NUX);
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                        NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
-                    }
-                }
             }
-        }
+            if (count > 0)
+            {
+                MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
+            }
 
-        private void CheckBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            CheckBox c = sender as CheckBox;
-            ContactInfo cn = c.DataContext as ContactInfo;
-            if (cn == null)
-                return;
-            if ((bool)c.IsChecked && !contactsToBeInvited.Contains(cn))
-            {
-                contactsToBeInvited.Add(cn);
-            }
-            else if (!(bool)c.IsChecked && contactsToBeInvited.Contains(cn))
-            {
-                contactsToBeInvited.Remove(cn);
-            }
-            sendInviteIconButton.IsEnabled = contactsToBeInvited.Count > 0;
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
         }
+
     }
 }

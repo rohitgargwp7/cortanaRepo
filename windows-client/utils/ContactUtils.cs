@@ -12,6 +12,7 @@ using System.ComponentModel;
 using Microsoft.Phone.Controls;
 using System.Net.NetworkInformation;
 using windows_client.Languages;
+using System.IO;
 
 namespace windows_client.utils
 {
@@ -164,15 +165,26 @@ namespace windows_client.utils
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
-
                 bool hasFacebookAccount = false;
                 byte accNumber = 0;
+                bool hasPicture = false;
                 foreach (Account acc in cn.Accounts)
                 {
                     if (acc.Kind == StorageKind.Facebook)
                         hasFacebookAccount = true;
                     accNumber++;
-
+                }
+                bool addedBirthday = false;
+                foreach (DateTime birthDate in cn.Birthdays)
+                {
+                    addedBirthday = true;
+                }
+                Stream s = cn.GetPicture();
+                byte[] picBytes = null;
+                if (s != null)
+                {
+                    hasPicture = !hasFacebookAccount;
+                    picBytes = AccountUtils.StreamToByteArray(s);
                 }
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
@@ -184,7 +196,10 @@ namespace windows_client.utils
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
-                    cInfo.IsCloseFriendNux = hasFacebookAccount || accNumber > 1;
+
+                    cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
+                    cInfo.HasPicture = picBytes != null;
+                    cInfo.Avatar = picBytes;
 
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {

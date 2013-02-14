@@ -14,7 +14,7 @@
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" >
+    <Grid x:Name="LayoutRoot"  Background="#eeeeee" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -22,22 +22,30 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="24,17,24,0">
-            <TextBlock Name="txtHeader" Text="YOUR FRIENDS" FontFamily="Segoe WP SemiLight" FontSize="24"/>
-            <TextBlock Name="txtConnectHike" Text="Which of your close friends would you like to connect with on hike?" TextWrapping="Wrap" Margin="0,20,0,0" FontFamily="Segoe WP SemiLight" FontSize="22"/>
+            <TextBlock Name="txtHeader" Text="{Binding Path= LocalizedResources.Nux_YourFriends_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" Foreground="#1f1f1f" FontSize="22"/>
+            <TextBlock Name="txtConnectHike" Text="{Binding Path= LocalizedResources.Nux_CloseFriendsConnect_txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="0,20,0,0" FontFamily="Segoe WP SemiLight" FontSize="22" Foreground="#000000"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="24,20,24,0" >
-            <ListBox Name="lstBoxInvite" Margin="20" Height="500">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="24,20,24,0"  Background="White">
+            <ListBox Name="lstBoxInvite" Margin="5">
                 <ListBox.ItemTemplate >
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox Tap="CheckBox_Tap" ></CheckBox>
-                            <StackPanel>
-                                <TextBlock Name="name" Text="{Binding Name}"  FontFamily="Segoe WP SemiLight" FontSize="42"/>
-                                <TextBlock Text="{Binding PhoneNo}" Foreground="Gray" FontSize="20" Height="30" />
-                            </StackPanel>
-                        </StackPanel>
+                        <Grid x:Name="LayoutRoot" Width="416">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="chkBox" HorizontalAlignment="Left" Background="#eeeeee" IsChecked="{Binding IsCloseFriendNux, Mode=TwoWay}"  Grid.Row="0" Grid.Column="0" Margin="0" Padding="0" BorderThickness="0"></CheckBox>
+                            <TextBlock Text="{Binding Name}" Foreground="#2d2d2d"  FontFamily="Segoe WP SemiLight" FontSize="33" Grid.Row="0" Grid.Column="1" Margin="-10 10 0 0"/>
+                            <TextBlock Text="{Binding PhoneNo}" Foreground="#5e5e5e" FontFamily="Segoe WP Regular" FontSize="18" Grid.Row="1" Grid.Column="1" Margin="-10 -15 0 0"/>
+                            <Image Source="{Binding AvatarImage}" MaxWidth="56" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Margin="10,0,5,0"/>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
