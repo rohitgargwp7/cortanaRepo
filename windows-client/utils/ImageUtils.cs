@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
+using System.IO;
 
 namespace windows_client.utils
 {
@@ -585,6 +586,7 @@ namespace windows_client.utils
         #endregion
 
         #region DEFAULT AVATARS
+
         private int computeHash(string msisdn)
         {
             string last3Digits = msisdn.Substring(msisdn.Length - 3);
@@ -663,6 +665,16 @@ namespace windows_client.utils
                 }
             }
             return defaultGroupAvatars[index];
+        }
+
+        public byte[] BitmapImgToByteArray(BitmapImage image)
+        {
+            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+            using (var msLargeImage = new MemoryStream())
+            {
+                writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                return msLargeImage.ToArray();
+            }
         }
         #endregion
     }

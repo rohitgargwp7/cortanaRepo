@@ -18,6 +18,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using windows_client.Languages;
 using System.Diagnostics;
+using windows_client.DbUtils;
+using System.Windows.Media.Imaging;
 
 namespace windows_client.View
 {
@@ -27,7 +29,9 @@ namespace windows_client.View
         private string token;
         private string tokenSecret;
         private string pin;
+        private bool fromEnterName;
 
+        private const string extendedPermissionsEnterName = "user_about_me";
         private const string extendedPermissions = "user_about_me,publish_stream";
         private readonly FacebookClient _fb = new FacebookClient();
 
@@ -47,6 +51,8 @@ namespace windows_client.View
             else if (socialNetwork == HikeConstants.FACEBOOK)
             {
                 PhoneApplicationService.Current.State["FromSocialPage"] = true;
+                if (PhoneApplicationService.Current.State.ContainsKey("fromEnterName"))
+                    fromEnterName = true;
                 if (App.appSettings.Contains(HikeConstants.FB_LOGGED_IN))
                     LogoutFb();
                 else
@@ -68,12 +74,17 @@ namespace windows_client.View
 
         private void LogInFb()
         {
+            string perms;
+            if (fromEnterName)
+                perms = extendedPermissionsEnterName;
+            else
+                perms = extendedPermissions;
             var parameters = new Dictionary<string, object>();
             parameters["client_id"] = Misc.Social.FacebookSettings.AppID;
             parameters["redirect_uri"] = "https://www.facebook.com/connect/login_success.html";
             parameters["response_type"] = "token";
             parameters["display"] = "touch";
-            parameters["scope"] = extendedPermissions;
+            parameters["scope"] = perms;
             BrowserControl.Navigate(_fb.GetLoginUrl(parameters));
         }
 
@@ -97,32 +108,6 @@ namespace windows_client.View
                     if (e.Uri.AbsoluteUri.ToLower().Replace("https://", "http://") == Misc.Social.TwitterSettings.AuthorizeUrl)
                     {
                         RetrieveAccessToken();
-                        //var htmlString = BrowserControl.SaveToString();
-                        //var pinFinder = new Regex(@"<DIV id=oauth_pin>(?<pin>[A-Za-z0-9_]+)</DIV>", RegexOptions.IgnoreCase);
-                        //var match = pinFinder.Match(htmlString);
-                        //if (match.Length > 0)
-                        //{
-                        //    var group = match.Groups["pin"];
-                        //    if (group.Length > 0)
-                        //    {
-                        //        pin = group.Captures[0].Value;
-                        //        if (!string.IsNullOrEmpty(pin))
-                        //        {
-                        //            RetrieveAccessToken();
-                        //        }
-                        //    }
-                        //}
-                        //if (string.IsNullOrEmpty(pin))
-                        //{
-                        //    Dispatcher.BeginInvoke(() =>
-                        //        {
-                        //            MessageBox.Show("Authorization denied by user");
-                        //            NavigationService.GoBack();
-                        //        });
-                        //}
-                        //// Make sure pin is reset to null
-                        //pin = null;
-                        //BrowserControl.Visibility = Visibility.Collapsed;
                     }
                 }
                 catch { }
@@ -143,6 +128,7 @@ namespace windows_client.View
                         NavigationService.GoBack();
                     });
                 }
+
                 if (!_fb.TryParseOAuthCallbackUrl(e.Uri, out oauthResult))
                 {
                     return;
@@ -187,14 +173,39 @@ namespace windows_client.View
                 string id = (string)result["id"];
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_ACCESS_TOKEN, accessToken);
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.FB_USER_ID, id);
-                App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (fromEnterName)
                 {
-                    PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGIN;
-                    NavigationService.GoBack();
-                });
+                    string profilePictureUrl = string.Format("https://graph.facebook.com/{0}/picture", id);
+                    WebClient client = new WebClient();
+                    client.OpenReadAsync(new Uri(profilePictureUrl));
+                    client.OpenReadCompleted += (ss, ee) =>
+                    {
+                        Stream s = ee.Result;                      
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            BitmapImage b = new BitmapImage();
+                            b.SetSource(s);
+                            byte[] imgBytes = UI_Utils.Instance.BitmapImgToByteArray(b);
+                            PhoneApplicationService.Current.State["img"] = imgBytes;
+                            PhoneApplicationService.Current.State["fbName"] = (string)result["name"];
+                            NavigationService.GoBack();
+                        });
+                    };
+                }
+                else
+                {
+                    App.WriteToIsoStorageSettings(HikeConstants.FB_LOGGED_IN, true);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        PhoneApplicationService.Current.State["socialState"] = FreeSMS.SocialState.FB_LOGIN;
+                        NavigationService.GoBack();
+                    });
+                }
+
+                // if this is called from Entername screen dont store logged in status
+
             };
-            fb.GetAsync("me?fields=id");
+            fb.GetAsync("me");
         }
 
         private void AuthenticateTwitter() // used for twitter
@@ -452,7 +463,7 @@ namespace windows_client.View
                 {
                     Dispatcher.BeginInvoke(() =>
                         {
-                            
+
                             //MessageBox.Show("Unable to retrieve Access Token");
                             //NavigationService.GoBack();
                         });
@@ -463,7 +474,7 @@ namespace windows_client.View
         private void Browser_Navigating(object sender, NavigatingEventArgs e)
         {
             string uri = e.Uri.AbsoluteUri.ToString();
-            if (uri.Contains("get.hike.in") && uri.Contains("windowsphone") ||  uri.Contains("zune"))
+            if (uri.Contains("get.hike.in") && uri.Contains("windowsphone") || uri.Contains("zune"))
             {
                 e.Cancel = true;
                 Dispatcher.BeginInvoke(() =>
@@ -472,7 +483,7 @@ namespace windows_client.View
                             NavigationService.GoBack();
                     });
             }
-            else if (uri.Contains("invite") && (uri.Contains("Hike.in")||uri.Contains("hike.in")))
+            else if (uri.Contains("invite") && (uri.Contains("Hike.in") || uri.Contains("hike.in")))
             {
                 e.Cancel = true;
                 Dispatcher.BeginInvoke(() =>
