@@ -96,7 +96,7 @@ namespace windows_client.View
             appBar.Buttons.Add(pauseIconButton);
 
             stopIconButton = new ApplicationBarIconButton();
-            stopIconButton.IconUri = new Uri("/View/images/icon_stop.png", UriKind.Relative);
+            stopIconButton.IconUri = new Uri("/View/images/icon_stop_appbar.png", UriKind.Relative);
             stopIconButton.Text = AppResources.Stop_Txt;
             stopIconButton.Click += new EventHandler(StopPlaybackRecording_Click);
             stopIconButton.IsEnabled = true;
