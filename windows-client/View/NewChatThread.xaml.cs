@@ -27,6 +27,8 @@ using Microsoft.Phone.UserData;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
+using System.Windows;
+
 
 namespace windows_client.View
 {
@@ -59,6 +61,7 @@ namespace windows_client.View
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
+        private bool showNoSmsLeftOverlay = false;
         private bool isContextMenuTapped = false;
         private JObject groupCreateJson = null;
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
@@ -585,9 +588,20 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
+            initBlockUnblockState();
+
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
-            initBlockUnblockState();
+            else
+            {
+                App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
+                if (!isOnHike && mCredits <= 0)
+                {
+                    showNoSmsLeftOverlay = true;
+                    ToggleAlertOnNoSms(true);
+                }
+            }
+
             if (isShowNudgeTute)
                 showNudgeTute();
         }
@@ -1296,8 +1310,12 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
+
+
             if (mUserIsBlocked) // UNBLOCK REQUEST
             {
+                if (showNoSmsLeftOverlay)
+                    ToggleControlsToNoSms(true);
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
@@ -1318,6 +1336,8 @@ namespace windows_client.View
             }
             else     // BLOCK REQUEST
             {
+                if (showNoSmsLeftOverlay)
+                    ToggleControlsToNoSms(false);
                 this.Focus();
                 sendMsgTxtbox.Text = "";
                 if (isGroupChat)
@@ -1766,6 +1786,8 @@ namespace windows_client.View
             convMessage.IsSms = true;
             convMessage.IsInvite = true;
             sendMsg(convMessage, false);
+            if(showNoSmsLeftOverlay)
+                showOverlay(false);
         }
 
         #endregion
@@ -1803,6 +1825,7 @@ namespace windows_client.View
         {
             if (mUserIsBlocked)
                 return;
+
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = "";
 
@@ -1812,7 +1835,8 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
 
-            if ((!isOnHike && mCredits <= 0) || message == "")
+
+            if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
 
             endTypingSent = true;
@@ -2310,6 +2334,59 @@ namespace windows_client.View
                 // DO OTHER STUFF TODO 
             }
         }
+
+        private void ToggleAlertOnNoSms(bool onEnter)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   ToggleControlsToNoSms(onEnter);
+                   showOverlay(onEnter);
+                   if (onEnter)
+                   {
+                       sendMsgTxtbox.Tap += SendMsgBtn_Tap;
+                       sendMsgTxtbox.IsReadOnly = true;
+                   }
+                   else
+                   {
+                       sendMsgTxtbox.Tap -= SendMsgBtn_Tap;
+                       sendMsgTxtbox.IsReadOnly = false;
+                   }
+               });
+        }
+
+        private void SendMsgBtn_Tap(object sender, EventArgs e)
+        {
+            showOverlay(true);
+        }
+
+        private void ToggleControlsToNoSms(bool toNoSms)
+        {
+            if (toNoSms)
+            {
+                BlockTxtBlk.Text = String.Format(AppResources.NoFreeSmsLeft_Txt, mContactName);
+                btnBlockUnblock.Content = AppResources.FreeSMS_InviteNow_Btn;
+                btnBlockUnblock.Click -= blockUnblock_Click;
+                btnBlockUnblock.Click += inviteUserBtn_Click;
+                overlayRectangle.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(NoFreeSmsOverlay_Tap);
+              
+
+            }
+            else
+            {
+                BlockTxtBlk.Text = AppResources.SelectUser_BlockMsg_Txt;
+                btnBlockUnblock.Content = UNBLOCK_USER;
+                btnBlockUnblock.Click += blockUnblock_Click;
+                btnBlockUnblock.Click -= inviteUserBtn_Click;
+                overlayRectangle.Tap -= new EventHandler<System.Windows.Input.GestureEventArgs>(NoFreeSmsOverlay_Tap);
+            }
+        }
+
+       
+        private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            showOverlay(false);
+        }
+
         private void showOverlay(bool show)
         {
             if (show)
@@ -2337,7 +2414,7 @@ namespace windows_client.View
                     sendIconButton.IsEnabled = false;
                     fileTransferIconButton.IsEnabled = false;
                 }
-                else
+                else if (!showNoSmsLeftOverlay)
                 {
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
@@ -2592,6 +2669,10 @@ namespace windows_client.View
                 mCredits = (int)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if (!isGroupChat || !isGroupAlive)
+                    {
+                        ToggleAlertOnNoSms(!isOnHike && mCredits <= 0);
+                    }
                     updateChatMetadata();
                     if (!animatedOnce)
                     {
