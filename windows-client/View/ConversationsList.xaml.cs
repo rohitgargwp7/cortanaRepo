@@ -108,15 +108,11 @@ namespace windows_client.View
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 App.MqttManagerInstance.connect();
-                if (App.PUSH_REGISTERATION_PENDING)
+                bool isPushEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                if (isPushEnabled)
                 {
-                    bool isPushEnabled = true;
-                    App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-                    if (isPushEnabled)
-                    {
-                        App.PushHelperInstance.registerPushnotifications();
-                        App.PUSH_REGISTERATION_PENDING = false;
-                    }
+                    App.PushHelperInstance.registerPushnotifications();
                 }
             }
             else
@@ -255,10 +251,9 @@ namespace windows_client.View
 
             bool isPushEnabled = true;
             appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-            if (isPushEnabled && NetworkInterface.GetIsNetworkAvailable() && App.PUSH_REGISTERATION_PENDING)
+            if (isPushEnabled)
             {
                 App.PushHelperInstance.registerPushnotifications();
-                App.PUSH_REGISTERATION_PENDING = false;
             }
             #endregion
             #region CHECK UPDATES
@@ -446,7 +441,7 @@ namespace windows_client.View
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
             }
 

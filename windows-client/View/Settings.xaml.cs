@@ -57,11 +57,6 @@ namespace windows_client.View
         {
             this.pushNotifications.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                App.PUSH_REGISTERATION_PENDING = true;
-                return;
-            }
             App.PushHelperInstance.registerPushnotifications();
         }
 
