@@ -115,6 +115,60 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact Info.
+        /// </summary>
+        public static string Attachement_Contact_Txt {
+            get {
+                return ResourceManager.GetString("Attachement_Contact_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Audio.
+        /// </summary>
+        public static string Attachment_Audio_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Audio_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string Attachment_Camera_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Camera_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share Location.
+        /// </summary>
+        public static string Attachment_Location_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Location_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Photo.
+        /// </summary>
+        public static string Attachment_Photo_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Photo_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Video.
+        /// </summary>
+        public static string Attachment_Video_Txt {
+            get {
+                return ResourceManager.GetString("Attachment_Video_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Audio.
         /// </summary>
         public static string Audio_Txt {

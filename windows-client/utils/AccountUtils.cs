@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
+        private static bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -39,7 +39,14 @@ namespace windows_client.utils
         {
             get
             {
-                return IS_PRODUCTION;
+                return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
+            }
+            set
+            {
+                if (value != IS_PRODUCTION)
+                {
+                    IS_PRODUCTION = value;
+                }
             }
         }
 
@@ -49,7 +56,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return MQTT_HOST_SERVER;
                 return STAGING_HOST;
             }
@@ -59,7 +66,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return STAGING_PORT;
                 return 1883;
             }
@@ -69,7 +76,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
                 return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
             }
@@ -77,9 +84,9 @@ namespace windows_client.utils
 
         #endregion
 
-        public static string HOST = IS_PRODUCTION ? PRODUCTION_HOST : STAGING_HOST;
+        public static string HOST = IsProd ? PRODUCTION_HOST : STAGING_HOST;
 
-        public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
+        public static int PORT = IsProd ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
         public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
@@ -837,13 +844,16 @@ namespace windows_client.utils
                         #region NUX SCANNING
                         if (nuxRequired)
                         {
+
                             if (!cn.OnHike)
+
                             {
                                 bool markedForNux = false;
                                 if (listFamilyMembers.Count < 31)
                                 {
                                     if (isLastNameCheckApplicable)
                                     {
+
                                         if (!string.IsNullOrEmpty(cn.Name))
                                         {
                                             string[] nameArray = cn.Name.Trim().Split(' ');
@@ -876,6 +886,7 @@ namespace windows_client.utils
                                     cn.NuxMatchScore = cList[i].NuxMatchScore;
                                 }
                             }
+
                         }
                         #endregion
 
