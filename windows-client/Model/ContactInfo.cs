@@ -9,6 +9,7 @@ using windows_client.utils;
 using System.Windows;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace windows_client.Model
 {
@@ -22,11 +23,13 @@ namespace windows_client.Model
         private string _msisdn;
         private string _phoneNo;
         private bool _onHike;
-        private bool _hasCustomPhoto;
+        private bool _hasCustomPhoto;//where is this used
         private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
-        private bool _isCloseFriendNux;
+        private bool _isCloseFriendNux;//for Nux
+        private bool _hasPicture;//for Nux
+        private byte _nuxScore;//for Nux
         //it significantly improves update performance
 
         # region Users Table Members
@@ -231,6 +234,29 @@ namespace windows_client.Model
             }
         }
 
+        public bool HasPicture
+        {
+            get
+            {
+                return _hasPicture;
+            }
+            set
+            {
+                _hasPicture = value;
+            }
+        }
+
+        public byte NuxMatchScore
+        {
+            get
+            {
+                return _nuxScore;
+            }
+            set
+            {
+                _nuxScore = value;
+            }
+        }
         public ContactInfo()
         {
             _name = null;
@@ -438,6 +464,32 @@ namespace windows_client.Model
                     Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
                     return null;
                 }
+            }
+        }
+    }
+
+    public class ContactCompare : IComparer<ContactInfo>
+    {
+        public int Compare(ContactInfo contactInfo1, ContactInfo contactInfo2)
+        {
+            if (contactInfo1.HasPicture == contactInfo2.HasPicture)
+            {
+                if (contactInfo1.NuxMatchScore > contactInfo2.NuxMatchScore)
+                    return -1;
+                else if (contactInfo1.NuxMatchScore < contactInfo2.NuxMatchScore)
+                    return 1;
+                else
+                {
+                    return contactInfo1.Name.ToLower().CompareTo(contactInfo2.Name.ToLower());
+                }
+            }
+            else if (contactInfo1.HasPicture)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
             }
         }
     }
