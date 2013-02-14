@@ -476,7 +476,7 @@ namespace windows_client.utils
         {
             get
             {
-                if(grpNameChanged == null)
+                if (grpNameChanged == null)
                     grpNameChanged = new BitmapImage(new Uri("/View/images/group_name_changed.png", UriKind.Relative));
                 return grpNameChanged;
             }
@@ -669,11 +669,18 @@ namespace windows_client.utils
 
         public byte[] BitmapImgToByteArray(BitmapImage image)
         {
-            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            using (var msLargeImage = new MemoryStream())
+            try
             {
-                writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-                return msLargeImage.ToArray();
+                WriteableBitmap writeableBitmap = new WriteableBitmap(image);
+                using (var msLargeImage = new MemoryStream())
+                {
+                    writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                    return msLargeImage.ToArray();
+                }
+            }
+            catch 
+            { 
+                return null; 
             }
         }
         #endregion

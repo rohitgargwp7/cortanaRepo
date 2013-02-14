@@ -180,13 +180,25 @@ namespace windows_client.View
                     client.OpenReadAsync(new Uri(profilePictureUrl));
                     client.OpenReadCompleted += (ss, ee) =>
                     {
-                        Stream s = ee.Result;                      
+                        Stream s = ee.Result;
+                        byte[] imgBytes = null;
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            BitmapImage b = new BitmapImage();
-                            b.SetSource(s);
-                            byte[] imgBytes = UI_Utils.Instance.BitmapImgToByteArray(b);
-                            PhoneApplicationService.Current.State["img"] = imgBytes;
+                            if (s != null)
+                            {
+                                try
+                                {
+                                    BitmapImage b = new BitmapImage();
+                                    b.SetSource(s);
+                                    imgBytes = UI_Utils.Instance.BitmapImgToByteArray(b);
+                                }
+                                catch
+                                {
+                                }
+                            }
+
+                            if (imgBytes != null)
+                                PhoneApplicationService.Current.State["img"] = imgBytes;
                             PhoneApplicationService.Current.State["fbName"] = (string)result["name"];
                             NavigationService.GoBack();
                         });
