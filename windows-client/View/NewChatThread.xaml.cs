@@ -1681,7 +1681,7 @@ namespace windows_client.View
                         }
                     }
                     MyChatBubble wchatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.WAITING, string.Format(AppResources.WAITING_TO_JOIN, msgText.ToString()));
-                    this.MessageList.Children.Insert(0, wchatBubble);
+                    this.MessageList.Children.Insert(insertPosition, wchatBubble);
                 }
                 #endregion
                 #region USER_JOINED
