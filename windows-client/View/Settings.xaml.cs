@@ -14,6 +14,7 @@ using Microsoft.Phone.Notification;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -56,6 +57,11 @@ namespace windows_client.View
         {
             this.pushNotifications.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                App.PUSH_REGISTERATION_PENDING = true;
+                return;
+            }
             App.PushHelperInstance.registerPushnotifications();
         }
 
