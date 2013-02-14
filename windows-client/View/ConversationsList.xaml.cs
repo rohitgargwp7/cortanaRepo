@@ -33,7 +33,7 @@ namespace windows_client.View
 
 
         #region Instances
-
+        bool isDeleteAllChats = false;
         bool _isFavListBound = false;
         bool _isPendingListBound = false;
         bool isProfilePicTapped = false;
@@ -575,6 +575,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+            isDeleteAllChats = true;
             shellProgress.IsVisible = true;
             disableAppBar();
             NetworkManager.turnOffNetworkManager = true;
@@ -587,6 +588,7 @@ namespace windows_client.View
             NetworkManager.turnOffNetworkManager = false;
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
             shellProgress.IsVisible = false;
+            isDeleteAllChats = false;
         }
 
         private void ClearAllDB()
@@ -751,18 +753,20 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (!isDeleteAllChats) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
-                    if (emptyScreenImage.Visibility == Visibility.Visible)
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        emptyScreenTip.Opacity = 0;
-                        emptyScreenImage.Opacity = 0;
-                    }
-                    //                    convScroller.ScrollToVerticalOffset(0);
-                    myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
 
-                });
+                        if (emptyScreenImage.Visibility == Visibility.Visible)
+                        {
+                            emptyScreenTip.Opacity = 0;
+                            emptyScreenImage.Opacity = 0;
+                        }
+                        //                    convScroller.ScrollToVerticalOffset(0);
+                        myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
+                    });
+                }
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                 if (isVibrateEnabled)
@@ -981,7 +985,7 @@ namespace windows_client.View
             glCopy.Tap += MenuItem_Tap_Delete;
             menu.Items.Add(menuItemDelete);
 
-            if (!convObj.IsGroupChat)
+            if (!convObj.IsGroupChat && !Utils.IsHikeBotMsg(convObj.Msisdn)) // if its not GC and not hike bot msg then only show add to fav 
             {
                 MenuItem menuItemFavourite = new MenuItem();
                 if (convObj.IsFav) // if already favourite
@@ -1001,6 +1005,7 @@ namespace windows_client.View
 
 
         #endregion
+
         #region Emoticons
         private static Thickness imgMargin = new Thickness(0, 5, 0, 0);
 

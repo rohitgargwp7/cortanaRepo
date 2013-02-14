@@ -249,9 +249,7 @@ namespace windows_client.ViewModel
                             if (App.ViewModel.ConversationListPage != null)
                                 ContextMenuService.SetContextMenu(mObj.ConvBoxObj, App.ViewModel.ConversationListPage.createConversationContextMenu(mObj));
                         }
-                        else
-                            App.ViewModel.MessageListPageCollection.Remove(mObj.ConvBoxObj);
-
+                        App.ViewModel.MessageListPageCollection.Remove(mObj.ConvBoxObj);
                         App.ViewModel.ConvMap[mObj.Msisdn] = mObj;
                         App.ViewModel.MessageListPageCollection.Insert(0, mObj.ConvBoxObj);
                     });
