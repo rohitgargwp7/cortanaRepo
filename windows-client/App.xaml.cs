@@ -66,7 +66,6 @@ namespace windows_client
         #region instances
         private static string _currentVersion = "1.0.0.0";
         private static string _latestVersion;
-        public static bool PUSH_REGISTERATION_PENDING = true;
         public static bool IS_VIEWMODEL_LOADED = false;
         public static bool IS_MARKETPLACE = false; // change this to toggle debugging
         private static bool isNewInstall = true;
