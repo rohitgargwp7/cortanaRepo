@@ -28,7 +28,7 @@ namespace windows_client.View
 
             ApplicationBarIconButton nextIconButton = new ApplicationBarIconButton();
             nextIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
-            nextIconButton.Text = AppResources.AppBar_Next_Btn;
+            nextIconButton.Text = AppResources.AppBar_Done_Btn;
             nextIconButton.Click += OnNextClick;
             appBar.Buttons.Add(nextIconButton);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.WELCOME_HIKE_SCREEN);
