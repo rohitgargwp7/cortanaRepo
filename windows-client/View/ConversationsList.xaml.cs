@@ -65,6 +65,7 @@ namespace windows_client.View
             App.ViewModel.ConversationListPage = this;
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
         }
+
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (favTutePvt.SelectedIndex == 0)
@@ -104,18 +105,22 @@ namespace windows_client.View
 
         private static void OnNetworkChange(object sender, EventArgs e)
         {
-            //Microsoft.Phone.Net.NetworkInformation.NetworkInterface inherits from System.Net.NetworkInformation.NetworkInterface 
-            //and adds the GetNetworkInterface static method and the NetworkInterfaceType static property
+            //reconnect mqtt whenever phone is reconnected without relaunch 
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 App.MqttManagerInstance.connect();
+                bool isPushEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                if (isPushEnabled)
+                {
+                    App.PushHelperInstance.registerPushnotifications();
+                }
             }
             else
             {
                 App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
             }
         }
-
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -125,7 +130,6 @@ namespace windows_client.View
             this.pendingRequests.SelectedIndex = -1;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
                 myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
-            //            convScroller.ScrollToVerticalOffset(0);
             App.IS_TOMBSTONED = false;
             App.APP_LAUNCH_STATE = App.LaunchState.NORMAL_LAUNCH;
             App.newChatThreadPage = null;
@@ -300,6 +304,8 @@ namespace windows_client.View
                              App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                          }
                          App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                         emptyScreenImage.Opacity = 0;
+                         emptyScreenTip.Opacity = 0;
                      });
                 }
             }
@@ -436,7 +442,7 @@ namespace windows_client.View
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Collapsed;
             else
             {
-                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt+" ({0})",Convert.ToString(rew_val));
+                rewardsTxtBlk.Text = string.Format(AppResources.Rewards_Txt + " ({0})", Convert.ToString(rew_val));
                 rewardsTxtBlk.Visibility = System.Windows.Visibility.Visible;
             }
 
@@ -459,11 +465,18 @@ namespace windows_client.View
 
             if (_avatar != null)
             {
-                MemoryStream memStream = new MemoryStream(_avatar);
-                memStream.Seek(0, SeekOrigin.Begin);
-                BitmapImage empImage = new BitmapImage();
-                empImage.SetSource(memStream);
-                avatarImage.Source = empImage;
+                try
+                {
+                    MemoryStream memStream = new MemoryStream(_avatar);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage empImage = new BitmapImage();
+                    empImage.SetSource(memStream);
+                    avatarImage.Source = empImage;
+                }
+                catch
+                {
+                    avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
+                }
             }
             else
             {

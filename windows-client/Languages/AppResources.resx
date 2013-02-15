@@ -433,14 +433,6 @@
     <value>save</value>
     <comment>cs</comment>
   </data>
-  <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Connect and get a</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
-  <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
-    <value>instantly</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
     <value>Earn an extra</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
@@ -1307,5 +1299,15 @@
   </data>
   <data name="Attachment_Video_Txt" xml:space="preserve">
     <value>Send Video</value>
+  </data>
+  <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
+    <value>Share on Facebook &amp; Twitter</value>
+  </data>
+  <data name="FB_Connect_Txt" xml:space="preserve">
+    <value>Connect with Facebook</value>
+  </data>
+  <data name="FeelingLazy_Txt" xml:space="preserve">
+    <value>Feeling lazy? We'll do it for you.</value>
+    <comment>Used in Entername screen above FB Notification</comment>
   </data>
 </root>
