@@ -60,6 +60,9 @@ namespace windows_client.utils
                 Debug.WriteLine("Contacts callback thread : {0}", Thread.CurrentThread.ToString());
                 IEnumerable<Contact> contacts = e.Results;
                 Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
+
+                if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
+                    getContactListForNux(contacts);
                 contactsMap = contactListMap;
                 if (!NetworkInterface.GetIsNetworkAvailable())
                 {
@@ -165,6 +168,49 @@ namespace windows_client.utils
             foreach (Contact cn in contacts)
             {
                 CompleteName cName = cn.CompleteName;
+
+                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+                {
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    {
+                        count++;
+                        continue;
+                    }
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    int idd = cInfo.GetHashCode();
+                    cInfo.Id = Convert.ToString(Math.Abs(idd));
+
+                    if (contactListMap.ContainsKey(cInfo.Id))
+                    {
+                        if (!contactListMap[cInfo.Id].Contains(cInfo))
+                            contactListMap[cInfo.Id].Add(cInfo);
+                        else
+                        {
+                            duplicates++;
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                        }
+                    }
+                    else
+                    {
+                        List<ContactInfo> contactList = new List<ContactInfo>();
+                        contactList.Add(cInfo);
+                        contactListMap.Add(cInfo.Id, contactList);
+                    }
+                }
+            }
+            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
+            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            return contactListMap;
+        }
+
+        public static List<ContactInfo> getContactListForNux(IEnumerable<Contact> contacts)
+        {
+            List<ContactInfo> listContacts = new List<ContactInfo>();
+            if (contacts == null)
+                return null;
+
+            foreach (Contact cn in contacts)
+            {
                 bool hasFacebookAccount = false;
                 byte accNumber = 0;
                 bool hasPicture = false;
@@ -190,7 +236,6 @@ namespace windows_client.utils
                 {
                     if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
                     {
-                        count++;
                         continue;
                     }
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
@@ -198,36 +243,23 @@ namespace windows_client.utils
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
 
                     cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
-                    cInfo.HasPicture = picBytes != null;
+                    cInfo.HasCustomPhoto = picBytes != null;
                     cInfo.Avatar = picBytes;
 
-                    if (contactListMap.ContainsKey(cInfo.Id))
-                    {
-                        if (!contactListMap[cInfo.Id].Contains(cInfo))
-                            contactListMap[cInfo.Id].Add(cInfo);
-                        else
-                        {
-                            duplicates++;
-                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
-                        }
-                    }
-                    else
-                    {
-                        List<ContactInfo> contactList = new List<ContactInfo>();
-                        contactList.Add(cInfo);
-                        contactListMap.Add(cInfo.Id, contactList);
-                    }
+                    if (!listContacts.Contains(cInfo))
+                        listContacts.Add(cInfo);
                 }
             }
-            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
-            Debug.WriteLine("Total contacts with no phone number : {0}", count);
-            return contactListMap;
+            App.WriteToIsoStorageSettings(HikeConstants.PHONE_ADDRESS_BOOK, listContacts);
+            return listContacts;
         }
 
-
-
-
-
+        public static void contactSearchCompletedForNux_Callback(object sender, ContactsSearchEventArgs e)
+        {
+            IEnumerable<Contact> contacts = e.Results;
+            if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
+                getContactListForNux(contacts);
+        }
         /* This is the callback function which is called when server returns the addressbook*/
         public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
         {

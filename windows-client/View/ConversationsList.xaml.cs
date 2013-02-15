@@ -63,8 +63,7 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
-            App.RemoveKeyFromAppSettings(HikeConstants.CLOSE_FRIENDS_NUX);
-            App.RemoveKeyFromAppSettings(HikeConstants.FAMILY_MEMBERS_NUX);
+            App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
         }
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

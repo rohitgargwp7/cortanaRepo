@@ -23,12 +23,11 @@ namespace windows_client.Model
         private string _msisdn;
         private string _phoneNo;
         private bool _onHike;
-        private bool _hasCustomPhoto;//where is this used
+        private bool _hasCustomPhoto;//for Nux
         private bool _isInvited;
         private byte[] _avatar;
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux
-        private bool _hasPicture;//for Nux
         private byte _nuxScore;//for Nux
         //it significantly improves update performance
 
@@ -231,18 +230,6 @@ namespace windows_client.Model
             set
             {
                 _isCloseFriendNux = value;
-            }
-        }
-
-        public bool HasPicture
-        {
-            get
-            {
-                return _hasPicture;
-            }
-            set
-            {
-                _hasPicture = value;
             }
         }
 
@@ -472,7 +459,7 @@ namespace windows_client.Model
     {
         public int Compare(ContactInfo contactInfo1, ContactInfo contactInfo2)
         {
-            if (contactInfo1.HasPicture == contactInfo2.HasPicture)
+            if (contactInfo1.HasCustomPhoto == contactInfo2.HasCustomPhoto)
             {
                 if (contactInfo1.NuxMatchScore > contactInfo2.NuxMatchScore)
                     return -1;
@@ -483,7 +470,7 @@ namespace windows_client.Model
                     return contactInfo1.Name.ToLower().CompareTo(contactInfo2.Name.ToLower());
                 }
             }
-            else if (contactInfo1.HasPicture)
+            else if (contactInfo1.HasCustomPhoto)
             {
                 return -1;
             }

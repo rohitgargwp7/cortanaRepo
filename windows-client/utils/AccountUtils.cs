@@ -35,7 +35,6 @@ namespace windows_client.utils
 
         private static readonly int STAGING_PORT = 8080;
 
-        public static List<ContactInfo> server_contacts;
         public static bool IsProd
         {
             get
@@ -810,7 +809,7 @@ namespace windows_client.utils
                     GroupManager.Instance.LoadGroupCache();
                 }
 
-                server_contacts = new List<ContactInfo>();
+                List<ContactInfo> server_contacts = new List<ContactInfo>();
                 IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
                 KeyValuePair<string, JToken> kv;
                 int count = 0;
@@ -833,10 +832,6 @@ namespace windows_client.utils
                         bool onhike = (bool)entry["onhike"];
                         ContactInfo cinfo = cList[i];
                         ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo);
-
-                        cn.HasPicture = cinfo.HasPicture;
-                        cn.NuxMatchScore = cinfo.NuxMatchScore;
-                        cn.Avatar = cinfo.Avatar;
 
                         if (!isRefresh) // this is case for new installation
                         {
