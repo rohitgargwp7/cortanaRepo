@@ -952,6 +952,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect with Facebook.
+        /// </summary>
+        public static string FB_Connect_Txt {
+            get {
+                return ResourceManager.GetString("FB_Connect_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Feeling lazy? We&apos;ll do it for you..
+        /// </summary>
+        public static string FeelingLazy_Txt {
+            get {
+                return ResourceManager.GetString("FeelingLazy_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sent you a {0}. To view go to .
         /// </summary>
         public static string FILES_MESSAGE_PREFIX {
