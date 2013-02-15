@@ -642,7 +642,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
-    <value>Free Message...</value>
+    <value>Hike Message</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_Txt" xml:space="preserve">
@@ -690,7 +690,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>SMS Message...</value>
+    <value>Text Message</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -1298,5 +1298,8 @@
   </data>
   <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
     <value>Invite {0} to continue hiking.</value>
+  </data>
+  <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
+    <value>Group Message</value>
   </data>
 </root>
