@@ -14,6 +14,7 @@ using Microsoft.Phone.Notification;
 using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Languages;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {

@@ -979,24 +979,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect and get a.
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk1 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to instantly.
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk3 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Earn an extra.
         /// </summary>
         public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
@@ -2442,6 +2424,15 @@ namespace windows_client.Languages {
         public static string SMS_Works_Only_In_India_Txt {
             get {
                 return ResourceManager.GetString("SMS_Works_Only_In_India_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share on Facebook &amp; Twitter.
+        /// </summary>
+        public static string Social_Cnnct_TxtBlk {
+            get {
+                return ResourceManager.GetString("Social_Cnnct_TxtBlk", resourceCulture);
             }
         }
         

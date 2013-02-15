@@ -183,7 +183,6 @@ namespace windows_client.View
                 upperbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xce, 0xce, 0xce));
                 lowerbar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xef, 0xef, 0xef));
             }
-            fbFreeSMS.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 100);
             earnSMSRun.Text = String.Format(AppResources.FreeSMS_EarnFreeSMS_TxtBlk2, 50);
         }
 
