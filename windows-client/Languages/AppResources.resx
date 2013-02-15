@@ -1291,4 +1291,11 @@
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
     <value>Share on Facebook &amp; Twitter</value>
   </data>
+  <data name="FB_Connect_Txt" xml:space="preserve">
+    <value>Connect with Facebook</value>
+  </data>
+  <data name="FeelingLazy_Txt" xml:space="preserve">
+    <value>Feeling lazy? We'll do it for you.</value>
+    <comment>Used in Entername screen above FB Notification</comment>
+  </data>
 </root>
