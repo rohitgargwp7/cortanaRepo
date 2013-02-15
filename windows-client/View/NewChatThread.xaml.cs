@@ -1795,7 +1795,7 @@ namespace windows_client.View
 
         private void inviteUserBtn_Click(object sender, EventArgs e)
         {
-            if (!isGroupChat || isOnHike)
+            if (!isGroupChat && isOnHike)
                 return;
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
@@ -1805,7 +1805,7 @@ namespace windows_client.View
                 {
                     if (!gp.IsOnHike)
                     {
-                        ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, utils.TimeUtils.getCurrentTimeStamp(), ConvMessage.State.SENT_UNCONFIRMED);
+                        ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
                         convMessage.IsInvite = true;
                         App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
                     }
@@ -1819,7 +1819,7 @@ namespace windows_client.View
                 convMessage.IsInvite = true;
                 sendMsg(convMessage, false);
             }
-            if (showNoSmsLeftOverlay)
+            if (showNoSmsLeftOverlay || isGroupChat)
                 showOverlay(false);
         }
 
