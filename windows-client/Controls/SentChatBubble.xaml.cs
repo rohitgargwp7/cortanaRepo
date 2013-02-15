@@ -21,7 +21,7 @@ namespace windows_client.Controls
     {
         private SolidColorBrush bubbleColor;
         private ConvMessage.State messageState;
-        private IScheduler scheduler = Scheduler.NewThread;
+        private static IScheduler scheduler = Scheduler.NewThread;
 
         public static SentChatBubble getSplitChatBubbles(ConvMessage cm, bool readFromDB)
         {
@@ -115,61 +115,6 @@ namespace windows_client.Controls
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
-
-        //public SentChatBubble(ConvMessage cm, bool readFromDB)
-        //    : base(cm)
-        //{
-        //    // Required to initialize variables
-        //    InitializeComponent();
-        //    initializeBasedOnState(cm, cm.Message);
-        //    //IsSms is false for group chat
-        //    switch (cm.MessageStatus)
-        //    {
-        //        case ConvMessage.State.SENT_CONFIRMED:
-        //            this.SDRImage.Source = UI_Utils.Instance.Sent;
-        //            break;
-        //        case ConvMessage.State.SENT_DELIVERED:
-        //            this.SDRImage.Source = UI_Utils.Instance.Delivered;
-        //            break;
-        //        case ConvMessage.State.SENT_DELIVERED_READ:
-        //            this.SDRImage.Source = UI_Utils.Instance.Read;
-        //            break;
-        //        case ConvMessage.State.UNKNOWN:
-        //            if (cm.HasAttachment)
-        //            {
-        //                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
-        //            }
-        //            break;
-        //        case ConvMessage.State.SENT_UNCONFIRMED:
-        //            if (this.FileAttachment != null)
-        //            {
-        //                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
-        //            }
-        //            else if (readFromDB)
-        //            {
-        //                this.SDRImage.Source = UI_Utils.Instance.Trying;
-        //            }
-        //            else
-        //            {
-        //                scheduleTryingImage();
-        //            }
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //    if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null)
-        //    {
-        //        using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
-        //        {
-        //            memStream.Seek(0, SeekOrigin.Begin);
-        //            BitmapImage fileThumbnail = new BitmapImage();
-        //            fileThumbnail.SetSource(memStream);
-        //            this.MessageImage.Source = fileThumbnail;
-        //        }
-        //    }
-        //    this.BubblePoint.Fill = bubbleColor;
-        //    this.BubbleBg.Fill = bubbleColor;
-        //}
 
         public SentChatBubble(ConvMessage cm, byte[] thumbnailsBytes)
             : base(cm)
