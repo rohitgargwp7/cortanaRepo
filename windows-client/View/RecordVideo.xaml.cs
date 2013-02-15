@@ -27,9 +27,7 @@ namespace windows_client.View
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        // Viewfinder for capturing video.
         private VideoBrush videoRecorderBrush;
-
         // Source and device for capturing video.
         private CaptureSource captureSource;
         private VideoCaptureDevice videoCaptureDevice;
@@ -137,7 +135,7 @@ namespace windows_client.View
 
         private void updateProgress()
         {
-            txtDebug.Text = (++runningSeconds).ToString("00") + " : " + maxPlayingTime.ToString("00");
+            txtDebug.Text = (++runningSeconds).ToString("00") + " / " + maxPlayingTime.ToString("00");
             recordProgress.Value = (double)runningSeconds / maxPlayingTime;
             if (runningSeconds == maxPlayingTime)
             {

@@ -2,9 +2,7 @@
 using Microsoft.Phone.Notification;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
-using System.Windows.Threading;
 using System.Net.NetworkInformation;
-using System.Windows;
 using Microsoft.Phone.Reactive;
 
 namespace windows_client.utils
@@ -61,9 +59,6 @@ namespace windows_client.utils
 
         private PushHelper()
         {
-            string pushToken;
-            App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
-            LatestPushToken = pushToken;
         }
 
         public void closePushnotifications()
@@ -94,6 +89,9 @@ namespace windows_client.utils
 
         public void registerPushnotifications()
         {
+            string pushToken;
+            App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
+            _latestPushToken = pushToken;
             HttpNotificationChannel pushChannel;
             // Try to find the push channel.
             pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
@@ -160,7 +158,7 @@ namespace windows_client.utils
                 if (statusToken != null)
                     stat = statusToken.ToString();
             }
-            if (stat != HikeConstants.OK && NetworkInterface.GetIsNetworkAvailable())
+            if (stat != HikeConstants.OK)
             {
                 if (scheduler == null)
                 {
@@ -185,7 +183,7 @@ namespace windows_client.utils
 
         private void postTokenToServer()
         {
-            if (!string.IsNullOrEmpty(_latestPushToken))
+            if (!string.IsNullOrEmpty(_latestPushToken) && NetworkInterface.GetIsNetworkAvailable())
                 AccountUtils.postPushNotification(_latestPushToken, new AccountUtils.postResponseFunction(postPushNotification_Callback));
         }
     }
