@@ -1300,6 +1300,21 @@
   <data name="Attachment_Video_Txt" xml:space="preserve">
     <value>Send Video</value>
   </data>
+  <data name="HappyMessaging_Txt" xml:space="preserve">
+    <value>Happy Messaging!</value>
+  </data>
+  <data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
+    <value>You can also message friends not</value>
+  </data>
+  <data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
+    <value>on hike with free hike SMS</value>
+  </data>
+  <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
+    <value>Messaging hike friends is free &amp; unlimited.</value>
+  </data>
+  <data name="ReadyToHike_Txt" xml:space="preserve">
+    <value>Ready to hike...</value>
+  </data>
   <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
     <value>Share on Facebook &amp; Twitter</value>
   </data>
