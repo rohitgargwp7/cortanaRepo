@@ -62,7 +62,7 @@ namespace windows_client.utils
                 Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
 
                 if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
-                    getContactListForNux(contacts);
+                    getContactListForNux(contacts,true);
                 contactsMap = contactListMap;
                 if (!NetworkInterface.GetIsNetworkAvailable())
                 {
@@ -203,7 +203,7 @@ namespace windows_client.utils
             return contactListMap;
         }
 
-        public static List<ContactInfo> getContactListForNux(IEnumerable<Contact> contacts)
+        public static List<ContactInfo> getContactListForNux(IEnumerable<Contact> contacts, bool writeToAppSettings)
         {
             List<ContactInfo> listContacts = new List<ContactInfo>();
             if (contacts == null)
@@ -250,16 +250,12 @@ namespace windows_client.utils
                         listContacts.Add(cInfo);
                 }
             }
-            App.WriteToIsoStorageSettings(HikeConstants.PHONE_ADDRESS_BOOK, listContacts);
+            if (writeToAppSettings)
+                App.WriteToIsoStorageSettings(HikeConstants.PHONE_ADDRESS_BOOK, listContacts);
             return listContacts;
         }
 
-        public static void contactSearchCompletedForNux_Callback(object sender, ContactsSearchEventArgs e)
-        {
-            IEnumerable<Contact> contacts = e.Results;
-            if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
-                getContactListForNux(contacts);
-        }
+
         /* This is the callback function which is called when server returns the addressbook*/
         public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
         {

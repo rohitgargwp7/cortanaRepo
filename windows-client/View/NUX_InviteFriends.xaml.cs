@@ -16,21 +16,24 @@ using windows_client.Controls;
 using windows_client.DbUtils;
 using System.Threading;
 using System.ComponentModel;
+using Microsoft.Phone.UserData;
 
 namespace windows_client.View
 {
     public partial class NUX_InviteFriends : PhoneApplicationPage
     {
         private ApplicationBarIconButton sendInviteIconButton;
+        private ApplicationBar appBar;
+        private ApplicationBarIconButton skipInviteIconButton;
         private bool isFirstLaunch = true;
-        private List<ContactInfo> listContactInfo;
+        private static List<ContactInfo> listContactInfo;
         List<ContactInfo> listFamilyMembers;
         List<ContactInfo> listCloseFriends;
         public NUX_InviteFriends()
         {
             InitializeComponent();
 
-            ApplicationBar appBar = new ApplicationBar();
+            appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
             appBar.Opacity = 1;
             appBar.IsVisible = true;
@@ -40,7 +43,6 @@ namespace windows_client.View
             sendInviteIconButton.IconUri = new Uri("/View/images/icon_tick.png", UriKind.Relative);
             sendInviteIconButton.Text = "Invite";
             sendInviteIconButton.IsEnabled = false;
-
             appBar.Buttons.Add(sendInviteIconButton);
             this.ApplicationBar = appBar;
         }
@@ -53,50 +55,70 @@ namespace windows_client.View
             {
                 listCloseFriends = new List<ContactInfo>();
                 listFamilyMembers = new List<ContactInfo>();
+               
+                progressBar.Opacity = 1;
+                progressBar.IsEnabled = true;
+                App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo);
+
+                if (listContactInfo == null || !AccountUtils.IsProd)//upgrade so can skip
+                {
+                    skipInviteIconButton = new ApplicationBarIconButton();
+                    skipInviteIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
+                    skipInviteIconButton.Text = "Skip";
+                    skipInviteIconButton.Click += btnSkipNux_Click;
+                    appBar.Buttons.Add(skipInviteIconButton);
+                }
+                
                 BackgroundWorker bw = new BackgroundWorker();
-                shellProgress.IsVisible = true;
                 bw.DoWork += (s, a) =>
                 {
-                    if (!App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo))
+                    if (listContactInfo == null)
                     {
-                        ContactUtils.getContacts(ContactUtils.contactSearchCompletedForNux_Callback);
-                        while (!App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo))
+                        Stopwatch stopWatch = Stopwatch.StartNew();
+                        ContactUtils.getContacts(contactSearchCompletedForNux_Callback);
+
+                        while (listContactInfo == null && stopWatch.ElapsedMilliseconds < 120000)//wait for 2 mins
                         {
                             Thread.Sleep(2);
                         }
+                        stopWatch.Stop();
                     }
-                    if (listContactInfo.Count > 0)
+                    if (listContactInfo != null && listContactInfo.Count > 0)
                         ProcessNuxContacts(listContactInfo);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                     {
-                         if (listCloseFriends.Count > 1)
-                         {
-                             listContactInfo = listCloseFriends;
-                             MarkDefaultChecked();
-                             lstBoxInvite.ItemsSource = listContactInfo;
-                             sendInviteIconButton.Click += btnInviteFriends_Click;
-                         }
-                         else if (listFamilyMembers.Count > 1)
-                         {
-                             InitialiseFamilyScreen();
-                         }
-                         else
-                         {
-                             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                             if (NavigationService != null)
-                                 NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
-                         }
-                         shellProgress.IsVisible = false;
-                         sendInviteIconButton.IsEnabled = true;
-                     });
                 };
                 bw.RunWorkerAsync();
+                bw.RunWorkerCompleted += LoadingCompleted;
 
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
 
                 isFirstLaunch = false;
             }
+        }
+
+        //will run on ui thread
+        private void LoadingCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (listCloseFriends != null && listCloseFriends.Count > 1)
+            {
+                listContactInfo = listCloseFriends;
+                MarkDefaultChecked();
+                lstBoxInvite.ItemsSource = listContactInfo;
+                sendInviteIconButton.Click += btnInviteFriends_Click;
+            }
+            else if (listFamilyMembers != null && listFamilyMembers.Count > 1)
+            {
+                InitialiseFamilyScreen();
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            }
+            progressBar.Opacity = 0;
+            progressBar.IsEnabled = false;
+
+            sendInviteIconButton.IsEnabled = true;
         }
 
         private void InitialiseFamilyScreen()
@@ -198,6 +220,11 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
+        private void btnSkipNux_Click(object sender, EventArgs e)
+        {
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+        }
 
         public void ProcessNuxContacts(List<ContactInfo> listContact)
         {
@@ -319,6 +346,13 @@ namespace windows_client.View
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
+        }
+
+        public static void contactSearchCompletedForNux_Callback(object sender, ContactsSearchEventArgs e)
+        {
+            IEnumerable<Contact> contacts = e.Results;
+            if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
+                listContactInfo = ContactUtils.getContactListForNux(contacts, false);
         }
 
     }
