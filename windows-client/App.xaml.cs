@@ -714,6 +714,11 @@ namespace windows_client
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
                     if (Utils.compareVersion(_currentVersion,"1.5.0.0") !=1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.UpdateToVersionOne();
+                    if (Utils.compareVersion(_currentVersion, "1.7.1.2") != 1)// if current version is less than equal to 1.7.1.2 then show NUX
+                    {
+                        ps = PageState.NUX_SCREEN;
+                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+                    }
                 }
             }
             st.Stop();
@@ -721,8 +726,6 @@ namespace windows_client
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
             IS_VIEWMODEL_LOADED = true;
             #endregion
-            
-
         }
 
         public static void createDatabaseAsync()

@@ -394,6 +394,7 @@
     <Content Include="View\images\favorites_heart.png" />
     <Content Include="View\images\favorites_tour_01.jpg" />
     <Content Include="View\images\favorites_tour_02.jpg" />
+    <Content Include="View\images\fbSignUp.png" />
     <Content Include="View\images\fb_icon.png" />
     <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\hike_favorite.png" />
