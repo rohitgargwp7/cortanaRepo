@@ -40,8 +40,6 @@ namespace windows_client
             App.RemoveKeyFromAppSettings(App.SET_NAME_FAILED);
             if (!App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED) && !App.isABScanning)
                 ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
-
-            this.Loaded += new RoutedEventHandler(EnterNamePage_Loaded);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -76,6 +74,7 @@ namespace windows_client
         private void btnEnterName_Click(object sender, EventArgs e)
         {
             isClicked = true;
+            this.Focus();
             nameErrorTxt.Visibility = Visibility.Collapsed;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
@@ -287,12 +286,6 @@ namespace windows_client
             }
             else
                 App.IS_TOMBSTONED = false;
-        }
-
-        void EnterNamePage_Loaded(object sender, RoutedEventArgs e)
-        {
-            txtBxEnterName.Focus();
-            this.Loaded -= EnterNamePage_Loaded;
         }
 
         private void txtBxEnterName_GotFocus(object sender, RoutedEventArgs e)
