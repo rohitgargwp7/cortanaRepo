@@ -56,18 +56,13 @@
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.RowSpan="2" >
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
                 <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,0"></Image>
-                <!--<Rectangle Height="2" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>-->
-
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="Auto" Height="35" Margin="24,20,0,0">
                     <TextBlock TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.EnterName_YourMsisdn_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24"  TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                     <TextBlock x:Name="txtBlckPhoneNumber" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" Text="" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                 </StackPanel>
-                <!--<TextBlock TextWrapping="Wrap" Text="Enter name" FontSize="20" TextAlignment="Left" Margin="24,20,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
-                <Border BorderThickness="2" Width="310" Height="56" Margin="24,10,0,0" HorizontalAlignment="Left" BorderBrush="Black">
-                    <StackPanel Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" Background="White">-->
-                <Image x:Name="avatarImage" Grid.Column="0" MaxHeight="83" MaxWidth="83" Margin="15,0,5,0" HorizontalAlignment="Left"/>
+                <Image x:Name="avatarImage" MaxHeight="83" MaxWidth="83" Margin="24,10,5,0" HorizontalAlignment="Left"/>
 
-                <TextBlock Text="{Binding Path= LocalizedResources.EnterName_Name_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" Margin="24,0,0,0" />
+                <TextBlock Text="{Binding Path= LocalizedResources.EnterName_Name_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" Margin="24,10,0,0" />
                 <toolkit:PhoneTextBox x:Name="txtBxEnterName" TextOptions.TextHintingMode="Animated" BorderThickness="2" LostFocus="txtBxEnterName_LostFocus" GotFocus="txtBxEnterName_GotFocus" InputScope="PersonalFullName" Margin="12,0,0,0" HorizontalAlignment="Left" Width="454" Height="78" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" />
 
                 <TextBlock Height="25" TextAlignment="Center" 
