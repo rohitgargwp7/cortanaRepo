@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -13,8 +14,11 @@
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
 
+
+  
+    
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" >
+    <Grid x:Name="LayoutRoot"  Background="#eeeeee" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -22,26 +26,42 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="24,17,24,0">
-            <TextBlock Text="YOUR FRIENDS" FontFamily="Segoe WP SemiLight" FontSize="24"/>
-            <TextBlock Text="Which of your close friends would you like to connect with on hike?" TextWrapping="Wrap" Margin="0,20,0,0" FontFamily="Segoe WP SemiLight" FontSize="22"/>
+            <TextBlock Name="txtHeader" Text="{Binding Path= LocalizedResources.Nux_YourFriends_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP Semibold" Foreground="#1f1f1f" FontSize="22"/>
+            <TextBlock Name="txtConnectHike" Text="{Binding Path= LocalizedResources.Nux_CloseFriendsConnect_txt, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="0,20,0,0" FontFamily="Segoe WP SemiLight" FontSize="22" Foreground="#000000"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="24,20,24,0" >
-            <ListBox Name="lstBoxInvite" Margin="20" Height="500">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="24,20,24,0"  Background="White">
+            <ListBox Name="lstBoxInvite" Margin="5">
                 <ListBox.ItemTemplate >
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox Tap="CheckBox_Tap" ></CheckBox>
-                            <StackPanel>
-                                <TextBlock Name="name" Text="{Binding Name}"  FontFamily="Segoe WP SemiLight" FontSize="42"/>
-                                <TextBlock Text="{Binding PhoneNo}" Foreground="Gray" FontSize="20" Height="30" />
-                            </StackPanel>
-                        </StackPanel>
+                        <Grid x:Name="LayoutRoot" Width="416">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="chkBox" HorizontalAlignment="Left" Background="#eeeeee" IsChecked="{Binding IsCloseFriendNux, Mode=TwoWay}"  Grid.Row="0" Grid.Column="0" Margin="0" Padding="0" BorderThickness="0"></CheckBox>
+                            <TextBlock Text="{Binding Name}" Foreground="#2d2d2d"  FontFamily="Segoe WP SemiLight" FontSize="33" Grid.Row="0" Grid.Column="1" Margin="-10 10 0 0"/>
+                            <TextBlock Text="{Binding PhoneNo}" Foreground="#5e5e5e" FontFamily="Segoe WP Regular" FontSize="18" Grid.Row="1" Grid.Column="1" Margin="-10 -15 0 0"/>
+                            <Image Source="{Binding AvatarImage}" MaxWidth="56" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Margin="10,0,5,0"/>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
+
+        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
+                                        Background="Transparent" IsIndeterminate="True" 
+                                        VerticalAlignment="Center" 
+                                        VerticalContentAlignment="Center" FontSize="24" 
+                                        HorizontalAlignment="Stretch" Height="10"
+                                        HorizontalContentAlignment="Center" 
+                                        IsEnabled="False" IsTabStop="True" Opacity="0"/>
     </Grid>
 
 </phone:PhoneApplicationPage>
