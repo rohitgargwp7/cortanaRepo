@@ -23,6 +23,11 @@
         </Style>
     </phone:PhoneApplicationPage.Resources>
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
+    </shell:SystemTray.ProgressIndicator>
+
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
 
@@ -58,7 +63,7 @@
 
         <!--ContentPanel - place additional content here-->
         <ScrollViewer Grid.Row="1" Name="Scroller" Opacity="0" Margin="24,0,0,0" Tap="MessageList_Tap" DoubleTap="MessageList_DoubleTap">
-            <StackPanel Name="MessageList" Margin="0,0,26,0" VerticalAlignment="Bottom">
+            <StackPanel  Name="MessageList" Margin="0,0,26,0" VerticalAlignment="Bottom" Loaded="MessageListPanel_Loaded">
 
             </StackPanel>
         </ScrollViewer>
