@@ -270,9 +270,11 @@ namespace windows_client
 
         public enum PageState
         {
+
             WELCOME_SCREEN, // WelcomePage Screen
             PHONE_SCREEN,   // EnterNumber Screen
             PIN_SCREEN,     // EnterPin Screen
+            WELCOME_HIKE_SCREEN,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
             NUX_SCREEN// Nux Screen
@@ -591,6 +593,9 @@ namespace windows_client
                 case PageState.SETNAME_SCREEN:
                     createDatabaseAsync();
                     nUri = new Uri("/View/EnterName.xaml", UriKind.Relative);
+                    break;
+                case PageState.WELCOME_HIKE_SCREEN:
+                    nUri = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
                     break;
                 case PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);

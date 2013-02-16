@@ -156,10 +156,7 @@ namespace windows_client
                 App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
             }
 
-            SmileyParser.Instance.initializeSmileyParser();
-
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
-            nextPage = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+            nextPage = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
 
             App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
             nameErrorTxt.Visibility = Visibility.Collapsed;

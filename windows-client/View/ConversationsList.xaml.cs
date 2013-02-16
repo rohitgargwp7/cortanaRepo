@@ -47,6 +47,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
+        ApplicationBarIconButton groupChatIconButton;
         BitmapImage profileImage = null;
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
@@ -325,18 +326,19 @@ namespace windows_client.View
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
-            composeIconButton.Click += new EventHandler(selectUserBtn_Click);
+            composeIconButton.Click += selectUserBtn_Click;
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
 
             /* Add Menu Items*/
             //convListPagePivot.ApplicationBar = appBar;
 
-            ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
+            groupChatIconButton = new ApplicationBarIconButton();
+            groupChatIconButton.IconUri = new Uri("/View/images/icon_group.png", UriKind.Relative);
             groupChatIconButton.Text = AppResources.GrpChat_Txt;
-            groupChatIconButton.Click += new EventHandler(createGroup_Click);
+            groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
-            appBar.MenuItems.Add(groupChatIconButton);
+            appBar.Buttons.Add(groupChatIconButton);
 
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
