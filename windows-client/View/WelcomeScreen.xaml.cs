@@ -44,20 +44,9 @@ namespace windows_client.View
         }
         public void OnNextClick(object sender, EventArgs e)
         {
-            List<ContactInfo> listContactInfo;
             SmileyParser.Instance.initializeSmileyParser();
-            Uri nextPage;
-            if (App.appSettings.TryGetValue(HikeConstants.CLOSE_FRIENDS_NUX, out listContactInfo) && listContactInfo.Count > 2)
-            {
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
-                nextPage = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
-            }
-            else
-            {
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-                nextPage = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
-            }
-            NavigationService.Navigate(nextPage);
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+            NavigationService.Navigate(new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative));
         }
     }
 }

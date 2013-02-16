@@ -1270,6 +1270,18 @@
   <data name="Help_System_Health_Title" xml:space="preserve">
     <value>System Health</value>
   </data>
+  <data name="Nux_CloseFriendsConnect_txt" xml:space="preserve">
+    <value>Which of your close friends would you like to connect with on hike?</value>
+  </data>
+  <data name="Nux_FamilyMembersConnect_txt" xml:space="preserve">
+    <value>Which of your family members would you like to connect with on hike?</value>
+  </data>
+  <data name="Nux_YourFamily_Txt" xml:space="preserve">
+    <value>YOUR FAMILY</value>
+  </data>
+  <data name="Nux_YourFriends_Txt" xml:space="preserve">
+    <value>YOUR FRIENDS</value>
+  </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
     <value>Contact Info</value>
   </data>

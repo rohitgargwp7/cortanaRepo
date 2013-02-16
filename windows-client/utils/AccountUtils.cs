@@ -784,7 +784,6 @@ namespace windows_client.utils
         {
             try
             {
-                List<ContactInfo> listCloseFriends = new List<ContactInfo>();
                 if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                 {
                     return null;
@@ -814,8 +813,7 @@ namespace windows_client.utils
                 KeyValuePair<string, JToken> kv;
                 int count = 0;
                 int totalContacts = 0;
-                string lastName = GetLastName();
-                bool isLastNameCheckApplicable = lastName != null;
+
                 while (keyVals.MoveNext())
                 {
                     kv = keyVals.Current;
@@ -831,40 +829,8 @@ namespace windows_client.utils
                             continue;
                         }
                         bool onhike = (bool)entry["onhike"];
-                        ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
-
-                        #region NUX
-
-                        if (!cn.OnHike)
-                        {
-                            bool isCloseFriend = false;
-                            if (cList[i].IsCloseFriendFamily)
-                            {
-                                isCloseFriend = true;
-                                listCloseFriends.Add(cn);
-                            }
-                            if (!isCloseFriend && isLastNameCheckApplicable)
-                            {
-                                if (cn.Name != null)
-                                {
-                                    string[] nameArray = cn.Name.Trim().Split(' ');
-                                    if (nameArray.Length > 1)
-                                    {
-                                        string curlastName = nameArray[nameArray.Length - 1].ToLower();
-                                        if (curlastName.Trim().ToLower() == lastName)
-                                        {
-                                            listCloseFriends.Add(cn);
-                                            isCloseFriend = true;
-                                        }
-                                    }
-                                }
-                            }
-                            if (!isCloseFriend && MatchFromFamilyVocab(cn.Name))
-                            {
-                                listCloseFriends.Add(cn);
-                            }
-                        }
-                        #endregion
+                        ContactInfo cinfo = cList[i];
+                        ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo);
 
                         if (!isRefresh) // this is case for new installation
                         {
@@ -922,8 +888,6 @@ namespace windows_client.utils
                         totalContacts++;
                     }
                 }
-                App.WriteToIsoStorageSettings(HikeConstants.CLOSE_FRIENDS_NUX, listCloseFriends);
-
                 if (isFavSaved)
                     MiscDBUtil.SaveFavourites();
                 if (isPendingSaved)
@@ -945,36 +909,7 @@ namespace windows_client.utils
             }
         }
 
-        public static string GetLastName()
-        {
-            string name;
-            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            if (name == null)
-                return null;
 
-            string[] nameArray = name.Trim().Split(' ');
-            if (nameArray.Length == 1)
-                return null;
-
-            return nameArray[nameArray.Length - 1].ToLower();
-        }
-
-        private static Dictionary<string, bool> familyVocab = new Dictionary<string, bool> {
-        { "mom", true }, { "dad", true },{ "uncle", true }, { "aunty", true } ,{ "mummy", true }, { "mommy", true },{ "daddy", true }};
-
-        public static bool MatchFromFamilyVocab(string completeName)
-        {
-            if (string.IsNullOrEmpty(completeName))
-                return false;
-            string[] nameArray = completeName.Trim().Split(' ');
-
-            foreach (string name in nameArray)
-            {
-                if (familyVocab.ContainsKey(name))
-                    return true;
-            }
-            return false;
-        }
 
     }
 }
