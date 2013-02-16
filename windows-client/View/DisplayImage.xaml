@@ -13,11 +13,6 @@
     SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
-
-    <shell:SystemTray.ProgressIndicator>
-        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
-    </shell:SystemTray.ProgressIndicator>
-
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -27,15 +22,8 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="12,0,12,0">
-            <Image Name="FileImage" Grid.Row="0" RenderTransformOrigin="0.5,0.5" CacheMode="BitmapCache">
-                <!--<Image.RenderTransform>
-                    <CompositeTransform x:Name="transform" />
-                </Image.RenderTransform>
-                <toolkit:GestureService.GestureListener>
-                    <toolkit:GestureListener DragDelta="GestureListener_DragDelta" PinchCompleted="GestureListener_PinchCompleted" PinchStarted="OnPinchStarted" PinchDelta="OnPinchDelta" />
-                </toolkit:GestureService.GestureListener>-->
-            </Image>
-            <!--<MediaElement  Grid.Row="0" x:Name="FileMedia"></MediaElement>-->
+            <Image Name="FileImage" Grid.Row="0" RenderTransformOrigin="0.5,0.5" CacheMode="BitmapCache"/>
+            <ProgressBar x:Name="shellProgress" Opacity="0"  IsEnabled="True" IsIndeterminate="True"/>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
