@@ -193,6 +193,8 @@ namespace windows_client
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+            txtBxEnterName.Hint = AppResources.EnterName_Name_Hint;
+
 
             if (App.IS_TOMBSTONED) /* ****************************    HANDLING TOMBSTONE    *************************** */
             {
