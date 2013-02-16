@@ -27,6 +27,7 @@ using Microsoft.Phone.UserData;
 using windows_client.Languages;
 using windows_client.ViewModel;
 using System.Net.NetworkInformation;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Controls.Primitives;
 
@@ -39,6 +40,7 @@ namespace windows_client.View
 
         private readonly string ON_HIKE_TEXT = AppResources.SelectUser_FreeMsg_Txt;
         private readonly string ON_SMS_TEXT = AppResources.SelectUser_SmsMsg_Txt;
+        private readonly string ON_GROUP_TEXT = AppResources.SelectUser_GroupMsg_Txt;
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
         private readonly string BLOCK_USER = AppResources.Block_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
@@ -61,6 +63,7 @@ namespace windows_client.View
         private bool isTypingNotificationActive = false;
         private bool isTypingNotificationEnabled = true;
         private bool isReshowTypingNotification = false;
+        private bool showNoSmsLeftOverlay = false;
         private bool isContextMenuTapped = false;
         private JObject groupCreateJson = null;
         private Dictionary<long, Attachment> attachments = null; //this map is required for mapping attachment object with convmessage only for
@@ -588,9 +591,37 @@ namespace windows_client.View
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
+            if (isGroupChat)
+                sendMsgTxtbox.Hint = ON_GROUP_TEXT;
+
+            initBlockUnblockState();
+
             if (isGroupChat && !isGroupAlive)
                 groupChatEnd();
-            initBlockUnblockState();
+            else
+            {
+                App.appSettings.TryGetValue(App.SMS_SETTING, out mCredits);
+                if (mCredits <= 0)
+                {
+                    if (isGroupChat)
+                    {
+                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                        {
+                            if (!gp.IsOnHike)
+                            {
+                                ToggleAlertOnNoSms(true);
+                                break;
+                            }
+                        }
+                    }
+                    else if (!isOnHike)
+                    {
+                        showNoSmsLeftOverlay = true;
+                        ToggleAlertOnNoSms(true);
+                    }
+                }
+            }
+
             if (isShowNudgeTute)
                 showNudgeTute();
         }
@@ -1312,8 +1343,12 @@ namespace windows_client.View
 
         private void blockUnblock_Click(object sender, EventArgs e)
         {
+
+
             if (mUserIsBlocked) // UNBLOCK REQUEST
             {
+                if (showNoSmsLeftOverlay)
+                    ToggleControlsToNoSms(true);
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
@@ -1334,6 +1369,8 @@ namespace windows_client.View
             }
             else     // BLOCK REQUEST
             {
+                if (showNoSmsLeftOverlay)
+                    ToggleControlsToNoSms(false);
                 this.Focus();
                 sendMsgTxtbox.Text = "";
                 if (isGroupChat)
@@ -1799,15 +1836,32 @@ namespace windows_client.View
 
         private void inviteUserBtn_Click(object sender, EventArgs e)
         {
-            if (isOnHike)
+            if (!isGroupChat && isOnHike)
                 return;
             long time = TimeUtils.getCurrentTimeStamp();
             string inviteToken = "";
-            //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
-            ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
-            convMessage.IsSms = true;
-            convMessage.IsInvite = true;
-            sendMsg(convMessage, false);
+            if (isGroupChat)
+            {
+                foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                {
+                    if (!gp.IsOnHike)
+                    {
+                        ConvMessage convMessage = new ConvMessage(AppResources.sms_invite_message, gp.Msisdn, time, ConvMessage.State.SENT_UNCONFIRMED);
+                        convMessage.IsInvite = true;
+                        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(false));
+                    }
+                }
+            }
+            else
+            {
+                //App.appSettings.TryGetValue<string>(HikeConstants.INVITE_TOKEN, out inviteToken);
+                ConvMessage convMessage = new ConvMessage(string.Format(AppResources.sms_invite_message, inviteToken), mContactNumber, time, ConvMessage.State.SENT_UNCONFIRMED);
+                convMessage.IsSms = true;
+                convMessage.IsInvite = true;
+                sendMsg(convMessage, false);
+            }
+            if (showNoSmsLeftOverlay || isGroupChat)
+                showOverlay(false);
         }
 
         #endregion
@@ -1845,6 +1899,7 @@ namespace windows_client.View
         {
             if (mUserIsBlocked)
                 return;
+
             string message = sendMsgTxtbox.Text.Trim();
             sendMsgTxtbox.Text = "";
 
@@ -1854,7 +1909,8 @@ namespace windows_client.View
             emoticonPanel.Visibility = Visibility.Collapsed;
             attachmentMenu.Visibility = Visibility.Collapsed;
 
-            if ((!isOnHike && mCredits <= 0) || message == "")
+
+            if (message == "" || (!isOnHike && mCredits <= 0))
                 return;
 
             endTypingSent = true;
@@ -2043,7 +2099,7 @@ namespace windows_client.View
                 object[] attachmentForwardMessage = new object[2];
                 attachmentForwardMessage[0] = chatBubble;
                 attachmentForwardMessage[1] = mContactNumber;
-                if(chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                     PhoneApplicationService.Current.State[HikeConstants.CONTACT] = null;
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
                 NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
@@ -2282,15 +2338,18 @@ namespace windows_client.View
 
         private void updateUIForHikeStatus()
         {
-            if (isOnHike)
+            if (isGroupChat)
+                sendMsgTxtbox.Hint = ON_GROUP_TEXT;
+            else if (isOnHike)
             {
                 sendMsgTxtbox.Hint = ON_HIKE_TEXT;
             }
             else
             {
-                updateChatMetadata();
                 sendMsgTxtbox.Hint = ON_SMS_TEXT;
+                updateChatMetadata();
             }
+
         }
 
         private void changeInviteButtonVisibility()
@@ -2333,7 +2392,7 @@ namespace windows_client.View
                     sendMsgTxtbox.Text = "";
                 }
                 sendMsgTxtbox.Hint = ZERO_CREDITS_MSG;
-                sendMsgTxtbox.IsEnabled = false;
+
                 //SHOW SOME UI EFFECTS
             }
             else
@@ -2352,6 +2411,60 @@ namespace windows_client.View
                 // DO OTHER STUFF TODO 
             }
         }
+
+        private void ToggleAlertOnNoSms(bool onEnter)
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   ToggleControlsToNoSms(onEnter);
+                   showOverlay(onEnter);
+                   if (onEnter)
+                   {
+                       if (!isGroupChat)
+                       {
+                           sendMsgTxtbox.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(SendMsgBtn_Tap);
+                           sendMsgTxtbox.IsReadOnly = true;
+                       }
+                   }
+                   else
+                   {
+                       sendMsgTxtbox.Tap -= new EventHandler<System.Windows.Input.GestureEventArgs>(SendMsgBtn_Tap);
+                       sendMsgTxtbox.IsReadOnly = false;
+                   }
+               });
+        }
+
+        private void SendMsgBtn_Tap(object sender, EventArgs e)
+        {
+            showOverlay(true);
+        }
+
+        private void ToggleControlsToNoSms(bool toNoSms)
+        {
+            if (toNoSms)
+            {
+                BlockTxtBlk.Text = String.Format(AppResources.NoFreeSmsLeft_Txt, isGroupChat ? "SMS particpants" : mContactName);
+                btnBlockUnblock.Content = AppResources.FreeSMS_InviteNow_Btn;
+                btnBlockUnblock.Click -= blockUnblock_Click;
+                btnBlockUnblock.Click += inviteUserBtn_Click;
+                overlayRectangle.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(NoFreeSmsOverlay_Tap);
+            }
+            else
+            {
+                BlockTxtBlk.Text = AppResources.SelectUser_BlockMsg_Txt;
+                btnBlockUnblock.Content = UNBLOCK_USER;
+                btnBlockUnblock.Click += blockUnblock_Click;
+                btnBlockUnblock.Click -= inviteUserBtn_Click;
+                overlayRectangle.Tap -= new EventHandler<System.Windows.Input.GestureEventArgs>(NoFreeSmsOverlay_Tap);
+            }
+        }
+
+
+        private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            showOverlay(false);
+        }
+
         private void showOverlay(bool show)
         {
             if (show)
@@ -2379,7 +2492,7 @@ namespace windows_client.View
                     sendIconButton.IsEnabled = false;
                     fileTransferIconButton.IsEnabled = false;
                 }
-                else
+                else if (!showNoSmsLeftOverlay)
                 {
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
@@ -2634,6 +2747,24 @@ namespace windows_client.View
                 mCredits = (int)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    if (!isGroupChat || !isGroupAlive)
+                    {
+                        if (!isOnHike && mCredits <= 0)
+                        {
+                            showNoSmsLeftOverlay = true;
+                            ToggleAlertOnNoSms(true);
+                            Deployment.Current.Dispatcher.BeginInvoke(() => //using ui thread beacuse I want this to happen after togle alert on no sms
+                               {
+                                   showOverlay(false);//on zero sms user should not immediately see overlay
+                                   this.Focus();
+                               });
+                        }
+                        else
+                        {
+                            showNoSmsLeftOverlay = false;
+                            ToggleAlertOnNoSms(false);
+                        }
+                    }
                     updateChatMetadata();
                     if (!animatedOnce)
                     {
@@ -2750,7 +2881,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         userName.Text = mContactName;
-                        AddMessageToUI(convMessage,false,false);
+                        AddMessageToUI(convMessage, false, false);
                     });
                 }
             }
@@ -3349,7 +3480,7 @@ namespace windows_client.View
                                 double offset = Scroller.ScrollableHeight - currentScrollSize;
                                 MessageList.UpdateLayout();
                                 Scroller.UpdateLayout();
-                                Scroller.ScrollToVerticalOffset( offset);
+                                Scroller.ScrollToVerticalOffset(offset);
                             });
                         };
                     }
