@@ -55,7 +55,7 @@ namespace windows_client.View
             {
                 listCloseFriends = new List<ContactInfo>();
                 listFamilyMembers = new List<ContactInfo>();
-               
+
                 progressBar.Opacity = 1;
                 progressBar.IsEnabled = true;
                 App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo);
@@ -67,21 +67,24 @@ namespace windows_client.View
                     skipInviteIconButton.Text = "Skip";
                     skipInviteIconButton.Click += btnSkipNux_Click;
                     appBar.Buttons.Add(skipInviteIconButton);
+
+                    if (listContactInfo == null)
+                        ContactUtils.getContacts(contactSearchCompletedForNux_Callback);
                 }
-                
+
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
                 {
                     if (listContactInfo == null)
                     {
-                        Stopwatch stopWatch = Stopwatch.StartNew();
-                        ContactUtils.getContacts(contactSearchCompletedForNux_Callback);
+                        int count = 0;
 
-                        while (listContactInfo == null && stopWatch.ElapsedMilliseconds < 120000)//wait for 2 mins
+
+                        while (listContactInfo == null && count < 120000)//wait for 2 mins
                         {
+                            count += 2;
                             Thread.Sleep(2);
                         }
-                        stopWatch.Stop();
                     }
                     if (listContactInfo != null && listContactInfo.Count > 0)
                         ProcessNuxContacts(listContactInfo);
