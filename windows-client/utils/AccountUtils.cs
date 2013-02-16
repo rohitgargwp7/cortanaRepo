@@ -153,6 +153,7 @@ namespace windows_client.utils
         private static void addToken(HttpWebRequest req)
         {
             req.Headers["Cookie"] = "user=" + mToken;
+            req.Headers["Cookie"] = "uid=" + (string)App.appSettings[App.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
