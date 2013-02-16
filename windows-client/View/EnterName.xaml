@@ -87,7 +87,7 @@
                     <TextBlock x:Name="fbConnectTxtBlk" FontSize="18"
                            HorizontalAlignment="Left" VerticalAlignment="Center"
                            Text="{Binding Path= LocalizedResources.FB_Connect_Txt, Source={StaticResource LocalizedStrings}}" 
-                           Opacity="1" Margin="5,0,0,0" Foreground="#375595">
+                           Opacity="1" Margin="5,0,0,0" Foreground="#3c5da2">
                     </TextBlock>
                 </StackPanel>
                 <TextBlock x:Name="msgTxtBlk" Text="Test" FontSize="18"
