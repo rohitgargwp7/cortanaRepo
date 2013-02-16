@@ -60,8 +60,13 @@
                     <TextBlock TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.EnterName_YourMsisdn_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24"  TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                     <TextBlock x:Name="txtBlckPhoneNumber" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" Text="" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                 </StackPanel>
-                <Image x:Name="avatarImage" MaxHeight="83" MaxWidth="83" Margin="24,10,5,0" HorizontalAlignment="Left"/>
-
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="avatarImage" MaxHeight="83" MaxWidth="83" Margin="24,10,5,0" HorizontalAlignment="Left"/>
+                    <Image Grid.Column="0" Grid.Row="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0" Source="images\change_pic.png" />
+                </Grid>
                 <TextBlock Text="{Binding Path= LocalizedResources.EnterName_Name_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" Margin="24,10,0,0" />
                 <toolkit:PhoneTextBox x:Name="txtBxEnterName" TextOptions.TextHintingMode="Animated" BorderThickness="2" LostFocus="txtBxEnterName_LostFocus" GotFocus="txtBxEnterName_GotFocus" InputScope="PersonalFullName" Margin="12,0,0,0" HorizontalAlignment="Left" Width="454" Height="78" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" />
 
@@ -82,17 +87,15 @@
                            Foreground="{StaticResource PhoneForegroundBrush}"
                            HorizontalAlignment="Left" VerticalAlignment="Center"
                            Text="{Binding Path= LocalizedResources.FeelingLazy_Txt, Source={StaticResource LocalizedStrings}}" 
-                           Opacity="0" Margin="24,0,0,0">
+                           Opacity="1" Margin="24,0,0,0">
 
                 </TextBlock>
                 <StackPanel Orientation="Horizontal">
-                    <Image x:Name="fbImage" Source="images\fbSignUp.png" Grid.Column="0" MaxHeight="83" MaxWidth="83" Margin="15,0,5,0" HorizontalAlignment="Left"/>
+                    <Image x:Name="fbImage" Source="images\signupfb.png" Grid.Column="0" MaxHeight="83" MaxWidth="83" Margin="15,0,5,0" HorizontalAlignment="Left"/>
                     <TextBlock x:Name="fbConnectTxtBlk" FontSize="18"
-                           
                            HorizontalAlignment="Left" VerticalAlignment="Center"
                            Text="{Binding Path= LocalizedResources.FB_Connect_Txt, Source={StaticResource LocalizedStrings}}" 
-                           Opacity="0" Margin="24,0,0,0">
-
+                           Opacity="1" Margin="24,0,0,0">
                     </TextBlock>
                 </StackPanel>
                 <Grid x:Name="facebook" Background="#f4f4f4" Grid.Column="0" Width="175" Height="50" Tap="facebook_Tap" Margin="0,0,15,0">
