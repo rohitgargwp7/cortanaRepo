@@ -1339,6 +1339,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Happy Messaging!.
+        /// </summary>
+        public static string HappyMessaging_Txt {
+            get {
+                return ResourceManager.GetString("HappyMessaging_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to help.
         /// </summary>
         public static string Help {
@@ -1609,11 +1618,38 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can also message friends not.
+        /// </summary>
+        public static string MessageNonHikeFriends_Blk1_Txt {
+            get {
+                return ResourceManager.GetString("MessageNonHikeFriends_Blk1_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on hike with free hike SMS.
+        /// </summary>
+        public static string MessageNonHikeFriends_Blk2_Txt {
+            get {
+                return ResourceManager.GetString("MessageNonHikeFriends_Blk2_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Messaging.
         /// </summary>
         public static string Messaging_Txt {
             get {
                 return ResourceManager.GetString("Messaging_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Messaging hike friends is free &amp; unlimited..
+        /// </summary>
+        public static string MessagingHikeFriendsFree_Txt {
+            get {
+                return ResourceManager.GetString("MessagingHikeFriendsFree_Txt", resourceCulture);
             }
         }
         
@@ -1929,6 +1965,15 @@ namespace windows_client.Languages {
         public static string Privacy_UnlinkErrMsgBxText {
             get {
                 return ResourceManager.GetString("Privacy_UnlinkErrMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to hike....
+        /// </summary>
+        public static string ReadyToHike_Txt {
+            get {
+                return ResourceManager.GetString("ReadyToHike_Txt", resourceCulture);
             }
         }
         
