@@ -105,7 +105,7 @@ namespace windows_client.Model
             {
                 jobject[HikeConstants.CS_ADDRESSES] = jarray;
             }
-            
+
             jobject[HikeConstants.FILE_NAME] = string.IsNullOrEmpty(name) ? "Contact" : name;
             jobject[HikeConstants.FILE_CONTENT_TYPE] = HikeConstants.CT_CONTACT;
             filesData.Add(jobject);
@@ -219,6 +219,10 @@ namespace windows_client.Model
             {
                 JArray phoneNumbers = (JArray)jt;
 
+                bool isMobileSet = false;
+                bool isHomePhoneSet = false;
+                bool isWorkSet = false;
+                List<string> listUnAssignedNumbers = new List<string>();
                 foreach (JObject jobj in phoneNumbers)
                 {
                     IEnumerator<KeyValuePair<string, JToken>> keyVals = jobj.GetEnumerator();
@@ -226,14 +230,44 @@ namespace windows_client.Model
                     {
                         kv = keyVals.Current;
 
-                        if (kv.Key.ToLower().Contains(HikeConstants.CS_MOBILE_KEY.ToLower()))
+                        if (!isMobileSet && kv.Key.ToLower().Contains(HikeConstants.CS_MOBILE_KEY.ToLower()))
+                        {
                             con.mobileNumber = kv.Value.ToString();
-
-                        if (kv.Key.ToLower().Contains(HikeConstants.CS_HOME_KEY.ToLower()))
+                            isMobileSet = true;
+                        }
+                        else if (!isHomePhoneSet && kv.Key.ToLower().Contains(HikeConstants.CS_HOME_KEY.ToLower()))
+                        {
                             con.homePhone = kv.Value.ToString();
-
-                        if (kv.Key.ToLower().Contains(HikeConstants.CS_WORK_KEY.ToLower()))
+                            isHomePhoneSet = true;
+                        }
+                        else if (!isWorkSet && kv.Key.ToLower().Contains(HikeConstants.CS_WORK_KEY.ToLower()))
+                        {
                             con.workPhone = kv.Value.ToString();
+                            isWorkSet = true;
+                        }
+                        else
+                        {
+                            listUnAssignedNumbers.Add(kv.Value.ToString());
+                        }
+                    }
+                }
+
+                if (listUnAssignedNumbers.Count > 0)
+                {
+                    int i = 0;
+                    if (!isMobileSet && listUnAssignedNumbers.Count > i)
+                    {
+                        con.mobileNumber = listUnAssignedNumbers[i];
+                        i++;
+                    }
+                    if (!isHomePhoneSet && listUnAssignedNumbers.Count > i)
+                    {
+                        con.homePhone = listUnAssignedNumbers[i];
+                        i++;
+                    }
+                    if (!isWorkSet && listUnAssignedNumbers.Count > i)
+                    {
+                        con.workPhone = listUnAssignedNumbers[i];
                     }
                 }
             }
