@@ -1300,13 +1300,12 @@
   <data name="Attachment_Video_Txt" xml:space="preserve">
     <value>Send Video</value>
   </data>
-
   <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
     <value>Invite {0} to continue hiking.</value>
   </data>
   <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
     <value>Group Message</value>
- </data>
+  </data>
   <data name="HappyMessaging_Txt" xml:space="preserve">
     <value>Happy Messaging!</value>
   </data>
@@ -1331,5 +1330,17 @@
   <data name="FeelingLazy_Txt" xml:space="preserve">
     <value>Feeling lazy? We'll do it for you.</value>
     <comment>Used in Entername screen above FB Notification</comment>
+  </data>
+  <data name="Account_Txt" xml:space="preserve">
+    <value>account</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="Delete_Txt_Caps" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Privacy page (xaml)</comment>
+  </data>
+  <data name="Unlink_Txt" xml:space="preserve">
+    <value>Unlink</value>
+    <comment>Privacy page (xaml)</comment>
   </data>
 </root>
