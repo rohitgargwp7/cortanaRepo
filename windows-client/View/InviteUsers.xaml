@@ -72,7 +72,7 @@
                     <DataTemplate>
                         <Border Background="Transparent">
                             <Border Background="{StaticResource PhoneAccentBrush}" 
-                        Width="55" Height="55" HorizontalAlignment="Left">
+                        Width="55" Height="55" HorizontalAlignment="Left" Margin="0,15,0,0">
                                 <TextBlock Text="{Binding Title}" 
                                 Foreground="{StaticResource PhoneForegroundBrush}" 
                                 Style="{StaticResource PhoneTextLargeStyle}"
