@@ -61,6 +61,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to account.
+        /// </summary>
+        public static string Account_Txt {
+            get {
+                return ResourceManager.GetString("Account_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to add to favorites.
         /// </summary>
         public static string Add_To_Fav_Txt {
@@ -525,6 +534,15 @@ namespace windows_client.Languages {
         public static string Delete_Txt {
             get {
                 return ResourceManager.GetString("Delete_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete_Txt_Caps {
+            get {
+                return ResourceManager.GetString("Delete_Txt_Caps", resourceCulture);
             }
         }
         
@@ -2703,6 +2721,15 @@ namespace windows_client.Languages {
         public static string UnBlock_Txt {
             get {
                 return ResourceManager.GetString("UnBlock_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlink.
+        /// </summary>
+        public static string Unlink_Txt {
+            get {
+                return ResourceManager.GetString("Unlink_Txt", resourceCulture);
             }
         }
         

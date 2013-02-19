@@ -102,7 +102,7 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,5,0,5" Tap="Privacy_Tap">
                                 <Image Name="privacyImage" VerticalAlignment="Center" Source="images\privacy.png" Width="26" Height="35"></Image>
-                                <TextBlock Text="{Binding Path= LocalizedResources.Privacy, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
+                                <TextBlock Text="{Binding Path= LocalizedResources.Account_Txt, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="25,0,0,0" FontSize="39"></TextBlock>
                             </StackPanel>
                             <StackPanel  Orientation="Horizontal" MaxHeight="55" Tap="Notifications_Tap" Margin="15,5,0,5">
                                 <Image Name="settingsImage" VerticalAlignment="Center" Source="images\settings.png" Height="34" Width="34">
