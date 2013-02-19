@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using windows_client.Model;
 using windows_client.Languages;
+using windows_client.DbUtils;
 
 namespace windows_client.View
 {
@@ -50,8 +51,16 @@ namespace windows_client.View
         public void OnNextClick(object sender, EventArgs e)
         {
             SmileyParser.Instance.initializeSmileyParser();
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
-            NavigationService.Navigate(new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative));
+            if (UsersTableUtils.GetAllNonHikeContactsCount() > 0)
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+                NavigationService.Navigate(new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative));
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            }
         }
     }
 }
