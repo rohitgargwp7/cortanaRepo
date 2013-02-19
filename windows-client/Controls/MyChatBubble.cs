@@ -90,15 +90,15 @@ namespace windows_client.Controls
                 if (currentPage != null)
                 {
                     ContextMenu contextMenu = null;
-                    if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains("poke"))   
+                    if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains("poke"))
                     {
                         contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.COMPLETED,
-                            false); //since it is not an attachment message this bool won't make difference
+                            false, true); //since it is not an attachment message this bool won't make difference
                     }
                     else
                     {
                         contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.CANCELED,
-                            true); //set to tru to have only delete option for nudge bubbles
+                            true, true); //set to tru to have only delete option for nudge bubbles
                     }
                     ContextMenuService.SetContextMenu(this, contextMenu);
                 }
