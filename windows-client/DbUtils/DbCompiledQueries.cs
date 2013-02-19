@@ -185,6 +185,21 @@ namespace windows_client.DbUtils
                 return q;
             }
         }
+
+        public static Func<HikeChatsDb, long, IQueryable<ConvMessage>> GetMessageByMessageId
+        {
+            get
+            {
+                Func<HikeChatsDb, long, IQueryable<ConvMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, long, IQueryable<ConvMessage>>
+                ((HikeChatsDb hdc, long messageId) =>
+                    from o in hdc.messages
+                    where o.MessageId == messageId
+                    select o);
+                return q;
+            }
+        }
+
         public static Func<HikeChatsDb, string, long,int, IQueryable<ConvMessage>> GetMessagesForMsisdnForPaging
         {
             get

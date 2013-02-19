@@ -89,7 +89,22 @@ namespace windows_client.DbUtils
             }
 
         }
+     
+        /// <summary>
+        /// Get Conv obj from db using messageid(current)
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        public static ConvMessage getMessageByMessageId(long messageId)
+        {
+            List<ConvMessage> res;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                res = DbCompiledQueries.GetMessageByMessageId(context, messageId).ToList<ConvMessage>();
+                return (res == null || res.Count == 0) ? null : res.First();
+            }
 
+        }
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
