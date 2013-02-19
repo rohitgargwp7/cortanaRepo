@@ -40,7 +40,12 @@ namespace windows_client.View
                 txtBlkInfo1.Text = AppResources.ReadyToHike_Txt;
                 txtBlkInfo2.Visibility = Visibility.Collapsed;
             }
-
+        }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
         }
         public void OnNextClick(object sender, EventArgs e)
         {

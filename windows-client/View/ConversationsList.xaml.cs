@@ -677,7 +677,7 @@ namespace windows_client.View
             if (selectedIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Insert(1, delConvsMenu);
+                    appBar.MenuItems.Insert(0, delConvsMenu);
             }
             else if (selectedIndex == 1)
             {
