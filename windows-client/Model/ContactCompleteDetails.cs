@@ -31,8 +31,6 @@ namespace windows_client.Model
 
         public JObject SerialiseToJobject()
         {
-            JObject metadata = new JObject();
-            JArray filesData = new JArray();
             JObject jobject = new JObject();
 
             if (!string.IsNullOrEmpty(name))
@@ -107,12 +105,7 @@ namespace windows_client.Model
                 jobject[HikeConstants.CS_ADDRESSES] = jarray;
             }
 
-            jobject[HikeConstants.FILE_NAME] = string.IsNullOrEmpty(name) ? "Contact" : name;
-            jobject[HikeConstants.FILE_CONTENT_TYPE] = HikeConstants.CT_CONTACT;
-            filesData.Add(jobject);
-
-            metadata[HikeConstants.FILES_DATA] = filesData;
-            return metadata;
+            return jobject;
         }
 
         public SaveContactTask GetSaveCotactTask()
@@ -206,6 +199,7 @@ namespace windows_client.Model
             }
             return con;
         }
+
         public static string GetCompleteAddress(CivicAddress address)
         {
             if (address == null)
@@ -225,6 +219,7 @@ namespace windows_client.Model
 
             return string.Join(", ", listAddress);
         }
+        
         public static ContactCompleteDetails GetContactDetails(JObject jsonOnj)
         {
             ContactCompleteDetails con = new ContactCompleteDetails();
