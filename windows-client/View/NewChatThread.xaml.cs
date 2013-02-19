@@ -562,7 +562,7 @@ namespace windows_client.View
             }
             #endregion
 
-            if ( !isOnHike)
+            if (!isOnHike)
             {
                 spContactTransfer.IsHitTestVisible = false;
                 spContactTransfer.Opacity = 0.4;
@@ -1026,10 +1026,10 @@ namespace windows_client.View
                 else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
                     convMessage.Message = AppResources.ContactTransfer_Text;
-                    byte[] contactInfo = null;
-                    MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out contactInfo);
-                    string contactInfoString = System.Text.Encoding.UTF8.GetString(contactInfo, 0, contactInfo.Length);
-                    convMessage.MetaDataString = contactInfoString;
+                    ConvMessage convMessageDb = MessagesTableUtils.getMessageByMessageId(chatBubble.MessageId);
+                    if (convMessageDb == null)
+                        return;
+                    convMessage.MetaDataString = convMessageDb.MetaDataString;
                 }
 
                 SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
@@ -1520,17 +1520,13 @@ namespace windows_client.View
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
             {
-                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
-                byte[] filebytes;
-                MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-
-                string contactInfoString = Encoding.UTF8.GetString(filebytes, 0, filebytes.Length);
-                JObject contactInfoJobject = JObject.Parse(contactInfoString);
-
+                ConvMessage convMessage = MessagesTableUtils.getMessageByMessageId(chatBubble.MessageId);
+                if (convMessage == null)
+                    return;
+                JObject contactInfoJobject = JObject.Parse(convMessage.MetaDataString);
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
                 SaveContactTask sct = con.GetSaveCotactTask();
                 sct.Show();
-
             }
         }
 
@@ -1584,7 +1580,7 @@ namespace windows_client.View
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return null;
                         }
-                    
+
                         chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
                     }
 
@@ -3385,7 +3381,7 @@ namespace windows_client.View
         }
 
         #region CONTEXT MENUS
-        public ContextMenu createAttachmentContextMenu(Attachment.AttachmentState attachmentState, bool isSent,bool showCopyMenu)
+        public ContextMenu createAttachmentContextMenu(Attachment.AttachmentState attachmentState, bool isSent, bool showCopyMenu)
         {
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = true;
