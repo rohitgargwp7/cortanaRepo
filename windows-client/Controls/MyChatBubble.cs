@@ -24,6 +24,7 @@ namespace windows_client.Controls
         private long _timeStampLong;
         private long _messageId;
         private ConvMessage.State _messageState;
+        private string _metaDataString;
         public Attachment FileAttachment;
 
         public string Text;
@@ -68,6 +69,12 @@ namespace windows_client.Controls
             }
         }
 
+        public string MetaDataString
+        {
+            get { return _metaDataString; }
+            set { _metaDataString = value; }
+        }
+
         public MyChatBubble()
         {
         }
@@ -79,6 +86,7 @@ namespace windows_client.Controls
             this._messageId = cm.MessageId;
             this._timeStampLong = cm.Timestamp;
             this._messageState = cm.MessageStatus;
+            this._metaDataString = cm.MetaDataString;
             if (cm.FileAttachment != null)
             {
                 this.FileAttachment = cm.FileAttachment;
