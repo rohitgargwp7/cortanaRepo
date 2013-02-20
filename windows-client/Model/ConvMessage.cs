@@ -465,7 +465,7 @@ namespace windows_client.Model
                 filesData = new JArray();
                 if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                 {
-                    if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
                         singleFileInfo = JObject.Parse(this.MetaDataString);
                     else
                         singleFileInfo = new JObject();
