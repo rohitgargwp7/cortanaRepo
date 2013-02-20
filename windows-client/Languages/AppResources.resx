@@ -1343,4 +1343,7 @@
     <value>Unlink</value>
     <comment>Privacy page (xaml)</comment>
   </data>
+  <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+    <value>{0} changed the group image.</value>
+  </data>
 </root>

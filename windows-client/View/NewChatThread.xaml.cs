@@ -1157,7 +1157,6 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.TYPING_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.END_TYPING_CONVERSATION, this);
             mPubSub.addListener(HikePubSub.UPDATE_UI, this);
-            mPubSub.addListener(HikePubSub.GROUP_NAME_CHANGED, this);
             mPubSub.addListener(HikePubSub.GROUP_END, this);
             mPubSub.addListener(HikePubSub.GROUP_ALIVE, this);
             mPubSub.addListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
@@ -1178,7 +1177,6 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.TYPING_CONVERSATION, this);
                 mPubSub.removeListener(HikePubSub.END_TYPING_CONVERSATION, this);
                 mPubSub.removeListener(HikePubSub.UPDATE_UI, this);
-                mPubSub.removeListener(HikePubSub.GROUP_NAME_CHANGED, this);
                 mPubSub.removeListener(HikePubSub.GROUP_END, this);
                 mPubSub.removeListener(HikePubSub.GROUP_ALIVE, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
@@ -1822,7 +1820,14 @@ namespace windows_client.View
                     insertPosition++;
                 }
                 #endregion
-                //                if (!readFromDB && !IsMute || (isGroupChat && IsMute && msgBubbleCount == App.ViewModel.ConvMap[mContactNumber].MuteVal))
+                #region GROUP PIC CHANGED
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
+                {
+                    MyChatBubble chatBubble = new NotificationChatBubble(NotificationChatBubble.MessageType.GROUP_PIC_CHANGED, convMessage.Message);
+                    this.MessageList.Children.Insert(insertPosition, chatBubble);
+                    insertPosition++;
+                }
+                #endregion
                 if (!insertAtTop)
                     ScrollToBottom();
 
@@ -2620,7 +2625,16 @@ namespace windows_client.View
                     HideTypingNotification();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
+                        {
+                            mContactName = App.ViewModel.ConvMap[convMessage.Msisdn].ContactName;
+                            userName.Text = mContactName;
+                        }
+                        else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
+                            userImage.Source = App.ViewModel.ConvMap[convMessage.Msisdn].AvatarImage;
+
                         AddMessageToUI(convMessage, false, false);
+
                         if (vals.Length == 3)
                         {
                             ConvMessage cm = (ConvMessage)vals[2];
@@ -2863,27 +2877,6 @@ namespace windows_client.View
                 {
                     userImage.Source = App.ViewModel.ConvMap[msisdn].AvatarImage;
                 });
-            }
-
-            #endregion
-
-            #region GROUP NAME CHANGED
-
-            else if (HikePubSub.GROUP_NAME_CHANGED == type)
-            {
-                object[] vals = (object[])obj;
-                string groupId = (string)vals[0];
-                string groupName = (string)vals[1];
-                ConvMessage convMessage = (ConvMessage)vals[2];
-                if (mContactNumber == groupId)
-                {
-                    mContactName = groupName;
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        userName.Text = mContactName;
-                        AddMessageToUI(convMessage, false, false);
-                    });
-                }
             }
 
             #endregion

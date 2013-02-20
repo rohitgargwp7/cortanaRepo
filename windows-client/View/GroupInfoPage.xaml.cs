@@ -276,17 +276,27 @@ namespace windows_client.View
             #region GROUP_NAME_CHANGED
             else if (HikePubSub.GROUP_NAME_CHANGED == type)
             {
-                object[] vals = (object[])obj;
-                string grpId = (string)vals[0];
-                string groupName = (string)vals[1];
+                if (isgroupNameSelfChanged)
+                    return;
+                string grpId = (string)obj;
                 if (grpId == groupId)
-                {
-                    if (isgroupNameSelfChanged)
-                        return;
+                {                    
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        this.groupNameTxtBox.Text = groupName;
-                        PhoneApplicationService.Current.State[HikeConstants.GROUP_NAME_FROM_CHATTHREAD] = groupName;
+                        this.groupNameTxtBox.Text = App.ViewModel.ConvMap[groupId].ContactName;
+                    });
+                }
+            }
+            #endregion
+            #region GROUP PIC CHANGED
+            else if (HikePubSub.UPDATE_GRP_PIC == type)
+            {
+                string grpId = (string)obj;
+                if (grpId == groupId)
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.groupImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
                     });
                 }
             }
@@ -425,13 +435,30 @@ namespace windows_client.View
                     groupImage.Source = grpImage;
                     groupImage.Height = 83;
                     groupImage.Width = 83;
+
+                    string msg = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, AppResources.You_Txt);
+                    ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1);
+                    cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED;
+                    cm.GroupParticipant = App.MSISDN;
+                    JObject jo = new JObject();
+                    jo[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC;
+                    cm.MetaDataString = jo.ToString(Newtonsoft.Json.Formatting.None);
+                    ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
+                    if (cobj == null)
+                        return;
+
+                    // handle msgs
+                    object[] vs = new object[2];
+                    vs[0] = cm;
+                    vs[1] = cobj;
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vs);
+
+                    // handle saving image
                     object[] vals = new object[3];
                     vals[0] = groupId;
                     vals[1] = fullViewImageBytes;
                     vals[2] = thumbnailBytes;
                     mPubSub.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
-                    if (App.newChatThreadPage != null)
-                        App.newChatThreadPage.userImage.Source = App.ViewModel.ConvMap[groupId].AvatarImage;
                 }
                 else
                 {
@@ -442,6 +469,7 @@ namespace windows_client.View
                 isProfilePicTapped = false;
             });
         }
+
         #endregion
 
         private void inviteSMSUsers_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -521,21 +549,20 @@ namespace windows_client.View
                 ConversationListObject cobj = MessagesTableUtils.addChatMessage(cm, false);
                 if (cobj == null)
                     return;
-                object[] vals = new object[3];
-                vals[0] = groupId;
-                vals[1] = groupName;
-                vals[2] = cm;
+
+                object[] vals = new object[2];
+                vals[0] = cm;
+                vals[1] = cobj;
+
                 isgroupNameSelfChanged = true;
-                mPubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     App.ViewModel.ConvMap[groupId].ContactName = groupName;
-                    if (App.newChatThreadPage != null)
-                        App.newChatThreadPage.userName.Text = groupName; // set the name here only to fix bug# 1666
+                    mPubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                     groupNameTxtBox.IsReadOnly = false;
                     saveIconButton.IsEnabled = true;
                     shellProgress.IsVisible = false;
-                    //progressBar.IsEnabled = false;
                 });
             }
             else

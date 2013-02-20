@@ -376,7 +376,7 @@ namespace windows_client.View
 
         #endregion
 
-        #region Listeners
+        #region LISTENERS
 
         private void registerListeners()
         {

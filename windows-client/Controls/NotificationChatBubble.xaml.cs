@@ -18,6 +18,7 @@ namespace windows_client.Controls
             REWARD,
             INTERNATIONAL_USER_BLOCKED,
             GROUP_NAME_CHANGED,
+            GROUP_PIC_CHANGED,
             DEFAULT,
             UNKNOWN
         }
@@ -69,7 +70,10 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.IntUserBlocked;
                     break;
                 case MessageType.GROUP_NAME_CHANGED:
-                    NotificationImage.Source = UI_Utils.Instance.GrpNameChanged;
+                    NotificationImage.Source = UI_Utils.Instance.GrpNameOrPicChanged;
+                    break;
+                case MessageType.GROUP_PIC_CHANGED:
+                    NotificationImage.Source = UI_Utils.Instance.GrpNameOrPicChanged;
                     break;
                 default:
                     NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
