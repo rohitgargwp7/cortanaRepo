@@ -1026,10 +1026,7 @@ namespace windows_client.View
                 else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
                     convMessage.Message = AppResources.ContactTransfer_Text;
-                    ConvMessage convMessageDb = MessagesTableUtils.getMessageByMessageId(chatBubble.MessageId);
-                    if (convMessageDb == null)
-                        return;
-                    convMessage.MetaDataString = convMessageDb.MetaDataString;
+                    convMessage.MetaDataString = chatBubble.MetaDataString;
                 }
 
                 SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
@@ -1520,10 +1517,7 @@ namespace windows_client.View
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
             {
-                ConvMessage convMessage = MessagesTableUtils.getMessageByMessageId(chatBubble.MessageId);
-                if (convMessage == null)
-                    return;
-                JObject contactInfoJobject = JObject.Parse(convMessage.MetaDataString);
+                JObject contactInfoJobject = JObject.Parse(chatBubble.MetaDataString);
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
                 SaveContactTask sct = con.GetSaveCotactTask();
                 sct.Show();
