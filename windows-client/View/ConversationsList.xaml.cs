@@ -259,23 +259,10 @@ namespace windows_client.View
             }
             #endregion
             #region CHECK UPDATES
+            //rate the app is handled within this
             checkForUpdates();
             #endregion
-            #region RATE THE APP
-            int appLaunchCount = 0;
-            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
-            {
-                if (NetworkInterface.GetIsNetworkAvailable())
-                {
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
-                    double result = Math.Log(appLaunchCount / 5f, 2);//using gp
-                    if (result == Math.Ceiling(result))
-                    {
-                        showRateAppMessage();
-                    }
-                }
-            }
-            #endregion
+
             postAnalytics();
         }
 
@@ -1149,6 +1136,8 @@ namespace windows_client.View
             {
                 AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
             }
+            else
+                CheckRateApp();
         }
 
         public void checkUpdate_Callback(JObject obj)
@@ -1183,6 +1172,8 @@ namespace windows_client.View
                     }
                     App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
                 }
+                else
+                    CheckRateApp();
             }
             catch (Exception)
             {
@@ -1245,34 +1236,6 @@ namespace windows_client.View
             }
         }
 
-
-
-        private void showRateAppMessage()
-        {
-            if (!Guide.IsVisible)
-            {
-                Guide.BeginShowMessageBox("Rate The App", "Please give rating!!!",
-                     new List<string> { "Rate Now", "Never" }, 0, MessageBoxIcon.None,
-                     asyncResult =>
-                     {
-                         int? returned = Guide.EndShowMessageBox(asyncResult);
-                         if (returned != null)
-                         {
-                             App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
-                             if (returned == 0)
-                             {
-                                 MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
-                                 try
-                                 {
-                                     marketplaceReviewTask.Show();
-                                 }
-                                 catch { }
-                             }
-                         }
-                     }, null);
-            }
-        }
-
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
@@ -1309,6 +1272,51 @@ namespace windows_client.View
 
         #endregion
 
+        #region RATE THE APP
+        private void CheckRateApp()
+        {
+            int appLaunchCount = 0;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
+                    double result = Math.Log(appLaunchCount / 5f, 2);//using gp
+                    if (result == Math.Ceiling(result))
+                    {
+                        showRateAppMessage();
+                    }
+                }
+            }
+        }
+
+        private void showRateAppMessage()
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox("Rate The App", "Give feedback of your eperience!!!",
+                     new List<string> { "Rate Now", "Later" }, 0, MessageBoxIcon.None,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null)
+                         {
+                             if (returned == 0)
+                             {
+                                 App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
+                                 MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
+                                 try
+                                 {
+                                     marketplaceReviewTask.Show();
+                                 }
+                                 catch { }
+                             }
+                         }
+                     }, null);
+            }
+        }
+
+        #endregion
         #region FAVOURITE ZONE
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
