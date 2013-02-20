@@ -1137,11 +1137,12 @@ namespace windows_client.View
                 AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
             }
             else
-                CheckRateApp();
+                checkForRateApp();
         }
 
         public void checkUpdate_Callback(JObject obj)
         {
+            bool isUpdateShown = false;
             try
             {
                 if (obj != null)
@@ -1157,23 +1158,24 @@ namespace windows_client.View
                     {
                         App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
                     }
-
                     if (Utils.compareVersion(critical, current) == 1)
                     {
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-                        showCriticalUpdateMessage();
-                        //critical update
+                        showCriticalUpdateMessage();//critical update
+                        isUpdateShown = true;
                     }
                     else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
                         (Utils.compareVersion(latest, lastDismissedUpdate) == 1)))
                     {
-                        showNormalUpdateMessage();
-                        //normal update
+                        showNormalUpdateMessage();//normal update
+                        isUpdateShown = true;
                     }
                     App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
                 }
-                else
-                    CheckRateApp();
+                if (!isUpdateShown)
+                {
+                    checkForRateApp();
+                }
             }
             catch (Exception)
             {
@@ -1273,20 +1275,18 @@ namespace windows_client.View
         #endregion
 
         #region RATE THE APP
-        private void CheckRateApp()
+        private void checkForRateApp()
         {
             int appLaunchCount = 0;
             if (App.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
             {
-                if (NetworkInterface.GetIsNetworkAvailable())
+                double result = Math.Log(appLaunchCount / 5f, 2);//using gp
+                if (result == Math.Ceiling(result) && NetworkInterface.GetIsNetworkAvailable()) //TODO - we can use mqtt connection status. 
+                                                                                                //if mqtt is connected it would safe to assume that user is online.
                 {
-                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
-                    double result = Math.Log(appLaunchCount / 5f, 2);//using gp
-                    if (result == Math.Ceiling(result))
-                    {
-                        showRateAppMessage();
-                    }
+                    showRateAppMessage();
                 }
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
             }
         }
 
@@ -1294,8 +1294,8 @@ namespace windows_client.View
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox("Rate The App", "Give feedback of your eperience!!!",
-                     new List<string> { "Rate Now", "Later" }, 0, MessageBoxIcon.None,
+                Guide.BeginShowMessageBox("Rate Hike", "Like hiking? Rate us",
+                     new List<string> { "Now", "Later" }, 0, MessageBoxIcon.None,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -1303,11 +1303,11 @@ namespace windows_client.View
                          {
                              if (returned == 0)
                              {
-                                 App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
                                  MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
                                  try
                                  {
                                      marketplaceReviewTask.Show();
+                                     App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
                                  }
                                  catch { }
                              }
