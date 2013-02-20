@@ -238,9 +238,6 @@ namespace windows_client.Model
             {
                 JArray phoneNumbers = (JArray)jt;
 
-                bool isMobileSet = false;
-                bool isHomePhoneSet = false;
-                bool isWorkSet = false;
                 List<string> listUnAssignedNumbers = new List<string>();
                 foreach (JObject jobj in phoneNumbers)
                 {
@@ -249,20 +246,17 @@ namespace windows_client.Model
                     {
                         kv = keyVals.Current;
 
-                        if (!isMobileSet && kv.Key.ToLower().Contains(HikeConstants.CS_MOBILE_KEY.ToLower()))
+                        if (string.IsNullOrEmpty(con.mobileNumber) && kv.Key.ToLower().Contains(HikeConstants.CS_MOBILE_KEY.ToLower()))
                         {
                             con.mobileNumber = kv.Value.ToString();
-                            isMobileSet = true;
                         }
-                        else if (!isHomePhoneSet && kv.Key.ToLower().Contains(HikeConstants.CS_HOME_KEY.ToLower()))
+                        else if (string.IsNullOrEmpty(con.homePhone) && kv.Key.ToLower().Contains(HikeConstants.CS_HOME_KEY.ToLower()))
                         {
                             con.homePhone = kv.Value.ToString();
-                            isHomePhoneSet = true;
                         }
-                        else if (!isWorkSet && kv.Key.ToLower().Contains(HikeConstants.CS_WORK_KEY.ToLower()))
+                        else if (string.IsNullOrEmpty(con.workPhone) && kv.Key.ToLower().Contains(HikeConstants.CS_WORK_KEY.ToLower()))
                         {
                             con.workPhone = kv.Value.ToString();
-                            isWorkSet = true;
                         }
                         else
                         {
@@ -274,17 +268,17 @@ namespace windows_client.Model
                 if (listUnAssignedNumbers.Count > 0)
                 {
                     int i = 0;
-                    if (!isMobileSet && listUnAssignedNumbers.Count > i)
+                    if (string.IsNullOrEmpty(con.mobileNumber) && listUnAssignedNumbers.Count > i)
                     {
                         con.mobileNumber = listUnAssignedNumbers[i];
                         i++;
                     }
-                    if (!isHomePhoneSet && listUnAssignedNumbers.Count > i)
+                    if (string.IsNullOrEmpty(con.homePhone) && listUnAssignedNumbers.Count > i)
                     {
                         con.homePhone = listUnAssignedNumbers[i];
                         i++;
                     }
-                    if (!isWorkSet && listUnAssignedNumbers.Count > i)
+                    if (string.IsNullOrEmpty(con.workPhone) && listUnAssignedNumbers.Count > i)
                     {
                         con.workPhone = listUnAssignedNumbers[i];
                     }
