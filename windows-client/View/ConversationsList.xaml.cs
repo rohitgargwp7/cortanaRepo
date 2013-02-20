@@ -261,6 +261,21 @@ namespace windows_client.View
             #region CHECK UPDATES
             checkForUpdates();
             #endregion
+            #region RATE THE APP
+            int appLaunchCount = 0;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
+                    double result = Math.Log(appLaunchCount / 5f, 2);//using gp
+                    if (result == Math.Ceiling(result))
+                    {
+                        showRateAppMessage();
+                    }
+                }
+            }
+            #endregion
             postAnalytics();
         }
 
@@ -1230,6 +1245,33 @@ namespace windows_client.View
             }
         }
 
+
+
+        private void showRateAppMessage()
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox("Rate The App", "Please give rating!!!",
+                     new List<string> { "Rate Now", "Never" }, 0, MessageBoxIcon.None,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null)
+                         {
+                             App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
+                             if (returned == 0)
+                             {
+                                 MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
+                                 try
+                                 {
+                                     marketplaceReviewTask.Show();
+                                 }
+                                 catch { }
+                             }
+                         }
+                     }, null);
+            }
+        }
 
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
