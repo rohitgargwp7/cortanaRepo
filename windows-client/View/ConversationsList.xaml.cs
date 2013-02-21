@@ -259,8 +259,10 @@ namespace windows_client.View
             }
             #endregion
             #region CHECK UPDATES
+            //rate the app is handled within this
             checkForUpdates();
             #endregion
+
             postAnalytics();
         }
 
@@ -1134,10 +1136,13 @@ namespace windows_client.View
             {
                 AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
             }
+            else
+                checkForRateApp();
         }
 
         public void checkUpdate_Callback(JObject obj)
         {
+            bool isUpdateShown = false;
             try
             {
                 if (obj != null)
@@ -1153,20 +1158,23 @@ namespace windows_client.View
                     {
                         App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
                     }
-
                     if (Utils.compareVersion(critical, current) == 1)
                     {
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-                        showCriticalUpdateMessage();
-                        //critical update
+                        showCriticalUpdateMessage();//critical update
+                        isUpdateShown = true;
                     }
                     else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
                         (Utils.compareVersion(latest, lastDismissedUpdate) == 1)))
                     {
-                        showNormalUpdateMessage();
-                        //normal update
+                        showNormalUpdateMessage();//normal update
+                        isUpdateShown = true;
                     }
                     App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
+                }
+                if (!isUpdateShown)
+                {
+                    checkForRateApp();
                 }
             }
             catch (Exception)
@@ -1230,7 +1238,6 @@ namespace windows_client.View
             }
         }
 
-
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
@@ -1267,6 +1274,49 @@ namespace windows_client.View
 
         #endregion
 
+        #region RATE THE APP
+        private void checkForRateApp()
+        {
+            int appLaunchCount = 0;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
+            {
+                double result = Math.Log(appLaunchCount / 5f, 2);//using gp
+                if (result == Math.Ceiling(result) && NetworkInterface.GetIsNetworkAvailable()) //TODO - we can use mqtt connection status. 
+                                                                                                //if mqtt is connected it would safe to assume that user is online.
+                {
+                    showRateAppMessage();
+                }
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
+            }
+        }
+
+        private void showRateAppMessage()
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.Love_Using_Hike_Txt, AppResources.Rate_Us_Txt,
+                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt}, 0, MessageBoxIcon.None,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null)
+                         {
+                             if (returned == 0)
+                             {
+                                 MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
+                                 try
+                                 {
+                                     marketplaceReviewTask.Show();
+                                     App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
+                                 }
+                                 catch { }
+                             }
+                         }
+                     }, null);
+            }
+        }
+
+        #endregion
         #region FAVOURITE ZONE
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)

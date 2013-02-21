@@ -290,6 +290,7 @@ namespace windows_client
             public static readonly string TWITTER_TOKEN_SECRET = "TwTokenSecret";
             public static readonly string CONTACTS_TO_SHOW = "ContactsToShow";
             public static readonly string NEW_UPDATE = "New_Update";
+            public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
         }
     }
 }
