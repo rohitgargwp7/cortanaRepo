@@ -55,7 +55,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("ContactName");
                     _contactName = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxName();
                     NotifyPropertyChanged("ContactName");
                     NotifyPropertyChanged("NameToShow");
                 }
@@ -75,7 +75,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxLastMsg();
                     NotifyPropertyChanged("LastMessage");
                 }
             }
@@ -94,7 +94,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxTimeStamp();
                     NotifyPropertyChanged("TimeStamp");
                 }
             }
@@ -113,7 +113,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Msisdn");
                     _msisdn = value.Trim();
-                    UpdateConversationBox();
+                    UpdateConvBoxMsisdn();
                     NotifyPropertyChanged("Msisdn");
                 }
             }
@@ -132,7 +132,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
-                    UpdateConversationBox();
                     NotifyPropertyChanged("IsOnhike");
                     NotifyPropertyChanged("ShowOnHikeImage");
                 }
@@ -152,7 +151,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxMsgStatus();
                     NotifyPropertyChanged("MessageStatus");
                 }
             }
@@ -232,7 +231,7 @@ namespace windows_client.Model
                 {
                     _avatar = value;
                     empImage = null; // reset to null whenever avatar changes
-                    UpdateConversationBox();
+                    UpdateConvBoxAvatarImage();
                     NotifyPropertyChanged("Avatar");
                     NotifyPropertyChanged("AvatarImage");
                 }
@@ -540,16 +539,75 @@ namespace windows_client.Model
         }
         #endregion
 
-        public void UpdateConversationBox()
+        #region UPDATE CONV BOX
+        
+        public void UpdateConvBoxMsisdn()
         {
             if (cBoxObj != null)
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
-              {
-                  cBoxObj.update(this);
-              });
+                {
+                    cBoxObj.Msisdn = this.Msisdn;
+                });
             }
         }
+
+        public void UpdateConvBoxMsgStatus()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    cBoxObj.MessageState = this.MessageStatus;
+                });
+            }
+        }
+
+        public void UpdateConvBoxAvatarImage()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    cBoxObj.AvatarImage = this.AvatarImage;
+                });
+            }
+        }
+
+        public void UpdateConvBoxName()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    cBoxObj.Name = this.ContactName;
+                });
+            }
+        }
+     
+        public void UpdateConvBoxLastMsg()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    cBoxObj.LastMessage = this.LastMessage;
+                });
+            }
+        }
+
+        public void UpdateConvBoxTimeStamp()
+        {
+            if (cBoxObj != null)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    cBoxObj.Timestamp = this.TimeStamp;
+                });
+            }
+        }
+      
+        #endregion
 
         public void UpdateConvBoxFavMenu()
         {
