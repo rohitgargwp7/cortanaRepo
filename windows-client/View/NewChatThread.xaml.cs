@@ -2085,8 +2085,6 @@ namespace windows_client.View
                 object[] attachmentForwardMessage = new object[2];
                 attachmentForwardMessage[0] = chatBubble;
                 attachmentForwardMessage[1] = mContactNumber;
-                if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                    PhoneApplicationService.Current.State[HikeConstants.CONTACT] = null;
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
                 NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
