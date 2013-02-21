@@ -562,7 +562,7 @@ namespace windows_client.View
             }
             #endregion
 
-            if (isGroupChat || !isOnHike)
+            if (!isOnHike)
             {
                 spContactTransfer.IsHitTestVisible = false;
                 spContactTransfer.Opacity = 0.4;
@@ -1026,10 +1026,7 @@ namespace windows_client.View
                 else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                 {
                     convMessage.Message = AppResources.ContactTransfer_Text;
-                    byte[] contactInfo = null;
-                    MiscDBUtil.readFileFromIsolatedStorage(sourceFilePath, out contactInfo);
-                    string contactInfoString = System.Text.Encoding.UTF8.GetString(contactInfo, 0, contactInfo.Length);
-                    convMessage.MetaDataString = contactInfoString;
+                    convMessage.MetaDataString = chatBubble.MetaDataString;
                 }
 
                 SentChatBubble newChatBubble = SentChatBubble.getSplitChatBubbles(convMessage, false);
@@ -1518,17 +1515,10 @@ namespace windows_client.View
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
             {
-                string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + mContactNumber + "/" + Convert.ToString(chatBubble.MessageId);
-                byte[] filebytes;
-                MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-
-                string contactInfoString = Encoding.UTF8.GetString(filebytes, 0, filebytes.Length);
-                JObject contactInfoJobject = JObject.Parse(contactInfoString)[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
-
+                JObject contactInfoJobject = JObject.Parse(chatBubble.MetaDataString);
                 ContactCompleteDetails con = ContactCompleteDetails.GetContactDetails(contactInfoJobject);
                 SaveContactTask sct = con.GetSaveCotactTask();
                 sct.Show();
-
             }
         }
 
@@ -1569,7 +1559,6 @@ namespace windows_client.View
                 if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 {
                     MyChatBubble chatBubble = null;
-                    string name = string.Empty;
                     if (convMessage.HasAttachment)
                     {
                         if (convMessage.FileAttachment == null && attachments.ContainsKey(convMessage.MessageId))
@@ -1583,10 +1572,7 @@ namespace windows_client.View
                             Debug.WriteLine("Fileattachment object is null for convmessage with attachment");
                             return null;
                         }
-                        if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
-                        {
-                            name = string.IsNullOrEmpty(convMessage.FileAttachment.FileName) ? "Contact" : convMessage.FileAttachment.FileName;
-                        }
+
                         chatBubble = MessagesTableUtils.getUploadingOrDownloadingMessage(convMessage.MessageId);
                     }
 
@@ -1602,7 +1588,7 @@ namespace windows_client.View
                         else
                         {
 
-                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, name != string.Empty ? name : GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
                         }
                     }
                     this.MessageList.Children.Insert(insertPosition, chatBubble);
@@ -2104,8 +2090,6 @@ namespace windows_client.View
                 object[] attachmentForwardMessage = new object[2];
                 attachmentForwardMessage[0] = chatBubble;
                 attachmentForwardMessage[1] = mContactNumber;
-                if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
-                    PhoneApplicationService.Current.State[HikeConstants.CONTACT] = null;
                 PhoneApplicationService.Current.State[HikeConstants.FORWARD_MSG] = attachmentForwardMessage;
                 NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
             }
@@ -3382,14 +3366,14 @@ namespace windows_client.View
         }
 
         #region CONTEXT MENUS
-        public ContextMenu createAttachmentContextMenu(Attachment.AttachmentState attachmentState, bool isSent)
+        public ContextMenu createAttachmentContextMenu(Attachment.AttachmentState attachmentState, bool isSent, bool showCopyMenu)
         {
             ContextMenu menu = new ContextMenu();
             menu.IsZoomEnabled = true;
 
             if (attachmentState == Attachment.AttachmentState.STARTED)
             {
-                if (!isSent) //if attachment is downloading, then allow user to copy link
+                if (!isSent && showCopyMenu) //if attachment is downloading, then allow user to copy link
                 {
                     MenuItem menuItemCopy = new MenuItem();
                     menuItemCopy.Header = AppResources.Copy_txt;
@@ -3405,12 +3389,14 @@ namespace windows_client.View
             }
             else if (attachmentState == Attachment.AttachmentState.COMPLETED)
             {
-                MenuItem menuItemCopy = new MenuItem();
-                menuItemCopy.Header = AppResources.Copy_txt;
-                var glCopy = GestureService.GetGestureListener(menuItemCopy);
-                glCopy.Tap += MenuItem_Click_Copy;
-                menu.Items.Add(menuItemCopy);
-
+                if (showCopyMenu)
+                {
+                    MenuItem menuItemCopy = new MenuItem();
+                    menuItemCopy.Header = AppResources.Copy_txt;
+                    var glCopy = GestureService.GetGestureListener(menuItemCopy);
+                    glCopy.Tap += MenuItem_Click_Copy;
+                    menu.Items.Add(menuItemCopy);
+                }
                 MenuItem menuItemForward = new MenuItem();
                 menuItemForward.Header = AppResources.Forward_Txt;
                 var glFwd = GestureService.GetGestureListener(menuItemForward);
@@ -3425,7 +3411,7 @@ namespace windows_client.View
             }
             else if (attachmentState == Attachment.AttachmentState.CANCELED || attachmentState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED)
             {
-                if (!isSent) //if attachment is downloading, then allow user to copy link
+                if (!isSent && showCopyMenu) //if attachment is downloading, then allow user to copy link
                 {
                     MenuItem menuItemCopy = new MenuItem();
                     menuItemCopy.Header = AppResources.Copy_txt;

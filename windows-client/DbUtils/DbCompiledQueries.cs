@@ -185,6 +185,7 @@ namespace windows_client.DbUtils
                 return q;
             }
         }
+
         public static Func<HikeChatsDb, string, long,int, IQueryable<ConvMessage>> GetMessagesForMsisdnForPaging
         {
             get

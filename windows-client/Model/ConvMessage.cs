@@ -468,9 +468,12 @@ namespace windows_client.Model
             {
                 metadata = new JObject();
                 filesData = new JArray();
-                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION) && !FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                 {
-                    singleFileInfo = new JObject();
+                    if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
+                        singleFileInfo = JObject.Parse(this.MetaDataString);
+                    else
+                        singleFileInfo = new JObject();
                     singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                     singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                     singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
@@ -649,7 +652,7 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey.ToString(), base64Decoded,
+                        this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
@@ -661,6 +664,10 @@ namespace windows_client.Model
                             this.MetaDataString = locationFile.ToString();
                         }
 
+                        if (contentType.ToString().Contains(HikeConstants.CONTACT))
+                        {
+                            this.MetaDataString = fileObject.ToString();
+                        }
                     }
                     else
                     {

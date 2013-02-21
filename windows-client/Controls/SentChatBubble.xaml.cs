@@ -253,7 +253,7 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
-                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true);
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true, !FileAttachment.ContentType.Contains(HikeConstants.CONTACT));
                     ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
@@ -310,7 +310,7 @@ namespace windows_client.Controls
             bool isSMS = cm.IsSms;
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
-            bool isContact = hasAttachment && contentType.Contains( HikeConstants.CT_CONTACT);
+            bool isContact = hasAttachment && contentType.Contains(HikeConstants.CT_CONTACT);
 
             if (isContact)
                 messageString = cm.FileAttachment.FileName;
