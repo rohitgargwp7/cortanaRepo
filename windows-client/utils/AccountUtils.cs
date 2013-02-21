@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = true;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -199,7 +199,7 @@ namespace windows_client.utils
 
         public static void validateNumber(string phoneNo, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate?digits=4")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
