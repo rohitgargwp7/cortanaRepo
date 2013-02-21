@@ -2006,6 +2006,15 @@ namespace windows_client.View
                     writeableBitmap.SaveJpeg(msSmallImage, thumbnailWidth, thumbnailHeight, 0, 50);
                     thumbnailBytes = msSmallImage.ToArray();
                 }
+                if (thumbnailBytes.Length > HikeConstants.MAX_THUMBNAILSIZE)
+                {
+                    using (var msSmallImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msSmallImage, thumbnailWidth, thumbnailHeight, 0, 20);
+                        thumbnailBytes = msSmallImage.ToArray();
+                    }
+                }
+
                 if (fileName.StartsWith("{")) // this is from share picker
                 {
                     fileName = "PhotoChooser-" + fileName.Substring(1, fileName.Length - 2) + ".jpg";
