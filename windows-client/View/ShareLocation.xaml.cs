@@ -55,18 +55,6 @@ namespace windows_client.View
 
         private void shareBtn_Click(object sender, EventArgs e)
         {
-            //JObject locationFile = new JObject();
-            //locationFile[HikeConstants.LATITUDE] = locationPushpin.Location.Latitude;
-            //locationFile[HikeConstants.LONGITUDE] = locationPushpin.Location.Longitude;
-            //locationFile[HikeConstants.ZOOM_LEVEL] = map.ZoomLevel;
-            //locationFile[HikeConstants.LOCATION_ADDRESS] = "";
-
-            //object[] locationDetails = new object[2];
-            //locationDetails[0] = locationFile;
-            //locationDetails[1] = captureThumbnail();
-            //PhoneApplicationService.Current.State[HikeConstants.SHARED_LOCATION] = locationDetails;
-            //map = null;
-
             byte[] thumbnailBytes = captureThumbnail();
             JObject metadata = new JObject();
             JArray filesData = new JArray();
@@ -77,7 +65,6 @@ namespace windows_client.View
             singleFileInfo[HikeConstants.LONGITUDE] = locationPushpin.Location.Longitude;
             singleFileInfo[HikeConstants.ZOOM_LEVEL] = map.ZoomLevel;
             singleFileInfo[HikeConstants.LOCATION_ADDRESS] = "";
-            //            singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(thumbnailBytes);
 
             filesData.Add(singleFileInfo.ToObject<JToken>());
 
@@ -148,11 +135,8 @@ namespace windows_client.View
             using (MemoryStream ms = new MemoryStream())
             {
                 screenshot.SaveJpeg(ms, HikeConstants.LOCATION_THUMBNAIL_MAX_WIDTH, HikeConstants.LOCATION_THUMBNAIL_MAX_HEIGHT,
-                    0, 60);
+                    0, 47);
                 thumbnailBytes = ms.ToArray();
-                //img = new BitmapImage();
-                //img.SetSource(ms);
-                //ms.Close();
             }
             return thumbnailBytes;
         }
