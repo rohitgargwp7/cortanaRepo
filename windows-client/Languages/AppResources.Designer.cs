@@ -1276,6 +1276,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} changed the group image..
+        /// </summary>
+        public static string GroupImgChangedByGrpMember_Txt {
+            get {
+                return ResourceManager.GetString("GroupImgChangedByGrpMember_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Group Name.
         /// </summary>
         public static string GroupInfo_ChangeGrpName_Txt {

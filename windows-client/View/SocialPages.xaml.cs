@@ -513,5 +513,13 @@ namespace windows_client.View
             }
         }
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            base.OnBackKeyPress(e);
+            if (NavigationService.CanGoBack)
+                NavigationService.GoBack();
+        }
+
     }
 }

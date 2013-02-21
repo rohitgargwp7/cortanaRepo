@@ -179,7 +179,12 @@ namespace windows_client.Controls
         public ConversationBox(ConversationListObject c)
         {
             InitializeComponent();
-            update(c);
+            this.AvatarImage = c.AvatarImage;
+            this.UserName = c.NameToShow;
+            this.LastMessage = c.LastMessage;
+            this.Timestamp = c.TimeStamp;
+            this.MessageState = c.MessageStatus;
+            this.Msisdn = c.Msisdn;
         }
 
         public override bool Equals(object obj)
@@ -195,16 +200,6 @@ namespace windows_client.Controls
                 return false;
             }
             return (_msisdn == o.Msisdn);
-        }
-
-        public void update(ConversationListObject c)
-        {
-            this.AvatarImage = c.AvatarImage;
-            this.UserName = c.NameToShow;
-            this.LastMessage = c.LastMessage;
-            this.Timestamp = c.TimeStamp;
-            this.MessageState = c.MessageStatus;
-            this.Msisdn = c.Msisdn;
         }
 
         public void UpdateContextMenuFavourites(bool isFav)

@@ -1343,6 +1343,9 @@
     <value>Unlink</value>
     <comment>Privacy page (xaml)</comment>
   </data>
+<data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+    <value>{0} changed the group image.</value>
+</data>
   <data name="Ask_Me_Later_Txt" xml:space="preserve">
     <value>Ask Me Later</value>
   </data>

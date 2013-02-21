@@ -38,31 +38,29 @@ namespace windows_client
             appBar.Buttons.Add(nextIconButton);
             welcomePage.ApplicationBar = appBar;
 
-            if (!App.IS_MARKETPLACE)
-            {
-                signupPanel.Tap += signupPanel_Tap;
-                serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
-                if(!AccountUtils.IsProd)
-                    serverTxtBlk.Text = "staging";
-                else
-                    serverTxtBlk.Text = "production";
-            }
+            //if (!App.IS_MARKETPLACE)
+            //{
+            //    signupPanel.Tap += signupPanel_Tap;
+            //    serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
+            //    if(!AccountUtils.IsProd)
+            //        serverTxtBlk.Text = "staging";
+            //    else
+            //        serverTxtBlk.Text = "production";
+            //}
         }
 
         private void signupPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (AccountUtils.IsProd) // server is prod , change to staging
-            {
-                AccountUtils.IsProd = false;
-                serverTxtBlk.Text = "staging";
-                App.appSettings[HikeConstants.STAGING_SERVER] = true;
-            }
-            else
-            {
-                AccountUtils.IsProd = true;
-                serverTxtBlk.Text = "production";
-                App.appSettings[HikeConstants.STAGING_SERVER] = false;
-            }
+            //if (AccountUtils.IsProd) // server is prod , change to staging
+            //{
+            //    AccountUtils.IsProd = false;
+            //    serverTxtBlk.Text = "staging";
+            //}
+            //else
+            //{
+            //    AccountUtils.IsProd = true;
+            //    serverTxtBlk.Text = "production";
+            //}
         }
 
         private void getStarted_click(object sender, EventArgs e)

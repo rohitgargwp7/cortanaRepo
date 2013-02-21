@@ -278,6 +278,7 @@ namespace windows_client
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
             public static string REWARDS = "rewards";
+            public static string GROUP_DISPLAY_PIC = "dp";
 
         }
 
