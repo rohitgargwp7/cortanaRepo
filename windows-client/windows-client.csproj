@@ -220,6 +220,7 @@
     <Compile Include="View\ShareLocation.xaml.cs">
       <DependentUpon>ShareLocation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\UpgradePage.xaml.cs" />
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -340,6 +341,9 @@
     <Page Include="View\ShareLocation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UpgradePage.xaml">
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
