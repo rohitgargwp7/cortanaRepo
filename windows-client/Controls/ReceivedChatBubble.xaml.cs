@@ -117,7 +117,7 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
-                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, false);
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, false, !FileAttachment.ContentType.Contains(HikeConstants.CONTACT));
                     ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
@@ -162,8 +162,10 @@ namespace windows_client.Controls
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            bool isContact = hasAttachment && contentType.Contains( HikeConstants.CT_CONTACT);
+            bool isContact = hasAttachment && contentType.Contains(HikeConstants.CT_CONTACT);
 
+            if (isContact)
+                messageString = string.IsNullOrEmpty(cm.FileAttachment.FileName) ? "contact" : cm.FileAttachment.FileName;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
                 cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
@@ -230,7 +232,7 @@ namespace windows_client.Controls
                     this.MessageImage.Height = 20;
                     this.MessageImage.Width = 30;
                     TextBlock textBlck = new TextBlock();
-                    textBlck.Text = userName;
+                    textBlck.Text = messageString;
                     textBlck.FontSize = 22;
                     textBlck.Foreground = UI_Utils.Instance.ReceiveMessageForeground;
                     textBlck.Margin = contactMessageTextMargin;

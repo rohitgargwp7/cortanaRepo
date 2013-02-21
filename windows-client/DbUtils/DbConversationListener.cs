@@ -13,6 +13,7 @@ using System.Threading;
 using windows_client.Misc;
 using windows_client.Languages;
 using Microsoft.Phone.Controls;
+using System.Text;
 
 namespace windows_client.DbUtils
 {
@@ -208,7 +209,8 @@ namespace windows_client.DbUtils
                 string destinationFilePath = HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" + convMessage.MessageId;
                 //while writing in iso, we write it as failed and then revert to started
                 MiscDBUtil.saveAttachmentObject(convMessage.FileAttachment, convMessage.Msisdn, convMessage.MessageId);
-                MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
+                if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    MiscDBUtil.copyFileInIsolatedStorage(sourceFilePath, destinationFilePath);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(true));
             }
             #endregion
@@ -249,8 +251,9 @@ namespace windows_client.DbUtils
                 convMessage.FileAttachment.FileState = Attachment.AttachmentState.STARTED;
 
                 AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
-                MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                        Convert.ToString(convMessage.MessageId), fileBytes);
+                if (!convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                            Convert.ToString(convMessage.MessageId), fileBytes);
                 AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatBubble);
 
             }
@@ -262,8 +265,11 @@ namespace windows_client.DbUtils
                 ConvMessage convMessage = (ConvMessage)vals[0];
                 SentChatBubble chatBubble = (SentChatBubble)vals[1];
                 byte[] fileBytes;
-                MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
-                            Convert.ToString(convMessage.MessageId), out fileBytes);
+                if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
+                    fileBytes = Encoding.UTF8.GetBytes(convMessage.MetaDataString);
+                else
+                    MiscDBUtil.readFileFromIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
+                                Convert.ToString(convMessage.MessageId), out fileBytes);
                 AccountUtils.postUploadPhotoFunction finalCallbackForUploadFile = new AccountUtils.postUploadPhotoFunction(uploadFileCallback);
                 AccountUtils.uploadFile(fileBytes, finalCallbackForUploadFile, convMessage, chatBubble);
             }

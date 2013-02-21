@@ -77,6 +77,7 @@ namespace windows_client
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
+        public static readonly int MAX_THUMBNAILSIZE = 4800;
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
@@ -277,6 +278,7 @@ namespace windows_client
             public static string ADD_FAVOURITE = "af";
             public static string REMOVE_FAVOURITE = "rf";
             public static string REWARDS = "rewards";
+            public static string GROUP_DISPLAY_PIC = "dp";
 
         }
 

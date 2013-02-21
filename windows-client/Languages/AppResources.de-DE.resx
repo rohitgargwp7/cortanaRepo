@@ -1236,4 +1236,7 @@
   <data name="FeelingLazy_Txt" xml:space="preserve">
     <value />
   </data>
+  <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+    <value />
+  </data>
 </root>

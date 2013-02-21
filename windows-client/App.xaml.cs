@@ -340,18 +340,6 @@ namespace windows_client
                 AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
-            if (!App.IS_MARKETPLACE) // check this only in case its not marketplace
-            {
-                bool isStaging = true;
-                if (App.appSettings.Contains(HikeConstants.STAGING_SERVER))
-                    isStaging = (bool)App.appSettings[HikeConstants.STAGING_SERVER];
-                else // represents first launch
-                    App.WriteToIsoStorageSettings(HikeConstants.STAGING_SERVER, true);
-                if (isStaging)
-                    AccountUtils.IsProd = false;
-                else
-                    AccountUtils.IsProd = true;
-            }
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
         }
 
@@ -449,6 +437,14 @@ namespace windows_client
 
             else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
+                if (ps != PageState.CONVLIST_SCREEN)
+                {
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        loadPage();
+                        return;
+                    });
+                }
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                 e.Cancel = true;
