@@ -228,9 +228,9 @@ namespace windows_client.utils
             byte[] uniqueId = null;
             if (DeviceExtendedProperties.TryGetValue("DeviceUniqueId", out uniqueIdObj))
             {
-                uniqueId = (byte [])uniqueIdObj;
+                uniqueId = (byte[])uniqueIdObj;
             }
-            string deviceId = uniqueId==null?null:BitConverter.ToString(uniqueId);
+            string deviceId = uniqueId == null ? null : BitConverter.ToString(uniqueId);
             if (string.IsNullOrEmpty(deviceId))
                 return null;
             deviceId = deviceId.Replace("-", "");
@@ -250,7 +250,7 @@ namespace windows_client.utils
             catch (Exception ex)
             {
             }
-            return rethash; 
+            return rethash;
         }
 
         //carrier DeviceNetworkInformation.CellularMobileOperator;
@@ -353,5 +353,15 @@ namespace windows_client.utils
         {
             return msisdn.Contains("hike");
         }
+
+        public static bool IsWP8
+        {
+            get
+            {
+                return Environment.OSVersion.Version >= TargetedVersion;
+            }
+        }
+
+        private static Version TargetedVersion = new Version(8, 0);
     }
 }

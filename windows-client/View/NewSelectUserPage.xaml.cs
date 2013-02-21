@@ -731,7 +731,13 @@ namespace windows_client.View
         {
             if (e.Key == Key.Back)
             {
+                Debug.WriteLine(Environment.OSVersion);
                 int cursorPosition = enterNameTxt.SelectionStart;
+
+                // this has to be done for WP8 device. therse is a problem in win phone os
+                // for wp7 , cursorPosition = x ; for wp8 , cursorPosition = x + 1
+                if (Utils.IsWP8)
+                    cursorPosition = cursorPosition == 0 ? cursorPosition : cursorPosition - 1;
                 if (cursorPosition <= 0 || cursorPosition >= stringBuilderForContactNames.Length)
                     return;
 
