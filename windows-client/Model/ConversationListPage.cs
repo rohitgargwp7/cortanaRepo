@@ -540,84 +540,85 @@ namespace windows_client.Model
         #endregion
 
         #region UPDATE CONV BOX
-        
+
         public void UpdateConvBoxMsisdn()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.Msisdn = this.Msisdn;
-                });
-            }
+                }
+            });
         }
 
         public void UpdateConvBoxMsgStatus()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.MessageState = this.MessageStatus;
-                });
-            }
+                }
+            });
         }
 
         public void UpdateConvBoxAvatarImage()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.AvatarImage = this.AvatarImage;
-                });
-            }
+                }
+            });
         }
 
         public void UpdateConvBoxName()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.Name = this.ContactName;
-                });
-            }
+                }
+            });
         }
-     
+
         public void UpdateConvBoxLastMsg()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.LastMessage = this.LastMessage;
-                });
-            }
+
+                }
+            });
         }
 
         public void UpdateConvBoxTimeStamp()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.Timestamp = this.TimeStamp;
-                });
-            }
+                }
+            });
         }
-      
+
         #endregion
 
         public void UpdateConvBoxFavMenu()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.UpdateContextMenuFavourites(_isFav);
-                });
-            }
+                }
+            });
         }
 
         #region INotifyPropertyChanged Members
