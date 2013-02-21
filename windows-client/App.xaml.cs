@@ -270,14 +270,14 @@ namespace windows_client
 
         public enum PageState
         {
-
             WELCOME_SCREEN, // WelcomePage Screen
             PHONE_SCREEN,   // EnterNumber Screen
             PIN_SCREEN,     // EnterPin Screen
             WELCOME_HIKE_SCREEN,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
-            NUX_SCREEN,// Nux Screen
+            NUX_SCREEN_FRIENDS,// Nux Screen for friends
+            NUX_SCREEN_FAMILY,// Nux Screen for family
             UPGRADE_SCREEN//Upgrade page
         }
 
@@ -601,7 +601,10 @@ namespace windows_client
                 case PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                     break;
-                case PageState.NUX_SCREEN:
+                case PageState.NUX_SCREEN_FRIENDS:
+                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+                    break;
+                case PageState.NUX_SCREEN_FAMILY:
                     nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
                     break;
                 case PageState.UPGRADE_SCREEN:

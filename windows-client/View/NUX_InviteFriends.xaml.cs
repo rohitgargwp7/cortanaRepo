@@ -92,7 +92,9 @@ namespace windows_client.View
         //will run on ui thread
         private void LoadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (listCloseFriends != null && listCloseFriends.Count > 1)
+            App.PageState ps;
+            App.appSettings.TryGetValue(App.PAGE_STATE, out ps);
+            if (listCloseFriends != null && listCloseFriends.Count > 1 && ps == App.PageState.NUX_SCREEN_FRIENDS)
             {
                 listContactInfo = listCloseFriends;
                 MarkDefaultChecked();
@@ -116,6 +118,7 @@ namespace windows_client.View
 
         private void InitialiseFamilyScreen()
         {
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FAMILY);
             listContactInfo = listFamilyMembers;
             MarkDefaultChecked();
             lstBoxInvite.ItemsSource = listContactInfo;

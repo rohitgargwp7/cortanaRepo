@@ -45,7 +45,7 @@ namespace windows_client.View
                     if (listContactInfo != null)
                     {
                         navigateTo = "/View/NUX_InviteFriends.xaml";
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FRIENDS);
                     }
                     else
                     {
