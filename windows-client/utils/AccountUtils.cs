@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static readonly bool IS_PRODUCTION = false;
+        private static readonly bool IS_PRODUCTION = true;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -155,9 +155,7 @@ namespace windows_client.utils
         }
         private static void addToken(HttpWebRequest req)
         {
-            req.Headers["Cookie"] = "user=" + mToken;
-               
-            //req.Headers["Cookie"] = "uid=" + (string)App.appSettings[App.UID_SETTING];
+            req.Headers["Cookie"] = "user=" + mToken + ";uid=" + (string)App.appSettings[App.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
