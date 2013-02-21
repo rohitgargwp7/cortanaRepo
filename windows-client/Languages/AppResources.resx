@@ -1343,7 +1343,20 @@
     <value>Unlink</value>
     <comment>Privacy page (xaml)</comment>
   </data>
-  <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+<data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
     <value>{0} changed the group image.</value>
+</data>
+  <data name="Ask_Me_Later_Txt" xml:space="preserve">
+    <value>Ask Me Later</value>
+  </data>
+  <data name="Love_Using_Hike_Txt" xml:space="preserve">
+    <value>Love using Hike?</value>
+  </data>
+  <data name="Rate_Now_Txt" xml:space="preserve">
+    <value>Rate Now</value>
+  </data>
+  <data name="Rate_Us_Txt" xml:space="preserve">
+    <value>Please rate us on the Marketplace.</value>
+>>>>>>> 205f4aaf0b4769d6b302edc6c00bd83c7b4fa824
   </data>
 </root>

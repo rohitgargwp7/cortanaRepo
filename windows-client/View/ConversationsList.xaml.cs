@@ -1297,8 +1297,8 @@ namespace windows_client.View
         {
             if (!Guide.IsVisible)
             {
-                Guide.BeginShowMessageBox("Rate Hike", "Like hiking? Rate us",
-                     new List<string> { "Now", "Later" }, 0, MessageBoxIcon.None,
+                Guide.BeginShowMessageBox(AppResources.Love_Using_Hike_Txt, AppResources.Rate_Us_Txt,
+                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt}, 0, MessageBoxIcon.None,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);

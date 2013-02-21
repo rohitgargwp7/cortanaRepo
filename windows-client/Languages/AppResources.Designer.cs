@@ -115,6 +115,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ask Me Later.
+        /// </summary>
+        public static string Ask_Me_Later_Txt {
+            get {
+                return ResourceManager.GetString("Ask_Me_Later_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to attach.
         /// </summary>
         public static string Attach_Txt {
@@ -1645,6 +1654,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Love using Hike?.
+        /// </summary>
+        public static string Love_Using_Hike_Txt {
+            get {
+                return ResourceManager.GetString("Love_Using_Hike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can also message friends not.
         /// </summary>
         public static string MessageNonHikeFriends_Blk1_Txt {
@@ -2001,6 +2019,24 @@ namespace windows_client.Languages {
         public static string Privacy_UnlinkErrMsgBxText {
             get {
                 return ResourceManager.GetString("Privacy_UnlinkErrMsgBxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rate Now.
+        /// </summary>
+        public static string Rate_Now_Txt {
+            get {
+                return ResourceManager.GetString("Rate_Now_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; 205f4aaf0b4769d6b302edc6c00bd83c7b4fa824.
+        /// </summary>
+        public static string Rate_Us_Txt {
+            get {
+                return ResourceManager.GetString("Rate_Us_Txt", resourceCulture);
             }
         }
         
