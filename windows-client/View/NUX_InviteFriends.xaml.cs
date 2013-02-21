@@ -63,6 +63,7 @@ namespace windows_client.View
                 {
                     App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                    return;
                 }
                 //upgrade or staging so can skip 
                 if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE) || !AccountUtils.IsProd)
