@@ -60,14 +60,13 @@ namespace windows_client.View
                 progressBar.IsEnabled = true;
                 App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo);
 
-                if (listContactInfo == null || !AccountUtils.IsProd)//upgrade so can skip
+                if (listContactInfo == null || !AccountUtils.IsProd)//upgrade or staging so can skip 
                 {
                     skipInviteIconButton = new ApplicationBarIconButton();
                     skipInviteIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
                     skipInviteIconButton.Text = "Skip";
                     skipInviteIconButton.Click += btnSkipNux_Click;
                     appBar.Buttons.Add(skipInviteIconButton);
-
                     if (listContactInfo == null)
                         ContactUtils.getContacts(contactSearchCompletedForNux_Callback);
                 }
@@ -300,7 +299,10 @@ namespace windows_client.View
                         }
                         if (contactAdded == countRequired)
                             break;
-                        if (!contact.OnHike && !listCloseFriends.Contains(contact) && !listFamilyMembers.Contains(contact))
+                        ContactInfo contactFromDb = listContactsFromDb[index];
+
+                        contact.Msisdn = contactFromDb.Msisdn;
+                        if (!contactFromDb.OnHike && !listCloseFriends.Contains(contact) && !listFamilyMembers.Contains(contact))
                         {
                             listCloseFriends.Add(contact);
                             contactAdded++;

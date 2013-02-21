@@ -724,7 +724,10 @@ namespace windows_client
                         MqttDBUtils.UpdateToVersionOne();
                     if (Utils.compareVersion(_currentVersion, "1.7.1.2") != 1)// if current version is less than equal to 1.7.1.2 then show NUX
                     {
+
                         ps = PageState.UPGRADE_SCREEN;
+
+                      
                     }
                 }
             }

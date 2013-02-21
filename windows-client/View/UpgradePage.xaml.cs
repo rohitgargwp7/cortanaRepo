@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Navigation;
+using windows_client.DbUtils;
 
 namespace windows_client.View
 {
@@ -24,7 +25,14 @@ namespace windows_client.View
             bw.DoWork += (a, b) =>
             {
                 Thread.Sleep(4000);
-                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.UPGRADE_SCREEN);
+                //in case of upgrade if 10 hike users then skip NUX
+                if (UsersTableUtils.GetAllHikeContactsCount() < 10)
+                {
+                    if (UsersTableUtils.GetAllNonHikeContactsCount() > 0)
+                    {
+                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+                    }
+                }
                 App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
             };
             bw.RunWorkerAsync();
