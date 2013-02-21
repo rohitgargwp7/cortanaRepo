@@ -2032,7 +2032,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; 205f4aaf0b4769d6b302edc6c00bd83c7b4fa824.
+        ///   Looks up a localized string similar to Please rate us on the Marketplace..
         /// </summary>
         public static string Rate_Us_Txt {
             get {
