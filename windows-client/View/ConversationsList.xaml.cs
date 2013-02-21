@@ -766,14 +766,17 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-
-                        if (emptyScreenImage.Visibility == Visibility.Visible)
+                        try
                         {
-                            emptyScreenTip.Opacity = 0;
-                            emptyScreenImage.Opacity = 0;
+                            if (emptyScreenImage.Visibility == Visibility.Visible)
+                            {
+                                emptyScreenTip.Opacity = 0;
+                                emptyScreenImage.Opacity = 0;
+                            }
+                            if (App.ViewModel.MessageListPageCollection.Count > 0)
+                                myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
                         }
-                        //                    convScroller.ScrollToVerticalOffset(0);
-                        myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
+                        catch { }
                     });
                 }
                 bool isVibrateEnabled = true;
