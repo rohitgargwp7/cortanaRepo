@@ -66,6 +66,7 @@ namespace windows_client.Model
             MEMBERS_JOINED, // this is used in new scenario
             GROUP_END, // Group chat has ended
             GROUP_NAME_CHANGE,
+            GROUP_PIC_CHANGED,
             USER_OPT_IN,
             USER_JOINED,
             HIKE_USER,
@@ -140,6 +141,10 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP == type)
             {
                 return ParticipantInfoState.DND_USER;
+            }
+            else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
+            {
+                return ParticipantInfoState.GROUP_PIC_CHANGED;
             }
             else  // shows type == null
             {
@@ -843,26 +848,42 @@ namespace windows_client.Model
 
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
         {
+            string grpId;
+            string from;
+            GroupParticipant gp;
             this.MessageId = -1;
             this.participantInfoState = participantInfoState;
-            this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
             this.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
             this.Timestamp = TimeUtils.getCurrentTimeStamp();
             switch (this.participantInfoState)
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
                     this.Message = AppResources.SMS_INDIA;
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_NAME_CHANGE:
-                    string grpId = (string)jsonObj[HikeConstants.TO];
-                    string from = (string)jsonObj[HikeConstants.FROM];
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
                     string grpName = (string)jsonObj[HikeConstants.DATA];
                     this._groupParticipant = from;
-                    this.Msisdn = grpId;
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                    this._msisdn = grpId;
+                    gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
                     this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Name, grpName);
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
-                default: break;
+                case ParticipantInfoState.GROUP_PIC_CHANGED:
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
+                    this._groupParticipant = from;
+                    this._msisdn = grpId;
+                    gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                    this.Message = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, gp.Name);
+                    jsonObj.Remove(HikeConstants.DATA);
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                default:
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
             }
         }
     }

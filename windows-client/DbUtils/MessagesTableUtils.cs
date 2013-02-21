@@ -214,7 +214,6 @@ namespace windows_client.DbUtils
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
                     return null;
 
-
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
                 App.ViewModel.ConvMap.Add(convMsg.Msisdn, obj);
             }
@@ -334,8 +333,8 @@ namespace windows_client.DbUtils
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion\
-                #region GROUP NAME CHANGED
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
+                #region GROUP NAME/PIC CHANGED
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
                     obj.LastMessage = convMsg.Message;
                 }

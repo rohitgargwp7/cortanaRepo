@@ -82,7 +82,7 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static PushHelper _pushHelper;        
+        private static PushHelper _pushHelper;
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
 
@@ -339,18 +339,6 @@ namespace windows_client
                 AccountUtils.Token = (string)appSettings[TOKEN_SETTING];
                 appSettings.TryGetValue<string>(App.MSISDN_SETTING, out App.MSISDN);
             }
-            if (!App.IS_MARKETPLACE) // check this only in case its not marketplace
-            {
-                bool isStaging = true;
-                if (App.appSettings.Contains(HikeConstants.STAGING_SERVER))
-                    isStaging = (bool)App.appSettings[HikeConstants.STAGING_SERVER];
-                else // represents first launch
-                    App.WriteToIsoStorageSettings(HikeConstants.STAGING_SERVER,true);
-                if (isStaging)
-                    AccountUtils.IsProd = false;
-                else
-                    AccountUtils.IsProd = true;
-            }
             RootFrame.Navigating += new NavigatingCancelEventHandler(RootFrame_Navigating);
         }
 
@@ -433,7 +421,7 @@ namespace windows_client
             instantiateClasses();
 
             string targetPage = e.Uri.ToString();
-            
+
             if (targetPage != null && targetPage.Contains("ConversationsList") && targetPage.Contains("msisdn")) // PUSH NOTIFICATION CASE
             {
                 _appLaunchState = LaunchState.PUSH_NOTIFICATION_LAUNCH;
@@ -448,6 +436,14 @@ namespace windows_client
 
             else if (targetPage != null && targetPage.Contains("sharePicker.xaml") && targetPage.Contains("FileId")) // SHARE PICKER CASE
             {
+                if (ps != PageState.CONVLIST_SCREEN)
+                {
+                    RootFrame.Dispatcher.BeginInvoke(delegate
+                    {
+                        loadPage();
+                        return;
+                    });
+                }
                 _appLaunchState = LaunchState.SHARE_PICKER_LAUNCH;
                 PhoneApplicationService.Current.State[LAUNCH_STATE] = _appLaunchState; // this will be used in tombstone and dormant state
                 e.Cancel = true;
@@ -717,12 +713,14 @@ namespace windows_client
                 {
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.NEW_UPDATE, true);
                     App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, _latestVersion);
-                    if (Utils.compareVersion(_currentVersion,"1.5.0.0") !=1) // if current version is less than equal to 1.5.0.0 then upgrade DB
+                    if (Utils.compareVersion(_currentVersion, "1.5.0.0") != 1) // if current version is less than equal to 1.5.0.0 then upgrade DB
                         MqttDBUtils.UpdateToVersionOne();
                     if (Utils.compareVersion(_currentVersion, "1.7.1.2") != 1)// if current version is less than equal to 1.7.1.2 then show NUX
                     {
                         ps = PageState.NUX_SCREEN;
                         App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
+
+                        App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
                     }
                 }
             }
@@ -730,6 +728,10 @@ namespace windows_client
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate View Model : {0}", msec);
             IS_VIEWMODEL_LOADED = true;
+            #endregion
+            #region RateMyApp
+            if (isNewInstall)
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
             #endregion
         }
 
@@ -891,7 +893,7 @@ namespace windows_client
                  * 1. Read from individual files.
                  * 2. Overite old files as they are written in a wrong format
                  */
-                convList =  ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
+                convList = ConversationTableUtils.getAllConversations(); // this function will read according to the old logic of Version 1.0.0.0
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
                 WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
                 // there was no country code in first version, and as first version was released in India , we are setting value to +91 
@@ -907,7 +909,7 @@ namespace windows_client
                  */
                 convList = ConversationTableUtils.getAllConvs();
                 ConversationTableUtils.saveConvObjectListIndividual(convList);
-                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS,convList != null?convList.Count:0);
+                WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convList != null ? convList.Count : 0);
 
                 string country_code = null;
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
@@ -917,7 +919,7 @@ namespace windows_client
                     App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
                 return convList;
             }
-      
+
             else // this corresponds to the latest version and is called everytime except update launch
             {
                 int convs = 0;

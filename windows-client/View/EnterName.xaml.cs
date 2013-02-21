@@ -208,6 +208,7 @@ namespace windows_client
                 string name = PhoneApplicationService.Current.State["fbName"] as string;
                 txtBxEnterName.Text = name;
                 txtBxEnterName.Hint = string.Empty;
+                nextIconButton.IsEnabled = true;
             }
 
             if (reloadImage) // this will handle both deactivation and tombstone
@@ -215,7 +216,6 @@ namespace windows_client
                 if (PhoneApplicationService.Current.State.ContainsKey("img"))
                 {
                     _avatar = (byte[])PhoneApplicationService.Current.State["img"];
-                    nextIconButton.IsEnabled = true;
                     reloadImage = false;
                 }
                 else
@@ -306,6 +306,9 @@ namespace windows_client
 
         private void facebook_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            // if done button is already clicked, simply ignore FB
+            if (isClicked)
+                return;
             reloadImage = true;
             PhoneApplicationService.Current.State[HikeConstants.SOCIAL] = HikeConstants.FACEBOOK;
             PhoneApplicationService.Current.State["fromEnterName"] = true;
