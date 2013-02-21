@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = false;
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -39,15 +39,18 @@ namespace windows_client.utils
         {
             get
             {
+                //bool isStaging;
+                //if (!App.appSettings.TryGetValue<bool>(HikeConstants.STAGING_SERVER, out isStaging))
+                //    isStaging = !IS_PRODUCTION;
                 return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
             }
-            set
-            {
-                if (value != IS_PRODUCTION)
-                {
-                    IS_PRODUCTION = value;
-                }
-            }
+            //set
+            //{
+            //    bool isStaging;
+            //    App.appSettings.TryGetValue(HikeConstants.STAGING_SERVER, out isStaging);
+            //    if (value != isStaging)
+            //        App.WriteToIsoStorageSettings(HikeConstants.STAGING_SERVER,value);
+            //}
         }
 
         #region MQTT RELATED
