@@ -270,14 +270,15 @@ namespace windows_client
 
         public enum PageState
         {
-
             WELCOME_SCREEN, // WelcomePage Screen
             PHONE_SCREEN,   // EnterNumber Screen
             PIN_SCREEN,     // EnterPin Screen
             WELCOME_HIKE_SCREEN,
             SETNAME_SCREEN, // EnterName Screen
             CONVLIST_SCREEN, // ConversationsList Screen
-            NUX_SCREEN// Nux Screen
+            NUX_SCREEN_FRIENDS,// Nux Screen for friends
+            NUX_SCREEN_FAMILY,// Nux Screen for family
+            UPGRADE_SCREEN//Upgrade page
         }
 
         #endregion
@@ -596,8 +597,14 @@ namespace windows_client
                 case PageState.CONVLIST_SCREEN:
                     nUri = new Uri("/View/ConversationsList.xaml", UriKind.Relative);
                     break;
-                case PageState.NUX_SCREEN:
+                case PageState.NUX_SCREEN_FRIENDS:
                     nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+                    break;
+                case PageState.NUX_SCREEN_FAMILY:
+                    nUri = new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative);
+                    break;
+                case PageState.UPGRADE_SCREEN:
+                    nUri = new Uri("/View/UpgradePage.xaml", UriKind.Relative);
                     break;
                 default:
                     nUri = new Uri("/View/WelcomePage.xaml", UriKind.Relative);
@@ -608,7 +615,6 @@ namespace windows_client
 
         private static void instantiateClasses()
         {
-
             #region GROUP CACHE
 
             if (App.appSettings.Contains(App.GROUPS_CACHE)) // this will happen just once and no need to check version as this will work  for all versions
@@ -717,10 +723,7 @@ namespace windows_client
                         MqttDBUtils.UpdateToVersionOne();
                     if (Utils.compareVersion(_currentVersion, "1.7.1.2") != 1)// if current version is less than equal to 1.7.1.2 then show NUX
                     {
-                        ps = PageState.NUX_SCREEN;
-                        App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN);
-
-                        App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, 1);
+                        ps = PageState.UPGRADE_SCREEN;
                     }
                 }
             }

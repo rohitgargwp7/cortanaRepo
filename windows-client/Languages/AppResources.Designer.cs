@@ -2788,6 +2788,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please wait while your app is upgrading....
+        /// </summary>
+        public static string UpgradingApp_Text {
+            get {
+                return ResourceManager.GetString("UpgradingApp_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User cancelled the task..
         /// </summary>
         public static string User_Cancelled_Task_Txt {
