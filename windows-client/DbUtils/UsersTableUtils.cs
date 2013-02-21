@@ -46,10 +46,36 @@ namespace windows_client.DbUtils
         {
             if (contacts == null)
                 return;
-            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring+"; Max Buffer Size = 2048"))
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring + "; Max Buffer Size = 2048"))
             {
                 context.users.InsertAllOnSubmit(contacts);
                 context.SubmitChanges();
+            }
+        }
+
+        public static int GetAllHikeContactsCount()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                int res;
+                try
+                {
+                    res = DbCompiledQueries.GetAllHikeContacts(context).Count();
+                }
+                catch (Exception)
+                {
+                    res = 0;
+                }
+                return res;
+            }
+        }
+
+        public static int GetAllNonHikeContactsCount()
+        {
+            using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
+            {
+                var users = from user in context.users where user.OnHike == false select user;
+                return users.Count();
             }
         }
 
@@ -115,7 +141,7 @@ namespace windows_client.DbUtils
         {
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
-                var users = from user in context.users where user.OnHike==false orderby user.Name select user;
+                var users = from user in context.users where user.OnHike == false orderby user.Name select user;
                 return users.ToList<ContactInfo>();
             }
         }
@@ -197,9 +223,9 @@ namespace windows_client.DbUtils
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
             {
                 List<ContactInfo> res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
-                if(res == null || res.Count == 0)
+                if (res == null || res.Count == 0)
                     return;
-                foreach(ContactInfo cInfo in res)
+                foreach (ContactInfo cInfo in res)
                 {
                     cInfo.OnHike = (bool)joined;
                 }
@@ -222,7 +248,7 @@ namespace windows_client.DbUtils
 
         public static void deleteMultipleRows(List<ContactInfo.DelContacts> ids)
         {
-            if(ids == null || ids.Count == 0)
+            if (ids == null || ids.Count == 0)
                 return;
             bool shouldSubmit = false;
             using (HikeUsersDb context = new HikeUsersDb(App.UsersDBConnectionstring))
@@ -236,7 +262,7 @@ namespace windows_client.DbUtils
                         {
                             ConversationListObject obj = App.ViewModel.ConvMap[ids[i].Msisdn];
                             obj.ContactName = null;
-                            ConversationTableUtils.saveConvObject(obj,obj.Msisdn);
+                            ConversationTableUtils.saveConvObject(obj, obj.Msisdn);
                             //ConversationTableUtils.saveConvObjectList();
                         }
                     }

@@ -58,36 +58,27 @@ namespace windows_client.View
 
                 progressBar.Opacity = 1;
                 progressBar.IsEnabled = true;
-                App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo);
 
-                if (listContactInfo == null || !AccountUtils.IsProd)//upgrade so can skip
+                if (!(App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo) && listContactInfo != null && listContactInfo.Count > 0))
+                {
+                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                    NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                    return;
+                }
+                //upgrade or staging so can skip 
+                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE) || !AccountUtils.IsProd)
                 {
                     skipInviteIconButton = new ApplicationBarIconButton();
                     skipInviteIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
                     skipInviteIconButton.Text = "Skip";
                     skipInviteIconButton.Click += btnSkipNux_Click;
                     appBar.Buttons.Add(skipInviteIconButton);
-
-                    if (listContactInfo == null)
-                        ContactUtils.getContacts(contactSearchCompletedForNux_Callback);
                 }
 
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
                 {
-                    if (listContactInfo == null)
-                    {
-                        int count = 0;
-
-
-                        while (listContactInfo == null && count < 120000)//wait for 2 mins
-                        {
-                            count += 2;
-                            Thread.Sleep(2);
-                        }
-                    }
-                    if (listContactInfo != null && listContactInfo.Count > 0)
-                        ProcessNuxContacts(listContactInfo);
+                    ProcessNuxContacts(listContactInfo);
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += LoadingCompleted;
@@ -102,7 +93,9 @@ namespace windows_client.View
         //will run on ui thread
         private void LoadingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (listCloseFriends != null && listCloseFriends.Count > 1)
+            App.PageState ps;
+            App.appSettings.TryGetValue(App.PAGE_STATE, out ps);
+            if (listCloseFriends != null && listCloseFriends.Count > 1 && ps == App.PageState.NUX_SCREEN_FRIENDS)
             {
                 listContactInfo = listCloseFriends;
                 MarkDefaultChecked();
@@ -126,6 +119,7 @@ namespace windows_client.View
 
         private void InitialiseFamilyScreen()
         {
+            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FAMILY);
             listContactInfo = listFamilyMembers;
             MarkDefaultChecked();
             lstBoxInvite.ItemsSource = listContactInfo;
@@ -177,7 +171,7 @@ namespace windows_client.View
             {
                 MessageBox.Show(string.Format(AppResources.InviteUsers_TotalInvitesSent_Txt, count), AppResources.InviteUsers_FriendsInvited_Txt, MessageBoxButton.OK);
             }
-            if (listFamilyMembers != null && listFamilyMembers.Count > 0)
+            if (listFamilyMembers != null && listFamilyMembers.Count > 1)
             {
                 InitialiseFamilyScreen();
             }
@@ -300,7 +294,10 @@ namespace windows_client.View
                         }
                         if (contactAdded == countRequired)
                             break;
-                        if (!contact.OnHike && !listCloseFriends.Contains(contact) && !listFamilyMembers.Contains(contact))
+                        ContactInfo contactFromDb = listContactsFromDb[index];
+
+                        contact.Msisdn = contactFromDb.Msisdn;
+                        if (!contactFromDb.OnHike && !listCloseFriends.Contains(contact) && !listFamilyMembers.Contains(contact))
                         {
                             listCloseFriends.Add(contact);
                             contactAdded++;
@@ -350,13 +347,5 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
         }
-
-        public static void contactSearchCompletedForNux_Callback(object sender, ContactsSearchEventArgs e)
-        {
-            IEnumerable<Contact> contacts = e.Results;
-            if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
-                listContactInfo = ContactUtils.getContactListForNux(contacts, false);
-        }
-
     }
 }

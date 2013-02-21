@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
             }
 
         }
-
+     
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;

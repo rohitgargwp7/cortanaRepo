@@ -62,7 +62,7 @@ namespace windows_client.utils
                 Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
 
                 if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
-                    getContactListForNux(contacts,true);
+                    getContactListForNux(contacts);
                 contactsMap = contactListMap;
                 if (!NetworkInterface.GetIsNetworkAvailable())
                 {
@@ -203,7 +203,7 @@ namespace windows_client.utils
             return contactListMap;
         }
 
-        public static List<ContactInfo> getContactListForNux(IEnumerable<Contact> contacts, bool writeToAppSettings)
+        public static List<ContactInfo> getContactListForNux(IEnumerable<Contact> contacts)
         {
             List<ContactInfo> listContacts = new List<ContactInfo>();
             if (contacts == null)
@@ -250,7 +250,6 @@ namespace windows_client.utils
                         listContacts.Add(cInfo);
                 }
             }
-            if (writeToAppSettings)
                 App.WriteToIsoStorageSettings(HikeConstants.PHONE_ADDRESS_BOOK, listContacts);
             return listContacts;
         }

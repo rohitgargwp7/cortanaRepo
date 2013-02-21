@@ -19,6 +19,7 @@ using windows_client.Model;
 using windows_client.utils;
 using windows_client.Misc;
 using windows_client.Languages;
+using windows_client.Controls;
 
 
 namespace windows_client.View
@@ -179,11 +180,16 @@ namespace windows_client.View
                 hideSmsContacts = true;
             else
                 hideSmsContacts = false;
-
-            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.CONTACT))
+            object obj;
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj) && obj is object[])
             {
-                hideSmsContacts = false;
-                isContactShared = true;
+                object[] attachmentForwardMessage = (object[])obj;
+                if (attachmentForwardMessage.Length == 2 && attachmentForwardMessage[0] is MyChatBubble
+                    && ((MyChatBubble)attachmentForwardMessage[0]).FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                {
+                    hideSmsContacts = false;
+                    isContactShared = true;
+                }
             }
             //case when share contact is called
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
@@ -265,7 +271,6 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
             PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.CONTACT);
             PhoneApplicationService.Current.State.Remove("Group_GroupId");
             base.OnRemovedFromJournal(e);
         }

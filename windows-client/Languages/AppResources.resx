@@ -1358,4 +1358,7 @@
   <data name="Rate_Us_Txt" xml:space="preserve">
     <value>Please rate us on the Marketplace.</value>
   </data>
+  <data name="UpgradingApp_Text" xml:space="preserve">
+    <value>Please wait while your app is upgrading...</value>
+  </data>
 </root>
