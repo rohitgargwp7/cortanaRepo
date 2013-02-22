@@ -135,7 +135,7 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
-                    if (convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
                         convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
 
                     if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))

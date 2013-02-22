@@ -580,7 +580,7 @@ namespace windows_client.Model
             {
                 if (cBoxObj != null)
                 {
-                    cBoxObj.Name = this.ContactName;
+                    cBoxObj.UserName = this.ContactName;
                 }
             });
         }
