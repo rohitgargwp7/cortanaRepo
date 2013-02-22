@@ -731,13 +731,18 @@ namespace windows_client.View
                 gp.Name = gp_obj.Name;
                 GroupManager.Instance.GetParticipantList(groupId).Sort();
                 GroupManager.Instance.SaveGroupCache(groupId);
-                string gpName = GroupManager.Instance.defaultGroupName(groupId);
-                groupNameTxtBox.Text = gpName;
-                if (App.newChatThreadPage != null)
-                    App.newChatThreadPage.userName.Text = gpName;
-                if (App.ViewModel.ConvMap.ContainsKey(groupId))
-                    App.ViewModel.ConvMap[groupId].ContactName = gpName;
-
+                // if default grp name is not set , then only update grp 
+                if (gi.GroupName == null)
+                {
+                    string gpName = GroupManager.Instance.defaultGroupName(groupId);
+                    groupNameTxtBox.Text = gpName;
+                    if (App.newChatThreadPage != null)
+                        App.newChatThreadPage.userName.Text = gpName;
+                    if (App.ViewModel.ConvMap.ContainsKey(groupId))
+                        App.ViewModel.ConvMap[groupId].ContactName = gpName;
+                }
+               
+                // update normal 1-1 chat contact
                 if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
                 {
                     App.ViewModel.ConvMap[gp_obj.Msisdn].ContactName = contactInfo.Name;
