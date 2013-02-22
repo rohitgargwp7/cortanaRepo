@@ -20,6 +20,7 @@ namespace windows_client.Controls
             TEXT_UPDATE,
             PIC_UPDATE,
             GROUP_NAME_CHANGED,
+            GROUP_PIC_CHANGED,
             DEFAULT,
             UNKNOWN
         }
@@ -74,7 +75,10 @@ namespace windows_client.Controls
                     NotificationImage.Source = UI_Utils.Instance.OnHikeImage;
                     break;
                 case MessageType.GROUP_NAME_CHANGED:
-                    NotificationImage.Source = UI_Utils.Instance.GrpNameChanged;
+                    NotificationImage.Source = UI_Utils.Instance.GrpNameOrPicChanged;
+                    break;
+                case MessageType.GROUP_PIC_CHANGED:
+                    NotificationImage.Source = UI_Utils.Instance.GrpNameOrPicChanged;
                     break;
                 case MessageType.TEXT_UPDATE:
                 default:

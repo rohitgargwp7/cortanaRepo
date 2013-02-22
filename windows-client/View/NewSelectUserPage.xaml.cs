@@ -19,6 +19,7 @@ using windows_client.Model;
 using windows_client.utils;
 using windows_client.Misc;
 using windows_client.Languages;
+using windows_client.Controls;
 
 
 namespace windows_client.View
@@ -127,7 +128,17 @@ namespace windows_client.View
                 hideSmsContacts = true;
             else
                 hideSmsContacts = false;
-
+            object obj;
+            if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.FORWARD_MSG, out obj) && obj is object[])
+            {
+                object[] attachmentForwardMessage = (object[])obj;
+                if (attachmentForwardMessage.Length == 2 && attachmentForwardMessage[0] is MyChatBubble
+                    && ((MyChatBubble)attachmentForwardMessage[0]).FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                {
+                    hideSmsContacts = false;
+                    isContactShared = true;
+                }
+            }
             //case when share contact is called
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
@@ -673,8 +684,15 @@ namespace windows_client.View
         {
             if (e.Key == Key.Back)
             {
-                /* Here -1 is used only for WP8. Somehow in wp8 Selection start gives extra count so manually using -1 in it*/
-                int cursorPosition = enterNameTxt.SelectionStart -1;
+
+                Debug.WriteLine(Environment.OSVersion);
+                int cursorPosition = enterNameTxt.SelectionStart;
+
+                // this has to be done for WP8 device. therse is a problem in win phone os
+                // for wp7 , cursorPosition = x ; for wp8 , cursorPosition = x + 1
+                if (Utils.IsWP8)
+                    cursorPosition = cursorPosition == 0 ? cursorPosition : cursorPosition - 1;
+
                 if (cursorPosition <= 0 || cursorPosition >= stringBuilderForContactNames.Length)
                     return;
 

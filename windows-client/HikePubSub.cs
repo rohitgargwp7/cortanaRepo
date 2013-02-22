@@ -143,6 +143,8 @@ namespace windows_client
 
         public static readonly string BAD_USER_PASS = "badUserPass";
 
+        public static readonly string UPDATE_GRP_PIC = "up_grp_pic";
+
         private readonly Thread mThread;
 
         private readonly BlockingQueue mQueue;

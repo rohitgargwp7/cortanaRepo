@@ -20,7 +20,7 @@ namespace windows_client.utils
 {
     public class AccountUtils
     {
-        private static bool IS_PRODUCTION = false;     // change this for PRODUCTION or STAGING
+        private static readonly bool IS_PRODUCTION = false;
 
         private static readonly string PRODUCTION_HOST = "api.im.hike.in";
 
@@ -39,8 +39,18 @@ namespace windows_client.utils
         {
             get
             {
-                return IS_PRODUCTION;
+                //bool isStaging;
+                //if (!App.appSettings.TryGetValue<bool>(HikeConstants.STAGING_SERVER, out isStaging))
+                //    isStaging = !IS_PRODUCTION;
+                return App.IS_MARKETPLACE ? true : IS_PRODUCTION;
             }
+            //set
+            //{
+            //    bool isStaging;
+            //    App.appSettings.TryGetValue(HikeConstants.STAGING_SERVER, out isStaging);
+            //    if (value != isStaging)
+            //        App.WriteToIsoStorageSettings(HikeConstants.STAGING_SERVER,value);
+            //}
         }
 
         #region MQTT RELATED
@@ -49,7 +59,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return MQTT_HOST_SERVER;
                 return STAGING_HOST;
             }
@@ -59,7 +69,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return STAGING_PORT;
                 return 1883;
             }
@@ -69,7 +79,7 @@ namespace windows_client.utils
         {
             get
             {
-                if (IS_PRODUCTION)
+                if (IsProd)
                     return "http://" + FILE_TRANSFER_HOST + ":" + Convert.ToString(PORT) + "/v1";
                 return "http://" + STAGING_HOST + ":" + Convert.ToString(STAGING_PORT) + "/v1";
             }
@@ -77,9 +87,9 @@ namespace windows_client.utils
 
         #endregion
 
-        public static string HOST = IS_PRODUCTION ? PRODUCTION_HOST : STAGING_HOST;
+        public static string HOST = IsProd ? PRODUCTION_HOST : STAGING_HOST;
 
-        public static int PORT = IS_PRODUCTION ? PRODUCTION_PORT : STAGING_PORT;
+        public static int PORT = IsProd ? PRODUCTION_PORT : STAGING_PORT;
 
         public static readonly string BASE = "http://" + HOST + ":" + Convert.ToString(PORT) + "/v1";
         public static readonly string AVATAR_BASE = "http://" + HOST + ":" + Convert.ToString(PORT);
@@ -134,7 +144,7 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
-        //public delegate void getProfilePicFunction(byte[] data);
+        public delegate void getProfilePicFunction(byte[] data);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
@@ -146,13 +156,12 @@ namespace windows_client.utils
         }
         private static void addToken(HttpWebRequest req)
         {
-            req.Headers["Cookie"] = "user=" + mToken;
+            req.Headers["Cookie"] = "user=" + mToken + ";uid=" + (string)App.appSettings[App.UID_SETTING];
         }
 
         public static void registerAccount(string pin, string unAuthMSISDN, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
-            //req.Headers["X-MSISDN"] = "918826670657";
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -191,7 +200,7 @@ namespace windows_client.utils
 
         public static void validateNumber(string phoneNo, postResponseFunction finalCallbackFunction)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/validate?digits=4")) as HttpWebRequest;
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
@@ -506,15 +515,14 @@ namespace windows_client.utils
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
-        //GET request
-        //public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
-        //{
-        //    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
-        //    if(setCookie)
-        //        addToken(request);
-        //    request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString(); 
-        //    request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
-        //}
+        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
+        {
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
+            if (setCookie)
+                addToken(request);
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+        }
 
         public static void createGetRequest(string requestUrl, downloadFile callback, bool setCookie, object metadata)
         {
@@ -803,7 +811,6 @@ namespace windows_client.utils
         {
             try
             {
-                List<ContactInfo> listCloseFriends = new List<ContactInfo>();
                 if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
                 {
                     return null;
@@ -833,8 +840,7 @@ namespace windows_client.utils
                 KeyValuePair<string, JToken> kv;
                 int count = 0;
                 int totalContacts = 0;
-                string lastName = GetLastName();
-                bool isLastNameCheckApplicable = lastName != null;
+
                 while (keyVals.MoveNext())
                 {
                     kv = keyVals.Current;
@@ -850,40 +856,8 @@ namespace windows_client.utils
                             continue;
                         }
                         bool onhike = (bool)entry["onhike"];
-                        ContactInfo cn = new ContactInfo(kv.Key, msisdn, cList[i].Name, onhike, cList[i].PhoneNo);
-                        
-                        #region NUX
-
-                        if (!cn.OnHike)
-                        {
-                            bool isCloseFriend = false;
-                            if (cList[i].IsCloseFriendFamily)
-                            {
-                                isCloseFriend = true;
-                                listCloseFriends.Add(cn);
-                            }
-                             if (!isCloseFriend && isLastNameCheckApplicable)
-                            {
-                                if (cn.Name != null)
-                                {
-                                    string[] nameArray = cn.Name.Trim().Split(' ');
-                                    if (nameArray.Length > 1)
-                                    {
-                                        string curlastName = nameArray[nameArray.Length-1].ToLower();
-                                        if (curlastName.Trim().ToLower() == lastName)
-                                        {
-                                            listCloseFriends.Add(cn);
-                                            isCloseFriend = true;
-                                        }
-                                    }
-                                }
-                            }
-                            if (!isCloseFriend && MatchFromFamilyVocab(cn.Name))
-                            {
-                                listCloseFriends.Add(cn);
-                            }
-                        } 
-                        #endregion
+                        ContactInfo cinfo = cList[i];
+                        ContactInfo cn = new ContactInfo(kv.Key, msisdn, cinfo.Name, onhike, cinfo.PhoneNo);
 
                         if (!isRefresh) // this is case for new installation
                         {
@@ -941,8 +915,6 @@ namespace windows_client.utils
                         totalContacts++;
                     }
                 }
-                App.WriteToIsoStorageSettings(HikeConstants.CLOSE_FRIENDS_NUX, listCloseFriends);
-
                 if (isFavSaved)
                     MiscDBUtil.SaveFavourites();
                 if (isPendingSaved)
@@ -964,36 +936,7 @@ namespace windows_client.utils
             }
         }
 
-        public static string GetLastName()
-        {
-            string name;
-            App.appSettings.TryGetValue(App.ACCOUNT_NAME, out name);
-            if (name == null)
-                return null;
 
-            string[] nameArray = name.Trim().Split(' ');
-            if (nameArray.Length == 1)
-                return null;
-
-            return nameArray[nameArray.Length-1].ToLower();
-        }
-
-        private static Dictionary<string, bool> familyVocab = new Dictionary<string, bool> {
-        { "mom", true }, { "dad", true },{ "uncle", true }, { "aunty", true } ,{ "mummy", true }, { "mommy", true },{ "daddy", true }};
-
-        public static bool MatchFromFamilyVocab(string completeName)
-        {
-            if (string.IsNullOrEmpty(completeName))
-                return false;
-            string[] nameArray = completeName.Trim().Split(' ');
-
-            foreach (string name in nameArray)
-            {
-                if (familyVocab.ContainsKey(name))
-                    return true;
-            }
-            return false;
-        }
 
     }
 }

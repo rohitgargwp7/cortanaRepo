@@ -36,6 +36,9 @@
     </toolkit:TransitionService.NavigationOutTransition>
 
 
+    <shell:SystemTray.ProgressIndicator>
+        <shell:ProgressIndicator x:Name="shellProgress" IsIndeterminate="true" IsVisible="false" />
+    </shell:SystemTray.ProgressIndicator>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent" Margin="0,0,0,0">
@@ -53,18 +56,18 @@
         <Grid x:Name="ContentPanel" Margin="0,0,0,0" Grid.RowSpan="2" >
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="500" >
                 <Image Source="images\hike_logo_small.png" Height="40" HorizontalAlignment="Left" Margin="24,15,0,0"></Image>
-                <!--<Rectangle Height="2" Margin="2,15,0,0" Fill="#FFD5D5D5"></Rectangle>-->
-
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="Auto" Height="35" Margin="24,20,0,0">
                     <TextBlock TextWrapping="Wrap" Text="{Binding Path= LocalizedResources.EnterName_YourMsisdn_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24"  TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                     <TextBlock x:Name="txtBlckPhoneNumber" FontFamily="Segoe WP Semibold" TextWrapping="Wrap" Text="" FontSize="24" TextAlignment="Center" Margin="0,0,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.5,0.5" Height="40" VerticalAlignment="Top" />
                 </StackPanel>
-                <!--<TextBlock TextWrapping="Wrap" Text="Enter name" FontSize="20" TextAlignment="Left" Margin="24,20,0,0" d:LayoutOverrides="GridBox" RenderTransformOrigin="0.497,2.059" Height="40" VerticalAlignment="Top" />
-                <Border BorderThickness="2" Width="310" Height="56" Margin="24,10,0,0" HorizontalAlignment="Left" BorderBrush="Black">
-                    <StackPanel Orientation="Horizontal" Height="50"   Width="320" Margin="0,0,0,0" Background="White">-->
-                <!--<Image Source="images\enter_name.png" Margin="15,10,0,10" Height="20" />-->
-
-                <TextBlock Text="{Binding Path= LocalizedResources.EnterName_Name_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" Margin="24,0,0,0" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Grid.Row="0" x:Name="avatarImage" MaxHeight="83" MaxWidth="83" Margin="24,10,5,0" HorizontalAlignment="Left"/>
+                    <Image Grid.Column="0" Grid.Row="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0" Source="images\change_pic.png" />
+                </Grid>
+                <TextBlock Text="{Binding Path= LocalizedResources.EnterName_Name_TxtBlk, Source={StaticResource LocalizedStrings}}" FontSize="24" HorizontalAlignment="Left" Margin="24,10,0,0" />
                 <toolkit:PhoneTextBox x:Name="txtBxEnterName" TextOptions.TextHintingMode="Animated" BorderThickness="2" LostFocus="txtBxEnterName_LostFocus" GotFocus="txtBxEnterName_GotFocus" InputScope="PersonalFullName" Margin="12,0,0,0" HorizontalAlignment="Left" Width="454" Height="78" MaxLength="20" TextChanged="txtBxEnterName_TextChanged" />
 
                 <TextBlock Height="25" TextAlignment="Center" 
@@ -73,12 +76,24 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center" 
                            Visibility="Collapsed" FontSize="18" Foreground="Red" />
-
+                <TextBlock x:Name="feelingLazyTxtBlk" FontSize="24"
+                           Foreground="{StaticResource PhoneForegroundBrush}"
+                           HorizontalAlignment="Left" VerticalAlignment="Center"
+                           Text="{Binding Path= LocalizedResources.FeelingLazy_Txt, Source={StaticResource LocalizedStrings}}" 
+                           Opacity="1" Margin="24,0,0,0">
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Tap="facebook_Tap">
+                    <Image x:Name="fbImage" Source="images\signupfb.png" Grid.Column="0" MaxHeight="25" MaxWidth="25" Margin="24,0,5,0" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="fbConnectTxtBlk" FontSize="18"
+                           HorizontalAlignment="Left" VerticalAlignment="Center"
+                           Text="{Binding Path= LocalizedResources.FB_Connect_Txt, Source={StaticResource LocalizedStrings}}" 
+                           Opacity="1" Margin="5,0,0,0" Foreground="#3c5da2">
+                    </TextBlock>
+                </StackPanel>
                 <TextBlock x:Name="msgTxtBlk" Text="Test" FontSize="18"
                            Foreground="{StaticResource PhoneForegroundBrush}"
                            HorizontalAlignment="Left" VerticalAlignment="Center"
-                           Opacity="0" Margin="24,0,0,0">
-
+                           Opacity="0" Margin="24,10,0,0">
                 </TextBlock>
                 <ProgressBar x:Name="progressBar" Background="Transparent" 
                                                 IsIndeterminate="True" 

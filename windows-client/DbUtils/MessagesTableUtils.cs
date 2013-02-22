@@ -72,9 +72,9 @@ namespace windows_client.DbUtils
         //private static HikeChatsDb chatsDbContext = new HikeChatsDb(App.MsgsDBConnectionstring); // use this chatsDbContext to improve performance
 
         /* This is shown on chat thread screen*/
-        public static List<ConvMessage> getMessagesForMsisdn(string msisdn)
+        public static List<ConvMessage> getMessagesForMsisdn(string msisdn, long lastMessageId, int count)
         {
-            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdn(DbCompiledQueries.chatsDbContext, msisdn).ToList<ConvMessage>();
+            List<ConvMessage> res = DbCompiledQueries.GetMessagesForMsisdnForPaging(DbCompiledQueries.chatsDbContext, msisdn, lastMessageId, count).ToList<ConvMessage>();
             return (res == null || res.Count == 0) ? null : res;
         }
 
@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
             }
 
         }
-
+     
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
@@ -336,8 +336,8 @@ namespace windows_client.DbUtils
                     convMsg.Message = obj.LastMessage;
                 }
                 #endregion\
-                #region GROUP NAME CHANGED
-                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE)
+                #region GROUP NAME/PIC CHANGED
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE || convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
                     obj.LastMessage = convMsg.Message;
                 }

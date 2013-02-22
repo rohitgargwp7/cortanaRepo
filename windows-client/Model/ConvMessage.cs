@@ -66,6 +66,7 @@ namespace windows_client.Model
             MEMBERS_JOINED, // this is used in new scenario
             GROUP_END, // Group chat has ended
             GROUP_NAME_CHANGE,
+            GROUP_PIC_CHANGED,
             USER_OPT_IN,
             USER_JOINED,
             HIKE_USER,
@@ -145,6 +146,10 @@ namespace windows_client.Model
             else if (HikeConstants.MqttMessageTypes.DND_USER_IN_GROUP == type)
             {
                 return ParticipantInfoState.DND_USER;
+            }
+            else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
+            {
+                return ParticipantInfoState.GROUP_PIC_CHANGED;
             }
             else  // shows type == null
             {
@@ -228,7 +233,6 @@ namespace windows_client.Model
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
                     NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("SdrImage");
                 }
             }
         }
@@ -471,20 +475,15 @@ namespace windows_client.Model
                 filesData = new JArray();
                 if (!FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                 {
-                    singleFileInfo = new JObject();
+                    if (FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT) && !string.IsNullOrEmpty(this.MetaDataString))
+                        singleFileInfo = JObject.Parse(this.MetaDataString);
+                    else
+                        singleFileInfo = new JObject();
                     singleFileInfo[HikeConstants.FILE_NAME] = FileAttachment.FileName;
                     singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
                     singleFileInfo[HikeConstants.FILE_CONTENT_TYPE] = FileAttachment.ContentType;
                     if (FileAttachment.Thumbnail != null)
                         singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
-                    //if (FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
-                    //{
-                    //    JObject locationInfo = JObject.Parse(this.MetaDataString);
-                    //    singleFileInfo[HikeConstants.LATITUDE] = locationInfo[HikeConstants.LATITUDE];
-                    //    singleFileInfo[HikeConstants.LONGITUDE] = locationInfo[HikeConstants.LONGITUDE];
-                    //    singleFileInfo[HikeConstants.ZOOM_LEVEL] = locationInfo[HikeConstants.ZOOM_LEVEL];
-                    //    singleFileInfo[HikeConstants.LOCATION_ADDRESS] = locationInfo[HikeConstants.LOCATION_ADDRESS];
-                    //}
                 }
                 else
                 {
@@ -492,7 +491,8 @@ namespace windows_client.Model
                     JObject uploadedJSON = JObject.Parse(this.MetaDataString);
                     singleFileInfo = uploadedJSON[HikeConstants.FILES_DATA].ToObject<JArray>()[0].ToObject<JObject>();
                     singleFileInfo[HikeConstants.FILE_KEY] = FileAttachment.FileKey;
-                    singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
+                    if (FileAttachment.Thumbnail != null)
+                        singleFileInfo[HikeConstants.FILE_THUMBNAIL] = System.Convert.ToBase64String(FileAttachment.Thumbnail);
                 }
                 filesData.Add(singleFileInfo.ToObject<JToken>());
                 metadata[HikeConstants.FILES_DATA] = filesData;
@@ -500,8 +500,6 @@ namespace windows_client.Model
             }
             else if (this.MetaDataString != null && this.MetaDataString.Contains("poke"))
             {
-                //metadata = new JObject();
-                //metadata["poke"] = true;
                 data["poke"] = true;
             }
 
@@ -556,87 +554,6 @@ namespace windows_client.Model
             result = prime * result + (int)(Timestamp ^ (Convert.ToUInt32(Timestamp) >> 32));
             return result;
         }
-
-        #region ChatThread Page Bindings for Converters
-
-        public string SdrImage
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
-                    case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
-                    case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
-                    default: return "";
-                }
-            }
-        }
-
-        public string Alignment
-        {
-            get
-            {
-                if (IsSent)
-                    return "right";
-                else
-                    return "left";
-            }
-        }
-
-        public string ChatBubbleDirection
-        {
-            get
-            {
-                if (IsSent)
-                    return "LowerRight";
-                else
-                    return "UpperLeft";
-            }
-        }
-
-        public string BubbleBackground
-        {
-            get
-            {
-                if (ChatBubbleType.RECEIVED == MsgType)
-                {
-                    return "#eeeeec";
-                }
-                else if (ChatBubbleType.HIKE_SENT == MsgType)
-                {
-                    return "#1ba1e2";
-                }
-                else
-                {
-                    return "#a3d250";
-                }
-            }
-        }
-
-        public string ChatBubbleMargin
-        {
-            get
-            {
-                if (IsSent)
-                    return "15,0,10,10";
-                else
-                    return "5,0,10,10";
-            }
-        }
-
-        public string SdrImageVisibility
-        {
-            get
-            {
-                if (IsSent)
-                    return "Visible";
-                else
-                    return "Collapsed";
-            }
-        }
-
-        #endregion
 
         #endregion
 
@@ -740,7 +657,7 @@ namespace windows_client.Model
                         byte[] base64Decoded = null;
                         if (thumbnail != null)
                             base64Decoded = System.Convert.FromBase64String(thumbnail.ToString());
-                        this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey.ToString(), base64Decoded,
+                        this.FileAttachment = new Attachment(fileName == null ? "" : fileName.ToString(), fileKey == null ? "" : fileKey.ToString(), base64Decoded,
                            contentType.ToString(), Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
                         if (contentType.ToString().Contains(HikeConstants.LOCATION))
                         {
@@ -750,7 +667,11 @@ namespace windows_client.Model
                             locationFile[HikeConstants.ZOOM_LEVEL] = fileObject[HikeConstants.ZOOM_LEVEL];
                             locationFile[HikeConstants.LOCATION_ADDRESS] = fileObject[HikeConstants.LOCATION_ADDRESS];
                             this.MetaDataString = locationFile.ToString();
+                        }
 
+                        if (contentType.ToString().Contains(HikeConstants.CONTACT))
+                        {
+                            this.MetaDataString = fileObject.ToString();
                         }
                     }
                     else
@@ -793,7 +714,7 @@ namespace windows_client.Model
                             messageText = AppResources.Video_Txt;
                         else if (this.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
                             messageText = AppResources.Location_Txt;
-                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        else if (this.FileAttachment.ContentType.Contains(HikeConstants.CT_CONTACT))
                             messageText = AppResources.ContactTransfer_Text;
                         this._message = messageText;
                     }
@@ -932,8 +853,10 @@ namespace windows_client.Model
 
         public ConvMessage(ParticipantInfoState participantInfoState, JObject jsonObj)
         {
+            string grpId;
+            string from;
+            GroupParticipant gp;
             this.MessageId = -1;
-            this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
             this.participantInfoState = participantInfoState;
             this.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
             this.Timestamp = TimeUtils.getCurrentTimeStamp();
@@ -941,6 +864,7 @@ namespace windows_client.Model
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
                     this.Message = AppResources.SMS_INDIA;
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.STATUS_UPDATE:
                     JObject data = (JObject)jsonObj[HikeConstants.DATA];
@@ -953,15 +877,28 @@ namespace windows_client.Model
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_NAME_CHANGE:
-                    string grpId = (string)jsonObj[HikeConstants.TO];
-                    string from = (string)jsonObj[HikeConstants.FROM];
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
                     string grpName = (string)jsonObj[HikeConstants.DATA];
                     this._groupParticipant = from;
-                    this.Msisdn = grpId;
-                    GroupParticipant gp = GroupManager.Instance.getGroupParticipant(null,from,grpId);
+                    this._msisdn = grpId;
+                    gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
                     this.Message = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, gp.Name, grpName);
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
-                default: break;
+                case ParticipantInfoState.GROUP_PIC_CHANGED:
+                    grpId = (string)jsonObj[HikeConstants.TO];
+                    from = (string)jsonObj[HikeConstants.FROM];
+                    this._groupParticipant = from;
+                    this._msisdn = grpId;
+                    gp = GroupManager.Instance.getGroupParticipant(null, from, grpId);
+                    this.Message = string.Format(AppResources.GroupImgChangedByGrpMember_Txt, gp.Name);
+                    jsonObj.Remove(HikeConstants.DATA);
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                default:
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
             }
         }
     }

@@ -21,7 +21,7 @@ namespace windows_client.Controls
     {
         private SolidColorBrush bubbleColor;
         private ConvMessage.State messageState;
-        private IScheduler scheduler = Scheduler.NewThread;
+        private static IScheduler scheduler = Scheduler.NewThread;
 
         public static SentChatBubble getSplitChatBubbles(ConvMessage cm, bool readFromDB)
         {
@@ -109,61 +109,6 @@ namespace windows_client.Controls
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
         }
-
-        //public SentChatBubble(ConvMessage cm, bool readFromDB)
-        //    : base(cm)
-        //{
-        //    // Required to initialize variables
-        //    InitializeComponent();
-        //    initializeBasedOnState(cm, cm.Message);
-        //    //IsSms is false for group chat
-        //    switch (cm.MessageStatus)
-        //    {
-        //        case ConvMessage.State.SENT_CONFIRMED:
-        //            this.SDRImage.Source = UI_Utils.Instance.Sent;
-        //            break;
-        //        case ConvMessage.State.SENT_DELIVERED:
-        //            this.SDRImage.Source = UI_Utils.Instance.Delivered;
-        //            break;
-        //        case ConvMessage.State.SENT_DELIVERED_READ:
-        //            this.SDRImage.Source = UI_Utils.Instance.Read;
-        //            break;
-        //        case ConvMessage.State.UNKNOWN:
-        //            if (cm.HasAttachment)
-        //            {
-        //                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
-        //            }
-        //            break;
-        //        case ConvMessage.State.SENT_UNCONFIRMED:
-        //            if (this.FileAttachment != null)
-        //            {
-        //                this.SDRImage.Source = UI_Utils.Instance.HttpFailed;
-        //            }
-        //            else if (readFromDB)
-        //            {
-        //                this.SDRImage.Source = UI_Utils.Instance.Trying;
-        //            }
-        //            else
-        //            {
-        //                scheduleTryingImage();
-        //            }
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //    if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null)
-        //    {
-        //        using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
-        //        {
-        //            memStream.Seek(0, SeekOrigin.Begin);
-        //            BitmapImage fileThumbnail = new BitmapImage();
-        //            fileThumbnail.SetSource(memStream);
-        //            this.MessageImage.Source = fileThumbnail;
-        //        }
-        //    }
-        //    this.BubblePoint.Fill = bubbleColor;
-        //    this.BubbleBg.Fill = bubbleColor;
-        //}
 
         public SentChatBubble(ConvMessage cm, byte[] thumbnailsBytes)
             : base(cm)
@@ -296,7 +241,7 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
-                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true);
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true, !FileAttachment.ContentType.Contains(HikeConstants.CONTACT));
                     ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
@@ -336,6 +281,7 @@ namespace windows_client.Controls
         private static Thickness nudgeMargin = new Thickness(12, 12, 12, 10);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 6, 0, 0);
+        private static Thickness contactMessageTextMargin = new Thickness(50, 8, 12, 0);
         private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
         private readonly SolidColorBrush progressColor = new SolidColorBrush(Color.FromArgb(255, 51, 51, 51));
         private static Thickness sdrImageMargin = new Thickness(0, 0, 10, 0);
@@ -352,8 +298,10 @@ namespace windows_client.Controls
             bool isSMS = cm.IsSms;
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
-            bool isContact = hasAttachment && contentType == HikeConstants.CONTACT;
+            bool isContact = hasAttachment && contentType.Contains(HikeConstants.CT_CONTACT);
 
+            if (isContact)
+                messageString = cm.FileAttachment.FileName;
             BubbleBg = new Rectangle();
             Grid.SetRowSpan(BubbleBg, 2);
             Grid.SetColumn(BubbleBg, 1);
@@ -389,18 +337,22 @@ namespace windows_client.Controls
                 }
                 else if (isContact)
                 {
-                    this.MessageImage.Source = UI_Utils.Instance.NudgeSent;
-                    this.MessageImage.Height = 35;
-                    this.MessageImage.Width = 48;
-                    this.MessageImage.Margin = nudgeMargin;
-                    MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
-                    MessageText.Width = 330;
-                    MessageText.Foreground = progressColor;
-                    MessageText.Margin = messageTextMargin;
-                    MessageText.FontFamily = UI_Utils.Instance.MessageText;
-                    Grid.SetRow(MessageText, 0);
-                    Grid.SetColumn(MessageText, 1);
-                    attachment.Children.Add(MessageText);
+                    this.MessageImage.Source = UI_Utils.Instance.ContactIcon;
+                    this.MessageImage.Height = 20;
+                    this.MessageImage.Width = 30;
+                    this.MessageImage.HorizontalAlignment = HorizontalAlignment.Left;
+                    TextBlock textBlck = new TextBlock();
+                    textBlck.Text = messageString;
+                    textBlck.FontSize = 22;
+                    textBlck.MinWidth = 150;
+                    textBlck.MaxWidth = 330;
+                    textBlck.Foreground = UI_Utils.Instance.White;
+                    textBlck.Margin = contactMessageTextMargin;
+                    textBlck.TextWrapping = TextWrapping.Wrap;
+                    Grid.SetRow(textBlck, 0);
+                    Grid.SetColumn(textBlck, 1);
+                    attachment.Children.Add(textBlck);
+                    textBlck.FontFamily = UI_Utils.Instance.MessageText;
 
                 }
                 Grid.SetRow(MessageImage, 0);

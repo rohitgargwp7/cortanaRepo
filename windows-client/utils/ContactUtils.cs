@@ -12,6 +12,7 @@ using System.ComponentModel;
 using Microsoft.Phone.Controls;
 using System.Net.NetworkInformation;
 using windows_client.Languages;
+using System.IO;
 
 namespace windows_client.utils
 {
@@ -59,6 +60,9 @@ namespace windows_client.utils
                 Debug.WriteLine("Contacts callback thread : {0}", Thread.CurrentThread.ToString());
                 IEnumerable<Contact> contacts = e.Results;
                 Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts);
+
+                if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
+                    getContactListForNux(contacts);
                 contactsMap = contactListMap;
                 if (!NetworkInterface.GetIsNetworkAvailable())
                 {
@@ -165,15 +169,6 @@ namespace windows_client.utils
             {
                 CompleteName cName = cn.CompleteName;
 
-                bool hasFacebookAccount = false;
-                byte accNumber = 0;
-                foreach (Account acc in cn.Accounts)
-                {
-                    if (acc.Kind == StorageKind.Facebook)
-                        hasFacebookAccount = true;
-                    accNumber++;
-
-                }
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
                     if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
@@ -184,7 +179,6 @@ namespace windows_client.utils
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
-                    cInfo.IsCloseFriendFamily = hasFacebookAccount || accNumber > 1;
 
                     if (contactListMap.ContainsKey(cInfo.Id))
                     {
@@ -209,8 +203,56 @@ namespace windows_client.utils
             return contactListMap;
         }
 
+        public static List<ContactInfo> getContactListForNux(IEnumerable<Contact> contacts)
+        {
+            List<ContactInfo> listContacts = new List<ContactInfo>();
+            if (contacts == null)
+                return null;
 
+            foreach (Contact cn in contacts)
+            {
+                bool hasFacebookAccount = false;
+                byte accNumber = 0;
+                bool hasPicture = false;
+                foreach (Account acc in cn.Accounts)
+                {
+                    if (acc.Kind == StorageKind.Facebook)
+                        hasFacebookAccount = true;
+                    accNumber++;
+                }
+                bool addedBirthday = false;
+                foreach (DateTime birthDate in cn.Birthdays)
+                {
+                    addedBirthday = true;
+                }
+                Stream s = cn.GetPicture();
+                byte[] picBytes = null;
+                if (s != null)
+                {
+                    hasPicture = !hasFacebookAccount;
+                    picBytes = AccountUtils.StreamToByteArray(s);
+                }
+                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+                {
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    {
+                        continue;
+                    }
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    int idd = cInfo.GetHashCode();
+                    cInfo.Id = Convert.ToString(Math.Abs(idd));
 
+                    cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
+                    cInfo.HasCustomPhoto = picBytes != null;
+                    cInfo.Avatar = picBytes;
+
+                    if (!listContacts.Contains(cInfo))
+                        listContacts.Add(cInfo);
+                }
+            }
+                App.WriteToIsoStorageSettings(HikeConstants.PHONE_ADDRESS_BOOK, listContacts);
+            return listContacts;
+        }
 
 
         /* This is the callback function which is called when server returns the addressbook*/
