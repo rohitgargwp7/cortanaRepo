@@ -12,7 +12,7 @@ namespace windows_client.utils
         private static object syncRoot = new Object(); // this object is used to take lock while creating singleton
         private static volatile PushHelper instance = null;
         private readonly int maxPollingTime = 120;
-        private volatile int pollingTime = 3; //in seconds
+        private volatile int pollingTime; //in seconds
         private readonly int minPollingTime = 3;
         private volatile IScheduler scheduler; //TODO MG - we should can try pooling of scheduler objects
         private volatile IDisposable httpPostScheduled;
@@ -93,6 +93,7 @@ namespace windows_client.utils
             App.appSettings.TryGetValue<string>(App.LATEST_PUSH_TOKEN, out pushToken);
             _latestPushToken = pushToken;
             HttpNotificationChannel pushChannel;
+            pollingTime = minPollingTime;
             // Try to find the push channel.
             pushChannel = HttpNotificationChannel.Find(HikeConstants.pushNotificationChannelName);
             try
