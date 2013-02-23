@@ -158,7 +158,7 @@ namespace windows_client.View
                 bw.RunWorkerAsync();
 
                 #endregion
-
+                App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section

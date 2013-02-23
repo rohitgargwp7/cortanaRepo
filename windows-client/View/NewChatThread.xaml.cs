@@ -605,12 +605,15 @@ namespace windows_client.View
                 {
                     if (isGroupChat)
                     {
-                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                        if (App.appSettings.Contains(HikeConstants.SHOW_GROUP_CHAT_OVERLAY))
                         {
-                            if (!gp.IsOnHike)
+                            foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
-                                ToggleAlertOnNoSms(true);
-                                break;
+                                if (!gp.IsOnHike)
+                                {
+                                    ToggleAlertOnNoSms(true);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -2460,6 +2463,8 @@ namespace windows_client.View
 
         private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (isGroupChat)
+                App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
             showOverlay(false);
         }
 
