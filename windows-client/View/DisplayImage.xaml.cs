@@ -123,13 +123,12 @@ namespace windows_client.View
         #region PINCH AND ZOOM
         private bool isRestore = false;
         // these two fields fully define the zoom state:
-        private double TotalImageScale = 1d;
-        private Point ImagePosition = new Point(0, 0);
+        private double totalImageScale = 1d;
+        private Point imagePosition = new Point(0, 0);
         private const double MAX_IMAGE_ZOOM = 15;
         private Point _oldFinger1;
         private Point _oldFinger2;
         private double _oldScaleFactor;
-        private Point oldTranslationDelta;
 
         #region Event handlers
 
@@ -149,38 +148,26 @@ namespace windows_client.View
         private void OnPinchDelta(object sender, PinchGestureEventArgs e)
         {
             var scaleFactor = e.DistanceRatio / _oldScaleFactor;
-            //if (!IsScaleValid(scaleFactor))
-            //    return;
-            if (TotalImageScale * scaleFactor < 1)
+            if (totalImageScale * scaleFactor < 1)
             {
                 isRestore = true;
             }
             else
             {
                 isRestore = false;
-                if (TotalImageScale * scaleFactor > MAX_IMAGE_ZOOM)
+                if (totalImageScale * scaleFactor > MAX_IMAGE_ZOOM)
                 {
                     return;
                 }
             }
-
             var currentFinger1 = e.GetPosition(FileImage, 0);
             var currentFinger2 = e.GetPosition(FileImage, 1);
-
-            oldTranslationDelta = GetTranslationDelta(
-                currentFinger1,
-                currentFinger2,
-                _oldFinger1,
-                _oldFinger2,
-                ImagePosition,
-                scaleFactor);
-
+            var translationDelta = GetTranslationDelta(currentFinger1, currentFinger2, _oldFinger1, _oldFinger2, imagePosition, scaleFactor);
             _oldFinger1 = currentFinger1;
             _oldFinger2 = currentFinger2;
             _oldScaleFactor = e.DistanceRatio;
-
             UpdateImageScale(scaleFactor);
-            UpdateImagePosition(oldTranslationDelta);
+            UpdateImagePosition(translationDelta);
         }
 
         /// <summary>
@@ -206,9 +193,7 @@ namespace windows_client.View
         {
             if (isRestore)
             {
-                UpdateImageScale();
-                Point p = new Point(oldTranslationDelta.X * -1, oldTranslationDelta.Y * -1);
-                UpdateImagePosition(p);
+                ResetImagePosition();
             }
             isRestore = false;
         }
@@ -220,26 +205,15 @@ namespace windows_client.View
         /// <summary>
         /// Computes the translation needed to keep the image centered between your fingers.
         /// </summary>
-        private Point GetTranslationDelta(
-            Point currentFinger1, Point currentFinger2,
-            Point oldFinger1, Point oldFinger2,
-            Point currentPosition, double scaleFactor)
+        private Point GetTranslationDelta(Point currentFinger1, Point currentFinger2,
+            Point oldFinger1, Point oldFinger2, Point currentPosition, double scaleFactor)
         {
-            var newPos1 = new Point(
-             currentFinger1.X + (currentPosition.X - oldFinger1.X) * scaleFactor,
+            var newPos1 = new Point(currentFinger1.X + (currentPosition.X - oldFinger1.X) * scaleFactor,
              currentFinger1.Y + (currentPosition.Y - oldFinger1.Y) * scaleFactor);
-
-            var newPos2 = new Point(
-             currentFinger2.X + (currentPosition.X - oldFinger2.X) * scaleFactor,
+            var newPos2 = new Point(currentFinger2.X + (currentPosition.X - oldFinger2.X) * scaleFactor,
              currentFinger2.Y + (currentPosition.Y - oldFinger2.Y) * scaleFactor);
-
-            var newPos = new Point(
-                (newPos1.X + newPos2.X) / 2,
-                (newPos1.Y + newPos2.Y) / 2);
-
-            return new Point(
-                newPos.X - currentPosition.X,
-                newPos.Y - currentPosition.Y);
+            var newPos = new Point((newPos1.X + newPos2.X) / 2, (newPos1.Y + newPos2.Y) / 2);
+            return new Point(newPos.X - currentPosition.X, newPos.Y - currentPosition.Y);
         }
 
         /// <summary>
@@ -247,22 +221,17 @@ namespace windows_client.View
         /// </summary>
         private void UpdateImageScale(double scaleFactor)
         {
-            TotalImageScale *= scaleFactor;
+            totalImageScale *= scaleFactor;
             ApplyScale();
         }
 
-        private void UpdateImageScale()
-        {
-            TotalImageScale = 1;
-            ApplyScale();
-        }
         /// <summary>
         /// Applies the computed scale to the image control.
         /// </summary>
         private void ApplyScale()
         {
-            ((CompositeTransform)FileImage.RenderTransform).ScaleX = TotalImageScale;
-            ((CompositeTransform)FileImage.RenderTransform).ScaleY = TotalImageScale;
+            ((CompositeTransform)FileImage.RenderTransform).ScaleX = totalImageScale;
+            ((CompositeTransform)FileImage.RenderTransform).ScaleY = totalImageScale;
         }
 
         /// <summary>
@@ -271,18 +240,18 @@ namespace windows_client.View
         /// </summary>
         private void UpdateImagePosition(Point delta)
         {
-            var newPosition = new Point(ImagePosition.X + delta.X, ImagePosition.Y + delta.Y);
+            var newPosition = new Point(imagePosition.X + delta.X, imagePosition.Y + delta.Y);
 
             if (newPosition.X > 0) newPosition.X = 0;
             if (newPosition.Y > 0) newPosition.Y = 0;
 
-            if ((FileImage.ActualWidth * TotalImageScale) + newPosition.X < FileImage.ActualWidth)
-                newPosition.X = FileImage.ActualWidth - (FileImage.ActualWidth * TotalImageScale);
+            if ((FileImage.ActualWidth * totalImageScale) + newPosition.X < FileImage.ActualWidth)
+                newPosition.X = FileImage.ActualWidth - (FileImage.ActualWidth * totalImageScale);
 
-            if ((FileImage.ActualHeight * TotalImageScale) + newPosition.Y < FileImage.ActualHeight)
-                newPosition.Y = FileImage.ActualHeight - (FileImage.ActualHeight * TotalImageScale);
+            if ((FileImage.ActualHeight * totalImageScale) + newPosition.Y < FileImage.ActualHeight)
+                newPosition.Y = FileImage.ActualHeight - (FileImage.ActualHeight * totalImageScale);
 
-            ImagePosition = newPosition;
+            imagePosition = newPosition;
 
             ApplyPosition();
         }
@@ -292,8 +261,8 @@ namespace windows_client.View
         /// </summary>
         private void ApplyPosition()
         {
-            ((CompositeTransform)FileImage.RenderTransform).TranslateX = ImagePosition.X;
-            ((CompositeTransform)FileImage.RenderTransform).TranslateY = ImagePosition.Y;
+            ((CompositeTransform)FileImage.RenderTransform).TranslateX = imagePosition.X;
+            ((CompositeTransform)FileImage.RenderTransform).TranslateY = imagePosition.Y;
         }
 
         /// <summary>
@@ -301,8 +270,8 @@ namespace windows_client.View
         /// </summary>
         private void ResetImagePosition()
         {
-            TotalImageScale = 1;
-            ImagePosition = new Point(0, 0);
+            totalImageScale = 1;
+            imagePosition = new Point(0, 0);
             ApplyScale();
             ApplyPosition();
         }
@@ -312,24 +281,13 @@ namespace windows_client.View
         /// </summary>
         private bool IsDragValid(double scaleDelta, Point translateDelta)
         {
-            if (ImagePosition.X + translateDelta.X > 0 || ImagePosition.Y + translateDelta.Y > 0)
+            if (imagePosition.X + translateDelta.X > 0 || imagePosition.Y + translateDelta.Y > 0)
                 return false;
-
-            if ((FileImage.ActualWidth * TotalImageScale * scaleDelta) + (ImagePosition.X + translateDelta.X) < FileImage.ActualWidth)
+            if ((FileImage.ActualWidth * totalImageScale * scaleDelta) + (imagePosition.X + translateDelta.X) < FileImage.ActualWidth)
                 return false;
-
-            if ((FileImage.ActualHeight * TotalImageScale * scaleDelta) + (ImagePosition.Y + translateDelta.Y) < FileImage.ActualHeight)
+            if ((FileImage.ActualHeight * totalImageScale * scaleDelta) + (imagePosition.Y + translateDelta.Y) < FileImage.ActualHeight)
                 return false;
-
             return true;
-        }
-
-        /// <summary>
-        /// Tells if the scaling is inside the desired range
-        /// </summary>
-        private bool IsScaleValid(double scaleDelta)
-        {
-            return (TotalImageScale * scaleDelta >= 1) && (TotalImageScale * scaleDelta <= MAX_IMAGE_ZOOM);
         }
 
         #endregion
