@@ -54,7 +54,7 @@ namespace windows_client.View
                 else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                 {
                     fileName = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
-                    shellProgress.IsVisible = true;
+                    loadingProgress.Opacity = 1;
                     if (!Utils.isGroupConversation(msisdn))
                     {
                         AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
@@ -71,8 +71,8 @@ namespace windows_client.View
                     byte[] defaultImageBytes = MiscDBUtil.getThumbNailForMsisdn(fileName);
                     if (defaultImageBytes == null || defaultImageBytes.Length == 0)
                     {
-                        shellProgress.IsVisible = true;
-                        AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false, fileName);
+                        loadingProgress.Opacity = 1;
+                        //TODO : MG plz correct this and merge this //AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false);
                     }
                     else
                     {
@@ -94,7 +94,7 @@ namespace windows_client.View
                 MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                shellProgress.IsVisible = false;
+                loadingProgress.Opacity = 0;
                 if (fullBytes != null && fullBytes.Length > 0)
                     this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
                 else

@@ -55,7 +55,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("ContactName");
                     _contactName = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxName();
                     NotifyPropertyChanged("ContactName");
                     NotifyPropertyChanged("NameToShow");
                 }
@@ -75,7 +75,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("LastMessage");
                     _lastMessage = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxLastMsg();
                     NotifyPropertyChanged("LastMessage");
                 }
             }
@@ -94,7 +94,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("TimeStamp");
                     _timeStamp = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxTimeStamp();
                     NotifyPropertyChanged("TimeStamp");
                 }
             }
@@ -113,7 +113,7 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("Msisdn");
                     _msisdn = value.Trim();
-                    UpdateConversationBox();
+                    UpdateConvBoxMsisdn();
                     NotifyPropertyChanged("Msisdn");
                 }
             }
@@ -132,7 +132,6 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("IsOnhike");
                     _isOnhike = value;
-                    UpdateConversationBox();
                     NotifyPropertyChanged("IsOnhike");
                     NotifyPropertyChanged("ShowOnHikeImage");
                 }
@@ -152,11 +151,8 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MessageStatus");
                     _messageStatus = value;
-                    UpdateConversationBox();
+                    UpdateConvBoxMsgStatus();
                     NotifyPropertyChanged("MessageStatus");
-                    NotifyPropertyChanged("LastMessageColor");
-                    NotifyPropertyChanged("SDRStatusImage");
-                    NotifyPropertyChanged("SDRStatusImageVisible");
                 }
             }
         }
@@ -212,46 +208,6 @@ namespace windows_client.Model
             }
         }
 
-        public BitmapImage SDRStatusImage
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED:
-                        return UI_Utils.Instance.Sent;
-                    case ConvMessage.State.SENT_DELIVERED:
-                        return UI_Utils.Instance.Delivered;
-                    case ConvMessage.State.SENT_DELIVERED_READ:
-                        return UI_Utils.Instance.Read;
-                    case ConvMessage.State.SENT_UNCONFIRMED:
-                        return UI_Utils.Instance.Trying;
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        return UI_Utils.Instance.Unread;
-                    default:
-                        return null;
-                }
-            }
-        }
-
-        public Visibility SDRStatusImageVisible
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED:
-                    case ConvMessage.State.SENT_DELIVERED:
-                    case ConvMessage.State.SENT_DELIVERED_READ:
-                    case ConvMessage.State.SENT_UNCONFIRMED:
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        return Visibility.Visible;
-                    default:
-                        return Visibility.Collapsed;
-                }
-            }
-        }
-
         public string NameToShow
         {
             get
@@ -275,7 +231,7 @@ namespace windows_client.Model
                 {
                     _avatar = value;
                     empImage = null; // reset to null whenever avatar changes
-                    UpdateConversationBox();
+                    UpdateConvBoxAvatarImage();
                     NotifyPropertyChanged("Avatar");
                     NotifyPropertyChanged("AvatarImage");
                 }
@@ -311,42 +267,13 @@ namespace windows_client.Model
             }
         }
 
-        public string LastMessageColor
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.RECEIVED_UNREAD:
-                        Color currentAccentColorHex =
-                        (Color)Application.Current.Resources["PhoneAccentColor"];
-                        return currentAccentColorHex.ToString();
-                    default: return "gray";
-                }
-            }
-        }
-
-        public Visibility IsLastMessageUnread
+        public Visibility IsLastMessageUnread // this too should be removed
         {
             get
             {
                 if (ConvMessage.State.RECEIVED_UNREAD == _messageStatus)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
-            }
-        }
-
-        public string SdrImage
-        {
-            get
-            {
-                switch (_messageStatus)
-                {
-                    case ConvMessage.State.SENT_CONFIRMED: return "images\\ic_sent.png";
-                    case ConvMessage.State.SENT_DELIVERED: return "images\\ic_delivered.png";
-                    case ConvMessage.State.SENT_DELIVERED_READ: return "images\\ic_read.png";
-                    default: return "";
-                }
             }
         }
 
@@ -610,26 +537,86 @@ namespace windows_client.Model
         }
         #endregion
 
-        public void UpdateConversationBox()
+        #region UPDATE CONV BOX
+
+        public void UpdateConvBoxMsisdn()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
-                    cBoxObj.update(this);
-                });
-            }
+                    cBoxObj.Msisdn = this.Msisdn;
+                }
+            });
         }
+
+        public void UpdateConvBoxMsgStatus()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (cBoxObj != null)
+                {
+                    cBoxObj.MessageState = this.MessageStatus;
+                }
+            });
+        }
+
+        public void UpdateConvBoxAvatarImage()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (cBoxObj != null)
+                {
+                    cBoxObj.AvatarImage = this.AvatarImage;
+                }
+            });
+        }
+
+        public void UpdateConvBoxName()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (cBoxObj != null)
+                {
+                    cBoxObj.UserName = this.ContactName;
+                }
+            });
+        }
+
+        public void UpdateConvBoxLastMsg()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (cBoxObj != null)
+                {
+                    cBoxObj.LastMessage = this.LastMessage;
+
+                }
+            });
+        }
+
+        public void UpdateConvBoxTimeStamp()
+        {
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
+            {
+                if (cBoxObj != null)
+                {
+                    cBoxObj.Timestamp = this.TimeStamp;
+                }
+            });
+        }
+
+        #endregion
 
         public void UpdateConvBoxFavMenu()
         {
-            if (cBoxObj != null)
+            Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (cBoxObj != null)
                 {
                     cBoxObj.UpdateContextMenuFavourites(_isFav);
-                });
-            }
+                }
+            });
         }
 
         #region INotifyPropertyChanged Members

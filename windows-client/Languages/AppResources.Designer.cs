@@ -8,10 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace windows_client.Languages {
+namespace windows_client.Languages
+{
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -22,2893 +23,3850 @@ namespace windows_client.Languages {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class AppResources {
-        
+    public class AppResources
+    {
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal AppResources() {
+        internal AppResources()
+        {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
-            get {
-                if (object.ReferenceEquals(resourceMan, null)) {
+        public static global::System.Resources.ResourceManager ResourceManager
+        {
+            get
+            {
+                if (object.ReferenceEquals(resourceMan, null))
+                {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("windows_client.Languages.AppResources", typeof(AppResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
-            get {
+        public static global::System.Globalization.CultureInfo Culture
+        {
+            get
+            {
                 return resourceCulture;
             }
-            set {
+            set
+            {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to account.
+        /// </summary>
+        public static string Account_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Account_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to add to favorites.
         /// </summary>
-        public static string Add_To_Fav_Txt {
-            get {
+        public static string Add_To_Fav_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Add_To_Fav_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Added {0} to the group.
         /// </summary>
-        public static string Added_X_To_GC {
-            get {
+        public static string Added_X_To_GC
+        {
+            get
+            {
                 return ResourceManager.GetString("Added_X_To_GC", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  and .
         /// </summary>
-        public static string And_txt {
-            get {
+        public static string And_txt
+        {
+            get
+            {
                 return ResourceManager.GetString("And_txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to done.
         /// </summary>
-        public static string AppBar_Done_Btn {
-            get {
+        public static string AppBar_Done_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("AppBar_Done_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
-        public static string AppBar_Next_Btn {
-            get {
+        public static string AppBar_Next_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("AppBar_Next_Btn", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ask Me Later.
+        /// </summary>
+        public static string Ask_Me_Later_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Ask_Me_Later_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to attach.
         /// </summary>
-        public static string Attach_Txt {
-            get {
+        public static string Attach_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Attach_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Contact Info.
+        /// </summary>
+        public static string Attachement_Contact_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Attachement_Contact_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Send Audio.
+        /// </summary>
+        public static string Attachment_Audio_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Attachment_Audio_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string Attachment_Camera_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Attachment_Camera_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Share Location.
+        /// </summary>
+        public static string Attachment_Location_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Attachment_Location_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Send Photo.
+        /// </summary>
+        public static string Attachment_Photo_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Attachment_Photo_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Send Video.
+        /// </summary>
+        public static string Attachment_Video_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Attachment_Video_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Audio.
         /// </summary>
-        public static string Audio_Txt {
-            get {
+        public static string Audio_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Audio_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Block.
         /// </summary>
-        public static string Block_Txt {
-            get {
+        public static string Block_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Block_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add as a friend.
         /// </summary>
-        public static string btnAddAsFriend_Txt {
-            get {
+        public static string btnAddAsFriend_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("btnAddAsFriend_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to call.
         /// </summary>
-        public static string Call_Txt {
-            get {
+        public static string Call_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Call_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to cancel.
         /// </summary>
-        public static string Cancel_Txt {
-            get {
+        public static string Cancel_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Cancel_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot change Profile Image. Try Later!!.
         /// </summary>
-        public static string Cannot_Change_Img_Error_Txt {
-            get {
+        public static string Cannot_Change_Img_Error_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Cannot_Change_Img_Error_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You cannot select photo while phone is connected to computer..
         /// </summary>
-        public static string Cannot_Select_Pic_Phone_Connected_to_PC {
-            get {
+        public static string Cannot_Select_Pic_Phone_Connected_to_PC
+        {
+            get
+            {
                 return ResourceManager.GetString("Cannot_Select_Pic_Phone_Connected_to_PC", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot change Group Image. Try Later!!.
         /// </summary>
-        public static string CannotChangeGrpImg_Txt {
-            get {
+        public static string CannotChangeGrpImg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("CannotChangeGrpImg_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot change GroupName. Try Later!!.
         /// </summary>
-        public static string CannotChangeGrpName_Txt {
-            get {
+        public static string CannotChangeGrpName_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("CannotChangeGrpName_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This group chat is muted.
         /// </summary>
-        public static string ChatThread_GCMute {
-            get {
+        public static string ChatThread_GCMute
+        {
+            get
+            {
                 return ResourceManager.GetString("ChatThread_GCMute", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Connectivity issue..
         /// </summary>
-        public static string Connectivity_Issue {
-            get {
+        public static string Connectivity_Issue
+        {
+            get
+            {
                 return ResourceManager.GetString("Connectivity_Issue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Contact not saved on server, kindly refresh..
         /// </summary>
-        public static string CONTACT_NOT_SAVED_ON_SERVER {
-            get {
+        public static string CONTACT_NOT_SAVED_ON_SERVER
+        {
+            get
+            {
                 return ResourceManager.GetString("CONTACT_NOT_SAVED_ON_SERVER", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Contact saved successfully.
         /// </summary>
-        public static string CONTACT_SAVED_SUCCESSFULLY {
-            get {
+        public static string CONTACT_SAVED_SUCCESSFULLY
+        {
+            get
+            {
                 return ResourceManager.GetString("CONTACT_SAVED_SUCCESSFULLY", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Contact Scanning failed. Try Later!!.
         /// </summary>
-        public static string Contact_Scanning_Failed_Txt {
-            get {
+        public static string Contact_Scanning_Failed_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Contact_Scanning_Failed_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Contact.
         /// </summary>
-        public static string ContactTransfer_Text {
-            get {
+        public static string ContactTransfer_Text
+        {
+            get
+            {
                 return ResourceManager.GetString("ContactTransfer_Text", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to added you as favourite. Would you like to do the same?.
         /// </summary>
-        public static string Conversations_AddedYouToFav_Txt {
-            get {
+        public static string Conversations_AddedYouToFav_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_AddedYouToFav_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Added you as a favorite!.
         /// </summary>
-        public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
-            get {
+        public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_AddedYouToFav_Txt_WP8FrndStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete All Chats.
         /// </summary>
-        public static string Conversations_DelAllChats_Txt {
-            get {
+        public static string Conversations_DelAllChats_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_DelAllChats_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Chat.
         /// </summary>
-        public static string Conversations_DelChat_Txt {
-            get {
+        public static string Conversations_DelChat_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_DelChat_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure about deleting this chat?.
         /// </summary>
-        public static string Conversations_Delete_Chat_Confirmation {
-            get {
+        public static string Conversations_Delete_Chat_Confirmation
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Delete_Chat_Confirmation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure about deleting all chats?.
         /// </summary>
-        public static string Conversations_Delete_Chats_Confirmation {
-            get {
+        public static string Conversations_Delete_Chats_Confirmation
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Delete_Chats_Confirmation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to edit profile.
         /// </summary>
-        public static string Conversations_EditProfile_Txt {
-            get {
+        public static string Conversations_EditProfile_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_EditProfile_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to free SMS.
         /// </summary>
-        public static string Conversations_FreeSms_Txt {
-            get {
+        public static string Conversations_FreeSms_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_FreeSms_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hike Contacts.
         /// </summary>
-        public static string Conversations_HikeContacts_Btn {
-            get {
+        public static string Conversations_HikeContacts_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_HikeContacts_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to new chat.
         /// </summary>
-        public static string Conversations_NewChat_AppBar_Btn {
-            get {
+        public static string Conversations_NewChat_AppBar_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_NewChat_AppBar_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} is on hike..
         /// </summary>
-        public static string Conversations_OnHike_Txt {
-            get {
+        public static string Conversations_OnHike_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_OnHike_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Send {0} free sms..
         /// </summary>
-        public static string Conversations_OnSMS_Txt {
-            get {
+        public static string Conversations_OnSMS_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_OnSMS_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Not Now.
         /// </summary>
-        public static string Conversations_Pending_NotNow_Btn {
-            get {
+        public static string Conversations_Pending_NotNow_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Pending_NotNow_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
-        public static string Conversations_Pending_Yes_Btn {
-            get {
+        public static string Conversations_Pending_Yes_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Pending_Yes_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to chats.
         /// </summary>
-        public static string Conversations_Pivot_Chats_Header_Txt {
-            get {
+        public static string Conversations_Pivot_Chats_Header_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Pivot_Chats_Header_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to favorites.
         /// </summary>
-        public static string Conversations_Pivot_Favourites_Header_Txt {
-            get {
+        public static string Conversations_Pivot_Favourites_Header_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Pivot_Favourites_Header_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to profile.
         /// </summary>
-        public static string Conversations_Pivot_Profile_Header_Txt {
-            get {
+        public static string Conversations_Pivot_Profile_Header_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Pivot_Profile_Header_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to timeline.
         /// </summary>
-        public static string Conversations_Pivot_Timeline_Header_Txt {
-            get {
+        public static string Conversations_Pivot_Timeline_Header_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Pivot_Timeline_Header_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Post Status.
         /// </summary>
-        public static string Conversations_PostStatus_AppBar {
-            get {
+        public static string Conversations_PostStatus_AppBar
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_PostStatus_AppBar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default Name.
         /// </summary>
-        public static string Conversations_ProfileName_Default_Txt {
-            get {
+        public static string Conversations_ProfileName_Default_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_ProfileName_Default_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure about removing this contact from favorites?.
         /// </summary>
-        public static string Conversations_RemFromFav_Confirm_Txt {
-            get {
+        public static string Conversations_RemFromFav_Confirm_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_RemFromFav_Confirm_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You have no favorites right now..
         /// </summary>
-        public static string Conversations_TapYesToAdd_Txt {
-            get {
+        public static string Conversations_TapYesToAdd_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_TapYesToAdd_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to invite friends.
         /// </summary>
-        public static string Conversations_TellFriend_Txt {
-            get {
+        public static string Conversations_TellFriend_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_TellFriend_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} new update.
         /// </summary>
-        public static string Conversations_Timeline_Refresh_SingleStatus {
-            get {
+        public static string Conversations_Timeline_Refresh_SingleStatus
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_SingleStatus", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} new updates.
         /// </summary>
-        public static string Conversations_Timeline_Refresh_Status {
-            get {
+        public static string Conversations_Timeline_Refresh_Status
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your favorites.
         /// </summary>
-        public static string Conversations_YourFav_Txt {
-            get {
+        public static string Conversations_YourFav_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Conversations_YourFav_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to copy.
         /// </summary>
-        public static string Copy_txt {
-            get {
+        public static string Copy_txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Copy_txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You&apos;ve just earned {0} free SMS.
         /// </summary>
-        public static string CREDITS_EARNED {
-            get {
+        public static string CREDITS_EARNED
+        {
+            get
+            {
                 return ResourceManager.GetString("CREDITS_EARNED", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Important update.
         /// </summary>
-        public static string CRITICAL_UPDATE_HEADING {
-            get {
+        public static string CRITICAL_UPDATE_HEADING
+        {
+            get
+            {
                 return ResourceManager.GetString("CRITICAL_UPDATE_HEADING", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To continue using hike, an update is required..
         /// </summary>
-        public static string CRITICAL_UPDATE_TEXT {
-            get {
+        public static string CRITICAL_UPDATE_TEXT
+        {
+            get
+            {
                 return ResourceManager.GetString("CRITICAL_UPDATE_TEXT", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to delete.
         /// </summary>
-        public static string Delete_Txt {
-            get {
+        public static string Delete_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Delete_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete_Txt_Caps
+        {
+            get
+            {
+                return ResourceManager.GetString("Delete_Txt_Caps", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to {0} is on DND. Waiting for {0} to reply..
         /// </summary>
-        public static string DND_USER {
-            get {
+        public static string DND_USER
+        {
+            get
+            {
                 return ResourceManager.GetString("DND_USER", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter Correct Email.
         /// </summary>
-        public static string EditProfile_emailErrorTxt_TxtBlk {
-            get {
+        public static string EditProfile_emailErrorTxt_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_emailErrorTxt_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to change email or gender. Try again..
         /// </summary>
-        public static string EditProfile_EmailUpdateErr_MsgBxTxt {
-            get {
+        public static string EditProfile_EmailUpdateErr_MsgBxTxt
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_EmailUpdateErr_MsgBxTxt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
-        public static string EditProfile_FullName_TxtBlk {
-            get {
+        public static string EditProfile_FullName_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_FullName_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Gender.
         /// </summary>
-        public static string EditProfile_Gender_TxtBlk {
-            get {
+        public static string EditProfile_Gender_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_Gender_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to female.
         /// </summary>
-        public static string EditProfile_GenderFemale_lstPckr {
-            get {
+        public static string EditProfile_GenderFemale_lstPckr
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_GenderFemale_lstPckr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to male.
         /// </summary>
-        public static string EditProfile_GenderMale_LstPckr {
-            get {
+        public static string EditProfile_GenderMale_LstPckr
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_GenderMale_LstPckr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to select.
         /// </summary>
-        public static string EditProfile_GenderSelect_LstPckr {
-            get {
+        public static string EditProfile_GenderSelect_LstPckr
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_GenderSelect_LstPckr", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please enter your name.
         /// </summary>
-        public static string EditProfile_nameErrorTxt_TxtBlk {
-            get {
+        public static string EditProfile_nameErrorTxt_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_nameErrorTxt_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Something went wrong.
         /// </summary>
-        public static string EditProfile_NameUpdateErr_MsgBxCaptn {
-            get {
+        public static string EditProfile_NameUpdateErr_MsgBxCaptn
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_NameUpdateErr_MsgBxCaptn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to change name. Try again..
         /// </summary>
-        public static string EditProfile_NameUpdateErr_MsgBxTxt {
-            get {
+        public static string EditProfile_NameUpdateErr_MsgBxTxt
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_NameUpdateErr_MsgBxTxt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Phone.
         /// </summary>
-        public static string EditProfile_Phone_TxtBlk {
-            get {
+        public static string EditProfile_Phone_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_Phone_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Profile Not Updated!.
         /// </summary>
-        public static string EditProfile_UpdatErrMsgBx_Captn {
-            get {
+        public static string EditProfile_UpdatErrMsgBx_Captn
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_UpdatErrMsgBx_Captn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nothing has changed!!.
         /// </summary>
-        public static string EditProfile_UpdatErrMsgBx_Text {
-            get {
+        public static string EditProfile_UpdatErrMsgBx_Text
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_UpdatErrMsgBx_Text", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Profile Updated.
         /// </summary>
-        public static string EditProfile_UpdatMsgBx_Captn {
-            get {
+        public static string EditProfile_UpdatMsgBx_Captn
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_UpdatMsgBx_Captn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your profile has been updated..
         /// </summary>
-        public static string EditProfile_UpdatMsgBx_Txt {
-            get {
+        public static string EditProfile_UpdatMsgBx_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("EditProfile_UpdatMsgBx_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hi! I&apos;ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
-        public static string Email_Invite_Txt {
-            get {
+        public static string Email_Invite_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Email_Invite_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
-        public static string Email_Txt {
-            get {
+        public static string Email_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Email_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Is this your number?.
         /// </summary>
-        public static string EnterMsisdn_ConfirmNumber_Txt {
-            get {
+        public static string EnterMsisdn_ConfirmNumber_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterMsisdn_ConfirmNumber_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed. Close App and try again !!.
         /// </summary>
-        public static string EnterName_Failed_Txt {
-            get {
+        public static string EnterName_Failed_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterName_Failed_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Getting you in.
         /// </summary>
-        public static string EnterName_Msg_TxtBlk {
-            get {
+        public static string EnterName_Msg_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterName_Msg_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        public static string EnterName_Name_Hint {
-            get {
+        public static string EnterName_Name_Hint
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterName_Name_Hint", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter your name below :.
         /// </summary>
-        public static string EnterName_Name_TxtBlk {
-            get {
+        public static string EnterName_Name_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterName_Name_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error!! Name not set. Try Again!!.
         /// </summary>
-        public static string EnterName_NameErrorTxt {
-            get {
+        public static string EnterName_NameErrorTxt
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterName_NameErrorTxt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Scanning Contacts ....
         /// </summary>
-        public static string EnterName_ScanningContacts_Txt {
-            get {
+        public static string EnterName_ScanningContacts_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterName_ScanningContacts_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You&apos;re all set on .
         /// </summary>
-        public static string EnterName_YourMsisdn_TxtBlk {
-            get {
+        public static string EnterName_YourMsisdn_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterName_YourMsisdn_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter your phone number below to get started :.
         /// </summary>
-        public static string EnterNumber_EnterNum_TxtBlk {
-            get {
+        public static string EnterNumber_EnterNum_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterNumber_EnterNum_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Incorrect phone number..
         /// </summary>
-        public static string EnterNumber_IncorrectPh_TxtBlk {
-            get {
+        public static string EnterNumber_IncorrectPh_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterNumber_IncorrectPh_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter valid phone number..
         /// </summary>
-        public static string EnterNumber_MsgBoxText_Msg {
-            get {
+        public static string EnterNumber_MsgBoxText_Msg
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterNumber_MsgBoxText_Msg", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Phone Number.
         /// </summary>
-        public static string EnterNumber_Ph_Hint_TxtBox {
-            get {
+        public static string EnterNumber_Ph_Hint_TxtBox
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterNumber_Ph_Hint_TxtBox", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SELECT COUNTRY.
         /// </summary>
-        public static string EnterNumber_SelectCountry_TxtBlk {
-            get {
+        public static string EnterNumber_SelectCountry_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterNumber_SelectCountry_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Verifying your number..
         /// </summary>
-        public static string EnterNumber_VerifyNumberMsg_TxtBlk {
-            get {
+        public static string EnterNumber_VerifyNumberMsg_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterNumber_VerifyNumberMsg_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t call you. Try again later..
         /// </summary>
-        public static string EnterPin_CallErrorMsg_MsgBox {
-            get {
+        public static string EnterPin_CallErrorMsg_MsgBox
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_CallErrorMsg_MsgBox", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Calling you for PIN..
         /// </summary>
-        public static string EnterPin_CallingMsg_MsgBox {
-            get {
+        public static string EnterPin_CallingMsg_MsgBox
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_CallingMsg_MsgBox", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Call me for PIN.
         /// </summary>
-        public static string EnterPin_CallMe_Btn {
-            get {
+        public static string EnterPin_CallMe_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_CallMe_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to PIN not valid. Please try again..
         /// </summary>
-        public static string EnterPin_PinError_TxtBlk {
-            get {
+        public static string EnterPin_PinError_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_PinError_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pin.
         /// </summary>
-        public static string EnterPin_PinHint {
-            get {
+        public static string EnterPin_PinHint
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_PinHint", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Thanks! Did you get an SMS pin? Enter it below :.
         /// </summary>
-        public static string EnterPin_PinMsg_TxtBlk {
-            get {
+        public static string EnterPin_PinMsg_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_PinMsg_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Didn&apos;t receive an SMS?.
         /// </summary>
-        public static string EnterPin_SMSError_TxtBlk {
-            get {
+        public static string EnterPin_SMSError_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_SMSError_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tap Here.
         /// </summary>
-        public static string EnterPin_Taphere_TxtBlk {
-            get {
+        public static string EnterPin_Taphere_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_Taphere_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Entered a wrong number?.
         /// </summary>
-        public static string EnterPin_WrongNumMsg_TxtBlk {
-            get {
+        public static string EnterPin_WrongNumMsg_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("EnterPin_WrongNumMsg_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error !!.
         /// </summary>
-        public static string Error_Txt {
-            get {
+        public static string Error_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Error_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add More.
         /// </summary>
-        public static string Favorites_AddMore {
-            get {
+        public static string Favorites_AddMore
+        {
+            get
+            {
                 return ResourceManager.GetString("Favorites_AddMore", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tap here to add new..
         /// </summary>
-        public static string Favorites_TapToAdd {
-            get {
+        public static string Favorites_TapToAdd
+        {
+            get
+            {
                 return ResourceManager.GetString("Favorites_TapToAdd", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A permanent place for all your favorite friends..
         /// </summary>
-        public static string Favorites_Tute_Screen1 {
-            get {
+        public static string Favorites_Tute_Screen1
+        {
+            get
+            {
                 return ResourceManager.GetString("Favorites_Tute_Screen1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Chatting with them is just a tap away..
         /// </summary>
-        public static string Favorites_Tute_Screen1_2 {
-            get {
+        public static string Favorites_Tute_Screen1_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Favorites_Tute_Screen1_2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To see all your hike friends and add new to favorites tap the + button.
         /// </summary>
-        public static string Favorites_Tute_Screen2 {
-            get {
+        public static string Favorites_Tute_Screen2
+        {
+            get
+            {
                 return ResourceManager.GetString("Favorites_Tute_Screen2", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Connect with Facebook.
+        /// </summary>
+        public static string FB_Connect_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("FB_Connect_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Feeling lazy? We&apos;ll do it for you..
+        /// </summary>
+        public static string FeelingLazy_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("FeelingLazy_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Sent you a {0}. To view go to .
         /// </summary>
-        public static string FILES_MESSAGE_PREFIX {
-            get {
+        public static string FILES_MESSAGE_PREFIX
+        {
+            get
+            {
                 return ResourceManager.GetString("FILES_MESSAGE_PREFIX", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to download file. .
         /// </summary>
-        public static string FileTransfer_ErrorMsgBoxText {
-            get {
+        public static string FileTransfer_ErrorMsgBoxText
+        {
+            get
+            {
                 return ResourceManager.GetString("FileTransfer_ErrorMsgBoxText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to forward.
         /// </summary>
-        public static string Forward_Txt {
-            get {
+        public static string Forward_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Forward_Txt", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect and get a.
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk1 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to instantly.
-        /// </summary>
-        public static string FreeSMS_Cnnct_TxtBlk3 {
-            get {
-                return ResourceManager.GetString("FreeSMS_Cnnct_TxtBlk3", resourceCulture);
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Earn an extra.
         /// </summary>
-        public static string FreeSMS_EarnFreeSMS_TxtBlk1 {
-            get {
+        public static string FreeSMS_EarnFreeSMS_TxtBlk1
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} free SMS.
         /// </summary>
-        public static string FreeSMS_EarnFreeSMS_TxtBlk2 {
-            get {
+        public static string FreeSMS_EarnFreeSMS_TxtBlk2
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to per month for every friend that joins through you..
         /// </summary>
-        public static string FreeSMS_EarnFreeSMS_TxtBlk3 {
-            get {
+        public static string FreeSMS_EarnFreeSMS_TxtBlk3
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_EarnFreeSMS_TxtBlk3", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Facebook.
         /// </summary>
-        public static string FreeSMS_fbConnStatus_TxtBlk {
-            get {
+        public static string FreeSMS_fbConnStatus_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_fbConnStatus_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Connected.
         /// </summary>
-        public static string FreeSMS_fbOrTwitter_Connected {
-            get {
+        public static string FreeSMS_fbOrTwitter_Connected
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_fbOrTwitter_Connected", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Facebook Post.
         /// </summary>
-        public static string FreeSMS_FbPost_MsgBxCaption {
-            get {
+        public static string FreeSMS_FbPost_MsgBxCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_FbPost_MsgBxCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Successfully posted to facebook..
         /// </summary>
-        public static string FreeSMS_FbPostSuccess_MsgBx {
-            get {
+        public static string FreeSMS_FbPostSuccess_MsgBx
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_FbPostSuccess_MsgBx", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hike to hike.
         /// </summary>
-        public static string FreeSMS_H2HHeader_TxtBlk {
-            get {
+        public static string FreeSMS_H2HHeader_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_H2HHeader_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Free Worldwide.
         /// </summary>
-        public static string FreeSMS_H2HText_TxtBlk {
-            get {
+        public static string FreeSMS_H2HText_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_H2HText_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hike to SMS.
         /// </summary>
-        public static string FreeSMS_H2SHeader_TxtBlk {
-            get {
+        public static string FreeSMS_H2SHeader_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_H2SHeader_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your free SMS refill on the 1st of every month.
         /// </summary>
-        public static string FreeSMS_H2SText_TxtBlk {
-            get {
+        public static string FreeSMS_H2SText_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_H2SText_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to *Free SMS can only be sent to India at the moment.
         /// </summary>
-        public static string FreeSMS_IndiaOnly_TxtBlk {
-            get {
+        public static string FreeSMS_IndiaOnly_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_IndiaOnly_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invite Now.
         /// </summary>
-        public static string FreeSMS_InviteNow_Btn {
-            get {
+        public static string FreeSMS_InviteNow_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_InviteNow_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invite via SMS.
         /// </summary>
-        public static string FreeSMS_InviteSMS_TxtBlk {
-            get {
+        public static string FreeSMS_InviteSMS_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_InviteSMS_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Twitter.
         /// </summary>
-        public static string FreeSMS_twConnStatus_TxtBlk {
-            get {
+        public static string FreeSMS_twConnStatus_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_twConnStatus_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Twitter Post.
         /// </summary>
-        public static string FreeSMS_TwPost_MsgBxCaption {
-            get {
+        public static string FreeSMS_TwPost_MsgBxCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_TwPost_MsgBxCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Successfully posted to twitter..
         /// </summary>
-        public static string FreeSMS_TwPostSuccess_MsgBx {
-            get {
+        public static string FreeSMS_TwPostSuccess_MsgBx
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_TwPostSuccess_MsgBx", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlimited.
         /// </summary>
-        public static string FreeSMS_unlimitedTxtBlck_TxtBlk {
-            get {
+        public static string FreeSMS_unlimitedTxtBlck_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_unlimitedTxtBlck_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlink Facebook.
         /// </summary>
-        public static string FreeSMS_UnlinkFacebook_MsgBxCaptn {
-            get {
+        public static string FreeSMS_UnlinkFacebook_MsgBxCaptn
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_UnlinkFacebook_MsgBxCaptn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to unlink your account?.
         /// </summary>
-        public static string FreeSMS_UnlinkFbOrTwConfirm_MsgBx {
-            get {
+        public static string FreeSMS_UnlinkFbOrTwConfirm_MsgBx
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_UnlinkFbOrTwConfirm_MsgBx", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Successfully Unlinked Account..
         /// </summary>
-        public static string FreeSMS_UnlinkFbOrTwSuccess_MsgBx {
-            get {
+        public static string FreeSMS_UnlinkFbOrTwSuccess_MsgBx
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_UnlinkFbOrTwSuccess_MsgBx", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlink Twitter.
         /// </summary>
-        public static string FreeSMS_UnlinkTwitter_MsgBxCaptn {
-            get {
+        public static string FreeSMS_UnlinkTwitter_MsgBxCaptn
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_UnlinkTwitter_MsgBxCaptn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Twitter Logout.
         /// </summary>
-        public static string FreeSMS_UnlinkTwSuccess_MsgBxCaptn {
-            get {
+        public static string FreeSMS_UnlinkTwSuccess_MsgBxCaptn
+        {
+            get
+            {
                 return ResourceManager.GetString("FreeSMS_UnlinkTwSuccess_MsgBxCaptn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to friends.
         /// </summary>
-        public static string Friends_Txt {
-            get {
+        public static string Friends_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Friends_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Fun, free messaging for life.
         /// </summary>
-        public static string Fun_Free_Messaging_Txt {
-            get {
+        public static string Fun_Free_Messaging_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Fun_Free_Messaging_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This group chat has ended..
         /// </summary>
-        public static string GROUP_CHAT_END {
-            get {
+        public static string GROUP_CHAT_END
+        {
+            get
+            {
                 return ResourceManager.GetString("GROUP_CHAT_END", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to GROUP NAME.
         /// </summary>
-        public static string GROUP_NAME_TXT {
-            get {
+        public static string GROUP_NAME_TXT
+        {
+            get
+            {
                 return ResourceManager.GetString("GROUP_NAME_TXT", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Group Chat with {0}.
         /// </summary>
-        public static string GroupChatWith_Txt {
-            get {
+        public static string GroupChatWith_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupChatWith_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} changed the group image..
+        /// </summary>
+        public static string GroupImgChangedByGrpMember_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("GroupImgChangedByGrpMember_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Change Group Name.
         /// </summary>
-        public static string GroupInfo_ChangeGrpName_Txt {
-            get {
+        public static string GroupInfo_ChangeGrpName_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupInfo_ChangeGrpName_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Group name cannot be empty&quot;.
         /// </summary>
-        public static string GroupInfo_GrpNameCannotBeEmpty_Txt {
-            get {
+        public static string GroupInfo_GrpNameCannotBeEmpty_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupInfo_GrpNameCannotBeEmpty_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Group name will be changed to &apos;{0}&apos;.
         /// </summary>
-        public static string GroupInfo_GrpNameChangedTo_Txt {
-            get {
+        public static string GroupInfo_GrpNameChangedTo_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupInfo_GrpNameChangedTo_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invite Sent.
         /// </summary>
-        public static string GroupInfo_InviteSent_MsgBoxHeader_Txt {
-            get {
+        public static string GroupInfo_InviteSent_MsgBoxHeader_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupInfo_InviteSent_MsgBoxHeader_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Your friends have been invited.
         /// </summary>
-        public static string GroupInfo_InviteSent_MsgBoxText_Txt {
-            get {
+        public static string GroupInfo_InviteSent_MsgBoxText_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupInfo_InviteSent_MsgBoxText_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invite SMS participants to hike.
         /// </summary>
-        public static string GroupInfo_InviteSMSUsers_Btn_Txt {
-            get {
+        public static string GroupInfo_InviteSMSUsers_Btn_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupInfo_InviteSMSUsers_Btn_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to group info.
         /// </summary>
-        public static string GroupInfo_Txt {
-            get {
+        public static string GroupInfo_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupInfo_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} changed the group name to {1}.
         /// </summary>
-        public static string GroupNameChangedByGrpMember_Txt {
-            get {
+        public static string GroupNameChangedByGrpMember_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GroupNameChangedByGrpMember_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Group Chat.
         /// </summary>
-        public static string GrpChat_Txt {
-            get {
+        public static string GrpChat_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GrpChat_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Group Name.
         /// </summary>
-        public static string GrpName_Txt {
-            get {
+        public static string GrpName_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("GrpName_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Happy Messaging!.
+        /// </summary>
+        public static string HappyMessaging_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("HappyMessaging_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to help.
         /// </summary>
-        public static string Help {
-            get {
+        public static string Help
+        {
+            get
+            {
                 return ResourceManager.GetString("Help", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
-        public static string Help_AppVersionTitle {
-            get {
+        public static string Help_AppVersionTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_AppVersionTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Contact our support team for help.
         /// </summary>
-        public static string Help_ContactUsText {
-            get {
+        public static string Help_ContactUsText
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_ContactUsText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Contact Us.
         /// </summary>
-        public static string Help_ContactUsTitle {
-            get {
+        public static string Help_ContactUsTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_ContactUsTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Carrier:.
         /// </summary>
-        public static string Help_EmailCarrier {
-            get {
+        public static string Help_EmailCarrier
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_EmailCarrier", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Device Model:.
         /// </summary>
-        public static string Help_EmailDeviceModel {
-            get {
+        public static string Help_EmailDeviceModel
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_EmailDeviceModel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hike Version:.
         /// </summary>
-        public static string Help_EmailHikeVersion {
-            get {
+        public static string Help_EmailHikeVersion
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_EmailHikeVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Win OS Version:.
         /// </summary>
-        public static string Help_EmailOSVersion {
-            get {
+        public static string Help_EmailOSVersion
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_EmailOSVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Phone Number:.
         /// </summary>
-        public static string Help_EmailPhoneNo {
-            get {
+        public static string Help_EmailPhoneNo
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_EmailPhoneNo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Feedback on WP7.
         /// </summary>
-        public static string Help_EmailSubject {
-            get {
+        public static string Help_EmailSubject
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_EmailSubject", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to FAQs.
         /// </summary>
-        public static string Help_FAQsTitle {
-            get {
+        public static string Help_FAQsTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_FAQsTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Frequently asked questions.
         /// </summary>
-        public static string Help_FAQsTxt {
-            get {
+        public static string Help_FAQsTxt
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_FAQsTxt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Read Terms of service and privacy policy.
         /// </summary>
-        public static string Help_LegalText {
-            get {
+        public static string Help_LegalText
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_LegalText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Legal.
         /// </summary>
-        public static string Help_LegalTitle {
-            get {
+        public static string Help_LegalTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_LegalTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rate and review hike on the marketplace.
         /// </summary>
-        public static string Help_RateAppText {
-            get {
+        public static string Help_RateAppText
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_RateAppText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Rate the App.
         /// </summary>
-        public static string Help_RateAppTitle {
-            get {
+        public static string Help_RateAppTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_RateAppTitle", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check hike status on Twitter.
+        /// </summary>
+        public static string Help_System_Health_Text
+        {
+            get
+            {
+                return ResourceManager.GetString("Help_System_Health_Text", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to System Health.
+        /// </summary>
+        public static string Help_System_Health_Title
+        {
+            get
+            {
+                return ResourceManager.GetString("Help_System_Health_Title", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to View the meet hike walkthrough.
         /// </summary>
-        public static string Help_WalkthroughText {
-            get {
+        public static string Help_WalkthroughText
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_WalkthroughText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Walkthrough.
         /// </summary>
-        public static string Help_WalkthroughTitle {
-            get {
+        public static string Help_WalkthroughTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("Help_WalkthroughTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hike friends.
         /// </summary>
-        public static string Hike_Friends_Text {
-            get {
+        public static string Hike_Friends_Text
+        {
+            get
+            {
                 return ResourceManager.GetString("Hike_Friends_Text", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hike. .
         /// </summary>
-        public static string Hike_txt {
-            get {
+        public static string Hike_txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Hike_txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore.
         /// </summary>
-        public static string Ignore_Txt {
-            get {
+        public static string Ignore_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Ignore_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Image.
         /// </summary>
-        public static string Image_Txt {
-            get {
+        public static string Image_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Image_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invite.
         /// </summary>
-        public static string Invite_Small {
-            get {
+        public static string Invite_Small
+        {
+            get
+            {
                 return ResourceManager.GetString("Invite_Small", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to INVITE.
         /// </summary>
-        public static string Invite_Txt {
-            get {
+        public static string Invite_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Invite_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invited.
         /// </summary>
-        public static string Invited {
-            get {
+        public static string Invited
+        {
+            get
+            {
                 return ResourceManager.GetString("Invited", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  is missing all the fun..
         /// </summary>
-        public static string InviteOnHike_Txt {
-            get {
+        public static string InviteOnHike_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("InviteOnHike_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invite to hike.
         /// </summary>
-        public static string InviteOnHikeBtn_Txt {
-            get {
+        public static string InviteOnHikeBtn_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("InviteOnHikeBtn_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Help him upgrade to hike!.
         /// </summary>
-        public static string InviteOnHikeUpgrade_Txt {
-            get {
+        public static string InviteOnHikeUpgrade_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("InviteOnHikeUpgrade_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Friends Invited.
         /// </summary>
-        public static string InviteUsers_FriendsInvited_Txt {
-            get {
+        public static string InviteUsers_FriendsInvited_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("InviteUsers_FriendsInvited_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Total invites sent : {0}.
         /// </summary>
-        public static string InviteUsers_TotalInvitesSent_Txt {
-            get {
+        public static string InviteUsers_TotalInvitesSent_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("InviteUsers_TotalInvitesSent_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
-        public static string Location_Txt {
-            get {
+        public static string Location_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Location_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Love using Hike?.
+        /// </summary>
+        public static string Love_Using_Hike_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Love_Using_Hike_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You can also message friends not.
+        /// </summary>
+        public static string MessageNonHikeFriends_Blk1_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("MessageNonHikeFriends_Blk1_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to on hike with free hike SMS.
+        /// </summary>
+        public static string MessageNonHikeFriends_Blk2_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("MessageNonHikeFriends_Blk2_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Messaging.
         /// </summary>
-        public static string Messaging_Txt {
-            get {
+        public static string Messaging_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Messaging_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Messaging hike friends is free &amp; unlimited..
+        /// </summary>
+        public static string MessagingHikeFriendsFree_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("MessagingHikeFriendsFree_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to More than 1 contacts found for number : {0}.
         /// </summary>
-        public static string MORE_THAN_1_CONTACT_FOUND {
-            get {
+        public static string MORE_THAN_1_CONTACT_FOUND
+        {
+            get
+            {
                 return ResourceManager.GetString("MORE_THAN_1_CONTACT_FOUND", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to my profile.
         /// </summary>
-        public static string MyProfileheader_Txt {
-            get {
+        public static string MyProfileheader_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("MyProfileheader_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} and {1} others.
         /// </summary>
-        public static string NamingConvention_Txt {
-            get {
+        public static string NamingConvention_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("NamingConvention_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Network Error. Try Again!!.
         /// </summary>
-        public static string NetworkError_TryAgain {
-            get {
+        public static string NetworkError_TryAgain
+        {
+            get
+            {
                 return ResourceManager.GetString("NetworkError_TryAgain", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to NEW STATUS.
         /// </summary>
-        public static string NewStatus_Txt {
-            get {
+        public static string NewStatus_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("NewStatus_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No Contact is saved..
         /// </summary>
-        public static string NO_CONTACT_SAVED {
-            get {
+        public static string NO_CONTACT_SAVED
+        {
+            get
+            {
                 return ResourceManager.GetString("NO_CONTACT_SAVED", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No network connectivity..
         /// </summary>
-        public static string No_Network_Txt {
-            get {
+        public static string No_Network_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("No_Network_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invite {0} to continue hiking..
+        /// </summary>
+        public static string NoFreeSmsLeft_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("NoFreeSmsLeft_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to No information regarding the task result is available..
         /// </summary>
-        public static string NoInfoForTask_Txt {
-            get {
+        public static string NoInfoForTask_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("NoInfoForTask_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update available.
         /// </summary>
-        public static string NORMAL_UPDATE_HEADING {
-            get {
+        public static string NORMAL_UPDATE_HEADING
+        {
+            get
+            {
                 return ResourceManager.GetString("NORMAL_UPDATE_HEADING", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A new version of hike is out. Would you like to update the app?.
         /// </summary>
-        public static string NORMAL_UPDATE_TEXT {
-            get {
+        public static string NORMAL_UPDATE_TEXT
+        {
+            get
+            {
                 return ResourceManager.GetString("NORMAL_UPDATE_TEXT", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nudge.
         /// </summary>
-        public static string Nudge {
-            get {
+        public static string Nudge
+        {
+            get
+            {
                 return ResourceManager.GetString("Nudge", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Nudge!.
         /// </summary>
-        public static string Nudge_Exclamation {
-            get {
+        public static string Nudge_Exclamation
+        {
+            get
+            {
                 return ResourceManager.GetString("Nudge_Exclamation", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Double tap anywhere on the chat to nudge your friend..
         /// </summary>
-        public static string Nudge_Tute {
-            get {
+        public static string Nudge_Tute
+        {
+            get
+            {
                 return ResourceManager.GetString("Nudge_Tute", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Which of your close friends would you like to connect with on hike?.
+        /// </summary>
+        public static string Nux_CloseFriendsConnect_txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Nux_CloseFriendsConnect_txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Which of your family members would you like to connect with on hike?.
+        /// </summary>
+        public static string Nux_FamilyMembersConnect_txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Nux_FamilyMembersConnect_txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to YOUR FAMILY.
+        /// </summary>
+        public static string Nux_YourFamily_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Nux_YourFamily_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to YOUR FRIENDS.
+        /// </summary>
+        public static string Nux_YourFriends_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Nux_YourFriends_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
-        public static string Off {
-            get {
+        public static string Off
+        {
+            get
+            {
                 return ResourceManager.GetString("Off", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
-        public static string OK {
-            get {
+        public static string OK
+        {
+            get
+            {
                 return ResourceManager.GetString("OK", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to On.
         /// </summary>
-        public static string On {
-            get {
+        public static string On
+        {
+            get
+            {
                 return ResourceManager.GetString("On", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to on hike since {0}.
         /// </summary>
-        public static string OnHIkeSince_Txt {
-            get {
+        public static string OnHIkeSince_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("OnHIkeSince_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to on SMS.
         /// </summary>
-        public static string OnSms_Txt {
-            get {
+        public static string OnSms_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("OnSms_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to profile.
         /// </summary>
-        public static string OthersProfile_Txt {
-            get {
+        public static string OthersProfile_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("OthersProfile_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to owner.
         /// </summary>
-        public static string Owner_Txt {
-            get {
+        public static string Owner_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Owner_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Participants.
         /// </summary>
-        public static string Participants_Txt {
-            get {
+        public static string Participants_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Participants_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to pause.
         /// </summary>
-        public static string Pause_Txt {
-            get {
+        public static string Pause_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Pause_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to photo.
         /// </summary>
-        public static string Photo_Txt {
-            get {
+        public static string Photo_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Photo_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Changed profile picture.
         /// </summary>
-        public static string PicUpdate_StatusTxt {
-            get {
+        public static string PicUpdate_StatusTxt
+        {
+            get
+            {
                 return ResourceManager.GetString("PicUpdate_StatusTxt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to play.
         /// </summary>
-        public static string Play_Txt {
-            get {
+        public static string Play_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Play_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please try again..
         /// </summary>
-        public static string Please_Try_Again_Txt {
-            get {
+        public static string Please_Try_Again_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Please_Try_Again_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to privacy.
         /// </summary>
-        public static string Privacy {
-            get {
+        public static string Privacy
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete your Hike account permanently?.
         /// </summary>
-        public static string Privacy_DeleteAccounConfirmMsgBxText {
-            get {
+        public static string Privacy_DeleteAccounConfirmMsgBxText
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_DeleteAccounConfirmMsgBxText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Account.
         /// </summary>
-        public static string Privacy_DeleteAccountHeader {
-            get {
+        public static string Privacy_DeleteAccountHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_DeleteAccountHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deleting Account....
         /// </summary>
-        public static string Privacy_DeleteAccountProgress {
-            get {
+        public static string Privacy_DeleteAccountProgress
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_DeleteAccountProgress", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Permanently delete your hike account.
         /// </summary>
-        public static string Privacy_DeleteAccountText {
-            get {
+        public static string Privacy_DeleteAccountText
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_DeleteAccountText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlink Account.
         /// </summary>
-        public static string Privacy_UnlinkAccountHeader {
-            get {
+        public static string Privacy_UnlinkAccountHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_UnlinkAccountHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unlinking Account....
         /// </summary>
-        public static string Privacy_UnlinkAccountProgress {
-            get {
+        public static string Privacy_UnlinkAccountProgress
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_UnlinkAccountProgress", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Logout your account from this device.
         /// </summary>
-        public static string Privacy_UnlinkAccountText {
-            get {
+        public static string Privacy_UnlinkAccountText
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_UnlinkAccountText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to unlink your Hike account from this device?.
         /// </summary>
-        public static string Privacy_UnlinkConfirmMsgBxText {
-            get {
+        public static string Privacy_UnlinkConfirmMsgBxText
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_UnlinkConfirmMsgBxText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Account not unlinked.
         /// </summary>
-        public static string Privacy_UnlinkErrMsgBxCaptn {
-            get {
+        public static string Privacy_UnlinkErrMsgBxCaptn
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_UnlinkErrMsgBxCaptn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hike couldn&apos;t unlink your account. Please try again..
         /// </summary>
-        public static string Privacy_UnlinkErrMsgBxText {
-            get {
+        public static string Privacy_UnlinkErrMsgBxText
+        {
+            get
+            {
                 return ResourceManager.GetString("Privacy_UnlinkErrMsgBxText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You need to be friends with.
         /// </summary>
-        public static string ProfileToBeFriendBlk1 {
-            get {
+        public static string ProfileToBeFriendBlk1
+        {
+            get
+            {
                 return ResourceManager.GetString("ProfileToBeFriendBlk1", resourceCulture);
             }
         }
-        
+        ///   Looks up a localized string similar to Rate Now.
+        /// </summary>
+        public static string Rate_Now_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Rate_Now_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to to be able to get status updates..
         /// </summary>
-        public static string ProfileToBeFriendBlk3 {
-            get {
+        public static string ProfileToBeFriendBlk3
+        {
+            get
+            {
                 return ResourceManager.GetString("ProfileToBeFriendBlk3", resourceCulture);
             }
         }
-        
+        ///   Looks up a localized string similar to Please rate us on the Marketplace..
+        /// </summary>
+        public static string Rate_Us_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Rate_Us_Txt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to hike....
+        /// </summary>
+        public static string ReadyToHike_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("ReadyToHike_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to record.
         /// </summary>
-        public static string Record_Txt {
-            get {
+        public static string Record_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Record_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to re-record.
         /// </summary>
-        public static string RecordAudio_AppBarCancelBtnTxt {
-            get {
+        public static string RecordAudio_AppBarCancelBtnTxt
+        {
+            get
+            {
                 return ResourceManager.GetString("RecordAudio_AppBarCancelBtnTxt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to TAP TO PLAY.
         /// </summary>
-        public static string RecordAudio_Play {
-            get {
+        public static string RecordAudio_Play
+        {
+            get
+            {
                 return ResourceManager.GetString("RecordAudio_Play", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to PLAYING.
         /// </summary>
-        public static string RecordAudio_Playing {
-            get {
+        public static string RecordAudio_Playing
+        {
+            get
+            {
                 return ResourceManager.GetString("RecordAudio_Playing", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to TAP ICON TO RECORD.
         /// </summary>
-        public static string RecordAudio_Record {
-            get {
+        public static string RecordAudio_Record
+        {
+            get
+            {
                 return ResourceManager.GetString("RecordAudio_Record", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to RECORDING.
         /// </summary>
-        public static string RecordAudio_Recording {
-            get {
+        public static string RecordAudio_Recording
+        {
+            get
+            {
                 return ResourceManager.GetString("RecordAudio_Recording", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to record audio.
         /// </summary>
-        public static string RecordMedia_Title {
-            get {
+        public static string RecordMedia_Title
+        {
+            get
+            {
                 return ResourceManager.GetString("RecordMedia_Title", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to remove from favorites.
         /// </summary>
-        public static string RemFromFav_Txt {
-            get {
+        public static string RemFromFav_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("RemFromFav_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to remove from group.
         /// </summary>
-        public static string Remove_From_grp_txt {
-            get {
+        public static string Remove_From_grp_txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Remove_From_grp_txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to remove this person from group ?.
         /// </summary>
-        public static string RemoveFromGrpConfirmation_Txt {
-            get {
+        public static string RemoveFromGrpConfirmation_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("RemoveFromGrpConfirmation_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to rewards.
         /// </summary>
-        public static string Rewards_Txt {
-            get {
+        public static string Rewards_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Rewards_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to save.
         /// </summary>
-        public static string Save_AppBar_Btn {
-            get {
+        public static string Save_AppBar_Btn
+        {
+            get
+            {
                 return ResourceManager.GetString("Save_AppBar_Btn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to add user.
         /// </summary>
-        public static string SelectUser_AddUser_Txt {
-            get {
+        public static string SelectUser_AddUser_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_AddUser_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to User already added !!.
         /// </summary>
-        public static string SelectUser_AlreadyAdded_Txt {
-            get {
+        public static string SelectUser_AlreadyAdded_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_AlreadyAdded_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You have blocked this group. Unblock to continue hiking..
         /// </summary>
-        public static string SelectUser_BlockedGroupMsg_Txt {
-            get {
+        public static string SelectUser_BlockedGroupMsg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_BlockedGroupMsg_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You have blocked this user. Unblock to continue hiking..
         /// </summary>
-        public static string SelectUser_BlockMsg_Txt {
-            get {
+        public static string SelectUser_BlockMsg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_BlockMsg_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot add user !!.
         /// </summary>
-        public static string SelectUser_CantAddUser_Txt {
-            get {
+        public static string SelectUser_CantAddUser_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_CantAddUser_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0}[{1}] will be removed from group..
         /// </summary>
-        public static string SelectUser_ContactRemoved_Txt {
-            get {
+        public static string SelectUser_ContactRemoved_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_ContactRemoved_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter Valid Number.
         /// </summary>
-        public static string SelectUser_EnterValidNo_Txt {
-            get {
+        public static string SelectUser_EnterValidNo_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_EnterValidNo_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Free Message....
+        ///   Looks up a localized string similar to Hike Message.
         /// </summary>
-        public static string SelectUser_FreeMsg_Txt {
-            get {
+        public static string SelectUser_FreeMsg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_FreeMsg_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group Message.
+        /// </summary>
+        public static string SelectUser_GroupMsg_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("SelectUser_GroupMsg_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to group owner.
         /// </summary>
-        public static string SelectUser_GrpOwner_Txt {
-            get {
+        public static string SelectUser_GrpOwner_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_GrpOwner_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CHAT.
         /// </summary>
-        public static string SelectUser_Header_Txt {
-            get {
+        public static string SelectUser_Header_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_Header_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hide sms contacts.
         /// </summary>
-        public static string SelectUser_HideSmsContacts_Txt {
-            get {
+        public static string SelectUser_HideSmsContacts_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_HideSmsContacts_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to invite user.
         /// </summary>
-        public static string SelectUser_InviteUsr_Txt {
-            get {
+        public static string SelectUser_InviteUsr_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_InviteUsr_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to leave group.
         /// </summary>
-        public static string SelectUser_LeaveGrp_Txt {
-            get {
+        public static string SelectUser_LeaveGrp_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_LeaveGrp_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} users already selected.
         /// </summary>
-        public static string SelectUser_MaxUsersSelected_Txt {
-            get {
+        public static string SelectUser_MaxUsersSelected_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_MaxUsersSelected_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to mute group.
         /// </summary>
-        public static string SelectUser_MuteGrp_Txt {
-            get {
+        public static string SelectUser_MuteGrp_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_MuteGrp_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Group.
         /// </summary>
-        public static string SelectUser_NewGroup_Text {
-            get {
+        public static string SelectUser_NewGroup_Text
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_NewGroup_Text", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Refresh Contacts.
         /// </summary>
-        public static string SelectUser_RefreshContacts_Txt {
-            get {
+        public static string SelectUser_RefreshContacts_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_RefreshContacts_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to This may take a minute or two....
         /// </summary>
-        public static string SelectUser_RefreshWaitMsg_Txt {
-            get {
+        public static string SelectUser_RefreshWaitMsg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_RefreshWaitMsg_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Remove Contact?.
         /// </summary>
-        public static string SelectUser_RemoveContact_Txt {
-            get {
+        public static string SelectUser_RemoveContact_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_RemoveContact_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to show sms contacts.
         /// </summary>
-        public static string SelectUser_ShowSmsContacts_Txt {
-            get {
+        public static string SelectUser_ShowSmsContacts_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_ShowSmsContacts_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to SMS Message....
+        ///   Looks up a localized string similar to Text Message.
         /// </summary>
-        public static string SelectUser_SmsMsg_Txt {
-            get {
+        public static string SelectUser_SmsMsg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_SmsMsg_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tap here to add this person.
         /// </summary>
-        public static string SelectUser_TapMsg_Grp_Txt {
-            get {
+        public static string SelectUser_TapMsg_Grp_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_TapMsg_Grp_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tap here to message this person.
         /// </summary>
-        public static string SelectUser_TapMsg_Txt {
-            get {
+        public static string SelectUser_TapMsg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_TapMsg_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to with.
         /// </summary>
-        public static string SelectUser_Title_Txt {
-            get {
+        public static string SelectUser_Title_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_Title_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  Search or Enter Phone #....
         /// </summary>
-        public static string SelectUser_TxtBoxHint_Txt {
-            get {
+        public static string SelectUser_TxtBoxHint_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_TxtBoxHint_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to unmute.
         /// </summary>
-        public static string SelectUser_UnMuteGrp_Txt {
-            get {
+        public static string SelectUser_UnMuteGrp_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_UnMuteGrp_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} is already added to group..
         /// </summary>
-        public static string SelectUser_UserAlreadyAdded_Txt {
-            get {
+        public static string SelectUser_UserAlreadyAdded_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_UserAlreadyAdded_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 0 Free SMS left....
         /// </summary>
-        public static string SelectUser_ZeroCredits_Txt {
-            get {
+        public static string SelectUser_ZeroCredits_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SelectUser_ZeroCredits_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to send.
         /// </summary>
-        public static string Send_Txt {
-            get {
+        public static string Send_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Send_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to settings.
         /// </summary>
-        public static string Settings {
-            get {
+        public static string Settings
+        {
+            get
+            {
                 return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Send free SMS to India.
         /// </summary>
-        public static string Settings_FreeSMSToggleSwitchHeader {
-            get {
+        public static string Settings_FreeSMSToggleSwitchHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("Settings_FreeSMSToggleSwitchHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Use push notifications.
         /// </summary>
-        public static string Settings_PushToggleSwitchHeader {
-            get {
+        public static string Settings_PushToggleSwitchHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("Settings_PushToggleSwitchHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Vibrate.
         /// </summary>
-        public static string Settings_VibrateToggleSwitchHeader {
-            get {
+        public static string Settings_VibrateToggleSwitchHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("Settings_VibrateToggleSwitchHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share Contact.
         /// </summary>
-        public static string ShareContact_ConfirmationCaption {
-            get {
+        public static string ShareContact_ConfirmationCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ShareContact_ConfirmationCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to share contact information of {0}.
         /// </summary>
-        public static string ShareContact_ConfirmationText {
-            get {
+        public static string ShareContact_ConfirmationText
+        {
+            get
+            {
                 return ResourceManager.GetString("ShareContact_ConfirmationText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Share Contact.
         /// </summary>
-        public static string ShareContact_Txt {
-            get {
+        public static string ShareContact_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("ShareContact_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Refresh Contact List.
         /// </summary>
-        public static string SharedContactNotFoundCaptionText {
-            get {
+        public static string SharedContactNotFoundCaptionText
+        {
+            get
+            {
                 return ResourceManager.GetString("SharedContactNotFoundCaptionText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please refresh contact list as contact selected does not exists..
         /// </summary>
-        public static string SharedContactNotFoundText {
-            get {
+        public static string SharedContactNotFoundText
+        {
+            get
+            {
                 return ResourceManager.GetString("SharedContactNotFoundText", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Location Service is not enabled on the device..
         /// </summary>
-        public static string ShareLocation_LocationServiceNotEnabled_Txt {
-            get {
+        public static string ShareLocation_LocationServiceNotEnabled_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("ShareLocation_LocationServiceNotEnabled_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Location Service is working, but it cannot get location data..
         /// </summary>
-        public static string ShareLocation_LocationServiceWorking_Txt {
-            get {
+        public static string ShareLocation_LocationServiceWorking_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("ShareLocation_LocationServiceWorking_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Please wait while your position is determined.....
         /// </summary>
-        public static string ShareLocation_PlsWaitForPosition_Txt {
-            get {
+        public static string ShareLocation_PlsWaitForPosition_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("ShareLocation_PlsWaitForPosition_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to share location.
         /// </summary>
-        public static string ShareLocation_Txt {
-            get {
+        public static string ShareLocation_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("ShareLocation_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to smiley.
         /// </summary>
-        public static string Smiley_Txt {
-            get {
+        public static string Smiley_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Smiley_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SMS can only be sent to India..
         /// </summary>
-        public static string SMS_INDIA {
-            get {
+        public static string SMS_INDIA
+        {
+            get
+            {
                 return ResourceManager.GetString("SMS_INDIA", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Hi! I’m using hike, an awesome new free messaging app from Bharti SoftBank. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
-        public static string sms_invite_message {
-            get {
+        public static string sms_invite_message
+        {
+            get
+            {
                 return ResourceManager.GetString("sms_invite_message", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} SMS Left.
         /// </summary>
-        public static string SMS_Left_Txt {
-            get {
+        public static string SMS_Left_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SMS_Left_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SMS works only to India at the moment..
         /// </summary>
-        public static string SMS_Works_Only_In_India_Txt {
-            get {
+        public static string SMS_Works_Only_In_India_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SMS_Works_Only_In_India_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Share on Facebook &amp; Twitter.
+        /// </summary>
+        public static string Social_Cnnct_TxtBlk
+        {
+            get
+            {
+                return ResourceManager.GetString("Social_Cnnct_TxtBlk", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to I’m using hike, an awesome new free messaging app! Download the app to start messaging me for free! @hikeapp.
         /// </summary>
-        public static string Social_Invite_Txt {
-            get {
+        public static string Social_Invite_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Social_Invite_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Social.
         /// </summary>
-        public static string Social_Txt {
-            get {
+        public static string Social_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Social_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to retrieve request token..
         /// </summary>
-        public static string SocialPages_UnableToRetrieveToken_Txt {
-            get {
+        public static string SocialPages_UnableToRetrieveToken_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("SocialPages_UnableToRetrieveToken_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Oops, something went wrong!.
         /// </summary>
-        public static string Something_Wrong_Txt {
-            get {
+        public static string Something_Wrong_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Changed profile picture.
         /// </summary>
-        public static string StatusUpdate_Photo {
-            get {
+        public static string StatusUpdate_Photo
+        {
+            get
+            {
                 return ResourceManager.GetString("StatusUpdate_Photo", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You can now see updates from {0}. Would you like to do the same?.
         /// </summary>
-        public static string StatusUpdate_YouCanNowSeeUpdates_TxtBlk {
-            get {
+        public static string StatusUpdate_YouCanNowSeeUpdates_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("StatusUpdate_YouCanNowSeeUpdates_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to at {0}.
         /// </summary>
-        public static string StatuUpdate_Location {
-            get {
+        public static string StatuUpdate_Location
+        {
+            get
+            {
                 return ResourceManager.GetString("StatuUpdate_Location", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to stop.
         /// </summary>
-        public static string Stop_Txt {
-            get {
+        public static string Stop_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Stop_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tap here to invite.
         /// </summary>
-        public static string Tap_To_Invite_Txt {
-            get {
+        public static string Tap_To_Invite_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Tap_To_Invite_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to a minute ago.
         /// </summary>
-        public static string TimeUtils_A_Min_Ago_Txt {
-            get {
+        public static string TimeUtils_A_Min_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_A_Min_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to an hour ago.
         /// </summary>
-        public static string TimeUtils_An_hour_Ago_Txt {
-            get {
+        public static string TimeUtils_An_hour_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_An_hour_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to moments ago.
         /// </summary>
-        public static string TimeUtils_Moments_Ago {
-            get {
+        public static string TimeUtils_Moments_Ago
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_Moments_Ago", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 month ago.
         /// </summary>
-        public static string TimeUtils_One_Month_Ago_Txt {
-            get {
+        public static string TimeUtils_One_Month_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_One_Month_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 second ago.
         /// </summary>
-        public static string TimeUtils_One_Sec_Ago_Txt {
-            get {
+        public static string TimeUtils_One_Sec_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_One_Sec_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 year ago.
         /// </summary>
-        public static string TimeUtils_One_Year_Ago_Txt {
-            get {
+        public static string TimeUtils_One_Year_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_One_Year_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} days ago.
         /// </summary>
-        public static string TimeUtils_X_Days_Ago_Txt {
-            get {
+        public static string TimeUtils_X_Days_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_X_Days_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} hours ago.
         /// </summary>
-        public static string TimeUtils_X_hours_Ago_Txt {
-            get {
+        public static string TimeUtils_X_hours_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_X_hours_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} minutes ago.
         /// </summary>
-        public static string TimeUtils_X_Mins_Ago_Txt {
-            get {
+        public static string TimeUtils_X_Mins_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_X_Mins_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} months ago.
         /// </summary>
-        public static string TimeUtils_X_Month_Ago_Txt {
-            get {
+        public static string TimeUtils_X_Month_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_X_Month_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} seconds ago.
         /// </summary>
-        public static string TimeUtils_X_Secs_Ago_Txt {
-            get {
+        public static string TimeUtils_X_Secs_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_X_Secs_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} years ago.
         /// </summary>
-        public static string TimeUtils_X_Years_Ago_Txt {
-            get {
+        public static string TimeUtils_X_Years_Ago_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("TimeUtils_X_Years_Ago_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unblock.
         /// </summary>
-        public static string UnBlock_Txt {
-            get {
+        public static string UnBlock_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("UnBlock_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unlink.
+        /// </summary>
+        public static string Unlink_Txt
+        {
+            get
+            {
+                return ResourceManager.GetString("Unlink_Txt", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
-        public static string Update_Txt {
-            get {
+        public static string Update_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Update_Txt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait while your app is upgrading....
+        /// </summary>
+        public static string UpgradingApp_Text
+        {
+            get
+            {
+                return ResourceManager.GetString("UpgradingApp_Text", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to User cancelled the task..
         /// </summary>
-        public static string User_Cancelled_Task_Txt {
-            get {
+        public static string User_Cancelled_Task_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("User_Cancelled_Task_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  has been invited.
         /// </summary>
-        public static string USER_INVITED {
-            get {
+        public static string USER_INVITED
+        {
+            get
+            {
                 return ResourceManager.GetString("USER_INVITED", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  joined the group chat!.
         /// </summary>
-        public static string USER_JOINED_GROUP_CHAT {
-            get {
+        public static string USER_JOINED_GROUP_CHAT
+        {
+            get
+            {
                 return ResourceManager.GetString("USER_JOINED_GROUP_CHAT", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} just joined hike!.
         /// </summary>
-        public static string USER_JOINED_HIKE {
-            get {
+        public static string USER_JOINED_HIKE
+        {
+            get
+            {
                 return ResourceManager.GetString("USER_JOINED_HIKE", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  left the group chat.
         /// </summary>
-        public static string USER_LEFT {
-            get {
+        public static string USER_LEFT
+        {
+            get
+            {
                 return ResourceManager.GetString("USER_LEFT", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to  just opted in to hike!.
         /// </summary>
-        public static string USER_OPTED_IN_MSG {
-            get {
+        public static string USER_OPTED_IN_MSG
+        {
+            get
+            {
                 return ResourceManager.GetString("USER_OPTED_IN_MSG", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Video.
         /// </summary>
-        public static string Video_Txt {
-            get {
+        public static string Video_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Video_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to voice message.
         /// </summary>
-        public static string Voice_msg_Txt {
-            get {
+        public static string Voice_msg_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Voice_msg_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Waiting for {0} to join in.
         /// </summary>
-        public static string WAITING_TO_JOIN {
-            get {
+        public static string WAITING_TO_JOIN
+        {
+            get
+            {
                 return ResourceManager.GetString("WAITING_TO_JOIN", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to *Free SMS can only be sent to India.
         /// </summary>
-        public static string Walkthrough_FreeMsgToIndia_Txt {
-            get {
+        public static string Walkthrough_FreeMsgToIndia_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Walkthrough_FreeMsgToIndia_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to For every friend who joins, you get 50 Free hike SMS every month.
         /// </summary>
-        public static string Walkthrough_FreeSmsReward_Txt {
-            get {
+        public static string Walkthrough_FreeSmsReward_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Walkthrough_FreeSmsReward_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to swipe left to continue.
         /// </summary>
-        public static string Walkthrough_H2H_SwipeLeft {
-            get {
+        public static string Walkthrough_H2H_SwipeLeft
+        {
+            get
+            {
                 return ResourceManager.GetString("Walkthrough_H2H_SwipeLeft", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invite Friends Earn Rewards..
         /// </summary>
-        public static string Walkthrough_InviteFriends_Txt {
-            get {
+        public static string Walkthrough_InviteFriends_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Walkthrough_InviteFriends_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to let&apos;s hike.
         /// </summary>
-        public static string Walkthrough_LetsHike_Txt {
-            get {
+        public static string Walkthrough_LetsHike_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Walkthrough_LetsHike_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Free, always, worldwide.
         /// </summary>
-        public static string Walkthrough_TitleMsg_1 {
-            get {
+        public static string Walkthrough_TitleMsg_1
+        {
+            get
+            {
                 return ResourceManager.GetString("Walkthrough_TitleMsg_1", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Also message friends not on hike for free with Free hike SMS.
         /// </summary>
-        public static string Walkthrough_TitleMsg_2 {
-            get {
+        public static string Walkthrough_TitleMsg_2
+        {
+            get
+            {
                 return ResourceManager.GetString("Walkthrough_TitleMsg_2", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Tap next to confirm that you are 13+ years of age.
         /// </summary>
-        public static string WelcomePage_13YrsMsg_TxtBlk {
-            get {
+        public static string WelcomePage_13YrsMsg_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("WelcomePage_13YrsMsg_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to accept.
         /// </summary>
-        public static string WelcomePage_Accept_AppBar {
-            get {
+        public static string WelcomePage_Accept_AppBar
+        {
+            get
+            {
                 return ResourceManager.GetString("WelcomePage_Accept_AppBar", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Push Notifications are turned on by default.
         /// </summary>
-        public static string WelcomePage_PushMsg_TxtBlk {
-            get {
+        public static string WelcomePage_PushMsg_TxtBlk
+        {
+            get
+            {
                 return ResourceManager.GetString("WelcomePage_PushMsg_TxtBlk", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Terms and Privacy.
         /// </summary>
-        public static string WelcomePage_TnP_HlBtn {
-            get {
+        public static string WelcomePage_TnP_HlBtn
+        {
+            get
+            {
                 return ResourceManager.GetString("WelcomePage_TnP_HlBtn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to yesterday.
         /// </summary>
-        public static string Yesterday_Txt {
-            get {
+        public static string Yesterday_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("Yesterday_Txt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You.
         /// </summary>
-        public static string You_Txt {
-            get {
+        public static string You_Txt
+        {
+            get
+            {
                 return ResourceManager.GetString("You_Txt", resourceCulture);
             }
         }

@@ -196,9 +196,9 @@
     <Compile Include="Mqtt\SubscribeCB.cs" />
     <Compile Include="Mqtt\Topic.cs" />
     <Compile Include="NetworkManager.cs" />
+    <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
-    <Compile Include="utils\AccountUtils.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
     <Compile Include="utils\PushHelper.cs" />
@@ -276,9 +276,9 @@
     <Compile Include="View\UserProfile.xaml.cs">
       <DependentUpon>UserProfile.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Walkthrough.xaml.cs">
-      <DependentUpon>Walkthrough.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="View\UpgradePage.xaml.cs">
+  <DependentUpon>UpgradePage.xaml</DependentUpon>
+  </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -287,6 +287,9 @@
     <Compile Include="Model\HikeDataContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utils\TimeUtils.cs" />
+    <Compile Include="View\WelcomeScreen.xaml.cs">
+      <DependentUpon>WelcomeScreen.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -420,11 +423,14 @@
     <Page Include="View\UserProfile.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Walkthrough.xaml">
+    <Page Include="View\UpgradePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\WelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\WelcomePage.xaml">
+    <Page Include="View\WelcomeScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -482,13 +488,14 @@
     <Content Include="View\images\favorites_heart.png" />
     <Content Include="View\images\favorites_tour_01.jpg" />
     <Content Include="View\images\favorites_tour_02.jpg" />
+    <Content Include="View\images\fbSignUp.png" />
     <Content Include="View\images\fb_icon.png" />
+    <Content Include="View\images\group_name_changed.png" />
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
-
     <Content Include="View\images\icon_editprofile.png" />
-
+    <Content Include="View\images\icon_group.png" />
     <Content Include="View\images\icon_pause.png" />
     <Content Include="View\images\icon_message.png" />
     <Content Include="View\images\icon_play.png" />
@@ -497,22 +504,26 @@
     <Content Include="View\images\icon_status.png" />
     <Content Include="View\images\icon_record_appbar.png" />
     <Content Include="View\images\icon_stop.png" />
+    <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
     <Content Include="View\images\notification_read.png" />
     <Content Include="View\images\notification_unread.png" />
     <Content Include="View\images\user_invite.png" />
     <Content Include="View\images\user_lock.png" />
+    <Content Include="View\images\menu_camera_icon.png" />
+    <Content Include="View\images\menu_video_icon.png" />
+    <Content Include="View\images\welome_screen.jpg" />
     <Resource Include="View\images\logo_main_white.png" />
     <Resource Include="View\images\logo_main_black.png" />
     <Content Include="View\images\made_with_love_dark.png" />
     <Content Include="View\images\map-pin.png" />
     <Content Include="View\images\menu_audio_icon.png" />
+    <Content Include="View\images\menu_contact_icon.png" />
     <Content Include="View\images\menu_photo_icon.png" />
     <Content Include="View\images\mic_icon.png" />
     <Content Include="View\images\mic_icon_black.png" />
     <Content Include="View\images\mute_icon_main.png" />
-    <Content Include="View\images\new_message.png" />
     <Content Include="View\images\nudge_received.png" />
     <Content Include="View\images\nudge_sent.png" />
     <Content Include="View\images\nudge_tutorial.png" />
@@ -521,6 +532,7 @@
     <Content Include="View\images\remove_icon.png" />
     <Content Include="View\images\rewards_link.png" />
     <Content Include="View\images\rewards_link_dark.png" />
+    <Content Include="View\images\signupfb.png" />
     <Content Include="View\images\tick.png" />
     <Content Include="View\images\timeline_friend.png" />
     <Content Include="View\images\timeline_status.png" />
@@ -721,10 +733,6 @@
     <Content Include="View\images\made_with_love.png" />
     <Resource Include="View\images\notifications.png" />
     <Content Include="View\images\logo_main.png" />
-    <Content Include="View\images\phone_hikerewards.jpg" />
-    <Content Include="View\images\phone_hiketohike.jpg" />
-    <Content Include="View\images\phone_hiketosms.jpg" />
-    <Content Include="View\images\phone_number.png" />
     <Resource Include="View\images\privacy.png" />
     <Content Include="View\images\play_icon.png" />
     <Resource Include="View\images\privacy_dark.png" />

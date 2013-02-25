@@ -137,7 +137,10 @@ namespace windows_client
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
-                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
+                    if (convMessage.FileAttachment != null && convMessage.FileAttachment.ContentType.Contains(HikeConstants.CONTACT))
+                        convMessage.FileAttachment.FileState = Attachment.AttachmentState.COMPLETED;
+
+                    if (convMessage.FileAttachment != null && (convMessage.FileAttachment.ContentType.Contains(HikeConstants.LOCATION)))
                     {
                         byte[] locationBytes = (new System.Text.UTF8Encoding()).GetBytes(convMessage.MetaDataString);
                         MiscDBUtil.storeFileInIsolatedStorage(HikeConstants.FILES_BYTE_LOCATION + "/" + convMessage.Msisdn + "/" +
@@ -363,6 +366,10 @@ namespace windows_client
             #region ICON
             else if (ICON == type)
             {
+                // donot do anything if its a GC as it will be handled in DP packet
+                if (Utils.isGroupConversation(msisdn))
+                    return;
+
                 JToken temp;
                 jsonObj.TryGetValue(HikeConstants.DATA, out temp);
                 if (temp == null)
@@ -371,14 +378,7 @@ namespace windows_client
                 byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
 
                 Stopwatch st = Stopwatch.StartNew();
-                if (Utils.isGroupConversation(msisdn))
-                {
-                    // ':' is not supported in Isolated Storage so replacing it with '_'
-                    string grpId = msisdn.Replace(":", "_");
-                    MiscDBUtil.saveAvatarImage(grpId, imageBytes, true);
-                }
-                else
-                    MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
+                MiscDBUtil.saveAvatarImage(msisdn, imageBytes, true);
                 st.Stop();
                 if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                 {
@@ -510,7 +510,7 @@ namespace windows_client
                                                         if (pendingJSON.TryGetValue(HikeConstants.NAME, out pToken))
                                                             name = pToken.ToString();
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
-                                                        LoadFavAndPending(isFav, fkkvv.Key,name); // true for favs
+                                                        LoadFavAndPending(isFav, fkkvv.Key, name); // true for favs
                                                         thrAreFavs = true;
                                                     }
                                                     if (thrAreFavs)
@@ -768,24 +768,25 @@ namespace windows_client
                 this.pubSub.publish(HikePubSub.PARTICIPANT_JOINED_GROUP, jsonObj);
             }
             #endregion
-            #region GROUP_CHAT_NAME
+            #region GROUP_CHAT_NAME CHANGE
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_NAME == type) //Group chat name change
             {
                 try
                 {
                     string groupName = (string)jsonObj[HikeConstants.DATA];
                     string groupId = (string)jsonObj[HikeConstants.TO];
-                    if (msisdn == App.MSISDN)
+                    if (msisdn == App.MSISDN) // if I changed the name ignore
                         return;
                     bool groupExist = ConversationTableUtils.updateGroupName(groupId, groupName);
                     if (!groupExist)
                         return;
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE, jsonObj);
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
-                    object[] vals = new object[3];
-                    vals[0] = groupId;
-                    vals[1] = groupName;
-                    vals[2] = cm;
+                    if (obj == null)
+                        return;
+                    object[] vals = new object[2];
+                    vals[0] = cm;
+                    vals[1] = obj;
 
                     bool goAhead = GroupTableUtils.updateGroupName(groupId, groupName);
                     if (goAhead)
@@ -793,14 +794,54 @@ namespace windows_client
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
                         {
                             App.ViewModel.ConvMap[groupId].ContactName = groupName;
+                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
+                            this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, groupId);
                         });
-                        this.pubSub.publish(HikePubSub.GROUP_NAME_CHANGED, vals);
                     }
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine("NETWORK MANAGER :: Exception while parsing GCN packet : " + e.StackTrace);
                 }
+            }
+            #endregion
+            #region GROUP DISPLAY PIC CHANGE
+            else if (HikeConstants.MqttMessageTypes.GROUP_DISPLAY_PIC == type)
+            {
+                string groupId = (string)jsonObj[HikeConstants.TO];
+                string from = (string)jsonObj[HikeConstants.FROM];
+                if (from == App.MSISDN) // if you changed the pic simply ignore
+                    return;
+                JToken temp;
+                jsonObj.TryGetValue(HikeConstants.DATA, out temp);
+                if (temp == null)
+                    return;
+                string iconBase64 = temp.ToString();
+                byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
+                ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED, jsonObj);
+                ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+                if (obj == null)
+                    return;
+                MiscDBUtil.saveAvatarImage(groupId, imageBytes, true);
+                if (App.ViewModel.ConvMap.ContainsKey(groupId))
+                {
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        try
+                        {
+                            App.ViewModel.ConvMap[groupId].Avatar = imageBytes;
+                            object[] oa = new object[2];
+                            oa[0] = cm;
+                            oa[1] = obj;
+                            this.pubSub.publish(HikePubSub.MESSAGE_RECEIVED, oa);
+                            this.pubSub.publish(HikePubSub.UPDATE_GRP_PIC, groupId);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
+                        }
+                    });
+                }                
             }
             #endregion
             #region GROUP_CHAT_LEAVE
@@ -1025,7 +1066,7 @@ namespace windows_client
             #endregion
         }
 
-        private void LoadFavAndPending(bool isFav, string msisdn,string name)
+        private void LoadFavAndPending(bool isFav, string msisdn, string name)
         {
             if (msisdn == null)
                 return;
@@ -1184,14 +1225,20 @@ namespace windows_client
                 {
                     if (l[i].Msisdn == ms) // if this msisdn exists in group
                     {
+                        ConvMessage convMsg = null;
                         if (!isOptInMsg) // represents UJ event
                         {
                             if (l[i].IsOnHike)  // if this user is already on hike
                                 continue;
                             l[i].IsOnHike = true;
+                            if (!GroupTableUtils.IsGroupAlive(key)) // if group is dead simply dont do anything
+                                continue;
+                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_JOINED, jsonObj);
                         }
+                        else
+                            convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
+
                         object[] values = null;
-                        ConvMessage convMsg = new ConvMessage(ConvMessage.ParticipantInfoState.USER_OPT_IN, jsonObj);
                         convMsg.Msisdn = key;
                         convMsg.Message = ms;
                         ConversationListObject co = MessagesTableUtils.addChatMessage(convMsg, false);

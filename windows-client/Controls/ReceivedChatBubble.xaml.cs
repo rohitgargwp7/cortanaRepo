@@ -111,7 +111,7 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
-                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, false);
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, false, !FileAttachment.ContentType.Contains(HikeConstants.CONTACT));
                     ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
@@ -147,6 +147,7 @@ namespace windows_client.Controls
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
         private static Thickness progressMargin = new Thickness(0, 5, 0, 0);
         private static Thickness messageTextMargin = new Thickness(0, 12, 0, 0);
+        private static Thickness contactMessageTextMargin = new Thickness(50, 8, 5, 0);
         private static Thickness timeStampBlockMargin = new Thickness(12, 0, 12, 6);
         private static Thickness userNameMargin = new Thickness(12, 12, 0, 0);
 
@@ -155,10 +156,12 @@ namespace windows_client.Controls
         {
             bool hasAttachment = cm.HasAttachment;
             string contentType = cm.FileAttachment == null ? "" : cm.FileAttachment.ContentType;
-            bool isContact = hasAttachment && contentType == HikeConstants.CONTACT;
+            bool isContact = hasAttachment && contentType.Contains(HikeConstants.CT_CONTACT);
 
+            if (isContact)
+                messageString = string.IsNullOrEmpty(cm.FileAttachment.FileName) ? "contact" : cm.FileAttachment.FileName;
             bool showDownload = cm.FileAttachment != null && (cm.FileAttachment.FileState == Attachment.AttachmentState.CANCELED ||
-                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED) && !isContact;
+                cm.FileAttachment.FileState == Attachment.AttachmentState.FAILED_OR_NOT_STARTED);
             bool isNudge = cm.MetaDataString != null && cm.MetaDataString.Contains("poke");
 
             Rectangle BubbleBg = new Rectangle();
@@ -219,23 +222,28 @@ namespace windows_client.Controls
                 }
                 else if (isContact)
                 {
-                    this.MessageImage.Source = UI_Utils.Instance.NudgeSent;
-                    this.MessageImage.Height = 35;
-                    this.MessageImage.Width = 48;
-                    this.MessageImage.Margin = nudgeMargin;
-                    MessageText = new LinkifiedTextBox(UI_Utils.Instance.White, 22, messageString);
-                    MessageText.Width = 330;
-                    MessageText.Margin = messageTextMargin;
-                    MessageText.FontFamily = UI_Utils.Instance.MessageText;
-                    Grid.SetRow(MessageText, 0);
-                    Grid.SetColumn(MessageText, 1);
-                    attachment.Children.Add(MessageText);
+                    this.MessageImage.Source = UI_Utils.Instance.ContactIcon;
+                    this.MessageImage.Height = 20;
+                    this.MessageImage.Width = 30;
+                    TextBlock textBlck = new TextBlock();
+                    textBlck.Text = messageString;
+                    textBlck.FontSize = 22;
+                    textBlck.Foreground = UI_Utils.Instance.ReceiveMessageForeground;
+                    textBlck.Margin = contactMessageTextMargin;
+                    textBlck.TextWrapping = TextWrapping.Wrap;
+                    textBlck.FontFamily = UI_Utils.Instance.MessageText;
+                    textBlck.MinWidth = 150;
+                    textBlck.MaxWidth = 330;
+                    Grid.SetRow(textBlck, 0);
+                    Grid.SetColumn(textBlck, 1);
+                    attachment.Children.Add(textBlck);
 
                 }
                 Grid.SetRow(MessageImage, 0);
                 attachment.Children.Add(MessageImage);
 
-                if ((contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO) || showDownload) && !contentType.Contains(HikeConstants.LOCATION))
+                if ((contentType.Contains(HikeConstants.VIDEO) || contentType.Contains(HikeConstants.AUDIO) || showDownload) && !contentType.Contains(HikeConstants.LOCATION)
+                    && !contentType.Contains(HikeConstants.CT_CONTACT))
                 {
 
                     PlayIcon = new Image();

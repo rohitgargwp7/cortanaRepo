@@ -116,30 +116,36 @@ namespace windows_client.Controls
                             lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Sent;
                             sdrImage.Visibility = Visibility.Visible;
+                            unreadCircle.Visibility = Visibility.Collapsed;
                             break;
                         case ConvMessage.State.SENT_DELIVERED:
                             lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Delivered;
                             sdrImage.Visibility = Visibility.Visible;
+                            unreadCircle.Visibility = Visibility.Collapsed;
                             break;
                         case ConvMessage.State.SENT_DELIVERED_READ:
                             lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Read;
                             sdrImage.Visibility = Visibility.Visible;
+                            unreadCircle.Visibility = Visibility.Collapsed;
                             break;
                         case ConvMessage.State.SENT_UNCONFIRMED:
                             lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Source = UI_Utils.Instance.Trying;
                             sdrImage.Visibility = Visibility.Visible;
+                            unreadCircle.Visibility = Visibility.Collapsed;
                             break;
                         case ConvMessage.State.RECEIVED_UNREAD:
-                            lastMessageTxtBlck.Foreground = (Brush)Application.Current.Resources["PhoneAccentBrush"];
-                            sdrImage.Source = UI_Utils.Instance.Unread;
-                            sdrImage.Visibility = Visibility.Visible;
+                            lastMessageTxtBlck.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                            sdrImage.Visibility = Visibility.Collapsed;
+                            unreadCircle.Visibility = Visibility.Visible;
+                            unreadCircle.Fill = UI_Utils.Instance.PhoneThemeColor;
                             break;
                         default:
                             lastMessageTxtBlck.Foreground = UI_Utils.Instance.LastMsgForeground;
                             sdrImage.Visibility = Visibility.Collapsed;
+                            unreadCircle.Visibility = Visibility.Collapsed;
                             break;
                     }
                 }
@@ -173,7 +179,12 @@ namespace windows_client.Controls
         public ConversationBox(ConversationListObject c)
         {
             InitializeComponent();
-            update(c);
+            this.AvatarImage = c.AvatarImage;
+            this.UserName = c.NameToShow;
+            this.LastMessage = c.LastMessage;
+            this.Timestamp = c.TimeStamp;
+            this.MessageState = c.MessageStatus;
+            this.Msisdn = c.Msisdn;
         }
 
         public override bool Equals(object obj)
@@ -189,16 +200,6 @@ namespace windows_client.Controls
                 return false;
             }
             return (_msisdn == o.Msisdn);
-        }
-
-        public void update(ConversationListObject c)
-        {
-            this.AvatarImage = c.AvatarImage;
-            this.UserName = c.NameToShow;
-            this.LastMessage = c.LastMessage;
-            this.Timestamp = c.TimeStamp;
-            this.MessageState = c.MessageStatus;
-            this.Msisdn = c.Msisdn;
         }
 
         public void UpdateContextMenuFavourites(bool isFav)

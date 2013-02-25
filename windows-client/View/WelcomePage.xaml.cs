@@ -37,12 +37,47 @@ namespace windows_client
             nextIconButton.Click += new EventHandler(getStarted_click);
             appBar.Buttons.Add(nextIconButton);
             welcomePage.ApplicationBar = appBar;
+
+            //if (!App.IS_MARKETPLACE)
+            //{
+            //    signupPanel.Tap += signupPanel_Tap;
+            //    serverTxtBlk.Visibility = System.Windows.Visibility.Visible;
+            //    if(!AccountUtils.IsProd)
+            //        serverTxtBlk.Text = "staging";
+            //    else
+            //        serverTxtBlk.Text = "production";
+            //}
+        }
+
+        private void signupPanel_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //if (AccountUtils.IsProd) // server is prod , change to staging
+            //{
+            //    AccountUtils.IsProd = false;
+            //    serverTxtBlk.Text = "staging";
+            //}
+            //else
+            //{
+            //    AccountUtils.IsProd = true;
+            //    serverTxtBlk.Text = "production";
+            //}
         }
 
         private void getStarted_click(object sender, EventArgs e)
         {
             if (isClicked)
                 return;
+            if (!App.IS_MARKETPLACE) // this is done to save the server info
+                App.appSettings.Save();
+
+            #region SERVER INFO
+            string env = (AccountUtils.IsProd) ? "PRODUCTION" : "STAGING";
+            Debug.WriteLine("SERVER SETTING : " + env);
+            Debug.WriteLine("HOST : " + AccountUtils.HOST);
+            Debug.WriteLine("PORT : " + AccountUtils.PORT);
+            Debug.WriteLine("MQTT HOST : " + AccountUtils.MQTT_HOST);
+            Debug.WriteLine("MQTT PORT : " + AccountUtils.MQTT_PORT);
+            #endregion
             NetworkErrorTxtBlk.Opacity = 0;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {

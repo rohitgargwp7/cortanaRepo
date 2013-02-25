@@ -31,7 +31,7 @@ namespace windows_client.View
     public partial class ConversationsList : PhoneApplicationPage, HikePubSub.Listener
     {
         #region Instances
-
+        bool isDeleteAllChats = false;
         bool _isFavListBound = false;
         private bool firstLoad = true;
         private bool showFreeSMS = false;
@@ -41,7 +41,12 @@ namespace windows_client.View
         private BitmapImage _avatarImageBitmap = new BitmapImage();
         ApplicationBarMenuItem delConvsMenu;
         ApplicationBarIconButton composeIconButton;
+
         ApplicationBarIconButton postStatusIconButton;
+
+        ApplicationBarIconButton groupChatIconButton;
+        BitmapImage profileImage = null;
+
         public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
@@ -58,6 +63,7 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
+
             string lastStatus = "";
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
             lastStatusTxtBlk.Text = lastStatus;
@@ -69,6 +75,7 @@ namespace windows_client.View
                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
             }
             TotalUnreadStatuses = NotificationCount;
+            App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
         }
 
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -110,11 +117,16 @@ namespace windows_client.View
 
         private static void OnNetworkChange(object sender, EventArgs e)
         {
-            //Microsoft.Phone.Net.NetworkInformation.NetworkInterface inherits from System.Net.NetworkInformation.NetworkInterface 
-            //and adds the GetNetworkInterface static method and the NetworkInterfaceType static property
+            //reconnect mqtt whenever phone is reconnected without relaunch 
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 App.MqttManagerInstance.connect();
+                bool isPushEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                if (isPushEnabled)
+                {
+                    App.PushHelperInstance.registerPushnotifications();
+                }
             }
             else
             {
@@ -259,8 +271,10 @@ namespace windows_client.View
             }
             #endregion
             #region CHECK UPDATES
+            //rate the app is handled within this
             checkForUpdates();
             #endregion
+
             postAnalytics();
         }
 
@@ -305,6 +319,8 @@ namespace windows_client.View
                              App.ViewModel.MessageListPageCollection.Remove(convObj.ConvBoxObj);
                          }
                          App.ViewModel.MessageListPageCollection.Insert(0, convObj.ConvBoxObj);
+                         emptyScreenImage.Opacity = 0;
+                         emptyScreenTip.Opacity = 0;
                      });
                 }
             }
@@ -324,7 +340,7 @@ namespace windows_client.View
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
-            composeIconButton.Click += new EventHandler(selectUserBtn_Click);
+            composeIconButton.Click += selectUserBtn_Click;
             composeIconButton.IsEnabled = true;
             appBar.Buttons.Add(composeIconButton);
 
@@ -335,11 +351,12 @@ namespace windows_client.View
             postStatusIconButton.IsEnabled = true;
             //appBar.Buttons.Add(composeIconButton);
 
-            ApplicationBarMenuItem groupChatIconButton = new ApplicationBarMenuItem();
+            groupChatIconButton = new ApplicationBarIconButton();
+            groupChatIconButton.IconUri = new Uri("/View/images/icon_group.png", UriKind.Relative);
             groupChatIconButton.Text = AppResources.GrpChat_Txt;
-            groupChatIconButton.Click += new EventHandler(createGroup_Click);
+            groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
-            appBar.MenuItems.Add(groupChatIconButton);
+            appBar.Buttons.Add(groupChatIconButton);
 
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
@@ -377,7 +394,7 @@ namespace windows_client.View
 
         #endregion
 
-        #region Listeners
+        #region LISTENERS
 
         private void registerListeners()
         {
@@ -478,6 +495,7 @@ namespace windows_client.View
             MessageBoxResult result = MessageBox.Show(AppResources.Conversations_Delete_Chats_Confirmation, AppResources.Conversations_DelAllChats_Txt, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
+            isDeleteAllChats = true;
             shellProgress.IsVisible = true;
             disableAppBar();
             NetworkManager.turnOffNetworkManager = true;
@@ -490,6 +508,7 @@ namespace windows_client.View
             NetworkManager.turnOffNetworkManager = false;
             App.AnalyticsInstance.addEvent(Analytics.DELETE_ALL_CHATS);
             shellProgress.IsVisible = false;
+            isDeleteAllChats = false;
         }
 
         private void ClearAllDB()
@@ -569,7 +588,7 @@ namespace windows_client.View
             if (selectedIndex == 0)
             {
                 if (!appBar.MenuItems.Contains(delConvsMenu))
-                    appBar.MenuItems.Insert(1, delConvsMenu);
+                    appBar.MenuItems.Insert(0, delConvsMenu);
             }
             else if (selectedIndex == 1)
             {
@@ -651,18 +670,23 @@ namespace windows_client.View
                 ConversationListObject mObj = (ConversationListObject)vals[1];
                 if (mObj == null)
                     return;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (!isDeleteAllChats) // this is to avoid exception caused due to deleting all chats while receiving msgs
                 {
-                    if (emptyScreenImage.Visibility == Visibility.Visible)
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        emptyScreenTip.Opacity = 0;
-                        emptyScreenImage.Opacity = 0;
-                    }
-                    //                    convScroller.ScrollToVerticalOffset(0);
-                    myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
-
-                });
+                        try
+                        {
+                            if (emptyScreenImage.Visibility == Visibility.Visible)
+                            {
+                                emptyScreenTip.Opacity = 0;
+                                emptyScreenImage.Opacity = 0;
+                            }
+                            if (App.ViewModel.MessageListPageCollection.Count > 0)
+                                myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
+                        }
+                        catch { }
+                    });
+                }
                 bool isVibrateEnabled = true;
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                 if (isVibrateEnabled)
@@ -935,7 +959,7 @@ namespace windows_client.View
             glCopy.Tap += MenuItem_Tap_Delete;
             menu.Items.Add(menuItemDelete);
 
-            if (!convObj.IsGroupChat)
+            if (!convObj.IsGroupChat && !Utils.IsHikeBotMsg(convObj.Msisdn)) // if its not GC and not hike bot msg then only show add to fav 
             {
                 MenuItem menuItemFavourite = new MenuItem();
                 if (convObj.IsFav) // if already favourite
@@ -1079,10 +1103,13 @@ namespace windows_client.View
             {
                 AccountUtils.createGetRequest(HikeConstants.UPDATE_URL, new AccountUtils.postResponseFunction(checkUpdate_Callback), false);
             }
+            else
+                checkForRateApp();
         }
 
         public void checkUpdate_Callback(JObject obj)
         {
+            bool isUpdateShown = false;
             try
             {
                 if (obj != null)
@@ -1098,20 +1125,23 @@ namespace windows_client.View
                     {
                         App.WriteToIsoStorageSettings(App.APP_ID_FOR_LAST_UPDATE, appID);
                     }
-
                     if (Utils.compareVersion(critical, current) == 1)
                     {
                         App.WriteToIsoStorageSettings(App.LAST_CRITICAL_VERSION, critical);
-                        showCriticalUpdateMessage();
-                        //critical update
+                        showCriticalUpdateMessage();//critical update
+                        isUpdateShown = true;
                     }
                     else if ((Utils.compareVersion(latest, current) == 1) && (String.IsNullOrEmpty(lastDismissedUpdate) ||
                         (Utils.compareVersion(latest, lastDismissedUpdate) == 1)))
                     {
-                        showNormalUpdateMessage();
-                        //normal update
+                        showNormalUpdateMessage();//normal update
+                        isUpdateShown = true;
                     }
                     App.WriteToIsoStorageSettings(App.LAST_UPDATE_CHECK_TIME, TimeUtils.getCurrentTimeStamp());
+                }
+                if (!isUpdateShown)
+                {
+                    checkForRateApp();
                 }
             }
             catch (Exception)
@@ -1175,7 +1205,6 @@ namespace windows_client.View
             }
         }
 
-
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             NetworkManager.turnOffNetworkManager = true;
@@ -1212,6 +1241,49 @@ namespace windows_client.View
 
         #endregion
 
+        #region RATE THE APP
+        private void checkForRateApp()
+        {
+            int appLaunchCount = 0;
+            if (App.appSettings.TryGetValue(HikeConstants.AppSettings.APP_LAUNCH_COUNT, out appLaunchCount) && appLaunchCount > 0)
+            {
+                double result = Math.Log(appLaunchCount / 5f, 2);//using gp
+                if (result == Math.Ceiling(result) && NetworkInterface.GetIsNetworkAvailable()) //TODO - we can use mqtt connection status. 
+                                                                                                //if mqtt is connected it would safe to assume that user is online.
+                {
+                    showRateAppMessage();
+                }
+                App.WriteToIsoStorageSettings(HikeConstants.AppSettings.APP_LAUNCH_COUNT, appLaunchCount + 1);
+            }
+        }
+
+        private void showRateAppMessage()
+        {
+            if (!Guide.IsVisible)
+            {
+                Guide.BeginShowMessageBox(AppResources.Love_Using_Hike_Txt, AppResources.Rate_Us_Txt,
+                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt}, 0, MessageBoxIcon.None,
+                     asyncResult =>
+                     {
+                         int? returned = Guide.EndShowMessageBox(asyncResult);
+                         if (returned != null)
+                         {
+                             if (returned == 0)
+                             {
+                                 MarketplaceReviewTask marketplaceReviewTask = new MarketplaceReviewTask();
+                                 try
+                                 {
+                                     marketplaceReviewTask.Show();
+                                     App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
+                                 }
+                                 catch { }
+                             }
+                         }
+                     }, null);
+            }
+        }
+
+        #endregion
         #region FAVOURITE ZONE
         private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {

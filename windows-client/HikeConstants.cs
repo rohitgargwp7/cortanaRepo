@@ -77,6 +77,7 @@ namespace windows_client
         public static readonly int LOCATION_THUMBNAIL_MAX_HEIGHT = 220;
         public static readonly int LOCATION_THUMBNAIL_MAX_WIDTH = 220;
         public static readonly int PROFILE_PICS_SIZE = 640; //image which are uploaded on servers
+        public static readonly int MAX_THUMBNAILSIZE = 4800;
 
         public static readonly int CHECK_FOR_UPDATE_TIME = 48;//hours on prod and minuts on staging
 
@@ -112,14 +113,15 @@ namespace windows_client
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
 
-        public static readonly string FIRSTNAME = "fname";
-        public static readonly string MIDDLENAME = "mname";
-        public static readonly string LASTNAME = "lname";
-        public static readonly string MOBILE = "mob";
-        public static readonly string TELEPHONE = "tel";
-        public static readonly string EMAIL = "email";
-        public static readonly string COMPANY = "cmp";
-        public static readonly string JOBTITLE = "jtitle";
+        //CS prefix for contactsharing
+        public static readonly string CS_PHONE_NUMBERS = "phone_numbers";
+        public static readonly string CS_NAME = "name";
+        public static readonly string CS_EMAILS = "emails";
+        public static readonly string CS_ADDRESSES = "addresses";
+        public static readonly string CS_HOME_KEY = "Home";
+        public static readonly string CS_WORK_KEY = "Work";
+        public static readonly string CS_MOBILE_KEY = "Mobile";
+        public static readonly string CS_OTHERS_KEY = "Others";
 
         public static string FAQS_LINK
         {
@@ -229,12 +231,16 @@ namespace windows_client
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
         public static string LAST_STATUS = "lastStatus";
 
+        public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
+
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
         public static readonly string CONTACT = "contact";
+        public static readonly string CT_CONTACT = "contact/share";
+
 
         public static readonly string OK = "ok";
         public static readonly string STAT = "stat";
@@ -242,6 +248,8 @@ namespace windows_client
         public static readonly string REWARDS_TOKEN = "reward_token";
         public static readonly string SHOW_REWARDS = "show_rewards";
         public static readonly string REWARDS_VALUE = "tt";
+
+        public static readonly string STAGING_SERVER = "stagingServer";
 
         public static class Extras
         {
@@ -278,6 +286,7 @@ namespace windows_client
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string DND_USER_IN_GROUP = "dugc";
+
             public static readonly string ACCOUNT_INFO = "ai";
             public static readonly string ACCOUNT_CONFIG = "ac";
             public static readonly string GROUP_USER_JOINED_OR_WAITING = "gujow";
@@ -289,6 +298,8 @@ namespace windows_client
             public static readonly string REMOVE_FAVOURITE = "rf";
             public static readonly string REWARDS = "rewards";
             public static readonly string STATUS_UPDATE = "su";
+            public static string GROUP_DISPLAY_PIC = "dp";
+
         }
 
         public static class AppSettings
@@ -300,6 +311,7 @@ namespace windows_client
             public static readonly string TWITTER_TOKEN_SECRET = "TwTokenSecret";
             public static readonly string CONTACTS_TO_SHOW = "ContactsToShow";
             public static readonly string NEW_UPDATE = "New_Update";
+            public static readonly string APP_LAUNCH_COUNT = "App_Launch_Count";
         }
     }
 }

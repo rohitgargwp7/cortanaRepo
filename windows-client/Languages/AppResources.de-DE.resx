@@ -433,14 +433,6 @@
     <value>Speichern</value>
     <comment>cs</comment>
   </data>
-  <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Verbinde dich und erhalte sofort</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
-  <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
-    <value />
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
     <value>Du bekommst monatlich</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
@@ -1237,6 +1229,18 @@
  <value />
   </data>
   <data name="You_Txt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FB_Connect_Txt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FeelingLazy_Txt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
     <value />
   </data>
 </root>

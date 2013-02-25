@@ -433,14 +433,6 @@
     <value>save</value>
     <comment>cs</comment>
   </data>
-  <data name="FreeSMS_Cnnct_TxtBlk1" xml:space="preserve">
-    <value>Connect and get a</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
-  <data name="FreeSMS_Cnnct_TxtBlk3" xml:space="preserve">
-    <value>instantly</value>
-    <comment>xaml. Since, 100 Free SMS is in bold then complet sentence is broken in 3 parts</comment>
-  </data>
   <data name="FreeSMS_EarnFreeSMS_TxtBlk1" xml:space="preserve">
     <value>Earn an extra</value>
     <comment>xaml. 50 Free SMS is in bold. Sentence broken in 3 parts</comment>
@@ -642,7 +634,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_FreeMsg_Txt" xml:space="preserve">
-    <value>Free Message...</value>
+    <value>Hike Message</value>
     <comment>cs</comment>
   </data>
   <data name="GroupInfo_Txt" xml:space="preserve">
@@ -690,7 +682,7 @@
     <comment>cs</comment>
   </data>
   <data name="SelectUser_SmsMsg_Txt" xml:space="preserve">
-    <value>SMS Message...</value>
+    <value>Text Message</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_TapMsg_Txt" xml:space="preserve">
@@ -1335,5 +1327,102 @@
   </data>
   <data name="You_Txt" xml:space="preserve">
     <value>You</value>
+  </data>
+  <data name="Help_System_Health_Text" xml:space="preserve">
+    <value>Check hike status on Twitter</value>
+  </data>
+  <data name="Help_System_Health_Title" xml:space="preserve">
+    <value>System Health</value>
+  </data>
+  <data name="Nux_CloseFriendsConnect_txt" xml:space="preserve">
+    <value>Which of your close friends would you like to connect with on hike?</value>
+  </data>
+  <data name="Nux_FamilyMembersConnect_txt" xml:space="preserve">
+    <value>Which of your family members would you like to connect with on hike?</value>
+  </data>
+  <data name="Nux_YourFamily_Txt" xml:space="preserve">
+    <value>YOUR FAMILY</value>
+  </data>
+  <data name="Nux_YourFriends_Txt" xml:space="preserve">
+    <value>YOUR FRIENDS</value>
+  </data>
+  <data name="Attachement_Contact_Txt" xml:space="preserve">
+    <value>Contact Info</value>
+  </data>
+  <data name="Attachment_Audio_Txt" xml:space="preserve">
+    <value>Send Audio</value>
+  </data>
+  <data name="Attachment_Camera_Txt" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="Attachment_Location_Txt" xml:space="preserve">
+    <value>Share Location</value>
+  </data>
+  <data name="Attachment_Photo_Txt" xml:space="preserve">
+    <value>Send Photo</value>
+  </data>
+  <data name="Attachment_Video_Txt" xml:space="preserve">
+    <value>Send Video</value>
+  </data>
+  <data name="NoFreeSmsLeft_Txt" xml:space="preserve">
+    <value>Invite {0} to continue hiking.</value>
+  </data>
+  <data name="SelectUser_GroupMsg_Txt" xml:space="preserve">
+    <value>Group Message</value>
+  </data>
+  <data name="HappyMessaging_Txt" xml:space="preserve">
+    <value>Happy Messaging!</value>
+  </data>
+  <data name="MessageNonHikeFriends_Blk1_Txt" xml:space="preserve">
+    <value>You can also message friends not</value>
+  </data>
+  <data name="MessageNonHikeFriends_Blk2_Txt" xml:space="preserve">
+    <value>on hike with free hike SMS</value>
+  </data>
+  <data name="MessagingHikeFriendsFree_Txt" xml:space="preserve">
+    <value>Messaging hike friends is free &amp; unlimited.</value>
+  </data>
+  <data name="ReadyToHike_Txt" xml:space="preserve">
+    <value>Ready to hike...</value>
+  </data>
+  <data name="Social_Cnnct_TxtBlk" xml:space="preserve">
+    <value>Share on Facebook &amp; Twitter</value>
+  </data>
+  <data name="FB_Connect_Txt" xml:space="preserve">
+    <value>Connect with Facebook</value>
+  </data>
+  <data name="FeelingLazy_Txt" xml:space="preserve">
+    <value>Feeling lazy? We'll do it for you.</value>
+    <comment>Used in Entername screen above FB Notification</comment>
+  </data>
+  <data name="Account_Txt" xml:space="preserve">
+    <value>account</value>
+    <comment>Profile (xaml)</comment>
+  </data>
+  <data name="Delete_Txt_Caps" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Privacy page (xaml)</comment>
+  </data>
+  <data name="Unlink_Txt" xml:space="preserve">
+    <value>Unlink</value>
+    <comment>Privacy page (xaml)</comment>
+  </data>
+<data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+    <value>{0} changed the group image.</value>
+</data>
+  <data name="Ask_Me_Later_Txt" xml:space="preserve">
+    <value>Ask Me Later</value>
+  </data>
+  <data name="Love_Using_Hike_Txt" xml:space="preserve">
+    <value>Love using Hike?</value>
+  </data>
+  <data name="Rate_Now_Txt" xml:space="preserve">
+    <value>Rate Now</value>
+  </data>
+  <data name="Rate_Us_Txt" xml:space="preserve">
+    <value>Please rate us on the Marketplace.</value>
+  </data>
+  <data name="UpgradingApp_Text" xml:space="preserve">
+    <value>Please wait while your app is upgrading...</value>
   </data>
 </root>
