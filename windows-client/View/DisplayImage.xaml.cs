@@ -36,7 +36,7 @@ namespace windows_client.View
                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
                 byte[] filebytes;
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-                setImage(filebytes);
+                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("displayProfilePic"))
             {
@@ -48,7 +48,7 @@ namespace windows_client.View
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
                 {
-                    setImage(fullViewBytes);
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
                 }
                 else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                 {
@@ -75,7 +75,7 @@ namespace windows_client.View
                     }
                     else
                     {
-                        setImage(defaultImageBytes);
+                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(defaultImageBytes);
                     }
                 }
             }
@@ -90,14 +90,14 @@ namespace windows_client.View
                 loadingProgress.Opacity = 0;
                 if (fullBytes != null && fullBytes.Length > 0)
                 {
-                    setImage(fullBytes);
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
                 }
                 else
                 {
                     byte[] smallThumbnailImage = MiscDBUtil.getThumbNailForMsisdn(msisdn);
                     if (smallThumbnailImage != null && smallThumbnailImage.Length > 0)
                     {
-                        setImage(smallThumbnailImage);
+                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(smallThumbnailImage);
                     }
                     else
                     {
@@ -114,25 +114,6 @@ namespace windows_client.View
                     }
                 }
             });
-        }
-
-        private void setImage(byte[] imageBytes)
-        {
-            try
-            {
-                BitmapImage bitmapImage = null;
-                using (var memStream = new MemoryStream(imageBytes))
-                {
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    bitmapImage = new BitmapImage();
-                    bitmapImage.SetSource(memStream);
-                }
-                this.FileImage.Source = bitmapImage;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
-            }
         }
     }
 }
