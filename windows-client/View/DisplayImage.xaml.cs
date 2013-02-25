@@ -167,15 +167,15 @@ namespace windows_client.View
             _oldFinger2 = currentFinger2;
             _oldScaleFactor = e.DistanceRatio;
             UpdateImageScale(scaleFactor);
-            if (!isRestore)
-            {
-                UpdateImagePosition(translationDelta);
-            }
-            else
+            if (isRestore) //image's total reduction is < 1
             {
                 imagePosition.X = (FileImage.ActualWidth * (1 - scaleFactor * totalImageScale)) / 2;
                 imagePosition.Y = (FileImage.ActualHeight * (1 - scaleFactor * totalImageScale)) / 2;
                 ApplyPosition();
+            }
+            else
+            {
+                UpdateImagePosition(translationDelta);
             }
         }
 
