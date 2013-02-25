@@ -280,7 +280,7 @@ namespace windows_client.View
         private void ResetImagePosition()
         {
             totalImageScale = 1;
-            imagePosition = new Point(0, 0);
+            imagePosition.X = imagePosition.Y = 0;
             ApplyScale();
             ApplyPosition();
         }
