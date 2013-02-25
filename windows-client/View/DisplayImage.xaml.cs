@@ -6,13 +6,12 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using windows_client.DbUtils;
 using windows_client.utils;
+using System.Diagnostics;
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
     {
         private string msisdn;
-        //private string fileName;//name of file recived from server. it would be either msisdn or default avatr file name
-
         public DisplayImage()
         {
             InitializeComponent();
@@ -41,10 +40,10 @@ namespace windows_client.View
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("displayProfilePic"))
             {
+                string fileName;
                 object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                 msisdn = (string)profilePicTapped[0];
                 string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
-                string fileName;
                 //check if image is already stored
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
@@ -72,7 +71,7 @@ namespace windows_client.View
                     if (defaultImageBytes == null || defaultImageBytes.Length == 0)
                     {
                         loadingProgress.Opacity = 1;
-                        //TODO : MG plz correct this and merge this //AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false);
+                        AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false, fileName);
                     }
                     else
                     {
@@ -86,7 +85,6 @@ namespace windows_client.View
                 this.FileImage.Source = imageToDisplay;
             }
         }
-
         public void getProfilePic_Callback(byte[] fullBytes, object fName)
         {
             string fileName = fName as string;
@@ -101,5 +99,6 @@ namespace windows_client.View
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
         }
+
     }
 }
