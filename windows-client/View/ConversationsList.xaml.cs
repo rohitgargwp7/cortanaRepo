@@ -60,7 +60,6 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
@@ -104,24 +103,6 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(App.SHOW_FAVORITES_TUTORIAL);
         }
 
-        private static void OnNetworkChange(object sender, EventArgs e)
-        {
-            //reconnect mqtt whenever phone is reconnected without relaunch 
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                App.MqttManagerInstance.connect();
-                bool isPushEnabled = true;
-                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-                if (isPushEnabled)
-                {
-                    App.PushHelperInstance.registerPushnotifications();
-                }
-            }
-            else
-            {
-                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-            }
-        }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -188,7 +169,6 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
-            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
         }
 
         #endregion
@@ -249,15 +229,6 @@ namespace windows_client.View
             }
 
             // move to seperate thread later
-            #region PUSH NOTIFICATIONS STUFF
-
-            bool isPushEnabled = true;
-            appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-            if (isPushEnabled)
-            {
-                App.PushHelperInstance.registerPushnotifications();
-            }
-            #endregion
             #region CHECK UPDATES
             //rate the app is handled within this
             checkForUpdates();

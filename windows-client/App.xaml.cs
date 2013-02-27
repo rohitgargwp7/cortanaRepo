@@ -14,6 +14,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using windows_client.Misc;
+using System.Net.NetworkInformation;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client
 {
@@ -82,7 +84,6 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static PushHelper _pushHelper;
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
 
@@ -231,21 +232,6 @@ namespace windows_client
             }
         }
 
-        public static PushHelper PushHelperInstance
-        {
-            get
-            {
-                return _pushHelper;
-            }
-            set
-            {
-                if (value != _pushHelper)
-                {
-                    _pushHelper = value;
-                }
-            }
-        }
-
         public static string CURRENT_VERSION
         {
             get
@@ -359,6 +345,7 @@ namespace windows_client
                 #endregion
             }
             _isAppLaunched = true;
+            appInitialization();
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -387,6 +374,7 @@ namespace windows_client
                     MqttManagerInstance.connect();
             }
             NetworkManager.turnOffNetworkManager = false;
+            appInitialization();
         }
 
         // Code to execute when the application is deactivated (sent to background)
@@ -404,6 +392,7 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
+            appDeinitialize();
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -411,7 +400,48 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             App.AnalyticsInstance.saveObject();
+            appDeinitialize();
         }
+
+        private void appInitialization()
+        {
+            DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
+            #region PUSH NOTIFICATIONS STUFF
+
+            bool isPushEnabled = true;
+            appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+            if (isPushEnabled)
+            {
+                PushHelper.Instance.registerPushnotifications();
+            }
+            #endregion
+        }
+
+        private void appDeinitialize()
+        {
+            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
+
+        }
+
+        private void OnNetworkChange(object sender, EventArgs e)
+        {
+            //reconnect mqtt whenever phone is reconnected without relaunch 
+            if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                App.MqttManagerInstance.connect();
+                bool isPushEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                if (isPushEnabled)
+                {
+                    PushHelper.Instance.registerPushnotifications();
+                }
+            }
+            else
+            {
+                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+            }
+        }
+
 
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
@@ -683,7 +713,6 @@ namespace windows_client
             #region PUSH HELPER
             st.Reset();
             st.Start();
-            App.PushHelperInstance = PushHelper.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
