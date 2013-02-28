@@ -116,17 +116,5 @@
                 </toolkit:LongListSelector.ItemTemplate>
             </toolkit:LongListSelector>
         </Grid>
-
-        <Rectangle x:Name="overlayRectangle" Grid.Row="0" Grid.RowSpan="3" Fill="#000000" Visibility="Collapsed" IsHitTestVisible="True"></Rectangle>
-        <StackPanel Grid.Row="1" Name="spProgressBar" Visibility="Collapsed">
-            <TextBlock Name="txtProgressText" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"  Margin="24 250 24 0"   ></TextBlock>
-            <toolkit:PerformanceProgressBar x:Name="progressBar"  Margin="0,0,0,0" 
-                                        Background="Transparent" IsIndeterminate="True" 
-                                        VerticalAlignment="Center" 
-                                        VerticalContentAlignment="Center" FontSize="24" 
-                                        HorizontalAlignment="Stretch" Height="10"
-                                        HorizontalContentAlignment="Center" 
-                                        IsEnabled="False" IsTabStop="True" Opacity="0"/>
-        </StackPanel>
     </Grid>
 </phone:PhoneApplicationPage >
