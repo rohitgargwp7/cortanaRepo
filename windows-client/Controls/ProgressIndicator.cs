@@ -17,6 +17,7 @@ namespace windows_client.Controls
         StackPanel spProgress;
         TextBlock txtProgressText;
         PerformanceProgressBar pBar;
+
         public ProgressIndicatorControl(Grid grid, string text)
         {
             overlayrectangle = new Rectangle();
@@ -24,6 +25,7 @@ namespace windows_client.Controls
             Grid.SetRowSpan(overlayrectangle, grid.RowDefinitions.Count);
             overlayrectangle.Fill = UI_Utils.Instance.Black;
             overlayrectangle.Visibility = Visibility.Collapsed;
+            overlayrectangle.Opacity = 0.85;
             grid.Children.Add(overlayrectangle);
 
             spProgress = new StackPanel();
@@ -36,11 +38,11 @@ namespace windows_client.Controls
             txtProgressText.TextWrapping = TextWrapping.Wrap;
             txtProgressText.HorizontalAlignment = HorizontalAlignment.Center;
             txtProgressText.TextAlignment = TextAlignment.Center;
+            txtProgressText.Text = text;
             spProgress.Children.Add(txtProgressText);
 
             pBar = new PerformanceProgressBar();
             pBar.IsEnabled = false;
-            //todo:transparent  pBar.Background=UI_Utils.Instance.
             pBar.IsIndeterminate = true;
             pBar.VerticalAlignment = VerticalAlignment.Bottom;
             pBar.VerticalContentAlignment = VerticalAlignment.Center;
@@ -49,18 +51,14 @@ namespace windows_client.Controls
             pBar.FontSize = 24;
             pBar.HorizontalContentAlignment = HorizontalAlignment.Center;
             pBar.IsTabStop = true;
-            pBar.Opacity = 0;
+            pBar.Opacity = 1;
             spProgress.Children.Add(pBar);
-
         }
 
         public void Show()
         {
-            txtProgressText.Text = AppResources.SelectUser_RefreshWaitMsg_Txt;
             overlayrectangle.Visibility = System.Windows.Visibility.Visible;
-            overlayrectangle.Opacity = 0.85;
             spProgress.Visibility = Visibility.Visible;
-            pBar.Opacity = 1;
             pBar.IsEnabled = true;
         }
 
@@ -68,7 +66,6 @@ namespace windows_client.Controls
         {
             overlayrectangle.Visibility = System.Windows.Visibility.Collapsed;
             spProgress.Visibility = Visibility.Collapsed;
-            pBar.Opacity = 0;
             pBar.IsEnabled = false;
         }
     }

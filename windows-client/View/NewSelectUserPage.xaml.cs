@@ -258,10 +258,14 @@ namespace windows_client.View
             if (!canGoBack)
             {
                 MessageBoxResult mbox = MessageBox.Show(AppResources.Stop_Contact_Scanning, AppResources.Stop_Caption_txt, MessageBoxButton.OKCancel);
-                if (mbox == MessageBoxResult.Cancel)
-                    e.Cancel = true;
-                else
+                if (mbox == MessageBoxResult.OK)
+                {
                     stopContactScanning = true;
+                    progressIndicator.Hide();
+                    enableAppBar();
+                    canGoBack = true;
+                }
+                e.Cancel = true;
             }
             base.OnBackKeyPress(e);
         }
@@ -923,12 +927,15 @@ namespace windows_client.View
              * contacts_to_update : These are the contacts to add
              * ids_json : These are the contacts to delete
              */
-
+            if (stopContactScanning)
+                return;
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
         }
 
         public void updateAddressBook_Callback(JObject patchJsonObj)
         {
+            if (stopContactScanning)
+                return;
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
@@ -974,6 +981,8 @@ namespace windows_client.View
                     }
                 }
             }
+            if (stopContactScanning)
+                return;
             if (hikeIds != null && hikeIds.Count > 0)
             {
                 /* Delete ids from hike user DB */
@@ -1042,6 +1051,7 @@ namespace windows_client.View
 
         private void disableAppBar()
         {
+            appBar.IsMenuEnabled = false;
             refreshIconButton.IsEnabled = false;
             if (isGroupChat)
                 doneIconButton.IsEnabled = false;
@@ -1050,7 +1060,7 @@ namespace windows_client.View
         private void enableAppBar()
         {
             refreshIconButton.IsEnabled = true;
-
+            appBar.IsMenuEnabled = true;
             // should be Group Chat
             // if new group then number of users should be greater than equal to 3 
             // if existing group then added user should atleast be 1
