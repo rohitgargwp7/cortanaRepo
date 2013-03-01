@@ -47,7 +47,7 @@
             <toolkit:PhoneTextBox x:Name="enterNameTxt" TextOptions.TextHintingMode="Animated" Grid.Row="1" GotFocus="enterNameTxt_GotFocus" Margin="-10,5,0,0" Width="440" HorizontalAlignment="Stretch" 
                                   Hint="{Binding Path= LocalizedResources.SelectUser_TxtBoxHint_Txt, Source={StaticResource LocalizedStrings}}"
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
-            
+
             <toolkit:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
@@ -100,8 +100,8 @@
                             <Button Content="{Binding Path= LocalizedResources.Invite_Small, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" Width="110" FontSize="20" Grid.Column="1" Visibility="{Binding InvitedStringVisible}" HorizontalAlignment="Right" BorderThickness="0" Tap="Invite_Tap"/>
 
                         </Grid>
-                        
-                        
+
+
                         <!--<StackPanel Orientation="Horizontal" Margin="-18,0,0,0"> 
                             <StackPanel x:Name="Sender" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="20,2,0,2">
                                 <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="36" />
