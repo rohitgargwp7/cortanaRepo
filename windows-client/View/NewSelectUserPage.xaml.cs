@@ -863,7 +863,10 @@ namespace windows_client.View
         public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
         {
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -928,14 +931,20 @@ namespace windows_client.View
              * ids_json : These are the contacts to delete
              */
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
         }
 
         public void updateAddressBook_Callback(JObject patchJsonObj)
         {
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
@@ -982,7 +991,10 @@ namespace windows_client.View
                 }
             }
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             if (hikeIds != null && hikeIds.Count > 0)
             {
                 /* Delete ids from hike user DB */
