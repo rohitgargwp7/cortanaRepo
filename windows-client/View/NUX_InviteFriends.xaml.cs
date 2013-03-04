@@ -27,8 +27,8 @@ namespace windows_client.View
         private ApplicationBarIconButton skipInviteIconButton;
         private bool isFirstLaunch = true;
         private static List<ContactInfo> listContactInfo;
-        List<ContactInfo> listFamilyMembers;
-        List<ContactInfo> listCloseFriends;
+        private List<ContactInfo> listFamilyMembers;
+        private List<ContactInfo> listCloseFriends;
         public NUX_InviteFriends()
         {
             InitializeComponent();
@@ -53,6 +53,13 @@ namespace windows_client.View
 
             if (isFirstLaunch)
             {
+                App.PageState ps;
+                if (App.appSettings.TryGetValue(App.PAGE_STATE, out ps) && ps == App.PageState.NUX_SCREEN_FAMILY)
+                {
+                    txtHeader.Text = AppResources.Nux_YourFamily_Txt;
+                    txtConnectHike.Text = AppResources.Nux_FamilyMembersConnect_txt;
+                }
+
                 listCloseFriends = new List<ContactInfo>();
                 listFamilyMembers = new List<ContactInfo>();
 
@@ -327,19 +334,24 @@ namespace windows_client.View
 
         #region FAMILY VOCABULARY
 
-        private static string[] familyVocab = new string[] { "aunt", "aunty", "auntie", "uncle", "grandma", "granny", "grandpa", "nanna", "cousin", "‘opà", "aayi", "abatyse", "abba", "abba", "abbi", "aboji", "abonim", "ahm", "äiti", "ama", "amai", "amca", "amma", "ammee", "ammi", "ana", "anne", "anneanne", "anya", "apa", "appa", "apu", "athair", "atta", "aunt", "auntie", "aunty", "ayah", "baabaa", "baba", "babba", "babbo", "banketi", "bapa", "bata", " dai", "bebe", "beta", "beti", "bhabhi", "bhai", "bhaiya", "biang", "bro", "buwa", "chacha", "chachu", "dad", "dada", "daddy", "dadi", "daidí", "daya", "dayı", "dede", "didi", "eadni", "édesapa", "eje", "ema", "emä", "emak", "emo", "ewe", "far", "father", "foter", "fu", "grandma", "grandpa", "haakoro", "haakui", "haha", "ibu", "iloy", "inahan", "induk", "isa", "isä", "itay", "janak", "kantaäiti", "kardeş-im", "kızım", "kohake", "kuzen", "ma", "maa", "macii", "madar", "madèr", "màder", "madr", "mädra", "madre", "mãe", "mai", "maica", "maire", "maji", "majka", "makuahine", "mam", "mama", "mamá", "maman", "mami", "mamm'", "mamm", "mamma", "mamu", "mána", "màna", "mare", "mari", "mat'", "mataji", "mater", "máthair", "mati", "máti", "matka", "matre, mamma", "matri", "me", "mèder", "medra", "mëmë", "mére", "mère", "moæ", "moder", "móðir", "moeder", "moer", "mojer", "mom", "mommy", "mor", "morsa", "mother", "motina", "mueter", "mum", "mummy", "mumsy", "muter", "mutter", "mutti", "mytyr", "mzaa", "mzazi", "nai", "nana", "nanay", "nani", "nay", "nënë", "ñuke", "ñuque", "nyokap", "ôèe", "oğlum", "ojciec", "okaasan", "omm", "oppa", "otac", "otec", "otosan", "pabo", "pai", "pak", "panjo", "papa", "papá", "papà", "papi", "pappa", "pappie", "pare", "parinte", "pater", "patri", "patrino", "pedar", "pita-ji", "pitaji", "pitar", "pop", "popà", "poppa", "pops", "pradininkas", "protevis", "pupà", "reny", "salentino", "sis", "tad", "taica", "tata", "táta", "tàtah", "tatay", "tateh", "tatti", "tay", "tevas", "tevs", "teyze", "uma", "uncle", "vader", "valide", "vieja", "viejo", "yebba", "yeğen", "yenge", "badima", "memaw", "meemaw", "妈", "妈妈", "老妈", "老公", "宝贝", "老婆", "宝贝", "爸", "爸爸", "老爸", "女儿", "闺女", "儿子", "哥", "哥哥", "弟", "弟弟", "姐", "姐姐", "妹", "妹妹", "祖母", "奶奶", "大姨", "小姨", "姑姑", "舅舅", "大舅", "小舅", "叔叔", "伯伯", "表姐", "表妹", "表哥", "表弟", "侄子", "侄女", "uncle", "mama", "mamu", "chacha", "chachu", "mom", "dad", "bhai", "bhaiya", "didi" };
+        private string[] arrFamilyVocab = new string[] { "aunt","aunty", "auntie","uncle","grandma","granny","grandpa","nanna","cousin","‘opà","aayi","abatyse","abba","abba","abbi","aboji","abonim","ahm","äiti","ama","amai","amca","amma","ammee","ammi","ana","anne","anneanne","anya","apa","appa","apu","athair","atta","aunt","auntie","aunty","ayah","baabaa","baba","babba","babbo","banketi","bapa","bata"," dai","bebe","beta","beti","bhabhi","bhai","bhaiya","biang","bro","buwa","chacha","chachu","dad","dada","daddy","dadi","daidí","daya","dayı","dede","didi","eadni","édesapa","eje","ema","emä","emak","emo","ewe","far","father","foter","fu","grandma","grandpa","haakoro","haakui","haha","ibu","iloy","inahan","induk","isa","isä","itay","janak","kantaäiti","kardeş-im","kızım","kohake","kuzen","ma","maa","macii","madar","madèr","màder","madr","mädra","madre","mãe","mai","maica","maire","maji","majka","makuahine","mam","mama","mamá","maman","mami","mamm'","mamm","mamma","mamu","mána","màna","mare","mari","mat'","mataji","mater","máthair","mati","máti","matka","matre, true },{ mamma","matri","me","mèder","medra","mëmë","mére","mère","moæ","moder","móðir","moeder","moer","mojer","mom","mommy","mor","morsa","mother","motina","mueter","mum","mummy","mumsy","muter","mutter","mutti","mytyr","mzaa","mzazi","nai","nana","nanay","nani","nay","nënë","ñuke","ñuque","nyokap","ôèe","oğlum","ojciec","okaasan","omm","oppa","otac","otec","otosan","pabo","pai","pak","panjo","papa","papá","papà","papi","pappa","pappie","pare","parinte","pater","patri","patrino","pedar","pita-ji","pitaji","pitar","pop","popà","poppa","pops","pradininkas","protevis","pupà","reny","salentino","sis","tad","taica","tata","táta","tàtah","tatay","tateh","tatti","tay","tevas","tevs","teyze","uma","uncle","vader","valide","vieja","viejo","yebba","yeğen","yenge","badima","memaw","meemaw", "uncle","mama","mamu","chacha","chachu","mom","dad","bhai","bhaiya","didi",
+         "妈", "妈妈", "老妈", "老公", "宝贝", "老婆", "宝贝", "爸", "爸爸", "老爸", "女儿", "闺女", "儿子", "哥", "哥哥", "弟", "弟弟", "姐", "姐姐", "妹", "妹妹", "祖母", "奶奶", "大姨", "小姨", "姑姑", "舅舅", "大舅", "小舅", "叔叔", "伯伯", "表姐", "表妹", "表哥", "表弟", "侄子", "侄女" };
 
         #endregion
 
-        public static bool MatchFromFamilyVocab(string completeName)
+        public bool MatchFromFamilyVocab(string completeName)
         {
             if (string.IsNullOrEmpty(completeName))
                 return false;
 
-            foreach (string vocabKey in familyVocab)
+            string[] strCompleteName = completeName.Split(' ');
+            foreach (string namesplit in strCompleteName)
             {
-                if (completeName.ToLower().Contains(vocabKey))
-                    return true;
+                foreach (string familyvocab in arrFamilyVocab)
+                {
+                    if (familyvocab == namesplit.ToLower())
+                        return true;
+                }
             }
             return false;
         }

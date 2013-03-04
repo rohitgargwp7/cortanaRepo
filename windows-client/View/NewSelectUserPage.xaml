@@ -101,12 +101,14 @@
                                  TextWrapping="Wrap" TextChanged="enterNameTxt_TextChanged"/>
 
             <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
+
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
                           IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
                           ItemTemplate="{StaticResource ItemTemplate}"
                           GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
                           JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"/>
+
 
         </Grid>
     </Grid>

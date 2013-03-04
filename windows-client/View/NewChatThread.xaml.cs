@@ -661,12 +661,15 @@ namespace windows_client.View
                 {
                     if (isGroupChat)
                     {
-                        foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                        if (App.appSettings.Contains(HikeConstants.SHOW_GROUP_CHAT_OVERLAY))
                         {
-                            if (!gp.IsOnHike)
+                            foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
                             {
-                                ToggleAlertOnNoSms(true);
-                                break;
+                                if (!gp.IsOnHike)
+                                {
+                                    ToggleAlertOnNoSms(true);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1953,6 +1956,8 @@ namespace windows_client.View
             }
             if (showNoSmsLeftOverlay || isGroupChat)
                 showOverlay(false);
+            if (isGroupChat)
+                App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
         }
 
         #endregion
@@ -2555,6 +2560,8 @@ namespace windows_client.View
 
         private void NoFreeSmsOverlay_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (isGroupChat)
+                App.appSettings.Remove(HikeConstants.SHOW_GROUP_CHAT_OVERLAY);
             showOverlay(false);
         }
 
@@ -2849,27 +2856,42 @@ namespace windows_client.View
 
             else if (HikePubSub.SMS_CREDIT_CHANGED == type)
             {
+                int previousCredits = mCredits;
                 mCredits = (int)obj;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (!isGroupChat || !isGroupAlive)
+                    if (mCredits <= 0)
                     {
-                        if (!isOnHike && mCredits <= 0)
+                        if (isGroupChat)
+                        {
+                            App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                            foreach (GroupParticipant gp in GroupManager.Instance.GroupCache[mContactNumber])
+                            {
+                                if (!gp.IsOnHike)
+                                {
+                                    ToggleAlertOnNoSms(true);
+                                    this.Focus();
+                                    break;
+                                }
+                            }
+                        }
+                        else if (!isOnHike)
                         {
                             showNoSmsLeftOverlay = true;
                             ToggleAlertOnNoSms(true);
                             Deployment.Current.Dispatcher.BeginInvoke(() => //using ui thread beacuse I want this to happen after togle alert on no sms
-                               {
-                                   showOverlay(false);//on zero sms user should not immediately see overlay
-                                   this.Focus();
-                               });
-                        }
-                        else
-                        {
-                            showNoSmsLeftOverlay = false;
-                            ToggleAlertOnNoSms(false);
+                            {
+                                showOverlay(false);//on zero sms user should not immediately see overlay
+                                this.Focus();
+                            });
                         }
                     }
+                    else if (previousCredits <= 0)
+                    {
+                        showNoSmsLeftOverlay = false;
+                        ToggleAlertOnNoSms(false);
+                    }
+
                     updateChatMetadata();
                     if (!animatedOnce)
                     {

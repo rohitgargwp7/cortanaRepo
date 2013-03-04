@@ -142,6 +142,7 @@
     <Compile Include="Controls\LinkifiedTextBox.xaml.cs">
       <DependentUpon>LinkifiedTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ProgressIndicator.cs" />
     <Compile Include="Controls\ReceivedChatBubble.xaml.cs">
       <DependentUpon>ReceivedChatBubble.xaml</DependentUpon>
     </Compile>
@@ -751,12 +752,6 @@
     <Content Include="View\images\typing.png" />
     <Content Include="View\images\key.jpg" />
     <Content Include="SplashScreenImage.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Phone.Controls\Phone.Controls.csproj">
-      <Project>{BE66B5CF-E495-4BB9-A261-9123B6974011}</Project>
-      <Name>Phone.Controls</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Languages\AppResources.de-DE.resx">

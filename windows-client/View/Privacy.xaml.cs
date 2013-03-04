@@ -12,19 +12,19 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
-using Phone.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Notification;
 using windows_client.Languages;
 using windows_client.DbUtils;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
     public partial class Privacy : PhoneApplicationPage, HikePubSub.Listener
     {
         bool canGoBack = true;
-        public MyProgressIndicator progress = null; // there should be just one instance of this.
+        private ProgressIndicatorControl progress = null; // there should be just one instance of this.
 
         public Privacy()
         {
@@ -57,14 +57,14 @@ namespace windows_client.View
         }
         private void RegisterListeners()
         {
-           
+
         }
 
         private void RemoveListeners()
         {
             try
             {
-               
+
             }
             catch { }
         }
@@ -75,7 +75,7 @@ namespace windows_client.View
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
-                progress = new MyProgressIndicator(AppResources.Privacy_UnlinkAccountProgress);
+                progress = new ProgressIndicatorControl(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
 
             progress.Show();
             canGoBack = false;
@@ -106,7 +106,7 @@ namespace windows_client.View
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator(AppResources.Privacy_DeleteAccountProgress);
+                progress = new ProgressIndicatorControl(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
             }
             progress.Show();
             canGoBack = false;
@@ -172,7 +172,7 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
-            
+
         }
     }
 }
