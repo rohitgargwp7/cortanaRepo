@@ -65,8 +65,8 @@ namespace windows_client.View
 
                 progressBar.Opacity = 1;
                 progressBar.IsEnabled = true;
-
-                if (!(App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo) && listContactInfo != null && listContactInfo.Count > 0))
+                listContactInfo = UsersTableUtils.GetContactsFromFile();
+                if (listContactInfo == null || listContactInfo.Count == 0)
                 {
                     App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));

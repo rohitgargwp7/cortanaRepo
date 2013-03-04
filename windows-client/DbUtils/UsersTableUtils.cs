@@ -4,11 +4,17 @@ using System.Data.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using windows_client.View;
+using System.IO.IsolatedStorage;
+using System.IO;
+using System.Diagnostics;
 
 namespace windows_client.DbUtils
 {
     public class UsersTableUtils
     {
+        public static string CONTACTS_DIRECTORY = "CONTACTS";
+        public static string CONTACTS_FILENAME = "_Contacts";
+        public static object readWriteLock = new object();
         #region user table
 
         public static void block(string msisdn)
@@ -311,6 +317,114 @@ namespace windows_client.DbUtils
             }
             // Submit succeeds on second try.
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
+        }
+
+        public static void SaveContactsToFile(List<ContactInfo> listContacts)
+        {
+            if (listContacts != null && listContacts.Count > 0)
+            {
+                lock (readWriteLock)
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        string fileName = CONTACTS_DIRECTORY + "\\" + CONTACTS_FILENAME;
+                        try
+                        {
+                            if (!store.DirectoryExists(CONTACTS_DIRECTORY))
+                                store.CreateDirectory(CONTACTS_DIRECTORY);
+                            else if (store.FileExists(fileName))
+                                store.DeleteFile(fileName);
+                        }
+                        catch { }
+                        try
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
+                            {
+                                using (BinaryWriter writer = new BinaryWriter(file))
+                                {
+                                    writer.Seek(0, SeekOrigin.Begin);
+
+                                    writer.Write(listContacts.Count);
+                                    foreach (ContactInfo item in listContacts)
+                                    {
+                                        item.Write(writer);
+                                    }
+                                    writer.Flush();
+                                    writer.Close();
+                                }
+                                file.Close();
+                                file.Dispose();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while writing file : " + e.StackTrace);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static List<ContactInfo> GetContactsFromFile()
+        {
+            List<ContactInfo> listContacts = null;
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    string fileName = CONTACTS_DIRECTORY + "\\" + CONTACTS_FILENAME;
+                    try
+                    {
+                        if (store.FileExists(fileName))
+                        {
+                            listContacts = new List<ContactInfo>();
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            {
+                                using (BinaryReader reader = new BinaryReader(file))
+                                {
+                                    int count = reader.ReadInt32();
+                                    for (int i = 0; i < count; i++)
+                                    {
+                                        ContactInfo contact = new ContactInfo();
+                                        contact.Read(reader);
+                                        listContacts.Add(contact);
+                                    }
+                                    reader.Close();
+                                }
+                                file.Close();
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Exception while reading file : " + e.StackTrace);
+                    }
+                }
+            }
+            return listContacts;
+        }
+
+        public static void DeleteContactsFile()
+        {
+            lock (readWriteLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                {
+                    try
+                    {
+                        string fileName = CONTACTS_DIRECTORY + "\\" + CONTACTS_FILENAME;
+                        if (store.FileExists(fileName))
+                        {
+                            store.DeleteFile(fileName);
+                            store.DeleteDirectory(CONTACTS_DIRECTORY);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Error while deleting contacts :" + ex.StackTrace);
+                    }
+                }
+            }
         }
     }
 }

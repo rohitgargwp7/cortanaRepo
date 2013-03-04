@@ -62,7 +62,6 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
-            App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
         }
 
         private void favTutePvt_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -157,6 +156,7 @@ namespace windows_client.View
 
                 #endregion
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                UsersTableUtils.DeleteContactsFile();
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section
