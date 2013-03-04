@@ -75,9 +75,9 @@ namespace windows_client.View
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
-                progress = new ProgressIndicatorControl(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
+                progress = new ProgressIndicatorControl();
 
-            progress.Show();
+            progress.Show(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
         }
@@ -90,7 +90,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkErrMsgBxText, AppResources.Privacy_UnlinkErrMsgBxCaptn, MessageBoxButton.OKCancel);
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                     canGoBack = true;
                 });
@@ -106,9 +106,9 @@ namespace windows_client.View
                 return;
             if (progress == null)
             {
-                progress = new ProgressIndicatorControl(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
+                progress = new ProgressIndicatorControl();
             }
-            progress.Show();
+            progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
             canGoBack = false;
             AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
         }
@@ -121,7 +121,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show("hike couldn't delete your account. Please try again.", "Account not deleted", MessageBoxButton.OKCancel);
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                     canGoBack = true;
                 });
@@ -154,7 +154,7 @@ namespace windows_client.View
                 App.ViewModel.ClearViewModel();
                 try
                 {
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                 }
                 catch
