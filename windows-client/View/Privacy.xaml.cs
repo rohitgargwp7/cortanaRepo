@@ -12,19 +12,19 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using windows_client.utils;
 using System.Windows.Media.Imaging;
-using Phone.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Microsoft.Phone.Notification;
 using windows_client.Languages;
 using windows_client.DbUtils;
+using windows_client.Controls;
 
 namespace windows_client.View
 {
     public partial class Privacy : PhoneApplicationPage, HikePubSub.Listener
     {
         bool canGoBack = true;
-        public MyProgressIndicator progress = null; // there should be just one instance of this.
+        private ProgressIndicatorControl progress = null; // there should be just one instance of this.
 
         public Privacy()
         {
@@ -57,14 +57,14 @@ namespace windows_client.View
         }
         private void RegisterListeners()
         {
-           
+
         }
 
         private void RemoveListeners()
         {
             try
             {
-               
+
             }
             catch { }
         }
@@ -75,9 +75,9 @@ namespace windows_client.View
             if (result == MessageBoxResult.Cancel)
                 return;
             if (progress == null)
-                progress = new MyProgressIndicator(AppResources.Privacy_UnlinkAccountProgress);
+                progress = new ProgressIndicatorControl();
 
-            progress.Show();
+            progress.Show(LayoutRoot, AppResources.Privacy_UnlinkAccountProgress);
             canGoBack = false;
             AccountUtils.unlinkAccount(new AccountUtils.postResponseFunction(unlinkAccountResponse_Callback));
         }
@@ -90,7 +90,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Privacy_UnlinkErrMsgBxText, AppResources.Privacy_UnlinkErrMsgBxCaptn, MessageBoxButton.OKCancel);
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                     canGoBack = true;
                 });
@@ -106,9 +106,9 @@ namespace windows_client.View
                 return;
             if (progress == null)
             {
-                progress = new MyProgressIndicator(AppResources.Privacy_DeleteAccountProgress);
+                progress = new ProgressIndicatorControl();
             }
-            progress.Show();
+            progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
             canGoBack = false;
             AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
         }
@@ -121,7 +121,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBoxResult result = MessageBox.Show("hike couldn't delete your account. Please try again.", "Account not deleted", MessageBoxButton.OKCancel);
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                     canGoBack = true;
                 });
@@ -154,7 +154,7 @@ namespace windows_client.View
                 App.ViewModel.ClearViewModel();
                 try
                 {
-                    progress.Hide();
+                    progress.Hide(LayoutRoot);
                     progress = null;
                 }
                 catch
@@ -172,7 +172,7 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
-            
+
         }
     }
 }

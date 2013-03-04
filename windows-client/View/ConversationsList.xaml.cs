@@ -17,7 +17,6 @@ using System.ComponentModel;
 using System.Windows.Documents;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
-using Phone.Controls;
 using windows_client.Misc;
 using System.Windows.Media;
 using windows_client.Languages;
@@ -49,7 +48,6 @@ namespace windows_client.View
         ApplicationBarIconButton composeIconButton;
         ApplicationBarIconButton groupChatIconButton;
         BitmapImage profileImage = null;
-        public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
         #endregion
 
@@ -139,7 +137,7 @@ namespace windows_client.View
                 bw.RunWorkerAsync();
 
                 #endregion
-
+                App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section
