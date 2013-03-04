@@ -46,7 +46,7 @@ namespace windows_client.Controls
             pBar.FontSize = 24;
             pBar.HorizontalContentAlignment = HorizontalAlignment.Center;
             pBar.IsTabStop = true;
-            pBar.Opacity = 0.85;
+            pBar.Opacity = 1;
             spProgress.Children.Add(pBar);
         }
 
@@ -74,13 +74,13 @@ namespace windows_client.Controls
         {
             if (grid == null)
                 return;
-            
+
             overlayrectangle.Visibility = Visibility.Collapsed;
             grid.Children.Remove(overlayrectangle);
 
             spProgress.Visibility = Visibility.Collapsed;
             grid.Children.Remove(spProgress);
-            
+
             pBar.IsEnabled = false;
             isShown = false;
         }
