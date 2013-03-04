@@ -345,7 +345,7 @@ namespace windows_client
                 #endregion
             }
             _isAppLaunched = true;
-            appInitialization();
+            appInitialize();
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -374,7 +374,6 @@ namespace windows_client
                     MqttManagerInstance.connect();
             }
             NetworkManager.turnOffNetworkManager = false;
-            appInitialization();
         }
 
         // Code to execute when the application is deactivated (sent to background)
@@ -392,7 +391,6 @@ namespace windows_client
                     return;
                 ConversationTableUtils.saveConvObjectList();
             }
-            appDeinitialize();
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
@@ -403,9 +401,9 @@ namespace windows_client
             appDeinitialize();
         }
 
-        private void appInitialization()
+        private void appInitialize()
         {
-            DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
+            DeviceNetworkInformation.NetworkAvailabilityChanged += OnNetworkChange;
             #region PUSH NOTIFICATIONS STUFF
 
             bool isPushEnabled = true;
@@ -420,7 +418,6 @@ namespace windows_client
         private void appDeinitialize()
         {
             DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
-
         }
 
         private void OnNetworkChange(object sender, EventArgs e)
