@@ -113,7 +113,7 @@ namespace windows_client.utils
                 //                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    //                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
+                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
                 });
             }
         }
