@@ -51,7 +51,7 @@ namespace windows_client.View
         public void OnNextClick(object sender, EventArgs e)
         {
             SmileyParser.Instance.initializeSmileyParser();
-            if (UsersTableUtils.GetAllNonHikeContactsCount() > 2)
+            if (App.appSettings.Contains("showNux"))
             {
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FRIENDS);
                 NavigationService.Navigate(new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative));

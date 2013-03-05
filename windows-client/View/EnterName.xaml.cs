@@ -17,11 +17,13 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using windows_client.DbUtils;
 using Microsoft.Phone.Tasks;
+using System.ComponentModel;
 
 namespace windows_client
 {
     public partial class EnterName : PhoneApplicationPage
     {
+        private bool isFirstLaunch = true;
         private bool reloadImage = true;
         public bool isClicked = false;
         private string ac_name;
@@ -36,10 +38,7 @@ namespace windows_client
         {
             InitializeComponent();
             App.WriteToIsoStorageSettings(HikeConstants.FILE_SYSTEM_VERSION, Utils.getAppVersion());// new install so write version
-            App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
-            App.RemoveKeyFromAppSettings(App.SET_NAME_FAILED);
-            if (!App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED) && !App.isABScanning)
-                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
+            App.appSettings.Remove(App.ACCOUNT_NAME);
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.SETNAME_SCREEN);
             appBar = new ApplicationBar();
             appBar.Mode = ApplicationBarMode.Default;
@@ -62,13 +61,6 @@ namespace windows_client
             photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
 
-            string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
-            msisdn = msisdn.Substring(msisdn.Length - 10);
-            StringBuilder userMsisdn = new StringBuilder();
-            userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
-            string country_code = null;
-            App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
-            txtBlckPhoneNumber.Text = " " + (country_code == null ? "+91" : country_code) + "-" + userMsisdn.ToString();
         }
 
         private void btnEnterName_Click(object sender, EventArgs e)
@@ -78,19 +70,14 @@ namespace windows_client
             nameErrorTxt.Visibility = Visibility.Collapsed;
             if (!NetworkInterface.GetIsNetworkAvailable()) // if no network
             {
+                isClicked = false;
                 msgTxtBlk.Opacity = 0;
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
                 nameErrorTxt.Text = AppResources.Connectivity_Issue;
                 nameErrorTxt.Visibility = Visibility.Visible;
                 App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
-                App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);
                 return;
-            }
-            if (App.appSettings.Contains(App.CONTACT_SCANNING_FAILED))
-            {
-                App.RemoveKeyFromAppSettings(App.CONTACT_SCANNING_FAILED);
-                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             }
 
             txtBxEnterName.IsReadOnly = true;
@@ -100,7 +87,44 @@ namespace windows_client
             progressBar.IsEnabled = true;
             msgTxtBlk.Opacity = 1;
             msgTxtBlk.Text = AppResources.EnterName_ScanningContacts_Txt;
-            AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
+
+            bool isScanned;
+
+            // if addbook already stored simply call setname api
+            if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB || (App.appSettings.TryGetValue(ContactUtils.IS_ADDRESS_BOOK_SCANNED, out isScanned) && isScanned))
+            {
+                Debug.WriteLine("Btn clicked,Addbook already scanned, posting name to server");
+                AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
+            }
+            // if addbook failed earlier , re attempt for posting add book
+            else if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED)
+            {
+                string token = (string)App.appSettings["token"];
+                AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
+                
+            }
+            else // if add book is already in posted state then run Background worker that waits for result
+            {
+                BackgroundWorker bw = new BackgroundWorker();
+                bw.DoWork += (ss, ee) =>
+                {
+                    Debug.WriteLine("Thread 2 started ....");
+                    while (true)
+                    {
+                        if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB || ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED)
+                            break;
+                        Thread.Sleep(50);
+                    }
+
+                    // if addbook is stored properly in hike db then call for setname function
+                    if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB)
+                    {
+                        Debug.WriteLine("Setname is called from thread 2 ....");
+                        AccountUtils.setName(ac_name, new AccountUtils.postResponseFunction(setName_Callback));
+                    }
+                };
+                bw.RunWorkerAsync();
+            }
         }
 
         private void setName_Callback(JObject obj)
@@ -109,6 +133,7 @@ namespace windows_client
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    Debug.WriteLine("Set Name post request returned unsuccessfully .... ");
                     txtBxEnterName.IsReadOnly = false; ;
                     progressBar.Opacity = 0;
                     progressBar.IsEnabled = false;
@@ -118,13 +143,12 @@ namespace windows_client
                     nameErrorTxt.Text = AppResources.EnterName_NameErrorTxt;
                     nameErrorTxt.Visibility = Visibility.Visible;
                     App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
-                    App.WriteToIsoStorageSettings(App.SET_NAME_FAILED, true);
                 });
                 return;
             }
+            Debug.WriteLine("Set Name post request returned successfully .... ");
             App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, ac_name);
-            App.RemoveKeyFromAppSettings(App.SET_NAME_FAILED);
-            if (App.appSettings.Contains(App.IS_ADDRESS_BOOK_SCANNED)) // shows that addressbook is already scanned
+            if (App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED)) // shows that addressbook is already scanned
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -140,33 +164,31 @@ namespace windows_client
             isCalled = true;
             txtBxEnterName.IsReadOnly = false;
 
-            App.WriteToIsoStorageSettings(App.SHOW_FAVORITES_TUTORIAL, true);
-            App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
-
             Uri nextPage;
             string country_code = null;
             App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+
             if (string.IsNullOrEmpty(country_code) || country_code == "+91")
-            {
-                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, true);
-            }
+                App.appSettings[App.SHOW_FREE_SMS_SETTING] = true;
             else
-            {
-                App.WriteToIsoStorageSettings(App.SHOW_FREE_SMS_SETTING, false);
-            }
+                App.appSettings[App.SHOW_FREE_SMS_SETTING] = false;
 
             nextPage = new Uri("/View/WelcomeScreen.xaml", UriKind.Relative);
 
-            App.WriteToIsoStorageSettings(HikeConstants.IS_NEW_INSTALLATION, true);
             nameErrorTxt.Visibility = Visibility.Collapsed;
             msgTxtBlk.Text = AppResources.EnterName_Msg_TxtBlk;
-            Thread.Sleep(2 * 1000);
+            Thread.Sleep(1 * 500);
             try
             {
                 if (_avatar != null)
                 {
                     MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, _avatar, false);
                 }
+
+                App.appSettings[HikeConstants.IS_NEW_INSTALLATION] = true;
+                App.appSettings[App.SHOW_FAVORITES_TUTORIAL] = true;
+                App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
+
                 NavigationService.Navigate(nextPage);
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
@@ -177,12 +199,42 @@ namespace windows_client
             }
         }
 
-
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             while (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
+
+            if (isFirstLaunch)
+            {
+                string msisdn = (string)App.appSettings[App.MSISDN_SETTING];
+                msisdn = msisdn.Substring(msisdn.Length - 10);
+                StringBuilder userMsisdn = new StringBuilder();
+                userMsisdn.Append(msisdn.Substring(0, 3)).Append("-").Append(msisdn.Substring(3, 3)).Append("-").Append(msisdn.Substring(6)).Append("!");
+                string country_code = null;
+                App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code);
+                txtBlckPhoneNumber.Text = " " + (country_code == null ? "+91" : country_code) + "-" + userMsisdn.ToString();
+
+                if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED))
+                {
+                    if (ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+                        ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
+
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.DoWork += (ss, ee) =>
+                    {
+                        while (ContactUtils.ContactState != ContactUtils.ContactScanState.ADDBOOK_SCANNED)
+                            Thread.Sleep(100);
+                        // now addressbook is scanned 
+                        Debug.WriteLine("Posting addbook from thread 1.... ");
+                        string token = (string)App.appSettings["token"];
+                        AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
+                    };
+                    bw.RunWorkerAsync();
+                }
+                isFirstLaunch = false;
+            }
+
             txtBxEnterName.Hint = AppResources.EnterName_Name_Hint;
 
 
@@ -392,5 +444,67 @@ namespace windows_client
             });
         }
 
+        /* This is the callback function which is called when server returns the addressbook*/
+        public void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
+        {
+            // test this is called
+            JObject obj = jsonForAddressBookAndBlockList;
+            if (obj == null)
+            {
+                Debug.WriteLine("Post addbook request returned unsuccessfully .... ");
+                ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    // if next button is clicked show the error msg
+                    if (isClicked)
+                    {
+                        this.msgTxtBlk.Opacity = 0;
+                        this.nameErrorTxt.Text = AppResources.Contact_Scanning_Failed_Txt;
+                        this.nameErrorTxt.Visibility = Visibility.Visible;
+                        this.progressBar.IsEnabled = false;
+                        this.progressBar.Opacity = 0;
+                        this.nextIconButton.IsEnabled = true;
+                        this.txtBxEnterName.IsReadOnly = false;
+                    }
+                });
+                return;
+            }
+            Debug.WriteLine("Post addbook request returned successfully .... ");
+            List<ContactInfo> addressbook = AccountUtils.getContactList(jsonForAddressBookAndBlockList, ContactUtils.contactsMap, false);
+            List<string> blockList = AccountUtils.getBlockList(jsonForAddressBookAndBlockList);
+
+            int count = 1;
+            // waiting for DB to be created
+            while (!App.appSettings.Contains(App.IS_DB_CREATED) && count <= 120)
+            {
+                Thread.Sleep(1 * 500);
+                count++;
+            }
+            if (!App.appSettings.Contains(App.IS_DB_CREATED)) // if DB is not created for so long
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    Debug.WriteLine("Phone DB is not created in time .... ");
+                    ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORE_FAILED;
+                    this.msgTxtBlk.Text = AppResources.EnterName_Failed_Txt;
+                });
+            }
+
+            if (addressbook != null)
+            {
+                UsersTableUtils.deleteAllContacts();
+                UsersTableUtils.deleteBlocklist();
+                Stopwatch st = Stopwatch.StartNew();
+                UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
+                st.Stop();
+                long msec = st.ElapsedMilliseconds;
+                Debug.WriteLine("Time to add addressbook {0}", msec);
+                UsersTableUtils.addBlockList(blockList);
+                ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
+                Debug.WriteLine("Addbook stored in Hike Db .... ");
+                App.WriteToIsoStorageSettings(ContactUtils.IS_ADDRESS_BOOK_SCANNED, true);
+
+            }
+        }
     }
 }
