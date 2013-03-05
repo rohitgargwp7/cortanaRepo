@@ -53,6 +53,7 @@ namespace windows_client.View
             SmileyParser.Instance.initializeSmileyParser();
             if (App.appSettings.Contains("showNux"))
             {
+                App.appSettings.Remove("showNux");
                 App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FRIENDS);
                 NavigationService.Navigate(new Uri("/View/NUX_InviteFriends.xaml", UriKind.Relative));
             }
