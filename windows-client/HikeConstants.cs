@@ -200,7 +200,7 @@ namespace windows_client
         public static string COUNTRY_SELECTED = "country_selected";
 
         public static string SOCIAL = "Social_Request";
-
+        public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
@@ -214,7 +214,6 @@ namespace windows_client
         public static string FB_LOGGED_IN = "FbLoggedIn";
         public static string TW_LOGGED_IN = "TwLoggedIn";
         public static string ACCOUNT = "account";
-        public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";
