@@ -19,6 +19,7 @@ namespace windows_client.utils
     public class ContactUtils
     {
         private static Stopwatch st;
+        private static Stopwatch st2;
         public static Dictionary<string, List<ContactInfo>> contactsMap = null;
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
@@ -90,6 +91,7 @@ namespace windows_client.utils
                     return;
                 }
                 string token = (string)App.appSettings["token"];
+                st2 = Stopwatch.StartNew();
                 AccountUtils.postAddressBook(contactListMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
             }
             catch (System.Exception)
@@ -258,6 +260,8 @@ namespace windows_client.utils
         /* This is the callback function which is called when server returns the addressbook*/
         public static void postAddressBook_Callback(JObject jsonForAddressBookAndBlockList)
         {
+            st2.Stop();
+            Debug.WriteLine("Post Addressbook callback took time : {0}", st2.ElapsedMilliseconds);
             Debug.WriteLine("Post Addressbook callback thread : {0}", Thread.CurrentThread.ToString());
             // test this is called
             JObject obj = jsonForAddressBookAndBlockList;
@@ -313,7 +317,7 @@ namespace windows_client.utils
             {
                 UsersTableUtils.deleteAllContacts();
                 UsersTableUtils.deleteBlocklist();
-                Stopwatch st = Stopwatch.StartNew();
+                st = Stopwatch.StartNew();
                 UsersTableUtils.addContacts(addressbook); // add the contacts to hike users db.
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
