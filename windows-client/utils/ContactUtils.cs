@@ -84,9 +84,8 @@ namespace windows_client.utils
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (ss, ee) =>
                 {
-                    contactsMap = getContactsListMap(e.Results);
-                    if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
-                        getContactListForNux(e.Results);
+                    List<ContactInfo> l;
+                    contactsMap = getContactsListMapInitial(e.Results,out l);
                     cState = ContactScanState.ADDBOOK_SCANNED;
                 };
                 bw.RunWorkerAsync();
@@ -166,8 +165,6 @@ namespace windows_client.utils
 
             foreach (Contact cn in contacts)
             {
-                CompleteName cName = cn.CompleteName;
-
                 foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
                 {
                     if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
@@ -202,13 +199,22 @@ namespace windows_client.utils
             return contactListMap;
         }
 
-        public static List<ContactInfo> getContactListForNux(IEnumerable<Contact> contacts)
+        public static Dictionary<string, List<ContactInfo>> getContactsListMapInitial(IEnumerable<Contact> contacts, out List<ContactInfo> listContacts)
         {
+            int count = 0;
+            int duplicates = 0;
+            listContacts = null;
+            List<ContactInfo> listContactsForNux = new List<ContactInfo>();
+            Dictionary<string, List<ContactInfo>> contactListMap = null;
+
             if (contacts == null)
+            {
+                listContacts = listContactsForNux;
                 return null;
+            }
             Stopwatch st = new Stopwatch();
             st.Start();
-            List<ContactInfo> listContacts = new List<ContactInfo>();
+            contactListMap = new Dictionary<string, List<ContactInfo>>();
             foreach (Contact cn in contacts)
             {
                 bool hasFacebookAccount = false;
@@ -237,31 +243,46 @@ namespace windows_client.utils
                 {
                     if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
                     {
+                        count++;
                         continue;
                     }
                     ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
-
                     cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
                     cInfo.HasCustomPhoto = picBytes != null;
                     cInfo.Avatar = picBytes;
 
-                    if (!listContacts.Contains(cInfo))
-                        listContacts.Add(cInfo);
+                    if (contactListMap.ContainsKey(cInfo.Id))
+                    {
+                        if (!contactListMap[cInfo.Id].Contains(cInfo))
+                        {
+                            contactListMap[cInfo.Id].Add(cInfo);
+                            listContactsForNux.Add(cInfo);
+                        }
+                        else
+                        {
+                            duplicates++;
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                        }
+                    }
+                    else
+                    {
+                        List<ContactInfo> contactList = new List<ContactInfo>();
+                        contactList.Add(cInfo);
+                        contactListMap.Add(cInfo.Id, contactList);
+                        listContactsForNux.Add(cInfo);
+                    }
                 }
             }
-            long x = st.ElapsedMilliseconds;
-            App.WriteToIsoStorageSettings(HikeConstants.PHONE_ADDRESS_BOOK, listContacts);
-            x = st.ElapsedMilliseconds;
-            Debug.WriteLine("Saving App settings for nux took {0} ms", x);
-            st.Stop();
+
+            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
+            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            UsersTableUtils.SaveContactsToFile(listContactsForNux);
+            listContacts = listContactsForNux;
             Debug.WriteLine("Nux logic takes {0} ms for contacts {1}", st.ElapsedMilliseconds, listContacts.Count);
-            return listContacts;
+            return contactListMap;
         }
-
-
-
 
         public static void saveContact(string phone, contactSearch_Callback callback)
         {
