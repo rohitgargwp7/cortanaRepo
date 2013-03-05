@@ -261,7 +261,7 @@ namespace windows_client.View
                 if (mbox == MessageBoxResult.OK)
                 {
                     stopContactScanning = true;
-                    progressIndicator.Hide();
+                    progressIndicator.Hide(LayoutRoot);
                     enableAppBar();
                     canGoBack = true;
                 }
@@ -851,9 +851,9 @@ namespace windows_client.View
             disableAppBar();
 
             if (progressIndicator == null)
-                progressIndicator = new ProgressIndicatorControl(LayoutRoot, AppResources.SelectUser_RefreshWaitMsg_Txt);
+                progressIndicator = new ProgressIndicatorControl();
 
-            progressIndicator.Show();
+            progressIndicator.Show(LayoutRoot, AppResources.SelectUser_RefreshWaitMsg_Txt);
 
             canGoBack = false;
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
@@ -863,7 +863,10 @@ namespace windows_client.View
         public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
         {
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -928,14 +931,20 @@ namespace windows_client.View
              * ids_json : These are the contacts to delete
              */
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
         }
 
         public void updateAddressBook_Callback(JObject patchJsonObj)
         {
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
@@ -982,7 +991,10 @@ namespace windows_client.View
                 }
             }
             if (stopContactScanning)
+            {
+                stopContactScanning = false;
                 return;
+            }
             if (hikeIds != null && hikeIds.Count > 0)
             {
                 /* Delete ids from hike user DB */
@@ -1012,7 +1024,7 @@ namespace windows_client.View
                 }
                 else
                     contactsListBox.ItemsSource = jumpList;
-                progressIndicator.Hide();
+                progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
             });
             canGoBack = true;
@@ -1022,7 +1034,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                progressIndicator.Hide();
+                progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
                 App.isABScanning = false;
             });

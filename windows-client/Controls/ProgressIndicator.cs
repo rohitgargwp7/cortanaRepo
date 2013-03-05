@@ -17,28 +17,23 @@ namespace windows_client.Controls
         StackPanel spProgress;
         TextBlock txtProgressText;
         PerformanceProgressBar pBar;
+        bool isShown;
 
-        public ProgressIndicatorControl(Grid grid, string text)
+        public ProgressIndicatorControl()
         {
             overlayrectangle = new Rectangle();
-            Grid.SetRow(overlayrectangle, 0);
-            Grid.SetRowSpan(overlayrectangle, grid.RowDefinitions.Count);
             overlayrectangle.Fill = UI_Utils.Instance.Black;
             overlayrectangle.Visibility = Visibility.Collapsed;
             overlayrectangle.Opacity = 0.85;
-            grid.Children.Add(overlayrectangle);
 
             spProgress = new StackPanel();
-            Grid.SetRow(spProgress, 0);
-            overlayrectangle.Visibility = Visibility.Collapsed;
-            grid.Children.Add(spProgress);
+            spProgress.Visibility = Visibility.Collapsed;
 
             txtProgressText = new TextBlock();
             txtProgressText.Margin = new Thickness(24, 250, 24, 0);
             txtProgressText.TextWrapping = TextWrapping.Wrap;
             txtProgressText.HorizontalAlignment = HorizontalAlignment.Center;
             txtProgressText.TextAlignment = TextAlignment.Center;
-            txtProgressText.Text = text;
             spProgress.Children.Add(txtProgressText);
 
             pBar = new PerformanceProgressBar();
@@ -55,18 +50,39 @@ namespace windows_client.Controls
             spProgress.Children.Add(pBar);
         }
 
-        public void Show()
+        public void Show(Grid grid, string text)
         {
-            overlayrectangle.Visibility = System.Windows.Visibility.Visible;
+            if (grid == null)
+                return;//not checked for text, as only perf bar required to show in some case
+            if (isShown)
+                return;//so that if grid is already shown then can not be called again until hiding
+            Grid.SetRow(overlayrectangle, 0);
+            Grid.SetRowSpan(overlayrectangle, grid.RowDefinitions.Count);
+            overlayrectangle.Visibility = Visibility.Visible;
+            grid.Children.Add(overlayrectangle);
+
             spProgress.Visibility = Visibility.Visible;
+            Grid.SetRow(spProgress, 0);
+            grid.Children.Add(spProgress);
+
+            txtProgressText.Text = text;
             pBar.IsEnabled = true;
+            isShown = true;
         }
 
-        public void Hide()
+        public void Hide(Grid grid)
         {
-            overlayrectangle.Visibility = System.Windows.Visibility.Collapsed;
+            if (grid == null)
+                return;
+
+            overlayrectangle.Visibility = Visibility.Collapsed;
+            grid.Children.Remove(overlayrectangle);
+
             spProgress.Visibility = Visibility.Collapsed;
+            grid.Children.Remove(spProgress);
+
             pBar.IsEnabled = false;
+            isShown = false;
         }
     }
 }
