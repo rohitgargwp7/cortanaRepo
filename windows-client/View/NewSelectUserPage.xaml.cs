@@ -867,7 +867,7 @@ namespace windows_client.View
                 stopContactScanning = false;
                 return;
             }
-            Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMapForRefresh(e.Results);
+            Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
             /* If no contacts in Phone as well as App , simply return */

@@ -60,7 +60,7 @@ namespace windows_client.utils
                 Debug.WriteLine("Contacts callback thread : {0}", Thread.CurrentThread.ToString());
                 IEnumerable<Contact> contacts = e.Results;
                 List<ContactInfo> listContatcInfo = null;
-                Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMap(contacts, out listContatcInfo);
+                Dictionary<string, List<ContactInfo>> contactListMap = getContactsListMapInitial(contacts, out listContatcInfo);
 
                 //todo:
                 //if (!App.appSettings.Contains(HikeConstants.PHONE_ADDRESS_BOOK))
@@ -158,7 +158,7 @@ namespace windows_client.utils
             return hikeContactListMap;
         }
 
-        public static Dictionary<string, List<ContactInfo>> getContactsListMapForRefresh(IEnumerable<Contact> contacts)
+        public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts)
         {
             int count = 0;
             int duplicates = 0;
@@ -202,7 +202,7 @@ namespace windows_client.utils
             Debug.WriteLine("Total contacts with no phone number : {0}", count);
             return contactListMap;
         }
-        public static Dictionary<string, List<ContactInfo>> getContactsListMap(IEnumerable<Contact> contacts, out List<ContactInfo> listContacts)
+        public static Dictionary<string, List<ContactInfo>> getContactsListMapInitial(IEnumerable<Contact> contacts, out List<ContactInfo> listContacts)
         {
             int count = 0;
             int duplicates = 0;

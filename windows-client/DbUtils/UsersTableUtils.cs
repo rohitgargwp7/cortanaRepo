@@ -12,7 +12,6 @@ namespace windows_client.DbUtils
 {
     public class UsersTableUtils
     {
-        public static string CONTACTS_DIRECTORY = "CONTACTS";
         public static string CONTACTS_FILENAME = "_Contacts";
         public static object readWriteLock = new object();
         #region user table
@@ -321,18 +320,17 @@ namespace windows_client.DbUtils
 
         public static void SaveContactsToFile(List<ContactInfo> listContacts)
         {
+            Stopwatch st = Stopwatch.StartNew();
             if (listContacts != null && listContacts.Count > 0)
             {
                 lock (readWriteLock)
                 {
                     using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        string fileName = CONTACTS_DIRECTORY + "\\" + CONTACTS_FILENAME;
+                        string fileName = CONTACTS_FILENAME;
                         try
                         {
-                            if (!store.DirectoryExists(CONTACTS_DIRECTORY))
-                                store.CreateDirectory(CONTACTS_DIRECTORY);
-                            else if (store.FileExists(fileName))
+                            if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
                         }
                         catch { }
@@ -363,6 +361,8 @@ namespace windows_client.DbUtils
                     }
                 }
             }
+            st.Stop();
+            Debug.WriteLine("Time to save {0} contacts in file is {1} ms", listContacts.Count, st.ElapsedMilliseconds);
         }
 
         public static List<ContactInfo> GetContactsFromFile()
@@ -372,13 +372,12 @@ namespace windows_client.DbUtils
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                 {
-                    string fileName = CONTACTS_DIRECTORY + "\\" + CONTACTS_FILENAME;
                     try
                     {
-                        if (store.FileExists(fileName))
+                        if (store.FileExists(CONTACTS_FILENAME))
                         {
                             listContacts = new List<ContactInfo>();
-                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                            using (var file = store.OpenFile(CONTACTS_FILENAME, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
                                 using (BinaryReader reader = new BinaryReader(file))
                                 {
@@ -412,11 +411,9 @@ namespace windows_client.DbUtils
                 {
                     try
                     {
-                        string fileName = CONTACTS_DIRECTORY + "\\" + CONTACTS_FILENAME;
-                        if (store.FileExists(fileName))
+                        if (store.FileExists(CONTACTS_FILENAME))
                         {
-                            store.DeleteFile(fileName);
-                            store.DeleteDirectory(CONTACTS_DIRECTORY);
+                            store.DeleteFile(CONTACTS_FILENAME);
                         }
                     }
                     catch (Exception ex)
