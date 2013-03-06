@@ -27,7 +27,7 @@ namespace windows_client.utils
         public delegate void contacts_Callback(object sender, ContactsSearchEventArgs e);
         public delegate void contactSearch_Callback(object sender, SaveContactResult e);
 
-        private static ContactScanState cState = ContactScanState.ADDBOOK_NOT_SCANNING;
+        private static volatile ContactScanState cState = ContactScanState.ADDBOOK_NOT_SCANNING;
         public static ContactScanState ContactState
         {
             get

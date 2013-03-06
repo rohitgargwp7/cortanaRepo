@@ -65,6 +65,8 @@ namespace windows_client
 
         private void btnEnterName_Click(object sender, EventArgs e)
         {
+            if (isClicked)
+                return;
             isClicked = true;
             this.Focus();
             nameErrorTxt.Visibility = Visibility.Collapsed;
@@ -143,6 +145,7 @@ namespace windows_client
                     nameErrorTxt.Text = AppResources.EnterName_NameErrorTxt;
                     nameErrorTxt.Visibility = Visibility.Visible;
                     App.RemoveKeyFromAppSettings(App.ACCOUNT_NAME);
+                    isClicked = false;
                 });
                 return;
             }
@@ -465,6 +468,7 @@ namespace windows_client
                         this.progressBar.Opacity = 0;
                         this.nextIconButton.IsEnabled = true;
                         this.txtBxEnterName.IsReadOnly = false;
+                        isClicked = false;
                     }
                 });
                 return;
@@ -503,7 +507,6 @@ namespace windows_client
                 ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_STORED_IN_HIKE_DB;
                 Debug.WriteLine("Addbook stored in Hike Db .... ");
                 App.WriteToIsoStorageSettings(ContactUtils.IS_ADDRESS_BOOK_SCANNED, true);
-
             }
         }
     }
