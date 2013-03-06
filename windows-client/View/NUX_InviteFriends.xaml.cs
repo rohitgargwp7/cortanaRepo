@@ -258,6 +258,8 @@ namespace windows_client.View
                 }
                 foreach (ContactInfo cn in listContact)
                 {
+                    if (listCloseFriends.Count > 30 && listFamilyMembers.Count > 30)
+                        break;
                     ContactInfo contactFromDb;
                     if (!dictContactsInDb.TryGetValue(cn.Name + cn.PhoneNo, out contactFromDb))
                         continue;
