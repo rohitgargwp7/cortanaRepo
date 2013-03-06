@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using Microsoft.Phone.Controls;
+using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using windows_client.DbUtils;
+using windows_client.Languages;
 using windows_client.Model;
 
 namespace windows_client.Controls.StatusUpdate
@@ -15,11 +17,11 @@ namespace windows_client.Controls.StatusUpdate
 
         public string UserName
         {
-            get 
+            get
             {
                 return _userName;
             }
-            set 
+            set
             {
                 if (value != _userName)
                 {
@@ -78,13 +80,25 @@ namespace windows_client.Controls.StatusUpdate
             this.UserName = userName;
             this.UserImage = userImage;
             this.Msisdn = msisdn;
+            //if (contextMenuDelete != null)
+            //{
+            //    ContextMenu menu = new ContextMenu();
+            //    menu.IsZoomEnabled = true;
+            //    MenuItem menuItemDelete = new MenuItem();
+            //    menuItemDelete.Header = AppResources.Delete_Txt;
+            //    menuItemDelete.Tap += contextMenuDelete;
+            //    menu.Items.Add(menuItemDelete);
+            //    ContextMenuService.SetContextMenu(this, menu);
+            //}
         }
 
+        //private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //}
+
         public StatusUpdateBox(ConversationListObject c)
+            : this(c.NameToShow, c.AvatarImage, c.Msisdn)
         {
-            this.UserName = c.NameToShow;
-            this.UserImage = c.AvatarImage;
-            this.Msisdn = c.Msisdn;
         }
 
         public StatusUpdateBox()
