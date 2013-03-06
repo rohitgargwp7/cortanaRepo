@@ -21,6 +21,7 @@ namespace windows_client.utils
         public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
         public static bool isABScanning;
         private static Stopwatch st;
+        private static Stopwatch st2;
         public static Dictionary<string, List<ContactInfo>> contactsMap = null;
         public static Dictionary<string, List<ContactInfo>> hike_contactsMap = null;
 
