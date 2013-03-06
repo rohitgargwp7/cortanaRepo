@@ -248,7 +248,12 @@ namespace windows_client.utils
                         count++;
                         continue;
                     }
-                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    string nameToStore;
+                    if (string.IsNullOrEmpty(cn.CompleteName.LastName) && !string.IsNullOrEmpty(cn.CompleteName.MiddleName))
+                        nameToStore = cn.CompleteName.FirstName.Trim() + " " + cn.CompleteName.MiddleName.Trim();
+                    else
+                        nameToStore = cn.DisplayName.Trim();
+                    ContactInfo cInfo = new ContactInfo(null,nameToStore , ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
