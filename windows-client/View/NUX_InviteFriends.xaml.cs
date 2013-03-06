@@ -68,7 +68,7 @@ namespace windows_client.View
                 listContactInfo = UsersTableUtils.GetContactsFromFile();
                 if (listContactInfo == null || listContactInfo.Count == 0)
                 {
-                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                    App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                     return;
                 }
@@ -85,7 +85,10 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
                 {
+                    Stopwatch st = Stopwatch.StartNew();
                     ProcessNuxContacts(listContactInfo);
+                    st.Stop();
+                    Debug.WriteLine("Time to process NUX in NUX Screen is {0} ms", st.ElapsedMilliseconds);
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += LoadingCompleted;
@@ -230,27 +233,37 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
+        private ContactInfo GetContact(ContactInfo cn, List<ContactInfo> listContact)
+        {
+            for (int i = 0; i < listContact.Count; i++)
+            {
+                if (listContact[i].Equals(cn))
+                    return listContact[i];
+            }
+            return null;
+        }
+
         public void ProcessNuxContacts(List<ContactInfo> listContact)
         {
             if (listContact != null && listContact.Count > 0 && listFamilyMembers != null && listCloseFriends != null)
             {
+                Stopwatch st = Stopwatch.StartNew();
                 List<ContactInfo> listContactsFromDb = UsersTableUtils.getAllContacts();
-                Dictionary<string, bool> dictVocabNames = new Dictionary<string, bool>();
-                List<string> listVocabNames = new List<string>();
-
+                st.Stop();
+                Debug.WriteLine("NUX : Time to get all contacts is {0} ms", st.ElapsedMilliseconds);
                 if (listContactsFromDb == null)
                     listContactsFromDb = new List<ContactInfo>();
 
                 string lastName = GetLastName();
                 bool isLastNameCheckApplicable = lastName != null;
                 listContact.Sort(new ContactCompare());
+                st = Stopwatch.StartNew();
                 foreach (ContactInfo cn in listContact)
                 {
                     int index = listContactsFromDb.IndexOf(cn);
                     if (index < 0)
-                    {
                         continue;
-                    }
+                   
                     ContactInfo contactFromDb = listContactsFromDb[index];
 
                     cn.Msisdn = contactFromDb.Msisdn;
@@ -259,15 +272,16 @@ namespace windows_client.View
                         bool markedForNux = false;
                         if (listFamilyMembers.Count < 31)
                         {
-                            if (isLastNameCheckApplicable)
+                            string[] nameArray = null;
+                            if (!string.IsNullOrEmpty(cn.Name))
                             {
-                                if (!string.IsNullOrEmpty(cn.Name))
+                                nameArray = cn.Name.Split(' ');
+                                if (isLastNameCheckApplicable)
                                 {
-                                    string[] nameArray = cn.Name.Trim().Split(' ');
                                     if (nameArray.Length > 1)
                                     {
-                                        string curlastName = nameArray[nameArray.Length - 1].ToLower();
-                                        if (curlastName.Trim().ToLower() == lastName)
+                                        string curlastName = nameArray[nameArray.Length - 1];
+                                        if (curlastName.Equals(lastName, StringComparison.OrdinalIgnoreCase))
                                         {
                                             listFamilyMembers.Add(cn);
                                             markedForNux = true;
@@ -275,7 +289,7 @@ namespace windows_client.View
                                     }
                                 }
                             }
-                            if (!markedForNux && MatchFromFamilyVocab(cn.Name))
+                            if (!markedForNux && MatchFromFamilyVocab(nameArray))
                             {
                                 markedForNux = true;
                                 listFamilyMembers.Add(cn);
@@ -285,12 +299,13 @@ namespace windows_client.View
                         if (!markedForNux && cn.NuxMatchScore > 0)
                         {
                             markedForNux = true;
-                            listCloseFriends.Add(cn);
+                            if (listCloseFriends.Count < 30)
+                                listCloseFriends.Add(cn);
                         }
-
                     }
                 }
-
+                st.Stop();
+                Debug.WriteLine("NUX :PART 1 {0} ms", st.ElapsedMilliseconds);
                 if (listCloseFriends.Count < 31)
                 {
                     int contactAdded = 0;
@@ -314,10 +329,6 @@ namespace windows_client.View
                         }
                     }
                 }
-                else
-                {
-                    listCloseFriends.RemoveRange(30, listCloseFriends.Count - 30);
-                }
             }
         }
 
@@ -332,7 +343,7 @@ namespace windows_client.View
             if (nameArray.Length == 1)
                 return null;
 
-            return nameArray[nameArray.Length - 1].ToLower();
+            return nameArray[nameArray.Length - 1].Trim();
         }
 
         #region FAMILY VOCABULARY
@@ -341,12 +352,10 @@ namespace windows_client.View
 
         #endregion
 
-        public bool MatchFromFamilyVocab(string completeName)
+        public bool MatchFromFamilyVocab(string[] strCompleteName)
         {
-            if (string.IsNullOrEmpty(completeName))
+            if (strCompleteName == null)
                 return false;
-
-            string[] strCompleteName = completeName.Split(' ');
             foreach (string namesplit in strCompleteName)
             {
                 if (dictFamilyVocab.ContainsKey(namesplit.ToLower()))
@@ -354,6 +363,7 @@ namespace windows_client.View
             }
             return false;
         }
+
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);

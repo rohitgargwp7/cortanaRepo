@@ -110,6 +110,8 @@ namespace windows_client
             appBar.Buttons.Add(nextIconButton);
             enterNumber.ApplicationBar = appBar;
             this.countryList.ItemsSource = GetGroupedList();
+            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
         private void initializeCountryCodes()
