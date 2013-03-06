@@ -46,7 +46,7 @@ namespace windows_client.Controls
                 if (_userName != value)
                 {
                     _userName = value;
-                    this.userNameTxtBlck.Text = _userName;
+                    this.userNameTxtBlck.Text = !string.IsNullOrWhiteSpace(_userName) ? _userName : _msisdn;
                 }
             }
         }

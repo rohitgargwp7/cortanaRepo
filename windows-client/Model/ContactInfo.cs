@@ -10,6 +10,8 @@ using System.Windows;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
+using windows_client.Misc;
+using System.Text;
 
 namespace windows_client.Model
 {
@@ -450,6 +452,61 @@ namespace windows_client.Model
                     Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
                     return null;
                 }
+            }
+        }
+
+        public void Write(BinaryWriter writer)
+        {
+            try
+            {
+                if (_name == null)
+                    writer.WriteStringBytes("*@N@*");
+                else
+                    writer.WriteStringBytes(_name);
+
+                writer.WriteStringBytes(_phoneNo);//cannot be null for nux
+                writer.WriteStringBytes(_id);//cannot be null for nux
+
+                writer.Write(_nuxScore);
+                writer.Write(_hasCustomPhoto);
+                if (_avatar != null)
+                {
+                    writer.Write(_avatar.Length);
+                    writer.Write(_avatar);
+                }
+                
+            }
+            catch
+            {
+                throw new Exception("Unable to write to a file...");
+            }
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            try
+            {
+                int count = reader.ReadInt32();
+                _name = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+                if (_name == "*@N@*")
+                    _name = null;
+                count = reader.ReadInt32();
+                _phoneNo = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
+                count = reader.ReadInt32();
+                _id = Encoding.UTF8.GetString(reader.ReadBytes(count), 0, count);
+
+                _nuxScore = reader.ReadByte();
+                _hasCustomPhoto = reader.ReadBoolean();
+                if (_hasCustomPhoto)
+                {
+                    count = reader.ReadInt32();
+                    _avatar = reader.ReadBytes(count);
+                }
+            }
+            catch
+            {
+                throw new Exception("Conversation Object corrupt");
             }
         }
     }

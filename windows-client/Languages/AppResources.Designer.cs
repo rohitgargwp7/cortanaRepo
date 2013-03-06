@@ -3432,6 +3432,24 @@ namespace windows_client.Languages
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Stop!!!.
+        /// </summary>
+        public static string Stop_Caption_txt {
+            get {
+                return ResourceManager.GetString("Stop_Caption_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to stop contact scanning?.
+        /// </summary>
+        public static string Stop_Contact_Scanning {
+            get {
+                return ResourceManager.GetString("Stop_Contact_Scanning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to stop.
         /// </summary>
         public static string Stop_Txt

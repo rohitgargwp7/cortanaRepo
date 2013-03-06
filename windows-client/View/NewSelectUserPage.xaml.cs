@@ -13,7 +13,6 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.UserData;
 using Newtonsoft.Json.Linq;
-using Phone.Controls;
 using windows_client.DbUtils;
 using windows_client.Model;
 using windows_client.utils;
@@ -29,6 +28,7 @@ namespace windows_client.View
         private bool hideSmsContacts;
         private bool isFreeSmsOn = true;
         private bool canGoBack = true;
+        private bool stopContactScanning = false;
         private bool isClicked = false;
         private bool isContactShared = false;
         private string TAP_MSG = AppResources.SelectUser_TapMsg_Txt;
@@ -36,7 +36,6 @@ namespace windows_client.View
         private bool isExistingGroup = false;
         private bool isGroupChat = false;
         public List<ContactInfo> contactsForgroup = null; // this is used to store all those contacts which are selected for group
-        public MyProgressIndicator progress = null;
         List<Group<ContactInfo>> glistFiltered = null;
         public List<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
         public List<Group<ContactInfo>> filteredJumpList = null;
@@ -45,7 +44,7 @@ namespace windows_client.View
         ContactInfo contactInfoObj;
         private readonly int MAX_USERS_ALLOWED_IN_GROUP = 20;
         private int defaultGroupmembers = 0;
-
+        private ProgressIndicatorControl progressIndicator;
         private StringBuilder stringBuilderForContactNames = new StringBuilder();
 
         List<ContactInfo> allContactsList = null; // contacts list
@@ -205,7 +204,17 @@ namespace windows_client.View
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             if (!canGoBack)
+            {
+                MessageBoxResult mbox = MessageBox.Show(AppResources.Stop_Contact_Scanning, AppResources.Stop_Caption_txt, MessageBoxButton.OKCancel);
+                if (mbox == MessageBoxResult.OK)
+                {
+                    stopContactScanning = true;
+                    progressIndicator.Hide(LayoutRoot);
+                    enableAppBar();
+                    canGoBack = true;
+                }
                 e.Cancel = true;
+            }
             base.OnBackKeyPress(e);
         }
 
@@ -789,11 +798,13 @@ namespace windows_client.View
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                 return;
             }
-            if (progress == null)
-                progress = new MyProgressIndicator(AppResources.SelectUser_RefreshWaitMsg_Txt);
-
             disableAppBar();
-            progress.Show();
+
+            if (progressIndicator == null)
+                progressIndicator = new ProgressIndicatorControl();
+
+            progressIndicator.Show(LayoutRoot, AppResources.SelectUser_RefreshWaitMsg_Txt);
+
             canGoBack = false;
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
         }
@@ -801,6 +812,11 @@ namespace windows_client.View
         /* This callback is on background thread started by getContacts function */
         public void makePatchRequest_Callback(object sender, ContactsSearchEventArgs e)
         {
+            if (stopContactScanning)
+            {
+                stopContactScanning = false;
+                return;
+            }
             Dictionary<string, List<ContactInfo>> new_contacts_by_id = ContactUtils.getContactsListMap(e.Results);
             Dictionary<string, List<ContactInfo>> hike_contacts_by_id = ContactUtils.convertListToMap(UsersTableUtils.getAllContacts());
 
@@ -864,12 +880,21 @@ namespace windows_client.View
              * contacts_to_update : These are the contacts to add
              * ids_json : These are the contacts to delete
              */
-
+            if (stopContactScanning)
+            {
+                stopContactScanning = false;
+                return;
+            }
             AccountUtils.updateAddressBook(contacts_to_update_or_add, ids_to_delete, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
         }
 
         public void updateAddressBook_Callback(JObject patchJsonObj)
         {
+            if (stopContactScanning)
+            {
+                stopContactScanning = false;
+                return;
+            }
             if (patchJsonObj == null)
             {
                 Thread.Sleep(1000);
@@ -915,6 +940,11 @@ namespace windows_client.View
                     }
                 }
             }
+            if (stopContactScanning)
+            {
+                stopContactScanning = false;
+                return;
+            }
             if (hikeIds != null && hikeIds.Count > 0)
             {
                 /* Delete ids from hike user DB */
@@ -944,7 +974,7 @@ namespace windows_client.View
                 }
                 else
                     contactsListBox.ItemsSource = jumpList;
-                progress.Hide();
+                progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
             });
             canGoBack = true;
@@ -954,7 +984,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                progress.Hide();
+                progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
                 App.isABScanning = false;
             });
@@ -983,6 +1013,7 @@ namespace windows_client.View
 
         private void disableAppBar()
         {
+            appBar.IsMenuEnabled = false;
             refreshIconButton.IsEnabled = false;
             if (isGroupChat)
                 doneIconButton.IsEnabled = false;
@@ -991,7 +1022,7 @@ namespace windows_client.View
         private void enableAppBar()
         {
             refreshIconButton.IsEnabled = true;
-
+            appBar.IsMenuEnabled = true;
             // should be Group Chat
             // if new group then number of users should be greater than equal to 3 
             // if existing group then added user should atleast be 1
@@ -1093,5 +1124,7 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, convMessage.serialize(convMessage.IsSms ? false : true));
             btn.IsEnabled = false;
         }
+
+
     }
 }

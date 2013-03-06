@@ -107,7 +107,6 @@
                           ItemTemplate="{StaticResource ItemTemplate}"
                           GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
                           JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"/>
-
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage >

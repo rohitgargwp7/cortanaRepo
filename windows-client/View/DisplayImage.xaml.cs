@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using windows_client.DbUtils;
 using windows_client.utils;
+using System.Diagnostics;
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
@@ -100,6 +101,25 @@ namespace windows_client.View
                 else
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
+        }
+
+        private void setImage(byte[] imageBytes)
+        {
+            try
+            {
+                BitmapImage bitmapImage = null;
+                using (var memStream = new MemoryStream(imageBytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(memStream);
+                }
+                this.FileImage.Source = bitmapImage;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+            }
         }
     }
 }
