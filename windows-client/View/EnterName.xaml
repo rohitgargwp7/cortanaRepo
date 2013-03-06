@@ -78,7 +78,7 @@
                            Visibility="Collapsed" FontSize="18" Foreground="Red" />
                 <TextBlock x:Name="feelingLazyTxtBlk" FontSize="24"
                            Foreground="{StaticResource PhoneForegroundBrush}"
-                           HorizontalAlignment="Left" VerticalAlignment="Center"
+                           HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Width="400"
                            Text="{Binding Path= LocalizedResources.FeelingLazy_Txt, Source={StaticResource LocalizedStrings}}" 
                            Opacity="1" Margin="24,0,0,0">
                 </TextBlock>

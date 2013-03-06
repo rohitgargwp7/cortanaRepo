@@ -72,8 +72,7 @@ namespace windows_client.View
 
         public static void contactSearchCompletedForNux_Callback(object sender, ContactsSearchEventArgs e)
         {
-            IEnumerable<Contact> contacts = e.Results;
-            listContactInfo = ContactUtils.getContactListForNux(contacts);
+            ContactUtils.getContactsListMapInitial(e.Results, out listContactInfo);
         }
     }
 }

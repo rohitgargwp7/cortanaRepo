@@ -99,6 +99,5 @@ namespace windows_client.View
                     this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
         }
-
     }
 }
