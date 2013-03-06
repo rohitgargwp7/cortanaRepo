@@ -288,32 +288,14 @@ namespace windows_client.View
                         }
                     }
 
-                    if (!markedForNux && cn.NuxMatchScore > 0 && listCloseFriends.Count < 31)
+                    if (!markedForNux &&  listCloseFriends.Count < 31)
                     {
                         markedForNux = true;
                         listCloseFriends.Add(cn);
                     }
 
                 }
-                if (listCloseFriends.Count < 31)
-                {
-                    int contactAdded = 0;
-                    int countRequired = 30 - listCloseFriends.Count;
-                    foreach (ContactInfo contact in listContact)
-                    {
-                        ContactInfo contactFromDb;
-                        if (!dictContactsInDb.TryGetValue(contact.Name + contact.PhoneNo, out contactFromDb))
-                            continue;
-                        if (contactAdded == countRequired)
-                            break;
-                        contact.Msisdn = contactFromDb.Msisdn;
-                        if (!contactFromDb.OnHike && !listCloseFriends.Contains(contact) && !listFamilyMembers.Contains(contact))
-                        {
-                            listCloseFriends.Add(contact);
-                            contactAdded++;
-                        }
-                    }
-                }
+               
                 st.Stop();
                 Debug.WriteLine("Time fr nux scanning " + st.ElapsedMilliseconds);
             }
