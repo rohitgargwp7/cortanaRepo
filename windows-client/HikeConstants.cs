@@ -181,6 +181,11 @@ namespace windows_client
         public static readonly string ACCOUNTS = "accounts";
         public static readonly string TWITTER = "twitter";
         public static readonly string FACEBOOK = "fb";
+        public static readonly string TEXT_UPDATE_MSG = "msg";
+        public static readonly string STATUS_ID = "statusid";
+        public static readonly string PROFILE_UPDATE = "profile";
+        public static readonly string THUMBNAIL = "tn";
+        public static readonly string PROFILE_PIC_ID = "ppid";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -198,12 +203,14 @@ namespace windows_client
         public static string IS_NEW_INSTALLATION = "is_new_installation";
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
+        public static string IMAGE_TO_DISPLAY = "imageToDisplay";
 
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";
         /* NAVIGATION CONSTANTS*/
         public static string OBJ_FROM_SELECTUSER_PAGE = "objFromSelectUserPage";
         public static string OBJ_FROM_CONVERSATIONS_PAGE = "objFromConversationPage";
+        public static string OBJ_FROM_STATUSPAGE = "objFromStatusPage";
         public static string FORWARD_MSG = "forwardedText";
         public static string AUDIO_RECORDED = "audioRecorded";
         public static string CONTACT_SELECTED = "contactSelected";
@@ -214,13 +221,26 @@ namespace windows_client
         public static string FB_LOGGED_IN = "FbLoggedIn";
         public static string TW_LOGGED_IN = "TwLoggedIn";
         public static string ACCOUNT = "account";
+
+        public static string USERINFO_FROM_CHATTHREAD_PAGE = "userInfoFromChatThread";
+        public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
+        public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
+        public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
+        public static string UNREAD_UPDATES = "unUp";
+
+        public static string CLOSE_FRIENDS_NUX = "closeFriends";
+        public static string LAST_STATUS = "lastStatus";
+
+        public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
+
+
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";
         public static readonly string AUDIO = "audio";
         public static readonly string IMAGE = "image";
         public static readonly string CONTACT = "contact";
-        public static readonly string CT_CONTACT="contact/share";
+        public static readonly string CT_CONTACT = "contact/share";
 
 
         public static readonly string OK = "ok";
@@ -267,16 +287,18 @@ namespace windows_client
             public static readonly string GROUP_CHAT_NAME = "gcn";
             public static readonly string REQUEST_ACCOUNT_INFO = "rai";
             public static readonly string DND_USER_IN_GROUP = "dugc";
-            public static string ACCOUNT_INFO = "ai";
-            public static string ACCOUNT_CONFIG = "ac";
-            public static string GROUP_USER_JOINED_OR_WAITING = "gujow";
-            public static string USER_OPT_IN = "uo";
-            public static string USER_JOIN = "uj";
-            public static string SMS_USER = "sms_user";
-            public static string HIKE_USER = "hike_user";
-            public static string ADD_FAVOURITE = "af";
-            public static string REMOVE_FAVOURITE = "rf";
-            public static string REWARDS = "rewards";
+
+            public static readonly string ACCOUNT_INFO = "ai";
+            public static readonly string ACCOUNT_CONFIG = "ac";
+            public static readonly string GROUP_USER_JOINED_OR_WAITING = "gujow";
+            public static readonly string USER_OPT_IN = "uo";
+            public static readonly string USER_JOIN = "uj";
+            public static readonly string SMS_USER = "sms_user";
+            public static readonly string HIKE_USER = "hike_user";
+            public static readonly string ADD_FAVOURITE = "af";
+            public static readonly string REMOVE_FAVOURITE = "rf";
+            public static readonly string REWARDS = "rewards";
+            public static readonly string STATUS_UPDATE = "su";
             public static string GROUP_DISPLAY_PIC = "dp";
 
         }

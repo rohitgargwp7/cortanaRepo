@@ -349,6 +349,14 @@ namespace windows_client.utils
             }
         }
 
+        public static ConversationListObject GetConvlistObj(string msisdn)
+        {
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                return App.ViewModel.ConvMap[msisdn];
+            else
+                return App.ViewModel.GetFav(msisdn);
+        }
+
         public static bool IsHikeBotMsg(string msisdn)
         {
             return msisdn.Contains("hike");

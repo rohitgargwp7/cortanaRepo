@@ -433,6 +433,9 @@ namespace windows_client.Model
             {
                 try
                 {
+                    // donot add this bitmap to map as this may not be used everywhere in the app
+                    // also this would fill the map with bitmaps for all the contacts
+
                     if (_avatar == null)
                     {
                         if (Utils.isGroupConversation(Msisdn))
@@ -441,11 +444,7 @@ namespace windows_client.Model
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(_avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        return empImage;
+                        return UI_Utils.Instance.createImageFromBytes(_avatar);
                     }
                 }
                 catch (Exception e)

@@ -3,12 +3,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 using System.IO;
+using windows_client.DbUtils;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
     public class UI_Utils
     {
-        #region private variables
+        #region PRIVATE UI VARIABLES
+
         private SolidColorBrush textBoxBackground;
         private SolidColorBrush lastMsgForeground;
         private SolidColorBrush smsBackground;
@@ -26,6 +30,8 @@ namespace windows_client.utils
         private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
+        private SolidColorBrush statusTextBlackTheme;
+        private SolidColorBrush statusTextWhiteTheme;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -47,7 +53,12 @@ namespace windows_client.utils
         private BitmapImage participantLeft;
         private BitmapImage nudgeSend;
         private BitmapImage nudgeReceived;
+        private BitmapImage textStatusImage;
+        private BitmapImage friendRequestImage;
+        private BitmapImage noNewNotificationImage;
+        private BitmapImage newNotificationImage;
         private BitmapImage contactIcon;
+
         private BitmapImage[] defaultUserAvatars = new BitmapImage[7];
         private BitmapImage[] defaultGroupAvatars = new BitmapImage[7];
         private string[] defaultAvatarFileNames;
@@ -58,6 +69,10 @@ namespace windows_client.utils
         private Thickness chatThreadKeyPadDownMargin = new Thickness(0, 0, 15, 0);
         private FontFamily groupChatMessageHeader;
         private FontFamily messageText;
+
+        #endregion
+
+        private Dictionary<string, BitmapImage> _bitMapImageCache = null;
 
         private static volatile UI_Utils instance = null;
 
@@ -80,7 +95,6 @@ namespace windows_client.utils
                 return instance;
             }
         }
-        #endregion
 
         private UI_Utils()
         {
@@ -99,9 +113,25 @@ namespace windows_client.utils
             defaultAvatarFileNames[11] = "EarthyPeople.jpg";
             defaultAvatarFileNames[12] = "GreenPeople.jpg";
             defaultAvatarFileNames[13] = "PinkPeople.jpg";
+
+            _bitMapImageCache = new Dictionary<string, BitmapImage>();
         }
 
         #region public  properties
+
+        public Dictionary<string, BitmapImage> BitmapImageCache
+        {
+            get
+            {
+                return _bitMapImageCache;
+            }
+            set
+            {
+                if (value != _bitMapImageCache)
+                    _bitMapImageCache = value;
+            }
+        }
+
         public SolidColorBrush TextBoxBackground
         {
             get
@@ -298,6 +328,30 @@ namespace windows_client.utils
                     phoneThemeColor = new SolidColorBrush((Color)Application.Current.Resources["PhoneAccentColor"]); ;
                 }
                 return phoneThemeColor;
+            }
+        }
+
+        public SolidColorBrush StatusTextBlackTheme
+        {
+            get
+            {
+                if (statusTextBlackTheme == null)
+                {
+                    statusTextBlackTheme = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
+                }
+                return statusTextBlackTheme;
+            }
+        }
+
+        public SolidColorBrush StatusTextWhiteTheme
+        {
+            get
+            {
+                if (statusTextWhiteTheme == null)
+                {
+                    statusTextWhiteTheme = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
+                }
+                return statusTextWhiteTheme;
             }
         }
 
@@ -512,6 +566,46 @@ namespace windows_client.utils
             }
         }
 
+        public BitmapImage TextStatusImage
+        {
+            get
+            {
+                if (textStatusImage == null)
+                    textStatusImage = new BitmapImage(new Uri("/View/images/timeline_status.png", UriKind.Relative));
+                return textStatusImage;
+            }
+        }
+
+        public BitmapImage FriendRequestImage
+        {
+            get
+            {
+                if (friendRequestImage == null)
+                    friendRequestImage = new BitmapImage(new Uri("/View/images/timeline_friend.png", UriKind.Relative));
+                return friendRequestImage;
+            }
+        }
+
+        public BitmapImage NoNewNotificationImage
+        {
+            get
+            {
+                if (noNewNotificationImage == null)
+                    noNewNotificationImage = new BitmapImage(new Uri("/View/images/notification_read.png", UriKind.Relative));
+                return noNewNotificationImage;
+            }
+        }
+
+        public BitmapImage NewNotificationImage
+        {
+            get
+            {
+                if (newNotificationImage == null)
+                    newNotificationImage = new BitmapImage(new Uri("/View/images/notification_unread.png", UriKind.Relative));
+                return newNotificationImage;
+            }
+        }
+
         public BitmapImage ContactIcon
         {
             get
@@ -521,6 +615,7 @@ namespace windows_client.utils
                 return contactIcon;
             }
         }
+
         public SolidColorBrush ReceiveMessageForeground
         {
             get
@@ -684,5 +779,70 @@ namespace windows_client.utils
             }
         }
         #endregion
+
+        public BitmapImage createImageFromBytes(byte[] imagebytes)
+        {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
+            BitmapImage bitmapImage = null;
+            try
+            {
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+            }
+            return bitmapImage;
+        }
+
+        /// <summary>
+        /// Call this function only if you want to cache the Bitmap Image
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <returns></returns>
+        public BitmapImage GetBitmapImage(string msisdn)
+        {
+            return GetBitmap(msisdn, true);
+        }
+
+        /// <summary>
+        /// Call this function if donot want to save in cache
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="shouldSave"></param>
+        /// <returns></returns>
+        public BitmapImage GetBitmapImage(string msisdn,bool shouldSave)
+        {
+            return GetBitmap(msisdn, false);
+        }
+
+        private BitmapImage GetBitmap(string msisdn,bool saveInCache)
+        {
+            if (_bitMapImageCache.ContainsKey(msisdn))
+                return _bitMapImageCache[msisdn];
+            // if no image for this user exists
+
+            byte[] profileImageBytes = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+            if (profileImageBytes != null && profileImageBytes.Length > 0)
+            {
+                BitmapImage img = createImageFromBytes(profileImageBytes);
+                if (img != null)
+                {
+                    if(saveInCache)
+                        _bitMapImageCache[msisdn] = img;
+                    return img;
+                }
+            }
+            // do not add default avatar images to cache as they are already chached.
+            if (Utils.isGroupConversation(msisdn))
+                return getDefaultGroupAvatar(msisdn);
+            return getDefaultAvatar(msisdn);
+        }
     }
 }

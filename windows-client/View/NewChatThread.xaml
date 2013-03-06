@@ -13,7 +13,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" Visibility="Visible" Name="chatThreadMainPage">
 
@@ -54,8 +54,8 @@
                     <TextBlock Grid.Column="0" Margin="24,0,0,0" Text="{Binding Path= LocalizedResources.ChatThread_GCMute, Source={StaticResource LocalizedStrings}}" FontSize="18" VerticalAlignment="Center" Foreground="White"/>
                     <Image Grid.Column="1" Source="images\mute_icon_main.png" Margin="0,0,24,0" VerticalAlignment="Center" HorizontalAlignment="Right" Height="26" Width="25"/>
                 </Grid>
-                <StackPanel Orientation="Horizontal" Margin="24,0,20,10">
-                    <Image Name="userImage" Height="50" Tap="userImage_Tap"></Image>
+                <StackPanel Orientation="Horizontal" Margin="24,0,20,10" Tap="userHeader_Tap">
+                    <Image Name="userImage" Height="50" ></Image>
                     <TextBlock x:Name="userName" Text="ERROR!!" FontFamily="Segoe WP SemiLight" FontSize="50" Margin="18,-4,0,0" Width="Auto" />
                 </StackPanel>
             </StackPanel>
@@ -94,7 +94,7 @@
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="460"></ColumnDefinition>
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
                             <ListBox Height="180" Name="emotList0" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList0_Tap">
@@ -122,7 +122,7 @@
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="460"></ColumnDefinition>
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
                             <ListBox Height="180" Name="emotList1" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList1_Tap">
@@ -149,7 +149,7 @@
                                 <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="460"></ColumnDefinition>
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
                             <ListBox Height="180" Name="emotList2" Grid.Row="0" Grid.Column="0" Visibility="Visible" BorderThickness="18,0,0,0" Tap="emotList2_Tap">
@@ -228,7 +228,7 @@
                     <Image Source="images\menu_video_icon.png" Height="30" HorizontalAlignment="Center"/>
                     <TextBlock Margin="0,5,0,0" Text="{Binding Path= LocalizedResources.Attachment_Video_Txt, Source={StaticResource LocalizedStrings}}" FontSize="18" HorizontalAlignment="Center" Foreground="#f6f6f6" ></TextBlock >
                 </StackPanel>
-                
+
                 <Rectangle Width="200" Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1"/>
                 <Rectangle Width="200" Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="1"/>
                 <Rectangle Width="200" Height="1" Fill="#080808" Grid.ColumnSpan="2" Grid.Column="4" Grid.Row="1"/>
@@ -254,11 +254,11 @@
 
             <Rectangle Width="Auto" Height="2" Margin="0,10,0,0" Fill="#dedede"/>
             <StackPanel Background="#eeeeec">
-                <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint=""  Width="480" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
+                <toolkit:PhoneTextBox TextOptions.TextHintingMode="Animated" x:Name="sendMsgTxtbox" Background="#eeeeec" InputScope="Text" BorderThickness="0" GotFocus="sendMsgTxtbox_GotFocus" AcceptsReturn="True" Hint="" TextWrapping="Wrap" TextChanged="sendMsgTxtbox_TextChanged" 
                                       MinHeight="68" MaxLength="10000"  Margin="0,-4,-8,0" Height="Auto" VerticalAlignment="Top" FontFamily="Segoe WP SemiLight" LostFocus="sendMsgTxtbox_LostFocus" />
             </StackPanel>
         </StackPanel>
-        <toolkit:PerformanceProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
+        <ProgressBar x:Name="progressBar" Grid.Row="1" Margin="0,0,0,0" 
                                         Background="Transparent" IsIndeterminate="True" 
                                         VerticalAlignment="Center" 
                                         VerticalContentAlignment="Center" FontSize="24" 

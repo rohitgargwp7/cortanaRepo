@@ -12,7 +12,7 @@ namespace windows_client.View
     public partial class DisplayImage : PhoneApplicationPage
     {
         private string msisdn;
-        private string fileName;//name of file recived from server. it would be either msisdn or default avatr file name
+        //private string fileName;//name of file recived from server. it would be either msisdn or default avatr file name
 
         public DisplayImage()
         {
@@ -24,10 +24,12 @@ namespace windows_client.View
             base.OnRemovedFromJournal(e);
             PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
             PhoneApplicationService.Current.State.Remove("displayProfilePic");
+            PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
         }
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            //TODO - use constants rather hard coded strings - MG
             if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
             {
                 object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
@@ -36,19 +38,19 @@ namespace windows_client.View
                 string filePath = HikeConstants.FILES_BYTE_LOCATION + "/" + msisdn + "/" + Convert.ToString(messsageId);
                 byte[] filebytes;
                 MiscDBUtil.readFileFromIsolatedStorage(filePath, out filebytes);
-                setImage(filebytes);
+                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(filebytes);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey("displayProfilePic"))
             {
                 object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                 msisdn = (string)profilePicTapped[0];
                 string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
-
+                string fileName;
                 //check if image is already stored
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
                 {
-                    setImage(fullViewBytes);
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullViewBytes);
                 }
                 else if (MiscDBUtil.hasCustomProfileImage(msisdn))
                 {
@@ -56,11 +58,11 @@ namespace windows_client.View
                     loadingProgress.Opacity = 1;
                     if (!Utils.isGroupConversation(msisdn))
                     {
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/account/avatar/" + msisdn + "?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                     else
                     {
-                        AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true);
+                        AccountUtils.createGetRequest(AccountUtils.BASE + "/group/" + msisdn + "/avatar?fullsize=true", getProfilePic_Callback, true, fileName);
                     }
                 }
                 else
@@ -71,48 +73,33 @@ namespace windows_client.View
                     if (defaultImageBytes == null || defaultImageBytes.Length == 0)
                     {
                         loadingProgress.Opacity = 1;
-                        AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false);
+                        //TODO : MG plz correct this and merge this //AccountUtils.createGetRequest(AccountUtils.AVATAR_BASE + "/static/avatars/" + fileName, getProfilePic_Callback, false);
                     }
                     else
                     {
-                        setImage(defaultImageBytes);
+                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(defaultImageBytes);
                     }
                 }
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+            {
+                BitmapImage imageToDisplay = (BitmapImage)PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY];
+                this.FileImage.Source = imageToDisplay;
+            }
         }
 
-        public void getProfilePic_Callback(byte[] fullBytes)
+        public void getProfilePic_Callback(byte[] fullBytes, object fName)
         {
+            string fileName = fName as string;
             if (fullBytes != null && fullBytes.Length > 0)
                 MiscDBUtil.saveAvatarImage(fileName, fullBytes, false);
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
                 loadingProgress.Opacity = 0;
                 if (fullBytes != null && fullBytes.Length > 0)
-                {
-                    setImage(fullBytes);
-                }
+                    this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
                 else
-                {
-                    byte[] smallThumbnailImage = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-                    if (smallThumbnailImage != null && smallThumbnailImage.Length > 0)
-                    {
-                        setImage(smallThumbnailImage);
-                    }
-                    else
-                    {
-                        BitmapImage defaultImage = null;
-                        if (Utils.isGroupConversation(msisdn))
-                        {
-                            defaultImage = UI_Utils.Instance.getDefaultGroupAvatar(msisdn);
-                        }
-                        else
-                        {
-                            defaultImage = UI_Utils.Instance.getDefaultAvatar(msisdn);
-                        }
-                        this.FileImage.Source = defaultImage;
-                    }
-                }
+                    this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
         }
 

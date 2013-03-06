@@ -100,17 +100,7 @@ namespace windows_client.View
             else
             {
                 string grpId = groupId.Replace(":", "_");
-                byte[] avatar = MiscDBUtil.getThumbNailForMsisdn(grpId);
-                if (avatar == null)
-                    groupImage.Source = UI_Utils.Instance.getDefaultGroupAvatar(grpId);
-                else
-                {
-                    MemoryStream memStream = new MemoryStream(avatar);
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage empImage = new BitmapImage();
-                    empImage.SetSource(memStream);
-                    groupImage.Source = empImage;
-                }
+                groupImage.Source = UI_Utils.Instance.GetBitmapImage(grpId);
                 if (Utils.isDarkTheme())
                 {
                     addUserImage.Source = new BitmapImage(new Uri("images/add_users_dark.png", UriKind.Relative));
@@ -390,10 +380,29 @@ namespace windows_client.View
             imageHandlerCalled = true;
             if (e.TaskResult == TaskResult.OK)
             {
-                Uri uri = new Uri(e.OriginalFileName);
-                grpImage = new BitmapImage(uri);
-                grpImage.CreateOptions = BitmapCreateOptions.BackgroundCreation;
-                grpImage.ImageOpened += imageOpenedHandler;
+                //Uri uri = new Uri(e.OriginalFileName);
+                grpImage = new BitmapImage();
+                grpImage.SetSource(e.ChosenPhoto);
+                try
+                {
+                    WriteableBitmap writeableBitmap = new WriteableBitmap(grpImage);
+                    using (var msLargeImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
+                        thumbnailBytes = msLargeImage.ToArray();
+                    }
+                    using (var msSmallImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
+                        fullViewImageBytes = msSmallImage.ToArray();
+                    }
+                    //send image to server here and insert in db after getting response
+                    AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
+                }
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
@@ -402,27 +411,6 @@ namespace windows_client.View
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
-        }
-
-        void imageOpenedHandler(object sender, RoutedEventArgs e)
-        {
-            if (!imageHandlerCalled)
-                return;
-            imageHandlerCalled = false;
-            BitmapImage image = (BitmapImage)sender;
-            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            using (var msLargeImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msLargeImage, 83, 83, 0, 95);
-                thumbnailBytes = msLargeImage.ToArray();
-            }
-            using (var msSmallImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
-                fullViewImageBytes = msSmallImage.ToArray();
-            }
-            //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), groupId);
         }
 
         public void updateProfile_Callback(JObject obj)
@@ -764,6 +752,17 @@ namespace windows_client.View
             });
         }
 
+        private void groupMember_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            GroupParticipant gp = groupChatParticipants.SelectedItem as GroupParticipant;
+
+            if (gp == null)
+                return;
+
+            PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE] = gp;
+            NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+        }
+
         private void MenuItem_Tap_AddUser(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
@@ -869,7 +868,7 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
 
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     MiscDBUtil.SaveFavourites();
                     MiscDBUtil.DeleteFavourite(gp.Msisdn);
                     int count = 0;
@@ -891,7 +890,7 @@ namespace windows_client.View
                     App.ViewModel.FavList.Insert(0, favObj);
                     if (App.ViewModel.IsPending(gp.Msisdn))
                     {
-                        App.ViewModel.PendingRequests.Remove(favObj);
+                        App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                         MiscDBUtil.SavePendingRequests();
                     }
                     MiscDBUtil.SaveFavourites();
@@ -905,7 +904,7 @@ namespace windows_client.View
                     obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
                 }
             }

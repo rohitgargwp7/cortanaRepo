@@ -18,19 +18,26 @@ namespace windows_client.DbUtils
         private static object lockObj = new object();
         private static object favReadWriteLock = new object();
         private static object pendingReadWriteLock = new object();
+        private static object profilePicLock = new object();
 
         public static string FAVOURITES_FILE = "favFile";
         public static string MISC_DIR = "Misc_Dir";
         public static string THUMBNAILS = "THUMBNAILS";
+        public static string PROFILE_PICS = "PROFILE_PICS";
+        public static string STATUS_UPDATE_LARGE = "STATUS_FULL_IMAGE";
+
         public static string PENDING_REQ_FILE = "pendingReqFile";
 
         public static void clearDatabase()
         {
-            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS
+            #region DELETE CONVS,CHAT MSGS, GROUPS, GROUP MEMBERS,THUMBNAILS,SAVED PIC UPDATES, STATUS MSGS
 
             ConversationTableUtils.deleteAllConversations();
             DeleteAllThumbnails();
             DeleteAllAttachmentData();
+            DeleteAllPicUpdates();
+            DeleteAllLargeStatusImages();
+            StatusMsgsTable.DeleteAllStatusMsgs();
             GroupManager.Instance.DeleteAllGroups();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
@@ -113,6 +120,149 @@ namespace windows_client.DbUtils
             #endregion
         }
 
+        #region STATUS UPDATES
+
+        public static void saveStatusImage(string msisdn, long statusUpdateId, byte[] imageBytes)
+        {
+            msisdn = msisdn.Replace(":", "_");
+            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+            storeFileInIsolatedStorage(fullFilePath, imageBytes);
+        }
+
+        public static byte[] GetProfilePicUpdateForID(string msisdn, long statusId)
+        {
+            msisdn = msisdn.Replace(":", "_");
+            string filePath = PROFILE_PICS + "/" + msisdn + "/" + statusId.ToString();
+            byte[] data = null;
+            lock (profilePicLock)
+            {
+                using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (myIsolatedStorage.FileExists(filePath))
+                    {
+                        using (IsolatedStorageFileStream stream = myIsolatedStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+                        {
+                            data = new byte[stream.Length];
+                            stream.Read(data, 0, data.Length);
+                            stream.Close();
+                        }
+                    }
+                }
+                return data;
+            }
+        }
+
+        /// <summary>
+        /// This function is used to store profile pics (small) so that same can be used in timelines
+        /// </summary>
+        /// <param name="msisdn"></param>
+        /// <param name="imageBytes"></param>
+        /// <param name="isUpdated"></param>
+        public static void saveProfileImages(string msisdn, byte[] imageBytes, long picId)
+        {
+            if (imageBytes == null)
+                return;
+            msisdn = msisdn.Replace(":", "_");
+            string FileName = PROFILE_PICS + "\\" + msisdn + "\\" + picId.ToString();
+            lock (profilePicLock)
+            {
+                try
+                {
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(PROFILE_PICS))
+                            store.CreateDirectory(PROFILE_PICS);
+                        if (!store.DirectoryExists(PROFILE_PICS + "\\" + msisdn))
+                            store.CreateDirectory(PROFILE_PICS + "\\" + msisdn);
+                        using (FileStream stream = new IsolatedStorageFileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, store))
+                        {
+                            stream.Write(imageBytes, 0, imageBytes.Length);
+                            stream.Flush();
+                            stream.Close();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
+            }
+        }
+
+        public static void getStatusUpdateImage(string msisdn, long statusUpdateId, out byte[] imageBytes, out bool isThumbnail)
+        {
+            lock (profilePicLock)
+            {
+                isThumbnail = false;
+                msisdn = msisdn.Replace(":", "_");
+                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+                readFileFromIsolatedStorage(fullFilePath, out imageBytes);
+                if (imageBytes == null || imageBytes.Length == 0)
+                {
+                    isThumbnail = true;
+                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
+                    readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
+                }
+            }
+        }
+
+        public static void DeleteAllLargeStatusImages()
+        {
+            using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                if (!store.DirectoryExists(STATUS_UPDATE_LARGE))
+                    return;
+                string[] dirs = store.GetFileNames(STATUS_UPDATE_LARGE + "\\*");
+                foreach (string dir in dirs)
+                {
+                    string[] files = store.GetFileNames(STATUS_UPDATE_LARGE + "\\" + dir + "\\*");
+
+                    foreach (string file in files)
+                    {
+                        try
+                        {
+                            store.DeleteFile(STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("File {0} does not exist.", STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void DeleteAllPicUpdates()
+        {
+            lock (profilePicLock)
+            {
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    if (!store.DirectoryExists(PROFILE_PICS))
+                        return;
+                    string[] dirs = store.GetFileNames(PROFILE_PICS + "\\*");
+                    foreach (string dir in dirs)
+                    {
+                        string[] files = store.GetFileNames(PROFILE_PICS + "\\" + dir + "\\*");
+
+                        foreach (string file in files)
+                        {
+                            try
+                            {
+                                store.DeleteFile(PROFILE_PICS + "\\" + dir + "\\" + file);
+                            }
+                            catch
+                            {
+                                Debug.WriteLine("File {0} does not exist.", PROFILE_PICS + "\\" + dir + "\\" + file);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
+
         public static void saveAvatarImage(string msisdn, byte[] imageBytes, bool isUpdated)
         {
             if (imageBytes == null)
@@ -163,6 +313,10 @@ namespace windows_client.DbUtils
 
         public static byte[] getThumbNailForMsisdn(string msisdn)
         {
+            if (msisdn == App.MSISDN)
+            {
+                msisdn = HikeConstants.MY_PROFILE_PIC;
+            }
             msisdn = msisdn.Replace(":", "_");
             byte[] data = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
@@ -174,7 +328,6 @@ namespace windows_client.DbUtils
                         using (IsolatedStorageFileStream isfs = store.OpenFile(THUMBNAILS + "\\" + msisdn, FileMode.Open, FileAccess.Read))
                         {
                             data = new byte[isfs.Length];
-                            // Read the entire file and then close it
                             isfs.Read(data, 0, data.Length);
                             isfs.Close();
                         }
@@ -202,7 +355,6 @@ namespace windows_client.DbUtils
                     }
                 }
             }
-
         }
 
         #region FILE TRANSFER UTILS
@@ -269,7 +421,6 @@ namespace windows_client.DbUtils
         public static void readFileFromIsolatedStorage(string filePath, out byte[] imageBytes)
         {
             filePath = filePath.Replace(":", "_");
-
             using (IsolatedStorageFile myIsolatedStorage = IsolatedStorageFile.GetUserStoreForApplication())
             {
                 if (myIsolatedStorage.FileExists(filePath))
@@ -419,7 +570,7 @@ namespace windows_client.DbUtils
                     string[] files = store.GetFileNames("FAVS\\*");
                     foreach (string fname in files)
                     {
-                        using (var file = store.OpenFile("FAVS\\"+fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        using (var file = store.OpenFile("FAVS\\" + fname, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
                             using (var reader = new BinaryReader(file))
                             {
@@ -588,9 +739,9 @@ namespace windows_client.DbUtils
                     }
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
                 }
-                catch(Exception e) 
+                catch (Exception e)
                 {
-                    Debug.WriteLine("Exception :: {0}",e.StackTrace);
+                    Debug.WriteLine("Exception :: {0}", e.StackTrace);
                 }
             }
         }
@@ -615,6 +766,8 @@ namespace windows_client.DbUtils
         {
             lock (pendingReadWriteLock)
             {
+                if (App.ViewModel.IsPendingListLoaded)
+                    return;
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     if (!store.DirectoryExists(MISC_DIR))
@@ -644,11 +797,11 @@ namespace windows_client.DbUtils
                                     {
                                         item.ReadFavOrPending(reader);
                                         if (App.ViewModel.ConvMap.ContainsKey(item.Msisdn))
-                                            App.ViewModel.PendingRequests.Add(App.ViewModel.ConvMap[item.Msisdn]);
+                                            App.ViewModel.PendingRequests[item.Msisdn] = App.ViewModel.ConvMap[item.Msisdn];
                                         else
                                         {
                                             item.Avatar = MiscDBUtil.getThumbNailForMsisdn(item.Msisdn);
-                                            App.ViewModel.PendingRequests.Add(item);
+                                            App.ViewModel.PendingRequests[item.Msisdn] = item;
                                         }
 
                                     }
@@ -668,6 +821,7 @@ namespace windows_client.DbUtils
                         catch { }
                     }
                 }
+                App.ViewModel.IsPendingListLoaded = true;
             }
         }
 
@@ -688,9 +842,9 @@ namespace windows_client.DbUtils
                         {
                             writer.Seek(0, SeekOrigin.Begin);
                             writer.Write(App.ViewModel.PendingRequests.Count);
-                            for (int i = 0; i < App.ViewModel.PendingRequests.Count; i++)
+                            foreach (string ms in App.ViewModel.PendingRequests.Keys)
                             {
-                                ConversationListObject item = App.ViewModel.PendingRequests[i];
+                                ConversationListObject item = App.ViewModel.PendingRequests[ms];
                                 item.WriteFavOrPending(writer);
                             }
                             writer.Flush();

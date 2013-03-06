@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -134,7 +134,7 @@
     <comment>Network issue msg (used in all pages)</comment>
   </data>
   <data name="Conversations_AddedYouToFav_Txt" xml:space="preserve">
-    <value>added you as favourite. Would you like to do the same?</value>
+    <value>added you as friend. Would you like to do the same?</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_DelAllChats_Txt" xml:space="preserve">
@@ -190,7 +190,7 @@
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Favourites_Header_Txt" xml:space="preserve">
-    <value>favorites</value>
+    <value>friends</value>
     <comment>xaml</comment>
   </data>
   <data name="Conversations_Pivot_Profile_Header_Txt" xml:space="preserve">
@@ -202,15 +202,15 @@
     <comment>Default name shown if no name (xaml)</comment>
   </data>
   <data name="Conversations_RemFromFav_Confirm_Txt" xml:space="preserve">
-    <value>Are you sure about removing this contact from favorites?</value>
+    <value>Are you sure about removing this contact from friends?</value>
     <comment>cs</comment>
   </data>
   <data name="RemFromFav_Txt" xml:space="preserve">
-    <value>remove from favorites</value>
+    <value>remove from friends</value>
     <comment>cs</comment>
   </data>
   <data name="Conversations_TapYesToAdd_Txt" xml:space="preserve">
-    <value>You have no favorites right now.</value>
+    <value>You have no friends right now.</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Conversations_TellFriend_Txt" xml:space="preserve">
@@ -218,7 +218,7 @@
     <comment>Profile (xaml)</comment>
   </data>
   <data name="Conversations_YourFav_Txt" xml:space="preserve">
-    <value>Your favorites</value>
+    <value>Your friends</value>
     <comment>Fav (xaml)</comment>
   </data>
   <data name="Delete_Txt" xml:space="preserve">
@@ -602,7 +602,7 @@
     <comment>General Text</comment>
   </data>
   <data name="Add_To_Fav_Txt" xml:space="preserve">
-    <value>add to favorites</value>
+    <value>add to friends</value>
     <comment>cs</comment>
   </data>
   <data name="SelectUser_AddUser_Txt" xml:space="preserve">
@@ -784,7 +784,7 @@
     <value>To continue using hike, an update is required.</value>
   </data>
   <data name="Email_Invite_Txt" xml:space="preserve">
-    <value>Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
+    <value>Hi! I've started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!</value>
     <comment>Email Invite Text</comment>
   </data>
   <data name="EnterName_Failed_Txt" xml:space="preserve">
@@ -1163,7 +1163,7 @@
     <comment>xaml (below heart image)</comment>
   </data>
   <data name="Favorites_Tute_Screen1" xml:space="preserve">
-    <value>A permanent place for all your favorite friends.</value>
+    <value>A permanent place for all your friend friends.</value>
     <comment>xaml (below tute image)</comment>
   </data>
   <data name="Favorites_Tute_Screen1_2" xml:space="preserve">
@@ -1171,7 +1171,7 @@
     <comment>xaml (below tute image)</comment>
   </data>
   <data name="Favorites_Tute_Screen2" xml:space="preserve">
-    <value>To see all your hike friends and add new to favorites tap the + button</value>
+    <value>To see all your hike friends and add new to friends tap the + button</value>
     <comment>xaml (below tute image)</comment>
   </data>
   <data name="Invited" xml:space="preserve">
@@ -1249,14 +1249,78 @@
     <value>stop</value>
     <comment>record video page app bar</comment>
   </data>
+  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
+    <value>Is this your number?</value>
+  </data>
   <data name="ShareContact_ConfirmationCaption" xml:space="preserve">
     <value>Share Contact</value>
   </data>
   <data name="SharedContactNotFoundCaptionText" xml:space="preserve">
     <value>Refresh Contact List</value>
   </data>
-  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
-    <value>Is this your number?</value>
+  <data name="Conversations_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
+    <value>Added you as a friend!</value>
+    <comment>for friend requests in wp8</comment>
+  </data>
+  <data name="StatusUpdate_YouCanNowSeeUpdates_TxtBlk" xml:space="preserve">
+    <value>You can now see updates from {0}. Would you like to do the same?</value>
+    <comment>for friend requests status update in wp8</comment>
+  </data>
+  <data name="PicUpdate_StatusTxt" xml:space="preserve">
+    <value>Changed profile picture</value>
+    <comment>Text used in profile picture update</comment>
+  </data>
+  <data name="StatusUpdate_Photo" xml:space="preserve">
+    <value>Changed profile picture</value>
+  </data>
+  <data name="StatuUpdate_Location" xml:space="preserve">
+    <value>at {0}</value>
+  </data>
+  <data name="Conversations_Pivot_Timeline_Header_Txt" xml:space="preserve">
+    <value>timeline</value>
+  </data>
+  <data name="Conversations_PostStatus_AppBar" xml:space="preserve">
+    <value>Post Status</value>
+  </data>
+  <data name="OthersProfile_Txt" xml:space="preserve">
+    <value>profile</value>
+  </data>
+  <data name="OnHIkeSince_Txt" xml:space="preserve">
+    <value>on hike since {0}</value>
+  </data>
+  <data name="InviteOnHikeBtn_Txt" xml:space="preserve">
+    <value>Invite to hike</value>
+  </data>
+  <data name="InviteOnHikeUpgrade_Txt" xml:space="preserve">
+    <value>Help him upgrade to hike!</value>
+  </data>
+  <data name="InviteOnHike_Txt" xml:space="preserve">
+    <value> is missing all the fun.</value>
+  </data>
+  <data name="OnSms_Txt" xml:space="preserve">
+    <value>on SMS</value>
+  </data>
+  <data name="MyProfileheader_Txt" xml:space="preserve">
+    <value>my profile</value>
+  </data>
+  <data name="ProfileToBeFriendBlk1" xml:space="preserve">
+    <value>You need to be friends with</value>
+  </data>
+  <data name="ProfileToBeFriendBlk3" xml:space="preserve">
+    <value>to be able to get status updates.</value>
+  </data>
+  <data name="btnAddAsFriend_Txt" xml:space="preserve">
+    <value>Add as a friend</value>
+  </data>
+  <data name="NewStatus_Txt" xml:space="preserve">
+    <value>NEW STATUS</value>
+  </data>
+  <data name="Conversations_Timeline_Refresh_Status" xml:space="preserve">
+    <value>{0} new updates</value>
+    <comment>text on top on timeline to show # of fresh status updates</comment>
+  </data>
+  <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
+    <value>{0} new update</value>
   </data>
   <data name="TimeUtils_Moments_Ago" xml:space="preserve">
     <value>moments ago</value>

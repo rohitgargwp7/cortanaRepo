@@ -5,7 +5,7 @@ using windows_client.utils;
 
 namespace windows_client
 {
-    public class HikePubSub
+    public class    HikePubSub
     {
         public class Operation
         {
@@ -49,6 +49,8 @@ namespace windows_client
         /* Broadcast after we've received a message and written it to our DB.
          * Status is RECEIVED_UNREAD */
         public static readonly string MESSAGE_RECEIVED = "messagereceived";
+
+        public static readonly string STATUS_RECEIVED = "statusReceived";
 
         public static readonly string NEW_ACTIVITY = "new_activity";
 
@@ -131,7 +133,9 @@ namespace windows_client
 
         public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
 
-        public static readonly string ADD_REMOVE_FAV_OR_PENDING = "addRemFP";
+        public static readonly string ADD_REMOVE_FAV = "addRemFP";
+
+        public static readonly string ADD_TO_PENDING = "addToPending";
 
         public static readonly string REWARDS_TOGGLE = "rew_tog";
 
