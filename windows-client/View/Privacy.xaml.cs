@@ -110,7 +110,7 @@ namespace windows_client.View
             }
             progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
             canGoBack = false;
-            AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
+            AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), AccountUtils.BASE + "/account");
         }
 
         private void deleteAccountResponse_Callback(JObject obj)

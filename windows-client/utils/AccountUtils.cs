@@ -247,7 +247,7 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_PROFILE, obj, finalCallbackFunction });
         }
 
-        public static void deleteAccount(postResponseFunction finalCallbackFunction)
+        public static void deleteRequest(postResponseFunction finalCallbackFunction, string requestUrl)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
             addToken(req);

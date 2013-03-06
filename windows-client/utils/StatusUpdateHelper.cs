@@ -1,4 +1,5 @@
 ﻿using Microsoft.Phone.Controls;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,9 +120,13 @@ namespace windows_client.utils
         }
 
         public void deleteMyStatus(long statusId)
-        { 
+        {
+            AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteStatus_Callback), 
+                AccountUtils.BASE + "/user/status/" + statusId.ToString());
         }
-
+        private void deleteStatus_Callback(JObject obj)
+        {
+        }
         public void deleteFriendStatus(long statusId)
         { 
         
