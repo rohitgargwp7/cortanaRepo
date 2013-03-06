@@ -118,8 +118,13 @@ namespace windows_client.utils
             }
         }
 
-        public void deleteStatus(long statusId)
+        public void deleteMyStatus(long statusId)
         { 
+        }
+
+        public void deleteFriendStatus(long statusId)
+        { 
+        
         }
     }
 }
