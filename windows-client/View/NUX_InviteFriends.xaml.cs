@@ -258,12 +258,6 @@ namespace windows_client.View
                 }
                 foreach (ContactInfo cn in listContact)
                 {
-                    //int index = listContactsFromDb.IndexOf(cn);
-                    //if (index < 0)
-                    //{
-                    //    continue;
-                    //}
-                    //ContactInfo contactFromDb = listContactsFromDb[index];
                     ContactInfo contactFromDb;
                     if (!dictContactsInDb.TryGetValue(cn.Name + cn.PhoneNo, out contactFromDb))
                         continue;
@@ -271,10 +265,10 @@ namespace windows_client.View
                     bool markedForNux = false;
                     if (listFamilyMembers.Count < 31)
                     {
-                        string[] nameArray = cn.Name.Trim().Split(' ');
-                        if (isLastNameCheckApplicable)
+                        if (!string.IsNullOrEmpty(cn.Name))
                         {
-                            if (!string.IsNullOrEmpty(cn.Name))
+                            string[] nameArray = cn.Name.Trim().Split(' ');
+                            if (isLastNameCheckApplicable)
                             {
                                 if (nameArray.Length > 1)
                                 {
@@ -286,11 +280,11 @@ namespace windows_client.View
                                     }
                                 }
                             }
-                        }
-                        if (!markedForNux && MatchFromFamilyVocab(nameArray))
-                        {
-                            markedForNux = true;
-                            listFamilyMembers.Add(cn);
+                            if (!markedForNux && MatchFromFamilyVocab(nameArray))
+                            {
+                                markedForNux = true;
+                                listFamilyMembers.Add(cn);
+                            }
                         }
                     }
 
@@ -301,21 +295,12 @@ namespace windows_client.View
                     }
 
                 }
-                st.Stop();
-                Debug.WriteLine("Time fr nux scanning " + st.ElapsedMilliseconds);
                 if (listCloseFriends.Count < 31)
                 {
                     int contactAdded = 0;
                     int countRequired = 30 - listCloseFriends.Count;
                     foreach (ContactInfo contact in listContact)
                     {
-                        //int index = listContactsFromDb.IndexOf(contact);
-                        //if (index < 0)
-                        //{
-                        //    continue;
-                        //}
-
-                        //ContactInfo contactFromDb = listContactsFromDb[index];
                         ContactInfo contactFromDb;
                         if (!dictContactsInDb.TryGetValue(contact.Name + contact.PhoneNo, out contactFromDb))
                             continue;
@@ -329,7 +314,8 @@ namespace windows_client.View
                         }
                     }
                 }
-
+                st.Stop();
+                Debug.WriteLine("Time fr nux scanning " + st.ElapsedMilliseconds);
             }
         }
 
