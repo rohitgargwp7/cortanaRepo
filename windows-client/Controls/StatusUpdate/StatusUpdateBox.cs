@@ -97,7 +97,7 @@ namespace windows_client.Controls.StatusUpdate
 
         private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StatusUpdateHelper.Instance.deleteStatus(_statusId);
+            StatusUpdateHelper.Instance.deleteMyStatus(_statusId);
         }
 
         public StatusUpdateBox(ConversationListObject c, long statusId)
