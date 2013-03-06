@@ -80,21 +80,21 @@ namespace windows_client.Controls.StatusUpdate
             this.UserName = userName;
             this.UserImage = userImage;
             this.Msisdn = msisdn;
-            //if (contextMenuDelete != null)
-            //{
-            //    ContextMenu menu = new ContextMenu();
-            //    menu.IsZoomEnabled = true;
-            //    MenuItem menuItemDelete = new MenuItem();
-            //    menuItemDelete.Header = AppResources.Delete_Txt;
-            //    menuItemDelete.Tap += contextMenuDelete;
-            //    menu.Items.Add(menuItemDelete);
-            //    ContextMenuService.SetContextMenu(this, menu);
-            //}
+            if (App.MSISDN == msisdn)
+            {
+                ContextMenu menu = new ContextMenu();
+                menu.IsZoomEnabled = true;
+                MenuItem menuItemDelete = new MenuItem();
+                menuItemDelete.Header = AppResources.Delete_Txt;
+                menuItemDelete.Tap += delete_Tap;
+                menu.Items.Add(menuItemDelete);
+                ContextMenuService.SetContextMenu(this, menu);
+            }
         }
 
-        //private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //}
+        private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+        }
 
         public StatusUpdateBox(ConversationListObject c)
             : this(c.NameToShow, c.AvatarImage, c.Msisdn)
