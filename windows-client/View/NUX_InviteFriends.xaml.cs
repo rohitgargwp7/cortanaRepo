@@ -258,14 +258,14 @@ namespace windows_client.View
                 }
                 foreach (ContactInfo cn in listContact)
                 {
-                    if (listCloseFriends.Count > 30 && listFamilyMembers.Count > 30)
+                    if (listCloseFriends.Count == 30 && listFamilyMembers.Count == 30)
                         break;
                     ContactInfo contactFromDb;
                     if (!dictContactsInDb.TryGetValue(cn.Name + cn.PhoneNo, out contactFromDb))
                         continue;
                     cn.Msisdn = contactFromDb.Msisdn;
                     bool markedForNux = false;
-                    if (listFamilyMembers.Count < 31)
+                    if (listFamilyMembers.Count < 30)
                     {
                         if (!string.IsNullOrEmpty(cn.Name))
                         {
@@ -290,7 +290,7 @@ namespace windows_client.View
                         }
                     }
 
-                    if (!markedForNux &&  listCloseFriends.Count < 31)
+                    if (!markedForNux &&  listCloseFriends.Count < 30)
                     {
                         markedForNux = true;
                         listCloseFriends.Add(cn);
