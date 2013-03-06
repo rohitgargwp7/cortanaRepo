@@ -396,7 +396,7 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
                     string x = data.ToString(Newtonsoft.Json.Formatting.None);
-                    Compress4(x,postStream);
+                    Compress4(x, postStream);
                     //Debug.WriteLine("Request gets compressed from {0} to {1} Length", x.Length, d.Length);
                     //using (StreamWriter sw = new StreamWriter(postStream))
                     //{
@@ -408,7 +408,6 @@ namespace windows_client.utils
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
                     ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
                     return;
-                    break;
                 #endregion
                 #region SOCIAL POST
                 case RequestType.SOCIAL_POST:
