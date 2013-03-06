@@ -5,6 +5,7 @@ using System.Windows.Media.Imaging;
 using windows_client.DbUtils;
 using windows_client.Languages;
 using windows_client.Model;
+using windows_client.utils;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -14,6 +15,7 @@ namespace windows_client.Controls.StatusUpdate
         private BitmapImage _userImage;
         private string _msisdn;
         private bool _isRead;
+        private long _statusId;
 
         public string UserName
         {
@@ -75,11 +77,12 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn)
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, long statusId)
         {
             this.UserName = userName;
             this.UserImage = userImage;
             this.Msisdn = msisdn;
+            this._statusId = statusId;
             if (App.MSISDN == msisdn)
             {
                 ContextMenu menu = new ContextMenu();
@@ -94,10 +97,11 @@ namespace windows_client.Controls.StatusUpdate
 
         private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            StatusUpdateHelper.Instance.deleteStatus(_statusId);
         }
 
-        public StatusUpdateBox(ConversationListObject c)
-            : this(c.NameToShow, c.AvatarImage, c.Msisdn)
+        public StatusUpdateBox(ConversationListObject c, long statusId)
+            : this(c.NameToShow, c.AvatarImage, c.Msisdn, statusId)
         {
         }
 

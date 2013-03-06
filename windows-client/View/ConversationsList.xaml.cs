@@ -744,7 +744,7 @@ namespace windows_client.View
                     ConversationListObject co = (ConversationListObject)obj;
                     if (co != null)
                     {
-                        FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                        FriendRequestStatus frs = new FriendRequestStatus(co, -1, yes_Click, no_Click);
                         App.ViewModel.StatusList.Insert(0, frs);
                     }
                 });
@@ -823,7 +823,7 @@ namespace windows_client.View
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                         lastStatusTxtBlk.Text = sm.Message;
-                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
                     else
@@ -835,7 +835,7 @@ namespace windows_client.View
                         }
                         else
                         {
-                            App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                             NotificationCount++;
                         }
@@ -1248,7 +1248,7 @@ namespace windows_client.View
             {
                 double result = Math.Log(appLaunchCount / 5f, 2);//using gp
                 if (result == Math.Ceiling(result) && NetworkInterface.GetIsNetworkAvailable()) //TODO - we can use mqtt connection status. 
-                                                                                                //if mqtt is connected it would safe to assume that user is online.
+                //if mqtt is connected it would safe to assume that user is online.
                 {
                     showRateAppMessage();
                 }
@@ -1261,7 +1261,7 @@ namespace windows_client.View
             if (!Guide.IsVisible)
             {
                 Guide.BeginShowMessageBox(AppResources.Love_Using_Hike_Txt, AppResources.Rate_Us_Txt,
-                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt}, 0, MessageBoxIcon.None,
+                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt }, 0, MessageBoxIcon.None,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -1459,8 +1459,8 @@ namespace windows_client.View
                     cn = App.ViewModel.ContactsCache[fObj.Msisdn];
                 else
                 {
-                     cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                     App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
+                    App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
                 }
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
@@ -1574,7 +1574,7 @@ namespace windows_client.View
             App.ViewModel.IsPendingListLoaded = true;
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
+                FriendRequestStatus frs = new FriendRequestStatus(co, -1, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();

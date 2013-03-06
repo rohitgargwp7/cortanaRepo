@@ -77,7 +77,7 @@ namespace windows_client.utils
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn,
+                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.StatusId,
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, status.IsRead, statusBubbleImageTap);
                     if (isThumbnail)
                     {
@@ -91,7 +91,7 @@ namespace windows_client.utils
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message,
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.StatusId, status.Message,
                         status.Timestamp, status.IsRead, status.Status_Type, statusBubbleImageTap);
                     break;
             }
@@ -116,6 +116,10 @@ namespace windows_client.utils
                     statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
                 });
             }
+        }
+
+        public void deleteStatus(long statusId)
+        { 
         }
     }
 }
