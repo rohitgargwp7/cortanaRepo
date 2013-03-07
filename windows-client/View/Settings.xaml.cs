@@ -57,14 +57,14 @@ namespace windows_client.View
         {
             this.pushNotifications.Content = AppResources.On;
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,true);
-            App.PushHelperInstance.registerPushnotifications();
+            PushHelper.Instance.registerPushnotifications();
         }
 
         private void pushNotifications_Unchecked(object sender, RoutedEventArgs e)
         {
             this.pushNotifications.Content = AppResources.Off;
             App.WriteToIsoStorageSettings(App.IS_PUSH_ENABLED,false);
-            App.PushHelperInstance.closePushnotifications();
+            PushHelper.Instance.closePushnotifications();
 
         }
 

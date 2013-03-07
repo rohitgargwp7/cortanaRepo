@@ -123,7 +123,7 @@ namespace windows_client.utils
             get { return uid; }
             set
             {
-                if (value != mToken)
+                if (value != uid)
                 {
                     uid = value;
                 }
@@ -407,7 +407,7 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
                     string x = data.ToString(Newtonsoft.Json.Formatting.None);
-                    Compress4(x,postStream);
+                    Compress4(x, postStream);
                     //Debug.WriteLine("Request gets compressed from {0} to {1} Length", x.Length, d.Length);
                     //using (StreamWriter sw = new StreamWriter(postStream))
                     //{
@@ -417,8 +417,8 @@ namespace windows_client.utils
                     //}
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
                     return;
-                    break;
                 #endregion
                 #region SOCIAL POST
                 case RequestType.SOCIAL_POST:
@@ -879,7 +879,7 @@ namespace windows_client.utils
                 }
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                int hikeCount = 1, smsCount = 1;
+                int hikeCount = 1, smsCount = 1, nonHikeCount = 0;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
                 if (!isRefresh)
@@ -932,6 +932,11 @@ namespace windows_client.utils
                                     msgToShow.Add(cn);
                                     smsCount++;
                                 }
+
+                                #region NUX RELATED
+                                if (!onhike)
+                                    nonHikeCount++;
+                                #endregion
                             }
                         }
                         else // this is refresh contacts case
@@ -980,7 +985,13 @@ namespace windows_client.utils
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
                 if (!isRefresh)
+                {
+                    #region NUX RELATED
+                    if (nonHikeCount > 2)
+                        App.appSettings["showNux"] = true;
+                    #endregion
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
+                }
                 return server_contacts;
             }
             catch (ArgumentException)
