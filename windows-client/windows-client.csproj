@@ -464,6 +464,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_user_icon.png" />
+    <Content Include="View\images\appbar_addfriend.png" />
     <Content Include="View\images\appbar_icon_play.png" />
     <Content Include="View\images\audio_file_icon_white.png" />
     <Content Include="View\images\avatars\Beach.png" />
