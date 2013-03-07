@@ -841,7 +841,7 @@ namespace windows_client
                             Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
                         }
                     });
-                }                
+                }
             }
             #endregion
             #region GROUP_CHAT_LEAVE
@@ -930,40 +930,41 @@ namespace windows_client
                 try
                 {
                     string ms = (string)jsonObj[HikeConstants.FROM];
-                    if (ms == null)
-                        return;
-                    if (App.ViewModel.Isfavourite(ms)) // already favourite
-                        return;
-                    if (App.ViewModel.IsPending(ms))
-                        return;
+                    //if (ms == null)
+                    //    return;
+                    //if (App.ViewModel.Isfavourite(ms)) // already favourite
+                    //    return;
+                    //if (App.ViewModel.IsPending(ms))
+                    //    return;
 
                     try
                     {
-                        ConversationListObject favObj;
-                        if (App.ViewModel.ConvMap.ContainsKey(ms))
-                            favObj = App.ViewModel.ConvMap[ms];
-                        else
-                        {
-                            ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                            string name = null;
-                            if (ci == null)
-                            {
-                                JToken data;
-                                if (jsonObj.TryGetValue(HikeConstants.DATA, out data))
-                                {
-                                    JToken n;
-                                    JObject dobj = data.ToObject<JObject>();
-                                    if (dobj.TryGetValue(HikeConstants.NAME, out n))
-                                        name = n.ToString();
-                                }
-                            }
-                            else
-                                name = ci.Name;
-                            favObj = new ConversationListObject(ms, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
-                        }
-                        App.ViewModel.PendingRequests.Add(ms, favObj);
-                        MiscDBUtil.SavePendingRequests();
-                        this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
+                        FriendsTableUtils.addFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.RequestRecieved);
+                        //ConversationListObject favObj;
+                        //if (App.ViewModel.ConvMap.ContainsKey(ms))
+                        //    favObj = App.ViewModel.ConvMap[ms];
+                        //else
+                        //{
+                        //    ContactInfo ci = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                        //    string name = null;
+                        //    if (ci == null)
+                        //    {
+                        //        JToken data;
+                        //        if (jsonObj.TryGetValue(HikeConstants.DATA, out data))
+                        //        {
+                        //            JToken n;
+                        //            JObject dobj = data.ToObject<JObject>();
+                        //            if (dobj.TryGetValue(HikeConstants.NAME, out n))
+                        //                name = n.ToString();
+                        //        }
+                        //    }
+                        //    else
+                        //        name = ci.Name;
+                        //    favObj = new ConversationListObject(ms, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
+                        //}
+                        //App.ViewModel.PendingRequests.Add(ms, favObj);
+                        //MiscDBUtil.SavePendingRequests();
+                        //this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                     }
                     catch (Exception e)
                     {
@@ -976,6 +977,31 @@ namespace windows_client
                 }
             }
             #endregion
+            #region REMOVE FAVOURITES
+            else if (HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE == type)
+            {
+                try
+                {
+                    string ms = (string)jsonObj[HikeConstants.FROM];
+
+
+                    try
+                    {
+                        FriendsTableUtils.deleteFriend(ms);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
+                }
+            }
+            #endregion
+
             #region REWARDS VALUE CHANGED
             else if (HikeConstants.MqttMessageTypes.REWARDS == type)
             {
@@ -1108,7 +1134,7 @@ namespace windows_client
                 }
                 App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
                 MiscDBUtil.SavePendingRequests();
-            } 
+            }
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)

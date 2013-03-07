@@ -49,16 +49,18 @@ namespace windows_client.DbUtils
                                         friendStatusDb = (FriendStatusEnum)reader.ReadByte();
                                     }
                                 }
-                                if (friendStatusDb < friendStatus)
+                                if ((friendStatusDb == FriendStatusEnum.RequestSent && friendStatus == FriendStatusEnum.RequestRecieved) ||
+                                    (friendStatusDb == FriendStatusEnum.RequestRecieved && friendStatus == FriendStatusEnum.RequestSent))
                                 {
-                                    store.DeleteFile(fileName);
-                                    using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
+                                    friendStatus = FriendStatusEnum.Friends;
+                                }
+                                store.DeleteFile(fileName);
+                                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
+                                {
+                                    using (var writer = new BinaryWriter(file))
                                     {
-                                        using (var writer = new BinaryWriter(file))
-                                        {
-                                            writer.Seek(0, SeekOrigin.Begin);
-                                            writer.Write((byte)friendStatus);
-                                        }
+                                        writer.Seek(0, SeekOrigin.Begin);
+                                        writer.Write((byte)friendStatus);
                                     }
                                 }
                             }
@@ -75,7 +77,7 @@ namespace windows_client.DbUtils
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Debug.WriteLine(e);
                     }

@@ -1314,6 +1314,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+                FriendsTableUtils.deleteFriend(convObj.Msisdn);
             }
             if (App.ViewModel.FavList.Count == 0)
             {

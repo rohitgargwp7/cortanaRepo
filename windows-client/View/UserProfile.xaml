@@ -26,13 +26,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Height="315" >
+        <Grid Grid.Row="0" Height="400" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="3" Stretch="UniformToFill" />
+            <Image Name="imgBackgrund"  Source="images/profile_stock1.jpg" Grid.Row="0" Grid.RowSpan="4" Stretch="UniformToFill" />
 
             <Grid Grid.Row="0" Margin="24,22,24,0">
                 <Grid.ColumnDefinitions>
@@ -50,12 +51,20 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" MaxHeight="96" MaxWidth="96"   />
+                <Image Name="avatarImage" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="0" Height="69"/>
                 <Image Name="changePic" Visibility="Collapsed" Grid.Column="0"  Width="31" Height="28" HorizontalAlignment="Right" VerticalAlignment="Bottom" Source="images\change_pic.png" />
             </Grid>
             <StackPanel Grid.Row="2" Margin="24,24,24,0" Orientation="Vertical" >
                 <TextBlock Name="txtUserName" HorizontalAlignment="Left" FontSize="30" FontFamily="Segoe WP" Foreground="White"/>
                 <TextBlock Name="txtOnHikeSmsTime" Text="{Binding Path= LocalizedResources.OnHIkeSince_Txt, Source={StaticResource LocalizedStrings}}"  HorizontalAlignment="Left" FontSize="15"  FontFamily="Segoe WP" Foreground="White"  />
+            </StackPanel>
+            <StackPanel Grid.Row="3" Name="spAddFriendInvite" Visibility="Collapsed">
+                <TextBlock TextWrapping="Wrap" FontSize="21" Grid.Column="1" Grid.Row="1" Margin="18,0,0,0" Text="{Binding Path= LocalizedResources.Conversations_AddedYouToFav_Txt_WP8FrndStatus, Source={StaticResource LocalizedStrings}}"/>
+                <TextBlock x:Name="seeUpdatesTxtBlk" TextWrapping="Wrap" FontSize="18" Foreground="#797979" Grid.Column="1" Grid.Row="2" Margin="16,0,5,0"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="5,0,0,0">
+                    <Button x:Name="yesBtn" Background="#2e91d3" Height="65" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Foreground="White" Tap="yes_Click"></Button>
+                    <Button x:Name="noBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959" Tap="no_Click"></Button>
+                </StackPanel>
             </StackPanel>
         </Grid>
         <Grid Name="gridSmsUser" Grid.Row="1"  >
@@ -83,6 +92,9 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+        </Grid>
+        <Grid Name="msgGrid" Grid.Row="1" Visibility="Collapsed">
+            <TextBlock Name="msgText"  FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
         </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
