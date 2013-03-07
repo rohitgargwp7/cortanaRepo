@@ -248,16 +248,10 @@ namespace windows_client.View
             if (listContact != null && listContact.Count > 0 && listFamilyMembers != null && listCloseFriends != null)
             {
                 Stopwatch st = Stopwatch.StartNew();
-<<<<<<< HEAD
                 List<ContactInfo> listContactsFromDb = UsersTableUtils.getAllContactsToInvite();
                 st.Stop();
                 Debug.WriteLine("Time taken to fetch contacts to be invited :{0}", st.ElapsedMilliseconds);
 
-=======
-                List<ContactInfo> listContactsFromDb = UsersTableUtils.getAllContacts();
-                st.Stop();
-                Debug.WriteLine("NUX : Time to get all contacts is {0} ms", st.ElapsedMilliseconds);
->>>>>>> 04637f79cf91f797069a84a9905345c32b8beaf6
                 if (listContactsFromDb == null)
                     listContactsFromDb = new List<ContactInfo>();
 
@@ -266,7 +260,6 @@ namespace windows_client.View
                 st.Reset();
                 st.Start();
                 listContact.Sort(new ContactCompare());
-<<<<<<< HEAD
                 st.Stop();
                 Debug.WriteLine("Time taken to sort :{0}", st.ElapsedMilliseconds);
                 st.Reset();
@@ -283,24 +276,12 @@ namespace windows_client.View
                     ContactInfo contactFromDb;
                     if (!dictContactsInDb.TryGetValue(cn.Name + cn.PhoneNo, out contactFromDb))
                         continue;
-=======
-                st = Stopwatch.StartNew();
-                foreach (ContactInfo cn in listContact)
-                {
-                    int index = listContactsFromDb.IndexOf(cn);
-                    if (index < 0)
-                        continue;
-                   
-                    ContactInfo contactFromDb = listContactsFromDb[index];
-
->>>>>>> 04637f79cf91f797069a84a9905345c32b8beaf6
                     cn.Msisdn = contactFromDb.Msisdn;
                     bool markedForNux = false;
                     if (listFamilyMembers.Count < 30)
                     {
                         if (!string.IsNullOrEmpty(cn.Name))
                         {
-<<<<<<< HEAD
                             string[] nameArray = cn.Name.Trim().Split(' ');
                             if (isLastNameCheckApplicable)
                             {
@@ -311,22 +292,6 @@ namespace windows_client.View
                                     {
                                         listFamilyMembers.Add(cn);
                                         markedForNux = true;
-=======
-                            string[] nameArray = null;
-                            if (!string.IsNullOrEmpty(cn.Name))
-                            {
-                                nameArray = cn.Name.Split(' ');
-                                if (isLastNameCheckApplicable)
-                                {
-                                    if (nameArray.Length > 1)
-                                    {
-                                        string curlastName = nameArray[nameArray.Length - 1];
-                                        if (curlastName.Equals(lastName, StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            listFamilyMembers.Add(cn);
-                                            markedForNux = true;
-                                        }
->>>>>>> 04637f79cf91f797069a84a9905345c32b8beaf6
                                     }
                                 }
                             }
@@ -336,40 +301,18 @@ namespace windows_client.View
                                 listFamilyMembers.Add(cn);
                             }
                         }
-<<<<<<< HEAD
                     }
 
-                    if (!markedForNux &&  listCloseFriends.Count < 30)
-=======
-
-                        if (!markedForNux && cn.NuxMatchScore > 0)
-                        {
-                            markedForNux = true;
-                            if (listCloseFriends.Count < 30)
-                                listCloseFriends.Add(cn);
-                        }
-                    }
-                }
-                st.Stop();
-                Debug.WriteLine("NUX :PART 1 {0} ms", st.ElapsedMilliseconds);
-                if (listCloseFriends.Count < 31)
-                {
-                    int contactAdded = 0;
-                    int countRequired = 30 - listCloseFriends.Count;
-                    foreach (ContactInfo contact in listContact)
->>>>>>> 04637f79cf91f797069a84a9905345c32b8beaf6
+                    if (!markedForNux && listCloseFriends.Count < 30)
                     {
                         markedForNux = true;
                         listCloseFriends.Add(cn);
                     }
 
                 }
-<<<<<<< HEAD
-               
+
                 st.Stop();
                 Debug.WriteLine("Time fr nux scanning " + st.ElapsedMilliseconds);
-=======
->>>>>>> 04637f79cf91f797069a84a9905345c32b8beaf6
             }
         }
 
@@ -393,25 +336,17 @@ namespace windows_client.View
 
         #endregion
 
-        public bool MatchFromFamilyVocab(string[] strCompleteName)
+  public bool MatchFromFamilyVocab(string[] strCompleteName)
         {
             if (strCompleteName == null)
                 return false;
-<<<<<<< HEAD
 
-=======
->>>>>>> 04637f79cf91f797069a84a9905345c32b8beaf6
             foreach (string namesplit in strCompleteName)
             {
                 if (dictFamilyVocab.ContainsKey(namesplit.ToLower()))
                     return true;
             }
             return false;
-        }
-
-        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
-        {
-            base.OnRemovedFromJournal(e);
         }
     }
 }
