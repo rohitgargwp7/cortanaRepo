@@ -121,8 +121,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\sl4-windowsphone71\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SharpCompress.WP7">
-      <HintPath>lib\SharpCompress.WP7.dll</HintPath>
+    <Reference Include="SharpCompress.WP7, Version=0.8.2.0, Culture=neutral, PublicKeyToken=beaf6f427e128133, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

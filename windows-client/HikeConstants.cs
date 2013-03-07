@@ -233,6 +233,7 @@ namespace windows_client
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
 
+
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";
         public static readonly string VIDEO = "video";

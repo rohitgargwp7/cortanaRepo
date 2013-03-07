@@ -233,7 +233,7 @@ namespace windows_client.View
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
                 //attachments = new Dictionary<long, Attachment>();
-                loadMessages();
+                loadMessages(INITIAL_FETCH_COUNT);
                 ScrollToBottomFromUI();
                 st.Stop();
                 long msec = st.ElapsedMilliseconds;
@@ -957,14 +957,15 @@ namespace windows_client.View
 
         long lastMessageId = -1;
         bool hasMoreMessages;
-        const int FETCHCOUNT = 11;
-        private void loadMessages()
+        const int INITIAL_FETCH_COUNT = 21;
+        const int SUBSEQUENT_FETCH_COUNT = 11;
+        private void loadMessages(int messageFetchCount)
         {
             int i;
             bool isPublish = false;
             hasMoreMessages = false;
 
-            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, FETCHCOUNT);
+            List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber, lastMessageId < 0 ? long.MaxValue : lastMessageId, messageFetchCount);
             //List<ConvMessage> messagesList = MessagesTableUtils.getMessagesForMsisdn(mContactNumber);
             if (messagesList == null) // represents there are no chat messages for this msisdn
             {
@@ -987,7 +988,7 @@ namespace windows_client.View
             {
                 ConvMessage cm = messagesList[i];
                 Debug.WriteLine(cm.MessageId);
-                if (i == FETCHCOUNT - 1)
+                if (i == messageFetchCount - 1)
                 {
                     hasMoreMessages = true;
                     lastMessageId = cm.MessageId;
@@ -3592,7 +3593,7 @@ namespace windows_client.View
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += (s1, ev1) =>
                         {
-                            loadMessages();
+                            loadMessages(SUBSEQUENT_FETCH_COUNT);
                         };
                         bw.RunWorkerAsync();
                         bw.RunWorkerCompleted += (s1, ev1) =>

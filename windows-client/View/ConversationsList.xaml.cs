@@ -167,6 +167,7 @@ namespace windows_client.View
 
                 #endregion
                 App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                UsersTableUtils.DeleteContactsFile();
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section

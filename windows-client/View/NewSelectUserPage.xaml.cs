@@ -209,7 +209,7 @@ namespace windows_client.View
                 if (mbox == MessageBoxResult.OK)
                 {
                     stopContactScanning = true;
-                    progressIndicator.Hide();
+                    progressIndicator.Hide(LayoutRoot);
                     enableAppBar();
                     canGoBack = true;
                 }
@@ -801,9 +801,9 @@ namespace windows_client.View
             disableAppBar();
 
             if (progressIndicator == null)
-                progressIndicator = new ProgressIndicatorControl(LayoutRoot, AppResources.SelectUser_RefreshWaitMsg_Txt);
+                progressIndicator = new ProgressIndicatorControl();
 
-            progressIndicator.Show();
+            progressIndicator.Show(LayoutRoot, AppResources.SelectUser_RefreshWaitMsg_Txt);
 
             canGoBack = false;
             ContactUtils.getContacts(new ContactUtils.contacts_Callback(makePatchRequest_Callback));
@@ -974,7 +974,7 @@ namespace windows_client.View
                 }
                 else
                     contactsListBox.ItemsSource = jumpList;
-                progressIndicator.Hide();
+                progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
             });
             canGoBack = true;
@@ -984,7 +984,7 @@ namespace windows_client.View
         {
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                progressIndicator.Hide();
+                progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
                 App.isABScanning = false;
             });

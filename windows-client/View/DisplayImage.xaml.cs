@@ -103,7 +103,6 @@ namespace windows_client.View
             });
         }
 
-
         private void setImage(byte[] imageBytes)
         {
             try
@@ -122,6 +121,5 @@ namespace windows_client.View
                 Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
             }
         }
-
     }
 }
