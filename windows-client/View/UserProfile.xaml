@@ -74,6 +74,7 @@
                 </TextBlock.Inlines>
             </TextBlock>
             <Button Name="btnInvite" Grid.Row="2" Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <Button Name="addToFavBtn" Grid.Row="0" Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="AddRemoveFavMenuItem_Click" />
         </Grid>
         <Grid Name="gridHikeUser" Grid.Row="1" >
             <ListBox x:Name="statusLLS" Margin="24,10,24,0" Grid.Row="0">

@@ -38,6 +38,10 @@ namespace windows_client
             appBar.Buttons.Add(nextIconButton);
             welcomePage.ApplicationBar = appBar;
 
+            // if addbook is not scanned and state is not scanning
+            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
+
             //if (!App.IS_MARKETPLACE)
             //{
             //    signupPanel.Tap += signupPanel_Tap;

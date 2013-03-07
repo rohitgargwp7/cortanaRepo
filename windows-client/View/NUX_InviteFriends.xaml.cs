@@ -68,7 +68,7 @@ namespace windows_client.View
                 listContactInfo = UsersTableUtils.GetContactsFromFile();
                 if (listContactInfo == null || listContactInfo.Count == 0)
                 {
-                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                    App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                     return;
                 }
@@ -85,7 +85,10 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
                 {
+                    Stopwatch st = Stopwatch.StartNew();
                     ProcessNuxContacts(listContactInfo);
+                    st.Stop();
+                    Debug.WriteLine("Time to process NUX in NUX Screen is {0} ms", st.ElapsedMilliseconds);
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += LoadingCompleted;
@@ -230,94 +233,86 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
+        private ContactInfo GetContact(ContactInfo cn, List<ContactInfo> listContact)
+        {
+            for (int i = 0; i < listContact.Count; i++)
+            {
+                if (listContact[i].Equals(cn))
+                    return listContact[i];
+            }
+            return null;
+        }
+
         public void ProcessNuxContacts(List<ContactInfo> listContact)
         {
             if (listContact != null && listContact.Count > 0 && listFamilyMembers != null && listCloseFriends != null)
             {
-                List<ContactInfo> listContactsFromDb = UsersTableUtils.getAllContacts();
-                Dictionary<string, bool> dictVocabNames = new Dictionary<string, bool>();
-                List<string> listVocabNames = new List<string>();
+                Stopwatch st = Stopwatch.StartNew();
+                List<ContactInfo> listContactsFromDb = UsersTableUtils.getAllContactsToInvite();
+                st.Stop();
+                Debug.WriteLine("Time taken to fetch contacts to be invited :{0}", st.ElapsedMilliseconds);
 
                 if (listContactsFromDb == null)
                     listContactsFromDb = new List<ContactInfo>();
 
                 string lastName = GetLastName();
                 bool isLastNameCheckApplicable = lastName != null;
+                st.Reset();
+                st.Start();
                 listContact.Sort(new ContactCompare());
+                st.Stop();
+                Debug.WriteLine("Time taken to sort :{0}", st.ElapsedMilliseconds);
+                st.Reset();
+                st.Start();
+                Dictionary<string, ContactInfo> dictContactsInDb = new Dictionary<string, ContactInfo>();
+                foreach (ContactInfo cinfo in listContactsFromDb)
+                {
+                    dictContactsInDb[cinfo.Name + cinfo.PhoneNo] = cinfo;
+                }
                 foreach (ContactInfo cn in listContact)
                 {
-                    int index = listContactsFromDb.IndexOf(cn);
-                    if (index < 0)
-                    {
+                    if (listCloseFriends.Count == 30 && listFamilyMembers.Count == 30)
+                        break;
+                    ContactInfo contactFromDb;
+                    if (!dictContactsInDb.TryGetValue(cn.Name + cn.PhoneNo, out contactFromDb))
                         continue;
-                    }
-                    ContactInfo contactFromDb = listContactsFromDb[index];
-
                     cn.Msisdn = contactFromDb.Msisdn;
-                    if (!contactFromDb.OnHike)
+                    bool markedForNux = false;
+                    if (listFamilyMembers.Count < 30)
                     {
-                        bool markedForNux = false;
-                        if (listFamilyMembers.Count < 31)
+                        if (!string.IsNullOrEmpty(cn.Name))
                         {
+                            string[] nameArray = cn.Name.Trim().Split(' ');
                             if (isLastNameCheckApplicable)
                             {
-                                if (!string.IsNullOrEmpty(cn.Name))
+                                if (nameArray.Length > 1)
                                 {
-                                    string[] nameArray = cn.Name.Trim().Split(' ');
-                                    if (nameArray.Length > 1)
+                                    string curlastName = nameArray[nameArray.Length - 1];
+                                    if (curlastName.Equals(lastName, StringComparison.OrdinalIgnoreCase))
                                     {
-                                        string curlastName = nameArray[nameArray.Length - 1].ToLower();
-                                        if (curlastName.Trim().ToLower() == lastName)
-                                        {
-                                            listFamilyMembers.Add(cn);
-                                            markedForNux = true;
-                                        }
+                                        listFamilyMembers.Add(cn);
+                                        markedForNux = true;
                                     }
                                 }
                             }
-                            if (!markedForNux && MatchFromFamilyVocab(cn.Name))
+                            if (!markedForNux && MatchFromFamilyVocab(nameArray))
                             {
                                 markedForNux = true;
                                 listFamilyMembers.Add(cn);
                             }
                         }
-
-                        if (!markedForNux && cn.NuxMatchScore > 0)
-                        {
-                            markedForNux = true;
-                            listCloseFriends.Add(cn);
-                        }
-
                     }
-                }
 
-                if (listCloseFriends.Count < 31)
-                {
-                    int contactAdded = 0;
-                    int countRequired = 30 - listCloseFriends.Count;
-                    foreach (ContactInfo contact in listContact)
+                    if (!markedForNux && listCloseFriends.Count < 30)
                     {
-                        int index = listContactsFromDb.IndexOf(contact);
-                        if (index < 0)
-                        {
-                            continue;
-                        }
-                        if (contactAdded == countRequired)
-                            break;
-                        ContactInfo contactFromDb = listContactsFromDb[index];
-
-                        contact.Msisdn = contactFromDb.Msisdn;
-                        if (!contactFromDb.OnHike && !listCloseFriends.Contains(contact) && !listFamilyMembers.Contains(contact))
-                        {
-                            listCloseFriends.Add(contact);
-                            contactAdded++;
-                        }
+                        markedForNux = true;
+                        listCloseFriends.Add(cn);
                     }
+
                 }
-                else
-                {
-                    listCloseFriends.RemoveRange(30, listCloseFriends.Count - 30);
-                }
+
+                st.Stop();
+                Debug.WriteLine("Time fr nux scanning " + st.ElapsedMilliseconds);
             }
         }
 
@@ -332,7 +327,7 @@ namespace windows_client.View
             if (nameArray.Length == 1)
                 return null;
 
-            return nameArray[nameArray.Length - 1].ToLower();
+            return nameArray[nameArray.Length - 1].Trim();
         }
 
         #region FAMILY VOCABULARY
@@ -341,22 +336,17 @@ namespace windows_client.View
 
         #endregion
 
-        public bool MatchFromFamilyVocab(string completeName)
+  public bool MatchFromFamilyVocab(string[] strCompleteName)
         {
-            if (string.IsNullOrEmpty(completeName))
+            if (strCompleteName == null)
                 return false;
 
-            string[] strCompleteName = completeName.Split(' ');
             foreach (string namesplit in strCompleteName)
             {
                 if (dictFamilyVocab.ContainsKey(namesplit.ToLower()))
                     return true;
             }
             return false;
-        }
-        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
-        {
-            base.OnRemovedFromJournal(e);
         }
     }
 }
