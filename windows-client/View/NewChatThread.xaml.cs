@@ -42,7 +42,6 @@ namespace windows_client.View
         private readonly string ON_SMS_TEXT = AppResources.SelectUser_SmsMsg_Txt;
         private readonly string ON_GROUP_TEXT = AppResources.SelectUser_GroupMsg_Txt;
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
-        private readonly string BLOCK_USER = AppResources.Block_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
 
         private string groupOwner = null;
@@ -51,7 +50,7 @@ namespace windows_client.View
         private string lastText = "";
 
         bool afterMute = true;
-        private bool _isFav;
+
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -80,10 +79,8 @@ namespace windows_client.View
         private byte[] avatar;
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
-        ApplicationBarMenuItem blockUnblockMenuItem;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
-        ApplicationBarMenuItem addToFavMenuItem = null;
         ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -881,39 +878,9 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
-
-                if (groupOwner != null)
-                {
-                    if (groupOwner != App.MSISDN) // represents current user is not group owner
-                    {
-                        blockUnblockMenuItem = new ApplicationBarMenuItem();
-                        if (mUserIsBlocked)
-                        {
-                            blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                        }
-                        else
-                        {
-                            blockUnblockMenuItem.Text = BLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                        }
-                        blockUnblockMenuItem.Click += new EventHandler(blockUnblock_Click);
-                        appBar.MenuItems.Add(blockUnblockMenuItem);
-                    }
-                }
             }
             else
             {
-                blockUnblockMenuItem = new ApplicationBarMenuItem();
-                if (mUserIsBlocked)
-                {
-                    blockUnblockMenuItem.Text = UNBLOCK_USER;
-                }
-                else
-                {
-                    blockUnblockMenuItem.Text = BLOCK_USER;
-                }
-                blockUnblockMenuItem.Click += new EventHandler(blockUnblock_Click);
-                appBar.MenuItems.Add(blockUnblockMenuItem);
-
                 if (isAddUser)
                 {
                     addUserMenuItem = new ApplicationBarMenuItem();
@@ -925,19 +892,7 @@ namespace windows_client.View
                 callMenuItem.Text = AppResources.Call_Txt;
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
-
-                // Add to fav is shown only in case of GC
-                addToFavMenuItem = new ApplicationBarMenuItem();
-                addToFavMenuItem.Text = AppResources.Add_To_Fav_Txt;
-                addToFavMenuItem.Click += new EventHandler(AddRemoveFavMenuItem_Click);
-                appBar.MenuItems.Add(addToFavMenuItem);
-                if (App.ViewModel.Isfavourite(mContactNumber))
-                {
-                    addToFavMenuItem.Text = AppResources.RemFromFav_Txt;
-                    _isFav = true;
-                }
             }
-            //            chatThreadMainPage.ApplicationBar = appBar;
         }
 
         private void initInviteMenuItem()
@@ -1245,72 +1200,6 @@ namespace windows_client.View
 
         #region APPBAR CLICK EVENTS
 
-        private void AddRemoveFavMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!_isFav) // add to fav
-            {
-                ConversationListObject favObj = null;
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                {
-                    favObj = App.ViewModel.ConvMap[mContactNumber];
-                    favObj.IsFav = true;
-                }
-                else
-                    favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
-                App.ViewModel.FavList.Insert(0, favObj);
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.SaveFavourites(favObj);
-                if (App.ViewModel.IsPending(favObj.Msisdn))
-                {
-                    App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
-                    MiscDBUtil.SavePendingRequests();
-                }
-                addToFavMenuItem.Text = AppResources.RemFromFav_Txt;
-
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
-                JObject data = new JObject();
-                data["id"] = mContactNumber;
-                JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                _isFav = true;
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-                App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS_APP_BAR_CHATTHREAD);
-            }
-            else
-            {
-                addToFavMenuItem.Text = AppResources.Add_To_Fav_Txt;
-                foreach (ConversationListObject cObj in App.ViewModel.FavList)
-                {
-                    if (cObj.Msisdn == mContactNumber)
-                    {
-                        App.ViewModel.FavList.Remove(cObj);
-                        break;
-                    }
-                }
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                    App.ViewModel.ConvMap[mContactNumber].IsFav = false;
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.DeleteFavourite(mContactNumber);
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV, null);
-
-                JObject data = new JObject();
-                data["id"] = mContactNumber;
-                JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                _isFav = false;
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD);
-            }
-        }
-
         private void callUser_Click(object sender, EventArgs e)
         {
             PhoneCallTask phoneCallTask = new PhoneCallTask();
@@ -1407,7 +1296,6 @@ namespace windows_client.View
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
-                    blockUnblockMenuItem.Text = BLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
                 }
                 else
                 {
@@ -1415,39 +1303,38 @@ namespace windows_client.View
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
                     isTypingNotificationEnabled = true;
-                    blockUnblockMenuItem.Text = BLOCK_USER;
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = true;
                 }
                 mUserIsBlocked = false;
                 showOverlay(false);
             }
-            else     // BLOCK REQUEST
-            {
-                if (showNoSmsLeftOverlay)
-                    ToggleControlsToNoSms(false);
-                this.Focus();
-                sendMsgTxtbox.Text = "";
-                if (isGroupChat)
-                {
-                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
-                    blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                }
-                else
-                {
-                    mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
-                    emoticonsIconButton.IsEnabled = false;
-                    sendIconButton.IsEnabled = false;
-                    isTypingNotificationEnabled = false;
-                    blockUnblockMenuItem.Text = UNBLOCK_USER;
-                    if (inviteMenuItem != null)
-                        inviteMenuItem.IsEnabled = false;
-                }
-                emoticonPanel.Visibility = Visibility.Collapsed;
-                attachmentMenu.Visibility = Visibility.Collapsed;
-                mUserIsBlocked = true;
-                showOverlay(true); //true means show block animation
-            }
+            //else     // BLOCK REQUEST
+            //{
+            //    if (showNoSmsLeftOverlay)
+            //        ToggleControlsToNoSms(false);
+            //    this.Focus();
+            //    sendMsgTxtbox.Text = "";
+            //    if (isGroupChat)
+            //    {
+            //        mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
+            //        blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
+            //    }
+            //    else
+            //    {
+            //        mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
+            //        emoticonsIconButton.IsEnabled = false;
+            //        sendIconButton.IsEnabled = false;
+            //        isTypingNotificationEnabled = false;
+            //        blockUnblockMenuItem.Text = UNBLOCK_USER;
+            //        if (inviteMenuItem != null)
+            //            inviteMenuItem.IsEnabled = false;
+            //    }
+            //    emoticonPanel.Visibility = Visibility.Collapsed;
+            //    attachmentMenu.Visibility = Visibility.Collapsed;
+            //    mUserIsBlocked = true;
+            //    showOverlay(true); //true means show block animation
+            //}
         }
 
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
