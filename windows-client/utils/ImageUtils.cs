@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 using System.IO;
+using System.Diagnostics;
 
 namespace windows_client.utils
 {
@@ -684,5 +685,27 @@ namespace windows_client.utils
             }
         }
         #endregion
+
+        public BitmapImage createImageFromBytes(byte[] imagebytes)
+        {
+            if (imagebytes == null || imagebytes.Length == 0)
+                return null;
+            BitmapImage bitmapImage = null;
+            try
+            {
+                using (var memStream = new MemoryStream(imagebytes))
+                {
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    bitmapImage = new BitmapImage();
+                    bitmapImage.SetSource(memStream);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("IMAGE UTILS :: Exception while creating bitmap image from memstream : " + e.StackTrace);
+            }
+            return bitmapImage;
+        }
+
     }
 }

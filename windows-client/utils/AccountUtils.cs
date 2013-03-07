@@ -144,7 +144,7 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
-        public delegate void getProfilePicFunction(byte[] data);
+        public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
 
@@ -515,20 +515,19 @@ namespace windows_client.utils
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
-        //GET request
-        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
+        public static void createGetRequest(string requestUrl, downloadFile callback, bool setCookie, object metadata)
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             if (setCookie)
                 addToken(request);
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
-            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
+            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback, metadata });
         }
+
 
         static void GetRequestCallback(IAsyncResult result)
         {
             object[] vars = (object[])result.AsyncState;
-
             HttpWebRequest request = vars[0] as HttpWebRequest;
             JObject jObject = null;
             string data = "";
@@ -553,7 +552,7 @@ namespace windows_client.utils
                             }
                             jObject = JObject.Parse(data);
                         }
-                        else if (vars[1] is getProfilePicFunction)
+                        else if (vars[1] is downloadFile)
                         {
                             using (BinaryReader br = new BinaryReader(responseStream))
                             {
@@ -581,10 +580,10 @@ namespace windows_client.utils
                         postResponseFunction finalCallbackFunction = vars[1] as postResponseFunction;
                         finalCallbackFunction(jObject);
                     }
-                    else if (vars[1] is getProfilePicFunction)
+                    else if (vars[1] is downloadFile)
                     {
-                        getProfilePicFunction finalCallbackFunction = vars[1] as getProfilePicFunction;
-                        finalCallbackFunction(fileBytes);
+                        downloadFile finalCallbackFunction = vars[1] as downloadFile;
+                        finalCallbackFunction(fileBytes, vars[2] as object);
                     }
 
                 }
