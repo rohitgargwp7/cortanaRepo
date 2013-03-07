@@ -385,6 +385,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Message {0} on Hike.
+        /// </summary>
+        public static string Conversations_MessageOnHike_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_MessageOnHike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to new chat.
         /// </summary>
         public static string Conversations_NewChat_AppBar_Btn {
