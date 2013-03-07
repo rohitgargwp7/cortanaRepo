@@ -123,7 +123,7 @@ namespace windows_client.utils
             get { return uid; }
             set
             {
-                if (value != mToken)
+                if (value != uid)
                 {
                     uid = value;
                 }
@@ -147,7 +147,6 @@ namespace windows_client.utils
         public delegate void getProfilePicFunction(byte[] data);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
-
 
         private enum RequestType
         {
@@ -408,7 +407,7 @@ namespace windows_client.utils
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
                     string x = data.ToString(Newtonsoft.Json.Formatting.None);
-                    Compress4(x,postStream);
+                    Compress4(x, postStream);
                     //Debug.WriteLine("Request gets compressed from {0} to {1} Length", x.Length, d.Length);
                     //using (StreamWriter sw = new StreamWriter(postStream))
                     //{
@@ -418,8 +417,8 @@ namespace windows_client.utils
                     //}
                     postStream.Close();
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
                     return;
-                    break;
                 #endregion
                 #region SOCIAL POST
                 case RequestType.SOCIAL_POST:
@@ -516,7 +515,6 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
         }
 
-        //GET request
         public static void createGetRequest(string requestUrl, postResponseFunction callback, bool isRelativeUrl)
         {
             HttpWebRequest request = null;
@@ -529,15 +527,6 @@ namespace windows_client.utils
                 request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             }
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
-            request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
-        }
-
-        public static void createGetRequest(string requestUrl, getProfilePicFunction callback, bool setCookie)
-        {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
-            if (setCookie)
-                addToken(request);
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
@@ -577,7 +566,7 @@ namespace windows_client.utils
                             }
                             jObject = JObject.Parse(data);
                         }
-                        else// if (vars[1] is getProfilePicFunction)
+                        else if (vars[1] is downloadFile)
                         {
                             using (BinaryReader br = new BinaryReader(responseStream))
                             {
@@ -610,7 +599,6 @@ namespace windows_client.utils
                         downloadFile downloadFileCallback = vars[1] as downloadFile;
                         downloadFileCallback(fileBytes, vars[2] as object);
                     }
-
                 }
             }
         }
@@ -890,7 +878,7 @@ namespace windows_client.utils
                 }
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                int hikeCount = 1, smsCount = 1;
+                int hikeCount = 1, smsCount = 1, nonHikeCount = 0;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
                 if (!isRefresh)
@@ -943,6 +931,11 @@ namespace windows_client.utils
                                     msgToShow.Add(cn);
                                     smsCount++;
                                 }
+
+                                #region NUX RELATED
+                                if (!onhike)
+                                    nonHikeCount++;
+                                #endregion
                             }
                         }
                         else // this is refresh contacts case
@@ -991,7 +984,13 @@ namespace windows_client.utils
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
                 if (!isRefresh)
+                {
+                    #region NUX RELATED
+                    if (nonHikeCount > 2)
+                        App.appSettings["showNux"] = true;
+                    #endregion
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
+                }
                 return server_contacts;
             }
             catch (ArgumentException)

@@ -14,6 +14,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.ComponentModel;
 using windows_client.Misc;
+using System.Net.NetworkInformation;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace windows_client
 {
@@ -29,7 +31,7 @@ namespace windows_client
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string COUNTRY_CODE_SETTING = "countryCode";
         public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
-        public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
+
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
@@ -47,8 +49,7 @@ namespace windows_client
         public static readonly string GROUPS_CACHE = "GroupsCache";
         public static readonly string IS_DB_CREATED = "is_db_created";
         public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
-        public static string CONTACT_SCANNING_FAILED = "contactScanningFailed";
-        public static string SET_NAME_FAILED = "setNameFailed";
+
         public static string EMAIL = "email";
         public static string GENDER = "gender";
         public static readonly string VIBRATE_PREF = "vibratePref";
@@ -73,8 +74,6 @@ namespace windows_client
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
         public static string MSISDN;
-        public static bool ab_scanned = false;
-        public static bool isABScanning = false;
         private static HikePubSub mPubSubInstance;
         private static HikeViewModel _viewModel;
         private static DbConversationListener dbListener;
@@ -82,7 +81,6 @@ namespace windows_client
         private static NetworkManager networkManager;
         private static UI_Utils ui_utils;
         private static Analytics _analytics;
-        private static PushHelper _pushHelper;
         private static LaunchState _appLaunchState = LaunchState.NORMAL_LAUNCH;
         private static PageState ps = PageState.WELCOME_SCREEN;
 
@@ -113,21 +111,6 @@ namespace windows_client
             }
 
 
-        }
-
-        public static bool Ab_scanned
-        {
-            get
-            {
-                return ab_scanned;
-            }
-            set
-            {
-                if (ab_scanned != value)
-                {
-                    ab_scanned = value;
-                }
-            }
         }
 
         public static HikePubSub HikePubSubInstance
@@ -227,21 +210,6 @@ namespace windows_client
                 if (value != _analytics)
                 {
                     _analytics = value;
-                }
-            }
-        }
-
-        public static PushHelper PushHelperInstance
-        {
-            get
-            {
-                return _pushHelper;
-            }
-            set
-            {
-                if (value != _pushHelper)
-                {
-                    _pushHelper = value;
                 }
             }
         }
@@ -359,6 +327,7 @@ namespace windows_client
                 #endregion
             }
             _isAppLaunched = true;
+            appInitialize();
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -411,7 +380,47 @@ namespace windows_client
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
             App.AnalyticsInstance.saveObject();
+            appDeinitialize();
         }
+
+        private void appInitialize()
+        {
+            DeviceNetworkInformation.NetworkAvailabilityChanged += OnNetworkChange;
+            #region PUSH NOTIFICATIONS STUFF
+
+            bool isPushEnabled = true;
+            appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+            if (isPushEnabled)
+            {
+                PushHelper.Instance.registerPushnotifications();
+            }
+            #endregion
+        }
+
+        private void appDeinitialize()
+        {
+            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
+        }
+
+        private void OnNetworkChange(object sender, EventArgs e)
+        {
+            //reconnect mqtt whenever phone is reconnected without relaunch 
+            if (Microsoft.Phone.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                App.MqttManagerInstance.connect();
+                bool isPushEnabled = true;
+                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
+                if (isPushEnabled)
+                {
+                    PushHelper.Instance.registerPushnotifications();
+                }
+            }
+            else
+            {
+                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
+            }
+        }
+
 
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
@@ -683,7 +692,6 @@ namespace windows_client
             #region PUSH HELPER
             st.Reset();
             st.Start();
-            App.PushHelperInstance = PushHelper.Instance;
             st.Stop();
             msec = st.ElapsedMilliseconds;
             Debug.WriteLine("APP: Time to Instantiate Push helper : {0}", msec);
