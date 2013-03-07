@@ -39,6 +39,8 @@ namespace windows_client
             nextIconButton.IsEnabled = false;
             appBar.Buttons.Add(nextIconButton);
             enterPin.ApplicationBar = appBar;
+            if (!App.appSettings.Contains(ContactUtils.IS_ADDRESS_BOOK_SCANNED) && ContactUtils.ContactState == ContactUtils.ContactScanState.ADDBOOK_NOT_SCANNING)
+                ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
         }
 
         private void btnEnterPin_Click(object sender, EventArgs e)
@@ -90,9 +92,6 @@ namespace windows_client
             }
 
             utils.Utils.savedAccountCredentials(obj);
-
-            /*Before calling setName function , simply scan the addressbook*/
-            ContactUtils.getContacts(new ContactUtils.contacts_Callback(ContactUtils.contactSearchCompleted_Callback));
             nextPage = new Uri("/View/EnterName.xaml", UriKind.Relative);
             /*This is used to avoid cross thread invokation exception*/
             Deployment.Current.Dispatcher.BeginInvoke(() =>

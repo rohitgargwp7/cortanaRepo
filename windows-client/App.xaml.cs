@@ -31,7 +31,7 @@ namespace windows_client
         public static readonly string MSISDN_SETTING = "msisdn";
         public static readonly string COUNTRY_CODE_SETTING = "countryCode";
         public static readonly string REQUEST_ACCOUNT_INFO_SETTING = "raiSettings";
-        public static readonly string IS_ADDRESS_BOOK_SCANNED = "isabscanned";
+
         public static readonly string TOKEN_SETTING = "token";
         public static readonly string UID_SETTING = "uid";
         public static readonly string SMS_SETTING = "smscredits";
@@ -49,8 +49,7 @@ namespace windows_client
         public static readonly string GROUPS_CACHE = "GroupsCache";
         public static readonly string IS_DB_CREATED = "is_db_created";
         public static readonly string IS_PUSH_ENABLED = "is_push_enabled";
-        public static string CONTACT_SCANNING_FAILED = "contactScanningFailed";
-        public static string SET_NAME_FAILED = "setNameFailed";
+
         public static string EMAIL = "email";
         public static string GENDER = "gender";
         public static readonly string VIBRATE_PREF = "vibratePref";
@@ -75,8 +74,6 @@ namespace windows_client
         private static bool _isTombstoneLaunch = false;
         private static bool _isAppLaunched = false;
         public static string MSISDN;
-        public static bool ab_scanned = false;
-        public static bool isABScanning = false;
         private static HikePubSub mPubSubInstance;
         private static HikeViewModel _viewModel;
         private static DbConversationListener dbListener;
@@ -114,21 +111,6 @@ namespace windows_client
             }
 
 
-        }
-
-        public static bool Ab_scanned
-        {
-            get
-            {
-                return ab_scanned;
-            }
-            set
-            {
-                if (ab_scanned != value)
-                {
-                    ab_scanned = value;
-                }
-            }
         }
 
         public static HikePubSub HikePubSubInstance
