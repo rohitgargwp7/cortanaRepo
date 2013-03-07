@@ -376,7 +376,6 @@ namespace windows_client.View
                     App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
                     MiscDBUtil.SavePendingRequests();
                 }
-                FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent);
                 MiscDBUtil.SaveFavourites();
                 MiscDBUtil.SaveFavourites(favObj);
                 int count = 0;
@@ -541,62 +540,54 @@ namespace windows_client.View
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            //FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
-            //App.ViewModel.StatusList.Remove(fObj);
-            //if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
-            //    return;
+            App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
+            if (App.ViewModel.Isfavourite(msisdn)) // if already favourite just ignore
+                return;
 
-            //ConversationListObject cObj = null;
-            //if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
-            //{
-            //    cObj = App.ViewModel.ConvMap[fObj.Msisdn];
-            //}
-            //else
-            //{
-            //    ContactInfo cn = null;
-            //    if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
-            //        cn = App.ViewModel.ContactsCache[fObj.Msisdn];
-            //    else
-            //    {
-            //        cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-            //        App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
-            //    }
-            //    bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
-            //    cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
-            //}
+            ConversationListObject cObj = null;
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+            {
+                cObj = App.ViewModel.ConvMap[msisdn];
+            }
+            else
+            {
+                ContactInfo cn = null;
+                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                    cn = App.ViewModel.ContactsCache[msisdn];
+                else
+                {
+                    cn = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                    App.ViewModel.ContactsCache[msisdn] = cn;
+                }
+                bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
+                cObj = new ConversationListObject(msisdn, nameToShow, onHike, MiscDBUtil.getThumbNailForMsisdn(msisdn));
+            }
 
-            //App.ViewModel.FavList.Insert(0, cObj);
-            //App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
+            App.ViewModel.FavList.Insert(0, cObj);
+            App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
             obj[HikeConstants.DATA] = data;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-            //MiscDBUtil.SaveFavourites();
-            //MiscDBUtil.SaveFavourites(cObj);
-            //MiscDBUtil.SavePendingRequests();
-            //int count = 0;
-            //App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-            //App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+            MiscDBUtil.SaveFavourites();
+            MiscDBUtil.SaveFavourites(cObj);
+            MiscDBUtil.SavePendingRequests();
+            int count = 0;
+            App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+            App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
             FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.Friends);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
-            //if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
-            //{
-            //    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
-            //    favourites.Visibility = System.Windows.Visibility.Visible;
-            //    addFavsPanel.Opacity = 1;
-            //}
+           
         }
 
         private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
-          
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.IGNORE_FRIEND_REQUEST;
             obj[HikeConstants.DATA] = data;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.Ignored);

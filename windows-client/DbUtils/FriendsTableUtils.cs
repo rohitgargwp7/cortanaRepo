@@ -16,6 +16,7 @@ namespace windows_client.DbUtils
             NotSet,
             RequestSent,
             RequestRecieved,
+            UnfriendedAfterFriend,
             Ignored,
             Friends
         }

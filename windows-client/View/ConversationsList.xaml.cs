@@ -820,7 +820,7 @@ namespace windows_client.View
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                         lastStatusTxtBlk.Text = sm.Message;
-                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
                     else
@@ -832,7 +832,7 @@ namespace windows_client.View
                         }
                         else
                         {
-                            App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                             NotificationCount++;
                         }
@@ -910,6 +910,11 @@ namespace windows_client.View
                     }
                     menuFavourite.Header = AppResources.Add_To_Fav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
+                    if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
+                        FriendsTableUtils.addFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedAfterFriend);
+                    else
+                        FriendsTableUtils.deleteFriend(convObj.Msisdn);
                 }
                 else // add to fav
                 {
@@ -1244,7 +1249,7 @@ namespace windows_client.View
             {
                 double result = Math.Log(appLaunchCount / 5f, 2);//using gp
                 if (result == Math.Ceiling(result) && NetworkInterface.GetIsNetworkAvailable()) //TODO - we can use mqtt connection status. 
-                                                                                                //if mqtt is connected it would safe to assume that user is online.
+                //if mqtt is connected it would safe to assume that user is online.
                 {
                     showRateAppMessage();
                 }
@@ -1257,7 +1262,7 @@ namespace windows_client.View
             if (!Guide.IsVisible)
             {
                 Guide.BeginShowMessageBox(AppResources.Love_Using_Hike_Txt, AppResources.Rate_Us_Txt,
-                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt}, 0, MessageBoxIcon.None,
+                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt }, 0, MessageBoxIcon.None,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);
@@ -1314,7 +1319,11 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                FriendsTableUtils.deleteFriend(convObj.Msisdn);
+                FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
+                if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
+                    FriendsTableUtils.addFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedAfterFriend);
+                else
+                    FriendsTableUtils.deleteFriend(convObj.Msisdn);
             }
             if (App.ViewModel.FavList.Count == 0)
             {
@@ -1432,8 +1441,8 @@ namespace windows_client.View
                     cn = App.ViewModel.ContactsCache[fObj.Msisdn];
                 else
                 {
-                     cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
-                     App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
+                    cn = UsersTableUtils.getContactInfoFromMSISDN(fObj.Msisdn);
+                    App.ViewModel.ContactsCache[fObj.Msisdn] = cn;
                 }
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
@@ -1467,7 +1476,7 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.IGNORE_FRIEND_REQUEST;
             obj[HikeConstants.DATA] = data;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             App.ViewModel.StatusList.Remove(fObj);

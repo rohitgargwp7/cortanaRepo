@@ -270,7 +270,7 @@ namespace windows_client.View
                     return;
                 string grpId = (string)obj;
                 if (grpId == groupId)
-                {                    
+                {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         this.groupNameTxtBox.Text = App.ViewModel.ConvMap[groupId].ContactName;
@@ -527,8 +527,8 @@ namespace windows_client.View
                 ConversationTableUtils.updateGroupName(groupId, groupName);
                 GroupTableUtils.updateGroupName(groupId, groupName);
 
-                string msg = string.Format(AppResources.GroupNameChangedByGrpMember_Txt , AppResources.You_Txt, groupName);
-                ConvMessage cm = new ConvMessage(msg,groupId,TimeUtils.getCurrentTimeStamp(),ConvMessage.State.RECEIVED_READ,-1,-1);
+                string msg = string.Format(AppResources.GroupNameChangedByGrpMember_Txt, AppResources.You_Txt, groupName);
+                ConvMessage cm = new ConvMessage(msg, groupId, TimeUtils.getCurrentTimeStamp(), ConvMessage.State.RECEIVED_READ, -1, -1);
                 cm.GrpParticipantState = ConvMessage.ParticipantInfoState.GROUP_NAME_CHANGE;
                 cm.GroupParticipant = App.MSISDN;
                 JObject jo = new JObject();
@@ -729,7 +729,7 @@ namespace windows_client.View
                     if (App.ViewModel.ConvMap.ContainsKey(groupId))
                         App.ViewModel.ConvMap[groupId].ContactName = gpName;
                 }
-               
+
                 // update normal 1-1 chat contact
                 if (App.ViewModel.ConvMap.ContainsKey(gp_obj.Msisdn))
                 {
@@ -875,6 +875,11 @@ namespace windows_client.View
                     App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO);
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(gp.Msisdn);
+                    if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
+                        FriendsTableUtils.addFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedAfterFriend);
+                    else
+                        FriendsTableUtils.deleteFriend(gp.Msisdn);
                 }
                 else // add to fav
                 {
