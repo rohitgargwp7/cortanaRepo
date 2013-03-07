@@ -44,6 +44,7 @@ namespace windows_client.View
         ApplicationBarIconButton postStatusIconButton;
 
         ApplicationBarIconButton groupChatIconButton;
+        ApplicationBarIconButton addFriendIconButton;
         BitmapImage profileImage = null;
 
         private bool isShowFavTute = true;
@@ -306,7 +307,6 @@ namespace windows_client.View
             appBar.IsMenuEnabled = false;
 
             /* Add icons */
-
             composeIconButton = new ApplicationBarIconButton();
             composeIconButton.IconUri = new Uri("/View/images/appbar.add.rest.png", UriKind.Relative);
             composeIconButton.Text = AppResources.Conversations_NewChat_AppBar_Btn;
@@ -327,6 +327,12 @@ namespace windows_client.View
             groupChatIconButton.Click += createGroup_Click;
             groupChatIconButton.IsEnabled = true;
             appBar.Buttons.Add(groupChatIconButton);
+
+            addFriendIconButton = new ApplicationBarIconButton();
+            addFriendIconButton.IconUri = new Uri("/View/images/appbar_addfriend.png", UriKind.Relative);
+            addFriendIconButton.Text = AppResources.Favorites_AddMore;
+            addFriendIconButton.Click += addFriend_Click;
+            addFriendIconButton.IsEnabled = true;
 
             delConvsMenu = new ApplicationBarMenuItem();
             delConvsMenu.Text = AppResources.Conversations_DelAllChats_Txt;
@@ -509,6 +515,16 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
 
+        private void addFriend_Click(object sender, EventArgs e)
+        {
+            //if (addFavsPanel.Opacity == 0)
+            //    return;
+            PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
+            string uri = "/View/InviteUsers.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        }
+
+
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
@@ -557,21 +573,37 @@ namespace windows_client.View
             var selectedIndex = panorama.SelectedIndex;
             if (selectedIndex == 0)
             {
+                if (!appBar.Buttons.Contains(composeIconButton))
+                    appBar.Buttons.Add(composeIconButton);
+                if (!appBar.Buttons.Contains(groupChatIconButton))
+                    appBar.Buttons.Add(groupChatIconButton);
                 if (!appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Insert(0, delConvsMenu);
+                if (appBar.Buttons.Contains(addFriendIconButton))
+                    appBar.Buttons.Remove(addFriendIconButton);
             }
             else if (selectedIndex == 1)
             {
+                if (!appBar.Buttons.Contains(composeIconButton))
+                    appBar.Buttons.Add(composeIconButton);
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
+                if (appBar.Buttons.Contains(addFriendIconButton))
+                    appBar.Buttons.Remove(addFriendIconButton);
+                if (!appBar.Buttons.Contains(groupChatIconButton))
+                    appBar.Buttons.Add(groupChatIconButton);
             }
             else if (selectedIndex == 2) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-
+                if (!appBar.Buttons.Contains(addFriendIconButton))
+                    appBar.Buttons.Add(addFriendIconButton);
+                if (appBar.Buttons.Contains(composeIconButton))
+                    appBar.Buttons.Remove(composeIconButton);
+                if (appBar.Buttons.Contains(groupChatIconButton))
+                    appBar.Buttons.Remove(groupChatIconButton);
                 // there will be two background workers that will independently load three sections
-
                 #region FAVOURITES
 
                 if (!_isFavListBound)
@@ -598,7 +630,7 @@ namespace windows_client.View
                         {
                             emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                             favourites.Visibility = System.Windows.Visibility.Visible;
-                            addFavsPanel.Opacity = 1;
+                            //addFavsPanel.Opacity = 1;
                         }
                     };
                 }
@@ -610,16 +642,18 @@ namespace windows_client.View
             {
                 if (appBar.Buttons.Contains(composeIconButton))
                     appBar.Buttons.Remove(composeIconButton);
+                if (appBar.Buttons.Contains(groupChatIconButton))
+                    appBar.Buttons.Remove(groupChatIconButton);
                 if (!appBar.Buttons.Contains(postStatusIconButton))
                     appBar.Buttons.Add(postStatusIconButton);
+                if (appBar.Buttons.Contains(addFriendIconButton))
+                    appBar.Buttons.Remove(addFriendIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
                 NotificationCount = 0;
             }
             if (selectedIndex != 3)
             {
-                if (!appBar.Buttons.Contains(composeIconButton))
-                    appBar.Buttons.Add(composeIconButton);
                 if (appBar.Buttons.Contains(postStatusIconButton))
                     appBar.Buttons.Remove(postStatusIconButton);
                 if (NotificationCount == 0)  //If NotificationCount is 0, it would be safe to change here
@@ -696,13 +730,13 @@ namespace windows_client.View
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
-                        addFavsPanel.Opacity = 1;
+                        //addFavsPanel.Opacity = 1;
                     }
                     else if (App.ViewModel.FavList.Count == 0) // remove fav
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
-                        addFavsPanel.Opacity = 0;
+                        //addFavsPanel.Opacity = 0;
                     }
                 });
             }
@@ -881,7 +915,7 @@ namespace windows_client.View
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                         favourites.Visibility = System.Windows.Visibility.Collapsed;
-                        addFavsPanel.Opacity = 0;
+                        //addFavsPanel.Opacity = 0;
                     }
                     menuFavourite.Header = AppResources.Add_To_Fav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
@@ -910,7 +944,7 @@ namespace windows_client.View
                     {
                         emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                         favourites.Visibility = System.Windows.Visibility.Visible;
-                        addFavsPanel.Opacity = 1;
+                        //addFavsPanel.Opacity = 1;
                     }
                     menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
@@ -1294,7 +1328,7 @@ namespace windows_client.View
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
-                addFavsPanel.Opacity = 0;
+                //addFavsPanel.Opacity = 0;
             }
         }
 
@@ -1456,7 +1490,7 @@ namespace windows_client.View
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
-                addFavsPanel.Opacity = 1;
+                //addFavsPanel.Opacity = 1;
             }
         }
 
@@ -1567,14 +1601,6 @@ namespace windows_client.View
         }
 
         #endregion
-        private void Button_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            if (addFavsPanel.Opacity == 0)
-                return;
-            PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
-            string uri = "/View/InviteUsers.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
 
         private void Button_Tap_2(object sender, System.Windows.Input.GestureEventArgs e)
         {
