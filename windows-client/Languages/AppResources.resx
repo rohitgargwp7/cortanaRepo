@@ -169,8 +169,8 @@
     <value>new chat</value>
     <comment>AppBar Btn (cs)</comment>
   </data>
-  <data name="Conversations_OnHike_Txt" xml:space="preserve">
-    <value>{0} is on hike.</value>
+  <data name="Conversations_SayHI_Txt" xml:space="preserve">
+    <value>Say Hi to {0}!</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_OnSMS_Txt" xml:space="preserve">
@@ -1366,5 +1366,9 @@
   </data>
   <data name="Stop_Contact_Scanning" xml:space="preserve">
     <value>Do you want to stop contact scanning?</value>
+  </data>
+  <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
+    <value>Message {0} on Hike</value>
+    <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
 </root>

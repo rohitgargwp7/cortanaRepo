@@ -244,6 +244,7 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
                 return;
             }
+            Random rnd = new Random();
             for (int i = 0; i < cl.Count; i++)
             {
                 ConvMessage c = null;
@@ -252,7 +253,7 @@ namespace windows_client.View
                 {
                     j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
                     c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER, j);
-                    c.Message = string.Format(AppResources.Conversations_OnHike_Txt, cl[i].Name);
+                    c.Message = string.Format(rnd.Next(1, 3) == 1 ? AppResources.Conversations_MessageOnHike_Txt : AppResources.Conversations_SayHI_Txt, cl[i].Name);
                 }
                 else
                 {
@@ -1254,7 +1255,7 @@ namespace windows_client.View
             {
                 double result = Math.Log(appLaunchCount / 5f, 2);//using gp
                 if (result == Math.Ceiling(result) && NetworkInterface.GetIsNetworkAvailable()) //TODO - we can use mqtt connection status. 
-                                                                                                //if mqtt is connected it would safe to assume that user is online.
+                //if mqtt is connected it would safe to assume that user is online.
                 {
                     showRateAppMessage();
                 }
@@ -1267,7 +1268,7 @@ namespace windows_client.View
             if (!Guide.IsVisible)
             {
                 Guide.BeginShowMessageBox(AppResources.Love_Using_Hike_Txt, AppResources.Rate_Us_Txt,
-                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt}, 0, MessageBoxIcon.None,
+                     new List<string> { AppResources.Rate_Now_Txt, AppResources.Ask_Me_Later_Txt }, 0, MessageBoxIcon.None,
                      asyncResult =>
                      {
                          int? returned = Guide.EndShowMessageBox(asyncResult);

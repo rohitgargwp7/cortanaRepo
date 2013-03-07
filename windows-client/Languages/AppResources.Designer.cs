@@ -394,15 +394,6 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is on hike..
-        /// </summary>
-        public static string Conversations_OnHike_Txt {
-            get {
-                return ResourceManager.GetString("Conversations_OnHike_Txt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Send {0} free sms..
         /// </summary>
         public static string Conversations_OnSMS_Txt {
@@ -471,6 +462,15 @@ namespace windows_client.Languages {
         public static string Conversations_RemFromFav_Confirm_Txt {
             get {
                 return ResourceManager.GetString("Conversations_RemFromFav_Confirm_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Say Hi to {0}!.
+        /// </summary>
+        public static string Conversations_SayHI_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_SayHI_Txt", resourceCulture);
             }
         }
         
