@@ -18,6 +18,7 @@ namespace windows_client.View
     public partial class PostStatus : PhoneApplicationPage
     {
         private ApplicationBar appBar;
+        private ApplicationBarIconButton postStatusIcon;
         public PostStatus()
         {
             InitializeComponent();
@@ -28,18 +29,25 @@ namespace windows_client.View
             appBar.IsVisible = true;
             appBar.IsMenuEnabled = true;
 
-            ApplicationBarIconButton postStatusIcon = new ApplicationBarIconButton();
+            postStatusIcon = new ApplicationBarIconButton();
             postStatusIcon.IconUri = new Uri("/View/images/icon_send.png", UriKind.Relative);
             postStatusIcon.Text = AppResources.Conversations_PostStatus_AppBar;
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = true;
             appBar.Buttons.Add(postStatusIcon);
+          
             postStatusPage.ApplicationBar = appBar;
         }
 
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
+            postStatusIcon.IsEnabled = false;
             string statusText = txtStatus.Text;
+            if (statusText.Trim() == string.Empty)
+            {
+                postStatusIcon.IsEnabled = true;
+                return;
+            }
             AccountUtils.postStatus(statusText, postStatus_Callback);
         }
 
@@ -68,7 +76,7 @@ namespace windows_client.View
                     StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
                         TimeUtils.getCurrentTimeStamp());
                     StatusMsgsTable.InsertStatusMsg(sm);
-                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm); 
+                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
                 catch
                 {
@@ -79,7 +87,7 @@ namespace windows_client.View
             {
                 if (NavigationService.CanGoBack)
                 {
-                  NavigationService.GoBack();
+                    NavigationService.GoBack();
                 }
             });
         }
