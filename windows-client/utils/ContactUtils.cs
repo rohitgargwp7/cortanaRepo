@@ -248,7 +248,7 @@ namespace windows_client.utils
                         continue;
                     }
                     string nameToStore;
-                    if (string.IsNullOrEmpty(cn.CompleteName.LastName) && !string.IsNullOrEmpty(cn.CompleteName.MiddleName))
+                    if (cn.CompleteName != null && string.IsNullOrEmpty(cn.CompleteName.LastName) && !string.IsNullOrEmpty(cn.CompleteName.MiddleName))
                         nameToStore = cn.CompleteName.FirstName.Trim() + " " + cn.CompleteName.MiddleName.Trim();
                     else
                         nameToStore = cn.DisplayName.Trim();
