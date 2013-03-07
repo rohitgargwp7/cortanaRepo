@@ -16,7 +16,7 @@ namespace windows_client.Controls
         Rectangle overlayrectangle;
         StackPanel spProgress;
         TextBlock txtProgressText;
-        PerformanceProgressBar pBar;
+        ProgressBar pBar;
         bool isShown;
 
         public ProgressIndicatorControl()
@@ -36,7 +36,7 @@ namespace windows_client.Controls
             txtProgressText.TextAlignment = TextAlignment.Center;
             spProgress.Children.Add(txtProgressText);
 
-            pBar = new PerformanceProgressBar();
+            pBar = new ProgressBar();
             pBar.IsEnabled = false;
             pBar.IsIndeterminate = true;
             pBar.VerticalAlignment = VerticalAlignment.Bottom;
