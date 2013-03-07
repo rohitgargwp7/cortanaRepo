@@ -1475,7 +1475,7 @@ namespace windows_client.View
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            if (NotificationCount != 0 && launchPagePivot.SelectedIndex != 3)
+            if (launchPagePivot.SelectedIndex != 3)
             {
                 launchPagePivot.SelectedIndex = 3;
             }
