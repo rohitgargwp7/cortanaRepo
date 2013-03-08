@@ -34,6 +34,7 @@ namespace windows_client.Controls
             txtProgressText.TextWrapping = TextWrapping.Wrap;
             txtProgressText.HorizontalAlignment = HorizontalAlignment.Center;
             txtProgressText.TextAlignment = TextAlignment.Center;
+            txtProgressText.Foreground = UI_Utils.Instance.White;
             spProgress.Children.Add(txtProgressText);
 
             pBar = new ProgressBar();
