@@ -48,7 +48,7 @@ namespace windows_client.View
         BitmapImage profileImage = null;
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
-        private List<ContactInfo> hikeContactList; //all hike contacts - hike friends
+        private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
 
         #region Page Based Functions
@@ -622,14 +622,14 @@ namespace windows_client.View
                                 App.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
                             }
                         }
-                        hikeContactList = UsersTableUtils.GetAllHikeContacts();
+                        List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContacts();
                         if (hikeContactList != null)
                         {
-                            int count = hikeContactList.Count;
+                            int count = tempHikeContactList.Count;
                             for (int i = count - 1; i >= 0; i--)
                             {
-                                if (App.ViewModel.Isfavourite(hikeContactList[i].Msisdn))
-                                    hikeContactList.RemoveAt(i);
+                                if (!App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn))
+                                    hikeContactList.Add(tempHikeContactList[i]);
                             }
                         }
                     };
@@ -1371,7 +1371,7 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                 ConversationListObject cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
-                hikeContactList.RemoveAt(0);
+                hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites(cObj);
             }
