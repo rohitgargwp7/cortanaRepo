@@ -185,7 +185,7 @@ namespace windows_client.Controls
                 TextBlock textBlck = new TextBlock();
                 textBlck.Text = userName + " -";
                 textBlck.FontSize = 22;
-                textBlck.FontFamily = UI_Utils.Instance.GroupChatMessageHeader;
+                textBlck.FontFamily = UI_Utils.Instance.SegoeSemiBoldFont;
                 textBlck.Foreground = UI_Utils.Instance.GroupChatHeaderColor;
                 textBlck.Margin = userNameMargin;
                 Grid.SetRow(textBlck, 0);

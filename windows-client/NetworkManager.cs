@@ -1011,7 +1011,8 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp());
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), 
+                            true);
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
                         {
@@ -1031,7 +1032,8 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
                             id = idToken.ToString();
-                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp());
+                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, 
+                            TimeUtils.getCurrentTimeStamp(), true);
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }
                     #endregion
