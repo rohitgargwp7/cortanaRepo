@@ -34,9 +34,9 @@ namespace windows_client.Controls.StatusUpdate
         }
 
 
-        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, long timestamp,
+        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, long statusId, BitmapImage statusImageBitmap, long timestamp,
             bool isRead, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
-            : base(userName, userImage, msisdn)
+            : base(userName, userImage, msisdn, statusId)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
@@ -52,9 +52,9 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, BitmapImage statusImageBitmap, string updateText,
-            long timestamp, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
-            : base(userName, userImage, msisdn)
+        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, long statusId, BitmapImage statusImageBitmap,
+            string updateText, long timestamp, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
+            : base(userName, userImage, msisdn, statusId)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = updateText;

@@ -34,8 +34,8 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Image x:Name="icon" Grid.Column="0" Source="images\hike_header.png" Height="40" Margin="4,25,0,0"/>
-            <Image x:Name="notificationIndicator" Grid.Column="1" Source="images\notification_read.png" Height="36" Margin="4,25,0,0" Tap="notification_Tap"/>
-            <TextBlock x:Name="notificationCountTxtBlk" Grid.Column="1" HorizontalAlignment="Center" Margin="8,34,0,0" FontSize="16" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
+            <Image x:Name="notificationIndicator" Grid.Column="1" Source="images\notification_read.png" Height="36" Margin="270,25,0,0" Tap="notification_Tap"/>
+            <TextBlock x:Name="notificationCountTxtBlk" Grid.Column="1" HorizontalAlignment="Center" Margin="274,34,0,0" FontSize="16" FontFamily="Segoe WP Semibold" Tap="notification_Tap"/>
         </Grid>
 
         <controls:Pivot x:Name="launchPagePivot" Grid.Row="1" Margin="0,-10,0,0" SelectionChanged="Pivot_SelectionChanged">
@@ -164,10 +164,10 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                            <StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="1" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
+                            <!--<StackPanel x:Name="addFavsPanel" Opacity="0" Grid.Row="1" Orientation="Horizontal" Margin="0,15,0,10" Tap="Button_Tap_1">
                                 <Image Source="images/add_favorites.png" Height="69" VerticalAlignment="Center"></Image>
                                 <TextBlock Margin="15,0,0,0" FontSize="37" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Text="{Binding Path= LocalizedResources.Favorites_AddMore, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left"/>
-                            </StackPanel>
+                            </StackPanel>-->
                         </Grid>
                     </ScrollViewer>
                 </Grid>
