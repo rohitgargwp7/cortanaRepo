@@ -18,7 +18,7 @@ namespace windows_client.Model
         StatusType _type;
         long _timestamp;
         string _mappedId;
-        bool _isRead;
+        bool _isUnread;
 
         public enum StatusType
         {
@@ -34,14 +34,14 @@ namespace windows_client.Model
         }
 
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool isRead)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
             _type = type;
             _mappedId = mappedId;
             _timestamp = ts;
-            _isRead = isRead;
+            _isUnread = isUnread;
         }
 
         public StatusMessage(string msisdn, StatusType type, string mappedId, long ts)
@@ -152,15 +152,15 @@ namespace windows_client.Model
             }
         }
 
-        public bool IsRead
+        public bool IsUnread
         {
             get
             {
-                return _isRead;
+                return _isUnread;
             }
             set
             {
-                _isRead = value;
+                _isUnread = value;
             }
         }
 

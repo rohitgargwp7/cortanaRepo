@@ -183,7 +183,6 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-
                     </Grid>
                 </ScrollViewer>
             </controls:PivotItem>

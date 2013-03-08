@@ -36,7 +36,7 @@ namespace windows_client.Controls.StatusUpdate
         }
 
         public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, long statusId, string textOrLocationName, long timestamp,
-            bool isRead, StatusMessage.StatusType statusType, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
+            bool isUnread, StatusMessage.StatusType statusType, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
             : base(userName, userImage, msisdn, statusId)
         {
             InitializeComponent();
@@ -47,9 +47,13 @@ namespace windows_client.Controls.StatusUpdate
             {
                 this.userProfileImage.Tap += statusBubbleImageTap;
             }
-            if (!isRead)
+            if (isUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+            }
+            else
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             }
             if (statusType == StatusMessage.StatusType.IS_NOW_FRIEND)
             {

@@ -21,13 +21,13 @@ namespace windows_client.Controls.StatusUpdate
                 if (value != base.IsUnread)
                 {
                     base.IsUnread = value;
-                    if (value == true) //read status
-                    {
-                        statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-                    }
-                    else //unread status
+                    if (value == true) //unread status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                    }
+                    else //read status
+                    {
+                        statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                     }
                 }
             }
@@ -35,7 +35,7 @@ namespace windows_client.Controls.StatusUpdate
 
 
         public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, long statusId, BitmapImage statusImageBitmap, long timestamp,
-            bool isRead, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
+            bool isUnread, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
             : base(userName, userImage, msisdn, statusId)
         {
             InitializeComponent();
@@ -46,9 +46,13 @@ namespace windows_client.Controls.StatusUpdate
             if (imageTap != null)
                 this.userProfileImage.Tap += imageTap;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-            if (!isRead)
+            if (isUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+            }
+            else
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             }
         }
 

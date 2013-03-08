@@ -1435,7 +1435,7 @@ namespace windows_client.View
                     {
                         for (int i = 0; i < _totalUnreadStatuses; i++)
                         {
-                            App.ViewModel.StatusList[i].IsUnread = false;
+                            App.ViewModel.StatusList[i].IsUnread = true;
                         }
                     }
                     _totalUnreadStatuses = value;
@@ -1632,7 +1632,7 @@ namespace windows_client.View
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             for (int i = 0; i < NotificationCount; i++)
             {
-                statusMessagesFromDB[i].IsRead = true;
+                statusMessagesFromDB[i].IsUnread = true;
             }
             if (statusMessagesFromDB != null)
             {

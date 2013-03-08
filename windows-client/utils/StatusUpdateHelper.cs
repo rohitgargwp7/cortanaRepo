@@ -79,7 +79,7 @@ namespace windows_client.utils
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
                     statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.StatusId,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, status.IsRead, statusBubbleImageTap);
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, status.IsUnread, statusBubbleImageTap);
                     if (isThumbnail)
                     {
                         object[] statusObjects = new object[2];
@@ -93,7 +93,7 @@ namespace windows_client.utils
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
                     statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.StatusId, status.Message,
-                        status.Timestamp, status.IsRead, status.Status_Type, statusBubbleImageTap);
+                        status.Timestamp, status.IsUnread, status.Status_Type, statusBubbleImageTap);
                     break;
             }
             if (statusBoxTap != null)
