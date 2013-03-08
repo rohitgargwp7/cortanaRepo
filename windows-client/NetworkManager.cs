@@ -932,7 +932,7 @@ namespace windows_client
                     string ms = (string)jsonObj[HikeConstants.FROM];
                     if (ms == null)
                         return;
-                    FriendsTableUtils.addFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.RequestRecieved);
+                    FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
                     if (App.ViewModel.Isfavourite(ms)) // already favourite
                         return;
                     if (App.ViewModel.IsPending(ms))
@@ -940,7 +940,7 @@ namespace windows_client
 
                     try
                     {
-                        
+
                         ConversationListObject favObj;
                         if (App.ViewModel.ConvMap.ContainsKey(ms))
                             favObj = App.ViewModel.ConvMap[ms];
@@ -983,22 +983,11 @@ namespace windows_client
             {
                 try
                 {
-                    string ms = (string)jsonObj[HikeConstants.FROM];
-
-
-                    try
-                    {
-                        FriendsTableUtils.deleteFriend(ms);
-
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
-                    }
+                    FriendsTableUtils.DeleteFriend(msisdn);
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
+                    Debug.WriteLine("Network Manager :: Exception in PostPone from FAVS : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1007,25 +996,15 @@ namespace windows_client
             {
                 try
                 {
-                    string ms = (string)jsonObj[HikeConstants.FROM];
-
-
-                    try
-                    {
-                        FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(ms);
-                        if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
-                            FriendsTableUtils.addFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.UnfriendedByHim,fs);
-                        else
-                            FriendsTableUtils.deleteFriend(ms);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine("Network Manager : Exception in ADD FAVORITES :: " + e.StackTrace);
-                    }
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(msisdn);
+                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                        FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
+                    else
+                        FriendsTableUtils.DeleteFriend(msisdn);
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Network Manager :: Exception in ADD TO FAVS : " + e.StackTrace);
+                    Debug.WriteLine("Network Manager :: Exception in Remove from Friends: " + e.StackTrace);
                 }
             }
             #endregion

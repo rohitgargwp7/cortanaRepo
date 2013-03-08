@@ -365,7 +365,7 @@ namespace windows_client.View
                 return;
             if (msisdn == App.MSISDN)
                 return;
-            FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent, FriendsTableUtils.FriendStatusEnum.NotSet);
+            FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
@@ -488,16 +488,16 @@ namespace windows_client.View
 
         private void InitiateOnFriendBasis()
         {
-            FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.FriendStatusEnum.NotSet;
+            FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.FriendStatusEnum.NOT_SET;
             if (App.MSISDN != msisdn)
             {
                 friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
             }
 
-            if (friendStatus > FriendsTableUtils.FriendStatusEnum.RequestSent || App.MSISDN == msisdn)
+            if (friendStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT || App.MSISDN == msisdn)
             {
                 bool inAddressBook = true;
-                if (App.MSISDN != msisdn && friendStatus != FriendsTableUtils.FriendStatusEnum.Friends)
+                if (App.MSISDN != msisdn && friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
                 {
                     inAddressBook = App.ViewModel.ContactsCache.ContainsKey(msisdn) || UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
                 }
@@ -521,7 +521,7 @@ namespace windows_client.View
                     //todo:show add to contacts
                 }
             }
-            else if (friendStatus == FriendsTableUtils.FriendStatusEnum.RequestSent)
+            else if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
             {
                 BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
                 imgInviteLock.Source = locked;
@@ -546,12 +546,12 @@ namespace windows_client.View
                 btnInvite.Content = AppResources.btnAddAsFriend_Txt;
                 btnInvite.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(AddAsFriend_Tap);
             }
-            if (friendStatus == FriendsTableUtils.FriendStatusEnum.RequestRecieved)
+            if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
             {
                 spAddFriendInvite.Visibility = Visibility.Visible;
             }
 
-            if (friendStatus == FriendsTableUtils.FriendStatusEnum.UnfriendedByYou)
+            if (friendStatus == FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU)
             {
                 spAddFriend.Visibility = Visibility.Visible;
             }
@@ -560,7 +560,7 @@ namespace windows_client.View
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
-            FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.Friends);
+            FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
             RemoveFrndReqFromTimeline();
             if (App.ViewModel.Isfavourite(msisdn)) // if already favourite just ignore
@@ -611,7 +611,7 @@ namespace windows_client.View
             obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
             obj[HikeConstants.DATA] = data;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-            FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.Ignored);
+            FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.IGNORED);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
             RemoveFrndReqFromTimeline();
             App.ViewModel.PendingRequests.Remove(msisdn);

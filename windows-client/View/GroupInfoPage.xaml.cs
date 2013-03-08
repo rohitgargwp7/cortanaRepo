@@ -876,10 +876,10 @@ namespace windows_client.View
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO);
                     FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(gp.Msisdn);
-                    if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
-                        FriendsTableUtils.addFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedByYou,fs);
+                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                        FriendsTableUtils.SetFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                     else
-                        FriendsTableUtils.deleteFriend(gp.Msisdn);
+                        FriendsTableUtils.DeleteFriend(gp.Msisdn);
                 }
                 else // add to fav
                 {
@@ -911,7 +911,7 @@ namespace windows_client.View
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
-                    FriendsTableUtils.addFriendStatus(favObj.Msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent, FriendsTableUtils.FriendStatusEnum.NotSet);
+                    FriendsTableUtils.SetFriendStatus(favObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                 }
             }
         }

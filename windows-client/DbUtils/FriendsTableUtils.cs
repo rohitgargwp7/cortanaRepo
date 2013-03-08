@@ -13,25 +13,22 @@ namespace windows_client.DbUtils
     {
         public enum FriendStatusEnum : byte
         {
-            NotSet,
-            UnfriendedByHim,
-            RequestSent,
-            RequestRecieved,
-            UnfriendedByYou,
-            Ignored,
-            Friends
+            NOT_SET,
+            UNFRIENDED_BY_HIM,
+            REQUEST_SENT,
+            REQUEST_RECIEVED,
+            UNFRIENDED_BY_YOU,
+            IGNORED,
+            FRIENDS
         }
 
         public static string FRIENDS_DIRECTORY = "FRIENDS";
         private static object readWriteLock = new object();
 
-        public static void addFriendStatus(string msisdn, FriendStatusEnum friendStatus)
+
+        public static void SetFriendStatus(string msisdn, FriendStatusEnum friendStatus)
         {
-            addFriendStatus(msisdn, friendStatus, FriendStatusEnum.NotSet);
-        }
-        public static void addFriendStatus(string msisdn, FriendStatusEnum friendStatus, FriendStatusEnum previousFriendStaus)
-        {
-            if (friendStatus > FriendStatusEnum.NotSet)
+            if (friendStatus > FriendStatusEnum.NOT_SET)
             {
                 lock (readWriteLock)
                 {
@@ -44,50 +41,22 @@ namespace windows_client.DbUtils
                             {
                                 store.CreateDirectory(FRIENDS_DIRECTORY);
                             }
-                            if (store.FileExists(fileName))
-                            {
-                                FriendStatusEnum friendStatusDb = FriendStatusEnum.NotSet;
-                                if (previousFriendStaus == FriendStatusEnum.NotSet)
-                                {
-                                    using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
-                                    {
-                                        using (var reader = new BinaryReader(file))
-                                        {
-                                            friendStatusDb = (FriendStatusEnum)reader.ReadByte();
-                                        }
-                                    }
-                                }
-                                else
-                                    friendStatusDb = previousFriendStaus;
 
-                                if ((friendStatusDb == FriendStatusEnum.RequestSent && friendStatus == FriendStatusEnum.RequestRecieved) ||
-                                    (friendStatusDb == FriendStatusEnum.RequestRecieved && friendStatus == FriendStatusEnum.RequestSent) ||
-                                    (friendStatusDb == FriendStatusEnum.UnfriendedByYou && friendStatus == FriendStatusEnum.RequestSent) ||
-                                    (friendStatusDb == FriendStatusEnum.UnfriendedByHim && friendStatus == FriendStatusEnum.RequestRecieved)
-                                    )
-                                {
-                                    friendStatus = FriendStatusEnum.Friends;
-                                }
-                                store.DeleteFile(fileName);
-                                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
-                                {
-                                    using (var writer = new BinaryWriter(file))
-                                    {
-                                        writer.Seek(0, SeekOrigin.Begin);
-                                        writer.Write((byte)friendStatus);
-                                    }
-                                }
-                            }
-                            else
+                            using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
                             {
-                                using (var file = store.OpenFile(fileName, FileMode.Create, FileAccess.Write))
+                                if (file.Length > 0)
                                 {
-                                    using (var writer = new BinaryWriter(file))
+                                    FriendStatusEnum friendStatusDb = (FriendStatusEnum)(byte)file.ReadByte();
+                                    if ((friendStatusDb == FriendStatusEnum.REQUEST_SENT && friendStatus == FriendStatusEnum.REQUEST_RECIEVED) ||
+                                        (friendStatusDb == FriendStatusEnum.REQUEST_RECIEVED && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
+                                        (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
+                                        (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatus == FriendStatusEnum.REQUEST_RECIEVED))
                                     {
-                                        writer.Seek(0, SeekOrigin.Begin);
-                                        writer.Write((byte)friendStatus);
+                                        friendStatus = FriendStatusEnum.FRIENDS;
                                     }
                                 }
+                                file.Seek(0, SeekOrigin.Begin);
+                                file.WriteByte((byte)friendStatus);
                             }
                         }
                     }
@@ -101,7 +70,7 @@ namespace windows_client.DbUtils
 
         public static FriendStatusEnum GetFriendStatus(string msisdn)
         {
-            FriendStatusEnum friendStatus = FriendStatusEnum.NotSet;
+            FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;
             lock (readWriteLock)
             {
                 string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
@@ -122,7 +91,7 @@ namespace windows_client.DbUtils
             return friendStatus;
         }
 
-        public static void deleteFriend(string msisdn)
+        public static void DeleteFriend(string msisdn)
         {
             lock (readWriteLock)
             {
@@ -134,13 +103,16 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void deleteAllFriends()
+        public static void DeleteAllFriends()
         {
             lock (readWriteLock)
             {
                 using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
                 {
-                    store.DeleteDirectory(FRIENDS_DIRECTORY);
+                    string[] files = store.GetFileNames(FRIENDS_DIRECTORY + "\\*");
+                    if (files != null)
+                        foreach (string fileName in files)
+                            store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
                 }
             }
         }

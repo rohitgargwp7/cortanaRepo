@@ -39,6 +39,7 @@ namespace windows_client.DbUtils
             DeleteAllLargeStatusImages();
             StatusMsgsTable.DeleteAllStatusMsgs();
             GroupManager.Instance.DeleteAllGroups();
+            FriendsTableUtils.DeleteAllFriends();
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
                 context.messages.DeleteAllOnSubmit<ConvMessage>(context.GetTable<ConvMessage>());
