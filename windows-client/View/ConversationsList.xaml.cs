@@ -834,7 +834,7 @@ namespace windows_client.View
                     {
                         if (launchPagePivot.SelectedIndex == 3)
                         {
-                            FreshStatusUpdates.Add(sm);//read from db or handling tombstone. freshStatusUpdates will be cleared in tombstone
+                            FreshStatusUpdates.Add(sm);
                             RefreshBarCount++;//persist in this.State. it will be cleared 
                         }
                         else
