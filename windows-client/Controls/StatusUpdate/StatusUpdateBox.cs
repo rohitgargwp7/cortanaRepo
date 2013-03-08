@@ -62,6 +62,14 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
+        public long StatusId
+        {
+            get 
+            {
+                return _statusId;
+            }
+        }
+
         public virtual bool IsUnread
         {
             get

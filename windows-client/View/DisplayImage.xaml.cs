@@ -8,6 +8,7 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using System.Diagnostics;
 using System.Windows.Media;
+using windows_client.Controls.StatusUpdate;
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
@@ -25,6 +26,7 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
             PhoneApplicationService.Current.State.Remove("displayProfilePic");
             PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.STATUS_IMAGE_TO_DISPLAY);
         }
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -85,6 +87,14 @@ namespace windows_client.View
             {
                 BitmapImage imageToDisplay = (BitmapImage)PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY];
                 this.FileImage.Source = imageToDisplay;
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
+            {
+                ImageStatusUpdate imageStatus = (ImageStatusUpdate)PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
+                byte[] statusImageBytes = null;
+                bool isThumbnail;
+                MiscDBUtil.getStatusUpdateImage(imageStatus.Msisdn, imageStatus.StatusId, out statusImageBytes, out isThumbnail);
+                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
             }
         }
         public void getProfilePic_Callback(byte[] fullBytes, object fName)
