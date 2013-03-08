@@ -582,6 +582,8 @@ namespace windows_client.View
                     appBar.MenuItems.Insert(0, delConvsMenu);
                 if (appBar.Buttons.Contains(addFriendIconButton))
                     appBar.Buttons.Remove(addFriendIconButton);
+                if (appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Remove(postStatusIconButton);
             }
             else if (selectedIndex == 1)
             {
@@ -593,13 +595,17 @@ namespace windows_client.View
                     appBar.Buttons.Remove(addFriendIconButton);
                 if (!appBar.Buttons.Contains(groupChatIconButton))
                     appBar.Buttons.Add(groupChatIconButton);
+                if (appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Remove(postStatusIconButton);
             }
             else if (selectedIndex == 2) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                if (!appBar.Buttons.Contains(addFriendIconButton))
-                    appBar.Buttons.Add(addFriendIconButton);
+                //if (!appBar.Buttons.Contains(addFriendIconButton))
+                //    appBar.Buttons.Add(addFriendIconButton);
+                if (!appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Add(postStatusIconButton);
                 if (appBar.Buttons.Contains(composeIconButton))
                     appBar.Buttons.Remove(composeIconButton);
                 if (appBar.Buttons.Contains(groupChatIconButton))
@@ -665,8 +671,6 @@ namespace windows_client.View
             }
             if (selectedIndex != 3)
             {
-                if (appBar.Buttons.Contains(postStatusIconButton))
-                    appBar.Buttons.Remove(postStatusIconButton);
                 if (NotificationCount == 0)  //If NotificationCount is 0, it would be safe to change here
                     TotalUnreadStatuses = 0; //should be reset when user moves away from Timeline. 
             }
