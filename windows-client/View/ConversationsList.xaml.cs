@@ -1396,6 +1396,7 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             FriendRequestStatus fObj = (sender as Button).DataContext as FriendRequestStatus;
             App.ViewModel.StatusList.Remove(fObj);
+            FriendsTableUtils.addFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.Friends);
             if (App.ViewModel.Isfavourite(fObj.Msisdn)) // if already favourite just ignore
                 return;
 
@@ -1446,12 +1447,13 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = fObj.Msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.IGNORE_FRIEND_REQUEST;
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
             obj[HikeConstants.DATA] = data;
             mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
             App.ViewModel.StatusList.Remove(fObj);
             App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
             MiscDBUtil.SavePendingRequests();
+            FriendsTableUtils.addFriendStatus(fObj.Msisdn, FriendsTableUtils.FriendStatusEnum.Ignored);
         }
 
         private void notification_Tap(object sender, System.Windows.Input.GestureEventArgs e)

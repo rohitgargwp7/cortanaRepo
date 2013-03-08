@@ -151,7 +151,7 @@ namespace windows_client.View
                         {
                             msisdn = sb.Msisdn;
                             profileImage = sb.UserImage;
-                            nameToShow = sb.Name;
+                            nameToShow = sb.UserName;
                             isOnHike = true;//check as it can be false also
                             InitChatIconBtn();
                         }
@@ -163,23 +163,24 @@ namespace windows_client.View
                 avatarImage.Tap += (new EventHandler<System.Windows.Input.GestureEventArgs>(onProfilePicButtonTap));
                 txtUserName.Text = nameToShow;
 
-                if (App.ViewModel.Isfavourite(msisdn))
-                {
-                    //TODO : Rohit set the text here for add to fav button
-                    _isFav = true;
-                }
-
                 if (!isOnHike)
                 {
                     txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
                     txtSmsUserNameBlk1.Text = nameToShow;
                     gridHikeUser.Visibility = Visibility.Collapsed;
-                    btnInvite.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(Invite_Tap);
+                    btnInvite.Tap += Invite_Tap;
+                    if (App.ViewModel.Isfavourite(msisdn))
+                    {
+                        //TODO : Rohit set the text here for add to fav button
+                        _isFav = true;
+                    }
+                    else
+                        addToFavBtn.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
-                    initiateOnFriendBasis();
+                    InitiateOnFriendBasis();
                 }
                 isFirstLoad = false;
 
@@ -397,6 +398,7 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
             }
             btn.Content = AppResources.Invited;
+            btn.IsEnabled = false;
         }
 
         private void GoToChat_Tap(object sender, EventArgs e)
@@ -484,7 +486,7 @@ namespace windows_client.View
             this.appBar.Buttons.Add(editProfile_button);
         }
 
-        private void initiateOnFriendBasis()
+        private void InitiateOnFriendBasis()
         {
             FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.FriendStatusEnum.NotSet;
             if (App.MSISDN != msisdn)
@@ -495,9 +497,9 @@ namespace windows_client.View
             if (friendStatus > FriendsTableUtils.FriendStatusEnum.RequestSent || App.MSISDN == msisdn)
             {
                 bool inAddressBook = true;
-                if (friendStatus != FriendsTableUtils.FriendStatusEnum.Friends)
+                if (App.MSISDN != msisdn && friendStatus != FriendsTableUtils.FriendStatusEnum.Friends)
                 {
-                    inAddressBook = UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
+                    inAddressBook = App.ViewModel.ContactsCache.ContainsKey(msisdn) || UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
                 }
                 gridSmsUser.Visibility = Visibility.Collapsed;
                 if (inAddressBook)
@@ -548,11 +550,19 @@ namespace windows_client.View
             {
                 spAddFriendInvite.Visibility = Visibility.Visible;
             }
+
+            if (friendStatus == FriendsTableUtils.FriendStatusEnum.UnfriendedByYou)
+            {
+                spAddFriend.Visibility = Visibility.Visible;
+            }
         }
 
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
+            FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.Friends);
+            spAddFriendInvite.Visibility = Visibility.Collapsed;
+            RemoveFrndReqFromTimeline();
             if (App.ViewModel.Isfavourite(msisdn)) // if already favourite just ignore
                 return;
 
@@ -589,9 +599,8 @@ namespace windows_client.View
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-            FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.Friends);
-            spAddFriendInvite.Visibility = Visibility.Collapsed;
-           
+         
+
         }
 
         private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
@@ -599,81 +608,94 @@ namespace windows_client.View
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();
-            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.IGNORE_FRIEND_REQUEST;
+            obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST;
             obj[HikeConstants.DATA] = data;
             App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
             FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.Ignored);
             spAddFriendInvite.Visibility = Visibility.Collapsed;
-            //App.ViewModel.StatusList.Remove(fObj);
-            //App.ViewModel.PendingRequests.Remove(fObj.Msisdn);
-            //MiscDBUtil.SavePendingRequests();
+            RemoveFrndReqFromTimeline();
+            App.ViewModel.PendingRequests.Remove(msisdn);
+            MiscDBUtil.SavePendingRequests();
         }
-        private void AddRemoveFavMenuItem_Click(object sender, EventArgs e)
+
+        private void RemoveFrndReqFromTimeline()
         {
-            if (!_isFav) // add to fav
+            foreach (StatusUpdateBox sb in App.ViewModel.StatusList)
             {
-                ConversationListObject favObj = null;
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                if ((sb is FriendRequestStatus) && sb.Msisdn == msisdn)
                 {
-                    favObj = App.ViewModel.ConvMap[msisdn];
-                    favObj.IsFav = true;
+                    App.ViewModel.StatusList.Remove(sb);
+                    break;
                 }
-                else
-                {
-                    favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, UI_Utils.Instance.BitmapImgToByteArray(profileImage));
-                }
-                App.ViewModel.FavList.Insert(0, favObj);
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.SaveFavourites(favObj);
-                if (App.ViewModel.IsPending(favObj.Msisdn))
-                {
-                    App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
-                    MiscDBUtil.SavePendingRequests();
-                }
-                addToFavBtn.Content = AppResources.RemFromFav_Txt;
-
-                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
-                JObject data = new JObject();
-                data["id"] = msisdn;
-                JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-                _isFav = true;
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-                App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS_APP_BAR_CHATTHREAD);
-            }
-            else
-            {
-                addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
-                foreach (ConversationListObject cObj in App.ViewModel.FavList)
-                {
-                    if (cObj.Msisdn == msisdn)
-                    {
-                        App.ViewModel.FavList.Remove(cObj);
-                        break;
-                    }
-                }
-                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
-                    App.ViewModel.ConvMap[msisdn].IsFav = false;
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.DeleteFavourite(msisdn);
-                App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
-
-                JObject data = new JObject();
-                data["id"] = msisdn;
-                JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
-                _isFav = false;
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD);
             }
         }
+
+        //private void AddRemoveFavMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    if (!_isFav) // add to fav
+        //    {
+        //        ConversationListObject favObj = null;
+        //        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+        //        {
+        //            favObj = App.ViewModel.ConvMap[msisdn];
+        //            favObj.IsFav = true;
+        //        }
+        //        else
+        //        {
+        //            favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, UI_Utils.Instance.BitmapImgToByteArray(profileImage));
+        //        }
+        //        App.ViewModel.FavList.Insert(0, favObj);
+        //        MiscDBUtil.SaveFavourites();
+        //        MiscDBUtil.SaveFavourites(favObj);
+        //        if (App.ViewModel.IsPending(favObj.Msisdn))
+        //        {
+        //            App.ViewModel.PendingRequests.Remove(favObj.Msisdn);
+        //            MiscDBUtil.SavePendingRequests();
+        //        }
+        //        addToFavBtn.Content = AppResources.RemFromFav_Txt;
+
+        //        App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
+        //        JObject data = new JObject();
+        //        data["id"] = msisdn;
+        //        JObject obj = new JObject();
+        //        obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+        //        obj[HikeConstants.DATA] = data;
+        //        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        //        _isFav = true;
+        //        int count = 0;
+        //        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+        //        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
+        //        App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS_APP_BAR_CHATTHREAD);
+        //    }
+        //    else
+        //    {
+        //        addToFavBtn.Content = AppResources.Add_To_Fav_Txt;
+        //        foreach (ConversationListObject cObj in App.ViewModel.FavList)
+        //        {
+        //            if (cObj.Msisdn == msisdn)
+        //            {
+        //                App.ViewModel.FavList.Remove(cObj);
+        //                break;
+        //            }
+        //        }
+        //        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+        //            App.ViewModel.ConvMap[msisdn].IsFav = false;
+        //        MiscDBUtil.SaveFavourites();
+        //        MiscDBUtil.DeleteFavourite(msisdn);
+        //        App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
+
+        //        JObject data = new JObject();
+        //        data["id"] = msisdn;
+        //        JObject obj = new JObject();
+        //        obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
+        //        obj[HikeConstants.DATA] = data;
+        //        App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+        //        _isFav = false;
+        //        int count = 0;
+        //        App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
+        //        App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
+        //        App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD);
+        //    }
+        //}
     }
 }

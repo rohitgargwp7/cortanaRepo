@@ -66,11 +66,16 @@
                     <Button x:Name="noBtn" Background="#e9ecee" Height="65" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959" Tap="no_Click"></Button>
                 </StackPanel>
             </StackPanel>
+            <StackPanel Grid.Row="3" Name="spAddFriend" Visibility="Collapsed">
+                <Button Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="AddAsFriend_Tap"  />
+            </StackPanel>
+
         </Grid>
         <Grid Name="gridSmsUser" Grid.Row="1"  >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Image x:Name="imgInviteLock" Grid.Row="0" Source="images/user_invite.png" HorizontalAlignment="Center" MaxHeight="30" MaxWidth="30" Margin="0,30,0,0"></Image>
@@ -83,7 +88,8 @@
                 </TextBlock.Inlines>
             </TextBlock>
             <Button Name="btnInvite" Grid.Row="2" Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
-            <Button Name="addToFavBtn" Grid.Row="0" Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="AddRemoveFavMenuItem_Click" />
+            <Button Name="addToFavBtn" Grid.Row="3" Content="{Binding Path= LocalizedResources.Add_To_Fav_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="AddAsFriend_Tap" Visibility="Collapsed" />
+
         </Grid>
         <Grid Name="gridHikeUser" Grid.Row="1" >
             <ListBox x:Name="statusLLS" Margin="24,10,24,0" Grid.Row="0">
