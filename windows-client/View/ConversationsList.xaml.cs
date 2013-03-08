@@ -834,7 +834,7 @@ namespace windows_client.View
                     {
                         if (launchPagePivot.SelectedIndex == 3)
                         {
-                            freshStatusUpdates.Add(sm);//read from db or handling tombstone. freshStatusUpdates will be cleared in tombstone
+                            FreshStatusUpdates.Add(sm);//read from db or handling tombstone. freshStatusUpdates will be cleared in tombstone
                             RefreshBarCount++;//persist in this.State. it will be cleared 
                         }
                         else
@@ -1335,7 +1335,30 @@ namespace windows_client.View
 
         #region TIMELINE
 
-        private List<StatusMessage> freshStatusUpdates = new List<StatusMessage>();
+        private List<StatusMessage> _freshStatusUpdates;
+        private List<StatusMessage> FreshStatusUpdates
+        {
+            set
+            {
+                if (_freshStatusUpdates != value)
+                {
+                    _freshStatusUpdates = value;
+                }
+            }
+            get
+            {
+                if (App.IS_TOMBSTONED)
+                {
+                    _freshStatusUpdates = StatusMsgsTable.GetUnReadStatusMsgs(TotalUnreadStatuses);
+                }
+                else if (_freshStatusUpdates == null)
+                {
+                    _freshStatusUpdates = new List<StatusMessage>();
+                }
+                return _freshStatusUpdates;
+            }
+        }
+
         private int _refreshBarCount = 0;
         private int RefreshBarCount
         {
@@ -1358,7 +1381,7 @@ namespace windows_client.View
                         {
                             refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
                             refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
-                            freshStatusUpdates.Clear();
+                            FreshStatusUpdates.Clear();
                         }
                         if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
                         {
@@ -1429,10 +1452,10 @@ namespace windows_client.View
 
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            for (int i = 0; i < freshStatusUpdates.Count; i++)
+            for (int i = 0; i < FreshStatusUpdates.Count; i++)
             {
                 App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
-                    StatusUpdateHelper.Instance.createStatusUIObject(freshStatusUpdates[i],
+                    StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i],
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
             statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
