@@ -1332,11 +1332,29 @@ namespace windows_client.View
 
         private void hikeContacts_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            //TODO - GK navigate to CT from here
         }
 
-        private void getHikeContacts()
-        { 
-           
+
+        private void addToFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (hikeContactListBox.SelectedItem != null)
+            {
+                ContactInfo contactInfo = hikeContactListBox.SelectedItem as ContactInfo;
+                if (contactInfo == null)
+                    return;
+                JObject data = new JObject();
+                data["id"] = contactInfo.Msisdn;
+                JObject obj = new JObject();
+                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
+                obj[HikeConstants.DATA] = data;
+                App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
+                ConversationListObject cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
+                hikeContactList.Remove(contactInfo);
+                App.ViewModel.FavList.Add(cObj);
+                MiscDBUtil.SaveFavourites(cObj);
+            }
+            
         }
         #endregion
 
