@@ -48,7 +48,7 @@ namespace windows_client.View
         BitmapImage profileImage = null;
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
-        private List<ContactInfo> hikeContactList; //all hike contacts - hike friends
+        private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
         #endregion
 
         #region Page Based Functions
@@ -582,6 +582,8 @@ namespace windows_client.View
                     appBar.MenuItems.Insert(0, delConvsMenu);
                 if (appBar.Buttons.Contains(addFriendIconButton))
                     appBar.Buttons.Remove(addFriendIconButton);
+                if (appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Remove(postStatusIconButton);
             }
             else if (selectedIndex == 1)
             {
@@ -593,13 +595,17 @@ namespace windows_client.View
                     appBar.Buttons.Remove(addFriendIconButton);
                 if (!appBar.Buttons.Contains(groupChatIconButton))
                     appBar.Buttons.Add(groupChatIconButton);
+                if (appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Remove(postStatusIconButton);
             }
             else if (selectedIndex == 2) // favourite
             {
                 if (appBar.MenuItems.Contains(delConvsMenu))
                     appBar.MenuItems.Remove(delConvsMenu);
-                if (!appBar.Buttons.Contains(addFriendIconButton))
-                    appBar.Buttons.Add(addFriendIconButton);
+                //if (!appBar.Buttons.Contains(addFriendIconButton))
+                //    appBar.Buttons.Add(addFriendIconButton);
+                if (!appBar.Buttons.Contains(postStatusIconButton))
+                    appBar.Buttons.Add(postStatusIconButton);
                 if (appBar.Buttons.Contains(composeIconButton))
                     appBar.Buttons.Remove(composeIconButton);
                 if (appBar.Buttons.Contains(groupChatIconButton))
@@ -622,14 +628,14 @@ namespace windows_client.View
                                 App.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
                             }
                         }
-                        hikeContactList = UsersTableUtils.GetAllHikeContacts();
+                        List<ContactInfo> tempHikeContactList = UsersTableUtils.GetAllHikeContacts();
                         if (hikeContactList != null)
                         {
-                            int count = hikeContactList.Count;
+                            int count = tempHikeContactList.Count;
                             for (int i = count - 1; i >= 0; i--)
                             {
-                                if (App.ViewModel.Isfavourite(hikeContactList[i].Msisdn))
-                                    hikeContactList.RemoveAt(i);
+                                if (!App.ViewModel.Isfavourite(tempHikeContactList[i].Msisdn))
+                                    hikeContactList.Add(tempHikeContactList[i]);
                             }
                         }
                     };
@@ -665,8 +671,6 @@ namespace windows_client.View
             }
             if (selectedIndex != 3)
             {
-                if (appBar.Buttons.Contains(postStatusIconButton))
-                    appBar.Buttons.Remove(postStatusIconButton);
                 if (NotificationCount == 0)  //If NotificationCount is 0, it would be safe to change here
                     TotalUnreadStatuses = 0; //should be reset when user moves away from Timeline. 
             }
@@ -1371,7 +1375,7 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                 ConversationListObject cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
-                hikeContactList.RemoveAt(0);
+                hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites(cObj);
             }
