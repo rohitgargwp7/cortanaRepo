@@ -1330,6 +1330,10 @@ namespace windows_client.View
             }
         }
 
+        private void hikeContacts_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+        }
+
         private void getHikeContacts()
         { 
            

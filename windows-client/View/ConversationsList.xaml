@@ -172,7 +172,7 @@
 
                         <TextBlock Grid.Row="5" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE CONTACTS"/>
 
-                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="6" Tap="favourites_Tap" >
+                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="6" Tap="hikeContacts_Tap" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
