@@ -454,6 +454,9 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="hike-symbol-app-icon70x110.png" />
+    <Content Include="hike-symbol-app-icon_130x202.png" />
+    <Content Include="hike_lock_bubble.png" />
     <Content Include="README_FIRST.txt" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
@@ -461,6 +464,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_user_icon.png" />
+    <Content Include="View\images\appbar_addfriend.png" />
     <Content Include="View\images\appbar_icon_play.png" />
     <Content Include="View\images\audio_file_icon_white.png" />
     <Content Include="View\images\avatars\Beach.png" />

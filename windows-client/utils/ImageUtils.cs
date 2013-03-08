@@ -30,8 +30,7 @@ namespace windows_client.utils
         private SolidColorBrush smsSentChatBubbleTimestamp;
         private SolidColorBrush receivedChatBubbleProgress;
         private SolidColorBrush phoneThemeColor;
-        private SolidColorBrush statusTextBlackTheme;
-        private SolidColorBrush statusTextWhiteTheme;
+        private SolidColorBrush statusTextForeground;
         private BitmapImage onHikeImage;
         private BitmapImage notOnHikeImage;
         private BitmapImage chatAcceptedImage;
@@ -331,30 +330,21 @@ namespace windows_client.utils
             }
         }
 
-        public SolidColorBrush StatusTextBlackTheme
+        public SolidColorBrush StatusTextForeground
         {
             get
             {
-                if (statusTextBlackTheme == null)
+                if (statusTextForeground == null)
                 {
-                    statusTextBlackTheme = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
+                    if(Utils.isDarkTheme())
+                        statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
+                    else
+                        statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
                 }
-                return statusTextBlackTheme;
+                return statusTextForeground;
             }
         }
-
-        public SolidColorBrush StatusTextWhiteTheme
-        {
-            get
-            {
-                if (statusTextWhiteTheme == null)
-                {
-                    statusTextWhiteTheme = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
-                }
-                return statusTextWhiteTheme;
-            }
-        }
-
+        
         public BitmapImage OnHikeImage
         {
             get
@@ -633,7 +623,7 @@ namespace windows_client.utils
 
 
 
-        public FontFamily GroupChatMessageHeader
+        public FontFamily SegoeSemiBoldFont
         {
             get
             {

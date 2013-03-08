@@ -20,15 +20,27 @@ namespace windows_client.Model
         string _mappedId;
         long _msgId;
         string _mood;
+        bool _isUnread;
 
         public enum StatusType
         {
-            ADD_FRIEND,
+            FRIEND_REQUEST,
             TEXT_UPDATE,
-            PROFILE_PIC_UPDATE
+            PROFILE_PIC_UPDATE,
+            IS_NOW_FRIEND
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type,string mappedId,long ts,long msgId,string mood)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts)
+            :this(msisdn, msg, type, mappedId, ts,-1 ,null,true)
+        {
+        }
+
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts,long id)
+            : this(msisdn, msg, type, mappedId, ts, id, null, true)
+        {
+        }
+
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts,long msgId,string mood ,bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
@@ -39,24 +51,6 @@ namespace windows_client.Model
             _mood = mood;
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long msgId)
-        {
-            _msisdn = msisdn;
-            _message = msg;
-            _type = type;
-            _mappedId = mappedId;
-            _timestamp = ts;
-            _msgId = msgId;
-        }
-
-        public StatusMessage(string msisdn, StatusType type, string mappedId,long ts)
-        {
-            _msisdn = msisdn;
-            _message = null;
-            _type = type;
-            _mappedId = mappedId;
-            _timestamp = ts;
-        }
 
         public StatusMessage()
         {
@@ -188,6 +182,18 @@ namespace windows_client.Model
                     NotifyPropertyChanging("Mood");
                     _mood = value;
                 }
+            }
+        }
+
+        public bool IsUnread
+        {
+            get
+            {
+                return _isUnread;
+            }
+            set
+            {
+                _isUnread = value;
             }
         }
 

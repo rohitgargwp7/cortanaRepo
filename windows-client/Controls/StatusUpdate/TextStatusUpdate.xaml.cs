@@ -3,30 +3,65 @@ using System.Windows.Media.Imaging;
 using windows_client.Languages;
 using Microsoft.Phone.Controls;
 using System;
+using System.Windows.Media;
+using windows_client.Model;
 
 namespace windows_client.Controls.StatusUpdate
 {
     public partial class TextStatusUpdate : StatusUpdateBox
     {
         private long timestamp;
-        public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string textOrLocationName, long timestamp,
-            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
-            : base(userName, userImage, msisdn)
+
+        public override bool IsUnread
+        {
+            get
+            {
+                return base.IsUnread;
+            }
+            set
+            {
+                if (value != base.IsUnread)
+                {
+                    base.IsUnread = value;
+                    if (value != true) //read status
+                    {
+                        statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                    }
+                    else
+                    {
+                        statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                    }
+                }
+            }
+        }
+
+        public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, long statusId, string textOrLocationName, long timestamp,
+            bool isUnread, StatusMessage.StatusType statusType, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
+            : base(userName, userImage, msisdn, statusId)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = textOrLocationName;
             this.timestamp = timestamp;
-            if (Utils.isDarkTheme())
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextBlackTheme;
-            }
-            else
-            {
-                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextWhiteTheme;
-            }
+            statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             if (statusBubbleImageTap != null)
             {
                 this.userProfileImage.Tap += statusBubbleImageTap;
+            }
+            if (isUnread)
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+            }
+            else
+            {
+                statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+            }
+            if (statusType == StatusMessage.StatusType.IS_NOW_FRIEND)
+            {
+                statusTypeImage.Source = UI_Utils.Instance.FriendRequestImage;
+            }
+            else
+            {
+                statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
             }
         }
 

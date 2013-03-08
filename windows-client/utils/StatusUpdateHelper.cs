@@ -1,4 +1,5 @@
 ﻿using Microsoft.Phone.Controls;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,8 +78,8 @@ namespace windows_client.utils
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
                     MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.StatusId, out statusImageBytes, out isThumbnail);
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn,
-                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, statusBubbleImageTap);
+                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.StatusId,
+                        UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, status.IsUnread, statusBubbleImageTap);
                     if (isThumbnail)
                     {
                         object[] statusObjects = new object[2];
@@ -87,11 +88,12 @@ namespace windows_client.utils
                         AccountUtils.createGetRequest(AccountUtils.BASE + "/user/status/" + status.Message + "?only_image=true",
                             onStatusImageDownloaded, true, statusObjects);
                     }
-                    if(enlargePic_Tap != null)
+                    if (enlargePic_Tap != null)
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.Message, status.Timestamp, statusBubbleImageTap);
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.StatusId, status.Message,
+                        status.Timestamp, status.IsUnread, status.Status_Type, statusBubbleImageTap);
                     break;
             }
             if (statusBoxTap != null)
@@ -112,9 +114,18 @@ namespace windows_client.utils
                 //                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-//                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
+                    statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
                 });
             }
+        }
+
+        public void deleteMyStatus(long statusId)
+        {
+            AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteStatus_Callback), 
+                AccountUtils.BASE + "/user/status/" + statusId.ToString());
+        }
+        private void deleteStatus_Callback(JObject obj)
+        {
         }
     }
 }

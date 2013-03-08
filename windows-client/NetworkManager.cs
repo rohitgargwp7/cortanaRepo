@@ -1014,7 +1014,9 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
+
                         sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
+
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
                         {
@@ -1034,11 +1036,13 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
                             id = idToken.ToString();
+
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId, idToken.ToString());
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId, idToken.ToString(),true);
                         else
                             sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
+
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }
                     #endregion

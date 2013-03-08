@@ -144,7 +144,6 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
-        public delegate void getProfilePicFunction(byte[] data);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
@@ -247,7 +246,7 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_PROFILE, obj, finalCallbackFunction });
         }
 
-        public static void deleteAccount(postResponseFunction finalCallbackFunction)
+        public static void deleteRequest(postResponseFunction finalCallbackFunction, string requestUrl)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
             addToken(req);
