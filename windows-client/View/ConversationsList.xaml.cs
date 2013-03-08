@@ -1436,7 +1436,7 @@ namespace windows_client.View
                     {
                         for (int i = 0; i < _totalUnreadStatuses; i++)
                         {
-                            App.ViewModel.StatusList[i].IsUnread = true;
+                            App.ViewModel.StatusList[i].IsUnread = false;
                         }
                     }
                     _totalUnreadStatuses = value;
