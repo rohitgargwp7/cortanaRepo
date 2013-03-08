@@ -24,15 +24,16 @@ namespace windows_client.Controls.StatusUpdate
                     if (value == true) //unread status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
                     }
                     else //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
                     }
                 }
             }
         }
-
 
         public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, long statusId, BitmapImage statusImageBitmap, long timestamp,
             bool isUnread, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
@@ -41,6 +42,7 @@ namespace windows_client.Controls.StatusUpdate
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
+            this.IsUnread = isUnread;
             if (statusImageBitmap != null)
                 this.StatusImage = statusImageBitmap;
             if (imageTap != null)
@@ -49,23 +51,13 @@ namespace windows_client.Controls.StatusUpdate
             if (isUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
             }
             else
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
-        }
-
-        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, long statusId, BitmapImage statusImageBitmap,
-            string updateText, long timestamp, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
-            : base(userName, userImage, msisdn, statusId)
-        {
-            InitializeComponent();
-            this.statusTextTxtBlk.Text = updateText;
-            this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
-            this.StatusImage = statusImageBitmap;
-            if (imageTap != null)
-                this.userProfileImage.Tap += imageTap;
         }
 
         public BitmapImage StatusImage
@@ -82,6 +74,5 @@ namespace windows_client.Controls.StatusUpdate
                 }
             }
         }
-
     }
 }

@@ -623,7 +623,7 @@ namespace windows_client.utils
 
 
 
-        public FontFamily SegoeSemiBoldFont
+        public FontFamily SemiBoldFont
         {
             get
             {
@@ -633,7 +633,7 @@ namespace windows_client.utils
             }
         }
 
-        public FontFamily MessageText
+        public FontFamily SemiLightFont
         {
             get
             {

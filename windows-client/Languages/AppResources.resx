@@ -169,8 +169,8 @@
     <value>new chat</value>
     <comment>AppBar Btn (cs)</comment>
   </data>
-  <data name="Conversations_OnHike_Txt" xml:space="preserve">
-    <value>{0} is on hike.</value>
+  <data name="Conversations_SayHI_Txt" xml:space="preserve">
+    <value>Say Hi to {0}!</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
   <data name="Conversations_OnSMS_Txt" xml:space="preserve">
@@ -1434,5 +1434,9 @@
   <data name="PostStatus_WhatsUp_Txt" xml:space="preserve">
     <value>What's up,{0}?</value>
     <comment>{0} to be replaced by name</comment>
+  </data>
+  <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
+    <value>Message {0} on Hike</value>
+    <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
 </root>
