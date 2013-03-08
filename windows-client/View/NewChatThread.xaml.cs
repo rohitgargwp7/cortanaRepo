@@ -1592,7 +1592,7 @@ namespace windows_client.View
                         else
                         {
 
-                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName);
+                            chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName : mContactName);
                         }
                     }
                     this.MessageList.Children.Insert(insertPosition, chatBubble);
