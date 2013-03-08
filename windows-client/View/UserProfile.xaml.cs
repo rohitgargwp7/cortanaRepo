@@ -146,12 +146,17 @@ namespace windows_client.View
                     StatusUpdateBox sb = o as StatusUpdateBox;
                     if (sb != null)
                     {
-                        msisdn = sb.Msisdn;
-                        profileImage = sb.UserImage;
-                        nameToShow = sb.Name;
-                        isOnHike = true;//check as it can be false also
-                        isFriend = true;
-                        InitChatIconBtn();
+                        if (sb.Msisdn == App.MSISDN)
+                            InitiateForSelfProfile();
+                        else
+                        {
+                            msisdn = sb.Msisdn;
+                            profileImage = sb.UserImage;
+                            nameToShow = sb.Name;
+                            isOnHike = true;//check as it can be false also
+                            isFriend = true;
+                            InitChatIconBtn();
+                        }
                     }
                 }
                 #endregion
@@ -509,7 +514,7 @@ namespace windows_client.View
                 }
                 else
                 {
-                    favObj = new ConversationListObject(msisdn, nameToShow, isOnHike,UI_Utils.Instance.BitmapImgToByteArray(profileImage));
+                    favObj = new ConversationListObject(msisdn, nameToShow, isOnHike, UI_Utils.Instance.BitmapImgToByteArray(profileImage));
                 }
                 App.ViewModel.FavList.Insert(0, favObj);
                 MiscDBUtil.SaveFavourites();

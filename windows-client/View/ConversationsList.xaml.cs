@@ -45,7 +45,6 @@ namespace windows_client.View
 
         ApplicationBarIconButton groupChatIconButton;
         BitmapImage profileImage = null;
-
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
         #endregion
