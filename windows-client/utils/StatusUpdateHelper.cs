@@ -110,8 +110,7 @@ namespace windows_client.utils
             ImageStatusUpdate statusMessageUI = vars[1] as ImageStatusUpdate;
             if (fileBytes != null && fileBytes.Length > 0)
             {
-                //TODO move to background thread
-                //                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
+                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
