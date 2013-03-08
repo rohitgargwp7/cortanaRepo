@@ -12,18 +12,18 @@ namespace windows_client.Controls.StatusUpdate
     {
         private long timestamp;
 
-        public override bool IsRead
+        public override bool IsUnread
         {
             get
             {
-                return base.IsRead;
+                return base.IsUnread;
             }
             set
             {
-                if (value != base.IsRead)
+                if (value != base.IsUnread)
                 {
-                    base.IsRead = value;
-                    if (value == true) //read status
+                    base.IsUnread = value;
+                    if (value != true) //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                     }

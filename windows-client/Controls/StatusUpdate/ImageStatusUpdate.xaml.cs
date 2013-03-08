@@ -10,17 +10,17 @@ namespace windows_client.Controls.StatusUpdate
     {
         private BitmapImage _statusImageSource;
 
-        public override bool IsRead
+        public override bool IsUnread
         {
             get
             {
-                return base.IsRead;
+                return base.IsUnread;
             }
             set
             {
-                if (value != base.IsRead)
+                if (value != base.IsUnread)
                 {
-                    base.IsRead = value;
+                    base.IsUnread = value;
                     if (value == true) //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;

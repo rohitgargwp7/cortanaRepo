@@ -14,7 +14,7 @@ namespace windows_client.Controls.StatusUpdate
         private string _userName;
         private BitmapImage _userImage;
         private string _msisdn;
-        private bool _isRead;
+        private bool _isUnread;
         private long _statusId;
 
         public string UserName
@@ -62,17 +62,17 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public virtual bool IsRead
+        public virtual bool IsUnread
         {
             get
             {
-                return _isRead;
+                return _isUnread;
             }
             set
             {
-                if (value != _isRead)
+                if (value != _isUnread)
                 {
-                    _isRead = value;
+                    _isUnread = value;
                 }
             }
         }
