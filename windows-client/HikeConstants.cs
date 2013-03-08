@@ -297,6 +297,7 @@ namespace windows_client
             public static readonly string HIKE_USER = "hike_user";
             public static readonly string ADD_FAVOURITE = "af";
             public static readonly string REMOVE_FAVOURITE = "rf";
+            public static readonly string POSTPONE_FRIEND_REQUEST = "pf";
             public static readonly string REWARDS = "rewards";
             public static readonly string STATUS_UPDATE = "su";
             public static string GROUP_DISPLAY_PIC = "dp";

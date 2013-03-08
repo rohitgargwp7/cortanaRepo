@@ -841,7 +841,7 @@ namespace windows_client
                             Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
                         }
                     });
-                }                
+                }
             }
             #endregion
             #region GROUP_CHAT_LEAVE
@@ -932,6 +932,7 @@ namespace windows_client
                     string ms = (string)jsonObj[HikeConstants.FROM];
                     if (ms == null)
                         return;
+                    FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
                     if (App.ViewModel.Isfavourite(ms)) // already favourite
                         return;
                     if (App.ViewModel.IsPending(ms))
@@ -939,6 +940,7 @@ namespace windows_client
 
                     try
                     {
+
                         ConversationListObject favObj;
                         if (App.ViewModel.ConvMap.ContainsKey(ms))
                             favObj = App.ViewModel.ConvMap[ms];
@@ -976,6 +978,36 @@ namespace windows_client
                 }
             }
             #endregion
+            #region POSTPONE FRIEND REQUEST
+            else if (HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST == type)
+            {
+                try
+                {
+                    FriendsTableUtils.DeleteFriend(msisdn);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in PostPone from FAVS : " + e.StackTrace);
+                }
+            }
+            #endregion
+            #region REMOVE FAVOURITES
+            else if (HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE == type)
+            {
+                try
+                {
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(msisdn);
+                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                        FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
+                    else
+                        FriendsTableUtils.DeleteFriend(msisdn);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in Remove from Friends: " + e.StackTrace);
+                }
+            }
+            #endregion
             #region REWARDS VALUE CHANGED
             else if (HikeConstants.MqttMessageTypes.REWARDS == type)
             {
@@ -993,7 +1025,6 @@ namespace windows_client
                 }
             }
             #endregion
-
             #region STATUS UPDATE
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
@@ -1110,7 +1141,7 @@ namespace windows_client
                 }
                 App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
                 MiscDBUtil.SavePendingRequests();
-            } 
+            }
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
