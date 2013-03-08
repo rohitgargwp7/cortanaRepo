@@ -62,7 +62,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine(e);
+                        Debug.WriteLine("Exception while settin friend status,{0}", e.StackTrace);
                     }
                 }
             }
@@ -73,19 +73,26 @@ namespace windows_client.DbUtils
             FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;
             lock (readWriteLock)
             {
-                string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                try
                 {
-                    if (store.FileExists(fileName))
+                    string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                        if (store.FileExists(fileName))
                         {
-                            using (var reader = new BinaryReader(file))
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                             {
-                                friendStatus = (FriendStatusEnum)reader.ReadByte();
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    friendStatus = (FriendStatusEnum)reader.ReadByte();
+                                }
                             }
                         }
                     }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Exception while getting friend status,{0}", e.StackTrace);
                 }
             }
             return friendStatus;
@@ -95,10 +102,17 @@ namespace windows_client.DbUtils
         {
             lock (readWriteLock)
             {
-                string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                try
                 {
-                    store.DeleteFile(fileName);
+                    string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        store.DeleteFile(fileName);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Exception while deleting friend status,{0}", e.StackTrace);
                 }
             }
         }
@@ -107,12 +121,19 @@ namespace windows_client.DbUtils
         {
             lock (readWriteLock)
             {
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                try
                 {
-                    string[] files = store.GetFileNames(FRIENDS_DIRECTORY + "\\*");
-                    if (files != null)
-                        foreach (string fileName in files)
-                            store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        string[] files = store.GetFileNames(FRIENDS_DIRECTORY + "\\*");
+                        if (files != null)
+                            foreach (string fileName in files)
+                                store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Exception while deleting all friendsDb,{0}", e.StackTrace);
                 }
             }
         }
