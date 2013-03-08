@@ -49,6 +49,7 @@ namespace windows_client.Model
             _timestamp = ts;
             _msgId = msgId;
             _mood = mood;
+            _isUnread = isUnread;
         }
 
         public StatusMessage()

@@ -42,6 +42,7 @@ namespace windows_client.Controls.StatusUpdate
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
             this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
+            this.IsUnread = isUnread;
             if (statusImageBitmap != null)
                 this.StatusImage = statusImageBitmap;
             if (imageTap != null)

@@ -44,6 +44,7 @@ namespace windows_client.Controls.StatusUpdate
             InitializeComponent();
             this.statusTextTxtBlk.Text = textOrLocationName;
             this.timestamp = timestamp;
+            this.IsUnread = isUnread;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             if (statusBubbleImageTap != null)
             {
