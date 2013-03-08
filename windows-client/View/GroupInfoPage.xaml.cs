@@ -877,7 +877,7 @@ namespace windows_client.View
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO);
                     FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(gp.Msisdn);
                     if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
-                        FriendsTableUtils.addFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedByYou);
+                        FriendsTableUtils.addFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedByYou,fs);
                     else
                         FriendsTableUtils.deleteFriend(gp.Msisdn);
                 }

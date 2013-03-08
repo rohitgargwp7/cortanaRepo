@@ -365,7 +365,7 @@ namespace windows_client.View
                 return;
             if (msisdn == App.MSISDN)
                 return;
-            FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent);
+            FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent, FriendsTableUtils.FriendStatusEnum.NotSet);
             JObject data = new JObject();
             data["id"] = msisdn;
             JObject obj = new JObject();

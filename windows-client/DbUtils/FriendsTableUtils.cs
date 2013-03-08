@@ -25,8 +25,11 @@ namespace windows_client.DbUtils
         public static string FRIENDS_DIRECTORY = "FRIENDS";
         private static object readWriteLock = new object();
 
-
         public static void addFriendStatus(string msisdn, FriendStatusEnum friendStatus)
+        {
+            addFriendStatus(msisdn, friendStatus, FriendStatusEnum.NotSet);
+        }
+        public static void addFriendStatus(string msisdn, FriendStatusEnum friendStatus, FriendStatusEnum previousFriendStaus)
         {
             if (friendStatus > FriendStatusEnum.NotSet)
             {
@@ -44,13 +47,19 @@ namespace windows_client.DbUtils
                             if (store.FileExists(fileName))
                             {
                                 FriendStatusEnum friendStatusDb = FriendStatusEnum.NotSet;
-                                using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                                if (previousFriendStaus == FriendStatusEnum.NotSet)
                                 {
-                                    using (var reader = new BinaryReader(file))
+                                    using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
                                     {
-                                        friendStatusDb = (FriendStatusEnum)reader.ReadByte();
+                                        using (var reader = new BinaryReader(file))
+                                        {
+                                            friendStatusDb = (FriendStatusEnum)reader.ReadByte();
+                                        }
                                     }
                                 }
+                                else
+                                    friendStatusDb = previousFriendStaus;
+
                                 if ((friendStatusDb == FriendStatusEnum.RequestSent && friendStatus == FriendStatusEnum.RequestRecieved) ||
                                     (friendStatusDb == FriendStatusEnum.RequestRecieved && friendStatus == FriendStatusEnum.RequestSent) ||
                                     (friendStatusDb == FriendStatusEnum.UnfriendedByYou && friendStatus == FriendStatusEnum.RequestSent) ||
@@ -89,6 +98,7 @@ namespace windows_client.DbUtils
                 }
             }
         }
+
         public static FriendStatusEnum GetFriendStatus(string msisdn)
         {
             FriendStatusEnum friendStatus = FriendStatusEnum.NotSet;

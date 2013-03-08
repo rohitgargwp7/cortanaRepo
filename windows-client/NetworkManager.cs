@@ -1014,7 +1014,7 @@ namespace windows_client
                     {
                         FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(ms);
                         if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
-                            FriendsTableUtils.addFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.UnfriendedByHim);
+                            FriendsTableUtils.addFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.UnfriendedByHim,fs);
                         else
                             FriendsTableUtils.deleteFriend(ms);
                     }

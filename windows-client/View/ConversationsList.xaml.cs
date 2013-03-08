@@ -882,7 +882,7 @@ namespace windows_client.View
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
                     FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
                     if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
-                        FriendsTableUtils.addFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedByYou);
+                        FriendsTableUtils.addFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedByYou,fs);
                     else
                         FriendsTableUtils.deleteFriend(convObj.Msisdn);
                 }
@@ -912,6 +912,7 @@ namespace windows_client.View
                         favourites.Visibility = System.Windows.Visibility.Visible;
                         addFavsPanel.Opacity = 1;
                     }
+                    FriendsTableUtils.addFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent);
                     menuFavourite.Header = AppResources.RemFromFav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_CONVLIST);
                 }
@@ -1291,7 +1292,7 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                 FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
                 if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
-                    FriendsTableUtils.addFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedByYou);
+                    FriendsTableUtils.addFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UnfriendedByYou,fs);
                 else
                     FriendsTableUtils.deleteFriend(convObj.Msisdn);
             }
