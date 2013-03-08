@@ -48,6 +48,7 @@ namespace windows_client.View
         BitmapImage profileImage = null;
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
+        private List<ContactInfo> hikeContactList; //all hike contacts - hike friends
         #endregion
 
         #region Page Based Functions
@@ -624,7 +625,8 @@ namespace windows_client.View
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
-                        hikeContactListBox.ItemsSource = UsersTableUtils.GetAllHikeContacts() ;
+                        hikeContactList = UsersTableUtils.GetAllHikeContacts();
+                        hikeContactListBox.ItemsSource = hikeContactList;
                         favourites.ItemsSource = App.ViewModel.FavList;
                         if (App.ViewModel.FavList.Count > 0)
                         {
@@ -634,9 +636,7 @@ namespace windows_client.View
                         }
                     };
                 }
-
                 #endregion
-
             }
             else if (selectedIndex == 3)
             {
@@ -1330,6 +1330,10 @@ namespace windows_client.View
             }
         }
 
+        private void getHikeContacts()
+        { 
+           
+        }
         #endregion
 
         #region TIMELINE
