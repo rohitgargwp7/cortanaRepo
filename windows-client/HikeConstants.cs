@@ -205,6 +205,7 @@ namespace windows_client
         public static string MY_PROFILE_PIC = "my_profile_pic";
         public static string COUNTRY_SELECTED = "country_selected";
         public static string IMAGE_TO_DISPLAY = "imageToDisplay";
+        public static string STATUS_IMAGE_TO_DISPLAY = "statusToDisplay";
 
         public static string SOCIAL = "Social_Request";
         public static string SHOW_GROUP_CHAT_OVERLAY = "sgcol";

@@ -1589,8 +1589,8 @@ namespace windows_client.View
         {
             if (statusLLS.SelectedItem != null && statusLLS.SelectedItem is ImageStatusUpdate)
             {
-                PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
-                    ImageStatusUpdate).StatusImage;
+                PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = (statusLLS.SelectedItem as
+                    ImageStatusUpdate);
                 Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
                 NavigationService.Navigate(nextPage);
             }

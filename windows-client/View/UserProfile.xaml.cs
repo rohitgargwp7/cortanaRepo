@@ -331,11 +331,10 @@ namespace windows_client.View
             ImageStatusUpdate imgStUp = statusLLS.SelectedItem as ImageStatusUpdate;
             if (imgStUp == null)
                 return;
-            PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY] = imgStUp.StatusImage;
+            PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY] = imgStUp;
             Uri nextPage = new Uri("/View/DisplayImage.xaml", UriKind.Relative);
             NavigationService.Navigate(nextPage);
         }
-
 
         #endregion
 
