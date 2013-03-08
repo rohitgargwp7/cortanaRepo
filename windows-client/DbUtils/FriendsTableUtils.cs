@@ -128,7 +128,16 @@ namespace windows_client.DbUtils
                         string[] files = store.GetFileNames(FRIENDS_DIRECTORY + "\\*");
                         if (files != null)
                             foreach (string fileName in files)
-                                store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
+                            {
+                                try
+                                {
+                                    store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
+                                }
+                                catch (Exception e)
+                                {
+                                    Debug.WriteLine("Exception while deleting all friendsDb, FileName :{0} , Exception :{1}", fileName, e.StackTrace);
+                                }
+                            }
                     }
                 }
                 catch (Exception e)
