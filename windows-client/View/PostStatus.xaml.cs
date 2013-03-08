@@ -85,7 +85,7 @@ namespace windows_client.View
                     string statusId = statusData["statusid"].ToString();
                     string message = statusData["msg"].ToString();
                     StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                        TimeUtils.getCurrentTimeStamp());
+                        TimeUtils.getCurrentTimeStamp(),-1);
                     StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>

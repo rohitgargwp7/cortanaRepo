@@ -1035,6 +1035,10 @@ namespace windows_client
                     StatusMessage sm = null;
                     JToken val;
 
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
+                    cm.Msisdn = msisdn;
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
@@ -1042,8 +1046,9 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), 
-                            true);
+
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
+
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
                         {
@@ -1063,15 +1068,18 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
                             id = idToken.ToString();
-                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, 
-                            TimeUtils.getCurrentTimeStamp(), true);
+
+                        idToken = null;
+                        if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId, idToken.ToString(),true);
+                        else
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
+
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }
                     #endregion
 
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
-                    cm.Msisdn = msisdn;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+
 
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
@@ -1086,6 +1094,23 @@ namespace windows_client
                 catch (Exception e)
                 {
                     Debug.WriteLine("Network Manager :: Exception in REWARDS : " + e.StackTrace);
+                }
+            }
+            #endregion
+            #region DELETE STATUS
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    string id = (string)data[HikeConstants.STATUS_ID];
+                    long msgId = StatusMsgsTable.DeleteStatusMsg(id);
+                    MessagesTableUtils.deleteMessage(msgId);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
                 }
             }
             #endregion

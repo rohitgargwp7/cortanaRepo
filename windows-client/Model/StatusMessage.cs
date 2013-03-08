@@ -18,6 +18,8 @@ namespace windows_client.Model
         StatusType _type;
         long _timestamp;
         string _mappedId;
+        long _msgId;
+        string _mood;
         bool _isUnread;
 
         public enum StatusType
@@ -29,29 +31,26 @@ namespace windows_client.Model
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts)
-            :this(msisdn, msg, type, mappedId, ts, true)
+            :this(msisdn, msg, type, mappedId, ts,-1 ,null,true)
         {
         }
 
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts,long id)
+            : this(msisdn, msg, type, mappedId, ts, id, null, true)
+        {
+        }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool isUnread)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts,long msgId,string mood ,bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
             _type = type;
             _mappedId = mappedId;
             _timestamp = ts;
-            _isUnread = isUnread;
+            _msgId = msgId;
+            _mood = mood;
         }
 
-        public StatusMessage(string msisdn, StatusType type, string mappedId, long ts)
-        {
-            _msisdn = msisdn;
-            _message = null;
-            _type = type;
-            _mappedId = mappedId;
-            _timestamp = ts;
-        }
 
         public StatusMessage()
         {
@@ -148,6 +147,40 @@ namespace windows_client.Model
                 {
                     NotifyPropertyChanging("MappedId");
                     _mappedId = value;
+                }
+            }
+        }
+
+        [Column]
+        public long MsgId
+        {
+            get
+            {
+                return _msgId;
+            }
+            set
+            {
+                if (_msgId != value)
+                {
+                    NotifyPropertyChanging("MsgId");
+                    _msgId = value;
+                }
+            }
+        }
+
+        [Column]
+        public string Mood
+        {
+            get
+            {
+                return _mood;
+            }
+            set
+            {
+                if (_mood != value)
+                {
+                    NotifyPropertyChanging("Mood");
+                    _mood = value;
                 }
             }
         }
