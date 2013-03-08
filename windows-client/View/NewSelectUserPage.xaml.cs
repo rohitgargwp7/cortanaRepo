@@ -957,7 +957,6 @@ namespace windows_client.View
             }
 
             allContactsList = UsersTableUtils.getAllContactsByGroup();
-            App.isABScanning = false;
             App.MqttManagerInstance.connect();
             NetworkManager.turnOffNetworkManager = false;
 
@@ -986,7 +985,6 @@ namespace windows_client.View
             {
                 progressIndicator.Hide(LayoutRoot);
                 enableAppBar();
-                App.isABScanning = false;
             });
         }
 

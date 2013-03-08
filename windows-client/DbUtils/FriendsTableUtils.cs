@@ -14,9 +14,10 @@ namespace windows_client.DbUtils
         public enum FriendStatusEnum : byte
         {
             NotSet,
+            UnfriendedByHim,
             RequestSent,
             RequestRecieved,
-            UnfriendedAfterFriend,
+            UnfriendedByYou,
             Ignored,
             Friends
         }
@@ -51,7 +52,10 @@ namespace windows_client.DbUtils
                                     }
                                 }
                                 if ((friendStatusDb == FriendStatusEnum.RequestSent && friendStatus == FriendStatusEnum.RequestRecieved) ||
-                                    (friendStatusDb == FriendStatusEnum.RequestRecieved && friendStatus == FriendStatusEnum.RequestSent))
+                                    (friendStatusDb == FriendStatusEnum.RequestRecieved && friendStatus == FriendStatusEnum.RequestSent) ||
+                                    (friendStatusDb == FriendStatusEnum.UnfriendedByYou && friendStatus == FriendStatusEnum.RequestSent) ||
+                                    (friendStatusDb == FriendStatusEnum.UnfriendedByHim && friendStatus == FriendStatusEnum.RequestRecieved)
+                                    )
                                 {
                                     friendStatus = FriendStatusEnum.Friends;
                                 }

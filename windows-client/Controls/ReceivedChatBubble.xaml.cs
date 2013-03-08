@@ -141,7 +141,7 @@ namespace windows_client.Controls
         private ProgressBar downloadProgress;
         private LinkifiedTextBox MessageText;
         private TextBlock TimeStampBlock;
-        private PerformanceProgressBar temporaryProgressBar;
+        private ProgressBar temporaryProgressBar;
 
         private static Thickness nudgeMargin = new Thickness(12, 12, 12, 10);
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
@@ -273,7 +273,7 @@ namespace windows_client.Controls
                     downloadProgress.Opacity = 0;
                     if (showDownload)
                     {
-                        temporaryProgressBar = new PerformanceProgressBar();
+                        temporaryProgressBar = new ProgressBar();
                         temporaryProgressBar.Height = 10;
                         //                    temporaryProgressBar.Background = UI_Utils.Instance.TextBoxBackground;
                         temporaryProgressBar.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;

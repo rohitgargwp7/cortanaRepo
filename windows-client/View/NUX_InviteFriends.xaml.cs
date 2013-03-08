@@ -68,7 +68,7 @@ namespace windows_client.View
                 listContactInfo = UsersTableUtils.GetContactsFromFile();
                 if (listContactInfo == null || listContactInfo.Count == 0)
                 {
-                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                    App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                     return;
                 }
@@ -85,7 +85,10 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
                 {
+                    Stopwatch st = Stopwatch.StartNew();
                     ProcessNuxContacts(listContactInfo);
+                    st.Stop();
+                    Debug.WriteLine("Time to process NUX in NUX Screen is {0} ms", st.ElapsedMilliseconds);
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += LoadingCompleted;
@@ -230,6 +233,16 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
+        private ContactInfo GetContact(ContactInfo cn, List<ContactInfo> listContact)
+        {
+            for (int i = 0; i < listContact.Count; i++)
+            {
+                if (listContact[i].Equals(cn))
+                    return listContact[i];
+            }
+            return null;
+        }
+
         public void ProcessNuxContacts(List<ContactInfo> listContact)
         {
             if (listContact != null && listContact.Count > 0 && listFamilyMembers != null && listCloseFriends != null)
@@ -290,14 +303,14 @@ namespace windows_client.View
                         }
                     }
 
-                    if (!markedForNux &&  listCloseFriends.Count < 30)
+                    if (!markedForNux && listCloseFriends.Count < 30)
                     {
                         markedForNux = true;
                         listCloseFriends.Add(cn);
                     }
 
                 }
-               
+
                 st.Stop();
                 Debug.WriteLine("Time fr nux scanning " + st.ElapsedMilliseconds);
             }
@@ -314,7 +327,7 @@ namespace windows_client.View
             if (nameArray.Length == 1)
                 return null;
 
-            return nameArray[nameArray.Length - 1].ToLower();
+            return nameArray[nameArray.Length - 1].Trim();
         }
 
         #region FAMILY VOCABULARY
@@ -323,7 +336,7 @@ namespace windows_client.View
 
         #endregion
 
-        public bool MatchFromFamilyVocab(string[] strCompleteName)
+  public bool MatchFromFamilyVocab(string[] strCompleteName)
         {
             if (strCompleteName == null)
                 return false;
@@ -334,10 +347,6 @@ namespace windows_client.View
                     return true;
             }
             return false;
-        }
-        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
-        {
-            base.OnRemovedFromJournal(e);
         }
     }
 }
