@@ -26,7 +26,6 @@ namespace windows_client.View
 {
     public partial class UserProfile : PhoneApplicationPage, HikePubSub.Listener
     {
-        private bool _isFav;
         private string msisdn;
         private PhotoChooserTask photoChooserTask;
         bool isProfilePicTapped = false;
@@ -39,7 +38,7 @@ namespace windows_client.View
         private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
-
+        bool isInvited;
         public UserProfile()
         {
             InitializeComponent();
@@ -169,12 +168,7 @@ namespace windows_client.View
                     txtSmsUserNameBlk1.Text = nameToShow;
                     gridHikeUser.Visibility = Visibility.Collapsed;
                     btnInvite.Tap += Invite_Tap;
-                    if (App.ViewModel.Isfavourite(msisdn))
-                    {
-                        //TODO : Rohit set the text here for add to fav button
-                        _isFav = true;
-                    }
-                    else
+                    if (!App.ViewModel.Isfavourite(msisdn))
                         addToFavBtn.Visibility = Visibility.Visible;
                 }
                 else
@@ -365,6 +359,8 @@ namespace windows_client.View
                 return;
             if (msisdn == App.MSISDN)
                 return;
+            if (isInvited)
+                return;
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             JObject data = new JObject();
             data["id"] = msisdn;
@@ -398,7 +394,8 @@ namespace windows_client.View
                 App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
             }
             btn.Content = AppResources.Invited;
-            btn.IsEnabled = false;
+            isInvited = true;
+            gridInvite.Visibility = Visibility.Collapsed;
         }
 
         private void GoToChat_Tap(object sender, EventArgs e)
@@ -549,11 +546,15 @@ namespace windows_client.View
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
             {
                 spAddFriendInvite.Visibility = Visibility.Visible;
+                txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
+                seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
+                gridInvite.Visibility = Visibility.Visible;
             }
 
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU)
             {
                 spAddFriend.Visibility = Visibility.Visible;
+                gridInvite.Visibility = Visibility.Visible;
             }
         }
 
@@ -599,7 +600,7 @@ namespace windows_client.View
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
             App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-         
+
 
         }
 
@@ -629,6 +630,6 @@ namespace windows_client.View
                 }
             }
         }
-        
+
     }
 }

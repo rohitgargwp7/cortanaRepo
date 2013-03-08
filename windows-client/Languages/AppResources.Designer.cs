@@ -2176,6 +2176,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} has added you as a friend..
+        /// </summary>
+        public static string Profile_AddedYouToFav_Txt_WP8FrndStatus {
+            get {
+                return ResourceManager.GetString("Profile_AddedYouToFav_Txt_WP8FrndStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Would you like to do the same?.
+        /// </summary>
+        public static string Profile_DoTheSame {
+            get {
+                return ResourceManager.GetString("Profile_DoTheSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now see updates from {0}. .
+        /// </summary>
+        public static string Profile_YouCanNowSeeUpdates {
+            get {
+                return ResourceManager.GetString("Profile_YouCanNowSeeUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You need to be friends with.
         /// </summary>
         public static string ProfileToBeFriendBlk1 {
