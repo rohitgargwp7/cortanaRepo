@@ -364,7 +364,7 @@ namespace windows_client.Controls
                     Grid.SetRow(textBlck, 0);
                     Grid.SetColumn(textBlck, 1);
                     attachment.Children.Add(textBlck);
-                    textBlck.FontFamily = UI_Utils.Instance.MessageText;
+                    textBlck.FontFamily = UI_Utils.Instance.SemiLightFont;
 
                 }
                 Grid.SetRow(MessageImage, 0);
@@ -411,7 +411,7 @@ namespace windows_client.Controls
                 MessageText.Width = 330;
                 MessageText.Foreground = progressColor;
                 MessageText.Margin = messageTextMargin;
-                MessageText.FontFamily = UI_Utils.Instance.MessageText;
+                MessageText.FontFamily = UI_Utils.Instance.SemiLightFont;
                 Grid.SetRow(MessageText, 0);
                 Grid.SetColumn(MessageText, 1);
                 wrapperGrid.Children.Add(MessageText);
