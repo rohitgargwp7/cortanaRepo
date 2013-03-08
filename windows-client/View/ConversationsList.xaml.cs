@@ -258,6 +258,7 @@ namespace windows_client.View
                 App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW);
                 return;
             }
+            Random rnd = new Random();
             for (int i = 0; i < cl.Count; i++)
             {
                 ConvMessage c = null;
@@ -266,7 +267,7 @@ namespace windows_client.View
                 {
                     j[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.HIKE_USER;
                     c = new ConvMessage(ConvMessage.ParticipantInfoState.HIKE_USER, j);
-                    c.Message = string.Format(AppResources.Conversations_OnHike_Txt, cl[i].Name);
+                    c.Message = string.Format(rnd.Next(1, 3) == 1 ? AppResources.Conversations_MessageOnHike_Txt : AppResources.Conversations_SayHI_Txt, cl[i].Name);
                 }
                 else
                 {
