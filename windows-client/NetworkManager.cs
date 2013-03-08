@@ -978,8 +978,8 @@ namespace windows_client
                 }
             }
             #endregion
-            #region IGNORE FRIEND REQUEST
-            else if (HikeConstants.MqttMessageTypes.IGNORE_FRIEND_REQUEST == type)
+            #region POSTPONE FRIEND REQUEST
+            else if (HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST == type)
             {
                 try
                 {
@@ -1012,8 +1012,11 @@ namespace windows_client
 
                     try
                     {
-                        FriendsTableUtils.deleteFriend(ms);
-
+                        FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(ms);
+                        if (fs == FriendsTableUtils.FriendStatusEnum.Friends)
+                            FriendsTableUtils.addFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.UnfriendedByHim);
+                        else
+                            FriendsTableUtils.deleteFriend(ms);
                     }
                     catch (Exception e)
                     {
