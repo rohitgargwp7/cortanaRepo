@@ -1034,7 +1034,11 @@ namespace windows_client
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     StatusMessage sm = null;
                     JToken val;
+                    string iconBase64 = null;
+                    if (data.TryGetValue(HikeConstants.THUMBNAIL, out val) && val != null)
+                        iconBase64 = val.ToString();
 
+                    val = null;
                     ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
                     cm.Msisdn = msisdn;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
@@ -1050,9 +1054,8 @@ namespace windows_client
                         sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
 
                         idToken = null;
-                        if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
+                        if (iconBase64 != null)
                         {
-                            string iconBase64 = idToken.ToString();
                             byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                             StatusMsgsTable.InsertStatusMsg(sm);
                             MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.StatusId);
@@ -1071,7 +1074,7 @@ namespace windows_client
 
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId, idToken.ToString(),true);
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId, idToken.ToString(), true);
                         else
                             sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
 
