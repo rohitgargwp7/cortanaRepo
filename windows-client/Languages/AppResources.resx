@@ -1439,4 +1439,15 @@
     <value>Message {0} on Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
   </data>
+  <data name="Profile_AddedYouToFav_Txt_WP8FrndStatus" xml:space="preserve">
+    <value>{0} has added you as a friend.</value>
+    <comment>{0} will be replaced by username</comment>
+  </data>
+  <data name="Profile_DoTheSame" xml:space="preserve">
+    <value>Would you like to do the same?</value>
+  </data>
+  <data name="Profile_YouCanNowSeeUpdates" xml:space="preserve">
+    <value>You can now see updates from {0}. </value>
+    <comment>for friend request in user profile,{0} username</comment>
+  </data>
 </root>
