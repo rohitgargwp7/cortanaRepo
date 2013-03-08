@@ -26,10 +26,12 @@ namespace windows_client.Controls.StatusUpdate
                     if (value != true) //read status
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
                     }
                     else
                     {
                         statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                        statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
                     }
                 }
             }
@@ -50,10 +52,12 @@ namespace windows_client.Controls.StatusUpdate
             if (isUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
+                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
             }
             else
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
+                statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
             if (statusType == StatusMessage.StatusType.IS_NOW_FRIEND)
             {
