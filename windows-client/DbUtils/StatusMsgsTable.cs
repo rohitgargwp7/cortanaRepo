@@ -84,8 +84,37 @@ namespace windows_client.DbUtils
         {
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                context.statusMessage.DeleteAllOnSubmit<StatusMessage>(context.GetTable<StatusMessage>());
-                context.SubmitChanges();
+                try
+                {
+
+                    context.statusMessage.DeleteAllOnSubmit<StatusMessage>(context.GetTable<StatusMessage>());
+                    context.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("StatusMsgsTable :: Exception while deleting all status msgs : " + e.StackTrace);
+                }
+            }
+        }
+
+        public static long DeleteStatusMsg(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return -1;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                try
+                {
+                    IEnumerable<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForId(context, id);
+                    context.statusMessage.DeleteAllOnSubmit<StatusMessage>(smEn);
+                    context.SubmitChanges();
+                    return smEn.FirstOrDefault<StatusMessage>().MsgId;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("StatusMsgsTable :: Exception while deleting status : "+e.StackTrace);
+                    return -1;
+                }
             }
         }
     }

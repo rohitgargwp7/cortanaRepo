@@ -12,6 +12,7 @@ using windows_client.utils;
 using Newtonsoft.Json.Linq;
 using windows_client.Model;
 using windows_client.DbUtils;
+using System.Net.NetworkInformation;
 
 namespace windows_client.View
 {
@@ -48,6 +49,16 @@ namespace windows_client.View
                 postStatusIcon.IsEnabled = true;
                 return;
             }
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                    postStatusIcon.IsEnabled = true;
+                    return;
+                });
+            }
             AccountUtils.postStatus(statusText, postStatus_Callback);
         }
 
@@ -74,22 +85,22 @@ namespace windows_client.View
                     string statusId = statusData["statusid"].ToString();
                     string message = statusData["msg"].ToString();
                     StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                        TimeUtils.getCurrentTimeStamp());
+                        TimeUtils.getCurrentTimeStamp(),-1);
                     StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (NavigationService.CanGoBack)
+                        {
+                            NavigationService.GoBack();
+                        }
+                    });
                 }
                 catch
                 {
                 }
 
             }
-            Deployment.Current.Dispatcher.BeginInvoke(() =>
-            {
-                if (NavigationService.CanGoBack)
-                {
-                    NavigationService.GoBack();
-                }
-            });
         }
     }
 }

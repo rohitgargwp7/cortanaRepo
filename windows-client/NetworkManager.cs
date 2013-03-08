@@ -841,7 +841,7 @@ namespace windows_client
                             Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
                         }
                     });
-                }                
+                }
             }
             #endregion
             #region GROUP_CHAT_LEAVE
@@ -932,6 +932,7 @@ namespace windows_client
                     string ms = (string)jsonObj[HikeConstants.FROM];
                     if (ms == null)
                         return;
+                    FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
                     if (App.ViewModel.Isfavourite(ms)) // already favourite
                         return;
                     if (App.ViewModel.IsPending(ms))
@@ -939,6 +940,7 @@ namespace windows_client
 
                     try
                     {
+
                         ConversationListObject favObj;
                         if (App.ViewModel.ConvMap.ContainsKey(ms))
                             favObj = App.ViewModel.ConvMap[ms];
@@ -976,6 +978,36 @@ namespace windows_client
                 }
             }
             #endregion
+            #region POSTPONE FRIEND REQUEST
+            else if (HikeConstants.MqttMessageTypes.POSTPONE_FRIEND_REQUEST == type)
+            {
+                try
+                {
+                    FriendsTableUtils.DeleteFriend(msisdn);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in PostPone from FAVS : " + e.StackTrace);
+                }
+            }
+            #endregion
+            #region REMOVE FAVOURITES
+            else if (HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE == type)
+            {
+                try
+                {
+                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(msisdn);
+                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                        FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
+                    else
+                        FriendsTableUtils.DeleteFriend(msisdn);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Network Manager :: Exception in Remove from Friends: " + e.StackTrace);
+                }
+            }
+            #endregion
             #region REWARDS VALUE CHANGED
             else if (HikeConstants.MqttMessageTypes.REWARDS == type)
             {
@@ -993,7 +1025,6 @@ namespace windows_client
                 }
             }
             #endregion
-
             #region STATUS UPDATE
             else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
             {
@@ -1004,6 +1035,10 @@ namespace windows_client
                     StatusMessage sm = null;
                     JToken val;
 
+                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
+                    cm.Msisdn = msisdn;
+                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+
                     #region HANDLE PROFILE PIC UPDATE
                     if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
                     {
@@ -1011,8 +1046,9 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), 
-                            true);
+
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
+
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.THUMBNAIL, out idToken))
                         {
@@ -1032,15 +1068,18 @@ namespace windows_client
                         JToken idToken;
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken) && idToken != null)
                             id = idToken.ToString();
-                        sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, 
-                            TimeUtils.getCurrentTimeStamp(), true);
+
+                        idToken = null;
+                        if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId, idToken.ToString(),true);
+                        else
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), cm.MessageId);
+
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }
                     #endregion
 
-                    ConvMessage cm = new ConvMessage(ConvMessage.ParticipantInfoState.STATUS_UPDATE, jsonObj);
-                    cm.Msisdn = msisdn;
-                    ConversationListObject obj = MessagesTableUtils.addChatMessage(cm, false);
+
 
                     // if conversation  with this user exists then only show him status updates on chat thread and conversation screen
                     if (obj != null)
@@ -1055,6 +1094,23 @@ namespace windows_client
                 catch (Exception e)
                 {
                     Debug.WriteLine("Network Manager :: Exception in REWARDS : " + e.StackTrace);
+                }
+            }
+            #endregion
+            #region DELETE STATUS
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                JObject data = null;
+                try
+                {
+                    data = (JObject)jsonObj[HikeConstants.DATA];
+                    string id = (string)data[HikeConstants.STATUS_ID];
+                    long msgId = StatusMsgsTable.DeleteStatusMsg(id);
+                    MessagesTableUtils.deleteMessage(msgId);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception in DELETE STATUS : " + e.StackTrace);
                 }
             }
             #endregion
@@ -1110,7 +1166,7 @@ namespace windows_client
                 }
                 App.ViewModel.PendingRequests[favObj.Msisdn] = favObj;
                 MiscDBUtil.SavePendingRequests();
-            } 
+            }
         }
 
         private List<GroupParticipant> GetDNDMembers(string grpId)
