@@ -624,6 +624,7 @@ namespace windows_client.View
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
+                        hikeContactListBox.ItemsSource = UsersTableUtils.GetAllHikeContacts() ;
                         favourites.ItemsSource = App.ViewModel.FavList;
                         if (App.ViewModel.FavList.Count > 0)
                         {
@@ -1021,8 +1022,6 @@ namespace windows_client.View
         {
             PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_PROFILE] = null;
             NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
-            //App.AnalyticsInstance.addEvent(Analytics.EDIT_PROFILE);
-            //NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
 
         private void FreeSMS_Tap(object sender, System.Windows.Input.GestureEventArgs e)
