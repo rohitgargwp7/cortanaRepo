@@ -166,7 +166,7 @@
     <Compile Include="DbUtils\GroupTableUtils.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
     <Compile Include="DbUtils\MiscDBUtil.cs" />
-    <Compile Include="utils\MqttDBUtils.cs" />
+    <Compile Include="DbUtils\MqttDBUtils.cs" />
     <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfer.cs" />
@@ -202,7 +202,7 @@
     <Compile Include="utils\BlockingQueue.cs" />
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\ContactUtils.cs" />
-    <Compile Include="View\ImageUtils.cs" />
+    <Compile Include="utils\ImageUtils.cs" />
     <Compile Include="utils\PushHelper.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
