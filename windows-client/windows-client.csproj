@@ -163,6 +163,7 @@
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
+    <Compile Include="DbUtils\FriendsTableUtils.cs" />
     <Compile Include="DbUtils\GroupTableUtils.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
     <Compile Include="DbUtils\MiscDBUtil.cs" />
