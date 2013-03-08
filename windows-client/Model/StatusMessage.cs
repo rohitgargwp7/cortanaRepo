@@ -29,7 +29,7 @@ namespace windows_client.Model
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts)
-            :this(msisdn, msg, type, mappedId, ts, true)
+            :this(msisdn, msg, type, mappedId, ts, false)
         {
         }
 
