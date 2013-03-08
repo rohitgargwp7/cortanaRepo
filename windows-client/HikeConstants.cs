@@ -186,6 +186,7 @@ namespace windows_client
         public static readonly string PROFILE_UPDATE = "profile";
         public static readonly string THUMBNAIL = "tn";
         public static readonly string PROFILE_PIC_ID = "ppid";
+        public static readonly string MOOD = "mood";
 
         public static string GROUP_PARTICIPANT_SEPARATOR = ",";
         public static string MSISDN = "msisdn";
@@ -299,7 +300,8 @@ namespace windows_client
             public static readonly string REMOVE_FAVOURITE = "rf";
             public static readonly string REWARDS = "rewards";
             public static readonly string STATUS_UPDATE = "su";
-            public static string GROUP_DISPLAY_PIC = "dp";
+            public static readonly string DELETE_STATUS_UPDATE = "dsu";
+            public static readonly string GROUP_DISPLAY_PIC = "dp";
 
         }
 

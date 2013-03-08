@@ -88,5 +88,18 @@ namespace windows_client.DbUtils
                 context.SubmitChanges();
             }
         }
+
+        public static long DeleteStatusMsg(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return -1;
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                IEnumerable<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForId(context, id);
+                context.statusMessage.DeleteAllOnSubmit<StatusMessage>(smEn);
+                context.SubmitChanges();
+                return smEn.FirstOrDefault<StatusMessage>().MsgId;
+            }
+        }
     }
 }
