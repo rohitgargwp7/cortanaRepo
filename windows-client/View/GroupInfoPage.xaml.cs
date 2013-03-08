@@ -911,7 +911,7 @@ namespace windows_client.View
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
-                    FriendsTableUtils.addFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent, FriendsTableUtils.FriendStatusEnum.NotSet);
+                    FriendsTableUtils.addFriendStatus(favObj.Msisdn, FriendsTableUtils.FriendStatusEnum.RequestSent, FriendsTableUtils.FriendStatusEnum.NotSet);
                 }
             }
         }
