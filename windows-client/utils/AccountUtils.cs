@@ -123,7 +123,7 @@ namespace windows_client.utils
             get { return uid; }
             set
             {
-                if (value != mToken)
+                if (value != uid)
                 {
                     uid = value;
                 }
@@ -147,7 +147,6 @@ namespace windows_client.utils
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
-
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
@@ -164,6 +163,7 @@ namespace windows_client.utils
             req.Method = "POST";
             req.ContentType = "application/json";
             req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.Headers[HttpRequestHeader.ContentEncoding] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.REGISTER_ACCOUNT, pin, unAuthMSISDN, finalCallbackFunction });
         }
 
@@ -173,7 +173,8 @@ namespace windows_client.utils
             addToken(req);
             req.Method = "POST";
             req.ContentType = "application/json";
-            req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip";
+            req.Headers["Accept-Encoding"] = "gzip";
+            req.Headers["Content-Encoding"] = "gzip";
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_ADDRESSBOOK, contactListMap, finalCallbackFunction });
         }
 
@@ -360,7 +361,10 @@ namespace windows_client.utils
                         data.Add("msisdn", unAuthMSISDN);
                         data.Add("pin", pin);
                     }
-                    break;
+                    Compress4(data.ToString(Formatting.None), postStream);
+                    postStream.Close();
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    return;
                 #endregion
                 #region INVITE
                 case RequestType.INVITE:
@@ -401,7 +405,19 @@ namespace windows_client.utils
                     Dictionary<string, List<ContactInfo>> contactListMap = vars[2] as Dictionary<string, List<ContactInfo>>;
                     finalCallbackFunction = vars[3] as postResponseFunction;
                     data = getJsonContactList(contactListMap);
-                    break;
+                    string x = data.ToString(Newtonsoft.Json.Formatting.None);
+                    Compress4(x, postStream);
+                    //Debug.WriteLine("Request gets compressed from {0} to {1} Length", x.Length, d.Length);
+                    //using (StreamWriter sw = new StreamWriter(postStream))
+                    //{
+                    //    sw.Write(d);
+                    //    sw.Flush();
+                    //    //postStream.Flush();
+                    //}
+                    postStream.Close();
+                    req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
+                    ContactUtils.ContactState = ContactUtils.ContactScanState.ADDBOOK_POSTED;
+                    return;
                 #endregion
                 #region SOCIAL POST
                 case RequestType.SOCIAL_POST:
@@ -498,7 +514,6 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
         }
 
-        //GET request
         public static void createGetRequest(string requestUrl, postResponseFunction callback, bool isRelativeUrl)
         {
             HttpWebRequest request = null;
@@ -639,6 +654,55 @@ namespace windows_client.utils
 
         public static byte[] Compress(string text)
         {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            var memoryStream = new MemoryStream();
+            using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+                gZipStream.Flush();
+            }
+            memoryStream.Position = 0;
+
+            var compressedData = new byte[memoryStream.Length];
+            memoryStream.Read(compressedData, 0, compressedData.Length);
+
+            byte[] gZipBuffer = new byte[compressedData.Length + 4];
+            Buffer.BlockCopy(compressedData, 0, gZipBuffer, 4, compressedData.Length);
+            Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
+            return gZipBuffer;
+        }
+
+        public static byte[] Compress3(string text)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress))
+                {
+                    gZipStream.Write(buffer, 0, buffer.Length);
+                    gZipStream.Flush();
+                }
+                // memoryStream.Seek(0, SeekOrigin.Begin);
+                memoryStream.Flush();
+                return memoryStream.ToArray();
+            }
+        }
+
+        public static void Compress4(string text, Stream postStream)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(text);
+            using (var gZipStream = new GZipStream(postStream, CompressionMode.Compress))
+            {
+                gZipStream.Write(buffer, 0, buffer.Length);
+                gZipStream.Flush();
+            }
+            // memoryStream.Seek(0, SeekOrigin.Begin);
+            //postStream.Flush();
+            return;
+        }
+
+        public static byte[] Compress2(string text)
+        {
             // if (text.Length < 300)
             // return text;
 
@@ -657,11 +721,13 @@ namespace windows_client.utils
 
             //Compress
             gzip.Write(byteArray, 0, byteArray.Length);
-            gzip.Close();
+
 
             //Transform byte[] zip data to string
             byteArray = ms.ToArray();
-
+            gzip.Flush();
+            ms.Flush();
+            gzip.Close();
             ms.Close();
             gzip.Dispose();
             ms.Dispose();
@@ -811,7 +877,7 @@ namespace windows_client.utils
                 }
                 bool isFavSaved = false;
                 bool isPendingSaved = false;
-                int hikeCount = 1, smsCount = 1;
+                int hikeCount = 1, smsCount = 1, nonHikeCount = 0;
                 List<ContactInfo> msgToShow = null;
                 List<string> msisdns = null;
                 if (!isRefresh)
@@ -864,6 +930,11 @@ namespace windows_client.utils
                                     msgToShow.Add(cn);
                                     smsCount++;
                                 }
+
+                                #region NUX RELATED
+                                if (!onhike)
+                                    nonHikeCount++;
+                                #endregion
                             }
                         }
                         else // this is refresh contacts case
@@ -912,7 +983,13 @@ namespace windows_client.utils
                 Debug.WriteLine("Total contacts with no msisdn : {0}", count);
                 Debug.WriteLine("Total contacts inserted : {0}", totalContacts);
                 if (!isRefresh)
+                {
+                    #region NUX RELATED
+                    if (nonHikeCount > 2)
+                        App.appSettings["showNux"] = true;
+                    #endregion
                     App.WriteToIsoStorageSettings(HikeConstants.AppSettings.CONTACTS_TO_SHOW, msgToShow);
+                }
                 return server_contacts;
             }
             catch (ArgumentException)

@@ -65,10 +65,10 @@ namespace windows_client.View
 
                 progressBar.Opacity = 1;
                 progressBar.IsEnabled = true;
-
-                if (!(App.appSettings.TryGetValue(HikeConstants.PHONE_ADDRESS_BOOK, out listContactInfo) && listContactInfo != null && listContactInfo.Count > 0))
+                listContactInfo = UsersTableUtils.GetContactsFromFile();
+                if (listContactInfo == null || listContactInfo.Count == 0)
                 {
-                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                    App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                     return;
                 }
@@ -85,7 +85,10 @@ namespace windows_client.View
                 BackgroundWorker bw = new BackgroundWorker();
                 bw.DoWork += (s, a) =>
                 {
+                    Stopwatch st = Stopwatch.StartNew();
                     ProcessNuxContacts(listContactInfo);
+                    st.Stop();
+                    Debug.WriteLine("Time to process NUX in NUX Screen is {0} ms", st.ElapsedMilliseconds);
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += LoadingCompleted;
@@ -230,91 +233,86 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
         }
 
+        private ContactInfo GetContact(ContactInfo cn, List<ContactInfo> listContact)
+        {
+            for (int i = 0; i < listContact.Count; i++)
+            {
+                if (listContact[i].Equals(cn))
+                    return listContact[i];
+            }
+            return null;
+        }
+
         public void ProcessNuxContacts(List<ContactInfo> listContact)
         {
             if (listContact != null && listContact.Count > 0 && listFamilyMembers != null && listCloseFriends != null)
             {
-                List<ContactInfo> listContactsFromDb = UsersTableUtils.getAllContacts();
+                Stopwatch st = Stopwatch.StartNew();
+                List<ContactInfo> listContactsFromDb = UsersTableUtils.getAllContactsToInvite();
+                st.Stop();
+                Debug.WriteLine("Time taken to fetch contacts to be invited :{0}", st.ElapsedMilliseconds);
+
                 if (listContactsFromDb == null)
                     listContactsFromDb = new List<ContactInfo>();
 
                 string lastName = GetLastName();
                 bool isLastNameCheckApplicable = lastName != null;
+                st.Reset();
+                st.Start();
                 listContact.Sort(new ContactCompare());
+                st.Stop();
+                Debug.WriteLine("Time taken to sort :{0}", st.ElapsedMilliseconds);
+                st.Reset();
+                st.Start();
+                Dictionary<string, ContactInfo> dictContactsInDb = new Dictionary<string, ContactInfo>();
+                foreach (ContactInfo cinfo in listContactsFromDb)
+                {
+                    dictContactsInDb[cinfo.Name + cinfo.PhoneNo] = cinfo;
+                }
                 foreach (ContactInfo cn in listContact)
                 {
-                    int index = listContactsFromDb.IndexOf(cn);
-                    if (index < 0)
-                    {
+                    if (listCloseFriends.Count == 30 && listFamilyMembers.Count == 30)
+                        break;
+                    ContactInfo contactFromDb;
+                    if (!dictContactsInDb.TryGetValue(cn.Name + cn.PhoneNo, out contactFromDb))
                         continue;
-                    }
-                    ContactInfo contactFromDb = listContactsFromDb[index];
-
                     cn.Msisdn = contactFromDb.Msisdn;
-                    if (!contactFromDb.OnHike)
+                    bool markedForNux = false;
+                    if (listFamilyMembers.Count < 30)
                     {
-                        bool markedForNux = false;
-                        if (listFamilyMembers.Count < 31)
+                        if (!string.IsNullOrEmpty(cn.Name))
                         {
+                            string[] nameArray = cn.Name.Trim().Split(' ');
                             if (isLastNameCheckApplicable)
                             {
-                                if (!string.IsNullOrEmpty(cn.Name))
+                                if (nameArray.Length > 1)
                                 {
-                                    string[] nameArray = cn.Name.Trim().Split(' ');
-                                    if (nameArray.Length > 1)
+                                    string curlastName = nameArray[nameArray.Length - 1];
+                                    if (curlastName.Equals(lastName, StringComparison.OrdinalIgnoreCase))
                                     {
-                                        string curlastName = nameArray[nameArray.Length - 1].ToLower();
-                                        if (curlastName.Trim().ToLower() == lastName)
-                                        {
-                                            listFamilyMembers.Add(cn);
-                                            markedForNux = true;
-                                        }
+                                        listFamilyMembers.Add(cn);
+                                        markedForNux = true;
                                     }
                                 }
                             }
-                            if (!markedForNux && MatchFromFamilyVocab(cn.Name))
+                            if (!markedForNux && MatchFromFamilyVocab(nameArray))
                             {
                                 markedForNux = true;
                                 listFamilyMembers.Add(cn);
                             }
                         }
-
-                        if (!markedForNux && cn.NuxMatchScore > 0)
-                        {
-                            markedForNux = true;
-                            listCloseFriends.Add(cn);
-                        }
-
                     }
-                }
 
-                if (listCloseFriends.Count < 31)
-                {
-                    int contactAdded = 0;
-                    int countRequired = 30 - listCloseFriends.Count;
-                    foreach (ContactInfo contact in listContact)
+                    if (!markedForNux && listCloseFriends.Count < 30)
                     {
-                        int index = listContactsFromDb.IndexOf(contact);
-                        if (index < 0)
-                        {
-                            continue;
-                        }
-                        if (contactAdded == countRequired)
-                            break;
-                        ContactInfo contactFromDb = listContactsFromDb[index];
-
-                        contact.Msisdn = contactFromDb.Msisdn;
-                        if (!contactFromDb.OnHike && !listCloseFriends.Contains(contact) && !listFamilyMembers.Contains(contact))
-                        {
-                            listCloseFriends.Add(contact);
-                            contactAdded++;
-                        }
+                        markedForNux = true;
+                        listCloseFriends.Add(cn);
                     }
+
                 }
-                else
-                {
-                    listCloseFriends.RemoveRange(30, listCloseFriends.Count - 30);
-                }
+
+                st.Stop();
+                Debug.WriteLine("Time fr nux scanning " + st.ElapsedMilliseconds);
             }
         }
 
@@ -329,35 +327,26 @@ namespace windows_client.View
             if (nameArray.Length == 1)
                 return null;
 
-            return nameArray[nameArray.Length - 1].ToLower();
+            return nameArray[nameArray.Length - 1].Trim();
         }
 
         #region FAMILY VOCABULARY
 
-        private string[] arrFamilyVocab = new string[] { "aunt","aunty", "auntie","uncle","grandma","granny","grandpa","nanna","cousin","‘opà","aayi","abatyse","abba","abba","abbi","aboji","abonim","ahm","äiti","ama","amai","amca","amma","ammee","ammi","ana","anne","anneanne","anya","apa","appa","apu","athair","atta","aunt","auntie","aunty","ayah","baabaa","baba","babba","babbo","banketi","bapa","bata"," dai","bebe","beta","beti","bhabhi","bhai","bhaiya","biang","bro","buwa","chacha","chachu","dad","dada","daddy","dadi","daidí","daya","dayı","dede","didi","eadni","édesapa","eje","ema","emä","emak","emo","ewe","far","father","foter","fu","grandma","grandpa","haakoro","haakui","haha","ibu","iloy","inahan","induk","isa","isä","itay","janak","kantaäiti","kardeş-im","kızım","kohake","kuzen","ma","maa","macii","madar","madèr","màder","madr","mädra","madre","mãe","mai","maica","maire","maji","majka","makuahine","mam","mama","mamá","maman","mami","mamm'","mamm","mamma","mamu","mána","màna","mare","mari","mat'","mataji","mater","máthair","mati","máti","matka","matre, true },{ mamma","matri","me","mèder","medra","mëmë","mére","mère","moæ","moder","móðir","moeder","moer","mojer","mom","mommy","mor","morsa","mother","motina","mueter","mum","mummy","mumsy","muter","mutter","mutti","mytyr","mzaa","mzazi","nai","nana","nanay","nani","nay","nënë","ñuke","ñuque","nyokap","ôèe","oğlum","ojciec","okaasan","omm","oppa","otac","otec","otosan","pabo","pai","pak","panjo","papa","papá","papà","papi","pappa","pappie","pare","parinte","pater","patri","patrino","pedar","pita-ji","pitaji","pitar","pop","popà","poppa","pops","pradininkas","protevis","pupà","reny","salentino","sis","tad","taica","tata","táta","tàtah","tatay","tateh","tatti","tay","tevas","tevs","teyze","uma","uncle","vader","valide","vieja","viejo","yebba","yeğen","yenge","badima","memaw","meemaw", "uncle","mama","mamu","chacha","chachu","mom","dad","bhai","bhaiya","didi",
-         "妈", "妈妈", "老妈", "老公", "宝贝", "老婆", "宝贝", "爸", "爸爸", "老爸", "女儿", "闺女", "儿子", "哥", "哥哥", "弟", "弟弟", "姐", "姐姐", "妹", "妹妹", "祖母", "奶奶", "大姨", "小姨", "姑姑", "舅舅", "大舅", "小舅", "叔叔", "伯伯", "表姐", "表妹", "表哥", "表弟", "侄子", "侄女" };
+        private Dictionary<string, bool> dictFamilyVocab = new Dictionary<string, bool> { { "aunt", true }, { "aunty", true }, { "auntie", true }, { "uncle", true }, { "grandma", true }, { "granny", true }, { "grandpa", true }, { "nanna", true }, { "cousin", true }, { "‘opà", true }, { "aayi", true }, { "abatyse", true }, { "abba", true }, { "abbi", true }, { "aboji", true }, { "abonim", true }, { "ahm", true }, { "äiti", true }, { "ama", true }, { "amai", true }, { "amca", true }, { "amma", true }, { "ammee", true }, { "ammi", true }, { "ana", true }, { "anne", true }, { "anneanne", true }, { "anya", true }, { "apa", true }, { "appa", true }, { "apu", true }, { "athair", true }, { "atta", true }, { "ayah", true }, { "baabaa", true }, { "baba", true }, { "babba", true }, { "babbo", true }, { "banketi", true }, { "bapa", true }, { "bata", true }, { " dai", true }, { "bebe", true }, { "beta", true }, { "beti", true }, { "bhabhi", true }, { "bhai", true }, { "bhaiya", true }, { "biang", true }, { "bro", true }, { "buwa", true }, { "chacha", true }, { "chachu", true }, { "dad", true }, { "dada", true }, { "daddy", true }, { "dadi", true }, { "daidí", true }, { "daya", true }, { "dayı", true }, { "dede", true }, { "didi", true }, { "eadni", true }, { "édesapa", true }, { "eje", true }, { "ema", true }, { "emä", true }, { "emak", true }, { "emo", true }, { "ewe", true }, { "far", true }, { "father", true }, { "foter", true }, { "fu", true }, { "haakoro", true }, { "haakui", true }, { "haha", true }, { "ibu", true }, { "iloy", true }, { "inahan", true }, { "induk", true }, { "isa", true }, { "isä", true }, { "itay", true }, { "janak", true }, { "kantaäiti", true }, { "kardeş-im", true }, { "kızım", true }, { "kohake", true }, { "kuzen", true }, { "ma", true }, { "maa", true }, { "macii", true }, { "madar", true }, { "madèr", true }, { "màder", true }, { "madr", true }, { "mädra", true }, { "madre", true }, { "mãe", true }, { "mai", true }, { "maica", true }, { "maire", true }, { "maji", true }, { "majka", true }, { "makuahine", true }, { "mam", true }, { "mamá", true }, { "maman", true }, { "mami", true }, { "mamm'", true }, { "mamm", true }, { "mamma", true }, { "mána", true }, { "màna", true }, { "mare", true }, { "mari", true }, { "mat'", true }, { "mataji", true }, { "mater", true }, { "máthair", true }, { "mati", true }, { "máti", true }, { "matka", true }, { "matre", true }, { " mamma", true }, { "matri", true }, { "me", true }, { "mèder", true }, { "medra", true }, { "mëmë", true }, { "mére", true }, { "mère", true }, { "moæ", true }, { "moder", true }, { "móðir", true }, { "moeder", true }, { "moer", true }, { "mojer", true }, { "mom", true }, { "mommy", true }, { "mor", true }, { "morsa", true }, { "mother", true }, { "motina", true }, { "mueter", true }, { "mum", true }, { "mummy", true }, { "mumsy", true }, { "muter", true }, { "mutter", true }, { "mutti", true }, { "mytyr", true }, { "mzaa", true }, { "mzazi", true }, { "nai", true }, { "nana", true }, { "nanay", true }, { "nani", true }, { "nay", true }, { "nënë", true }, { "ñuke", true }, { "ñuque", true }, { "nyokap", true }, { "ôèe", true }, { "oğlum", true }, { "ojciec", true }, { "okaasan", true }, { "omm", true }, { "oppa", true }, { "otac", true }, { "otec", true }, { "otosan", true }, { "pabo", true }, { "pai", true }, { "pak", true }, { "panjo", true }, { "papa", true }, { "papá", true }, { "papà", true }, { "papi", true }, { "pappa", true }, { "pappie", true }, { "pare", true }, { "parinte", true }, { "pater", true }, { "patri", true }, { "patrino", true }, { "pedar", true }, { "pita-ji", true }, { "pitaji", true }, { "pitar", true }, { "pop", true }, { "popà", true }, { "poppa", true }, { "pops", true }, { "pradininkas", true }, { "protevis", true }, { "pupà", true }, { "reny", true }, { "salentino", true }, { "sis", true }, { "tad", true }, { "taica", true }, { "tata", true }, { "táta", true }, { "tàtah", true }, { "tatay", true }, { "tateh", true }, { "tatti", true }, { "tay", true }, { "tevas", true }, { "tevs", true }, { "teyze", true }, { "uma", true }, { "vader", true }, { "valide", true }, { "vieja", true }, { "viejo", true }, { "yebba", true }, { "yeğen", true }, { "yenge", true }, { "badima", true }, { "memaw", true }, { "meemaw", true }, { "mama", true }, { "mamu", true }, { "妈", true }, { "妈妈", true }, { "老妈", true }, { "老公", true }, { "宝贝", true }, { "老婆", true }, { "爸", true }, { "爸爸", true }, { "老爸", true }, { "女儿", true }, { "闺女", true }, { "儿子", true }, { "哥", true }, { "哥哥", true }, { "弟", true }, { "弟弟", true }, { "姐", true }, { "姐姐", true }, { "妹", true }, { "妹妹", true }, { "祖母", true }, { "奶奶", true }, { "大姨", true }, { "小姨", true }, { "姑姑", true }, { "舅舅", true }, { "大舅", true }, { "小舅", true }, { "叔叔", true }, { "伯伯", true }, { "表姐", true }, { "表妹", true }, { "表哥", true }, { "表弟", true }, { "侄子", true }, { "侄女", true } };
 
         #endregion
 
-        public bool MatchFromFamilyVocab(string completeName)
+  public bool MatchFromFamilyVocab(string[] strCompleteName)
         {
-            if (string.IsNullOrEmpty(completeName))
+            if (strCompleteName == null)
                 return false;
 
-            string[] strCompleteName = completeName.Split(' ');
             foreach (string namesplit in strCompleteName)
             {
-                foreach (string familyvocab in arrFamilyVocab)
-                {
-                    if (familyvocab == namesplit.ToLower())
-                        return true;
-                }
+                if (dictFamilyVocab.ContainsKey(namesplit.ToLower()))
+                    return true;
             }
             return false;
-        }
-        protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
-        {
-            base.OnRemovedFromJournal(e);
         }
     }
 }

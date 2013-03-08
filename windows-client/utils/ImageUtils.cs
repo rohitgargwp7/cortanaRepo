@@ -752,6 +752,8 @@ namespace windows_client.utils
             return defaultGroupAvatars[index];
         }
 
+        #endregion
+
         public byte[] BitmapImgToByteArray(BitmapImage image)
         {
             try
@@ -763,12 +765,11 @@ namespace windows_client.utils
                     return msLargeImage.ToArray();
                 }
             }
-            catch 
-            { 
-                return null; 
+            catch
+            {
+                return null;
             }
         }
-        #endregion
 
         public BitmapImage createImageFromBytes(byte[] imagebytes)
         {

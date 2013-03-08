@@ -17,7 +17,6 @@ using System.ComponentModel;
 using System.Windows.Documents;
 using Microsoft.Devices;
 using Microsoft.Xna.Framework.GamerServices;
-using Phone.Controls;
 using windows_client.Misc;
 using windows_client.Languages;
 using windows_client.ViewModel;
@@ -46,8 +45,6 @@ namespace windows_client.View
 
         ApplicationBarIconButton groupChatIconButton;
         BitmapImage profileImage = null;
-
-        public MyProgressIndicator progress = null; // there should be just one instance of this.
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
         #endregion
@@ -59,7 +56,6 @@ namespace windows_client.View
             InitializeComponent();
             initAppBar();
             initProfilePage();
-            DeviceNetworkInformation.NetworkAvailabilityChanged += new EventHandler<NetworkNotificationEventArgs>(OnNetworkChange);
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
@@ -115,24 +111,6 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(App.SHOW_FAVORITES_TUTORIAL);
         }
 
-        private static void OnNetworkChange(object sender, EventArgs e)
-        {
-            //reconnect mqtt whenever phone is reconnected without relaunch 
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                App.MqttManagerInstance.connect();
-                bool isPushEnabled = true;
-                App.appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-                if (isPushEnabled)
-                {
-                    App.PushHelperInstance.registerPushnotifications();
-                }
-            }
-            else
-            {
-                App.MqttManagerInstance.setConnectionStatus(Mqtt.HikeMqttManager.MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET);
-            }
-        }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -170,7 +148,8 @@ namespace windows_client.View
                 bw.RunWorkerAsync();
 
                 #endregion
-
+                App.WriteToIsoStorageSettings(HikeConstants.SHOW_GROUP_CHAT_OVERLAY, true);
+                UsersTableUtils.DeleteContactsFile();
                 firstLoad = false;
             }
             // this should be called only if its not first load as it will get called in first load section
@@ -200,7 +179,6 @@ namespace windows_client.View
         {
             base.OnRemovedFromJournal(e);
             removeListeners();
-            DeviceNetworkInformation.NetworkAvailabilityChanged -= OnNetworkChange;
         }
 
         #endregion
@@ -261,15 +239,6 @@ namespace windows_client.View
             }
 
             // move to seperate thread later
-            #region PUSH NOTIFICATIONS STUFF
-
-            bool isPushEnabled = true;
-            appSettings.TryGetValue<bool>(App.IS_PUSH_ENABLED, out isPushEnabled);
-            if (isPushEnabled)
-            {
-                App.PushHelperInstance.registerPushnotifications();
-            }
-            #endregion
             #region CHECK UPDATES
             //rate the app is handled within this
             checkForUpdates();
