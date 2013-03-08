@@ -709,7 +709,6 @@ namespace windows_client.View
             ScrollToBottom();
         }
 
-
         private void processGroupJoin(bool isNewgroup)
         {
             List<ContactInfo> contactsForGroup = this.State[HikeConstants.GROUP_CHAT] as List<ContactInfo>;
@@ -914,6 +913,7 @@ namespace windows_client.View
         bool hasMoreMessages;
         const int INITIAL_FETCH_COUNT = 21;
         const int SUBSEQUENT_FETCH_COUNT = 11;
+
         private void loadMessages(int messageFetchCount)
         {
             int i;
@@ -1534,7 +1534,6 @@ namespace windows_client.View
                         }
                         else
                         {
-
                             chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName : mContactName);
                         }
                     }
@@ -1770,7 +1769,8 @@ namespace windows_client.View
                             img = UI_Utils.Instance.createImageFromBytes(imageBytes);
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage, img);
                             chatBubble.setTapEvent(statusBubble_Tap);
-                            this.MessageList.Children.Add(chatBubble);
+                            this.MessageList.Children.Insert(insertPosition,chatBubble);
+                            insertPosition++;
                         }
                         catch (Exception e)
                         {
@@ -1786,7 +1786,8 @@ namespace windows_client.View
                         {
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage);
                             chatBubble.setTapEvent(statusBubble_Tap);
-                            this.MessageList.Children.Add(chatBubble);
+                            this.MessageList.Children.Insert(insertPosition,chatBubble);
+                            insertPosition++;
                         }
                         catch (Exception e)
                         {

@@ -622,11 +622,21 @@ namespace windows_client.View
                                 App.ViewModel.FavList[i].Avatar = MiscDBUtil.getThumbNailForMsisdn(App.ViewModel.FavList[i].Msisdn);
                             }
                         }
+                        hikeContactList = UsersTableUtils.GetAllHikeContacts();
+                        if (hikeContactList != null)
+                        {
+                            int count = hikeContactList.Count;
+                            for (int i = count - 1; i >= 0; i--)
+                            {
+                                if (App.ViewModel.Isfavourite(hikeContactList[i].Msisdn))
+                                    hikeContactList.RemoveAt(i);
+                            }
+                        }
                     };
                     favBw.RunWorkerAsync();
                     favBw.RunWorkerCompleted += (sf, ef) =>
                     {
-                        hikeContactList = UsersTableUtils.GetAllHikeContacts();
+
                         hikeContactListBox.ItemsSource = hikeContactList;
                         favourites.ItemsSource = App.ViewModel.FavList;
                         if (App.ViewModel.FavList.Count > 0)
@@ -1347,7 +1357,6 @@ namespace windows_client.View
             //TODO - GK navigate to CT from here
         }
 
-
         private void addToFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             if (hikeContactListBox.SelectedItem != null)
@@ -1362,7 +1371,7 @@ namespace windows_client.View
                 obj[HikeConstants.DATA] = data;
                 App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                 ConversationListObject cObj = new ConversationListObject(contactInfo.Msisdn, contactInfo.Name, contactInfo.OnHike, contactInfo.Avatar);
-                hikeContactList.Remove(contactInfo);
+                hikeContactList.RemoveAt(0);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites(cObj);
             }
@@ -1447,7 +1456,7 @@ namespace windows_client.View
                     {
                         for (int i = 0; i < _totalUnreadStatuses; i++)
                         {
-                            App.ViewModel.StatusList[i].IsUnread = true;
+                            App.ViewModel.StatusList[i].IsUnread = false;
                         }
                     }
                     _totalUnreadStatuses = value;

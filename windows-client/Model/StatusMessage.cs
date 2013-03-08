@@ -31,16 +31,16 @@ namespace windows_client.Model
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts)
-            :this(msisdn, msg, type, mappedId, ts,-1 ,null,true)
+            : this(msisdn, msg, type, mappedId, ts, -1, null, true)
         {
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts,long id)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id)
             : this(msisdn, msg, type, mappedId, ts, id, null, true)
         {
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts,long msgId,string mood ,bool isUnread)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long msgId, string mood, bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
@@ -49,8 +49,8 @@ namespace windows_client.Model
             _timestamp = ts;
             _msgId = msgId;
             _mood = mood;
+            _isUnread = isUnread;
         }
-
 
         public StatusMessage()
         {
