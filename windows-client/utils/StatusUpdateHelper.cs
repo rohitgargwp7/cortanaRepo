@@ -127,9 +127,5 @@ namespace windows_client.utils
         private void deleteStatus_Callback(JObject obj)
         {
         }
-        public void deleteFriendStatus(long statusId)
-        { 
-        
-        }
     }
 }
