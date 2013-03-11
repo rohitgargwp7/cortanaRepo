@@ -31,7 +31,7 @@ namespace windows_client.View
         bool isProfilePicTapped = false;
         BitmapImage profileImage = null;
         byte[] fullViewImageBytes = null;
-        byte[] largeImageBytes = null;
+        byte[] thumbnailBytes = null;
         bool isFirstLoad = true;
         string nameToShow = null;
         bool isOnHike = false;
@@ -249,7 +249,7 @@ namespace windows_client.View
                     using (var msLargeImage = new MemoryStream())
                     {
                         writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-                        largeImageBytes = msLargeImage.ToArray();
+                        thumbnailBytes = msLargeImage.ToArray();
                     }
                     using (var msSmallImage = new MemoryStream())
                     {
@@ -276,9 +276,28 @@ namespace windows_client.View
 
         public void updateProfile_Callback(JObject obj)
         {
+            string statusId = null;
+            long statusIdLong = -1;
+            bool uploadSuccess = false;
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            {
+                uploadSuccess = true;
+                try
+                {
+                    statusId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
+                }
+                catch { }
+                if (long.TryParse(statusId, out statusIdLong))
+                {
+                    MiscDBUtil.saveStatusImage(App.MSISDN, statusIdLong, fullViewImageBytes);
+                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                        statusId, TimeUtils.getCurrentTimeStamp(), -1);
+                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                }
+            }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+                if (uploadSuccess)
                 {
                     UI_Utils.Instance.BitmapImageCache[HikeConstants.MY_PROFILE_PIC] = profileImage;
                     avatarImage.Source = profileImage;
@@ -287,7 +306,7 @@ namespace windows_client.View
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
                     vals[1] = fullViewImageBytes;
-                    vals[2] = largeImageBytes;
+                    vals[2] = thumbnailBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                 }
                 else
@@ -455,7 +474,7 @@ namespace windows_client.View
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+            photoChooserTask.Completed += photoChooserTask_Completed;
 
             profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             msisdn = App.MSISDN;
