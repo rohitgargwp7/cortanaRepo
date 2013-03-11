@@ -1348,9 +1348,18 @@ namespace windows_client.View
                 else
                     FriendsTableUtils.DeleteFriend(convObj.Msisdn);
 
-                ContactInfo c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                c.Avatar = convObj.Avatar;
-                hikeContactList.Add(c);
+                // if this user is on hike and contact is stored in DB then add it to contacts on hike list
+                if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
+                {
+
+                    ContactInfo c = null;
+                    if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
+                        c = App.ViewModel.ContactsCache[convObj.Msisdn];
+                    else
+                        c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                    c.Avatar = convObj.Avatar;
+                    hikeContactList.Add(c);
+                }
             }
             if (App.ViewModel.FavList.Count == 0)
             {
@@ -1361,7 +1370,19 @@ namespace windows_client.View
 
         private void hikeContacts_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            //TODO - GK navigate to CT from here
+            ContactInfo c = hikeContactListBox.SelectedItem as ContactInfo;
+            if (c == null)
+                return;
+
+            object objToSend;
+            if (App.ViewModel.ConvMap.ContainsKey(c.Msisdn))
+                objToSend = App.ViewModel.ConvMap[c.Msisdn];
+            else
+                objToSend = c;
+            // TODO: Handle this properly
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = objToSend;
+            string uri = "/View/NewChatThread.xaml";
+            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
         }
 
         private void addToFriends_Tap(object sender, System.Windows.Input.GestureEventArgs e)
