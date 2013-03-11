@@ -15,7 +15,7 @@ namespace windows_client.Controls.StatusUpdate
         private BitmapImage _userImage;
         private string _msisdn;
         private bool _isUnread;
-        private long _statusId;
+        private string _mappedStatusId;
 
         public string UserName
         {
@@ -62,11 +62,11 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public long StatusId
+        public string MappedStatusId
         {
-            get 
+            get
             {
-                return _statusId;
+                return _mappedStatusId;
             }
         }
 
@@ -85,12 +85,12 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, long statusId)
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string mappedStatusId)
         {
             this.UserName = userName;
             this.UserImage = userImage;
             this.Msisdn = msisdn;
-            this._statusId = statusId;
+            this._mappedStatusId = mappedStatusId;
             if (App.MSISDN == msisdn)
             {
                 ContextMenu menu = new ContextMenu();
@@ -105,11 +105,11 @@ namespace windows_client.Controls.StatusUpdate
 
         private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StatusUpdateHelper.Instance.deleteMyStatus(_statusId);
+          //  StatusUpdateHelper.Instance.deleteMyStatus(_mappedStatusId);
         }
 
-        public StatusUpdateBox(ConversationListObject c, long statusId)
-            : this(c.NameToShow, c.AvatarImage, c.Msisdn, statusId)
+        public StatusUpdateBox(ConversationListObject c, string mappedStatusId)
+            : this(c.NameToShow, c.AvatarImage, c.Msisdn, mappedStatusId)
         {
         }
 

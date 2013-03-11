@@ -93,7 +93,7 @@ namespace windows_client.View
                 ImageStatusUpdate imageStatus = (ImageStatusUpdate)PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
                 byte[] statusImageBytes = null;
                 bool isThumbnail;
-                MiscDBUtil.getStatusUpdateImage(imageStatus.Msisdn, imageStatus.StatusId, out statusImageBytes, out isThumbnail);
+                MiscDBUtil.getStatusUpdateImage(imageStatus.Msisdn, imageStatus.MappedStatusId, out statusImageBytes, out isThumbnail);
                 this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
             }
         }

@@ -190,18 +190,18 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void getStatusUpdateImage(string msisdn, long statusUpdateId, out byte[] imageBytes, out bool isThumbnail)
+        public static void getStatusUpdateImage(string msisdn, string mapppedStatusUpdateId, out byte[] imageBytes, out bool isThumbnail)
         {
             lock (profilePicLock)
             {
                 isThumbnail = false;
                 msisdn = msisdn.Replace(":", "_");
-                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + mapppedStatusUpdateId;
                 readFileFromIsolatedStorage(fullFilePath, out imageBytes);
                 if (imageBytes == null || imageBytes.Length == 0)
                 {
                     isThumbnail = true;
-                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
+                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + mapppedStatusUpdateId;
                     readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
                 }
             }
