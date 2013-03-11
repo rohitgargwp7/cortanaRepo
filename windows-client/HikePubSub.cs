@@ -134,6 +134,8 @@ namespace windows_client
         public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
 
         public static readonly string ADD_REMOVE_FAV = "addRemFP";
+        public static readonly string REMOVE_FRIENDS = "remFriends";
+        public static readonly string ADD_FRIENDS = "addFriends";
 
         public static readonly string ADD_TO_PENDING = "addToPending";
 

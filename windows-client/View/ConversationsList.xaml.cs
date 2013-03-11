@@ -386,6 +386,8 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.REMOVE_FRIENDS, this);
+            mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
         }
 
         private void removeListeners()
@@ -403,7 +405,8 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
                 mPubSub.removeListener(HikePubSub.STATUS_RECEIVED, this);
                 mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
-
+                mPubSub.removeListener(HikePubSub.REMOVE_FRIENDS, this);
+                mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
             }
             catch { }
         }
@@ -873,6 +876,26 @@ namespace windows_client.View
                });
             }
             #endregion
+            #region REMOVE_FRIENDS
+            else if (HikePubSub.REMOVE_FRIENDS == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (obj != null && obj is ContactInfo)
+                        hikeContactList.Insert(0, obj as ContactInfo);
+                });
+            }
+            #endregion
+            #region ADD_FRIENDS
+            else if (HikePubSub.ADD_FRIENDS == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    if (obj != null && obj is ContactInfo)
+                        hikeContactList.Remove(obj as ContactInfo);
+                });
+            }
+            #endregion
         }
 
         #endregion
@@ -939,10 +962,30 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                     else
                         FriendsTableUtils.DeleteFriend(convObj.Msisdn);
+
+                    // if this user is on hike and contact is stored in DB then add it to contacts on hike list
+                    if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
+                    {
+
+                        ContactInfo c = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
+                            c = App.ViewModel.ContactsCache[convObj.Msisdn];
+                        else
+                            c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                        c.Avatar = convObj.Avatar;
+                        hikeContactList.Add(c);
+                    }
                 }
                 else // add to fav
                 {
                     convObj.IsFav = true;
+
+                    ContactInfo c = null;
+                    if (App.ViewModel.ContactsCache.ContainsKey(convObj.Msisdn))
+                        c = App.ViewModel.ContactsCache[convObj.Msisdn];
+                    else
+                        c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                    hikeContactList.Remove(c);
                     App.ViewModel.FavList.Insert(0, convObj);
                     if (App.ViewModel.IsPending(convObj.Msisdn))
                     {
@@ -1568,7 +1611,7 @@ namespace windows_client.View
                 bool onHike = cn != null ? cn.OnHike : true; // by default only hiek user can send you friend request
                 cObj = new ConversationListObject(fObj.Msisdn, fObj.UserName, onHike, MiscDBUtil.getThumbNailForMsisdn(fObj.Msisdn));
             }
-
+            hikeContactList.Remove(cn);
             App.ViewModel.FavList.Insert(0, cObj);
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();
