@@ -118,13 +118,23 @@ namespace windows_client.utils
             }
         }
 
-        public void deleteMyStatus(long statusId)
+        public void deleteMyStatus(StatusUpdateBox sb)
         {
-            AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteStatus_Callback), 
-                AccountUtils.BASE + "/user/status/" + statusId.ToString());
+            AccountUtils.deleteStatus(new AccountUtils.parametrisedPostResponseFunction(deleteStatus_Callback),
+                AccountUtils.BASE + "/user/status/" + sb.MappedStatusId, sb);
         }
-        private void deleteStatus_Callback(JObject obj)
+        private void deleteStatus_Callback(JObject jObj, Object obj)
         {
+            if (jObj != null && HikeConstants.OK == (string)jObj[HikeConstants.STAT] && obj != null && obj is StatusUpdateBox)
+            {
+                StatusUpdateBox sb = obj as StatusUpdateBox;
+                long msgId = StatusMsgsTable.DeleteStatusMsg(sb.MappedStatusId);
+                MessagesTableUtils.deleteMessage(msgId);
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+               {
+                   App.ViewModel.StatusList.Remove(sb);
+               });
+            }
         }
     }
 }

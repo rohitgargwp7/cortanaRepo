@@ -15,6 +15,7 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
+using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.utils
 {
@@ -144,6 +145,7 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
+        public delegate void parametrisedPostResponseFunction(JObject jObj, Object obj);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
 
@@ -253,6 +255,14 @@ namespace windows_client.utils
             req.Method = "DELETE";
             addToken(req);
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
+        }
+        public static void deleteStatus(parametrisedPostResponseFunction finalCallbackFunction, string requestUrl, Object obj)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "DELETE";
+            addToken(req);
+            req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction, obj });
         }
         public static void unlinkAccount(postResponseFunction finalCallbackFunction)
         {
@@ -807,6 +817,12 @@ namespace windows_client.utils
                     convMessage = vars[3] as ConvMessage;
                     SentChatBubble chatBubble = vars[4] as SentChatBubble;
                     finalCallbackFunctionForUpload(obj, convMessage, chatBubble);
+                }
+                else if (vars[2] is parametrisedPostResponseFunction)
+                {
+                    parametrisedPostResponseFunction finalCallbackFunctionForStatus = vars[2] as parametrisedPostResponseFunction;
+                    StatusUpdateBox sb = vars[3] as StatusUpdateBox;
+                    finalCallbackFunctionForStatus(obj, sb);
                 }
             }
         }
