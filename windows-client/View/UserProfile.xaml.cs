@@ -30,7 +30,7 @@ namespace windows_client.View
         private PhotoChooserTask photoChooserTask;
         bool isProfilePicTapped = false;
         BitmapImage profileImage = null;
-        byte[] fullViewImageBytes = null;
+        byte[] thumbnailBytes = null;
         byte[] largeImageBytes = null;
         bool isFirstLoad = true;
         string nameToShow = null;
@@ -254,10 +254,10 @@ namespace windows_client.View
                     using (var msSmallImage = new MemoryStream())
                     {
                         writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
-                        fullViewImageBytes = msSmallImage.ToArray();
+                        thumbnailBytes = msSmallImage.ToArray();
                     }
                     //send image to server here and insert in db after getting response
-                    AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+                    AccountUtils.updateProfileIcon(thumbnailBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
                 }
                 catch (Exception ex)
                 {
@@ -286,7 +286,7 @@ namespace windows_client.View
                     avatarImage.MaxWidth = 83;
                     object[] vals = new object[3];
                     vals[0] = App.MSISDN;
-                    vals[1] = fullViewImageBytes;
+                    vals[1] = thumbnailBytes;
                     vals[2] = largeImageBytes;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                 }
@@ -455,7 +455,7 @@ namespace windows_client.View
             photoChooserTask.ShowCamera = true;
             photoChooserTask.PixelHeight = HikeConstants.PROFILE_PICS_SIZE;
             photoChooserTask.PixelWidth = HikeConstants.PROFILE_PICS_SIZE;
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+            photoChooserTask.Completed += photoChooserTask_Completed;
 
             profileImage = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
             msisdn = App.MSISDN;
