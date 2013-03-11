@@ -163,8 +163,10 @@ namespace windows_client.View
             if (_isAddToFavPage)
             {
                 bool isPendingRemoved = false;
-                for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count);i++ )
+                for (int i = 0; i < (hikeFavList == null ? 0 : hikeFavList.Count); i++)
                 {
+                    if (hikeFavList[i].Msisdn != App.MSISDN)
+                        FriendsTableUtils.SetFriendStatus(hikeFavList[i].Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                     if (!App.ViewModel.Isfavourite(hikeFavList[i].Msisdn) && hikeFavList[i].Msisdn != App.MSISDN) // if not already favourite then only add to fav
                     {
                         ConversationListObject favObj = null;
@@ -175,7 +177,7 @@ namespace windows_client.View
                         }
                         else
                             favObj = new ConversationListObject(hikeFavList[i].Msisdn, hikeFavList[i].Name, hikeFavList[i].OnHike, hikeFavList[i].Avatar);
-                            
+
                         App.ViewModel.FavList.Insert(0, favObj);
                         if (App.ViewModel.IsPending(favObj.Msisdn)) // if this is in pending already , remove from pending and add to fav
                         {
@@ -249,7 +251,7 @@ namespace windows_client.View
                 msisdn = cn.Msisdn;
             if ((bool)c.IsChecked) // this will be true when checkbox is not checked initially and u clicked it
             {
-                if(_isAddToFavPage)
+                if (_isAddToFavPage)
                 {
                     if (hikeFavList == null)
                         hikeFavList = new List<ContactInfo>();
@@ -268,7 +270,7 @@ namespace windows_client.View
 
             if (_isAddToFavPage)
             {
-                if(hikeFavList.Count > 0)
+                if (hikeFavList.Count > 0)
                     doneIconButton.IsEnabled = true;
                 else
                     doneIconButton.IsEnabled = false;
@@ -414,7 +416,7 @@ namespace windows_client.View
                 for (int j = 0; j < maxJ; j++)
                 {
                     ContactInfo cn = listToIterate[i][j];
-                    if (!_isAddToFavPage )
+                    if (!_isAddToFavPage)
                     {
                         if (contactsList.ContainsKey(cn.Msisdn))
                         {
