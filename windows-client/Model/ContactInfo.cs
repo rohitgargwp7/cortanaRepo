@@ -438,9 +438,9 @@ namespace windows_client.Model
 
                     if (_avatar == null)
                     {
-                        if (Utils.isGroupConversation(Msisdn))
-                            return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn);
-                        return UI_Utils.Instance.getDefaultAvatar(Msisdn);
+                        if (Utils.isGroupConversation(_msisdn))
+                            return UI_Utils.Instance.getDefaultGroupAvatar(_msisdn);
+                        return UI_Utils.Instance.getDefaultAvatar(_msisdn);
                     }
                     else
                     {

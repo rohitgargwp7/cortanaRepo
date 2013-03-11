@@ -1347,12 +1347,15 @@ namespace windows_client.View
                     FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                 else
                     FriendsTableUtils.DeleteFriend(convObj.Msisdn);
+
+                ContactInfo c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                c.Avatar = convObj.Avatar;
+                hikeContactList.Add(c);
             }
             if (App.ViewModel.FavList.Count == 0)
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Visible;
                 favourites.Visibility = System.Windows.Visibility.Collapsed;
-                //addFavsPanel.Opacity = 0;
             }
         }
 
@@ -1526,13 +1529,13 @@ namespace windows_client.View
                 return;
 
             ConversationListObject cObj = null;
+            ContactInfo cn = null;
             if (App.ViewModel.ConvMap.ContainsKey(fObj.Msisdn))
             {
                 cObj = App.ViewModel.ConvMap[fObj.Msisdn];
             }
             else
             {
-                ContactInfo cn = null;
                 if (App.ViewModel.ContactsCache.ContainsKey(fObj.Msisdn))
                     cn = App.ViewModel.ContactsCache[fObj.Msisdn];
                 else
@@ -1562,7 +1565,6 @@ namespace windows_client.View
             {
                 emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
                 favourites.Visibility = System.Windows.Visibility.Visible;
-                //addFavsPanel.Opacity = 1;
             }
         }
 
