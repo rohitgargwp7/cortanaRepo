@@ -495,5 +495,6 @@ namespace windows_client.DbUtils
             // Submit succeeds on second try.           
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
+
     }
 }

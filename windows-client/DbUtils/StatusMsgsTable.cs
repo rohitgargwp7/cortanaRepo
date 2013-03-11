@@ -50,12 +50,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static List<StatusMessage> GetUnReadStatusMsgsForMsisdn(string msisdn,int count)
+        public static List<StatusMessage> GetUnReadStatusMsgsForMsisdn(string msisdn, int count)
         {
             List<StatusMessage> res;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                res = DbCompiledQueries.GetUnReadStatusMsgsForMsisdn(context, msisdn,count).ToList<StatusMessage>();
+                res = DbCompiledQueries.GetUnReadStatusMsgsForMsisdn(context, msisdn, count).ToList<StatusMessage>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
@@ -75,7 +75,7 @@ namespace windows_client.DbUtils
             List<StatusMessage> res;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                res = DbCompiledQueries.GetUnReadStatusMsgs(context,count).ToList<StatusMessage>();
+                res = DbCompiledQueries.GetUnReadStatusMsgs(context, count).ToList<StatusMessage>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }
@@ -105,15 +105,29 @@ namespace windows_client.DbUtils
             {
                 try
                 {
-                    IEnumerable<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForId(context, id);
+                    List<StatusMessage> smEn = DbCompiledQueries.GetStatusMsgForServerId(context, id).ToList();
                     context.statusMessage.DeleteAllOnSubmit<StatusMessage>(smEn);
                     context.SubmitChanges();
-                    return smEn.FirstOrDefault<StatusMessage>().MsgId;
+                    StatusMessage sm = smEn.FirstOrDefault<StatusMessage>();
+                    return sm.MsgId;
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("StatusMsgsTable :: Exception while deleting status : "+e.StackTrace);
+                    Debug.WriteLine("StatusMsgsTable :: Exception while deleting status : " + e.StackTrace);
                     return -1;
+                }
+            }
+        }
+
+        public static void UpdateMsgId(StatusMessage sm)
+        {
+            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
+            {
+                StatusMessage smsg = DbCompiledQueries.GetStatusMsgForStatusId(context, sm.StatusId).FirstOrDefault();
+                if (smsg != null)
+                {
+                    smsg.MsgId = sm.MsgId;
+                    context.SubmitChanges();
                 }
             }
         }
