@@ -288,7 +288,12 @@ namespace windows_client.View
                 }
                 catch { }
                 if (long.TryParse(statusId, out statusIdLong))
+                {
                     MiscDBUtil.saveStatusImage(App.MSISDN, statusIdLong, fullViewImageBytes);
+                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                        statusId, TimeUtils.getCurrentTimeStamp(), -1);
+                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                }
             }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -302,7 +307,6 @@ namespace windows_client.View
                     vals[0] = App.MSISDN;
                     vals[1] = fullViewImageBytes;
                     vals[2] = thumbnailBytes;
-                    vals[3] = statusId;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                 }
                 else
