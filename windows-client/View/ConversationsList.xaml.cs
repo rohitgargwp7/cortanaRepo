@@ -1374,6 +1374,7 @@ namespace windows_client.View
                 hikeContactList.RemoveAt(0);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites(cObj);
+                FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             }
         }
         #endregion
