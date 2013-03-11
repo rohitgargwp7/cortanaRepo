@@ -276,9 +276,23 @@ namespace windows_client.View
 
         public void updateProfile_Callback(JObject obj)
         {
+            string statusId = null;
+            long statusIdLong = -1;
+            bool uploadSuccess = false;
+            if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+            {
+                uploadSuccess = true;
+                try
+                {
+                    statusId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
+                }
+                catch { }
+                if (long.TryParse(statusId, out statusIdLong))
+                    MiscDBUtil.saveStatusImage(App.MSISDN, statusIdLong, fullViewImageBytes);
+            }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
-                if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
+                if (uploadSuccess)
                 {
                     UI_Utils.Instance.BitmapImageCache[HikeConstants.MY_PROFILE_PIC] = profileImage;
                     avatarImage.Source = profileImage;
@@ -288,6 +302,7 @@ namespace windows_client.View
                     vals[0] = App.MSISDN;
                     vals[1] = fullViewImageBytes;
                     vals[2] = thumbnailBytes;
+                    vals[3] = statusId;
                     App.HikePubSubInstance.publish(HikePubSub.ADD_OR_UPDATE_PROFILE, vals);
                 }
                 else
