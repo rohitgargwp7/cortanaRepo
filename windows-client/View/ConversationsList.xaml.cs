@@ -905,17 +905,24 @@ namespace windows_client.View
                     ContactInfo c = null;
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
-                        ConversationListObject convObj;
-                        if (!App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) || string.IsNullOrEmpty(convObj.ContactName))
+                        ConversationListObject convObj = null;
+                        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
-                            c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                            c.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-                            App.ViewModel.ContactsCache[msisdn] = c;
+                            convObj = App.ViewModel.ConvMap[msisdn];
+                            if (convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
+                            {
+                                c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                                c.Avatar = convObj.Avatar;
+                            }
                         }
                         else
                         {
-                            c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                            c.Avatar = convObj.Avatar;
+                            c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                            if (c != null)
+                            {
+                                //TODO : Use image caching
+                                c.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+                            }
                         }
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -929,11 +936,40 @@ namespace windows_client.View
             #region ADD_FRIENDS
             else if (HikePubSub.ADD_FRIENDS == type)
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (obj is ContactInfo)
                 {
-                    if (obj != null)
-                        hikeContactList.Remove(obj as ContactInfo);
-                });
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (obj != null)
+                            hikeContactList.Remove(obj as ContactInfo);
+                    });
+                }
+                else if (obj is string)
+                {
+                    string ms = obj as string;
+                    if (App.ViewModel.ConvMap.ContainsKey(ms))
+                    {
+                        ConversationListObject co = App.ViewModel.ConvMap[ms];
+                        if (co != null && co.IsOnhike && !string.IsNullOrEmpty(co.ContactName))
+                        {
+                            ContactInfo c = new ContactInfo(ms, co.NameToShow, co.IsOnhike);
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                hikeContactList.Remove(c);
+                            });
+                        }
+                    }
+                    else
+                    {
+                        ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(ms);
+                        if (c != null)
+                        {
+                            hikeContactList.Remove(c);
+                        }
+                    }
+                }
+
+
             }
             #endregion
         }
@@ -1390,6 +1426,7 @@ namespace windows_client.View
         }
 
         #endregion
+
         #region FAVOURITE ZONE
         private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
