@@ -1450,4 +1450,13 @@
     <value>You can now see updates from {0}. </value>
     <comment>for friend request in user profile,{0} username</comment>
   </data>
+  <data name="Profile_CancelRequest_BtnTxt" xml:space="preserve">
+    <value>Cancel Request</value>
+  </data>
+  <data name="Profile_RequestSent_Blk1" xml:space="preserve">
+    <value>Waiting For </value>
+  </data>
+  <data name="Profile_RequestSent_Blk3" xml:space="preserve">
+    <value>to accept your friend request.</value>
+  </data>
 </root>

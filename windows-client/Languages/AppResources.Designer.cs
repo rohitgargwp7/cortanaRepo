@@ -2185,11 +2185,38 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel Request.
+        /// </summary>
+        public static string Profile_CancelRequest_BtnTxt {
+            get {
+                return ResourceManager.GetString("Profile_CancelRequest_BtnTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Would you like to do the same?.
         /// </summary>
         public static string Profile_DoTheSame {
             get {
                 return ResourceManager.GetString("Profile_DoTheSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting For .
+        /// </summary>
+        public static string Profile_RequestSent_Blk1 {
+            get {
+                return ResourceManager.GetString("Profile_RequestSent_Blk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to accept your friend request..
+        /// </summary>
+        public static string Profile_RequestSent_Blk3 {
+            get {
+                return ResourceManager.GetString("Profile_RequestSent_Blk3", resourceCulture);
             }
         }
         

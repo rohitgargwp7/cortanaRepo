@@ -540,13 +540,15 @@ namespace windows_client.View
             {
                 BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
                 imgInviteLock.Source = locked;
-                txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
+                txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
                 txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
                 txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
                 txtSmsUserNameBlk2.Text = nameToShow;
-                txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
+                txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
                 gridHikeUser.Visibility = Visibility.Collapsed;
-                btnInvite.Content = AppResources.Invited;
+                //btnInvite.Background =
+                btnInvite.Content = AppResources.Profile_CancelRequest_BtnTxt;
+                //todo: add event
             }
             else
             {
