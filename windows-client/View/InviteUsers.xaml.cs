@@ -196,14 +196,9 @@ namespace windows_client.View
                         App.HikePubSubInstance.publish(HikePubSub.MQTT_PUBLISH, obj);
                         MiscDBUtil.SaveFavourites(favObj);
                         App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_INVITE_USERS);
-                        if (favObj.IsOnhike)
+                        if (hikeFavList[i].OnHike)
                         {
-                            ContactInfo c = null;
-                            if (App.ViewModel.ContactsCache.ContainsKey(favObj.Msisdn))
-                                c = App.ViewModel.ContactsCache[favObj.Msisdn];
-                            else
-                                c = new ContactInfo(favObj.Msisdn, favObj.ContactName, favObj.IsOnhike);
-                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, hikeFavList[i]);
                         }
                     }
                 }

@@ -430,10 +430,14 @@ namespace windows_client.View
                 {
                     ContactInfo c = null;
                     if (App.ViewModel.ContactsCache.ContainsKey(favObj.Msisdn))
+                    {
                         c = App.ViewModel.ContactsCache[favObj.Msisdn];
-                    else
-                        c = new ContactInfo(favObj.Msisdn, favObj.ContactName, favObj.IsOnhike);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                        App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                    }
+                    else if (favObj.IsOnhike)
+                    {
+                        App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, msisdn);
+                    }
                 }
             }
             btn.Content = AppResources.Invited;
@@ -634,10 +638,14 @@ namespace windows_client.View
             {
                 ContactInfo c = null;
                 if (App.ViewModel.ContactsCache.ContainsKey(cObj.Msisdn))
+                {
                     c = App.ViewModel.ContactsCache[cObj.Msisdn];
-                else
-                    c = new ContactInfo(cObj.Msisdn, cObj.ContactName, cObj.IsOnhike);
-                App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                }
+                else if (cObj.IsOnhike)
+                {
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, cObj.Msisdn);
+                }
             }
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();

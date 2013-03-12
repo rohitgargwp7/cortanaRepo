@@ -919,14 +919,13 @@ namespace windows_client.View
                     {
                         ContactInfo c = null;
                         if (App.ViewModel.ContactsCache.ContainsKey(gp.Msisdn))
+                        {
                             c = App.ViewModel.ContactsCache[gp.Msisdn];
+                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                        }
                         else if (gp.IsOnHike)
                         {
-                            if (App.ViewModel.ConvMap.ContainsKey(gp.Msisdn))
-                            {
-                            }
-                            c = new ContactInfo(gp.Msisdn, gp.Name, gp.IsOnHike);
-                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                            App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, gp.Msisdn);
                         }
                     }
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);

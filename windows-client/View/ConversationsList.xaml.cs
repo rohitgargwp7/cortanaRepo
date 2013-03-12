@@ -909,7 +909,7 @@ namespace windows_client.View
                         if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
                             convObj = App.ViewModel.ConvMap[msisdn];
-                            if(convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
+                            if (convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
                             {
                                 c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                                 c.Avatar = convObj.Avatar;
@@ -936,11 +936,40 @@ namespace windows_client.View
             #region ADD_FRIENDS
             else if (HikePubSub.ADD_FRIENDS == type)
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (obj is ContactInfo)
                 {
-                    if (obj != null)
-                        hikeContactList.Remove(obj as ContactInfo);
-                });
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (obj != null)
+                            hikeContactList.Remove(obj as ContactInfo);
+                    });
+                }
+                else if (obj is string)
+                {
+                    string ms = obj as string;
+                    if (App.ViewModel.ConvMap.ContainsKey(ms))
+                    {
+                        ConversationListObject co = App.ViewModel.ConvMap[ms];
+                        if (co != null && co.IsOnhike && !string.IsNullOrEmpty(co.ContactName))
+                        {
+                            ContactInfo c = new ContactInfo(ms, co.NameToShow, co.IsOnhike);
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                hikeContactList.Remove(c);
+                            });
+                        }
+                    }
+                    else
+                    {
+                        ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(ms);
+                        if (c != null)
+                        {
+                            hikeContactList.Remove(c);
+                        }
+                    }
+                }
+
+
             }
             #endregion
         }
