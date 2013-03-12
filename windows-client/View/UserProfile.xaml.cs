@@ -547,10 +547,12 @@ namespace windows_client.View
                     loadStatuses();
                     if (statusList.Count == 0)
                     {
+                        imgInviteLock.Visibility = Visibility.Collapsed;
+                        txtSmsUserNameBlk1.Text = nameToShow;
+                        txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
+                        txtSmsUserNameBlk3.Text = string.Empty;
                         gridHikeUser.Visibility = Visibility.Collapsed;
-                        msgGrid.Visibility = Visibility.Visible;
-                        msgText.Text = "No statuses";
-                        //todo:show screen with no msgs
+                        btnInvite.Visibility = Visibility.Collapsed;
                     }
                 }
                 else
@@ -571,7 +573,8 @@ namespace windows_client.View
                 txtSmsUserNameBlk2.Text = nameToShow;
                 txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
                 gridHikeUser.Visibility = Visibility.Collapsed;
-                //btnInvite.Background =
+                btnInvite.Background = UI_Utils.Instance.ButtonGrayBackground;
+                btnInvite.Foreground = UI_Utils.Instance.ButtonGrayForeground;
                 btnInvite.Content = AppResources.Profile_CancelRequest_BtnTxt;
                 //todo: add event
             }

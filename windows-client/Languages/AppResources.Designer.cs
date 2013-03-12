@@ -2203,6 +2203,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  hasn&apos;t posted anything :(.
+        /// </summary>
+        public static string Profile_NoStatus_Txt {
+            get {
+                return ResourceManager.GetString("Profile_NoStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waiting For .
         /// </summary>
         public static string Profile_RequestSent_Blk1 {

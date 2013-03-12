@@ -21,6 +21,8 @@ namespace windows_client.utils
         private SolidColorBrush walkThroughUnselectedColumn;
         private SolidColorBrush black;
         private SolidColorBrush white;
+        private SolidColorBrush btnGrayBackground;
+        private SolidColorBrush btnGrayForeground;
         private SolidColorBrush groupChatHeaderColor;
         private SolidColorBrush signUpForeground;
         private SolidColorBrush receivedChatBubbleColor;
@@ -211,6 +213,26 @@ namespace windows_client.utils
             }
         }
 
+        public SolidColorBrush ButtonGrayBackground
+        {
+            get
+            {
+                if (btnGrayBackground == null)
+                    btnGrayBackground = new SolidColorBrush(Color.FromArgb(255, 89, 89, 89));
+                return btnGrayBackground;
+            }
+        }
+
+        public SolidColorBrush ButtonGrayForeground
+        {
+            get
+            {
+                if (btnGrayForeground == null)
+                    btnGrayForeground = new SolidColorBrush(Color.FromArgb(255, 233, 236, 238));
+                return btnGrayForeground;
+            }
+        }
+
         public SolidColorBrush GroupChatHeaderColor
         {
             get
@@ -336,7 +358,7 @@ namespace windows_client.utils
             {
                 if (statusTextForeground == null)
                 {
-                    if(Utils.isDarkTheme())
+                    if (Utils.isDarkTheme())
                         statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0xd9, 0xd9, 0xd9));
                     else
                         statusTextForeground = new SolidColorBrush(Color.FromArgb(255, 0x4f, 0x4f, 0x4f));
@@ -344,7 +366,7 @@ namespace windows_client.utils
                 return statusTextForeground;
             }
         }
-        
+
         public BitmapImage OnHikeImage
         {
             get
@@ -808,12 +830,12 @@ namespace windows_client.utils
         /// <param name="msisdn"></param>
         /// <param name="shouldSave"></param>
         /// <returns></returns>
-        public BitmapImage GetBitmapImage(string msisdn,bool shouldSave)
+        public BitmapImage GetBitmapImage(string msisdn, bool shouldSave)
         {
             return GetBitmap(msisdn, false);
         }
 
-        private BitmapImage GetBitmap(string msisdn,bool saveInCache)
+        private BitmapImage GetBitmap(string msisdn, bool saveInCache)
         {
             if (_bitMapImageCache.ContainsKey(msisdn))
                 return _bitMapImageCache[msisdn];
@@ -825,7 +847,7 @@ namespace windows_client.utils
                 BitmapImage img = createImageFromBytes(profileImageBytes);
                 if (img != null)
                 {
-                    if(saveInCache)
+                    if (saveInCache)
                         _bitMapImageCache[msisdn] = img;
                     return img;
                 }
