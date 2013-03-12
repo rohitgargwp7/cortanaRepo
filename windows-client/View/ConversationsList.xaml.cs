@@ -894,7 +894,10 @@ namespace windows_client.View
                             App.ViewModel.ContactsCache[msisdn] = c;
                         }
                         else
+                        {
                             c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                            c.Avatar = convObj.Avatar;
+                        }
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
