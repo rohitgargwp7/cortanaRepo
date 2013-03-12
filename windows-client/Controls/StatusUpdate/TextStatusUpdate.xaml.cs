@@ -37,9 +37,9 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string mappedStatusId, string textOrLocationName, long timestamp,
+        public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string serverId, string textOrLocationName, long timestamp,
             bool isUnread, StatusMessage.StatusType statusType, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
-            : base(userName, userImage, msisdn, mappedStatusId)
+            : base(userName, userImage, msisdn, serverId)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = textOrLocationName;

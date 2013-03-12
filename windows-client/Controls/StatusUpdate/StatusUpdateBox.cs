@@ -15,7 +15,7 @@ namespace windows_client.Controls.StatusUpdate
         private BitmapImage _userImage;
         private string _msisdn;
         private bool _isUnread;
-        private string _mappedStatusId;
+        private string _serverId;
 
         public string UserName
         {
@@ -62,11 +62,11 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public string MappedStatusId
+        public string serverId
         {
             get
             {
-                return _mappedStatusId;
+                return _serverId;
             }
         }
 
@@ -85,12 +85,12 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string mappedStatusId)
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string serverId)
         {
             this.UserName = userName;
             this.UserImage = userImage;
             this.Msisdn = msisdn;
-            this._mappedStatusId = mappedStatusId;
+            this._serverId = serverId;
             if (App.MSISDN == msisdn)
             {
                 ContextMenu menu = new ContextMenu();
@@ -108,8 +108,8 @@ namespace windows_client.Controls.StatusUpdate
             StatusUpdateHelper.Instance.deleteMyStatus(this);
         }
 
-        public StatusUpdateBox(ConversationListObject c, string mappedStatusId)
-            : this(c.NameToShow, c.AvatarImage, c.Msisdn, mappedStatusId)
+        public StatusUpdateBox(ConversationListObject c, string serverId)
+            : this(c.NameToShow, c.AvatarImage, c.Msisdn, serverId)
         {
         }
 
@@ -127,7 +127,7 @@ namespace windows_client.Controls.StatusUpdate
                 return false;
             StatusUpdateBox otherSb = (StatusUpdateBox)obj;
 
-            return this._mappedStatusId.Equals(otherSb._mappedStatusId);
+            return this._serverId.Equals(otherSb._serverId);
         }
     }
 }

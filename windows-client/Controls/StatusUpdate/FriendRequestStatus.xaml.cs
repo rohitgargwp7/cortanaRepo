@@ -10,9 +10,9 @@ namespace windows_client.Controls.StatusUpdate
     {
         private ConversationListObject convObj;
 
-        public FriendRequestStatus(string userName, BitmapImage userImage, string msisdn, string mappedStatusId,
+        public FriendRequestStatus(string userName, BitmapImage userImage, string msisdn, string serverId,
             EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap)
-            : base(userName, userImage, msisdn, mappedStatusId)
+            : base(userName, userImage, msisdn, serverId)
         {
             InitializeComponent();
             this.seeUpdatesTxtBlk.Text = string.Format(AppResources.StatusUpdate_YouCanNowSeeUpdates_TxtBlk, userName);
@@ -28,9 +28,9 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public FriendRequestStatus(ConversationListObject c, string mappedStatusId,
+        public FriendRequestStatus(ConversationListObject c, string serverId,
             EventHandler<GestureEventArgs> yesTap, EventHandler<GestureEventArgs> noTap)
-            : base(c, mappedStatusId)
+            : base(c, serverId)
         {
             InitializeComponent();
             convObj = c;

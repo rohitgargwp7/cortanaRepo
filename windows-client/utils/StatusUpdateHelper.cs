@@ -121,7 +121,7 @@ namespace windows_client.utils
         public void deleteMyStatus(StatusUpdateBox sb)
         {
             AccountUtils.deleteStatus(new AccountUtils.parametrisedPostResponseFunction(deleteStatus_Callback),
-                AccountUtils.BASE + "/user/status/" + sb.MappedStatusId, sb);
+                AccountUtils.BASE + "/user/status/" + sb.serverId, sb);
         }
 
         private void deleteStatus_Callback(JObject jObj, Object obj)
@@ -129,7 +129,7 @@ namespace windows_client.utils
             if (jObj != null && HikeConstants.OK == (string)jObj[HikeConstants.STAT] && obj != null && obj is StatusUpdateBox)
             {
                 StatusUpdateBox sb = obj as StatusUpdateBox;
-                long msgId = StatusMsgsTable.DeleteStatusMsg(sb.MappedStatusId);
+                long msgId = StatusMsgsTable.DeleteStatusMsg(sb.serverId);
                 MessagesTableUtils.deleteMessage(msgId);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
