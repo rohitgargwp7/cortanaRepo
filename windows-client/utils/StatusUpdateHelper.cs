@@ -130,7 +130,6 @@ namespace windows_client.utils
             {
                 StatusUpdateBox sb = obj as StatusUpdateBox;
                 long msgId = StatusMsgsTable.DeleteStatusMsg(sb.serverId);
-                MessagesTableUtils.deleteMessage(msgId);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
         }
