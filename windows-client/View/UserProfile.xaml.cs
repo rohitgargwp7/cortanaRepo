@@ -39,6 +39,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
         bool isInvited;
+        bool toggleToInvitedScreen;
         public UserProfile()
         {
             InitializeComponent();
@@ -443,6 +444,8 @@ namespace windows_client.View
             btn.Content = AppResources.Invited;
             isInvited = true;
             gridInvite.Visibility = Visibility.Collapsed;
+            if (toggleToInvitedScreen)
+                ToggleFriendRequestPending();
         }
 
         private void GoToChat_Tap(object sender, EventArgs e)
@@ -545,7 +548,6 @@ namespace windows_client.View
                 {
                     inAddressBook = App.ViewModel.ContactsCache.ContainsKey(msisdn) || UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
                 }
-                gridSmsUser.Visibility = Visibility.Collapsed;
                 if (inAddressBook)
                 {
                     loadStatuses();
@@ -558,9 +560,12 @@ namespace windows_client.View
                         gridHikeUser.Visibility = Visibility.Collapsed;
                         btnInvite.Visibility = Visibility.Collapsed;
                     }
+                    else
+                        gridSmsUser.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
+                    gridSmsUser.Visibility = Visibility.Collapsed;
                     gridHikeUser.Visibility = Visibility.Collapsed;
                     msgGrid.Visibility = Visibility.Visible;
                     msgText.Text = string.Format("Add {0} to contacts", nameToShow); ;
@@ -569,18 +574,7 @@ namespace windows_client.View
             }
             else if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
             {
-                BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
-                imgInviteLock.Source = locked;
-                txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
-                txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-                txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-                txtSmsUserNameBlk2.Text = nameToShow;
-                txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
-                gridHikeUser.Visibility = Visibility.Collapsed;
-                btnInvite.Background = UI_Utils.Instance.ButtonGrayBackground;
-                btnInvite.Foreground = UI_Utils.Instance.ButtonGrayForeground;
-                btnInvite.Content = AppResources.Profile_CancelRequest_BtnTxt;
-                //todo: add event
+                ToggleFriendRequestPending();
             }
             else
             {
@@ -594,6 +588,7 @@ namespace windows_client.View
                 gridHikeUser.Visibility = Visibility.Collapsed;
                 btnInvite.Content = AppResources.btnAddAsFriend_Txt;
                 btnInvite.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(AddAsFriend_Tap);
+                toggleToInvitedScreen = true;
             }
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
             {
@@ -610,6 +605,22 @@ namespace windows_client.View
             }
         }
 
+        private void ToggleFriendRequestPending()
+        {
+            BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+            imgInviteLock.Source = locked;
+            txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
+            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
+            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
+            txtSmsUserNameBlk2.Text = nameToShow;
+            txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
+            gridHikeUser.Visibility = Visibility.Collapsed;
+            btnInvite.Background = UI_Utils.Instance.ButtonGrayBackground;
+            btnInvite.Foreground = UI_Utils.Instance.ButtonGrayForeground;
+            btnInvite.Content = AppResources.Profile_CancelRequest_BtnTxt;
+            //todo: add event
+
+        }
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);

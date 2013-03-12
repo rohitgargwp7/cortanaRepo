@@ -2203,7 +2203,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  hasn&apos;t posted anything :(.
+        ///   Looks up a localized string similar to hasn&apos;t posted anything :(.
         /// </summary>
         public static string Profile_NoStatus_Txt {
             get {
@@ -2212,7 +2212,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Waiting For .
+        ///   Looks up a localized string similar to Waiting For.
         /// </summary>
         public static string Profile_RequestSent_Blk1 {
             get {
