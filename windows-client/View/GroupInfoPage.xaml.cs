@@ -880,6 +880,11 @@ namespace windows_client.View
                         FriendsTableUtils.SetFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                     else
                         FriendsTableUtils.DeleteFriend(gp.Msisdn);
+                    // if this user is on hike and contact is stored in DB then add it to contacts on hike list
+                    if (gp.IsOnHike)//on hike and in address book will be checked by convlist page
+                    {
+                        App.HikePubSubInstance.publish(HikePubSub.REMOVE_FRIENDS, gp.Msisdn);
+                    }
                 }
                 else // add to fav
                 {
@@ -910,8 +915,18 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
+                    if (gp.IsOnHike)
+                    {
+                        ContactInfo c = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(gp.Msisdn))
+                            c = App.ViewModel.ContactsCache[gp.Msisdn];
+                        else
+                            c = new ContactInfo(gp.Msisdn, gp.Name, gp.IsOnHike);
+                        App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                    }
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
                     FriendsTableUtils.SetFriendStatus(favObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+
                 }
             }
         }
