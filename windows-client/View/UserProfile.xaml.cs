@@ -75,6 +75,8 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, null, null, enlargePic_Tap));
+                    gridHikeUser.Visibility = Visibility.Visible;
+                    gridSmsUser.Visibility = Visibility.Collapsed;
                 });
             }
             #endregion
