@@ -94,7 +94,7 @@
             </TextBlock>
             <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
                 <Button Name="btnInvite"  Content="{Binding Path= LocalizedResources.InviteOnHikeBtn_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                <Button Name="addToFavBtn" Content="{Binding Path= LocalizedResources.btnAddAsFriend_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#2e91d3" BorderThickness="0" Foreground="White"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="AddAsFriend_Tap" Visibility="Collapsed" />
+                <Button Name="addToFavBtn" Content="{Binding Path= LocalizedResources.btnAddAsFriend_Txt, Source={StaticResource LocalizedStrings}}"  FontSize="15" Width="150" Height="60" Background="#e9ecee" BorderThickness="0" Foreground="#595959"  Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Tap="AddAsFriend_Tap" Visibility="Collapsed" />
             </StackPanel>
         </Grid>
         <Grid Name="gridHikeUser" Grid.Row="2" >
