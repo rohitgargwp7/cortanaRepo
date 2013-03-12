@@ -881,16 +881,9 @@ namespace windows_client.View
                     else
                         FriendsTableUtils.DeleteFriend(gp.Msisdn);
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
-                    if (gp.IsOnHike && (App.ViewModel.ContactsCache.ContainsKey(gp.Msisdn) || UsersTableUtils.getContactInfoFromMSISDN(gp.Msisdn) != null))//on hike and in address booj
+                    if (gp.IsOnHike)//on hike and in address book will be checked by convlist page
                     {
-                        ContactInfo c = null;
-                        if (App.ViewModel.ContactsCache.ContainsKey(gp.Msisdn))
-                            c = App.ViewModel.ContactsCache[gp.Msisdn];
-                        else
-                            c = new ContactInfo(gp.Msisdn, gp.Name, gp.IsOnHike);
-                        c.Avatar = MiscDBUtil.getThumbNailForMsisdn(gp.Msisdn);
-
-                        App.HikePubSubInstance.publish(HikePubSub.REMOVE_FRIENDS, c);
+                        App.HikePubSubInstance.publish(HikePubSub.REMOVE_FRIENDS, gp.Msisdn);
                     }
                 }
                 else // add to fav
@@ -922,15 +915,18 @@ namespace windows_client.View
                     obj[HikeConstants.DATA] = data;
                     mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
                     App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
-                    ContactInfo c = null;
-                    if (App.ViewModel.ContactsCache.ContainsKey(gp.Msisdn))
-                        c = App.ViewModel.ContactsCache[gp.Msisdn];
-                    else
-                        c = new ContactInfo(gp.Msisdn, gp.Name, gp.IsOnHike);
-                    App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                    if (gp.IsOnHike)
+                    {
+                        ContactInfo c = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(gp.Msisdn))
+                            c = App.ViewModel.ContactsCache[gp.Msisdn];
+                        else
+                            c = new ContactInfo(gp.Msisdn, gp.Name, gp.IsOnHike);
+                        App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                    }
                     App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_CONTEXT_MENU_GROUP_INFO);
                     FriendsTableUtils.SetFriendStatus(favObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
-                
+
                 }
             }
         }

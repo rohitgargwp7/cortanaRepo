@@ -879,11 +879,26 @@ namespace windows_client.View
             #region REMOVE_FRIENDS
             else if (HikePubSub.REMOVE_FRIENDS == type)
             {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                string msisdn;
+                if (obj != null && obj is string)
                 {
-                    if (obj != null && obj is ContactInfo)
-                        hikeContactList.Insert(0, obj as ContactInfo);
-                });
+                    msisdn = (string)obj;
+                    ContactInfo c = null;
+                    if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
+                    {
+                        c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                        if (c != null)
+                        {
+                            c.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+                            App.ViewModel.ContactsCache[msisdn] = c;
+                        }
+                    }
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (c != null)
+                            hikeContactList.Insert(0, c);
+                    });
+                }
             }
             #endregion
             #region ADD_FRIENDS
