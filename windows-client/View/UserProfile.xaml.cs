@@ -50,6 +50,7 @@ namespace windows_client.View
         private void registerListeners()
         {
             App.HikePubSubInstance.addListener(HikePubSub.STATUS_RECEIVED, this);
+            App.HikePubSubInstance.addListener(HikePubSub.STATUS_DELETED, this);
         }
 
         private void removeListeners()
@@ -57,6 +58,7 @@ namespace windows_client.View
             try
             {
                 App.HikePubSubInstance.removeListener(HikePubSub.STATUS_RECEIVED, this);
+                App.HikePubSubInstance.removeListener(HikePubSub.STATUS_DELETED, this);
             }
             catch { }
         }
@@ -73,6 +75,23 @@ namespace windows_client.View
                 {
                     statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, null, null, enlargePic_Tap));
                 });
+            }
+            #endregion
+            #region STATUS_DELETED
+            if (HikePubSub.STATUS_DELETED == type)
+            {
+                StatusUpdateBox sb = obj as StatusUpdateBox;
+                if (sb == null)
+                    return;
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                  {
+                      if (msisdn == App.MSISDN)
+                      {
+                          statusList.Remove(sb);
+                      }
+                  });
+
+                //todo:handle ui to show zero status
             }
             #endregion
         }
@@ -276,24 +295,21 @@ namespace windows_client.View
 
         public void updateProfile_Callback(JObject obj)
         {
-            string statusId = null;
-            long statusIdLong = -1;
+            string serverId = null;
             bool uploadSuccess = false;
             if (obj != null && HikeConstants.OK == (string)obj[HikeConstants.STAT])
             {
                 uploadSuccess = true;
                 try
                 {
-                    statusId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
+                    serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
                 }
                 catch { }
-                if (long.TryParse(statusId, out statusIdLong))
-                {
-                    MiscDBUtil.saveStatusImage(App.MSISDN, statusIdLong, fullViewImageBytes);
-                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                        statusId, TimeUtils.getCurrentTimeStamp(), -1);
-                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
-                }
+
+                MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
+                StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                    serverId, TimeUtils.getCurrentTimeStamp(), -1);
+                App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
             }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {

@@ -123,17 +123,18 @@ namespace windows_client.DbUtils
 
         #region STATUS UPDATES
 
-        public static void saveStatusImage(string msisdn, long statusUpdateId, byte[] imageBytes)
+        public static void saveStatusImage(string msisdn, string serverId, byte[] imageBytes)
         {
             msisdn = msisdn.Replace(":", "_");
-            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+            serverId = serverId.Replace(":", "_");
+            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
             storeFileInIsolatedStorage(fullFilePath, imageBytes);
         }
 
-        public static byte[] GetProfilePicUpdateForID(string msisdn, long statusId)
+        public static byte[] GetProfilePicUpdateForID(string msisdn, string serverId)
         {
-            msisdn = msisdn.Replace(":", "_");
-            string filePath = PROFILE_PICS + "/" + msisdn + "/" + statusId.ToString();
+            serverId = serverId.Replace(":", "_");
+            string filePath = PROFILE_PICS + "/" + msisdn + "/" + serverId;
             byte[] data = null;
             lock (profilePicLock)
             {
@@ -159,12 +160,12 @@ namespace windows_client.DbUtils
         /// <param name="msisdn"></param>
         /// <param name="imageBytes"></param>
         /// <param name="isUpdated"></param>
-        public static void saveProfileImages(string msisdn, byte[] imageBytes, long picId)
+        public static void saveProfileImages(string msisdn, byte[] imageBytes, string serverId)
         {
             if (imageBytes == null)
                 return;
-            msisdn = msisdn.Replace(":", "_");
-            string FileName = PROFILE_PICS + "\\" + msisdn + "\\" + picId.ToString();
+            serverId = serverId.Replace(":", "_");
+            string FileName = PROFILE_PICS + "\\" + msisdn + "\\" + serverId;
             lock (profilePicLock)
             {
                 try
@@ -190,18 +191,19 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void getStatusUpdateImage(string msisdn, long statusUpdateId, out byte[] imageBytes, out bool isThumbnail)
+        public static void getStatusUpdateImage(string msisdn, string serverId, out byte[] imageBytes, out bool isThumbnail)
         {
             lock (profilePicLock)
             {
                 isThumbnail = false;
                 msisdn = msisdn.Replace(":", "_");
-                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + statusUpdateId.ToString();
+                serverId = serverId.Replace(":", "_");
+                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
                 readFileFromIsolatedStorage(fullFilePath, out imageBytes);
                 if (imageBytes == null || imageBytes.Length == 0)
                 {
                     isThumbnail = true;
-                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + statusUpdateId.ToString();
+                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + serverId;
                     readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
                 }
             }
