@@ -1767,9 +1767,9 @@ namespace windows_client.View
                     {
                         try
                         {
-                            long picId = (long)jsonObj[HikeConstants.PROFILE_PIC_ID];
+                            string serverId = (string)jsonObj[HikeConstants.PROFILE_PIC_ID];
                             BitmapImage img = null;
-                            byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn, picId);
+                            byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn, serverId);
                             img = UI_Utils.Instance.createImageFromBytes(imageBytes);
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage, img);
                             chatBubble.setTapEvent(statusBubble_Tap);

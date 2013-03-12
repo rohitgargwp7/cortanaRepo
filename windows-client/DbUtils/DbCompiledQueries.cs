@@ -282,7 +282,7 @@ namespace windows_client.DbUtils
                 CompiledQuery.Compile<HikeChatsDb, string, IQueryable<StatusMessage>>
                 ((HikeChatsDb hdc, string Id) =>
                     from o in hdc.statusMessage
-                    where o.MappedId == Id
+                    where o.ServerId == Id
                     select o);
                 return q;
             }
