@@ -765,7 +765,7 @@ namespace windows_client.View
                     ConversationListObject co = (ConversationListObject)obj;
                     if (co != null)
                     {
-                        FriendRequestStatus frs = new FriendRequestStatus(co, "", yes_Click, no_Click);
+                        FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         App.ViewModel.StatusList.Insert(0, frs);
                     }
                 });
@@ -1695,7 +1695,7 @@ namespace windows_client.View
             App.ViewModel.IsPendingListLoaded = true;
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                FriendRequestStatus frs = new FriendRequestStatus(co, "", yes_Click, no_Click);
+                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
