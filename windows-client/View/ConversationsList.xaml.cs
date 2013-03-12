@@ -886,12 +886,15 @@ namespace windows_client.View
                     ContactInfo c = null;
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
-                        c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                        if (c != null)
+                        ConversationListObject convObj;
+                        if (!App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) || string.IsNullOrEmpty(convObj.ContactName))
                         {
+                            c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
                             c.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
                             App.ViewModel.ContactsCache[msisdn] = c;
                         }
+                        else
+                            c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
