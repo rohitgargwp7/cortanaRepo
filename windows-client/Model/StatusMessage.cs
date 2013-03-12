@@ -17,7 +17,7 @@ namespace windows_client.Model
         string _message; // this will be stored in JSON format
         StatusType _type;
         long _timestamp;
-        string _mappedId;
+        string _serverId;
         long _msgId;
         string _mood;
         bool _isUnread;
@@ -45,7 +45,7 @@ namespace windows_client.Model
             _msisdn = msisdn;
             _message = msg;
             _type = type;
-            _mappedId = mappedId;
+            _serverId = mappedId;
             _timestamp = ts;
             _msgId = msgId;
             _mood = mood;
@@ -135,18 +135,18 @@ namespace windows_client.Model
         }
 
         [Column]
-        public string MappedId
+        public string ServerId
         {
             get
             {
-                return _mappedId;
+                return _serverId;
             }
             set
             {
-                if (_mappedId != value)
+                if (_serverId != value)
                 {
-                    NotifyPropertyChanging("MappedId");
-                    _mappedId = value;
+                    NotifyPropertyChanging("ServerId");
+                    _serverId = value;
                 }
             }
         }

@@ -386,6 +386,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.STATUS_DELETED, this);
             mPubSub.addListener(HikePubSub.REMOVE_FRIENDS, this);
             mPubSub.addListener(HikePubSub.ADD_FRIENDS, this);
         }
@@ -405,6 +406,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
                 mPubSub.removeListener(HikePubSub.STATUS_RECEIVED, this);
                 mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+                mPubSub.removeListener(HikePubSub.STATUS_DELETED, this);
                 mPubSub.removeListener(HikePubSub.REMOVE_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
             }
@@ -767,7 +769,7 @@ namespace windows_client.View
                     ConversationListObject co = (ConversationListObject)obj;
                     if (co != null)
                     {
-                        FriendRequestStatus frs = new FriendRequestStatus(co, -1, yes_Click, no_Click);
+                        FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         App.ViewModel.StatusList.Insert(0, frs);
                     }
                 });
@@ -874,6 +876,23 @@ namespace windows_client.View
                {
                    avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
                });
+            }
+            #endregion
+            #region STATUS_DELETED
+            else if (HikePubSub.STATUS_DELETED == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    StatusUpdateBox sb = obj as StatusUpdateBox;
+                    if (sb != null)
+                    {
+                        App.ViewModel.StatusList.Remove(sb);
+                        if (sb.IsUnread)
+                            _totalUnreadStatuses -= 1;
+
+                        //todo:handle ui for handling zero status
+                    }
+                });
             }
             #endregion
             #region REMOVE_FRIENDS
@@ -1741,7 +1760,7 @@ namespace windows_client.View
             App.ViewModel.IsPendingListLoaded = true;
             foreach (ConversationListObject co in App.ViewModel.PendingRequests.Values)
             {
-                FriendRequestStatus frs = new FriendRequestStatus(co, -1, yes_Click, no_Click);
+                FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();

@@ -15,7 +15,7 @@ namespace windows_client.Controls.StatusUpdate
         private BitmapImage _userImage;
         private string _msisdn;
         private bool _isUnread;
-        private long _statusId;
+        private string _serverId;
 
         public string UserName
         {
@@ -62,11 +62,11 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public long StatusId
+        public string serverId
         {
-            get 
+            get
             {
-                return _statusId;
+                return _serverId;
             }
         }
 
@@ -85,12 +85,12 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, long statusId)
+        public StatusUpdateBox(string userName, BitmapImage userImage, string msisdn, string serverId)
         {
             this.UserName = userName;
             this.UserImage = userImage;
             this.Msisdn = msisdn;
-            this._statusId = statusId;
+            this._serverId = serverId;
             if (App.MSISDN == msisdn)
             {
                 ContextMenu menu = new ContextMenu();
@@ -105,16 +105,29 @@ namespace windows_client.Controls.StatusUpdate
 
         private void delete_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            StatusUpdateHelper.Instance.deleteMyStatus(_statusId);
+            StatusUpdateHelper.Instance.deleteMyStatus(this);
         }
 
-        public StatusUpdateBox(ConversationListObject c, long statusId)
-            : this(c.NameToShow, c.AvatarImage, c.Msisdn, statusId)
+        public StatusUpdateBox(ConversationListObject c, string serverId)
+            : this(c.NameToShow, c.AvatarImage, c.Msisdn, serverId)
         {
         }
 
         public StatusUpdateBox()
         {
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (GetType() != obj.GetType())
+                return false;
+            StatusUpdateBox otherSb = (StatusUpdateBox)obj;
+
+            return this._serverId.Equals(otherSb._serverId);
         }
     }
 }
