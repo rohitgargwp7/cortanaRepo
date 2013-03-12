@@ -880,7 +880,7 @@ namespace windows_client.View
             else if (HikePubSub.REMOVE_FRIENDS == type)
             {
                 string msisdn;
-                if (obj != null && obj is string)
+                if (obj != null)
                 {
                     msisdn = (string)obj;
                     ContactInfo c = null;
@@ -896,7 +896,7 @@ namespace windows_client.View
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         if (c != null)
-                            hikeContactList.Insert(0, c);
+                            hikeContactList.Add(c);
                     });
                 }
             }
@@ -906,7 +906,7 @@ namespace windows_client.View
             {
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    if (obj != null && obj is ContactInfo)
+                    if (obj != null)
                         hikeContactList.Remove(obj as ContactInfo);
                 });
             }
