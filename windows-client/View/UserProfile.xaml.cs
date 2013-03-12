@@ -426,6 +426,15 @@ namespace windows_client.View
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
 
                 App.HikePubSubInstance.publish(HikePubSub.ADD_REMOVE_FAV, null);
+                if (favObj.IsOnhike)
+                {
+                    ContactInfo c = null;
+                    if (App.ViewModel.ContactsCache.ContainsKey(favObj.Msisdn))
+                        c = App.ViewModel.ContactsCache[favObj.Msisdn];
+                    else
+                        c = new ContactInfo(favObj.Msisdn, favObj.ContactName, favObj.IsOnhike);
+                    App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+                }
             }
             btn.Content = AppResources.Invited;
             isInvited = true;
@@ -621,6 +630,15 @@ namespace windows_client.View
             }
 
             App.ViewModel.FavList.Insert(0, cObj);
+            if (cObj.IsOnhike)
+            {
+                ContactInfo c = null;
+                if (App.ViewModel.ContactsCache.ContainsKey(cObj.Msisdn))
+                    c = App.ViewModel.ContactsCache[cObj.Msisdn];
+                else
+                    c = new ContactInfo(cObj.Msisdn, cObj.ContactName, cObj.IsOnhike);
+                App.HikePubSubInstance.publish(HikePubSub.ADD_FRIENDS, c);
+            }
             App.ViewModel.PendingRequests.Remove(cObj.Msisdn);
             JObject data = new JObject();
             data["id"] = msisdn;
