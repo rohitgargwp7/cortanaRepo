@@ -2185,6 +2185,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add now.
+        /// </summary>
+        public static string Profile_AddNow_Btn_Txt {
+            get {
+                return ResourceManager.GetString("Profile_AddNow_Btn_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel Request.
         /// </summary>
         public static string Profile_CancelRequest_BtnTxt {
@@ -2208,6 +2217,15 @@ namespace windows_client.Languages {
         public static string Profile_NoStatus_Txt {
             get {
                 return ResourceManager.GetString("Profile_NoStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is not in your address book..
+        /// </summary>
+        public static string Profile_NotInAddressbook_Txt {
+            get {
+                return ResourceManager.GetString("Profile_NotInAddressbook_Txt", resourceCulture);
             }
         }
         

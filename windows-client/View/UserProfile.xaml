@@ -106,8 +106,5 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <Grid Name="msgGrid" Grid.Row="2" Visibility="Collapsed">
-            <TextBlock Name="msgText"  FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" TextAlignment="Center"></TextBlock>
-        </Grid>
     </Grid>
 </phone:PhoneApplicationPage>
