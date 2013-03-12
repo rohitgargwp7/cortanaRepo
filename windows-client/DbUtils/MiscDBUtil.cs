@@ -123,11 +123,11 @@ namespace windows_client.DbUtils
 
         #region STATUS UPDATES
 
-        public static void saveStatusImage(string msisdn, string mapppedStatusUpdateId, byte[] imageBytes)
+        public static void saveStatusImage(string msisdn, string serverId, byte[] imageBytes)
         {
             msisdn = msisdn.Replace(":", "_");
-            mapppedStatusUpdateId = mapppedStatusUpdateId.Replace(":", "_");
-            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + mapppedStatusUpdateId;
+            serverId = serverId.Replace(":", "_");
+            string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
             storeFileInIsolatedStorage(fullFilePath, imageBytes);
         }
 
@@ -191,19 +191,19 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static void getStatusUpdateImage(string msisdn, string mapppedStatusUpdateId, out byte[] imageBytes, out bool isThumbnail)
+        public static void getStatusUpdateImage(string msisdn, string serverId, out byte[] imageBytes, out bool isThumbnail)
         {
             lock (profilePicLock)
             {
                 isThumbnail = false;
                 msisdn = msisdn.Replace(":", "_");
-                mapppedStatusUpdateId = mapppedStatusUpdateId.Replace(":", "_");
-                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + mapppedStatusUpdateId;
+                serverId = serverId.Replace(":", "_");
+                string fullFilePath = STATUS_UPDATE_LARGE + "/" + msisdn + "/" + serverId;
                 readFileFromIsolatedStorage(fullFilePath, out imageBytes);
                 if (imageBytes == null || imageBytes.Length == 0)
                 {
                     isThumbnail = true;
-                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + mapppedStatusUpdateId;
+                    string thumbnailFilePath = PROFILE_PICS + "/" + msisdn + "/" + serverId;
                     readFileFromIsolatedStorage(thumbnailFilePath, out imageBytes);
                 }
             }
