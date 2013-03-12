@@ -1604,7 +1604,7 @@ namespace windows_client.View
                 {
                     if (value == 0)
                     {
-                        for (int i = 0; i < _totalUnreadStatuses; i++)
+                        for (int i = 0; i < Math.Min(_totalUnreadStatuses, App.ViewModel.StatusList.Count); i++)
                         {
                             App.ViewModel.StatusList[i].IsUnread = false;
                         }
