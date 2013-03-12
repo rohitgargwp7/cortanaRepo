@@ -886,17 +886,24 @@ namespace windows_client.View
                     ContactInfo c = null;
                     if (!App.ViewModel.ContactsCache.TryGetValue(msisdn, out c))
                     {
-                        ConversationListObject convObj;
-                        if (!App.ViewModel.ConvMap.TryGetValue(msisdn, out convObj) || string.IsNullOrEmpty(convObj.ContactName))
+                        ConversationListObject convObj = null;
+                        if (App.ViewModel.ConvMap.ContainsKey(msisdn))
                         {
-                            c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
-                            c.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-                            App.ViewModel.ContactsCache[msisdn] = c;
+                            convObj = App.ViewModel.ConvMap[msisdn];
+                            if(convObj != null && convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
+                            {
+                                c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
+                                c.Avatar = convObj.Avatar;
+                            }
                         }
                         else
                         {
-                            c = new ContactInfo(convObj.Msisdn, convObj.NameToShow, convObj.IsOnhike);
-                            c.Avatar = convObj.Avatar;
+                            c = UsersTableUtils.getContactInfoFromMSISDN(msisdn);
+                            if (c != null)
+                            {
+                                //TODO : Use image caching
+                                c.Avatar = MiscDBUtil.getThumbNailForMsisdn(msisdn);
+                            }
                         }
                     }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -1371,6 +1378,7 @@ namespace windows_client.View
         }
 
         #endregion
+
         #region FAVOURITE ZONE
         private void favourites_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
