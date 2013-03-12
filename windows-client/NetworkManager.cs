@@ -1058,8 +1058,8 @@ namespace windows_client
                         {
                             byte[] imageBytes = System.Convert.FromBase64String(iconBase64);
                             StatusMsgsTable.InsertStatusMsg(sm);
-                            MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.StatusId);
-                            jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.StatusId;
+                            MiscDBUtil.saveProfileImages(msisdn, imageBytes, sm.ServerId);
+                            jsonObj[HikeConstants.PROFILE_PIC_ID] = sm.ServerId;
                         }
                     }
                     #endregion

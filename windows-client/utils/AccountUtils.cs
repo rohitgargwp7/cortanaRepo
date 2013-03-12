@@ -258,7 +258,7 @@ namespace windows_client.utils
         }
         public static void deleteStatus(parametrisedPostResponseFunction finalCallbackFunction, string requestUrl, Object obj)
         {
-            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
             addToken(req);
             req.Method = "DELETE";
             addToken(req);

@@ -51,6 +51,8 @@ namespace windows_client
         public static readonly string MESSAGE_RECEIVED = "messagereceived";
 
         public static readonly string STATUS_RECEIVED = "statusReceived";
+        
+        public static readonly string STATUS_DELETED = "statusDeleted";
 
         public static readonly string NEW_ACTIVITY = "new_activity";
 

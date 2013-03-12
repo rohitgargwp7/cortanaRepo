@@ -77,8 +77,8 @@ namespace windows_client.utils
                 case StatusMessage.StatusType.PROFILE_PIC_UPDATE:
                     byte[] statusImageBytes = null;
                     bool isThumbnail;
-                    MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.MappedId, out statusImageBytes, out isThumbnail);
-                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.MappedId,
+                    MiscDBUtil.getStatusUpdateImage(status.Msisdn, status.ServerId, out statusImageBytes, out isThumbnail);
+                    statusUpdateBox = new ImageStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.ServerId,
                         UI_Utils.Instance.createImageFromBytes(statusImageBytes), status.Timestamp, status.IsUnread, statusBubbleImageTap);
                     if (isThumbnail)
                     {
@@ -92,7 +92,7 @@ namespace windows_client.utils
                         (statusUpdateBox as ImageStatusUpdate).statusImage.Tap += enlargePic_Tap;
                     break;
                 case StatusMessage.StatusType.TEXT_UPDATE:
-                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.MappedId, status.Message,
+                    statusUpdateBox = new TextStatusUpdate(userName, userProfileThumbnail, status.Msisdn, status.ServerId, status.Message,
                         status.Timestamp, status.IsUnread, status.Status_Type, statusBubbleImageTap);
                     break;
             }
@@ -110,7 +110,7 @@ namespace windows_client.utils
             ImageStatusUpdate statusMessageUI = vars[1] as ImageStatusUpdate;
             if (fileBytes != null && fileBytes.Length > 0)
             {
-                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.StatusId, fileBytes);
+                MiscDBUtil.saveStatusImage(statusMessage.Msisdn, statusMessage.ServerId, fileBytes);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     statusMessageUI.StatusImage = UI_Utils.Instance.createImageFromBytes(fileBytes);
@@ -123,6 +123,7 @@ namespace windows_client.utils
             AccountUtils.deleteStatus(new AccountUtils.parametrisedPostResponseFunction(deleteStatus_Callback),
                 AccountUtils.BASE + "/user/status/" + sb.MappedStatusId, sb);
         }
+
         private void deleteStatus_Callback(JObject jObj, Object obj)
         {
             if (jObj != null && HikeConstants.OK == (string)jObj[HikeConstants.STAT] && obj != null && obj is StatusUpdateBox)
@@ -130,10 +131,7 @@ namespace windows_client.utils
                 StatusUpdateBox sb = obj as StatusUpdateBox;
                 long msgId = StatusMsgsTable.DeleteStatusMsg(sb.MappedStatusId);
                 MessagesTableUtils.deleteMessage(msgId);
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-               {
-                   App.ViewModel.StatusList.Remove(sb);
-               });
+                App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
         }
     }

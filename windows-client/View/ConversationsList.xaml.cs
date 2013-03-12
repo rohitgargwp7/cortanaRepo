@@ -386,6 +386,7 @@ namespace windows_client.View
             mPubSub.addListener(HikePubSub.BAD_USER_PASS, this);
             mPubSub.addListener(HikePubSub.STATUS_RECEIVED, this);
             mPubSub.addListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
+            mPubSub.addListener(HikePubSub.STATUS_DELETED, this);
         }
 
         private void removeListeners()
@@ -403,7 +404,7 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.BAD_USER_PASS, this);
                 mPubSub.removeListener(HikePubSub.STATUS_RECEIVED, this);
                 mPubSub.removeListener(HikePubSub.ADD_OR_UPDATE_PROFILE, this);
-
+                mPubSub.removeListener(HikePubSub.STATUS_DELETED, this);
             }
             catch { }
         }
@@ -871,6 +872,23 @@ namespace windows_client.View
                {
                    avatarImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
                });
+            }
+            #endregion
+            #region STATUS_DELETED
+            else if (HikePubSub.STATUS_DELETED == type)
+            {
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    StatusUpdateBox sb = obj as StatusUpdateBox;
+                    if (sb != null)
+                    {
+                        App.ViewModel.StatusList.Remove(sb);
+                        if (sb.IsUnread)
+                            _totalUnreadStatuses -= 1;
+
+                        //todo:handle ui for handling zero status
+                    }
+                });
             }
             #endregion
         }

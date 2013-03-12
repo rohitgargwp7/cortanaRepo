@@ -116,5 +116,18 @@ namespace windows_client.Controls.StatusUpdate
         public StatusUpdateBox()
         {
         }
+
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (GetType() != obj.GetType())
+                return false;
+            StatusUpdateBox otherSb = (StatusUpdateBox)obj;
+
+            return this._mappedStatusId.Equals(otherSb._mappedStatusId);
+        }
     }
 }
