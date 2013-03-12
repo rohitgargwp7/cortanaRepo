@@ -842,13 +842,14 @@ namespace windows_client.View
             else if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
+                int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
                         lastStatusTxtBlk.Text = sm.Message;
-                        App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
                     else
@@ -860,7 +861,7 @@ namespace windows_client.View
                         }
                         else
                         {
-                            App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                             NotificationCount++;
                         }

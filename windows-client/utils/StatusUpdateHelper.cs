@@ -129,7 +129,7 @@ namespace windows_client.utils
             if (jObj != null && HikeConstants.OK == (string)jObj[HikeConstants.STAT] && obj != null && obj is StatusUpdateBox)
             {
                 StatusUpdateBox sb = obj as StatusUpdateBox;
-                long msgId = StatusMsgsTable.DeleteStatusMsg(sb.serverId);
+                StatusMsgsTable.DeleteStatusMsg(sb.serverId);
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
         }
