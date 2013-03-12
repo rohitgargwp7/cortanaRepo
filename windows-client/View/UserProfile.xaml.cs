@@ -307,13 +307,16 @@ namespace windows_client.View
                 try
                 {
                     serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
+                //todo:check
                 }
                 catch { }
-
-                MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
-                StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                    serverId, TimeUtils.getCurrentTimeStamp(), -1);
-                App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                if (serverId != null)
+                {
+                    MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
+                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                        serverId, TimeUtils.getCurrentTimeStamp(), -1);
+                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                }
             }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
