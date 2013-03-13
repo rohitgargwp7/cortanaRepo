@@ -67,6 +67,12 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            if (obj == null)
+            {
+                Debug.WriteLine("UserProfile :: OnEventReceived : Object received is null");
+                return;
+            }
+
             #region STATUS UPDATE RECEIVED
             if (HikePubSub.STATUS_RECEIVED == type)
             {

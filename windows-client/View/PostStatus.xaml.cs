@@ -36,7 +36,7 @@ namespace windows_client.View
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = true;
             appBar.Buttons.Add(postStatusIcon);
-          
+
             postStatusPage.ApplicationBar = appBar;
         }
 
@@ -78,28 +78,27 @@ namespace windows_client.View
             }
             if (stat == HikeConstants.OK)
             {
-                JToken statusData;
-                obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
-                try
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    string statusId = statusData["statusid"].ToString();
-                    string message = statusData["msg"].ToString();
-                    StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                        TimeUtils.getCurrentTimeStamp(),-1);
-                    StatusMsgsTable.InsertStatusMsg(sm);
-                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    JToken statusData;
+                    obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
+                    try
                     {
-                        if (NavigationService.CanGoBack)
-                        {
-                            NavigationService.GoBack();
-                        }
-                    });
-                }
-                catch
-                {
-                }
+                        string statusId = statusData["statusid"].ToString();
+                        string message = statusData["msg"].ToString();
+                        // status should be in read state when posted yourself
+                        StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
+                            TimeUtils.getCurrentTimeStamp(), -1,false);
+                        StatusMsgsTable.InsertStatusMsg(sm);
+                        App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
 
+                        if (NavigationService.CanGoBack)
+                            NavigationService.GoBack();
+                    }
+                    catch
+                    {
+                    }
+                });
             }
         }
     }
