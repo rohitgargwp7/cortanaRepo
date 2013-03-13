@@ -253,7 +253,7 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
-                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true, !FileAttachment.ContentType.Contains(HikeConstants.CONTACT));
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, true, false);
                     ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {

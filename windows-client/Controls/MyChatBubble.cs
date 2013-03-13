@@ -101,7 +101,7 @@ namespace windows_client.Controls
                     if (String.IsNullOrEmpty(cm.MetaDataString) || !cm.MetaDataString.Contains("poke"))
                     {
                         contextMenu = currentPage.createAttachmentContextMenu(Attachment.AttachmentState.COMPLETED,
-                            false, true); //since it is not an attachment message this bool won't make difference
+                            false, false); //since it is not an attachment message this bool won't make difference
                     }
                     else
                     {
