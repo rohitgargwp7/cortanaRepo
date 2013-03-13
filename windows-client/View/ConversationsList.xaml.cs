@@ -850,9 +850,10 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 if (sm == null)
                     return;
-                int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+                
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
@@ -862,6 +863,19 @@ namespace windows_client.View
                     }
                     else
                     {
+                        ContactInfo ci = App.ViewModel.ContactsCache[sm.Msisdn];
+                        if (ci != null)
+                        {
+                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                return;
+                        }
+                        else
+                        {
+                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(sm.Msisdn);
+                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                return;
+                        }
+                        // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
                             FreshStatusUpdates.Add(sm);
