@@ -2185,11 +2185,65 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add now.
+        /// </summary>
+        public static string Profile_AddNow_Btn_Txt {
+            get {
+                return ResourceManager.GetString("Profile_AddNow_Btn_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Request.
+        /// </summary>
+        public static string Profile_CancelRequest_BtnTxt {
+            get {
+                return ResourceManager.GetString("Profile_CancelRequest_BtnTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Would you like to do the same?.
         /// </summary>
         public static string Profile_DoTheSame {
             get {
                 return ResourceManager.GetString("Profile_DoTheSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hasn&apos;t posted anything :(.
+        /// </summary>
+        public static string Profile_NoStatus_Txt {
+            get {
+                return ResourceManager.GetString("Profile_NoStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is not in your address book..
+        /// </summary>
+        public static string Profile_NotInAddressbook_Txt {
+            get {
+                return ResourceManager.GetString("Profile_NotInAddressbook_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting For.
+        /// </summary>
+        public static string Profile_RequestSent_Blk1 {
+            get {
+                return ResourceManager.GetString("Profile_RequestSent_Blk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to accept your friend request..
+        /// </summary>
+        public static string Profile_RequestSent_Blk3 {
+            get {
+                return ResourceManager.GetString("Profile_RequestSent_Blk3", resourceCulture);
             }
         }
         

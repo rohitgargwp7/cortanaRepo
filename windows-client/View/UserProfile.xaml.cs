@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Microsoft.Phone.UserData;
 
 namespace windows_client.View
 {
@@ -39,6 +40,7 @@ namespace windows_client.View
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
         bool isInvited;
+        bool toggleToInvitedScreen;
         public UserProfile()
         {
             InitializeComponent();
@@ -74,6 +76,8 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, null, null, enlargePic_Tap));
+                    gridHikeUser.Visibility = Visibility.Visible;
+                    gridSmsUser.Visibility = Visibility.Collapsed;
                 });
             }
             #endregion
@@ -303,13 +307,16 @@ namespace windows_client.View
                 try
                 {
                     serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
+                //todo:check
                 }
                 catch { }
-
-                MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
-                StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                    serverId, TimeUtils.getCurrentTimeStamp(), -1);
-                App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                if (serverId != null)
+                {
+                    MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
+                    StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
+                        serverId, TimeUtils.getCurrentTimeStamp(), -1);
+                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
+                }
             }
             Deployment.Current.Dispatcher.BeginInvoke(() =>
             {
@@ -342,17 +349,25 @@ namespace windows_client.View
         private void loadStatuses()
         {
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-            if (statusMessagesFromDB == null)
+            if (statusMessagesFromDB != null)
             {
+                for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                {
+                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
+                }
                 this.statusLLS.ItemsSource = statusList;
-                return;
             }
-
-            for (int i = 0; i < statusMessagesFromDB.Count; i++)
+            if (statusList.Count == 0)
             {
-                statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
+                imgInviteLock.Visibility = Visibility.Collapsed;
+                txtSmsUserNameBlk1.Text = nameToShow;
+                txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
+                txtSmsUserNameBlk3.Text = string.Empty;
+                gridHikeUser.Visibility = Visibility.Collapsed;
+                btnInvite.Visibility = Visibility.Collapsed;
             }
-            this.statusLLS.ItemsSource = statusList;
+            else
+                gridSmsUser.Visibility = Visibility.Collapsed;
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -443,6 +458,8 @@ namespace windows_client.View
             btn.Content = AppResources.Invited;
             isInvited = true;
             gridInvite.Visibility = Visibility.Collapsed;
+            if (toggleToInvitedScreen)
+                ToggleFriendRequestPending();
         }
 
         private void GoToChat_Tap(object sender, EventArgs e)
@@ -545,37 +562,25 @@ namespace windows_client.View
                 {
                     inAddressBook = App.ViewModel.ContactsCache.ContainsKey(msisdn) || UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
                 }
-                gridSmsUser.Visibility = Visibility.Collapsed;
                 if (inAddressBook)
                 {
                     loadStatuses();
-                    if (statusList.Count == 0)
-                    {
-                        gridHikeUser.Visibility = Visibility.Collapsed;
-                        msgGrid.Visibility = Visibility.Visible;
-                        msgText.Text = "No statuses";
-                        //todo:show screen with no msgs
-                    }
                 }
                 else
                 {
+                    BitmapImage locked = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+                    imgInviteLock.Source = locked;
+                    txtSmsUserNameBlk1.Text = nameToShow;
+                    txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
+                    txtSmsUserNameBlk3.Text = string.Empty;
                     gridHikeUser.Visibility = Visibility.Collapsed;
-                    msgGrid.Visibility = Visibility.Visible;
-                    msgText.Text = string.Format("Add {0} to contacts", nameToShow); ;
-                    //todo:show add to contacts
+                    btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
+                    //btnInvite.Tap += addUser_Click; todo:
                 }
             }
             else if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
             {
-                BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
-                imgInviteLock.Source = locked;
-                txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
-                txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-                txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-                txtSmsUserNameBlk2.Text = nameToShow;
-                txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
-                gridHikeUser.Visibility = Visibility.Collapsed;
-                btnInvite.Content = AppResources.Invited;
+                ToggleFriendRequestPending();
             }
             else
             {
@@ -588,7 +593,8 @@ namespace windows_client.View
                 txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
                 gridHikeUser.Visibility = Visibility.Collapsed;
                 btnInvite.Content = AppResources.btnAddAsFriend_Txt;
-                btnInvite.Tap += new EventHandler<System.Windows.Input.GestureEventArgs>(AddAsFriend_Tap);
+                btnInvite.Tap += AddAsFriend_Tap;
+                toggleToInvitedScreen = true;
             }
             if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
             {
@@ -605,6 +611,22 @@ namespace windows_client.View
             }
         }
 
+        private void ToggleFriendRequestPending()
+        {
+            BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+            imgInviteLock.Source = locked;
+            txtSmsUserNameBlk1.Text = AppResources.Profile_RequestSent_Blk1;
+            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
+            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
+            txtSmsUserNameBlk2.Text = nameToShow;
+            txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
+            gridHikeUser.Visibility = Visibility.Collapsed;
+            btnInvite.Background = UI_Utils.Instance.ButtonGrayBackground;
+            btnInvite.Foreground = UI_Utils.Instance.ButtonGrayForeground;
+            btnInvite.Content = AppResources.Profile_CancelRequest_BtnTxt;
+            //todo: add event
+
+        }
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
@@ -690,6 +712,142 @@ namespace windows_client.View
                 }
             }
         }
+
+        //#region ADD USER TO CONTATCS
+        //private void addUser_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    ContactUtils.saveContact(msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
+        //}
+
+        //private void saveContactTask_Completed(object sender, SaveContactResult e)
+        //{
+        //    switch (e.TaskResult)
+        //    {
+        //        case TaskResult.OK:
+        //            ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
+        //            break;
+        //        case TaskResult.Cancel:
+        //            MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
+        //            break;
+        //        case TaskResult.None:
+        //            MessageBox.Show(AppResources.NoInfoForTask_Txt);
+        //            break;
+        //    }
+        //}
+
+        //public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
+        //{
+        //    try
+        //    {
+        //        Dictionary<string, List<ContactInfo>> contactListMap = GetContactListMap(e.Results);
+        //        if (contactListMap == null)
+        //        {
+        //            MessageBox.Show(AppResources.NO_CONTACT_SAVED);
+        //            return;
+        //        }
+        //        AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+        //    }
+        //    catch (System.Exception)
+        //    {
+        //        //That's okay, no results//
+        //    }
+        //}
+
+        //private Dictionary<string, List<ContactInfo>> GetContactListMap(IEnumerable<Contact> contacts)
+        //{
+        //    int count = 0;
+        //    int duplicates = 0;
+        //    Dictionary<string, List<ContactInfo>> contactListMap = null;
+        //    if (contacts == null)
+        //        return null;
+        //    contactListMap = new Dictionary<string, List<ContactInfo>>();
+        //    foreach (Contact cn in contacts)
+        //    {
+        //        CompleteName cName = cn.CompleteName;
+
+        //        foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+        //        {
+        //            if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+        //            {
+        //                count++;
+        //                continue;
+        //            }
+        //            ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+        //            int idd = cInfo.GetHashCode();
+        //            cInfo.Id = Convert.ToString(Math.Abs(idd));
+        //            if (contactListMap.ContainsKey(cInfo.Id))
+        //            {
+        //                if (!contactListMap[cInfo.Id].Contains(cInfo))
+        //                    contactListMap[cInfo.Id].Add(cInfo);
+        //                else
+        //                {
+        //                    duplicates++;
+        //                    Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                List<ContactInfo> contactList = new List<ContactInfo>();
+        //                contactList.Add(cInfo);
+        //                contactListMap.Add(cInfo.Id, contactList);
+        //            }
+        //        }
+        //    }
+        //    Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
+        //    Debug.WriteLine("Total contacts with no phone number : {0}", count);
+        //    return contactListMap;
+        //}
+
+        //public void updateAddressBook_Callback(JObject obj)
+        //{
+        //    if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+        //    {
+        //        Dispatcher.BeginInvoke(() =>
+        //        {
+        //            MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
+        //        });
+        //        return;
+        //    }
+        //    JObject addressbook = (JObject)obj["addressbook"];
+        //    if (addressbook == null)
+        //    {
+        //        Dispatcher.BeginInvoke(() =>
+        //        {
+        //            MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
+        //        });
+        //        return;
+        //    }
+        //    IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
+        //    ContactInfo contactInfo = null;
+        //    KeyValuePair<string, JToken> kv;
+        //    int count = 0;
+        //    while (keyVals.MoveNext())
+        //    {
+        //        kv = keyVals.Current;
+        //        JArray entries = (JArray)addressbook[kv.Key];
+        //        for (int i = 0; i < entries.Count; ++i)
+        //        {
+        //            JObject entry = (JObject)entries[i];
+        //            string msisdn = (string)entry["msisdn"];
+        //            if (string.IsNullOrWhiteSpace(msisdn))
+        //                continue;
+
+        //            bool onhike = (bool)entry["onhike"];
+        //            contactInfo.Msisdn = msisdn;
+        //            contactInfo.OnHike = onhike;
+        //            count++;
+        //        }
+        //    }
+        //    UsersTableUtils.addContact(contactInfo);
+        //    Dispatcher.BeginInvoke(() =>
+        //    {
+        //        nameToShow = contactInfo.Name;
+        //        isOnHike = contactInfo.OnHike;
+        //        loadStatuses();
+        //        MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
+        //    });
+        //}
+        //#endregion
 
     }
 }
