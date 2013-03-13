@@ -103,7 +103,7 @@ namespace windows_client
             {
                 string token = (string)App.appSettings["token"];
                 AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
-                
+
             }
             else // if add book is already in posted state then run Background worker that waits for result
             {
@@ -377,8 +377,10 @@ namespace windows_client
             {
                 photoChooserTask.Show();
             }
-                               
-
+            catch (Exception ex)
+            {
+                Debug.WriteLine("EnterName :: OnProfilePicButtonTap, Exception : " + ex.StackTrace);
+            }
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
