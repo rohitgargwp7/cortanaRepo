@@ -1650,7 +1650,7 @@ namespace windows_client.View
                             notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
                             notificationCountTxtBlk.Text = "";
                         }
-                        if(value > 0)
+                        if (value > 0)
                             notificationCountTxtBlk.Text = value.ToString();
                         App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
                         _notificationCount = value;
@@ -1671,7 +1671,7 @@ namespace windows_client.View
                     StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i],
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
-            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - 1   ]);
+            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - 1]);
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
@@ -1820,17 +1820,12 @@ namespace windows_client.View
                 App.ViewModel.StatusList.Add(frs);
             }
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
-            //if (statusMessagesFromDB != null)
-            //{
-            //}
             if (statusMessagesFromDB != null)
             {
-                for (int i = 0; i < NotificationCount; i++)
-                {
-                    statusMessagesFromDB[i].IsUnread = true;
-                }
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
+                    if (i < NotificationCount)
+                        statusMessagesFromDB[i].IsUnread = true;
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }
