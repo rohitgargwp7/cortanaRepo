@@ -1644,16 +1644,15 @@ namespace windows_client.View
                         if (_notificationCount == 0 && value > 0)
                         {
                             notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
-                            App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
                         }
                         else if (_notificationCount > 0 && value == 0)
                         {
                             notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
                             notificationCountTxtBlk.Text = "";
-                            App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, 0);
                         }
                         if(value > 0)
                             notificationCountTxtBlk.Text = value.ToString();
+                        App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
                         _notificationCount = value;
                     });
                 }
