@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using windows_client.utils;
 using windows_client.Languages;
+using System.Diagnostics;
 
 
 namespace windows_client.View
@@ -114,8 +115,10 @@ namespace windows_client.View
         void dt_Tick(object sender, EventArgs e)
         {
             try { FrameworkDispatcher.Update(); }
-            catch { }
-
+            catch (Exception ex)
+            {
+                Debug.WriteLine("RecordMedia.xaml :: dt_Tick, update, Exception : " + ex.StackTrace);
+            }
             if (true == soundIsPlaying)
             {
                 if (soundInstance.State != SoundState.Playing)
@@ -210,8 +213,10 @@ namespace windows_client.View
                 buffer = null;
                 stream.Dispose();
             }
-            catch (Exception) //not really required, but added as an extra check for now
-            { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("RecordMedia.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
+            }
         }
 
         private void play()

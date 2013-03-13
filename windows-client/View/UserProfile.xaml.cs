@@ -62,7 +62,10 @@ namespace windows_client.View
                 App.HikePubSubInstance.removeListener(HikePubSub.STATUS_RECEIVED, this);
                 App.HikePubSubInstance.removeListener(HikePubSub.STATUS_DELETED, this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("UserProfile.xaml :: removeListeners, Exception : " + ex.StackTrace);
+            }
         }
 
         public void onEventReceived(string type, object obj)
@@ -247,9 +250,9 @@ namespace windows_client.View
                     NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
             }
         }
 
@@ -309,7 +312,10 @@ namespace windows_client.View
                     serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
                 //todo:check
                 }
-                catch { }
+                catch (Exception ex)
+            {
+                Debug.WriteLine("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
+            }
                 if (serverId != null)
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);

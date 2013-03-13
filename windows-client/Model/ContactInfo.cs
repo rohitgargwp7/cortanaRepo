@@ -366,7 +366,10 @@ namespace windows_client.Model
                     {
                         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ContactInfo :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
+                    }
                 });
             }
         }
@@ -447,9 +450,9 @@ namespace windows_client.Model
                         return UI_Utils.Instance.createImageFromBytes(_avatar);
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
+                    Debug.WriteLine("ContactInfo :: AvatarImage : fetch AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
             }
@@ -474,12 +477,14 @@ namespace windows_client.Model
                     writer.Write(_avatar.Length);
                     writer.Write(_avatar);
                 }
-                
+
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ContactInfo :: Write : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
+
         }
 
         public void Read(BinaryReader reader)
@@ -504,8 +509,9 @@ namespace windows_client.Model
                     _avatar = reader.ReadBytes(count);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ContactInfo :: Read : Read, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }

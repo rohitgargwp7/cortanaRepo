@@ -340,8 +340,9 @@ namespace windows_client
             {
                 _appLaunchState = (LaunchState)PhoneApplicationService.Current.State[LAUNCH_STATE];
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("App :: Application_Activated : Setting launch state , Exception : " + ex.StackTrace);
             }
 
             if (_isTombstoneLaunch)
@@ -484,8 +485,9 @@ namespace windows_client
                 int idx = targetPage.IndexOf("msisdn");
                 return targetPage.Substring(idx);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("App :: GetParamFromUri : GetParamFromUri , Exception : " + ex.StackTrace);
                 return "";
             }
         }
@@ -802,10 +804,12 @@ namespace windows_client
                     long msec = st.ElapsedMilliseconds;
                     Debug.WriteLine("APP: Time to create Dbs : {0}", msec);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("App :: createDatabaseAsync : createDatabaseAsync , Exception : " + ex.StackTrace);
                     RemoveKeyFromAppSettings(App.IS_DB_CREATED);
                 }
+
             };
             bw.RunWorkerAsync();
         }
@@ -841,9 +845,9 @@ namespace windows_client
                     appSettings[key] = value;
                     appSettings.Save();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem while saving to isolated storage.");
+                    Debug.WriteLine("App :: WriteToIsoStorageSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -857,9 +861,9 @@ namespace windows_client
                     appSettings.Clear();
                     appSettings.Save();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem while clearing isolated storage.");
+                    Debug.WriteLine("App :: ClearAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -873,9 +877,9 @@ namespace windows_client
                     appSettings.Remove(key);
                     appSettings.Save();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Problem while removing key from isolated storage.");
+                    Debug.WriteLine("App :: RemoveKeyFromAppSettings, Exception : " + ex.StackTrace);
                 }
             }
         }

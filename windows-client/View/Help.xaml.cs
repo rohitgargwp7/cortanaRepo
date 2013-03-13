@@ -18,6 +18,7 @@ using Microsoft.Phone.Net.NetworkInformation;
 using windows_client.utils;
 using windows_client.Languages;
 using System.Text;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -46,7 +47,10 @@ namespace windows_client.View
             {
                 webBrowserTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  FAQs_Tap , Exception : " + ex.StackTrace);
+            }
         }
 
         private void ContactUs_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -67,8 +71,9 @@ namespace windows_client.View
             {
                 contactUsMail.Show();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("HElp.xaml ::  ContactUs_Tap , Exception : " + ex.StackTrace);
             }
         }
 
@@ -81,7 +86,10 @@ namespace windows_client.View
             {
                 webBrowserTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  Legal_Tap , Exception : " + ex.StackTrace);
+            }
         }
 
         private void Updates_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -103,7 +111,10 @@ namespace windows_client.View
             {
                 marketplaceReviewTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  rateAndReview_Tap , Exception : " + ex.StackTrace);
+            }
         }
 
         private void SystemHealth_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -114,7 +125,10 @@ namespace windows_client.View
             {
                 webBrowserTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("HElp.xaml ::  SystemHealth_Tap , Exception : " + ex.StackTrace);
+            }
         }
     }
 }

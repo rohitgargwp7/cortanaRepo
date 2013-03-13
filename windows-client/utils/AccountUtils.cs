@@ -584,17 +584,22 @@ namespace windows_client.utils
                         }
                     }
                 }
+
                 catch (IOException ioe)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + ioe.StackTrace);
                 }
                 catch (WebException we)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + we.StackTrace);
                 }
                 catch (JsonException je)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + je.StackTrace);
                 }
                 catch (Exception e)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
                 }
                 finally
                 {
@@ -621,10 +626,12 @@ namespace windows_client.utils
             {
                 byteArray = Convert.FromBase64String(compressedText);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("AccountUtils ::  Decompress :  Decompress , Exception : " + ex.StackTrace);
                 return compressedText;
             }
+
 
             //Prepare for decompress
             MemoryStream ms = new MemoryStream(byteArray);
@@ -790,18 +797,22 @@ namespace windows_client.utils
             }
             catch (IOException ioe)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + ioe.StackTrace);
                 obj = null;
             }
             catch (WebException we)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + we.StackTrace);
                 obj = null;
             }
             catch (JsonException je)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + je.StackTrace);
                 obj = null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + e.StackTrace);
                 obj = null;
             }
             finally
@@ -849,12 +860,15 @@ namespace windows_client.utils
                 }
                 return blockListMsisdns;
             }
+
             catch (ArgumentException e)
             {
+                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
         }
@@ -1008,12 +1022,15 @@ namespace windows_client.utils
                 }
                 return server_contacts;
             }
-            catch (ArgumentException)
+
+            catch (ArgumentException e)
             {
+                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
         }

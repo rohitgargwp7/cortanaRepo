@@ -15,6 +15,7 @@ using windows_client.Model;
 using Newtonsoft.Json.Linq;
 using Microsoft.Phone.Shell;
 using windows_client.Languages;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -39,8 +40,9 @@ namespace windows_client.View
             {
                 shareLinkTask.Show();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Invite.xaml ::  Social_Tap , Exception : " + ex.StackTrace);
             }
         }
 
@@ -57,8 +59,9 @@ namespace windows_client.View
             {
                 f5EmailCompose.Show();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Invite.xaml ::  Email_Tap , Exception : " + ex.StackTrace);
             }
         }
 

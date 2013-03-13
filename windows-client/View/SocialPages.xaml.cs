@@ -110,7 +110,10 @@ namespace windows_client.View
                         RetrieveAccessToken();
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("SocialPages.xaml :: Browser_Navigated, Twitter, Exception : " + ex.StackTrace);
+                }
             }
             #endregion
             #region FACEBOOK
@@ -192,8 +195,9 @@ namespace windows_client.View
                                     b.SetSource(s);
                                     imgBytes = UI_Utils.Instance.BitmapImgToByteArray(b);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
+                                    Debug.WriteLine("SocialPages.xaml :: LoginSucceded, LoginSucceded, Exception : " + ex.StackTrace);
                                 }
                             }
 
@@ -242,8 +246,9 @@ namespace windows_client.View
                         Dispatcher.BeginInvoke(() => BrowserControl.Navigate(loginUrl));
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Debug.WriteLine("SocialPages.xaml :: AuthenticateTwitter, Twitter, Exception : " + ex.StackTrace);
                     Dispatcher.BeginInvoke(() =>
                         {
                             MessageBox.Show(AppResources.SocialPages_UnableToRetrieveToken_Txt);
@@ -471,8 +476,9 @@ namespace windows_client.View
                         });
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("SocialPages.xaml :: RetrieveAccessToken, Exception : " + ex.StackTrace);
                     Dispatcher.BeginInvoke(() =>
                         {
 

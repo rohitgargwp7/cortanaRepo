@@ -97,7 +97,10 @@ namespace windows_client.Misc
                         if (store.FileExists(fileName))
                             store.DeleteFile(fileName);
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
+                    }
                     try
                     {
                         using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
@@ -118,7 +121,10 @@ namespace windows_client.Misc
                             file.Dispose();
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                    }
                 }
             }
         }
@@ -139,7 +145,10 @@ namespace windows_client.Misc
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("GroupManager :: SaveGroupCache : delete file , Exception : " + ex.StackTrace);
+                        }
                         try
                         {
                             using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
@@ -160,7 +169,10 @@ namespace windows_client.Misc
                                 file.Dispose();
                             }
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("GroupManager :: SaveGroupCache : write file , Exception : " + ex.StackTrace);
+                        }
                     }
                 }
             }
@@ -192,7 +204,10 @@ namespace windows_client.Misc
                                     {
                                         count = reader.ReadInt32();
                                     }
-                                    catch { }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine("GroupManager :: GetParticipantList : read count, Exception : " + ex.StackTrace);
+                                    }
                                     if (count > 0)
                                     {
                                         gpList = new List<GroupParticipant>(count);
@@ -203,8 +218,9 @@ namespace windows_client.Misc
                                             {
                                                 item.Read(reader);
                                             }
-                                            catch
+                                            catch (Exception ex)
                                             {
+                                                Debug.WriteLine("GroupManager :: GetParticipantList : read group participant, Exception : " + ex.StackTrace);
                                                 item = null;
                                             }
                                         }
@@ -216,7 +232,10 @@ namespace windows_client.Misc
                                     file.Close();
                                     file.Dispose();
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("GroupManager :: GetParticipantList : dispose file , Exception : " + ex.StackTrace);
+                                }
                             }
                             if (gpList != null)
                                 groupCache[grpId] = gpList;
@@ -252,7 +271,10 @@ namespace windows_client.Misc
                                 {
                                     count = reader.ReadInt32();
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("GroupManager :: LoadGroupParticipants : read count, Exception : " + ex.StackTrace);
+                                }
                                 if (count > 0)
                                 {
                                     gpList = new List<GroupParticipant>(count);
@@ -264,8 +286,9 @@ namespace windows_client.Misc
                                             item.Read(reader);
                                             gpList.Add(item);
                                         }
-                                        catch
+                                        catch (Exception ex)
                                         {
+                                            Debug.WriteLine("GroupManager :: LoadGroupParticipants : read item, Exception : " + ex.StackTrace);
                                             item = null;
                                         }
                                     }
@@ -277,7 +300,10 @@ namespace windows_client.Misc
                                 file.Close();
                                 file.Dispose();
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("GroupManager :: LoadGroupParticipants : dispose file, Exception : " + ex.StackTrace);
+                            }
                         }
                         if (gpList != null)
                             groupCache[grpId] = gpList;
@@ -313,7 +339,10 @@ namespace windows_client.Misc
                                 {
                                     count = reader.ReadInt32();
                                 }
-                                catch { }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("GroupManager :: LoadGroupCache : read count, Exception : " + ex.StackTrace);
+                                }
                                 if (count > 0)
                                 {
                                     gpList = new List<GroupParticipant>(count);
@@ -325,8 +354,9 @@ namespace windows_client.Misc
                                             item.Read(reader);
                                             gpList.Add(item);
                                         }
-                                        catch
+                                        catch (Exception ex)
                                         {
+                                            Debug.WriteLine("GroupManager :: LoadGroupCache : read item, Exception : " + ex.StackTrace);
                                             item = null;
                                         }
                                     }
@@ -338,7 +368,10 @@ namespace windows_client.Misc
                                 file.Close();
                                 file.Dispose();
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("GroupManager :: LoadGroupCache : dispose file, Exception : " + ex.StackTrace);
+                            }
                         }
                         if (gpList != null)
                             groupCache[grpId] = gpList;
@@ -395,9 +428,9 @@ namespace windows_client.Misc
                         {
                             store.DeleteFile(GROUP_DIR + "\\" + files[i]);
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            Debug.WriteLine("Exception while deleting all groups :: " + e.StackTrace);
+                            Debug.WriteLine("GroupManager :: DeleteAllGroups :DeleteAllGroups, Exception : " + ex.StackTrace);
                         }
                     }
                 }

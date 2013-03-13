@@ -410,7 +410,10 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REMOVE_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
+            }
         }
 
         #endregion
@@ -708,7 +711,10 @@ namespace windows_client.View
                             if (App.ViewModel.MessageListPageCollection.Count > 0)
                                 myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ConversationList ::  onEventReceived,MESSAGE_RECEIVED  , Exception : " + ex.StackTrace);
+                        }
                     });
                 }
                 bool isVibrateEnabled = true;
@@ -833,8 +839,9 @@ namespace windows_client.View
                         NavigationService.Navigate(nextPage);
                     });
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("ConversationList ::  onEventReceived,BAD_USER_PASS  , Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -1287,8 +1294,9 @@ namespace windows_client.View
                     checkForRateApp();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationList ::  checkUpdate_Callback , checkUpdate_Callback, Exception : " + ex.StackTrace);
             }
         }
 
@@ -1378,7 +1386,10 @@ namespace windows_client.View
                 {
                     marketplaceDetailTask.Show();
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
+                }
             }
         }
 
@@ -1419,7 +1430,10 @@ namespace windows_client.View
                                      marketplaceReviewTask.Show();
                                      App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
                                  }
-                                 catch { }
+                                 catch (Exception ex)
+                                 {
+                                     Debug.WriteLine("ConversationList ::  showRateAppMessage, showRateAppMessage  , Exception : " + ex.StackTrace);
+                                 }
                              }
                          }
                      }, null);

@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Model;
 using windows_client.DbUtils;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -36,7 +37,7 @@ namespace windows_client.View
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = true;
             appBar.Buttons.Add(postStatusIcon);
-          
+
             postStatusPage.ApplicationBar = appBar;
         }
 
@@ -85,7 +86,7 @@ namespace windows_client.View
                     string statusId = statusData["statusid"].ToString();
                     string message = statusData["msg"].ToString();
                     StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                        TimeUtils.getCurrentTimeStamp(),-1);
+                        TimeUtils.getCurrentTimeStamp(), -1);
                     StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -96,8 +97,9 @@ namespace windows_client.View
                         }
                     });
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
                 }
 
             }

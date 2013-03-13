@@ -196,9 +196,9 @@ namespace windows_client
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Exception handled in page EnterName Screen : " + e.StackTrace);
+                Debug.WriteLine("Enter Name ::  processEnterName , processEnterName  , Exception : " + ex.StackTrace);
             }
         }
 
@@ -286,8 +286,9 @@ namespace windows_client
                         empImage.SetSource(memStream);
                         avatarImage.Source = empImage;
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
                         avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
                     }
                 }
@@ -376,10 +377,8 @@ namespace windows_client
             {
                 photoChooserTask.Show();
             }
-            catch
-            {
+                               
 
-            }
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
