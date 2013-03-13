@@ -187,7 +187,7 @@ namespace windows_client.View
                 object obj = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
                 if (obj is ConversationListObject)
                     statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-                
+
                 else // obj is ContactInfo obj
                     statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = obj;
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
@@ -1773,7 +1773,7 @@ namespace windows_client.View
                             img = UI_Utils.Instance.createImageFromBytes(imageBytes);
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage, img);
                             chatBubble.setTapEvent(statusBubble_Tap);
-                            this.MessageList.Children.Insert(insertPosition,chatBubble);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble);
                             insertPosition++;
                         }
                         catch (Exception e)
@@ -1790,7 +1790,7 @@ namespace windows_client.View
                         {
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage);
                             chatBubble.setTapEvent(statusBubble_Tap);
-                            this.MessageList.Children.Insert(insertPosition,chatBubble);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble);
                             insertPosition++;
                         }
                         catch (Exception e)
@@ -3210,7 +3210,7 @@ namespace windows_client.View
         //TODO - MG try to use sametap event for header n statusBubble
         private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            if (!isGroupChat)
+            if (!isContextMenuTapped && !isGroupChat)
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
