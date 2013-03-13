@@ -210,6 +210,9 @@
     <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
+    <Compile Include="View\BlockListPage.xaml.cs">
+      <DependentUpon>BlockListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
@@ -276,6 +279,9 @@
     <Compile Include="View\ShareLocation.xaml.cs">
       <DependentUpon>ShareLocation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\UnblockedUsersPage.xaml.cs">
+      <DependentUpon>UnblockedUsersPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\UserProfile.xaml.cs">
       <DependentUpon>UserProfile.xaml</DependentUpon>
     </Compile>
@@ -334,6 +340,10 @@
     <Page Include="Controls\StatusUpdate\ImageStatusUpdate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\BlockListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -420,6 +430,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ShareLocation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UnblockedUsersPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
