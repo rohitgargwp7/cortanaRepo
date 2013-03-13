@@ -690,6 +690,12 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            if (obj == null)
+            {
+                Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
+                return;
+            }
+
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -773,7 +779,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
-                    if (co != null)
+                    if (co != null && !App.ViewModel.IsPending(co.Msisdn))
                     {
                         FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         App.ViewModel.StatusList.Insert(0, frs);
@@ -849,9 +855,12 @@ namespace windows_client.View
             else if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
-                int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+                if (sm == null)
+                    return;
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
@@ -861,6 +870,21 @@ namespace windows_client.View
                     }
                     else
                     {
+                        ContactInfo ci = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(sm.Msisdn))
+                            ci = App.ViewModel.ContactsCache[sm.Msisdn];
+                        if (ci != null)
+                        {
+                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                return;
+                        }
+                        else
+                        {
+                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(sm.Msisdn);
+                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                return;
+                        }
+                        // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
                             FreshStatusUpdates.Add(sm);
@@ -972,7 +996,10 @@ namespace windows_client.View
                         ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(ms);
                         if (c != null)
                         {
-                            hikeContactList.Remove(c);
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                hikeContactList.Remove(c);
+                            });
                         }
                     }
                 }
@@ -1827,6 +1854,23 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
+                    if (statusMessagesFromDB[i].Msisdn != App.MSISDN)
+                    {
+                        ContactInfo ci = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(statusMessagesFromDB[i].Msisdn))
+                            ci = App.ViewModel.ContactsCache[statusMessagesFromDB[i].Msisdn];
+                        if (ci != null)
+                        {
+                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                continue;
+                        }
+                        else
+                        {
+                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(statusMessagesFromDB[i].Msisdn);
+                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                continue;
+                        }
+                    }
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }

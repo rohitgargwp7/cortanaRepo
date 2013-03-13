@@ -65,6 +65,7 @@ namespace windows_client.utils
                     else
                     {
                         cn = UsersTableUtils.getContactInfoFromMSISDN(status.Msisdn);
+                        cn.FriendStatus = FriendsTableUtils.FriendStatusEnum.FRIENDS;
                         App.ViewModel.ContactsCache[status.Msisdn] = cn;
                     }
                     userName = cn != null ? cn.Name : status.Msisdn;
