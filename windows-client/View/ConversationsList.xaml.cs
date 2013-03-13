@@ -857,7 +857,7 @@ namespace windows_client.View
                 StatusMessage sm = obj as StatusMessage;
                 if (sm == null)
                     return;
-                
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
@@ -870,7 +870,9 @@ namespace windows_client.View
                     }
                     else
                     {
-                        ContactInfo ci = App.ViewModel.ContactsCache[sm.Msisdn];
+                        ContactInfo ci = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(sm.Msisdn))
+                            ci = App.ViewModel.ContactsCache[sm.Msisdn];
                         if (ci != null)
                         {
                             if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
@@ -1846,6 +1848,23 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
+                    if (statusMessagesFromDB[i].Msisdn != App.MSISDN)
+                    {
+                        ContactInfo ci = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(statusMessagesFromDB[i].Msisdn))
+                            ci = App.ViewModel.ContactsCache[statusMessagesFromDB[i].Msisdn];
+                        if (ci != null)
+                        {
+                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                continue;
+                        }
+                        else
+                        {
+                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(statusMessagesFromDB[i].Msisdn);
+                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                continue;
+                        }
+                    }
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }
