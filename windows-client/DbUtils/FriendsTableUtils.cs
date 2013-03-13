@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace windows_client.DbUtils
 {
-    class FriendsTableUtils
+    public class FriendsTableUtils
     {
         public enum FriendStatusEnum : byte
         {
@@ -19,7 +19,8 @@ namespace windows_client.DbUtils
             REQUEST_RECIEVED,
             UNFRIENDED_BY_YOU,
             IGNORED,
-            FRIENDS
+            FRIENDS,
+            NOT_FRIENDS //  this is just to signify that there is no 2 way friendship
         }
 
         public static string FRIENDS_DIRECTORY = "FRIENDS";
@@ -57,6 +58,8 @@ namespace windows_client.DbUtils
                                 }
                                 file.Seek(0, SeekOrigin.Begin);
                                 file.WriteByte((byte)friendStatus);
+                                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                                    App.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatus;
                             }
                         }
                     }
@@ -109,6 +112,8 @@ namespace windows_client.DbUtils
                     {
                         store.DeleteFile(fileName);
                     }
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        App.ViewModel.ContactsCache[msisdn].FriendStatus = FriendStatusEnum.NOT_FRIENDS;
                 }
                 catch (Exception ex)
                 {

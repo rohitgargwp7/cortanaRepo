@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using windows_client.Misc;
 using System.Text;
+using windows_client.DbUtils;
 
 namespace windows_client.Model
 {
@@ -31,7 +32,6 @@ namespace windows_client.Model
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux
         private byte _nuxScore;//for Nux
-        //it significantly improves update performance
 
         # region Users Table Members
 
@@ -428,6 +428,12 @@ namespace windows_client.Model
                 if (value != _avatar)
                     _avatar = value;
             }
+        }
+
+        public FriendsTableUtils.FriendStatusEnum FriendStatus
+        {
+            get;
+            set;
         }
 
         public BitmapImage AvatarImage

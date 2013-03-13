@@ -41,6 +41,11 @@ namespace windows_client.Model
         {
         }
 
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id,bool isUnRead)
+            : this(msisdn, msg, type, mappedId, ts, id, null, isUnRead)
+        {
+        }
+
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long msgId, string mood, bool isUnread)
         {
             _msisdn = msisdn;
