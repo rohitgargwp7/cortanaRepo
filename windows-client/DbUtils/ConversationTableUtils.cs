@@ -190,8 +190,9 @@ namespace windows_client.DbUtils
                     App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_CONVERSATIONS, out convs);
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_CONVERSATIONS, convs - 1);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("ConversationTableUtils :: deleteConversation : deleteConversation , Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -282,7 +283,10 @@ namespace windows_client.DbUtils
                         if (store.FileExists(FileName))
                             store.DeleteFile(FileName);
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : DeletingFile , Exception : " + ex.StackTrace);
+                    }
                     try
                     {
                         using (var file = store.OpenFile(FileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
@@ -308,31 +312,37 @@ namespace windows_client.DbUtils
                             file.Dispose();
                         }
                     }
-                    catch (Exception e)
+
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception while writing file : " + e.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : writing file , Exception : " + ex.StackTrace);
                     }
+
                     try // TODO REVIEW
                     {
                         store.CopyFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs_bkp", true);
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : copying file , Exception : " + ex.StackTrace);
+                    }
                     try
                     {
                         store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("SAVE LIST BACKUP:: " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : SAVE LIST BACKUP , Exception : " + ex.StackTrace);
                         return;
                     }
+
                     try
                     {
                         store.MoveFile(CONVERSATIONS_DIRECTORY + "\\" + "_Convs", CONVERSATIONS_DIRECTORY + "\\" + "Convs");
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("SAVE LIST :: " + ex.StackTrace);
+                        Debug.WriteLine("ConversationTableUtils :: saveConvObjectList : save list, Exception : " + ex.StackTrace);
                     }
                     store.Dispose();
                 }
@@ -433,8 +443,9 @@ namespace windows_client.DbUtils
                             {
                                 count = reader.ReadInt32();
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                Debug.WriteLine("ConversationTableUtils :: getAllConvs : reading count , Exception : " + ex.StackTrace);
                             }
                             if (count > 0)
                             {
@@ -453,8 +464,9 @@ namespace windows_client.DbUtils
                                         else
                                             item.ReadVer_Latest(reader);
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
+                                        Debug.WriteLine("ConversationTableUtils :: getAllConvs : reading file , Exception : " + ex.StackTrace);
                                         item = null;
                                     }
                                     if (IsValidConv(item))
@@ -469,7 +481,10 @@ namespace windows_client.DbUtils
                             file.Close();
                             file.Dispose();
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ConversationTableUtils :: getAllConvs : file dispose, Exception : " + ex.StackTrace);
+                        }
                     }
                     store.Dispose();
                 }
@@ -505,7 +520,7 @@ namespace windows_client.DbUtils
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Exception while reading Conversations : {0}", ex.StackTrace);
+                Debug.WriteLine("ConversationTableUtils :: IsValidConv : IsValidConv, Exception : " + ex.StackTrace);
                 return false;
             }
         }
@@ -523,10 +538,12 @@ namespace windows_client.DbUtils
                     {
                         files = store.GetFileNames(CONVERSATIONS_DIRECTORY + "\\*");
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("ConversationTableUtils :: deleteAllConversationsOld : get file Names, Exception : " + ex.StackTrace);
                         files = null;
                     }
+
                     if (files == null)
                         return;
                     foreach (string fileName in files)
@@ -537,10 +554,12 @@ namespace windows_client.DbUtils
                                 continue;
                             store.DeleteFile(CONVERSATIONS_DIRECTORY + "\\" + fileName);
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             Debug.WriteLine("File {0} does not exist.", CONVERSATIONS_DIRECTORY + "\\" + fileName);
+                            Debug.WriteLine("ConversationTableUtils :: deleteAllConversationsOld : delete file, Exception : " + ex.StackTrace);
                         }
+
                     }
                 }
             }

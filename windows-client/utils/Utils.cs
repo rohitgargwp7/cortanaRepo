@@ -249,6 +249,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("Utils ::  computeHash :  computeHash , Exception : " + ex.StackTrace);
             }
             return rethash;
         }

@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Misc;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -131,8 +132,9 @@ namespace windows_client.Model
             {
                 count = reader.ReadInt32();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Analytics :: Read : read Count, Exception : " + ex.StackTrace);
             }
             string key;
             int value = -1;
@@ -150,8 +152,9 @@ namespace windows_client.Model
                     if (!String.IsNullOrEmpty(key) && value > 0)
                         eventMap[key] = value;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Analytics :: Read : read item, Exception : " + ex.StackTrace);
                 }
             }
         }

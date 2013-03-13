@@ -67,8 +67,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetAllHikeContacts(context).Count();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: GetAllHikeContactsCount : GetAllHikeContactsCount, Exception : " + ex.StackTrace);
                     res = 0;
                 }
                 return res;
@@ -93,8 +94,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetAllHikeContacts(context).ToList<ContactInfo>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: GetAllHikeContacts : GetAllHikeContacts, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return res;
@@ -109,8 +111,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetAllHikeContactsOrdered(context).ToList<ContactInfo>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: GetAllHikeContactsOrdered : GetAllHikeContactsOrdered, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return res;
@@ -125,8 +128,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetAllContacts(context).ToList<ContactInfo>();
                 }
-                catch (ArgumentNullException)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: getAllContacts : getAllContacts, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return (res == null || res.Count == 0) ? null : res;
@@ -160,8 +164,9 @@ namespace windows_client.DbUtils
                 {
                     res = DbCompiledQueries.GetContactFromMsisdn(context, msisdn).ToList<ContactInfo>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("UserTableUtils :: getContactInfoFromMSISDN : getContactInfoFromMSISDN, Exception : " + ex.StackTrace);
                     res = null;
                 }
                 return (res == null || res.Count == 0) ? null : res.First();
@@ -195,9 +200,9 @@ namespace windows_client.DbUtils
                 {
                     context.SubmitChanges();
                 }
-                catch (DuplicateKeyException dke)
+                catch (Exception ex)
                 {
-                    dke.ToString();
+                    Debug.WriteLine("UserTableUtils :: addBlockList : addBlockList, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -306,7 +311,8 @@ namespace windows_client.DbUtils
             }
             catch (ChangeConflictException e)
             {
-                Console.WriteLine(e.Message);
+                Debug.WriteLine("UserTableUtils :: SubmitWithConflictResolve : SubmitWithConflictResolve, Exception : " + e.StackTrace);
+
                 // Automerge database values for members that client
                 // has not modified.
                 foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -333,7 +339,10 @@ namespace windows_client.DbUtils
                             if (store.FileExists(fileName))
                                 store.DeleteFile(fileName);
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("UserTableUtils :: SaveContactsToFile : delete file, Exception : " + ex.StackTrace);
+                        }
                         try
                         {
                             using (var file = store.OpenFile(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.ReadWrite))
@@ -354,9 +363,9 @@ namespace windows_client.DbUtils
                                 file.Dispose();
                             }
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            Debug.WriteLine("Exception while writing file : " + e.StackTrace);
+                            Debug.WriteLine("UserTableUtils :: SaveContactsToFile : write file, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -394,9 +403,9 @@ namespace windows_client.DbUtils
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception while reading file : " + e.StackTrace);
+                        Debug.WriteLine("UserTableUtils :: GetContactsFromFile : read file, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -418,7 +427,7 @@ namespace windows_client.DbUtils
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine("Error while deleting contacts :" + ex.StackTrace);
+                        Debug.WriteLine("UserTableUtils :: DeleteContactsFile : delete file, Exception : " + ex.StackTrace);
                     }
                 }
             }

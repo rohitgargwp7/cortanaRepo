@@ -63,9 +63,9 @@ namespace windows_client.DbUtils
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception while settin friend status,{0}", e.StackTrace);
+                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : SetFriendStatus, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -93,9 +93,9 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while getting friend status,{0}", e.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return friendStatus;
@@ -115,9 +115,9 @@ namespace windows_client.DbUtils
                     if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
                         App.ViewModel.ContactsCache[msisdn].FriendStatus = FriendStatusEnum.NOT_FRIENDS;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while deleting friend status,{0}", e.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: DeleteFriend :DeleteFriend, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -138,16 +138,17 @@ namespace windows_client.DbUtils
                                 {
                                     store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
                                 }
-                                catch (Exception e)
+                                catch (Exception ex)
                                 {
-                                    Debug.WriteLine("Exception while deleting all friendsDb, FileName :{0} , Exception :{1}", fileName, e.StackTrace);
+                                    Debug.WriteLine("Exception while deleting all friendsDb, FileName :{0} ", fileName);
+                                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : Individual Files, Exception : " + ex.StackTrace);
                                 }
                             }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while deleting all friendsDb,{0}", e.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : DeleteAllFriends, Exception : " + ex.StackTrace);
                 }
             }
         }

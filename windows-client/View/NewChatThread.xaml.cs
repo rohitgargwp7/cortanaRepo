@@ -187,7 +187,7 @@ namespace windows_client.View
                 object obj = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
                 if (obj is ConversationListObject)
                     statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
-                
+
                 else // obj is ContactInfo obj
                     statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = obj;
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
@@ -1198,7 +1198,10 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml ::  removeListeners , Exception : " + ex.StackTrace);
+            }
         }
         #endregion
 
@@ -1213,7 +1216,10 @@ namespace windows_client.View
             {
                 phoneCallTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml ::  callUser_Click , Exception : " + ex.StackTrace);
+            }
         }
 
         private void addUser_Click(object sender, EventArgs e)
@@ -1439,8 +1445,9 @@ namespace windows_client.View
                 {
                     mediaPlayerLauncher.Show();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
                 }
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
@@ -1773,7 +1780,7 @@ namespace windows_client.View
                             img = UI_Utils.Instance.createImageFromBytes(imageBytes);
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage, img);
                             chatBubble.setTapEvent(statusBubble_Tap);
-                            this.MessageList.Children.Insert(insertPosition,chatBubble);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble);
                             insertPosition++;
                         }
                         catch (Exception e)
@@ -1790,7 +1797,7 @@ namespace windows_client.View
                         {
                             MyChatBubble chatBubble = new StatusChatBubble(convMessage);
                             chatBubble.setTapEvent(statusBubble_Tap);
-                            this.MessageList.Children.Insert(insertPosition,chatBubble);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble);
                             insertPosition++;
                         }
                         catch (Exception e)
@@ -2224,8 +2231,9 @@ namespace windows_client.View
                 photoChooserTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("NewChatThread.xaml :: sendImage_Tap , Exception : " + ex.StackTrace);
             }
         }
         private void clickPhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2236,8 +2244,9 @@ namespace windows_client.View
                 cameraCaptureTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("NewChatThread.xaml :: clickPhoto_Tap , Exception : " + ex.StackTrace);
             }
         }
         private void sendAudio_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2516,7 +2525,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                //logger.("ConvMessage", "invalid json message", e);
+                Debug.WriteLine("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
             }
             object[] publishData = new object[2];
             publishData[0] = obj;
@@ -2679,9 +2688,9 @@ namespace windows_client.View
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_CONFIRMED);
                     }
                 }
-                catch (KeyNotFoundException e)
+                catch (Exception ex)
                 {
-                    //logger.Info("NewChatThread", "Message Delivered Read Exception " + e);
+                    Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,SERVER_RECEIVED_MSG Exception : " + ex.StackTrace);
                 }
             }
 
@@ -2705,9 +2714,9 @@ namespace windows_client.View
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED);
                     }
                 }
-                catch (KeyNotFoundException e)
+                catch (Exception ex)
                 {
-                    //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                    Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED, Exception : " + ex.StackTrace);
                 }
             }
 
@@ -2735,9 +2744,9 @@ namespace windows_client.View
                             msgMap.Remove(ids[i]);
                         }
                     }
-                    catch (KeyNotFoundException e)
+                    catch (Exception ex)
                     {
-                        //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                        Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED_READ Exception : " + ex.StackTrace);
                         continue;
                     }
                 }
@@ -3132,7 +3141,10 @@ namespace windows_client.View
             {
                 sms.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml :: smsUser_Click Exception : " + ex.StackTrace);
+            }
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3284,9 +3296,9 @@ namespace windows_client.View
                 }
                 AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                //That's okay, no results//
+                Debug.WriteLine("NewChatThread.xaml :: contactSearchCompleted_Callback, Exception : " + ex.StackTrace);
             }
         }
 

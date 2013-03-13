@@ -52,9 +52,9 @@ namespace windows_client.Controls
                 }
                 return sentChatBubble;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Sent chat bubble :: " + e.StackTrace);
+                Debug.WriteLine("SentChatBubble :: getSplitChatBubbles : getSplitChatBubbles , Exception : " + ex.StackTrace);
                 return null;
             }
         }

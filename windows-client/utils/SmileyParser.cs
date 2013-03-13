@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using windows_client.utils;
 using Microsoft.Phone.Tasks;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -221,7 +222,7 @@ namespace windows_client
         }
 
         private string emailRegexPattern = @"(([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+))";
-        private string hyperLinkRegexPattern = @"((https?://)?[\w\-\.]+\.([a-zA-z]{2,3})[?_%@!:/\+=&\w\-\.]*)"; 
+        private string hyperLinkRegexPattern = @"((https?://)?[\w\-\.]+\.([a-zA-z]{2,3})[?_%@!:/\+=&\w\-\.]*)";
         private string phoneNumberRegexPattern = @"\b(\+?[\d-]{8,13})";
 
         private Regex emailRegex;
@@ -629,7 +630,10 @@ namespace windows_client
             {
                 phoneCallTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("SmileyParser:: selectUserBtn_Click : " + ex.StackTrace);
+            }
         }
 
         public Paragraph LinkifyAll(string message)
@@ -685,11 +689,13 @@ namespace windows_client
                         MyLink.Inlines.Add(regexMatch);
                         p.Inlines.Add(MyLink);
                     }
-                    catch (UriFormatException)
+                    catch (UriFormatException ex)
                     {
                         Run r = new Run();
                         r.Text = regexMatch;
                         p.Inlines.Add(r);
+
+                        Debug.WriteLine("SmileyParser:: LinkifyAll : " + ex.StackTrace);
                     }
                 }
                 else

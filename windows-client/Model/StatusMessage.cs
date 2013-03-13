@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -215,8 +216,10 @@ namespace windows_client.Model
                 {
                     PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
                 }
-                catch (Exception)
-                { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("StatusMessage ::  NotifyPropertyChanging : NotifyPropertyChanging, Exception : " + ex.StackTrace);
+                }
             }
         }
         #endregion

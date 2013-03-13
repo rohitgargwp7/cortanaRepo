@@ -19,6 +19,7 @@ using windows_client.DbUtils;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
 using windows_client.Languages;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -52,7 +53,7 @@ namespace windows_client
 
         public void downloadFile(MyChatBubble chatBubble, string msisdn)
         {
-            Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + chatBubble.FileAttachment.FileKey), 
+            Uri downloadUriSource = new Uri(Uri.EscapeUriString(HikeConstants.FILE_TRANSFER_BASE_URL + "/" + chatBubble.FileAttachment.FileKey),
                 UriKind.RelativeOrAbsolute);
 
             string relativeFilePath = "/" + msisdn + "/" + Convert.ToString(chatBubble.MessageId);
@@ -75,10 +76,12 @@ namespace windows_client
             }
             catch (InvalidOperationException ex)
             {
+                Debug.WriteLine("FileTransfer :: downloadFile : downloadFile, Exception : " + ex.StackTrace);
                 MessageBox.Show(AppResources.FileTransfer_ErrorMsgBoxText + ex.Message);
             }
             catch (Exception e)
             {
+                Debug.WriteLine("FileTransfer :: downloadFile : downloadFile, Exception : " + e.StackTrace);
                 MessageBox.Show(AppResources.FileTransfer_ErrorMsgBoxText);
             }
         }
@@ -95,7 +98,7 @@ namespace windows_client
                         // removed by the system.
                         ReceivedChatBubble chatBubble;
                         requestIdChatBubbleMap.TryGetValue(transfer.RequestId, out chatBubble);
-                        if(chatBubble !=null)
+                        if (chatBubble != null)
                             chatBubble.setAttachmentState(Attachment.AttachmentState.COMPLETED);
                         RemoveTransferRequest(transfer.RequestId);
                         //RemoveTransferRequest(transfer.RequestId);
@@ -118,7 +121,7 @@ namespace windows_client
                                 isoStore.MoveFile(transfer.DownloadLocation.OriginalString, destinationPath);
                                 isoStore.DeleteFile(transfer.DownloadLocation.OriginalString);
 
-                                if (chatBubble!=null && chatBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
+                                if (chatBubble != null && chatBubble.FileAttachment.ContentType.Contains(HikeConstants.IMAGE))
                                 {
                                     IsolatedStorageFileStream myFileStream = isoStore.OpenFile(destinationPath, FileMode.Open, FileAccess.Read);
                                     MediaLibrary library = new MediaLibrary();
@@ -148,8 +151,10 @@ namespace windows_client
                                 // Handle TransferError if one exists.
                             }
                         }
-                        catch (InvalidOperationException)
-                        { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("FileTransfer :: process transfer : process transfer, Exception : " + ex.StackTrace);
+                        }
                     }
                     break;
 
@@ -194,8 +199,10 @@ namespace windows_client
                         BackgroundTransferRequest transferRequest = BackgroundTransferService.Find(e.Request.RequestId);
                         BackgroundTransferService.Remove(transferRequest);
                     }
-                    catch (InvalidOperationException)
-                    { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("FileTransfer :: transfer_TransferProgressChanged: transfer_TransferProgressChanged, Exception : " + ex.StackTrace);
+                    }
                 }
             }
         }
@@ -209,9 +216,9 @@ namespace windows_client
             {
                 BackgroundTransferService.Remove(transferToRemove);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                // Handle the exception.
+                Debug.WriteLine("FileTransfer :: RemoveTransferRequest : process transfer, Exception : " + ex.StackTrace);
             }
         }
 

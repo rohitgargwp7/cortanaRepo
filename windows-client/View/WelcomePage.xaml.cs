@@ -98,7 +98,10 @@ namespace windows_client
                     MiscDBUtil.clearDatabase();
                 //App.clearAllDatabasesAsync(); // this is async function and runs on the background thread.
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WelcomePage.xaml :: getStarted_click, Exception : " + ex.StackTrace);
+            }
             isClicked = true;
             progressBar.Opacity = 1;
             progressBar.IsEnabled = true;
@@ -180,7 +183,10 @@ namespace windows_client
             {
                 webBrowserTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("WelcomePAge.xaml :: Privacy_Tap, Exception : " + ex.StackTrace);
+            }
         }
     }
 }

@@ -129,8 +129,9 @@ namespace windows_client.Mqtt
                 }
                 setConnectionStatus(MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Debug.WriteLine("HIkeMqttManager ::  disconnectFromBroker : disconnectFromBroker, Exception : " + ex.StackTrace);
             }
         }
 
@@ -160,10 +161,12 @@ namespace windows_client.Mqtt
                 setConnectionStatus(MQTTConnectionStatus.CONNECTING);
                 mqttConnection.connect();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 /* couldn't connect, schedule a ping even earlier? */
+                Debug.WriteLine("HIkeMqttManager ::  connectToBroker : connectToBroker, Exception : " + ex.StackTrace);
             }
+
         }
 
         public bool isConnected()
@@ -190,9 +193,9 @@ namespace windows_client.Mqtt
                     mqttConnection.unsubscribe(topics[i], null);
                 }
             }
-            catch (ArgumentException e)
+            catch (Exception ex)
             {
-                //			Log.e("HikeMqttManager", "IllegalArgument trying to unsubscribe", e);
+                Debug.WriteLine("HIkeMqttManager ::  unsubscribeFromTopics : unsubscribeFromTopics, Exception : " + ex.StackTrace);
             }
         }
 
@@ -248,9 +251,9 @@ namespace windows_client.Mqtt
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //connect();
+                Debug.WriteLine("HIkeMqttManager ::  ping : ping, Exception : " + ex.StackTrace);
             }
         }
 
@@ -285,8 +288,9 @@ namespace windows_client.Mqtt
                 };
                 bw.RunWorkerAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("HIkeMqttManager ::  connect : connect, Exception : " + ex.StackTrace);
                 connectInBackground();
             }
         }
@@ -294,9 +298,9 @@ namespace windows_client.Mqtt
         private void connectAgain()
         {
             if (!isConnected() && !isConnecting() && connectionStatus != MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET)
-            { 
+            {
                 connect();
-            }        
+            }
         }
 
         private static object lockObj = new object();
@@ -336,8 +340,9 @@ namespace windows_client.Mqtt
                     {
                         MqttDBUtils.addSentMessage(packet);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("HIkeMqttManager ::  send : send, Exception : " + ex.StackTrace);
                     }
                 }
                 this.connect();

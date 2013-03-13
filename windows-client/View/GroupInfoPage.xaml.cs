@@ -186,8 +186,9 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.USER_JOINED, this);
                 mPubSub.removeListener(HikePubSub.USER_LEFT, this);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Group Info Page ::  removeListeners , Exception : " + ex.StackTrace);
             }
         }
 
@@ -359,7 +360,10 @@ namespace windows_client.View
                     {
                         photoChooserTask.Show();
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Group Info Page ::  onGroupProfileTap , Exception : " + ex.StackTrace);
+                    }
                     isProfilePicTapped = true;
                 }
             }
@@ -620,9 +624,9 @@ namespace windows_client.View
                 }
                 AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                //That's okay, no results//
+                Debug.WriteLine("Group Info Page ::  contactSearchCompleted_Callback , Exception : " + ex.StackTrace);
             }
         }
 

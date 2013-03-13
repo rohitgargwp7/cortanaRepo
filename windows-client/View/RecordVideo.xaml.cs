@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using windows_client.Languages;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -355,6 +356,7 @@ namespace windows_client.View
             // If recording fails, display an error.
             catch (Exception e)
             {
+                Debug.WriteLine("RecoedVideo.xaml :: StartVideoRecording, Exception : " + e.StackTrace);
                 this.Dispatcher.BeginInvoke(delegate()
                 {
                     txtDebug.Text = "ERROR: " + e.Message.ToString();
@@ -398,6 +400,7 @@ namespace windows_client.View
             // If stop fails, display an error.
             catch (Exception e)
             {
+                Debug.WriteLine("RecoedVideo.xaml :: StopVideoRecording, Exception : " + e.StackTrace);
                 this.Dispatcher.BeginInvoke(delegate()
                 {
                     txtDebug.Text = "ERROR: " + e.Message.ToString();
@@ -429,6 +432,7 @@ namespace windows_client.View
             // If preview fails, display an error.
             catch (Exception e)
             {
+                Debug.WriteLine("RecoedVideo.xaml :: StartVideoPreview, Exception : " + e.StackTrace);
                 this.Dispatcher.BeginInvoke(delegate()
                 {
                     txtDebug.Text = "ERROR: " + e.Message.ToString();

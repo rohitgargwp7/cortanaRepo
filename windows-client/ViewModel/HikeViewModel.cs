@@ -10,6 +10,7 @@ using windows_client.Controls;
 using windows_client.View;
 using Microsoft.Phone.Controls;
 using windows_client.Controls.StatusUpdate;
+using System.Diagnostics;
 
 
 namespace windows_client.ViewModel
@@ -21,7 +22,7 @@ namespace windows_client.ViewModel
 
         public static string NUMBER_OF_FAVS = "NoFavs";
 
-        private Dictionary<string,ConversationListObject> _pendingReq = null;
+        private Dictionary<string, ConversationListObject> _pendingReq = null;
 
         private ObservableCollection<ConversationListObject> _favList = null;
 
@@ -91,7 +92,7 @@ namespace windows_client.ViewModel
             set;
         }
 
-        public Dictionary<string,ConversationListObject> PendingRequests
+        public Dictionary<string, ConversationListObject> PendingRequests
         {
             get
             {
@@ -115,7 +116,7 @@ namespace windows_client.ViewModel
         public HikeViewModel(List<ConversationListObject> convList)
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
-            _pendingReq = new Dictionary<string,ConversationListObject>();
+            _pendingReq = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
 
             List<ConversationBox> listConversationBox = new List<ConversationBox>();
@@ -144,7 +145,7 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationBox>();
             _convMap = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
-            _pendingReq = new Dictionary<string,ConversationListObject>();
+            _pendingReq = new Dictionary<string, ConversationListObject>();
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
@@ -249,8 +250,10 @@ namespace windows_client.ViewModel
                     ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
                     convObj.IsOnhike = HikePubSub.USER_JOINED == type;
                 }
-                catch (KeyNotFoundException)
+
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("HikeViewModel:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -284,7 +287,7 @@ namespace windows_client.ViewModel
                 _statusList.Clear();
         }
 
-        private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string,ContactInfo>();
+        private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();
         public Dictionary<string, ContactInfo> ContactsCache
         {
             get

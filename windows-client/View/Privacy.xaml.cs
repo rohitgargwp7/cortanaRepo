@@ -157,14 +157,18 @@ namespace windows_client.View
                     progress.Hide(LayoutRoot);
                     progress = null;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,hideProgress, Exception : " + ex.StackTrace);
                 }
                 try
                 {
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,Navigate, Exception : " + ex.StackTrace);
+                }
             });
 
 

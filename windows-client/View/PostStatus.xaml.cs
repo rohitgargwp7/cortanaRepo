@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Model;
 using windows_client.DbUtils;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -88,15 +89,16 @@ namespace windows_client.View
                         string message = statusData["msg"].ToString();
                         // status should be in read state when posted yourself
                         StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                            TimeUtils.getCurrentTimeStamp(), -1,false);
+                            TimeUtils.getCurrentTimeStamp(), -1, false);
                         StatusMsgsTable.InsertStatusMsg(sm);
                         App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
 
                         if (NavigationService.CanGoBack)
                             NavigationService.GoBack();
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
                     }
                 });
             }

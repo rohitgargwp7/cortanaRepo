@@ -787,8 +787,9 @@ namespace windows_client.utils
                     return msLargeImage.ToArray();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ImageUtils ::  BitmapImgToByteArray :  BitmapImgToByteArray , Exception : " + ex.StackTrace);
                 return null;
             }
         }

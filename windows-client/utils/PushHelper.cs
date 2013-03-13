@@ -79,11 +79,13 @@ namespace windows_client.utils
                 LatestPushToken = null;
                 scheduler = null;
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
+                Debug.WriteLine("Push Helper :: closePushnotifications : " + e.StackTrace);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.WriteLine("Push Helper :: closePushnotifications : " + e.StackTrace);
             }
         }
 
