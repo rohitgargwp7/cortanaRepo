@@ -265,7 +265,7 @@ namespace windows_client
                 }
                 catch (FormatException e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER:: Exception occured while parsing msgId. Exception : " + e);
+                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}",jsonObj.ToString(Formatting.None) ,e.StackTrace);
                     msgID = -1;
                     return;
                 }
