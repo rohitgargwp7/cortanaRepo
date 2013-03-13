@@ -1644,7 +1644,6 @@ namespace windows_client.View
                         if (_notificationCount == 0 && value > 0)
                         {
                             notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
-                            notificationCountTxtBlk.Text = value.ToString();
                             App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
                         }
                         else if (_notificationCount > 0 && value == 0)
@@ -1653,6 +1652,8 @@ namespace windows_client.View
                             notificationCountTxtBlk.Text = "";
                             App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, 0);
                         }
+                        if(value > 0)
+                            notificationCountTxtBlk.Text = value.ToString();
                         _notificationCount = value;
                     });
                 }
@@ -1671,7 +1672,7 @@ namespace windows_client.View
                     StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i],
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
-            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - 1]);
+            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - 1   ]);
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
