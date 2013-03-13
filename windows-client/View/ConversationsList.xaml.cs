@@ -996,7 +996,10 @@ namespace windows_client.View
                         ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(ms);
                         if (c != null)
                         {
-                            hikeContactList.Remove(c);
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                hikeContactList.Remove(c);
+                            });
                         }
                     }
                 }
