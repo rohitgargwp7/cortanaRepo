@@ -687,6 +687,12 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            if (obj == null)
+            {
+                Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
+                return;
+            }
+
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -767,7 +773,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
-                    if (co != null)
+                    if (co != null && !App.ViewModel.IsPending(co.Msisdn))
                     {
                         FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         App.ViewModel.StatusList.Insert(0, frs);
@@ -842,6 +848,8 @@ namespace windows_client.View
             else if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
+                if (sm == null)
+                    return;
                 int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
