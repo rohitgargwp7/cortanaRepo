@@ -770,18 +770,11 @@ namespace windows_client.View
                     if (co != null)
                     {
                         FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
-                        if (launchPagePivot.SelectedIndex == 3)
+                        if (launchPagePivot.SelectedIndex != 3)
                         {
-                            freshFriendRequests.Add(frs);
-                            RefreshBarCount++;//persist in this.State. it will be cleared 
-                        }
-                        else
-                        {
-                            App.ViewModel.StatusList.Insert(0, frs);
                             NotificationCount++;
                         }
-
-
+                        App.ViewModel.StatusList.Insert(0, frs);
                     }
                 });
             }
@@ -1570,8 +1563,6 @@ namespace windows_client.View
             }
         }
 
-        private List<FriendRequestStatus> freshFriendRequests = new List<FriendRequestStatus>();
-
         private int _refreshBarCount = 0;
         private int RefreshBarCount
         {
@@ -1595,7 +1586,6 @@ namespace windows_client.View
                             refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
                             refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
                             FreshStatusUpdates.Clear();
-                            freshFriendRequests.Clear();
                         }
                         if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
                         {
@@ -1666,10 +1656,6 @@ namespace windows_client.View
 
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            for (int i = 0; i < freshFriendRequests.Count; i++)
-            {
-                App.ViewModel.StatusList.Insert(0, freshFriendRequests[i]);
-            }
             for (int i = 0; i < FreshStatusUpdates.Count; i++)
             {
                 App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
