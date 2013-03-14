@@ -130,29 +130,17 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0" Margin="0,0,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Image Source="/View/images/timeline_status.png" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31"/>
-                            <TextBlock x:Name="lastStatusTxtBlk" Grid.Column="1" Margin="12,0,0,0" TextWrapping="Wrap" FontSize="21" Foreground="#4f4f4f"/>
-                        </Grid>
 
-                        <Rectangle Grid.Row="1" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
+                        <TextBlock Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE FRIENDS"/>
 
-                        <TextBlock Grid.Row="2" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE FRIENDS"/>
-
-                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center">
+                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
                             <Image Source="images/favorites_heart.png" Height="90"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <TextBlock Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                         </StackPanel>
 
-                        <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" Tap="favourites_Tap" >
+                        <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="favourites_Tap" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
@@ -168,11 +156,11 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <Rectangle Grid.Row="4" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
+                        <Rectangle Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
 
-                        <TextBlock Grid.Row="5" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE CONTACTS"/>
+                        <TextBlock Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE CONTACTS"/>
 
-                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="6">
+                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5" >

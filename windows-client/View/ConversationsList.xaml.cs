@@ -64,7 +64,6 @@ namespace windows_client.View
 
             string lastStatus = "";
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
-            lastStatusTxtBlk.Text = lastStatus;
             int notificationCount = 0;
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
             NotificationCount = notificationCount;
@@ -852,7 +851,6 @@ namespace windows_client.View
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
-                        lastStatusTxtBlk.Text = sm.Message;
                         App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                             statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
