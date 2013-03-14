@@ -39,8 +39,15 @@ namespace windows_client.View
             appBar.Buttons.Add(postStatusIcon);
 
             postStatusPage.ApplicationBar = appBar;
-        }
 
+
+        }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            MoodsInitialiser.Instance.Initialise();
+            moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
+        }
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
             postStatusIcon.IsEnabled = false;
@@ -102,6 +109,39 @@ namespace windows_client.View
                     }
                 });
             }
+        }
+
+        private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void TwitterIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+            gridMood.Visibility = Visibility.Visible;
+            this.appBar.IsVisible = false;
+        }
+
+        private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (gridMood.Visibility == Visibility.Visible)
+            {
+                gridMood.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+                return;
+            }
+            base.OnBackKeyPress(e);
         }
     }
 }
