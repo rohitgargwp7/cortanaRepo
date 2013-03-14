@@ -316,12 +316,12 @@ namespace windows_client.View
                 try
                 {
                     serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
-                //todo:check
+                    //todo:check
                 }
                 catch (Exception ex)
-            {
-                Debug.WriteLine("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
-            }
+                {
+                    Debug.WriteLine("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
+                }
                 if (serverId != null)
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
@@ -367,7 +367,6 @@ namespace windows_client.View
                 {
                     statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
                 }
-                this.statusLLS.ItemsSource = statusList;
             }
             if (statusList.Count == 0)
             {
@@ -380,6 +379,8 @@ namespace windows_client.View
             }
             else
                 gridSmsUser.Visibility = Visibility.Collapsed;
+
+            this.statusLLS.ItemsSource = statusList;
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
