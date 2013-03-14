@@ -51,6 +51,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
+        <TextBlock x:Name="txtEmptyScreen" TextAlignment="Center" HorizontalAlignment="Center" Text="Yay it's empty :)" Visibility="Collapsed" Grid.Row="1" FontSize="22" FontFamily="Segoe WP Semilight"></TextBlock>
     </Grid>
 
 </phone:PhoneApplicationPage>

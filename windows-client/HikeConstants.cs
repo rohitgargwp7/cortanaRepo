@@ -230,6 +230,7 @@ namespace windows_client
         public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
         public static string UNREAD_UPDATES = "unUp";
 
+        public static string BLOCKLIST_PAGE = "blocklistPage";
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
         public static string LAST_STATUS = "lastStatus";
 

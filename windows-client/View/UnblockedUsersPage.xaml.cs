@@ -19,14 +19,14 @@ namespace windows_client.View
 {
     public partial class UnblockedUsersPage : PhoneApplicationPage
     {
-        List<ContactInfo> allContactsList = null;
+        List<ContactInfo> unblockedContacts = null;
         public ObservableCollection<Group<ContactInfo>> jumpList = null; // list that will contain the complete jump list
         bool xyz = true; // this is used to avoid double calling of Text changed function in Textbox
         private string charsEntered;
         Dictionary<string, ObservableCollection<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, ObservableCollection<Group<ContactInfo>>>();
         ObservableCollection<Group<ContactInfo>> glistFiltered = null;
         List<ContactInfo> listContactInfo = null;
-        
+
         public UnblockedUsersPage()
         {
             InitializeComponent();
@@ -34,36 +34,48 @@ namespace windows_client.View
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
-                allContactsList = UsersTableUtils.getAllContactsByGroup();
-                List<Blocked> listBlocked = UsersTableUtils.getBlockList();
-                FilterBlockedUsers(listBlocked);
+                Object obj;
+                if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.BLOCKLIST_PAGE, out  obj))
+                {
+                    BlockListPage blkListPage = obj as BlockListPage;
+                    if (blkListPage != null)
+                    {
+                        unblockedContacts = blkListPage.unblockedContacts;
+                    }
+                }
+                if (unblockedContacts == null)
+                {
+                    //in case it is null then fetch from db
+                    unblockedContacts = UsersTableUtils.getAllContactsByGroup();
+                    List<Blocked> listBlocked = UsersTableUtils.getBlockList();
+                    FilterBlockedUsers(listBlocked);
+                }
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
             {
-                jumpList = getGroupedList(allContactsList);
+                jumpList = getGroupedList(unblockedContacts);
                 contactsListBox.ItemsSource = jumpList;
                 shellProgress.IsVisible = false;
-
             };
         }
 
         private void FilterBlockedUsers(List<Blocked> blockedList)
         {
-            if (blockedList == null || blockedList.Count == 0 || allContactsList == null || allContactsList.Count == 0)
+            if (blockedList == null || blockedList.Count == 0 || unblockedContacts == null || unblockedContacts.Count == 0)
                 return;
             Dictionary<string, bool> dictBlocked = new Dictionary<string, bool>();
             foreach (Blocked bl in blockedList)
             {
                 dictBlocked.Add(bl.Msisdn, true);
             }
-            for (int i = allContactsList.Count - 1; i >= 0; i--)
+            for (int i = unblockedContacts.Count - 1; i >= 0; i--)
             {
-                if (dictBlocked.ContainsKey(allContactsList[i].Msisdn))
-                    allContactsList.RemoveAt(i);
+                if (dictBlocked.ContainsKey(unblockedContacts[i].Msisdn))
+                    unblockedContacts.RemoveAt(i);
             }
         }
-        
+
         #region GROUP CREATION FUNCTIONS
 
         private ObservableCollection<Group<ContactInfo>> getGroupedList(List<ContactInfo> allContactsList)
@@ -117,9 +129,9 @@ namespace windows_client.View
                 set;
             }
         }
-        
+
         #endregion
-        
+
         private void contactsListBox_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             //todo:handle tap of blocks
@@ -127,42 +139,27 @@ namespace windows_client.View
             if (c == null)
                 return;
             shellProgress.IsVisible = true;
-            BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += (s, a) =>
-            {
-                UsersTableUtils.block(c.Msisdn);
-            };
-            bw.RunWorkerAsync();
-            bw.RunWorkerCompleted += (s, a) =>
-            {
-                string ch = GetCaptionGroup(c);
-                // calculate the index into the list
-                int index = (ch == "#") ? 26 : ch[0] - 'a';
-                // and remove the entry
-                jumpList[index].Remove(c);
-                if (glistFiltered != null)
-                {
-                    glistFiltered[index].Remove(c);
-                }
-                if (listContactInfo == null)
-                    listContactInfo = new List<ContactInfo>() { c };
-                else
-                    listContactInfo.Add(c);
-                Object obj;
-                if (PhoneApplicationService.Current.State.TryGetValue("blocked", out obj))
-                {
-                    List<ContactInfo> list = obj as List<ContactInfo>;
-                    list.Add(c);
-                }
-                else
-                {
-                    PhoneApplicationService.Current.State["blocked"] = new List<ContactInfo>() { c };
-                }
-                shellProgress.IsVisible = false;
-            };
+            App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, c);
 
+            string ch = GetCaptionGroup(c);
+            int index = (ch == "#") ? 26 : ch[0] - 'a';
+            jumpList[index].Remove(c);
+
+            if (glistFiltered != null)
+            {
+                glistFiltered[index].Remove(c);
+            }
+
+            //removed contacts to be removed from search dictionary
+            if (listContactInfo == null)
+                listContactInfo = new List<ContactInfo>() { c };
+            else
+                listContactInfo.Add(c);
+
+            contactsListBox.SelectedItem = null;
+            shellProgress.IsVisible = false;
         }
-       
+
         #region SEARCH HELPER FUNCTIONS
 
         private void enterNameTxt_TextChanged(object sender, TextChangedEventArgs e)
@@ -181,7 +178,6 @@ namespace windows_client.View
             charsEntered = charsEntered.Trim();
             if (String.IsNullOrWhiteSpace(charsEntered))
             {
-
                 contactsListBox.ItemsSource = jumpList;
                 return;
             }
