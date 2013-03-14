@@ -1321,6 +1321,10 @@
   </data>
   <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
     <value>{0} new update</value>
+
+  </data>
+  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
+    <value>Confirm your number</value>
   </data>
   <data name="TimeUtils_Moments_Ago" xml:space="preserve">
     <value>moments ago</value>
