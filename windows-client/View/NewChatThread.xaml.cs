@@ -379,6 +379,9 @@ namespace windows_client.View
                     ManagePage();
                     isFirstLaunch = false;
                 }
+                else //removing here because it may be case that user pressed back without selecting any user
+                    PhoneApplicationService.Current.State.Remove(HikeConstants.FORWARD_MSG);
+
                 /* This is called only when you add more participants to group */
                 if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IS_EXISTING_GROUP))
                 {
@@ -387,6 +390,7 @@ namespace windows_client.View
                     PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                     processGroupJoin(false);
                 }
+
             }
 
             #endregion
