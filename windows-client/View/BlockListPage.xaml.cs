@@ -69,7 +69,7 @@ namespace windows_client.View
         {
             if (obj == null)
             {
-                Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
+                Debug.WriteLine("BlockListPage :: OnEventReceived : Object received is null");
                 return;
             }
             if (type == HikePubSub.BLOCK_USER)
