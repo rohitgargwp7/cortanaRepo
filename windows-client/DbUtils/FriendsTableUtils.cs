@@ -29,44 +29,78 @@ namespace windows_client.DbUtils
 
         public static void SetFriendStatus(string msisdn, FriendStatusEnum friendStatus)
         {
-            if (friendStatus > FriendStatusEnum.NOT_SET)
+            lock (readWriteLock)
             {
-                lock (readWriteLock)
+                try
                 {
-                    try
+                    string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                        using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                        if (!store.DirectoryExists(FRIENDS_DIRECTORY))
                         {
-                            if (!store.DirectoryExists(FRIENDS_DIRECTORY))
+                            store.CreateDirectory(FRIENDS_DIRECTORY);
+                        }
+                        long ts = 0;
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite,FileShare.ReadWrite))
+                        {
+                            if (file.Length > 0)
                             {
-                                store.CreateDirectory(FRIENDS_DIRECTORY);
-                            }
-
-                            using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-                            {
-                                if (file.Length > 0)
+                                FriendStatusEnum friendStatusDb = FriendStatusEnum.NOT_SET;
+                                using (var reader = new BinaryReader(file,Encoding.UTF8,true))
                                 {
-                                    FriendStatusEnum friendStatusDb = (FriendStatusEnum)(byte)file.ReadByte();
-                                    if ((friendStatusDb == FriendStatusEnum.REQUEST_SENT && friendStatus == FriendStatusEnum.REQUEST_RECIEVED) ||
-                                        (friendStatusDb == FriendStatusEnum.REQUEST_RECIEVED && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
-                                        (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
-                                        (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatus == FriendStatusEnum.REQUEST_RECIEVED))
+                                    try
                                     {
-                                        friendStatus = FriendStatusEnum.FRIENDS;
+                                        friendStatusDb = (FriendStatusEnum)(byte)reader.ReadByte();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading status, Exception : " + e.StackTrace);
+                                    }
+                                    try
+                                    {
+                                        ts = reader.ReadInt64();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading timestamp, Exception : " + e.StackTrace);
                                     }
                                 }
-                                file.Seek(0, SeekOrigin.Begin);
-                                file.WriteByte((byte)friendStatus);
-                                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                                    App.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatus;
+
+                                if (friendStatus == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatusDb != FriendsTableUtils.FriendStatusEnum.FRIENDS)                                  
+                                {
+                                    friendStatus = FriendStatusEnum.NOT_SET;
+                                }
+                                else if (friendStatus == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatusDb != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                {
+                                    friendStatus = FriendStatusEnum.NOT_SET;
+                                }
+
+                                else if ((friendStatusDb == FriendStatusEnum.REQUEST_SENT && friendStatus == FriendStatusEnum.REQUEST_RECIEVED) ||
+                                    (friendStatusDb == FriendStatusEnum.REQUEST_RECIEVED && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
+                                    (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_YOU && friendStatus == FriendStatusEnum.REQUEST_SENT) ||
+                                    (friendStatusDb == FriendStatusEnum.UNFRIENDED_BY_HIM && friendStatus == FriendStatusEnum.REQUEST_RECIEVED))
+                                {
+                                    friendStatus = FriendStatusEnum.FRIENDS;
+                                }
                             }
+                            
+                           
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write((byte)friendStatus);
+                                writer.Write(ts);
+                                writer.Flush();
+                                writer.Close();
+                            }
+                            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                                App.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatus;
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : SetFriendStatus, Exception : " + ex.StackTrace);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("FriendsTableUtils :: SetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -101,23 +135,117 @@ namespace windows_client.DbUtils
             return friendStatus;
         }
 
-        public static void DeleteFriend(string msisdn)
+        public static FriendStatusEnum GetFriendStatus(string msisdn,out long ts)
         {
+            ts = 0;
+            FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;
             lock (readWriteLock)
             {
                 try
                 {
                     string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
-                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
                     {
-                        store.DeleteFile(fileName);
+                        if (store.FileExists(fileName))
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                            {
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    friendStatus = (FriendStatusEnum)reader.ReadByte();
+                                    ts = reader.ReadInt64();
+                                }
+                            }
+                        }
                     }
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-                        App.ViewModel.ContactsCache[msisdn].FriendStatus = FriendStatusEnum.NOT_FRIENDS;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("FriendsTableUtils :: DeleteFriend :DeleteFriend, Exception : " + ex.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                }
+            }
+            return friendStatus;
+        }
+
+        public static long GetFriendOnHIke(string msisdn)
+        {
+            long ts = 0;
+            lock (readWriteLock)
+            {
+                try
+                {
+                    string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (store.FileExists(fileName))
+                        {
+                            using (var file = store.OpenFile(fileName, FileMode.Open, FileAccess.Read))
+                            {
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    FriendStatusEnum friendStatus = (FriendStatusEnum)reader.ReadByte();
+                                    ts = reader.ReadInt64();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
+                }
+            }
+            return ts;
+        }
+
+        public static void SetJoiningTime(string msisdn, long ts)
+        {
+            lock (readWriteLock)
+            {
+                try
+                {
+                    FriendStatusEnum friendStatusDb = FriendStatusEnum.NOT_SET;
+                    string fileName = FRIENDS_DIRECTORY + "\\" + msisdn;
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication()) // grab the storage
+                    {
+                        if (!store.DirectoryExists(FRIENDS_DIRECTORY))
+                        {
+                            store.CreateDirectory(FRIENDS_DIRECTORY);
+                        }
+                        using (var file = store.OpenFile(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                        {
+                            if (file.Length > 0)
+                            {
+                                using (var reader = new BinaryReader(file))
+                                {
+                                    try
+                                    {
+                                        friendStatusDb = (FriendStatusEnum)(byte)reader.ReadByte();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : Reading status, Exception : " + e.StackTrace);
+                                    }
+                                }
+                            }
+
+
+                            using (BinaryWriter writer = new BinaryWriter(file))
+                            {
+                                writer.Seek(0, SeekOrigin.Begin);
+                                writer.Write((byte)friendStatusDb);
+                                writer.Write(ts);
+                                writer.Flush();
+                                writer.Close();
+                            }
+                            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                                App.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatusDb;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("FriendsTableUtils :: SetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
         }
