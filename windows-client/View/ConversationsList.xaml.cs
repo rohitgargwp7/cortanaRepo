@@ -1068,11 +1068,8 @@ namespace windows_client.View
                     }
                     menuFavourite.Header = AppResources.Add_To_Fav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
-                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
-                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                        FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
-                    else
-                        FriendsTableUtils.DeleteFriend(convObj.Msisdn);
+
+                    FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
 
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                     if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
@@ -1504,11 +1501,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
-                if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                    FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
-                else
-                    FriendsTableUtils.DeleteFriend(convObj.Msisdn);
+                FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
 
                 // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                 if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
