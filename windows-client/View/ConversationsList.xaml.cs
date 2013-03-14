@@ -1534,6 +1534,11 @@ namespace windows_client.View
                 hikeContactList.Remove(contactInfo);
                 App.ViewModel.FavList.Add(cObj);
                 MiscDBUtil.SaveFavourites(cObj);
+                if (emptyListPlaceholder.Visibility == System.Windows.Visibility.Visible)
+                {
+                    emptyListPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+                    favourites.Visibility = System.Windows.Visibility.Visible;
+                }
                 FriendsTableUtils.SetFriendStatus(cObj.Msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             }
         }
