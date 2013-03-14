@@ -347,7 +347,7 @@ namespace windows_client
                     // if user does not exists we dont know about his onhike status , so we need to process
                     ProcessUoUjMsgs(jsonObj, false, isUserInContactList);
                 }
-                // if user has left mark him as non hike user in group cache
+                // if user has left, mark him as non hike user in group cache
                 else if (GroupManager.Instance.GroupCache != null)
                 {
                     foreach (string key in GroupManager.Instance.GroupCache.Keys)
@@ -368,6 +368,11 @@ namespace windows_client
                 }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
+                JToken jt;
+                long ts = 0;
+                if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
+                    ts = jt.ToObject<long>();
+                FriendsTableUtils.SetJoiningTime(uMsisdn,ts);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
             #endregion
@@ -1002,7 +1007,7 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.DeleteFriend(msisdn);
+                    FriendsTableUtils.SetFriendStatus(msisdn,FriendsTableUtils.FriendStatusEnum.NOT_SET);
                 }
                 catch (Exception e)
                 {
@@ -1015,11 +1020,7 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(msisdn);
-                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                        FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
-                    else
-                        FriendsTableUtils.DeleteFriend(msisdn);
+                    FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
                 }
                 catch (Exception e)
                 {
