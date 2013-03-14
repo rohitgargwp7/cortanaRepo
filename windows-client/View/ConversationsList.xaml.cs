@@ -1841,11 +1841,11 @@ namespace windows_client.View
 
         #endregion
 
-        private void Button_Tap_2(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
-            string uri = "/View/InviteUsers.xaml";
-            NavigationService.Navigate(new Uri(uri, UriKind.Relative));
-        }
+        //private void Button_Tap_2(object sender, System.Windows.Input.GestureEventArgs e)
+        //{
+        //    PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
+        //    string uri = "/View/InviteUsers.xaml";
+        //    NavigationService.Navigate(new Uri(uri, UriKind.Relative));
+        //}
     }
 }

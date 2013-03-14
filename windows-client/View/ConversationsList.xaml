@@ -146,7 +146,7 @@
 
                         <TextBlock Grid.Row="2" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE FRIENDS"/>
 
-                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Tap="Button_Tap_2" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center">
+                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center">
                             <Image Source="images/favorites_heart.png" Height="90"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <TextBlock Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
