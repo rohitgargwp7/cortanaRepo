@@ -24,7 +24,6 @@ namespace windows_client.DbUtils
 
         public static List<ConversationListObject> getAllConversations()
         {
-            byte[] data = null;
             List<ConversationListObject> convList = null;
             using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
             {
@@ -50,14 +49,6 @@ namespace windows_client.DbUtils
             }
             convList.Sort();
             return convList;
-            /*
-            using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring+";Max Buffer Size=1024"))
-            {
-                var q = from o in DbCompiledQueries.chatsDbContext.conversations select o;
-                //var q = from o in DbCompiledQueries.chatsDbContext.conversations orderby o.TimeStamp descending select o;
-                return q.ToList();
-            }
-             * */
         }
 
         public static ConversationListObject addGroupConversation(ConvMessage convMessage, string groupName)
