@@ -117,7 +117,7 @@ namespace windows_client.Controls
                 var currentPage = ((App)Application.Current).RootFrame.Content as NewChatThread;
                 if (currentPage != null)
                 {
-                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, false, !FileAttachment.ContentType.Contains(HikeConstants.CONTACT));
+                    ContextMenu contextMenu = currentPage.createAttachmentContextMenu(attachmentState, false, false);
                     ContextMenuService.SetContextMenu(this, contextMenu);
                     switch (attachmentState)
                     {
@@ -191,7 +191,7 @@ namespace windows_client.Controls
                 TextBlock textBlck = new TextBlock();
                 textBlck.Text = userName + " -";
                 textBlck.FontSize = 22;
-                textBlck.FontFamily = UI_Utils.Instance.GroupChatMessageHeader;
+                textBlck.FontFamily = UI_Utils.Instance.SemiBoldFont;
                 textBlck.Foreground = UI_Utils.Instance.GroupChatHeaderColor;
                 textBlck.Margin = userNameMargin;
                 Grid.SetRow(textBlck, 0);
@@ -237,7 +237,7 @@ namespace windows_client.Controls
                     textBlck.Foreground = UI_Utils.Instance.ReceiveMessageForeground;
                     textBlck.Margin = contactMessageTextMargin;
                     textBlck.TextWrapping = TextWrapping.Wrap;
-                    textBlck.FontFamily = UI_Utils.Instance.MessageText;
+                    textBlck.FontFamily = UI_Utils.Instance.SemiLightFont;
                     textBlck.MinWidth = 150;
                     textBlck.MaxWidth = 330;
                     Grid.SetRow(textBlck, 0);
@@ -300,7 +300,7 @@ namespace windows_client.Controls
                 MessageText.Width = 330;
                 if (!isGroupChat)
                     MessageText.Margin = messageTextMargin;
-                MessageText.FontFamily = UI_Utils.Instance.MessageText;
+                MessageText.FontFamily = UI_Utils.Instance.SemiLightFont;
                 Grid.SetRow(MessageText, rowNumber);
                 wrapperGrid.Children.Add(MessageText);
             }
