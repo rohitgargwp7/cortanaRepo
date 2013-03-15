@@ -1704,7 +1704,7 @@ namespace windows_client.View
                     StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i],
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
-            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count - 1]);
+            statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
             RefreshBarCount = 0;
         }
         private void postStatusBtn_Click(object sender, EventArgs e)
