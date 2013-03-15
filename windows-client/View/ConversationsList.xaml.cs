@@ -779,7 +779,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
-                    if (co != null && !App.ViewModel.IsPending(co.Msisdn))
+                    if (co != null)
                     {
                         FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         App.ViewModel.StatusList.Insert(0, frs);

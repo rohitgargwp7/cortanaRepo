@@ -523,10 +523,21 @@ namespace windows_client
                                                         fkkvv = kVals.Current; // kkvv contains favourites MSISDN
                                                         JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
                                                         JToken pToken;
-                                                        if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
+                                                        if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
+                                                        {
+                                                            bool rp = pToken.ToObject<bool>();
+                                                            if (rp)
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+                                                            else
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                                                        }
+                                                        else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null && pToken.ToObject<bool>() == true)
+                                                        {
                                                             isFav = false;
-                                                        if (pendingJSON.TryGetValue(HikeConstants.NAME, out pToken))
-                                                            name = pToken.ToString();
+                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                                                        }
+                                                        else
+                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
                                                         LoadFavAndPending(isFav, fkkvv.Key, name); // true for favs
                                                         thrAreFavs = true;
