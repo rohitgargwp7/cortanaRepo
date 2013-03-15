@@ -64,9 +64,7 @@ namespace windows_client.View
 
             string lastStatus = "";
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
-            int unreadStatusCount = 0;
-            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out unreadStatusCount);
-            TotalUnreadStatuses = unreadStatusCount;
+            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
             if (RefreshBarCount + UnreadFriendRequests == 0)
             {
                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
@@ -1644,7 +1642,7 @@ namespace windows_client.View
             }
             set
             {
-                if (value != _totalUnreadStatuses)
+                if (value != _totalUnreadStatuses && launchPagePivot.SelectedIndex == 3)
                 {
                     if (value == 0)
                     {
