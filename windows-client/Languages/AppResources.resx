@@ -1250,7 +1250,7 @@
     <comment>record video page app bar</comment>
   </data>
   <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
-    <value>Is this your number?</value>
+    <value>Confirm your number</value>
   </data>
   <data name="ShareContact_ConfirmationCaption" xml:space="preserve">
     <value>Share Contact</value>
@@ -1321,10 +1321,6 @@
   </data>
   <data name="Conversations_Timeline_Refresh_SingleStatus" xml:space="preserve">
     <value>{0} new update</value>
-
-  </data>
-  <data name="EnterMsisdn_ConfirmNumber_Txt" xml:space="preserve">
-    <value>Confirm your number</value>
   </data>
   <data name="TimeUtils_Moments_Ago" xml:space="preserve">
     <value>moments ago</value>
@@ -1471,5 +1467,11 @@
   </data>
   <data name="Profile_NotInAddressbook_Txt" xml:space="preserve">
     <value>is not in your address book.</value>
+  </data>
+  <data name="Conversations_Circle_Of_friends_txt" xml:space="preserve">
+    <value>CIRCLE OF FRIENDS</value>
+  </data>
+  <data name="Conversations_Contacts_on_hike" xml:space="preserve">
+    <value>CONTACTS ON HIKE</value>
   </data>
 </root>

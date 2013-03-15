@@ -340,6 +340,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CIRCLE OF FRIENDS.
+        /// </summary>
+        public static string Conversations_Circle_Of_friends_txt {
+            get {
+                return ResourceManager.GetString("Conversations_Circle_Of_friends_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CONTACTS ON HIKE.
+        /// </summary>
+        public static string Conversations_Contacts_on_hike {
+            get {
+                return ResourceManager.GetString("Conversations_Contacts_on_hike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete All Chats.
         /// </summary>
         public static string Conversations_DelAllChats_Txt {
