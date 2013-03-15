@@ -974,7 +974,7 @@ namespace windows_client
                     if (ms == null)
                         return;
                     FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, msisdn);
                     if (App.ViewModel.Isfavourite(ms)) // already favourite
                         return;
                     if (App.ViewModel.IsPending(ms))
@@ -1027,7 +1027,7 @@ namespace windows_client
                 try
                 {
                     FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, msisdn);
                 }
                 catch (Exception e)
                 {
@@ -1041,7 +1041,7 @@ namespace windows_client
                 try
                 {
                     FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, msisdn);
                 }
                 catch (Exception e)
                 {

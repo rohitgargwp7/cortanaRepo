@@ -117,6 +117,9 @@ namespace windows_client.View
             #region FRIEND_RELATIONSHIP_CHANGE
             else if (type == HikePubSub.FRIEND_RELATIONSHIP_CHANGE)
             {
+                string recMsisdn = (string)obj;
+                if (recMsisdn != msisdn)
+                    return;
                 FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
