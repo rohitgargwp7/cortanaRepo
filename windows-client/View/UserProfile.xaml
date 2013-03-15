@@ -68,8 +68,8 @@
                 <TextBlock x:Name="seeUpdatesTxtBlk1" TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Regular" Foreground="#e5e5e5"   HorizontalAlignment="Center" TextAlignment="Center"/>
                 <TextBlock x:Name="seeUpdatesTxtBlk2" TextWrapping="Wrap" FontSize="18" FontFamily="Segoe WP Regular" Foreground="#e5e5e5" Text="{Binding Path= LocalizedResources.Profile_DoTheSame, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" TextAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" Margin="0,5,0,5" HorizontalAlignment="Center">
-                    <Button x:Name="yesBtn" Background="#2e91d3" Height="70" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Foreground="White" Tap="yes_Click"></Button>
-                    <Button x:Name="noBtn" Background="#e9ecee" Height="70" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959" Tap="no_Click"></Button>
+                    <Button x:Name="yesBtn" Background="#2e91d3" Height="70" Width="102" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_Yes_Btn, Source={StaticResource LocalizedStrings}}" Foreground="White" Tap="Yes_Click"></Button>
+                    <Button x:Name="noBtn" Background="#e9ecee" Height="70" Width="140" FontSize="20" BorderThickness="0" Content="{Binding Path= LocalizedResources.Conversations_Pending_NotNow_Btn, Source={StaticResource LocalizedStrings}}" Foreground="#595959" Tap="No_Click"></Button>
                 </StackPanel>
             </StackPanel>
             <StackPanel  Name="spAddFriend" Visibility="Collapsed"  Background="#414243">
@@ -83,13 +83,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Image x:Name="imgInviteLock" Grid.Row="0" Source="images/user_invite.png" HorizontalAlignment="Center" MaxHeight="30" MaxWidth="30" Margin="0,30,0,0"></Image>
+            <Image x:Name="imgInviteLock" Grid.Row="0" HorizontalAlignment="Center" MaxHeight="30" MaxWidth="30" Margin="0,30,0,0"></Image>
             <TextBlock Grid.Row="1" FontSize="18" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center" Foreground="#5f5f5f" TextAlignment="Center" >
                 <TextBlock.Inlines>
                     <Run x:Name="txtSmsUserNameBlk1" FontFamily="Segoe WP" FontWeight="SemiBold"/>
-                    <Run x:Name="txtSmsUserNameBlk2" Text="{Binding Path= LocalizedResources.InviteOnHike_Txt, Source={StaticResource LocalizedStrings}}" />
+                    <Run x:Name="txtSmsUserNameBlk2" />
                     <LineBreak/>
-                    <Run x:Name="txtSmsUserNameBlk3" Text="{Binding Path= LocalizedResources.InviteOnHikeUpgrade_Txt, Source={StaticResource LocalizedStrings}}"/>
+                    <Run x:Name="txtSmsUserNameBlk3" />
                 </TextBlock.Inlines>
             </TextBlock>
             <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">

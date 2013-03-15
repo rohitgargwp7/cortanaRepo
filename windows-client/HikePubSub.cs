@@ -55,6 +55,8 @@ namespace windows_client
 
         public static readonly string STATUS_DELETED = "statusDeleted";
 
+        public static readonly string FRIEND_RELATIONSHIP_CHANGE = "friendRelation";
+
         public static readonly string NEW_ACTIVITY = "new_activity";
 
         public static readonly string END_TYPING_CONVERSATION = "endtypingconv";
