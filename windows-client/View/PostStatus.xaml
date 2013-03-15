@@ -21,8 +21,47 @@
         </Grid.RowDefinitions>
 
         <TextBlock x:Name="txtStatusHeader" Margin="24, 35, 24, 0" Text="{Binding Path= LocalizedResources.NewStatus_Txt, Source={StaticResource LocalizedStrings}}"  Grid.Row="0" HorizontalAlignment="Left" FontSize="22" FontFamily="Segoe WP Regular"  />
-        <TextBox VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Margin="13,20,24,0" Width="436" Height="200" Grid.Row="1" TextWrapping="Wrap" />
-
+        <Grid Grid.Row="1" Height="250" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition  Height="Auto"/>
+                <RowDefinition  Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBox VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Margin="13,20,24,0" Width="436" Height="200" Grid.Row="0" TextWrapping="Wrap" />
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Height="50" Width="50" Margin="30 0 0 0" Grid.Column="0" Tap="FbIcon_Tap">
+                    <Image Source="/View/images/fb_icon.png" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31" Height="30" ></Image>
+                </StackPanel>
+                <StackPanel Height="50" Width="50" Margin="30 0 0 0" Grid.Column="1" Tap="TwitterIcon_Tap" HorizontalAlignment="Left" >
+                    <Image Source="/View/images/tw_icon.png" Grid.Column="1" VerticalAlignment="Center" Width="31" Height="30" ></Image>
+                </StackPanel>
+                <StackPanel Height="50" Width="50" Margin="0 0 45 0" Grid.Column="2"  Tap="Mood_Tap">
+                    <Image Source="/View/images/emoticons/emo_im_01_bigsmile.png" VerticalAlignment="Center" HorizontalAlignment="Right" Width="31" ></Image>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Name="gridMood" Grid.Row="0" Grid.RowSpan="2" Visibility="Collapsed" Background="White" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="SELECT MOOD" FontSize="22" FontFamily="Segoe WP Regular"  Margin="26 12 12 12" Foreground="Gray"></TextBlock>
+            <ListBox  Name="moodList" BorderThickness="18,0,0,0" Grid.Row="1" Margin="12" Tap="moodList_Tap">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0 12 0 0">
+                            <Image Height="40" Width="40" Source="{Binding MoodIcon}">
+                            </Image>
+                            <TextBlock Text="{Binding Text}" FontSize="22" FontFamily="Segoe WP Regular" Foreground="Gray" VerticalAlignment="Bottom" Margin="12 0 0 0" ></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 
 </phone:PhoneApplicationPage>
