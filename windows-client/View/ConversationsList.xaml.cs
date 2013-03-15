@@ -679,11 +679,11 @@ namespace windows_client.View
                 RefreshBarCount = 0;
                 UnreadFriendRequests = 0;
             }
-            //if (selectedIndex != 3)
-            //{
-            //    if (NotificationCount == 0)  //If NotificationCount is 0, it would be safe to change here
-            //        TotalUnreadStatuses = 0; //should be reset when user moves away from Timeline. 
-            //}
+            if (selectedIndex != 3)
+            {
+                if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
+                    TotalUnreadStatuses = 0;
+            }
         }
 
         #endregion
@@ -1698,7 +1698,7 @@ namespace windows_client.View
         }
 
         private void setNotificationCounter(int newCounterValue)
-        { 
+        {
             int currentCounter = 0;
             Int32.TryParse(notificationCountTxtBlk.Text, out currentCounter);
             if (currentCounter == 0 && newCounterValue > 0)
