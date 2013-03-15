@@ -588,7 +588,7 @@ namespace windows_client.View
                     txtSmsUserNameBlk3.Text = string.Empty;
                     gridHikeUser.Visibility = Visibility.Collapsed;
                     btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
-                    //btnInvite.Tap += addUser_Click; todo:
+                    btnInvite.Tap += addUser_Click;
                 }
             }
             else if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
@@ -634,11 +634,7 @@ namespace windows_client.View
             txtSmsUserNameBlk2.Text = nameToShow;
             txtSmsUserNameBlk3.Text = AppResources.Profile_RequestSent_Blk3;
             gridHikeUser.Visibility = Visibility.Collapsed;
-            btnInvite.Background = UI_Utils.Instance.ButtonGrayBackground;
-            btnInvite.Foreground = UI_Utils.Instance.ButtonGrayForeground;
-            btnInvite.Content = AppResources.Profile_CancelRequest_BtnTxt;
-            //todo: add event
-
+            btnInvite.Visibility = Visibility.Collapsed;
         }
         private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -726,141 +722,157 @@ namespace windows_client.View
             }
         }
 
-        //#region ADD USER TO CONTATCS
-        //private void addUser_Click(object sender, System.Windows.Input.GestureEventArgs e)
-        //{
-        //    ContactUtils.saveContact(msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
-        //}
+        #region ADD USER TO CONTATCS
+        ContactInfo contactInfo;
+        private void addUser_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            ContactUtils.saveContact(msisdn, new ContactUtils.contactSearch_Callback(saveContactTask_Completed));
+        }
 
-        //private void saveContactTask_Completed(object sender, SaveContactResult e)
-        //{
-        //    switch (e.TaskResult)
-        //    {
-        //        case TaskResult.OK:
-        //            ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
-        //            break;
-        //        case TaskResult.Cancel:
-        //            MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
-        //            break;
-        //        case TaskResult.None:
-        //            MessageBox.Show(AppResources.NoInfoForTask_Txt);
-        //            break;
-        //    }
-        //}
+        private void saveContactTask_Completed(object sender, SaveContactResult e)
+        {
+            switch (e.TaskResult)
+            {
+                case TaskResult.OK:
+                    ContactUtils.getContact(msisdn, new ContactUtils.contacts_Callback(contactSearchCompleted_Callback));
+                    break;
+                case TaskResult.Cancel:
+                    MessageBox.Show(AppResources.User_Cancelled_Task_Txt);
+                    break;
+                case TaskResult.None:
+                    MessageBox.Show(AppResources.NoInfoForTask_Txt);
+                    break;
+            }
+        }
 
-        //public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
-        //{
-        //    try
-        //    {
-        //        Dictionary<string, List<ContactInfo>> contactListMap = GetContactListMap(e.Results);
-        //        if (contactListMap == null)
-        //        {
-        //            MessageBox.Show(AppResources.NO_CONTACT_SAVED);
-        //            return;
-        //        }
-        //        AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
-        //    }
-        //    catch (System.Exception)
-        //    {
-        //        //That's okay, no results//
-        //    }
-        //}
+        public void contactSearchCompleted_Callback(object sender, ContactsSearchEventArgs e)
+        {
+            try
+            {
+                Dictionary<string, List<ContactInfo>> contactListMap = GetContactListMap(e.Results);
+                if (contactListMap == null)
+                {
+                    MessageBox.Show(AppResources.NO_CONTACT_SAVED);
+                    return;
+                }
+                AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
+            }
+            catch (System.Exception)
+            {
+                //That's okay, no results//
+            }
+        }
 
-        //private Dictionary<string, List<ContactInfo>> GetContactListMap(IEnumerable<Contact> contacts)
-        //{
-        //    int count = 0;
-        //    int duplicates = 0;
-        //    Dictionary<string, List<ContactInfo>> contactListMap = null;
-        //    if (contacts == null)
-        //        return null;
-        //    contactListMap = new Dictionary<string, List<ContactInfo>>();
-        //    foreach (Contact cn in contacts)
-        //    {
-        //        CompleteName cName = cn.CompleteName;
+        private Dictionary<string, List<ContactInfo>> GetContactListMap(IEnumerable<Contact> contacts)
+        {
+            int count = 0;
+            int duplicates = 0;
+            Dictionary<string, List<ContactInfo>> contactListMap = null;
+            if (contacts == null)
+                return null;
+            contactListMap = new Dictionary<string, List<ContactInfo>>();
+            foreach (Contact cn in contacts)
+            {
+                CompleteName cName = cn.CompleteName;
 
-        //        foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
-        //        {
-        //            if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
-        //            {
-        //                count++;
-        //                continue;
-        //            }
-        //            ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
-        //            int idd = cInfo.GetHashCode();
-        //            cInfo.Id = Convert.ToString(Math.Abs(idd));
-        //            if (contactListMap.ContainsKey(cInfo.Id))
-        //            {
-        //                if (!contactListMap[cInfo.Id].Contains(cInfo))
-        //                    contactListMap[cInfo.Id].Add(cInfo);
-        //                else
-        //                {
-        //                    duplicates++;
-        //                    Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                List<ContactInfo> contactList = new List<ContactInfo>();
-        //                contactList.Add(cInfo);
-        //                contactListMap.Add(cInfo.Id, contactList);
-        //            }
-        //        }
-        //    }
-        //    Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
-        //    Debug.WriteLine("Total contacts with no phone number : {0}", count);
-        //    return contactListMap;
-        //}
+                foreach (ContactPhoneNumber ph in cn.PhoneNumbers)
+                {
+                    if (string.IsNullOrWhiteSpace(ph.PhoneNumber)) // if no phone number simply ignore the contact
+                    {
+                        count++;
+                        continue;
+                    }
+                    ContactInfo cInfo = new ContactInfo(null, cn.DisplayName.Trim(), ph.PhoneNumber);
+                    int idd = cInfo.GetHashCode();
+                    cInfo.Id = Convert.ToString(Math.Abs(idd));
+                    contactInfo = cInfo;
+                    if (contactListMap.ContainsKey(cInfo.Id))
+                    {
+                        if (!contactListMap[cInfo.Id].Contains(cInfo))
+                            contactListMap[cInfo.Id].Add(cInfo);
+                        else
+                        {
+                            duplicates++;
+                            Debug.WriteLine("Duplicate Contact !! for Phone Number {0}", cInfo.PhoneNo);
+                        }
+                    }
+                    else
+                    {
+                        List<ContactInfo> contactList = new List<ContactInfo>();
+                        contactList.Add(cInfo);
+                        contactListMap.Add(cInfo.Id, contactList);
+                    }
+                }
+            }
+            Debug.WriteLine("Total duplicate contacts : {0}", duplicates);
+            Debug.WriteLine("Total contacts with no phone number : {0}", count);
+            return contactListMap;
+        }
 
-        //public void updateAddressBook_Callback(JObject obj)
-        //{
-        //    if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
-        //    {
-        //        Dispatcher.BeginInvoke(() =>
-        //        {
-        //            MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
-        //        });
-        //        return;
-        //    }
-        //    JObject addressbook = (JObject)obj["addressbook"];
-        //    if (addressbook == null)
-        //    {
-        //        Dispatcher.BeginInvoke(() =>
-        //        {
-        //            MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
-        //        });
-        //        return;
-        //    }
-        //    IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
-        //    ContactInfo contactInfo = null;
-        //    KeyValuePair<string, JToken> kv;
-        //    int count = 0;
-        //    while (keyVals.MoveNext())
-        //    {
-        //        kv = keyVals.Current;
-        //        JArray entries = (JArray)addressbook[kv.Key];
-        //        for (int i = 0; i < entries.Count; ++i)
-        //        {
-        //            JObject entry = (JObject)entries[i];
-        //            string msisdn = (string)entry["msisdn"];
-        //            if (string.IsNullOrWhiteSpace(msisdn))
-        //                continue;
+        public void updateAddressBook_Callback(JObject obj)
+        {
+            if ((obj == null) || HikeConstants.FAIL == (string)obj[HikeConstants.STAT])
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
+                });
+                return;
+            }
+            JObject addressbook = (JObject)obj["addressbook"];
+            if (addressbook == null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.CONTACT_NOT_SAVED_ON_SERVER);
+                });
+                return;
+            }
+            IEnumerator<KeyValuePair<string, JToken>> keyVals = addressbook.GetEnumerator();
+            KeyValuePair<string, JToken> kv;
+            int count = 0;
+            while (keyVals.MoveNext())
+            {
+                kv = keyVals.Current;
+                JArray entries = (JArray)addressbook[kv.Key];
+                for (int i = 0; i < entries.Count; ++i)
+                {
+                    JObject entry = (JObject)entries[i];
+                    string msisdn = (string)entry["msisdn"];
+                    if (string.IsNullOrWhiteSpace(msisdn))
+                        continue;
 
-        //            bool onhike = (bool)entry["onhike"];
-        //            contactInfo.Msisdn = msisdn;
-        //            contactInfo.OnHike = onhike;
-        //            count++;
-        //        }
-        //    }
-        //    UsersTableUtils.addContact(contactInfo);
-        //    Dispatcher.BeginInvoke(() =>
-        //    {
-        //        nameToShow = contactInfo.Name;
-        //        isOnHike = contactInfo.OnHike;
-        //        loadStatuses();
-        //        MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
-        //    });
-        //}
-        //#endregion
+                    bool onhike = (bool)entry["onhike"];
+                    contactInfo.Msisdn = msisdn;
+                    contactInfo.OnHike = onhike;
+                    count++;
+                }
+            }
+            UsersTableUtils.addContact(contactInfo);
+            Dispatcher.BeginInvoke(() =>
+            {
+                nameToShow = contactInfo.Name;
+                txtUserName.Text = nameToShow;
+                txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
+                seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
+                isOnHike = contactInfo.OnHike;
+                if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                {
+                    App.ViewModel.ConvMap[msisdn].ContactName = contactInfo.Name;
+                }
+                else
+                {
+                    ConversationListObject co = App.ViewModel.GetFav(msisdn);
+                    if (co != null)
+                        co.ContactName = contactInfo.Name;
+                }
+                if (App.newChatThreadPage != null)
+                    App.newChatThreadPage.userName.Text = nameToShow;
+                MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
+                loadStatuses();
+            });
+        }
+        #endregion
 
     }
 }
