@@ -61,14 +61,12 @@ namespace windows_client.View
             if (isShowFavTute)
                 showTutorial();
             App.ViewModel.ConversationListPage = this;
-
             string lastStatus = "";
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
             App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
-            if (RefreshBarCount + UnreadFriendRequests == 0)
-            {
-                notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
-            }
+            App.appSettings.TryGetValue(HikeConstants.REFRESH_BAR, out _refreshBarCount);
+            App.appSettings.TryGetValue(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
+            setNotificationCounter(RefreshBarCount + UnreadFriendRequests);
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
         }
 
@@ -1583,6 +1581,7 @@ namespace windows_client.View
             }
         }
 
+        //number of unread status updates by friends
         private int _refreshBarCount = 0;
         private int RefreshBarCount
         {
@@ -1590,7 +1589,7 @@ namespace windows_client.View
             {
                 if (App.IS_TOMBSTONED)
                 {
-                    _refreshBarCount = (int)PhoneApplicationService.Current.State[HikeConstants.REFRESH_BAR];
+                    App.appSettings.TryGetValue<int>(HikeConstants.REFRESH_BAR, out _refreshBarCount);
                 }
                 return _refreshBarCount;
             }
@@ -1627,12 +1626,13 @@ namespace windows_client.View
                             setNotificationCounter(value + _unreadFriendRequests);
                         }
                         _refreshBarCount = value;
-                        PhoneApplicationService.Current.State[HikeConstants.REFRESH_BAR] = value;
+                        App.WriteToIsoStorageSettings(HikeConstants.REFRESH_BAR, value);
                     });
                 }
             }
         }
 
+        //number of unread statuses. It includes self updates as well i.e. refreshBarCount + self updates
         private int _totalUnreadStatuses;
         private int TotalUnreadStatuses
         {
@@ -1642,9 +1642,9 @@ namespace windows_client.View
             }
             set
             {
-                if (value != _totalUnreadStatuses && launchPagePivot.SelectedIndex == 3)
+                if (value != _totalUnreadStatuses)
                 {
-                    if (value == 0)
+                    if (value == 0 && launchPagePivot.SelectedIndex == 3)
                     {
                         for (int i = App.ViewModel.PendingRequests.Count;
                             i < App.ViewModel.PendingRequests.Count + _totalUnreadStatuses; i++)
@@ -1658,6 +1658,7 @@ namespace windows_client.View
             }
         }
 
+        //number of unread friend requests
         private int _unreadFriendRequests = 0;
         private int UnreadFriendRequests
         {
