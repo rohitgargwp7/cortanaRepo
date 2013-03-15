@@ -60,12 +60,12 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static List<StatusMessage> GetAllStatusMsgs()
+        public static List<StatusMessage> GetAllStatusMsgsForTimeline()
         {
             List<StatusMessage> res;
             using (HikeChatsDb context = new HikeChatsDb(App.MsgsDBConnectionstring))
             {
-                res = DbCompiledQueries.GetAllStatusMsgs(context).ToList<StatusMessage>();
+                res = DbCompiledQueries.GetAllStatusMsgsForTimeline(context).ToList<StatusMessage>();
                 return (res == null || res.Count == 0) ? null : res;
             }
         }

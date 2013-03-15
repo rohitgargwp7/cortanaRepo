@@ -1068,7 +1068,8 @@ namespace windows_client
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
 
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), -1);
+                        
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn),-1);
 
                         idToken = null;
                         if (iconBase64 != null)
@@ -1091,9 +1092,9 @@ namespace windows_client
 
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), -1, idToken.ToString(), true);
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, idToken.ToString(), true);
                         else
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), -1);
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1);
 
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }

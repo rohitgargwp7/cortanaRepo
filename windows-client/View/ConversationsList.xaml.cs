@@ -870,20 +870,8 @@ namespace windows_client.View
                     }
                     else
                     {
-                        ContactInfo ci = null;
-                        if (App.ViewModel.ContactsCache.ContainsKey(sm.Msisdn))
-                            ci = App.ViewModel.ContactsCache[sm.Msisdn];
-                        if (ci != null)
-                        {
-                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                return;
-                        }
-                        else
-                        {
-                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(sm.Msisdn);
-                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                return;
-                        }
+                        if (!sm.ShowOnTimeline)
+                            return;
                         // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
@@ -1835,7 +1823,7 @@ namespace windows_client.View
                 FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
-            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
+            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
             for (int i = 0; i < NotificationCount; i++)
             {
                 statusMessagesFromDB[i].IsUnread = true;
@@ -1844,23 +1832,6 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    if (statusMessagesFromDB[i].Msisdn != App.MSISDN)
-                    {
-                        ContactInfo ci = null;
-                        if (App.ViewModel.ContactsCache.ContainsKey(statusMessagesFromDB[i].Msisdn))
-                            ci = App.ViewModel.ContactsCache[statusMessagesFromDB[i].Msisdn];
-                        if (ci != null)
-                        {
-                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                continue;
-                        }
-                        else
-                        {
-                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(statusMessagesFromDB[i].Msisdn);
-                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                continue;
-                        }
-                    }
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }
