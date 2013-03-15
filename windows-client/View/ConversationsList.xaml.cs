@@ -107,6 +107,13 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(App.SHOW_FAVORITES_TUTORIAL);
         }
 
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            if (UnreadFriendRequests == 0 && RefreshBarCount == 0)
+                TotalUnreadStatuses = 0;
+        }
+
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
