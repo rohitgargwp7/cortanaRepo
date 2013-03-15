@@ -64,14 +64,13 @@ namespace windows_client.View
 
             string lastStatus = "";
             App.appSettings.TryGetValue<string>(HikeConstants.LAST_STATUS, out lastStatus);
-            int notificationCount = 0;
-            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out notificationCount);
-            NotificationCount = notificationCount;
-            if (NotificationCount == 0)
+            int unreadStatusCount = 0;
+            App.appSettings.TryGetValue(HikeConstants.UNREAD_UPDATES, out unreadStatusCount);
+            TotalUnreadStatuses = unreadStatusCount;
+            if (RefreshBarCount + UnreadFriendRequests == 0)
             {
                 notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
             }
-            TotalUnreadStatuses = NotificationCount;
             App.RemoveKeyFromAppSettings(HikeConstants.PHONE_ADDRESS_BOOK);
         }
 
@@ -117,7 +116,10 @@ namespace windows_client.View
         {
             base.OnNavigatedTo(e);
             if (launchPagePivot.SelectedIndex == 3)
-                NotificationCount = 0;
+            {
+                RefreshBarCount = 0;
+                UnreadFriendRequests = 0;
+            }
             this.myListBox.SelectedIndex = -1;
             this.favourites.SelectedIndex = -1;
             if (App.ViewModel.MessageListPageCollection.Count > 0)
@@ -674,13 +676,14 @@ namespace windows_client.View
                     appBar.Buttons.Remove(addFriendIconButton);
                 if (!isStatusMessagesLoaded)
                     loadStatuses();
-                NotificationCount = 0;
+                RefreshBarCount = 0;
+                UnreadFriendRequests = 0;
             }
-            if (selectedIndex != 3)
-            {
-                if (NotificationCount == 0)  //If NotificationCount is 0, it would be safe to change here
-                    TotalUnreadStatuses = 0; //should be reset when user moves away from Timeline. 
-            }
+            //if (selectedIndex != 3)
+            //{
+            //    if (NotificationCount == 0)  //If NotificationCount is 0, it would be safe to change here
+            //        TotalUnreadStatuses = 0; //should be reset when user moves away from Timeline. 
+            //}
         }
 
         #endregion
@@ -783,7 +786,7 @@ namespace windows_client.View
                         FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         if (launchPagePivot.SelectedIndex != 3)
                         {
-                            NotificationCount++;
+                            UnreadFriendRequests++;
                         }
                         App.ViewModel.StatusList.Insert(0, frs);
                     }
@@ -890,14 +893,13 @@ namespace windows_client.View
                         if (launchPagePivot.SelectedIndex == 3)
                         {
                             FreshStatusUpdates.Add(sm);
-                            RefreshBarCount++;//persist in this.State. it will be cleared 
                         }
                         else
                         {
                             App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
-                            NotificationCount++;
                         }
+                        RefreshBarCount++;//persist in this.State. it will be cleared 
                     }
                     TotalUnreadStatuses++;
                 });
@@ -1607,6 +1609,10 @@ namespace windows_client.View
         {
             get
             {
+                if (App.IS_TOMBSTONED)
+                {
+                    _refreshBarCount = (int)PhoneApplicationService.Current.State[HikeConstants.REFRESH_BAR];
+                }
                 return _refreshBarCount;
             }
             set
@@ -1615,25 +1621,34 @@ namespace windows_client.View
                 {
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        if (_refreshBarCount == 0 && value > 0)
+                        if (launchPagePivot.SelectedIndex == 3)
                         {
-                            refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
-                            refreshStatusText.Visibility = System.Windows.Visibility.Visible;
+                            if (_refreshBarCount == 0 && value > 0)
+                            {
+                                refreshStatusBackground.Visibility = System.Windows.Visibility.Visible;
+                                refreshStatusText.Visibility = System.Windows.Visibility.Visible;
+                            }
+                            else if (_refreshBarCount > 0 && value == 0)
+                            {
+                                refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
+                                refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
+                                FreshStatusUpdates.Clear();
+                            }
+                            if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
+                            {
+                                if (value == 1)
+                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
+                                else
+                                    refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
+                            }
+                            setNotificationCounter(0);
                         }
-                        else if (_refreshBarCount > 0 && value == 0)
+                        else
                         {
-                            refreshStatusBackground.Visibility = System.Windows.Visibility.Collapsed;
-                            refreshStatusText.Visibility = System.Windows.Visibility.Collapsed;
-                            FreshStatusUpdates.Clear();
-                        }
-                        if (refreshStatusText.Visibility == System.Windows.Visibility.Visible && value > 0)
-                        {
-                            if (value == 1)
-                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_SingleStatus, value);
-                            else
-                                refreshStatusText.Text = string.Format(AppResources.Conversations_Timeline_Refresh_Status, value);
+                            setNotificationCounter(value + _unreadFriendRequests);
                         }
                         _refreshBarCount = value;
+                        PhoneApplicationService.Current.State[HikeConstants.REFRESH_BAR] = value;
                     });
                 }
             }
@@ -1652,46 +1667,53 @@ namespace windows_client.View
                 {
                     if (value == 0)
                     {
-                        for (int i = 0; i < Math.Min(_totalUnreadStatuses, App.ViewModel.StatusList.Count); i++)
+                        for (int i = App.ViewModel.PendingRequests.Count;
+                            i < App.ViewModel.PendingRequests.Count + _totalUnreadStatuses; i++)
                         {
                             App.ViewModel.StatusList[i].IsUnread = false;
                         }
                     }
+                    App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
                     _totalUnreadStatuses = value;
                 }
             }
         }
 
-        private int _notificationCount = 0;
-        private int NotificationCount
+        private int _unreadFriendRequests = 0;
+        private int UnreadFriendRequests
         {
             get
             {
-                return _notificationCount;
+                return _unreadFriendRequests;
             }
             set
             {
-                if (value != _notificationCount)
+                if (value != _unreadFriendRequests)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
-                    {
-                        if (_notificationCount == 0 && value > 0)
-                        {
-                            notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
-                        }
-                        else if (_notificationCount > 0 && value == 0)
-                        {
-                            notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
-                            notificationCountTxtBlk.Text = "";
-                        }
-                        if (value > 0)
-                            notificationCountTxtBlk.Text = value.ToString();
-                        App.WriteToIsoStorageSettings(HikeConstants.UNREAD_UPDATES, value);
-                        _notificationCount = value;
-                    });
+                    _unreadFriendRequests = value;
+                    setNotificationCounter(value + _refreshBarCount);
+                    App.WriteToIsoStorageSettings(HikeConstants.UNREAD_FRIEND_REQUESTS, value);
                 }
             }
         }
+
+        private void setNotificationCounter(int newCounterValue)
+        { 
+            int currentCounter = 0;
+            Int32.TryParse(notificationCountTxtBlk.Text, out currentCounter);
+            if (currentCounter == 0 && newCounterValue > 0)
+            {
+                notificationIndicator.Source = UI_Utils.Instance.NewNotificationImage;
+            }
+            else if (currentCounter > 0 && newCounterValue == 0)
+            {
+                notificationIndicator.Source = UI_Utils.Instance.NoNewNotificationImage;
+                notificationCountTxtBlk.Text = "";
+            }
+            if (newCounterValue > 0)
+                notificationCountTxtBlk.Text = newCounterValue.ToString();
+        }
+
 
         private void refreshStatuses_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
@@ -1849,12 +1871,14 @@ namespace windows_client.View
                 FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                 App.ViewModel.StatusList.Add(frs);
             }
+            //TODO - MG - handle case when you receive unread status from 1 way friend. Since, we are showing only 2-way su on timeline
+            //corresponding counters should be handled for eg unread count
             List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
             if (statusMessagesFromDB != null)
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    if (i < NotificationCount)
+                    if (i < TotalUnreadStatuses)
                         statusMessagesFromDB[i].IsUnread = true;
                     if (statusMessagesFromDB[i].Msisdn != App.MSISDN)
                     {
