@@ -33,40 +33,42 @@ namespace windows_client.utils
         private MoodsInitialiser()
         {
         }
+
+        private const int moodscount = 24;
         private string[,] moodsPaths = new string[,]
-        {
-        	{
-                "/View/images/emoticons/emo_im_01_bigsmile.png",
-                "smile"
-            },
-            {
-                "/View/images/emoticons/emo_im_02_happy.png",
-                ""
-            },
-            {
-			"/View/images/emoticons/emo_im_03_laugh.png",""},
-            {
-        	"/View/images/emoticons/emo_im_04_smile.png",""},
-            {
-			"/View/images/emoticons/emo_im_05_wink.png",""},
-            {
-			"/View/images/emoticons/emo_im_06_adore.png",""},
-            {
-			"/View/images/emoticons/emo_im_07_kiss.png",""},
-            {
-			"/View/images/emoticons/emo_im_08_kissed.png",""},
-            {
-            "/View/images/emoticons/emo_im_09_expressionless.png",""},
-            {
-			"/View/images/emoticons/emo_im_10_pudently.png",""}
-        };
+                        {
+                            {"/View/images/moods/icon40-40/apple.png",""},
+                            {"/View/images/moods/icon40-40/beer.png",""},
+                            {"/View/images/moods/icon40-40/busy.png",""},
+                            {"/View/images/moods/icon40-40/camera.png",""},
+                            {"/View/images/moods/icon40-40/car.png",""},
+                            {"/View/images/moods/icon40-40/confused.png",""},
+                            {"/View/images/moods/icon40-40/dumble.png",""},
+                            {"/View/images/moods/icon40-40/game.png",""},
+                            {"/View/images/moods/icon40-40/happy.png",""},
+                            {"/View/images/moods/icon40-40/heart.png",""},
+                            {"/View/images/moods/icon40-40/hungover.png",""},
+                            {"/View/images/moods/icon40-40/laugh.png",""},
+                            {"/View/images/moods/icon40-40/music.png",""},
+                            {"/View/images/moods/icon40-40/pop_corn.png",""},
+                            {"/View/images/moods/icon40-40/rain.png",""},
+                            {"/View/images/moods/icon40-40/reader.png",""},
+                            {"/View/images/moods/icon40-40/sad.png",""},
+                            {"/View/images/moods/icon40-40/scooter.png",""},
+                            {"/View/images/moods/icon40-40/sleepy.png",""},
+                            {"/View/images/moods/icon40-40/sun.png",""},
+                            {"/View/images/moods/icon40-40/surprise.png",""},
+                            {"/View/images/moods/icon40-40/tea.png",""},
+                            {"/View/images/moods/icon40-40/tv.png",""},
+                            {"/View/images/moods/icon40-40/write.png",""}
+                        };
 
         public void Initialise()
         {
             if (isInitialised)
                 return;
             listMoods = new List<Mood>();
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < moodscount; i++)
             {
                 BitmapImage img = new BitmapImage();
                 img.CreateOptions = BitmapCreateOptions.BackgroundCreation;

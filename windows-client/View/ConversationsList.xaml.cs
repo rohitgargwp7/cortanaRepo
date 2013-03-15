@@ -781,7 +781,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
-                    if (co != null && !App.ViewModel.IsPending(co.Msisdn))
+                    if (co != null)
                     {
                         FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         if (launchPagePivot.SelectedIndex != 3)
@@ -875,20 +875,8 @@ namespace windows_client.View
                     }
                     else
                     {
-                        ContactInfo ci = null;
-                        if (App.ViewModel.ContactsCache.ContainsKey(sm.Msisdn))
-                            ci = App.ViewModel.ContactsCache[sm.Msisdn];
-                        if (ci != null)
-                        {
-                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                return;
-                        }
-                        else
-                        {
-                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(sm.Msisdn);
-                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                return;
-                        }
+                        if (!sm.ShowOnTimeline)
+                            return;
                         // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
@@ -1072,11 +1060,8 @@ namespace windows_client.View
                     }
                     menuFavourite.Header = AppResources.Add_To_Fav_Txt;
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CONVLIST);
-                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
-                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                        FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
-                    else
-                        FriendsTableUtils.DeleteFriend(convObj.Msisdn);
+
+                    FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
 
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                     if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
@@ -1508,11 +1493,7 @@ namespace windows_client.View
                 int count = 0;
                 App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                 App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(convObj.Msisdn);
-                if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                    FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
-                else
-                    FriendsTableUtils.DeleteFriend(convObj.Msisdn);
+                FriendsTableUtils.SetFriendStatus(convObj.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
 
                 // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                 if (convObj.IsOnhike && !string.IsNullOrEmpty(convObj.ContactName))
@@ -1873,7 +1854,7 @@ namespace windows_client.View
             }
             //TODO - MG - handle case when you receive unread status from 1 way friend. Since, we are showing only 2-way su on timeline
             //corresponding counters should be handled for eg unread count
-            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgs();
+            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetAllStatusMsgsForTimeline();
             if (statusMessagesFromDB != null)
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)

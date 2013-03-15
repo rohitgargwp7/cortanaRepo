@@ -347,7 +347,7 @@ namespace windows_client
                     // if user does not exists we dont know about his onhike status , so we need to process
                     ProcessUoUjMsgs(jsonObj, false, isUserInContactList);
                 }
-                // if user has left mark him as non hike user in group cache
+                // if user has left, mark him as non hike user in group cache
                 else if (GroupManager.Instance.GroupCache != null)
                 {
                     foreach (string key in GroupManager.Instance.GroupCache.Keys)
@@ -368,6 +368,11 @@ namespace windows_client
                 }
                 UsersTableUtils.updateOnHikeStatus(uMsisdn, joined);
                 ConversationTableUtils.updateOnHikeStatus(uMsisdn, joined);
+                JToken jt;
+                long ts = 0;
+                if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
+                    ts = jt.ToObject<long>();
+                FriendsTableUtils.SetJoiningTime(uMsisdn,ts);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
             #endregion
@@ -518,10 +523,21 @@ namespace windows_client
                                                         fkkvv = kVals.Current; // kkvv contains favourites MSISDN
                                                         JObject pendingJSON = fkkvv.Value.ToObject<JObject>();
                                                         JToken pToken;
-                                                        if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken))
+                                                        if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
+                                                        {
+                                                            bool rp = pToken.ToObject<bool>();
+                                                            if (rp)
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
+                                                            else
+                                                                FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                                                        }
+                                                        else if (pendingJSON.TryGetValue(HikeConstants.PENDING, out pToken) && pToken != null && pToken.ToObject<bool>() == true)
+                                                        {
                                                             isFav = false;
-                                                        if (pendingJSON.TryGetValue(HikeConstants.NAME, out pToken))
-                                                            name = pToken.ToString();
+                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                                                        }
+                                                        else
+                                                            FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.FRIENDS);
                                                         Debug.WriteLine("Fav request, Msisdn : {0} ; isFav : {1}", fkkvv.Key, isFav);
                                                         LoadFavAndPending(isFav, fkkvv.Key, name); // true for favs
                                                         thrAreFavs = true;
@@ -1002,7 +1018,7 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.DeleteFriend(msisdn);
+                    FriendsTableUtils.SetFriendStatus(msisdn,FriendsTableUtils.FriendStatusEnum.NOT_SET);
                 }
                 catch (Exception e)
                 {
@@ -1015,11 +1031,7 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(msisdn);
-                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                        FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
-                    else
-                        FriendsTableUtils.DeleteFriend(msisdn);
+                    FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
                 }
                 catch (Exception e)
                 {
@@ -1067,7 +1079,8 @@ namespace windows_client
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
 
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), -1);
+                        
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn),-1);
 
                         idToken = null;
                         if (iconBase64 != null)
@@ -1090,9 +1103,9 @@ namespace windows_client
 
                         idToken = null;
                         if (data.TryGetValue(HikeConstants.MOOD, out idToken) && idToken != null && string.IsNullOrEmpty(idToken.ToString()))
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), -1, idToken.ToString(), true);
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1, idToken.ToString(), true);
                         else
-                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), -1);
+                            sm = new StatusMessage(msisdn, val.ToString(), StatusMessage.StatusType.TEXT_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1);
 
                         StatusMsgsTable.InsertStatusMsg(sm);
                     }

@@ -132,7 +132,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE FRIENDS"/>
+                        <TextBlock Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
 
                         <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
                             <Image Source="images/favorites_heart.png" Height="90"></Image>
@@ -158,7 +158,7 @@
 
                         <Rectangle Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
 
-                        <TextBlock Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="HIKE CONTACTS"/>
+                        <TextBlock Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
 
                         <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">
                             <ListBox.ItemTemplate>

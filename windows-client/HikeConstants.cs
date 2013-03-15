@@ -109,7 +109,8 @@ namespace windows_client
         public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
         public static readonly string PUSH_CHANNEL_CN = "*.hike.in";//The PUSH CN
         public static readonly string FAVORITES = "favorites";
-        public static readonly string PENDING = "pending"; // TODO : Change to exact constant
+        public static readonly string PENDING = "pending";
+        public static readonly string REQUEST_PENDING = "requestpending";
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
 

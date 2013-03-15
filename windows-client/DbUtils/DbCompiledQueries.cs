@@ -303,14 +303,14 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static Func<HikeChatsDb, IQueryable<StatusMessage>> GetAllStatusMsgs
+        public static Func<HikeChatsDb, IQueryable<StatusMessage>> GetAllStatusMsgsForTimeline
         {
             get
             {
                 Func<HikeChatsDb, IQueryable<StatusMessage>> q =
                 CompiledQuery.Compile<HikeChatsDb, IQueryable<StatusMessage>>
                 ((HikeChatsDb hdc) =>
-                    from o in hdc.statusMessage
+                    from o in hdc.statusMessage where o.ShowOnTimeline == true
                     orderby o.StatusId descending
                     select o);
                 return q;
