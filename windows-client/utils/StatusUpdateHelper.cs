@@ -137,18 +137,7 @@ namespace windows_client.utils
 
         public bool IsTwoWayFriend(string msisdn)
         {
-            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
-            {
-                ContactInfo ci = App.ViewModel.ContactsCache[msisdn];
-                if (ci.FriendStatus == FriendsTableUtils.FriendStatusEnum.NOT_SET)
-                    ci.FriendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
-                return ci.FriendStatus == FriendsTableUtils.FriendStatusEnum.FRIENDS;
-            }
-            else
-            {
-                return FriendsTableUtils.GetFriendStatus(msisdn) == FriendsTableUtils.FriendStatusEnum.FRIENDS;
-            }
-
+            return FriendsTableUtils.GetFriendStatus(msisdn) == FriendsTableUtils.FriendStatusEnum.FRIENDS;
         }
     }
 }

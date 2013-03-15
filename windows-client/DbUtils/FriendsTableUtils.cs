@@ -6,6 +6,7 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using windows_client.Model;
 
 namespace windows_client.DbUtils
 {
@@ -105,7 +106,7 @@ namespace windows_client.DbUtils
             }
         }
 
-        public static FriendStatusEnum GetFriendStatus(string msisdn)
+        private static FriendStatusEnum GetFriendStatusFromFile(string msisdn)
         {
             FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;
             lock (readWriteLock)
@@ -135,7 +136,7 @@ namespace windows_client.DbUtils
             return friendStatus;
         }
 
-        public static FriendStatusEnum GetFriendStatus(string msisdn,out long ts)
+        private static FriendStatusEnum GetFriendStatusFromFile(string msisdn,out long ts)
         {
             ts = 0;
             FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;
@@ -165,6 +166,19 @@ namespace windows_client.DbUtils
                 }
             }
             return friendStatus;
+        }
+
+        public static FriendStatusEnum GetFriendStatus(string msisdn)
+        {
+            if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+            {
+                ContactInfo ci = App.ViewModel.ContactsCache[msisdn];
+                if (ci.FriendStatus == FriendsTableUtils.FriendStatusEnum.NOT_SET)
+                    ci.FriendStatus = FriendsTableUtils.GetFriendStatusFromFile(msisdn);
+                return ci.FriendStatus;
+            }
+            else
+                return GetFriendStatusFromFile(msisdn);
         }
 
         public static long GetFriendOnHIke(string msisdn)
