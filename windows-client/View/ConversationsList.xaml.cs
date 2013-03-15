@@ -114,7 +114,6 @@ namespace windows_client.View
                 TotalUnreadStatuses = 0;
         }
 
-
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -436,7 +435,6 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_black.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite_dark.png", UriKind.Relative));
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link_dark.png", UriKind.Relative));
-                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0x36, 0x36, 0x36));
             }
             else
             {
@@ -444,7 +442,6 @@ namespace windows_client.View
                 emptyScreenTip.Source = new BitmapImage(new Uri("images/empty_screen_tip_white.png", UriKind.Relative));
                 invite.Source = new BitmapImage(new Uri("images/invite.png", UriKind.Relative));
                 rewards.Source = new BitmapImage(new Uri("images/rewards_link.png", UriKind.Relative));
-                //favsBar.Fill = new SolidColorBrush(Color.FromArgb(255, 0xe9, 0xe9, 0xe9));
             }
             bool showRewards;
             if (App.appSettings.TryGetValue<bool>(HikeConstants.SHOW_REWARDS, out showRewards) && showRewards == true)
@@ -518,7 +515,6 @@ namespace windows_client.View
             GroupManager.Instance.GroupCache.Clear();
             GroupManager.Instance.DeleteAllGroups();
             GroupTableUtils.deleteAllGroups();
-
         }
 
         private void createGroup_Click(object sender, EventArgs e)
@@ -530,8 +526,6 @@ namespace windows_client.View
 
         private void addFriend_Click(object sender, EventArgs e)
         {
-            //if (addFavsPanel.Opacity == 0)
-            //    return;
             PhoneApplicationService.Current.State["HIKE_FRIENDS"] = true;
             string uri = "/View/InviteUsers.xaml";
             NavigationService.Navigate(new Uri(uri, UriKind.Relative));
@@ -541,7 +535,6 @@ namespace windows_client.View
         /* Start or continue the conversation*/
         private void selectUserBtn_Click(object sender, EventArgs e)
         {
-            //if (isAppEnabled)
             App.AnalyticsInstance.addEvent(Analytics.COMPOSE);
             NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
@@ -1594,10 +1587,6 @@ namespace windows_client.View
         {
             get
             {
-                if (App.IS_TOMBSTONED)
-                {
-                    App.appSettings.TryGetValue<int>(HikeConstants.REFRESH_BAR, out _refreshBarCount);
-                }
                 return _refreshBarCount;
             }
             set
@@ -1645,10 +1634,6 @@ namespace windows_client.View
         {
             get
             {
-                if (App.IS_TOMBSTONED)
-                {
-                    App.appSettings.TryGetValue<int>(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
-                }
                 return _totalUnreadStatuses;
             }
             set
@@ -1675,10 +1660,6 @@ namespace windows_client.View
         {
             get
             {
-                if (App.IS_TOMBSTONED)
-                {
-                    App.appSettings.TryGetValue<int>(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
-                }
                 return _unreadFriendRequests;
             }
             set
