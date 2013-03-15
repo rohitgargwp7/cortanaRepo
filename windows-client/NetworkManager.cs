@@ -525,7 +525,13 @@ namespace windows_client
                                                         JToken pToken;
                                                         if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
                                                         {
-                                                            bool rp = pToken.ToObject<bool>();
+                                                            bool rp = false;
+                                                            if (pToken != null && pToken.HasValues)
+                                                            {
+                                                                object o = pToken.ToObject<object>();
+                                                                if(o is bool)
+                                                                    rp = (bool)o;
+                                                            }
                                                             if (rp)
                                                                 FriendsTableUtils.SetFriendStatus(fkkvv.Key, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
                                                             else
