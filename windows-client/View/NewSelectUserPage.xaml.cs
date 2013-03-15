@@ -224,7 +224,10 @@ namespace windows_client.View
             {
                 App.HikePubSubInstance.removeListener(HikePubSub.GROUP_END, this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewSelectUserPage.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
+            }
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
             PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
@@ -500,6 +503,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("NewSelectUserPage.xaml :: contactSelected_Click, Exception : " + ex.StackTrace);
             }
         }
 

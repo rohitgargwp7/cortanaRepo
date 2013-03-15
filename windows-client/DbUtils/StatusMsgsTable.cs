@@ -90,9 +90,9 @@ namespace windows_client.DbUtils
                     context.statusMessage.DeleteAllOnSubmit<StatusMessage>(context.GetTable<StatusMessage>());
                     context.SubmitChanges();
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("StatusMsgsTable :: Exception while deleting all status msgs : " + e.StackTrace);
+                    Debug.WriteLine("StatusMsgsTable :: DeleteAllStatusMsgs : DeleteAllStatusMsgs, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -111,9 +111,9 @@ namespace windows_client.DbUtils
                     StatusMessage sm = smEn.FirstOrDefault<StatusMessage>();
                     return sm.MsgId;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("StatusMsgsTable :: Exception while deleting status : " + e.StackTrace);
+                    Debug.WriteLine("StatusMsgsTable :: DeleteStatusMsg : DeleteStatusMsg, Exception : " + ex.StackTrace);
                     return -1;
                 }
             }

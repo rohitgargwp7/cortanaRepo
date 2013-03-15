@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Model;
 using windows_client.DbUtils;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace windows_client.View
 {
@@ -36,10 +37,17 @@ namespace windows_client.View
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = true;
             appBar.Buttons.Add(postStatusIcon);
-          
-            postStatusPage.ApplicationBar = appBar;
-        }
 
+            postStatusPage.ApplicationBar = appBar;
+
+
+        }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            MoodsInitialiser.Instance.Initialise();
+            moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
+        }
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
             postStatusIcon.IsEnabled = false;
@@ -78,29 +86,62 @@ namespace windows_client.View
             }
             if (stat == HikeConstants.OK)
             {
-                JToken statusData;
-                obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
-                try
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    string statusId = statusData["statusid"].ToString();
-                    string message = statusData["msg"].ToString();
-                    StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                        TimeUtils.getCurrentTimeStamp(),-1);
-                    StatusMsgsTable.InsertStatusMsg(sm);
-                    App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
-                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    JToken statusData;
+                    obj.TryGetValue(HikeConstants.Extras.DATA, out statusData);
+                    try
                     {
-                        if (NavigationService.CanGoBack)
-                        {
-                            NavigationService.GoBack();
-                        }
-                    });
-                }
-                catch
-                {
-                }
+                        string statusId = statusData["statusid"].ToString();
+                        string message = statusData["msg"].ToString();
+                        // status should be in read state when posted yourself
+                        StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
+                            TimeUtils.getCurrentTimeStamp(), -1, false);
+                        StatusMsgsTable.InsertStatusMsg(sm);
+                        App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
 
+                        if (NavigationService.CanGoBack)
+                            NavigationService.GoBack();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("PostStatus:: postStatus_Callback, Exception : " + ex.StackTrace);
+                    }
+                });
             }
+        }
+
+        private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void TwitterIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+            gridMood.Visibility = Visibility.Visible;
+            this.appBar.IsVisible = false;
+        }
+
+        private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (gridMood.Visibility == Visibility.Visible)
+            {
+                gridMood.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+                return;
+            }
+            base.OnBackKeyPress(e);
         }
     }
 }

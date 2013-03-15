@@ -132,8 +132,9 @@ namespace windows_client.View
             {
                 App.HikePubSubInstance.removeListener(HikePubSub.INVITEE_NUM_CHANGED, this);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Free Smms ::  OnRemovedFromJournal , Exception : " + ex.StackTrace);
             }
             base.OnRemovedFromJournal(e);
         }
@@ -315,7 +316,10 @@ namespace windows_client.View
                 {
                     max = Int32.Parse((string)App.appSettings[HikeConstants.TOTAL_CREDITS_PER_MONTH]);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Free Sms::  initializeCredits , Exception : " + ex.StackTrace);
+                }
             }
             long val = ((long)creditsRemaining * 435) / max;
             creditsRemainingBar.Width = val;
@@ -406,7 +410,7 @@ namespace windows_client.View
                         App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN);
                         App.RemoveKeyFromAppSettings(HikeConstants.AppSettings.TWITTER_TOKEN_SECRET);
                         App.RemoveKeyFromAppSettings(HikeConstants.TW_LOGGED_IN);
-                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW),HikeConstants.TWITTER, false);
+                        AccountUtils.SocialPost(null, new AccountUtils.postResponseFunction(SocialDeleteTW), HikeConstants.TWITTER, false);
                         return;
                     }
                 }

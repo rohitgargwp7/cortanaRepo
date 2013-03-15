@@ -409,7 +409,10 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.REMOVE_FRIENDS, this);
                 mPubSub.removeListener(HikePubSub.ADD_FRIENDS, this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ConversationList ::  removeListeners , Exception : " + ex.StackTrace);
+            }
         }
 
         #endregion
@@ -686,6 +689,12 @@ namespace windows_client.View
 
         public void onEventReceived(string type, object obj)
         {
+            if (obj == null)
+            {
+                Debug.WriteLine("ConversationsList :: OnEventReceived : Object received is null");
+                return;
+            }
+
             #region MESSAGE_RECEIVED
             if (HikePubSub.MESSAGE_RECEIVED == type)
             {
@@ -707,7 +716,10 @@ namespace windows_client.View
                             if (App.ViewModel.MessageListPageCollection.Count > 0)
                                 myListBox.ScrollIntoView(App.ViewModel.MessageListPageCollection[0]);
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ConversationList ::  onEventReceived,MESSAGE_RECEIVED  , Exception : " + ex.StackTrace);
+                        }
                     });
                 }
                 bool isVibrateEnabled = true;
@@ -766,7 +778,7 @@ namespace windows_client.View
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     ConversationListObject co = (ConversationListObject)obj;
-                    if (co != null)
+                    if (co != null && !App.ViewModel.IsPending(co.Msisdn))
                     {
                         FriendRequestStatus frs = new FriendRequestStatus(co, yes_Click, no_Click);
                         if (launchPagePivot.SelectedIndex != 3)
@@ -836,8 +848,9 @@ namespace windows_client.View
                         NavigationService.Navigate(nextPage);
                     });
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("ConversationList ::  onEventReceived,BAD_USER_PASS  , Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -845,9 +858,12 @@ namespace windows_client.View
             else if (HikePubSub.STATUS_RECEIVED == type)
             {
                 StatusMessage sm = obj as StatusMessage;
-                int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
+                if (sm == null)
+                    return;
+
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
+                    int count = App.ViewModel.PendingRequests != null ? App.ViewModel.PendingRequests.Count : 0;
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
@@ -856,6 +872,21 @@ namespace windows_client.View
                     }
                     else
                     {
+                        ContactInfo ci = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(sm.Msisdn))
+                            ci = App.ViewModel.ContactsCache[sm.Msisdn];
+                        if (ci != null)
+                        {
+                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                return;
+                        }
+                        else
+                        {
+                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(sm.Msisdn);
+                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                return;
+                        }
+                        // here we have to check 2 way firendship
                         if (launchPagePivot.SelectedIndex == 3)
                         {
                             FreshStatusUpdates.Add(sm);
@@ -967,7 +998,10 @@ namespace windows_client.View
                         ContactInfo c = UsersTableUtils.getContactInfoFromMSISDN(ms);
                         if (c != null)
                         {
-                            hikeContactList.Remove(c);
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                hikeContactList.Remove(c);
+                            });
                         }
                     }
                 }
@@ -1289,8 +1323,9 @@ namespace windows_client.View
                     checkForRateApp();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationList ::  checkUpdate_Callback , checkUpdate_Callback, Exception : " + ex.StackTrace);
             }
         }
 
@@ -1380,7 +1415,10 @@ namespace windows_client.View
                 {
                     marketplaceDetailTask.Show();
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ConversationList ::  openMarketPlace, openMarketPlace  , Exception : " + ex.StackTrace);
+                }
             }
         }
 
@@ -1421,7 +1459,10 @@ namespace windows_client.View
                                      marketplaceReviewTask.Show();
                                      App.appSettings.Remove(HikeConstants.AppSettings.APP_LAUNCH_COUNT);
                                  }
-                                 catch { }
+                                 catch (Exception ex)
+                                 {
+                                     Debug.WriteLine("ConversationList ::  showRateAppMessage, showRateAppMessage  , Exception : " + ex.StackTrace);
+                                 }
                              }
                          }
                      }, null);
@@ -1815,6 +1856,23 @@ namespace windows_client.View
                 {
                     if (i < NotificationCount)
                         statusMessagesFromDB[i].IsUnread = true;
+                    if (statusMessagesFromDB[i].Msisdn != App.MSISDN)
+                    {
+                        ContactInfo ci = null;
+                        if (App.ViewModel.ContactsCache.ContainsKey(statusMessagesFromDB[i].Msisdn))
+                            ci = App.ViewModel.ContactsCache[statusMessagesFromDB[i].Msisdn];
+                        if (ci != null)
+                        {
+                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                continue;
+                        }
+                        else
+                        {
+                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(statusMessagesFromDB[i].Msisdn);
+                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                                continue;
+                        }
+                    }
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }

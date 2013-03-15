@@ -411,11 +411,11 @@ namespace windows_client
                     RegionInfo reg = new RegionInfo(countryCodeName);
                     ISORegion = reg.TwoLetterISORegionName;
                 }
+                
                 catch (ArgumentException argEx)
                 {
-                    // The country code was not valid 
+                    Debug.WriteLine("Enter Number ::  OnNavigatedTo , Country Code Invalid, Exception : " + argEx.StackTrace);
                 }
-
                 if (isoCodeCountryCode.ContainsKey(ISORegion))
                 {
                     txtEnterCountry.Text = countryCode = isoCodeCountryCode[ISORegion];

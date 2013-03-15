@@ -10,6 +10,7 @@ using windows_client.Controls;
 using windows_client.View;
 using Microsoft.Phone.Controls;
 using windows_client.Controls.StatusUpdate;
+using System.Diagnostics;
 
 
 namespace windows_client.ViewModel
@@ -249,8 +250,10 @@ namespace windows_client.ViewModel
                     ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
                     convObj.IsOnhike = HikePubSub.USER_JOINED == type;
                 }
-                catch (KeyNotFoundException)
+
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("HikeViewModel:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion

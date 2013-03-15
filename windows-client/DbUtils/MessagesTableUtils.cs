@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
             }
 
         }
-     
+
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
@@ -121,9 +121,10 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while inserting msg in CHATS DB : " + ex.StackTrace);
+                    Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
                     return false;
                 }
+                
                 //if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 //{
                 //    long msgId = convMessage.MessageId;
@@ -482,9 +483,9 @@ namespace windows_client.DbUtils
             {
                 context.SubmitChanges(ConflictMode.ContinueOnConflict);
             }
-            catch (ChangeConflictException e)
+            catch (ChangeConflictException ex)
             {
-                Console.WriteLine(e.Message);
+                Debug.WriteLine("MessageTableUtils :: SubmitWithConflictResolve : submitChanges, Exception : " + ex.StackTrace);
                 // Automerge database values for members that client
                 // has not modified.
                 foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -492,6 +493,7 @@ namespace windows_client.DbUtils
                     occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                 }
             }
+          
             // Submit succeeds on second try.           
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }

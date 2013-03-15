@@ -48,15 +48,14 @@ namespace windows_client.DbUtils
                 {
                     context.SubmitChanges(ConflictMode.ContinueOnConflict);
                 }
-
-                catch (ChangeConflictException e)
+                catch (ChangeConflictException ex)
                 {
-                    Debug.WriteLine(e.Message);
+                    Debug.WriteLine("MiscDbUtil :: clearDatabase : submitChangesChat, Exception : " + ex.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)
                     {
-                        occ.Resolve(RefreshMode.KeepChanges);
+                        occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                     }
                 }
 
@@ -75,14 +74,14 @@ namespace windows_client.DbUtils
                     context.SubmitChanges(ConflictMode.ContinueOnConflict);
                 }
 
-                catch (ChangeConflictException e)
+                catch (ChangeConflictException ex)
                 {
-                    Debug.WriteLine(e.Message);
+                    Debug.WriteLine("MiscDbUtil :: clearDatabase : submitChangesUSers , blocklists, Exception : " + ex.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)
                     {
-                        occ.Resolve(RefreshMode.KeepChanges);
+                        occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                     }
                 }
 
@@ -100,14 +99,14 @@ namespace windows_client.DbUtils
                     context.SubmitChanges(ConflictMode.ContinueOnConflict);
                 }
 
-                catch (ChangeConflictException e)
+                catch (ChangeConflictException ex)
                 {
-                    Debug.WriteLine(e.Message);
+                    Debug.WriteLine("MiscDbUtil :: clearDatabase :  DELETE MQTTPERSISTED MESSAGES , Exception : " + ex.StackTrace);
                     // Automerge database values for members that client
                     // has not modified.
                     foreach (ObjectChangeConflict occ in context.ChangeConflicts)
                     {
-                        occ.Resolve(RefreshMode.KeepChanges);
+                        occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                     }
                 }
 
@@ -184,9 +183,9 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine(e);
+                    Debug.WriteLine("MiscDbUtil :: saveProfileImages :saveProfileImages, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -226,9 +225,10 @@ namespace windows_client.DbUtils
                         {
                             store.DeleteFile(STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             Debug.WriteLine("File {0} does not exist.", STATUS_UPDATE_LARGE + "\\" + dir + "\\" + file);
+                            Debug.WriteLine("MiscDbUtil :: DeleteAllLargeStatusImages : DeleteAllLargeStatusImages, Exception : " + ex.StackTrace);
                         }
                     }
                 }
@@ -254,9 +254,10 @@ namespace windows_client.DbUtils
                             {
                                 store.DeleteFile(PROFILE_PICS + "\\" + dir + "\\" + file);
                             }
-                            catch
+                            catch (Exception ex)
                             {
                                 Debug.WriteLine("File {0} does not exist.", PROFILE_PICS + "\\" + dir + "\\" + file);
+                                Debug.WriteLine("MiscDbUtil :: DeleteAllPicUpdates : DeleteAllPicUpdates, Exception : " + ex.StackTrace);
                             }
                         }
                     }
@@ -290,9 +291,9 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine(e);
+                    Debug.WriteLine("MiscDbUtil :: saveAvatarImage : saveAvatarImage, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -309,7 +310,10 @@ namespace windows_client.DbUtils
                         return true;
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: hasCustomProfileImage : hasCustomProfileImage, Exception : " + ex.StackTrace);
+                }
             }
             return false;
         }
@@ -336,7 +340,10 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: getThumbNailForMsisdn : getThumbNailForMsisdn, Exception : " + ex.StackTrace);
+                }
             }
             return data;
         }
@@ -352,9 +359,10 @@ namespace windows_client.DbUtils
                     {
                         store.DeleteFile(THUMBNAILS + "\\" + fileName);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         Debug.WriteLine("File {0} does not exist.", THUMBNAILS + "\\" + fileName);
+                        Debug.WriteLine("MiscDbUtil :: DeleteAllThumbnails : DeleteAllThumbnails, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -591,7 +599,7 @@ namespace windows_client.DbUtils
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine(ex);
+                                    Debug.WriteLine("MiscDbUtil :: LoadFavouritesFromIndividualFiles : reading file, Exception : " + ex.StackTrace);
                                 }
                                 reader.Close();
                             }
@@ -600,7 +608,10 @@ namespace windows_client.DbUtils
                                 file.Close();
                                 file.Dispose();
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("MiscDbUtil :: LoadFavouritesFromIndividualFiles : disposing file, Exception : " + ex.StackTrace);
+                            }
                         }
                     }
                 }
@@ -630,7 +641,10 @@ namespace windows_client.DbUtils
                             {
                                 count = reader.ReadInt32();
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("MiscDbUtil :: LoadFavourites : count reading, Exception : " + ex.StackTrace);
+                            }
                             if (count > 0)
                             {
                                 for (int i = 0; i < count; i++)
@@ -649,7 +663,7 @@ namespace windows_client.DbUtils
                                     }
                                     catch (Exception ex)
                                     {
-                                        Debug.WriteLine(ex);
+                                        Debug.WriteLine("MiscDbUtil :: LoadFavourites : file reading, Exception : " + ex.StackTrace);
                                     }
                                 }
                             }
@@ -660,7 +674,10 @@ namespace windows_client.DbUtils
                             file.Close();
                             file.Dispose();
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("MiscDbUtil :: LoadFavourites : disposing file, Exception : " + ex.StackTrace);
+                        }
                     }
                 }
             }
@@ -742,9 +759,9 @@ namespace windows_client.DbUtils
                     }
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, 0);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception :: {0}", e.StackTrace);
+                    Debug.WriteLine("MiscDbUtil :: DeleteFavourites :DeleteFavourites Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -757,7 +774,10 @@ namespace windows_client.DbUtils
                 {
                     store.DeleteFile("FAVS\\" + msisdn.Replace(":", "_"));
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: DeleteFavourite : DeleteFavourite, Exception : " + ex.StackTrace);
+                }
             }
         }
 
@@ -790,7 +810,10 @@ namespace windows_client.DbUtils
                             {
                                 count = reader.ReadInt32();
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("MiscDbUtil :: LoadPendingRequests : read count, Exception : " + ex.StackTrace);
+                            }
                             if (count > 0)
                             {
                                 for (int i = 0; i < count; i++)
@@ -808,9 +831,9 @@ namespace windows_client.DbUtils
                                         }
 
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
-                                        item = null;
+                                        Debug.WriteLine("MiscDbUtil :: LoadPendingRequests : read file, Exception : " + ex.StackTrace);
                                     }
                                 }
                             }
@@ -821,7 +844,10 @@ namespace windows_client.DbUtils
                             file.Close();
                             file.Dispose();
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("MiscDbUtil :: LoadPendingRequests : dispose file, Exception : " + ex.StackTrace);
+                        }
                     }
                 }
                 App.ViewModel.IsPendingListLoaded = true;
@@ -868,7 +894,10 @@ namespace windows_client.DbUtils
                 {
                     store.DeleteFile(MISC_DIR + "\\" + PENDING_REQ_FILE);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MiscDbUtil :: DeletePendingRequests : DeletePendingRequests, Exception : " + ex.StackTrace);
+                }
             }
         }
 

@@ -62,11 +62,20 @@ namespace windows_client.View
                 App.HikePubSubInstance.removeListener(HikePubSub.STATUS_RECEIVED, this);
                 App.HikePubSubInstance.removeListener(HikePubSub.STATUS_DELETED, this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("UserProfile.xaml :: removeListeners, Exception : " + ex.StackTrace);
+            }
         }
 
         public void onEventReceived(string type, object obj)
         {
+            if (obj == null)
+            {
+                Debug.WriteLine("UserProfile :: OnEventReceived : Object received is null");
+                return;
+            }
+
             #region STATUS UPDATE RECEIVED
             if (HikePubSub.STATUS_RECEIVED == type)
             {
@@ -247,9 +256,9 @@ namespace windows_client.View
                     NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("UserProfile.xaml :: onProfilePicButtonTap, Exception : " + ex.StackTrace);
             }
         }
 
@@ -307,9 +316,12 @@ namespace windows_client.View
                 try
                 {
                     serverId = obj["status"].ToObject<JObject>()[HikeConstants.STATUS_ID].ToString();
-                //todo:check
+                    //todo:check
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("UserProfile.xaml :: updateProfile_Callback, serverid parse, Exception : " + ex.StackTrace);
+                }
                 if (serverId != null)
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
@@ -355,7 +367,6 @@ namespace windows_client.View
                 {
                     statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
                 }
-                this.statusLLS.ItemsSource = statusList;
             }
             if (statusList.Count == 0)
             {
@@ -368,6 +379,8 @@ namespace windows_client.View
             }
             else
                 gridSmsUser.Visibility = Visibility.Collapsed;
+
+            this.statusLLS.ItemsSource = statusList;
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)

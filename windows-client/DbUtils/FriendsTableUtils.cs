@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace windows_client.DbUtils
 {
-    class FriendsTableUtils
+    public class FriendsTableUtils
     {
         public enum FriendStatusEnum : byte
         {
@@ -19,7 +19,8 @@ namespace windows_client.DbUtils
             REQUEST_RECIEVED,
             UNFRIENDED_BY_YOU,
             IGNORED,
-            FRIENDS
+            FRIENDS,
+            NOT_FRIENDS //  this is just to signify that there is no 2 way friendship
         }
 
         public static string FRIENDS_DIRECTORY = "FRIENDS";
@@ -57,12 +58,14 @@ namespace windows_client.DbUtils
                                 }
                                 file.Seek(0, SeekOrigin.Begin);
                                 file.WriteByte((byte)friendStatus);
+                                if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                                    App.ViewModel.ContactsCache[msisdn].FriendStatus = friendStatus;
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception while settin friend status,{0}", e.StackTrace);
+                        Debug.WriteLine("FriendsTableUtils :: SetFriendStatus : SetFriendStatus, Exception : " + ex.StackTrace);
                     }
                 }
             }
@@ -90,9 +93,9 @@ namespace windows_client.DbUtils
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while getting friend status,{0}", e.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: GetFriendStatus :GetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
             return friendStatus;
@@ -109,10 +112,12 @@ namespace windows_client.DbUtils
                     {
                         store.DeleteFile(fileName);
                     }
+                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn))
+                        App.ViewModel.ContactsCache[msisdn].FriendStatus = FriendStatusEnum.NOT_FRIENDS;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while deleting friend status,{0}", e.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: DeleteFriend :DeleteFriend, Exception : " + ex.StackTrace);
                 }
             }
         }
@@ -133,16 +138,17 @@ namespace windows_client.DbUtils
                                 {
                                     store.DeleteFile(FRIENDS_DIRECTORY + "\\" + fileName);
                                 }
-                                catch (Exception e)
+                                catch (Exception ex)
                                 {
-                                    Debug.WriteLine("Exception while deleting all friendsDb, FileName :{0} , Exception :{1}", fileName, e.StackTrace);
+                                    Debug.WriteLine("Exception while deleting all friendsDb, FileName :{0} ", fileName);
+                                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : Individual Files, Exception : " + ex.StackTrace);
                                 }
                             }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while deleting all friendsDb,{0}", e.StackTrace);
+                    Debug.WriteLine("FriendsTableUtils :: DeleteAllFriends : DeleteAllFriends, Exception : " + ex.StackTrace);
                 }
             }
         }

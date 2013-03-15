@@ -95,8 +95,9 @@ namespace windows_client
             {
                 jsonObj = JObject.Parse(msg);
             }
-            catch (JsonReaderException e)
+            catch (JsonReaderException ex)
             {
+                Debug.WriteLine("NetworkManager ::  onMessage : json Parse, Exception : " + ex.StackTrace);
                 return;
             }
             string type = null;
@@ -104,8 +105,9 @@ namespace windows_client
             {
                 type = (string)jsonObj[HikeConstants.TYPE];
             }
-            catch
+            catch (JsonReaderException ex)
             {
+                Debug.WriteLine("NetworkManager ::  onMessage : json Parse type, Exception : " + ex.StackTrace);
                 return;
             }
             string msisdn = null;
@@ -113,8 +115,10 @@ namespace windows_client
             {
                 msisdn = (string)jsonObj[HikeConstants.FROM];
             }
-            catch (Exception e)
+            catch (JsonReaderException ex)
             {
+                Debug.WriteLine("NetworkManager ::  onMessage : json Parse from, Exception : " + ex.StackTrace);
+                return;
             }
 
             #region MESSAGE
@@ -129,11 +133,12 @@ namespace windows_client
                         if (Utils.isGroupConversation(convMessage.Msisdn))
                             GroupManager.Instance.LoadGroupParticipants(convMessage.Msisdn);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception in parsing json : " + e.StackTrace);
+                        Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE convmessage, Exception : " + ex.StackTrace);
                         return;
                     }
+
                     convMessage.MessageStatus = ConvMessage.State.RECEIVED_UNREAD;
                     ConversationListObject obj = MessagesTableUtils.addChatMessage(convMessage, false);
 
@@ -159,9 +164,10 @@ namespace windows_client
                     vals[1] = obj;
                     pubSub.publish(HikePubSub.MESSAGE_RECEIVED, vals);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    //logger.Info("NETWORK MANAGER", "Invalid JSON", e);
+                    Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE , Exception : " + ex.StackTrace);
+                    return;
                 }
             }
             #endregion
@@ -173,10 +179,10 @@ namespace windows_client
                 {
                     sentTo = (string)jsonObj[HikeConstants.TO];
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  START_TYPING, Exception : " + ex.StackTrace);
                 }
-
                 object[] vals = new object[2];
                 vals[0] = msisdn;
                 vals[1] = sentTo;
@@ -193,8 +199,9 @@ namespace windows_client
                 {
                     sentTo = (string)jsonObj[HikeConstants.TO];
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  END_TYPING, Exception : " + ex.StackTrace);
                 }
 
                 object[] vals = new object[2];
@@ -214,9 +221,9 @@ namespace windows_client
                     App.WriteToIsoStorageSettings(App.SMS_SETTING, sms_credits);
                     this.pubSub.publish(HikePubSub.SMS_CREDIT_CHANGED, sms_credits);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing sms_credits : " + e.StackTrace);
+                    Debug.WriteLine("NetworkManager ::  onMessage :  SMS_CREDITS, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -230,9 +237,9 @@ namespace windows_client
                     msgID = long.Parse(id);
                     Debug.WriteLine("NETWORK MANAGER:: Received report for Message Id " + msgID);
                 }
-                catch (FormatException e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("NETWORK MANAGER:: Exception occured while parsing msgId. Exception : " + e);
+                    Debug.WriteLine("NetworkManager ::  onMessage :  SERVER_REPORT, Exception : " + ex.StackTrace);
                     msgID = -1;
                     return;
                 }
@@ -258,7 +265,7 @@ namespace windows_client
                 }
                 catch (FormatException e)
                 {
-                    Debug.WriteLine("NETWORK MANAGER:: Exception occured while parsing msgId. Exception : " + e);
+                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}",jsonObj.ToString(Formatting.None) ,e.StackTrace);
                     msgID = -1;
                     return;
                 }
@@ -286,8 +293,9 @@ namespace windows_client
                     else
                         msisdnToCheck = msisdn;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  MESSAGE_READ, Exception : " + ex.StackTrace);
                     return;
                 }
                 if (msgIds == null || msgIds.Count == 0)
@@ -318,9 +326,9 @@ namespace windows_client
                     o = (JObject)jsonObj[HikeConstants.DATA];
                     uMsisdn = (string)o[HikeConstants.MSISDN];
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("NETWORK MANAGER :: Exception while parsing UJ/UL Json : " + e.StackTrace);
+                    Debug.WriteLine("NetworkManager ::  onMessage :  USER_JOINED USER_LEFT, Exception : " + ex.StackTrace);
                     return;
                 }
                 bool joined = USER_JOINED == type;
@@ -391,7 +399,7 @@ namespace windows_client
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine("Network Manager : Exception in ICON :: " + ex.StackTrace);
+                            Debug.WriteLine("NetworkManager ::  onMessage :  ICON , Exception : " + ex.StackTrace);
                         }
                     });
                 }
@@ -431,23 +439,28 @@ namespace windows_client
                     int invited = (int)data[HikeConstants.ALL_INVITEE];
                     App.WriteToIsoStorageSettings(App.INVITED, invited);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
                 }
                 try
                 {
                     int invited_joined = (int)data[HikeConstants.ALL_INVITEE_JOINED];
                     App.WriteToIsoStorageSettings(App.INVITED_JOINED, invited_joined);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
                 }
                 string totalCreditsPerMonth = "0";
                 try
                 {
                     totalCreditsPerMonth = data[HikeConstants.TOTAL_CREDITS_PER_MONTH].ToString();
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("NetworkManager ::  onMessage :  INVITE_INFO , Exception : " + ex.StackTrace);
+                }
 
                 if (!String.IsNullOrEmpty(totalCreditsPerMonth) && Int32.Parse(totalCreditsPerMonth) > 0)
                 {
@@ -574,7 +587,7 @@ namespace windows_client
                                     }
                                     catch (Exception ex)
                                     {
-                                        Debug.WriteLine(ex);
+                                        Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT_INFO , Exception : " + ex.StackTrace);
                                     }
                                 }
 
@@ -590,7 +603,10 @@ namespace windows_client
                                     App.WriteToIsoStorageSettings(kv.Key, val);
                             }
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT_INFO , Exception : " + ex.StackTrace);
+                        }
                     }
 
                     JToken it = data[HikeConstants.TOTAL_CREDITS_PER_MONTH];
@@ -628,10 +644,11 @@ namespace windows_client
                         pubSub.publish(HikePubSub.REWARDS_TOGGLE, null);
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine(e);
+                    Debug.WriteLine("NetworkManager ::  onMessage :  ACCOUNT CONFIG , Exception : " + ex.StackTrace);
                 }
+
             }
             #endregion
             #region USER_OPT_IN
@@ -664,9 +681,9 @@ namespace windows_client
                 {
                     grpId = jsonObj[HikeConstants.TO].ToString();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    return;
+                    Debug.WriteLine("NetworkManager ::  onMessage :  GROUP_CHAT_JOIN , Exception : " + ex.StackTrace);
                 }
                 GroupManager.Instance.LoadGroupParticipants(grpId);
                 ConvMessage convMessage = null;
@@ -688,8 +705,9 @@ namespace windows_client
                             convMessage.Message += ";" + dndMsg;
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("NetworkManager ::  onMessage :  NEW GROUP , Exception : " + ex.StackTrace);
                         return;
                     }
                 }
@@ -963,7 +981,8 @@ namespace windows_client
                                 name = ci.Name;
                             favObj = new ConversationListObject(ms, name, ci != null ? ci.OnHike : true, ci != null ? MiscDBUtil.getThumbNailForMsisdn(ms) : null);
                         }
-                        App.ViewModel.PendingRequests.Add(ms, favObj);
+                        // this will ensure there will be one pending request for a particular msisdn
+                        App.ViewModel.PendingRequests[ms] = favObj;
                         MiscDBUtil.SavePendingRequests();
                         this.pubSub.publish(HikePubSub.ADD_TO_PENDING, favObj);
                     }
@@ -1110,7 +1129,7 @@ namespace windows_client
                     data = (JObject)jsonObj[HikeConstants.DATA];
                     string id = (string)data[HikeConstants.STATUS_ID];
                     long msgId = StatusMsgsTable.DeleteStatusMsg(id);
-                    if(msgId > 0) // delete only if msgId is greater than 0
+                    if (msgId > 0) // delete only if msgId is greater than 0
                         MessagesTableUtils.deleteMessage(msgId);
                 }
                 catch (Exception e)
@@ -1226,8 +1245,9 @@ namespace windows_client
                 {
                     credits = (int)data["credits"];
                 }
-                catch
+                catch (Exception e)
                 {
+                    Debug.WriteLine("NETWORK MANAGER :: Exception in ProcessUoUjMsgs : " + e.StackTrace);
                     credits = 0;
                 }
             }
