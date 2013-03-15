@@ -1638,6 +1638,10 @@ namespace windows_client.View
         {
             get
             {
+                if (App.IS_TOMBSTONED)
+                {
+                    App.appSettings.TryGetValue<int>(HikeConstants.UNREAD_UPDATES, out _totalUnreadStatuses);
+                }
                 return _totalUnreadStatuses;
             }
             set
@@ -1664,6 +1668,10 @@ namespace windows_client.View
         {
             get
             {
+                if (App.IS_TOMBSTONED)
+                {
+                    App.appSettings.TryGetValue<int>(HikeConstants.UNREAD_FRIEND_REQUESTS, out _unreadFriendRequests);
+                }
                 return _unreadFriendRequests;
             }
             set
