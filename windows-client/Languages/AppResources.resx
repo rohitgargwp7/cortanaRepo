@@ -1474,4 +1474,10 @@
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTACTS ON HIKE</value>
   </data>
+  <data name="Profile_BlockedUser_Blk1" xml:space="preserve">
+    <value>You have blocked</value>
+  </data>
+  <data name="Profile_BlockedUser_Blk3" xml:space="preserve">
+    <value>Unblock to send a message.</value>
+  </data>
 </root>

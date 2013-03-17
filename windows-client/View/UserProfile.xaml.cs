@@ -41,7 +41,7 @@ namespace windows_client.View
         ApplicationBarIconButton editProfile_button;
         bool isInvited;
         bool toggleToInvitedScreen;
-
+        bool isBlocked;
         public UserProfile()
         {
             InitializeComponent();
@@ -120,6 +120,8 @@ namespace windows_client.View
                 string recMsisdn = (string)obj;
                 if (recMsisdn != msisdn)
                     return;
+                if (isBlocked)
+                    return;
                 FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -156,9 +158,13 @@ namespace windows_client.View
             #region USER_LEFT
             else if (HikePubSub.USER_LEFT == type)
             {
+                
                 string recMsisdn = (string)obj;
                 try
                 {
+                    isOnHike = false;
+                    if (isBlocked)
+                        return;
                     if (msisdn != recMsisdn)
                         return;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -178,10 +184,14 @@ namespace windows_client.View
                 string recMsisdn = (string)obj;
                 try
                 {
+                    isOnHike = true;
+                    if (isBlocked)
+                        return;
                     if (msisdn != recMsisdn)
                         return;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
+                    
                         txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                         ShowAddAsFriends();
                     });
@@ -281,6 +291,14 @@ namespace windows_client.View
                 avatarImage.Tap += onProfilePicButtonTap;
                 txtUserName.Text = nameToShow;
 
+                //if blocked user show block ui and return
+                if (UsersTableUtils.isUserBlocked(msisdn))
+                {
+                    isBlocked = true;
+                    ShowBlockedUser();
+                    isFirstLoad = false;
+                    return;
+                }
                 if (!isOnHike)//sms user
                 {
                     ShowNonHikeUser();
@@ -497,6 +515,7 @@ namespace windows_client.View
                 return;
             if (isInvited)
                 return;
+           
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             JObject data = new JObject();
             data["id"] = msisdn;
@@ -587,7 +606,22 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
 
-
+        private void UnblockUser_Tap(object sender, EventArgs e)
+        {
+            App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, msisdn);
+            addToFavBtn.Visibility = Visibility.Collapsed;
+            addToFavBtn.Tap -= UnblockUser_Tap;
+            isBlocked = false;
+            if (!isOnHike)
+            {
+                ShowNonHikeUser();
+            }
+            else
+            {
+                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
+                InitHikeUserProfile();
+            }
+        }
         #endregion
 
         private void InitAppBar()
@@ -754,7 +788,6 @@ namespace windows_client.View
 
         private void ShowEmptyStatus()
         {
-            imgInviteLock.Visibility = Visibility.Collapsed;
             txtSmsUserNameBlk1.Text = nameToShow;
             txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
             txtSmsUserNameBlk3.Text = string.Empty;
@@ -780,7 +813,30 @@ namespace windows_client.View
             btnInvite.Content = AppResources.InviteOnHikeBtn_Txt;
             btnInvite.Visibility = Visibility.Visible;
             if (!App.ViewModel.Isfavourite(msisdn))
+            {
                 addToFavBtn.Visibility = Visibility.Visible;
+                addToFavBtn.Content = AppResources.btnAddAsFriend_Txt;
+                addToFavBtn.Tap += AddAsFriend_Tap;
+            }
+        }
+
+        private void ShowBlockedUser()
+        {
+            BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+            imgInviteLock.Source = locked;
+            txtSmsUserNameBlk1.Text = AppResources.Profile_BlockedUser_Blk1;
+            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
+            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
+            txtSmsUserNameBlk2.Text = nameToShow;
+            txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
+            txtSmsUserNameBlk3.Text = AppResources.Profile_BlockedUser_Blk3;
+            addToFavBtn.Content = AppResources.UnBlock_Txt;
+            addToFavBtn.Visibility = Visibility.Visible;
+            addToFavBtn.Tap += UnblockUser_Tap;
+            btnInvite.Visibility = Visibility.Collapsed;
+            gridSmsUser.Visibility = Visibility.Visible;
+            gridInvite.Visibility = Visibility.Collapsed;
+            gridHikeUser.Visibility = Visibility.Collapsed;
         }
         #endregion
 
