@@ -20,7 +20,7 @@ namespace windows_client.Model
         long _timestamp;
         string _serverId;
         long _msgId; // this is the id of convmsg used to delete status in messagestable
-        string _mood;
+        string _moodInfo;
         bool _showOnTimeline;
         bool _isUnread;
 
@@ -42,7 +42,8 @@ namespace windows_client.Model
         {
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool showOnTimeline, long msgId, string mood, bool isUnread)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool showOnTimeline, 
+            long msgId, string moodInfo, bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
@@ -50,7 +51,7 @@ namespace windows_client.Model
             _serverId = mappedId;
             _timestamp = ts;
             _msgId = msgId;
-            _mood = mood;
+            _moodInfo = moodInfo;
             _isUnread = isUnread;
             _showOnTimeline = showOnTimeline;
         }
@@ -184,18 +185,18 @@ namespace windows_client.Model
         }
 
         [Column]
-        public string Mood
+        public string MoodInfo
         {
             get
             {
-                return _mood;
+                return _moodInfo;
             }
             set
             {
-                if (_mood != value)
+                if (_moodInfo != value)
                 {
-                    NotifyPropertyChanging("Mood");
-                    _mood = value;
+                    NotifyPropertyChanging("MoodInfo");
+                    _moodInfo = value;
                 }
             }
         }
