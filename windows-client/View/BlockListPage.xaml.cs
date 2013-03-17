@@ -135,23 +135,23 @@ namespace windows_client.View
             unblockedContacts = new List<ContactInfo>();
             if (allContactsList == null || allContactsList.Count == 0)
                 return;
-            Dictionary<string, bool> dictMsisdns = new Dictionary<string, bool>();
-            Dictionary<string, bool> dictBlocked = new Dictionary<string, bool>();
+            HashSet<string> hashMsisdns = new HashSet<string>();
+            HashSet<string> hashBlocked = new HashSet<string>();
 
             if (blockedList != null)
             {
                 foreach (Blocked bl in blockedList)
                 {
-                    dictBlocked.Add(bl.Msisdn, true);
+                    hashBlocked.Add(bl.Msisdn);
                 }
             }
             for (int i = 0; i < allContactsList.Count; i++)
             {
                 ContactInfo c = allContactsList[i];
-                if (dictMsisdns.ContainsKey(c.Msisdn))
+                if (hashMsisdns.Contains(c.Msisdn))
                     continue;
-                dictMsisdns.Add(c.Msisdn, true);
-                if (dictBlocked.ContainsKey(c.Msisdn))
+                hashMsisdns.Add(c.Msisdn);
+                if (hashBlocked.Contains(c.Msisdn))
                     blockedContacts.Add(c);
                 else
                     unblockedContacts.Add(c);

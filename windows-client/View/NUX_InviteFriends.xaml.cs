@@ -24,11 +24,12 @@ namespace windows_client.View
     {
         private ApplicationBarIconButton sendInviteIconButton;
         private ApplicationBar appBar;
-        private ApplicationBarIconButton skipInviteIconButton;
         private bool isFirstLaunch = true;
         private static List<ContactInfo> listContactInfo;
         private List<ContactInfo> listFamilyMembers;
         private List<ContactInfo> listCloseFriends;
+        private App.PageState ps;
+
         public NUX_InviteFriends()
         {
             InitializeComponent();
@@ -53,10 +54,9 @@ namespace windows_client.View
 
             if (isFirstLaunch)
             {
-                App.PageState ps;
                 if (App.appSettings.TryGetValue(App.PAGE_STATE, out ps) && ps == App.PageState.NUX_SCREEN_FAMILY)
                 {
-                    txtHeader.Text = AppResources.Nux_YourFamily_Txt;
+                    txtHeader.Text = AppResources.Nux_InviteFamily_Txt;
                     txtConnectHike.Text = AppResources.Nux_FamilyMembersConnect_txt;
                 }
 
@@ -71,15 +71,6 @@ namespace windows_client.View
                     App.appSettings[App.PAGE_STATE] = App.PageState.CONVLIST_SCREEN;
                     NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
                     return;
-                }
-                //upgrade or staging so can skip 
-                if (App.appSettings.Contains(HikeConstants.AppSettings.NEW_UPDATE) || !AccountUtils.IsProd)
-                {
-                    skipInviteIconButton = new ApplicationBarIconButton();
-                    skipInviteIconButton.IconUri = new Uri("/View/images/icon_next.png", UriKind.Relative);
-                    skipInviteIconButton.Text = "Skip";
-                    skipInviteIconButton.Click += btnSkipNux_Click;
-                    appBar.Buttons.Add(skipInviteIconButton);
                 }
 
                 BackgroundWorker bw = new BackgroundWorker();
@@ -125,15 +116,17 @@ namespace windows_client.View
             progressBar.IsEnabled = false;
 
             sendInviteIconButton.IsEnabled = true;
+            btnSkipNux.IsHitTestVisible = true;
         }
 
         private void InitialiseFamilyScreen()
         {
+            ps = App.PageState.NUX_SCREEN_FAMILY;
             App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.NUX_SCREEN_FAMILY);
             listContactInfo = listFamilyMembers;
             MarkDefaultChecked();
             lstBoxInvite.ItemsSource = listContactInfo;
-            txtHeader.Text = AppResources.Nux_YourFamily_Txt;
+            txtHeader.Text = AppResources.Nux_InviteFamily_Txt;
             txtConnectHike.Text = AppResources.Nux_FamilyMembersConnect_txt;
             sendInviteIconButton.IsEnabled = true;
             sendInviteIconButton.Click += btnInviteFamily_Click;
@@ -229,8 +222,23 @@ namespace windows_client.View
 
         private void btnSkipNux_Click(object sender, EventArgs e)
         {
-            App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
-            NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            if (ps == App.PageState.NUX_SCREEN_FRIENDS)
+            {
+                if (listFamilyMembers != null && listFamilyMembers.Count > 1)
+                {
+                    InitialiseFamilyScreen();
+                }
+                else
+                {
+                    App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                    NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+                }
+            }
+            else
+            {
+                App.WriteToIsoStorageSettings(App.PAGE_STATE, App.PageState.CONVLIST_SCREEN);
+                NavigationService.Navigate(new Uri("/View/ConversationsList.xaml", UriKind.Relative));
+            }
         }
 
         private ContactInfo GetContact(ContactInfo cn, List<ContactInfo> listContact)
@@ -336,7 +344,7 @@ namespace windows_client.View
 
         #endregion
 
-  public bool MatchFromFamilyVocab(string[] strCompleteName)
+        public bool MatchFromFamilyVocab(string[] strCompleteName)
         {
             if (strCompleteName == null)
                 return false;
