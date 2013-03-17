@@ -1478,4 +1478,8 @@
     <value>Status Update</value>
     <comment>Used in convlist last msg</comment>
   </data>
+  <data name="Share_With_Txt" xml:space="preserve">
+    <value>SHARE</value>
+    <comment>Used in share photo</comment>
+  </data>
 </root>

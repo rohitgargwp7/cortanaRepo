@@ -2734,6 +2734,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SHARE.
+        /// </summary>
+        public static string Share_With_Txt {
+            get {
+                return ResourceManager.GetString("Share_With_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string ShareContact_ConfirmationCaption {
