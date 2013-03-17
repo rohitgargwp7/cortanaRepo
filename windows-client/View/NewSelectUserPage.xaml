@@ -53,7 +53,7 @@
             </Border>
         </DataTemplate>
 
-        <DataTemplate x:Key="ItemTemplate">
+        <DataTemplate x:Name="defaultTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="320"/>
@@ -70,6 +70,23 @@
             </Grid>
         </DataTemplate>
 
+        <DataTemplate x:Name="blockTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="Sender" Grid.Column="0" Height="Auto"  Orientation="Vertical" HorizontalAlignment="Left" Width="Auto" Margin="0,2,0,2">
+                    <TextBlock Text="{Binding Name}" FontFamily="Segoe WP SemiLight" FontSize="36" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding HikeStatusImage}" Height="15" Width="15"/>
+                        <TextBlock Text="{Binding Msisdn}" Foreground="Gray" FontSize="20" Height="30" Margin="6,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
+                <Button Content="{Binding Path= LocalizedResources.Block_Txt, Source={StaticResource LocalizedStrings}}" Background="#e9ecee" Foreground="#595959" Height="65" Width="110" FontSize="20" Grid.Column="1" Visibility="Visible" HorizontalAlignment="Right" BorderThickness="0" Tap="Block_Tap"/>
+            </Grid>
+        </DataTemplate>
+        
     </phone:PhoneApplicationPage.Resources>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -103,8 +120,7 @@
             <phone:LongListSelector x:Name="contactsListBox" Grid.Row="2" Margin="28,10,0,68"
                           VerticalAlignment="Stretch" 
                           HorizontalAlignment="Stretch"
-                          IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"
-                          ItemTemplate="{StaticResource ItemTemplate}"
+                          IsGroupingEnabled="True" LayoutMode="List" HideEmptyGroups="True"                
                           GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
                           JumpListStyle="{StaticResource LongListSelectorJumpListStyle}"/>
         </Grid>

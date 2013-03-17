@@ -25,6 +25,7 @@ namespace windows_client.View
 {
     public partial class NewSelectUserPage : PhoneApplicationPage, HikePubSub.Listener
     {
+        private bool frmBlockedList;
         private bool hideSmsContacts;
         private bool isFreeSmsOn = true;
         private bool canGoBack = true;
@@ -160,8 +161,20 @@ namespace windows_client.View
                 TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
             }
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
+            {
+                frmBlockedList = true;
+                hideSmsContacts = true;
+            }
+
             if (isGroupChat)
                 txtChat.Text = AppResources.GrpChat_Txt.ToUpper();
+
+            if(frmBlockedList) //  this is to show block button
+                contactsListBox.ItemTemplate = this.blockTemplate;
+            else
+                contactsListBox.ItemTemplate = this.defaultTemplate;
+
             shellProgress.IsVisible = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
@@ -346,7 +359,7 @@ namespace windows_client.View
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
 
-
+               
                 #region FREE SMS SETTINGS SUPPORT
                 if (!isContactShared)
                 {
@@ -1107,6 +1120,11 @@ namespace windows_client.View
                     });
                 }
             }
+        }
+
+        private void Block_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            
         }
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
