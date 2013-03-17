@@ -64,8 +64,8 @@ namespace windows_client.View
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                     postStatusIcon.IsEnabled = true;
-                    return;
                 });
+                return;
             }
             AccountUtils.postStatus(statusText, postStatus_Callback);
         }
