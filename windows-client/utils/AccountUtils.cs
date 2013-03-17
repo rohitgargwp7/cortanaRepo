@@ -506,7 +506,7 @@ namespace windows_client.utils
                 #region POST STATUS
                 case RequestType.POST_STATUS:
                     data = vars[2] as JObject;
-                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
                     break;
                 #endregion
                 #region DEFAULT
