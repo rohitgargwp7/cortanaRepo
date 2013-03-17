@@ -237,7 +237,7 @@ namespace windows_client
         public static string LAST_STATUS = "lastStatus";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
-
+        public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
 
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";

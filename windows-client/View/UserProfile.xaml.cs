@@ -209,8 +209,10 @@ namespace windows_client.View
                     InitiateOnFriendBasis();
                 }
                 isFirstLoad = false;
-
             }
+            // this is done to update profile name , as soon as it gets updated
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
+                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
         }
 
         private void InitChatIconBtn()
@@ -230,6 +232,7 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE);
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_TIMELINE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.PROFILE_NAME_CHANGED);
             removeListeners();
         }
 
