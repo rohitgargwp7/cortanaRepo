@@ -80,7 +80,7 @@ namespace windows_client.View
             if (moodId > -1)
             {
                 statusJSON["mood"] = moodId;
-                statusJSON["timeofday"] = 2; //TODO - Rohit add function in timeUtils and use it here
+                statusJSON["timeofday"] = TimeUtils.GetTimeIntervalDay();
             }
             AccountUtils.postStatus(statusJSON, postStatus_Callback);
         }
@@ -148,10 +148,11 @@ namespace windows_client.View
             if (mood == null)
                 return;
             moodId = moodList.SelectedIndex;
-            txtStatus.Text = mood.Text;
+            txtStatus.Text = mood.DisplayText;
             postedMood.Source = mood.MoodIcon;
             postedMood.Visibility = Visibility.Visible;
             gridMood.Visibility = Visibility.Collapsed;
+            this.appBar.IsVisible = true;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)

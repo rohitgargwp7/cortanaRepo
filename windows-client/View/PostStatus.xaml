@@ -29,8 +29,8 @@
             <Rectangle VerticalAlignment="Top" HorizontalAlignment="Left" Margin="13,20,24,0" Width="436" Height="200" Grid.Row="0" Fill="#dedede"/>
             <StackPanel Orientation="Horizontal" Background="#eeeeec" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="13,20,24,5" Width="436" Height="200" Grid.Row="0" >
                 <Image Name="userImage"  Height="80" Width="80" VerticalAlignment="Top" Margin="15"/>
-                <Image Name="postedMood"  Height="30" Width="30" VerticalAlignment="Top" Margin="10 20 5 0" Visibility="Collapsed"/>
-                <TextBox VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Width="330" Height="200" Background="#eeeeec" BorderThickness="0" Grid.Row="0" TextWrapping="Wrap" />
+                <Image Name="postedMood"  Height="30" Width="30" VerticalAlignment="Top" Margin="10 20 0 0" Visibility="Collapsed"/>
+                <TextBox VerticalAlignment="Top" x:Name="txtStatus" HorizontalAlignment="Left" Width="310" Height="200" Background="#eeeeec" BorderThickness="0" Grid.Row="0" TextWrapping="Wrap" />
             </StackPanel>
             
             <Grid Grid.Row="1">
@@ -62,7 +62,7 @@
                         <StackPanel Orientation="Horizontal" Margin="0 12 0 0">
                             <Image Height="40" Width="40" Source="{Binding MoodIcon}">
                             </Image>
-                            <TextBlock Text="{Binding Text}" FontSize="22" FontFamily="Segoe WP Regular" Foreground="Gray" VerticalAlignment="Bottom" Margin="12 0 0 0" ></TextBlock>
+                            <TextBlock Text="{Binding DisplayText}" FontSize="22" FontFamily="Segoe WP Regular" Foreground="Gray" VerticalAlignment="Bottom" Margin="12 0 0 0" ></TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
