@@ -1856,23 +1856,6 @@ namespace windows_client.View
                 {
                     if (i < TotalUnreadStatuses)
                         statusMessagesFromDB[i].IsUnread = true;
-                    if (statusMessagesFromDB[i].Msisdn != App.MSISDN)
-                    {
-                        ContactInfo ci = null;
-                        if (App.ViewModel.ContactsCache.ContainsKey(statusMessagesFromDB[i].Msisdn))
-                            ci = App.ViewModel.ContactsCache[statusMessagesFromDB[i].Msisdn];
-                        if (ci != null)
-                        {
-                            if (ci.FriendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                continue;
-                        }
-                        else
-                        {
-                            FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(statusMessagesFromDB[i].Msisdn);
-                            if (fs != FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                                continue;
-                        }
-                    }
                     App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }
