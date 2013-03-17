@@ -11,6 +11,7 @@ namespace windows_client.Controls.StatusUpdate
     public partial class TextStatusUpdate : StatusUpdateBox
     {
         private long timestamp;
+        private bool _showOnTimeline = false;
 
         public override bool IsUnread
         {
@@ -68,6 +69,18 @@ namespace windows_client.Controls.StatusUpdate
             {
                 statusTypeImage.Source = UI_Utils.Instance.TextStatusImage;
             }
+            if (_showOnTimeline)
+            {
+                this.userProfileImage.Source = this.UserImage;
+                this.userProfileImage.MinHeight = 69;
+            }
+            else
+            {
+                this.userProfileImage.Source = UI_Utils.Instance.TextStatusImage;
+                this.userProfileImage.MaxHeight = 60;
+                statusTypeImage.Visibility = System.Windows.Visibility.Collapsed;
+            }
+
         }
 
         void timestampTxtBlk_Loaded(object sender, System.Windows.RoutedEventArgs e)

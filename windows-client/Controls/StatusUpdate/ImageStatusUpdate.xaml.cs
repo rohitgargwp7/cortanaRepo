@@ -9,6 +9,7 @@ namespace windows_client.Controls.StatusUpdate
     public partial class ImageStatusUpdate : StatusUpdateBox
     {
         private BitmapImage _statusImageSource;
+        private bool showOnTimeline = false;
 
         public override bool IsUnread
         {
@@ -34,7 +35,7 @@ namespace windows_client.Controls.StatusUpdate
                 }
             }
         }
-
+        
         public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, string serverId, BitmapImage statusImageBitmap, long timestamp,
             bool isUnread, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
             : base(userName, userImage, msisdn, serverId)
@@ -57,6 +58,17 @@ namespace windows_client.Controls.StatusUpdate
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                 statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
+            }
+            if (showOnTimeline)
+            {
+                this.userProfileImage.Source = this.UserImage;
+                this.userProfileImage.MinHeight = 69;
+            }
+            else
+            {
+                this.userProfileImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
+                this.userProfileImage.MaxHeight = 60;
+                statusTypeImage.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 
