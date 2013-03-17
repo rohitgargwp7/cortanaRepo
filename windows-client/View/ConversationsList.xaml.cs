@@ -1640,7 +1640,7 @@ namespace windows_client.View
             {
                 if (value != _totalUnreadStatuses)
                 {
-                    if (value == 0 && launchPagePivot.SelectedIndex == 3)
+                    if (value == 0 && (App.ViewModel.StatusList.Count >= App.ViewModel.PendingRequests.Count + _totalUnreadStatuses))
                     {
                         for (int i = App.ViewModel.PendingRequests.Count;
                             i < App.ViewModel.PendingRequests.Count + _totalUnreadStatuses; i++)
