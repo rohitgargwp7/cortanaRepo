@@ -28,7 +28,7 @@ namespace windows_client.DbUtils
         private static object readWriteLock = new object();
 
 
-        public static void SetFriendStatus(string msisdn, FriendStatusEnum friendStatus)
+        public static FriendStatusEnum SetFriendStatus(string msisdn, FriendStatusEnum friendStatus)
         {
             lock (readWriteLock)
             {
@@ -104,6 +104,7 @@ namespace windows_client.DbUtils
                     Debug.WriteLine("FriendsTableUtils :: SetFriendStatus, Exception : " + ex.StackTrace);
                 }
             }
+            return friendStatus;
         }
 
         private static FriendStatusEnum GetFriendStatusFromFile(string msisdn)

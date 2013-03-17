@@ -1776,7 +1776,10 @@ namespace windows_client.View
                 StatusUpdateBox sb = statusLLS.SelectedItem as StatusUpdateBox;
                 if (sb == null)
                     return;
-                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = sb;
+                Object[] obj = new Object[2];
+                obj[0] = sb.Msisdn;
+                obj[1] = sb.UserName;
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_TIMELINE] = obj;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
             }
         }

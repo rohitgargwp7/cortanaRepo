@@ -22,6 +22,7 @@ using windows_client.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.Phone.UserData;
+using System.ComponentModel;
 
 namespace windows_client.View
 {
@@ -36,12 +37,15 @@ namespace windows_client.View
         bool isFirstLoad = true;
         string nameToShow = null;
         bool isOnHike = false;
-        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+        private ObservableCollection<StatusUpdateBox> statusList ;
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
         bool isInvited;
+        bool isInAddressBook;
         bool toggleToInvitedScreen;
         bool isBlocked;
+        FriendsTableUtils.FriendStatusEnum friendStatus;
+
         public UserProfile()
         {
             InitializeComponent();
@@ -117,12 +121,14 @@ namespace windows_client.View
             #region FRIEND_RELATIONSHIP_CHANGE
             else if (type == HikePubSub.FRIEND_RELATIONSHIP_CHANGE)
             {
-                string recMsisdn = (string)obj;
+                Object[] objArray = (Object[])obj;
+                string recMsisdn = objArray[0] as string;
+
                 if (recMsisdn != msisdn)
                     return;
                 if (isBlocked)
                     return;
-                FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+                friendStatus = (FriendsTableUtils.FriendStatusEnum)objArray[1];
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     switch (friendStatus)
@@ -134,8 +140,7 @@ namespace windows_client.View
                         #endregion
                         #region REQUEST RECIEVED
                         case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
-
-                            if (App.ViewModel.ContactsCache.ContainsKey(msisdn) || UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null)
+                            if (isInAddressBook)
                                 LoadStatuses();
                             else
                                 ShowAddToContacts();
@@ -158,7 +163,7 @@ namespace windows_client.View
             #region USER_LEFT
             else if (HikePubSub.USER_LEFT == type)
             {
-                
+
                 string recMsisdn = (string)obj;
                 try
                 {
@@ -191,7 +196,7 @@ namespace windows_client.View
                         return;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
-                    
+
                         txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
                         ShowAddAsFriends();
                     });
@@ -267,19 +272,17 @@ namespace windows_client.View
                 #region USER INFO FROM TIMELINE
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_TIMELINE, out o))
                 {
-                    InitAppBar();
-
-                    StatusUpdateBox sb = o as StatusUpdateBox;
-                    if (sb != null)
+                    Object[] objArr = o as Object[];
+                    if (objArr != null)
                     {
-
-                        if (sb.Msisdn == App.MSISDN)
+                        msisdn = objArr[0] as string;
+                        if (msisdn == App.MSISDN)
                             InitSelfProfile();
                         else
                         {
-                            msisdn = sb.Msisdn;
-                            profileImage = sb.UserImage;
-                            nameToShow = sb.UserName;
+                            InitAppBar();
+                            profileImage = UI_Utils.Instance.GetBitmapImage(msisdn);
+                            nameToShow = objArr[1] as string;
                             isOnHike = true;//check as it can be false also
                             InitChatIconBtn();
                         }
@@ -292,11 +295,13 @@ namespace windows_client.View
                 txtUserName.Text = nameToShow;
 
                 //if blocked user show block ui and return
-                if (UsersTableUtils.isUserBlocked(msisdn))
+                if (msisdn != App.MSISDN && UsersTableUtils.isUserBlocked(msisdn))
                 {
                     isBlocked = true;
                     ShowBlockedUser();
                     isFirstLoad = false;
+                    if (appBar != null)
+                        appBar.IsVisible = false;
                     return;
                 }
                 if (!isOnHike)//sms user
@@ -459,22 +464,37 @@ namespace windows_client.View
 
         private void LoadStatuses()
         {
-            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-            if (statusMessagesFromDB != null)
-            {
-                for (int i = 0; i < statusMessagesFromDB.Count; i++)
-                {
-                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
-                }
-            }
-            if (statusList.Count == 0)
-            {
-                ShowEmptyStatus();
-            }
-            else
-                gridSmsUser.Visibility = Visibility.Collapsed;
+            shellProgress.IsVisible = true;
+            List<StatusMessage> statusMessagesFromDB = null;
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (ss, ee) =>
+               {
 
-            this.statusLLS.ItemsSource = statusList;
+                   statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+               };
+            bw.RunWorkerAsync();
+            bw.RunWorkerCompleted += (ss, ee) =>
+                {
+                    statusList = new ObservableCollection<StatusUpdateBox>();
+                    if (statusMessagesFromDB != null)
+                    {
+                        for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                        {
+                            statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
+                        }
+                    }
+                    if (statusList.Count == 0)
+                    {
+                        ShowEmptyStatus();
+                    }
+                    else
+                    {
+                        gridSmsUser.Visibility = Visibility.Collapsed;
+                        gridHikeUser.Visibility = Visibility.Visible;
+                    }
+                    this.statusLLS.ItemsSource = statusList;
+                    shellProgress.IsVisible = false;
+                };
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -515,7 +535,7 @@ namespace windows_client.View
                 return;
             if (isInvited)
                 return;
-           
+
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             JObject data = new JObject();
             data["id"] = msisdn;
@@ -611,6 +631,9 @@ namespace windows_client.View
             App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, msisdn);
             addToFavBtn.Visibility = Visibility.Collapsed;
             addToFavBtn.Tap -= UnblockUser_Tap;
+            txtOnHikeSmsTime.Visibility = Visibility.Visible;
+            if (appBar != null)
+                appBar.IsVisible = true;
             isBlocked = false;
             if (!isOnHike)
             {
@@ -678,52 +701,74 @@ namespace windows_client.View
                 return;
             }
 
-            FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
-            switch (friendStatus)
+            friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+            if (friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
             {
-                #region TWO WAY FRIENDS
-                case FriendsTableUtils.FriendStatusEnum.FRIENDS:
-                    LoadStatuses();
-                    break;
-                #endregion
-                #region REQUEST RECIEVED
-
-                case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
-                case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
-                case FriendsTableUtils.FriendStatusEnum.IGNORED:
-
-                    //if request recievd and no action then show: status + pending friend request
-                    if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-                        ShowRequestRecievedPanel();
-
-                    //if unfriended then show: status + AddAsFriends option
-                    if (friendStatus == FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU)
+                BackgroundWorker bw = new BackgroundWorker();
+                isInAddressBook = false;
+                bw.DoWork += (ss, ee) =>
+                {
+                    isInAddressBook = UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
+                };
+                bw.RunWorkerAsync();
+                bw.RunWorkerCompleted += (ss, ee) =>
+                {
+                    switch (friendStatus)
                     {
-                        spAddFriend.Visibility = Visibility.Visible;
-                        gridInvite.Visibility = Visibility.Visible;
+                        #region REQUEST RECIEVED
+                        case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
+                            ShowRequestRecievedPanel();
+                            if (isInAddressBook)
+                                LoadStatuses();
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region UNFRIENDED_BY_YOU
+                        case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
+                            if (isInAddressBook)
+                            {
+                                spAddFriend.Visibility = Visibility.Visible;
+                                gridInvite.Visibility = Visibility.Visible;
+                                LoadStatuses();
+                            }
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region IGNORED
+                        case FriendsTableUtils.FriendStatusEnum.IGNORED:
+                            if (isInAddressBook)
+                                LoadStatuses();
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region REQUEST SENT
+
+                        case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT:
+                            if (isInAddressBook)
+                                ShowRequestSent();
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region NO ACTION OR UNFRIENDED
+
+                        default:
+                            if (isInAddressBook)
+                                ShowAddAsFriends();
+                            else
+                                ShowAddToContacts();
+                            break;
+
+                        #endregion
                     }
-
-                    if (App.ViewModel.ContactsCache.ContainsKey(msisdn) || UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null)
-                        LoadStatuses();
-                    else
-                        ShowAddToContacts();
-                    break;
-
-                #endregion
-                #region REQUEST SENT
-
-                case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT:
-                    ShowRequestSent();
-                    break;
-                #endregion
-                #region NO ACTION OR UNFRIENDED
-
-                default:
-                    ShowAddAsFriends();
-                    break;
-
-                #endregion
+                };
             }
+            else
+                LoadStatuses();
+
         }
 
         #region CONTROL UI ON FRIENDSHIP BASIS
@@ -737,7 +782,7 @@ namespace windows_client.View
             txtSmsUserNameBlk3.Text = string.Empty;
             btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
             btnInvite.Tap += addUser_Click;
-
+            btnInvite.Visibility = Visibility.Visible;
             gridSmsUser.Visibility = Visibility.Visible;
             gridInvite.Visibility = Visibility.Collapsed;
             gridHikeUser.Visibility = Visibility.Collapsed;
@@ -1073,7 +1118,36 @@ namespace windows_client.View
                 if (App.newChatThreadPage != null)
                     App.newChatThreadPage.userName.Text = nameToShow;
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
-                LoadStatuses();
+
+                switch (friendStatus)
+                {
+                    #region REQUEST RECIEVED
+                    case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
+                    case FriendsTableUtils.FriendStatusEnum.IGNORED:
+                        LoadStatuses();
+                        break;
+                    #endregion
+                    #region UNFRIENDED_BY_YOU
+                    case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
+                        spAddFriend.Visibility = Visibility.Visible;
+                        gridInvite.Visibility = Visibility.Visible;
+                        LoadStatuses();
+                        break;
+                    #endregion
+                    #region REQUEST SENT
+
+                    case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT:
+                        ShowRequestSent();
+                        break;
+                    #endregion
+                    #region NO ACTION OR UNFRIENDED
+
+                    default:
+                        ShowAddAsFriends();
+                        break;
+
+                    #endregion
+                }
             });
         }
         #endregion

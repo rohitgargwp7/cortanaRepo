@@ -525,12 +525,11 @@ namespace windows_client
                                                         JToken pToken;
                                                         if (pendingJSON.TryGetValue(HikeConstants.REQUEST_PENDING, out pToken))
                                                         {
-                                                            //todo:Should pub suHikePubSub.FRIEND_RELATIONSHIP_CHANGE aded here
                                                             bool rp = false;
                                                             if (pToken != null && pToken.HasValues)
                                                             {
                                                                 object o = pToken.ToObject<object>();
-                                                                if(o is bool)
+                                                                if (o is bool)
                                                                     rp = (bool)o;
                                                             }
                                                             if (rp)
@@ -973,8 +972,8 @@ namespace windows_client
                     string ms = (string)jsonObj[HikeConstants.FROM];
                     if (ms == null)
                         return;
-                    FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, msisdn);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                     if (App.ViewModel.Isfavourite(ms)) // already favourite
                         return;
                     if (App.ViewModel.IsPending(ms))
@@ -1026,8 +1025,8 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, msisdn);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
                 catch (Exception e)
                 {
@@ -1040,8 +1039,8 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
-                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, msisdn);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
                 catch (Exception e)
                 {
