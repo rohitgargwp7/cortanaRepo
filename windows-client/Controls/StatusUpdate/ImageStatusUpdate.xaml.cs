@@ -63,6 +63,7 @@ namespace windows_client.Controls.StatusUpdate
             {
                 this.userProfileImage.Source = this.UserImage;
                 this.userProfileImage.MinHeight = 69;
+                statusTypeImage.Source = UI_Utils.Instance.ProfilePicStatusImage;
             }
             else
             {
