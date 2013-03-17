@@ -2212,6 +2212,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have blocked.
+        /// </summary>
+        public static string Profile_BlockedUser_Blk1 {
+            get {
+                return ResourceManager.GetString("Profile_BlockedUser_Blk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unblock to send a message..
+        /// </summary>
+        public static string Profile_BlockedUser_Blk3 {
+            get {
+                return ResourceManager.GetString("Profile_BlockedUser_Blk3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel Request.
         /// </summary>
         public static string Profile_CancelRequest_BtnTxt {
@@ -2734,6 +2752,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SHARE.
+        /// </summary>
+        public static string Share_With_Txt {
+            get {
+                return ResourceManager.GetString("Share_With_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string ShareContact_ConfirmationCaption {
@@ -2901,6 +2928,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Update.
+        /// </summary>
+        public static string Status_Update_Txt {
+            get {
+                return ResourceManager.GetString("Status_Update_Txt", resourceCulture);
             }
         }
         

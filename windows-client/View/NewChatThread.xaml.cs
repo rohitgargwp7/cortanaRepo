@@ -2165,6 +2165,12 @@ namespace windows_client.View
                     obj.MessageStatus = ConvMessage.State.UNKNOWN;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                 }
+                else if (lastMessageBubble is StatusChatBubble)
+                {
+                    obj.LastMessage = AppResources.Status_Update_Txt;
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    obj.TimeStamp = lastMessageBubble.TimeStampLong;
+                }
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;

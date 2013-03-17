@@ -22,6 +22,7 @@ using windows_client.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.Phone.UserData;
+using System.ComponentModel;
 
 namespace windows_client.View
 {
@@ -36,11 +37,15 @@ namespace windows_client.View
         bool isFirstLoad = true;
         string nameToShow = null;
         bool isOnHike = false;
-        private ObservableCollection<StatusUpdateBox> statusList = new ObservableCollection<StatusUpdateBox>();
+        private ObservableCollection<StatusUpdateBox> statusList;
         private ApplicationBar appBar;
         ApplicationBarIconButton editProfile_button;
         bool isInvited;
+        bool isInAddressBook;
         bool toggleToInvitedScreen;
+        bool isBlocked;
+        FriendsTableUtils.FriendStatusEnum friendStatus;
+
         public UserProfile()
         {
             InitializeComponent();
@@ -53,6 +58,9 @@ namespace windows_client.View
         {
             App.HikePubSubInstance.addListener(HikePubSub.STATUS_RECEIVED, this);
             App.HikePubSubInstance.addListener(HikePubSub.STATUS_DELETED, this);
+            App.HikePubSubInstance.addListener(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, this);
+            App.HikePubSubInstance.addListener(HikePubSub.USER_JOINED, this);
+            App.HikePubSubInstance.addListener(HikePubSub.USER_LEFT, this);
         }
 
         private void removeListeners()
@@ -61,6 +69,9 @@ namespace windows_client.View
             {
                 App.HikePubSubInstance.removeListener(HikePubSub.STATUS_RECEIVED, this);
                 App.HikePubSubInstance.removeListener(HikePubSub.STATUS_DELETED, this);
+                App.HikePubSubInstance.removeListener(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, this);
+                App.HikePubSubInstance.removeListener(HikePubSub.USER_JOINED, this);
+                App.HikePubSubInstance.removeListener(HikePubSub.USER_LEFT, this);
             }
             catch (Exception ex)
             {
@@ -107,7 +118,155 @@ namespace windows_client.View
                 //todo:handle ui to show zero status
             }
             #endregion
+            #region FRIEND_RELATIONSHIP_CHANGE
+            else if (type == HikePubSub.FRIEND_RELATIONSHIP_CHANGE)
+            {
+                Object[] objArray = (Object[])obj;
+                string recMsisdn = objArray[0] as string;
+
+                if (recMsisdn != msisdn)
+                    return;
+                if (isBlocked)
+                    return;
+                friendStatus = (FriendsTableUtils.FriendStatusEnum)objArray[1];
+
+                switch (friendStatus)
+                {
+                    #region TWO WAY FRIENDS
+                    case FriendsTableUtils.FriendStatusEnum.FRIENDS:
+
+                        List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+                        statusList = new ObservableCollection<StatusUpdateBox>();
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (statusMessagesFromDB != null)
+                            {
+                                for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                                {
+                                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                                        null, enlargePic_Tap));
+                                }
+                            }
+                            if (statusList.Count == 0)
+                            {
+                                ShowEmptyStatus();
+                            }
+                            else
+                            {
+                                gridSmsUser.Visibility = Visibility.Collapsed;
+                                gridHikeUser.Visibility = Visibility.Visible;
+                            }
+                            this.statusLLS.ItemsSource = statusList;
+                        });
+
+                        break;
+                    #endregion
+                    #region REQUEST RECIEVED
+                    case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
+                        if (isInAddressBook)
+                        {
+                            statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+                            statusList = new ObservableCollection<StatusUpdateBox>();
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                if (statusMessagesFromDB != null)
+                                {
+                                    for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                                    {
+                                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                                            null, enlargePic_Tap));
+                                    }
+                                }
+                                if (statusList.Count == 0)
+                                {
+                                    ShowEmptyStatus();
+                                }
+                                else
+                                {
+                                    gridSmsUser.Visibility = Visibility.Collapsed;
+                                    gridHikeUser.Visibility = Visibility.Visible;
+                                }
+                                this.statusLLS.ItemsSource = statusList;
+                            });
+                        }
+                        else
+                        {
+                            Deployment.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                ShowAddToContacts();
+                            });
+                        }
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            ShowRequestRecievedPanel();
+                        });
+                        break;
+                    #endregion
+                    #region NO ACTION OR UNFRIENDED
+                    default:
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            ShowAddAsFriends();
+                        });
+                        break;
+
+                    #endregion
+                    //case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU: cannot be done from others
+                    //case FriendsTableUtils.FriendStatusEnum.IGNORED: cannot be done by others
+                    //case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT: cannot be done by others
+                }
+            }
+            #endregion
+            #region USER_LEFT
+            else if (HikePubSub.USER_LEFT == type)
+            {
+
+                string recMsisdn = (string)obj;
+                try
+                {
+                    isOnHike = false;
+                    if (isBlocked)
+                        return;
+                    if (msisdn != recMsisdn)
+                        return;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ShowNonHikeUser();
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
+                }
+            }
+            #endregion
+            #region USER_JOINED
+            else if (HikePubSub.USER_JOINED == type)
+            {
+                string recMsisdn = (string)obj;
+                try
+                {
+                    isOnHike = true;
+                    if (isBlocked)
+                        return;
+                    if (msisdn != recMsisdn)
+                        return;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+
+                        txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
+                        ShowAddAsFriends();
+                    });
+                }
+
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("UserProfile:: onEventReceived, Exception : " + ex.StackTrace);
+                }
+            }
+            #endregion
         }
+
         #endregion
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -150,7 +309,7 @@ namespace windows_client.View
 
                     if (App.MSISDN == gp.Msisdn) // represents self page
                     {
-                        InitiateForSelfProfile();
+                        InitSelfProfile();
                     }
                     else
                     {
@@ -164,25 +323,23 @@ namespace windows_client.View
                 #region USER OWN PROFILE
                 else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.USERINFO_FROM_PROFILE))
                 {
-                    InitiateForSelfProfile();
+                    InitSelfProfile();
                 }
                 #endregion
                 #region USER INFO FROM TIMELINE
                 else if (PhoneApplicationService.Current.State.TryGetValue(HikeConstants.USERINFO_FROM_TIMELINE, out o))
                 {
-                    InitAppBar();
-
-                    StatusUpdateBox sb = o as StatusUpdateBox;
-                    if (sb != null)
+                    Object[] objArr = o as Object[];
+                    if (objArr != null)
                     {
-
-                        if (sb.Msisdn == App.MSISDN)
-                            InitiateForSelfProfile();
+                        msisdn = objArr[0] as string;
+                        if (msisdn == App.MSISDN)
+                            InitSelfProfile();
                         else
                         {
-                            msisdn = sb.Msisdn;
-                            profileImage = sb.UserImage;
-                            nameToShow = sb.UserName;
+                            InitAppBar();
+                            profileImage = UI_Utils.Instance.GetBitmapImage(msisdn);
+                            nameToShow = objArr[1] as string;
                             isOnHike = true;//check as it can be false also
                             InitChatIconBtn();
                         }
@@ -191,22 +348,27 @@ namespace windows_client.View
                 #endregion
 
                 avatarImage.Source = profileImage;
-                avatarImage.Tap += (new EventHandler<System.Windows.Input.GestureEventArgs>(onProfilePicButtonTap));
+                avatarImage.Tap += onProfilePicButtonTap;
                 txtUserName.Text = nameToShow;
 
-                if (!isOnHike)
+                //if blocked user show block ui and return
+                if (msisdn != App.MSISDN && UsersTableUtils.isUserBlocked(msisdn))
                 {
-                    txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
-                    txtSmsUserNameBlk1.Text = nameToShow;
-                    gridHikeUser.Visibility = Visibility.Collapsed;
-                    btnInvite.Tap += Invite_Tap;
-                    if (!App.ViewModel.Isfavourite(msisdn))
-                        addToFavBtn.Visibility = Visibility.Visible;
+                    isBlocked = true;
+                    ShowBlockedUser();
+                    isFirstLoad = false;
+                    if (appBar != null)
+                        appBar.IsVisible = false;
+                    return;
+                }
+                if (!isOnHike)//sms user
+                {
+                    ShowNonHikeUser();
                 }
                 else
                 {
                     txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
-                    InitiateOnFriendBasis();
+                    InitHikeUserProfile();
                 }
                 isFirstLoad = false;
             }
@@ -329,7 +491,7 @@ namespace windows_client.View
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
                     StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                        serverId, TimeUtils.getCurrentTimeStamp(), -1);
+                        serverId, TimeUtils.getCurrentTimeStamp(), true, -1);
                     StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
@@ -357,35 +519,44 @@ namespace windows_client.View
                 isProfilePicTapped = false;
             });
         }
-
         #endregion
 
         #region STATUS MESSAGES
 
-        private void loadStatuses()
+        private void LoadStatuses()
         {
-            List<StatusMessage> statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
-            if (statusMessagesFromDB != null)
+            shellProgress.IsVisible = true;
+            List<StatusMessage> statusMessagesFromDB = null;
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (ss, ee) =>
             {
-                for (int i = 0; i < statusMessagesFromDB.Count; i++)
-                {
-                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, null, 
-                        enlargePic_Tap));
-                }
-            }
-            if (statusList.Count == 0)
-            {
-                imgInviteLock.Visibility = Visibility.Collapsed;
-                txtSmsUserNameBlk1.Text = nameToShow;
-                txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
-                txtSmsUserNameBlk3.Text = string.Empty;
-                gridHikeUser.Visibility = Visibility.Collapsed;
-                btnInvite.Visibility = Visibility.Collapsed;
-            }
-            else
-                gridSmsUser.Visibility = Visibility.Collapsed;
 
-            this.statusLLS.ItemsSource = statusList;
+                statusMessagesFromDB = StatusMsgsTable.GetStatusMsgsForMsisdn(msisdn);
+            };
+            bw.RunWorkerAsync();
+            bw.RunWorkerCompleted += (ss, ee) =>
+            {
+                statusList = new ObservableCollection<StatusUpdateBox>();
+                if (statusMessagesFromDB != null)
+                {
+                    for (int i = 0; i < statusMessagesFromDB.Count; i++)
+                    {
+                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                            null, enlargePic_Tap));
+                    }
+                }
+                if (statusList.Count == 0)
+                {
+                    ShowEmptyStatus();
+                }
+                else
+                {
+                    gridSmsUser.Visibility = Visibility.Collapsed;
+                    gridHikeUser.Visibility = Visibility.Visible;
+                }
+                this.statusLLS.ItemsSource = statusList;
+                shellProgress.IsVisible = false;
+            };
         }
 
         private void enlargePic_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -422,12 +593,11 @@ namespace windows_client.View
         private void AddAsFriend_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Button btn = sender as Button;
-            if (!btn.IsEnabled)
-                return;
             if (msisdn == App.MSISDN)
                 return;
             if (isInvited)
                 return;
+
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.REQUEST_SENT);
             JObject data = new JObject();
             data["id"] = msisdn;
@@ -476,8 +646,9 @@ namespace windows_client.View
             btn.Content = AppResources.Invited;
             isInvited = true;
             gridInvite.Visibility = Visibility.Collapsed;
-            if (toggleToInvitedScreen)
-                ToggleFriendRequestPending();
+
+            if (toggleToInvitedScreen)//do not change ui if sms user or if status are shown
+                ShowRequestSent();
         }
 
         private void GoToChat_Tap(object sender, EventArgs e)
@@ -517,7 +688,25 @@ namespace windows_client.View
             NavigationService.Navigate(new Uri("/View/EditProfile.xaml", UriKind.Relative));
         }
 
-
+        private void UnblockUser_Tap(object sender, EventArgs e)
+        {
+            App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, msisdn);
+            addToFavBtn.Visibility = Visibility.Collapsed;
+            addToFavBtn.Tap -= UnblockUser_Tap;
+            txtOnHikeSmsTime.Visibility = Visibility.Visible;
+            if (appBar != null)
+                appBar.IsVisible = true;
+            isBlocked = false;
+            if (!isOnHike)
+            {
+                ShowNonHikeUser();
+            }
+            else
+            {
+                txtOnHikeSmsTime.Text = string.Format(AppResources.OnHIkeSince_Txt, DateTime.Now.ToString("MMM yy"));//todo:change date
+                InitHikeUserProfile();
+            }
+        }
         #endregion
 
         private void InitAppBar()
@@ -530,7 +719,7 @@ namespace windows_client.View
 
         }
 
-        private void InitiateForSelfProfile()
+        private void InitSelfProfile()
         {
             InitAppBar();
 
@@ -565,71 +754,104 @@ namespace windows_client.View
             this.appBar.Buttons.Add(editProfile_button);
         }
 
-        private void InitiateOnFriendBasis()
+        private void InitHikeUserProfile()
         {
-            FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.FriendStatusEnum.NOT_SET;
-            if (App.MSISDN != msisdn)
+            //handled self profile
+            if (App.MSISDN == msisdn)
             {
-                friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+                LoadStatuses();
+                return;
             }
 
-            if (friendStatus > FriendsTableUtils.FriendStatusEnum.REQUEST_SENT || App.MSISDN == msisdn)
+            friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+            if (friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
             {
-                bool inAddressBook = true;
-                if (App.MSISDN != msisdn && friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
+                BackgroundWorker bw = new BackgroundWorker();
+                isInAddressBook = false;
+                bw.DoWork += (ss, ee) =>
                 {
-                    inAddressBook = App.ViewModel.ContactsCache.ContainsKey(msisdn) || UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
-                }
-                if (inAddressBook)
+                    isInAddressBook = UsersTableUtils.getContactInfoFromMSISDN(msisdn) != null;
+                };
+                bw.RunWorkerAsync();
+                bw.RunWorkerCompleted += (ss, ee) =>
                 {
-                    loadStatuses();
-                }
-                else
-                {
-                    BitmapImage locked = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
-                    imgInviteLock.Source = locked;
-                    txtSmsUserNameBlk1.Text = nameToShow;
-                    txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
-                    txtSmsUserNameBlk3.Text = string.Empty;
-                    gridHikeUser.Visibility = Visibility.Collapsed;
-                    btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
-                    btnInvite.Tap += addUser_Click;
-                }
-            }
-            else if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_SENT)
-            {
-                ToggleFriendRequestPending();
+                    switch (friendStatus)
+                    {
+                        #region REQUEST RECIEVED
+                        case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
+                            ShowRequestRecievedPanel();
+                            if (isInAddressBook)
+                                LoadStatuses();
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region UNFRIENDED_BY_YOU
+                        case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
+                            if (isInAddressBook)
+                            {
+                                spAddFriend.Visibility = Visibility.Visible;
+                                gridInvite.Visibility = Visibility.Visible;
+                                LoadStatuses();
+                            }
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region IGNORED
+                        case FriendsTableUtils.FriendStatusEnum.IGNORED:
+                            if (isInAddressBook)
+                                LoadStatuses();
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region REQUEST SENT
+
+                        case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT:
+                            if (isInAddressBook)
+                                ShowRequestSent();
+                            else
+                                ShowAddToContacts();
+                            break;
+                        #endregion
+                        #region NO ACTION OR UNFRIENDED
+
+                        default:
+                            if (isInAddressBook)
+                                ShowAddAsFriends();
+                            else
+                                ShowAddToContacts();
+                            break;
+
+                        #endregion
+                    }
+                };
             }
             else
-            {
-                BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
-                imgInviteLock.Source = locked;
-                txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
-                txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
-                txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
-                txtSmsUserNameBlk2.Text = nameToShow;
-                txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
-                gridHikeUser.Visibility = Visibility.Collapsed;
-                btnInvite.Content = AppResources.btnAddAsFriend_Txt;
-                btnInvite.Tap += AddAsFriend_Tap;
-                toggleToInvitedScreen = true;
-            }
-            if (friendStatus == FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED)
-            {
-                spAddFriendInvite.Visibility = Visibility.Visible;
-                txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
-                seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
-                gridInvite.Visibility = Visibility.Visible;
-            }
+                LoadStatuses();
 
-            if (friendStatus == FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU)
-            {
-                spAddFriend.Visibility = Visibility.Visible;
-                gridInvite.Visibility = Visibility.Visible;
-            }
         }
 
-        private void ToggleFriendRequestPending()
+        #region CONTROL UI ON FRIENDSHIP BASIS
+
+        private void ShowAddToContacts()
+        {
+            BitmapImage locked = new BitmapImage(new Uri("/View/images/menu_contact_icon.png", UriKind.Relative));
+            imgInviteLock.Source = locked;
+            txtSmsUserNameBlk1.Text = nameToShow;
+            txtSmsUserNameBlk2.Text = AppResources.Profile_NotInAddressbook_Txt;
+            txtSmsUserNameBlk3.Text = string.Empty;
+            btnInvite.Content = AppResources.Profile_AddNow_Btn_Txt;
+            btnInvite.Tap += addUser_Click;
+            btnInvite.Visibility = Visibility.Visible;
+            gridSmsUser.Visibility = Visibility.Visible;
+            gridInvite.Visibility = Visibility.Collapsed;
+            gridHikeUser.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void ShowRequestSent()
         {
             BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
             imgInviteLock.Source = locked;
@@ -641,7 +863,91 @@ namespace windows_client.View
             gridHikeUser.Visibility = Visibility.Collapsed;
             btnInvite.Visibility = Visibility.Collapsed;
         }
-        private void yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
+
+        private void ShowAddAsFriends()
+        {
+            BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+            imgInviteLock.Source = locked;
+            imgInviteLock.Visibility = Visibility.Visible;
+            txtSmsUserNameBlk1.Text = AppResources.ProfileToBeFriendBlk1;
+            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
+            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
+            txtSmsUserNameBlk2.Text = nameToShow;
+            txtSmsUserNameBlk3.Text = AppResources.ProfileToBeFriendBlk3;
+            btnInvite.Content = AppResources.btnAddAsFriend_Txt;
+            btnInvite.Tap += AddAsFriend_Tap;
+            btnInvite.Visibility = Visibility.Visible;
+            addToFavBtn.Visibility = Visibility.Collapsed;
+            isInvited = false;//resetting so that if not now can be clicked again
+            toggleToInvitedScreen = true;
+            gridSmsUser.Visibility = Visibility.Visible;
+            gridInvite.Visibility = Visibility.Collapsed;
+            gridHikeUser.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowRequestRecievedPanel()
+        {
+            spAddFriendInvite.Visibility = Visibility.Visible;
+            txtAddedYouAsFriend.Text = string.Format(AppResources.Profile_AddedYouToFav_Txt_WP8FrndStatus, nameToShow);
+            seeUpdatesTxtBlk1.Text = string.Format(AppResources.Profile_YouCanNowSeeUpdates, nameToShow);
+            gridInvite.Visibility = Visibility.Visible;
+        }
+
+        private void ShowEmptyStatus()
+        {
+            txtSmsUserNameBlk1.Text = nameToShow;
+            txtSmsUserNameBlk2.Text = AppResources.Profile_NoStatus_Txt;
+            txtSmsUserNameBlk3.Text = string.Empty;
+            txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
+            txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
+            gridHikeUser.Visibility = Visibility.Collapsed;
+            btnInvite.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowNonHikeUser()
+        {
+            BitmapImage locked = new BitmapImage(new Uri("/View/images/user_invite.png", UriKind.Relative));
+            imgInviteLock.Source = locked;
+            imgInviteLock.Visibility = Visibility.Visible;
+            txtOnHikeSmsTime.Text = AppResources.OnSms_Txt;
+            txtSmsUserNameBlk1.Text = nameToShow;
+            txtSmsUserNameBlk2.Text = AppResources.InviteOnHike_Txt;
+            txtSmsUserNameBlk3.Text = AppResources.InviteOnHikeUpgrade_Txt;
+            txtSmsUserNameBlk1.FontWeight = FontWeights.SemiBold;
+            txtSmsUserNameBlk2.FontWeight = FontWeights.Normal;
+            gridHikeUser.Visibility = Visibility.Collapsed;
+            btnInvite.Tap += Invite_Tap;
+            btnInvite.Content = AppResources.InviteOnHikeBtn_Txt;
+            btnInvite.Visibility = Visibility.Visible;
+            if (!App.ViewModel.Isfavourite(msisdn))
+            {
+                addToFavBtn.Visibility = Visibility.Visible;
+                addToFavBtn.Content = AppResources.btnAddAsFriend_Txt;
+                addToFavBtn.Tap += AddAsFriend_Tap;
+            }
+        }
+
+        private void ShowBlockedUser()
+        {
+            BitmapImage locked = new BitmapImage(new Uri("/View/images/user_lock.png", UriKind.Relative));
+            imgInviteLock.Source = locked;
+            txtSmsUserNameBlk1.Text = AppResources.Profile_BlockedUser_Blk1;
+            txtSmsUserNameBlk1.FontWeight = FontWeights.Normal;
+            txtSmsUserNameBlk2.FontWeight = FontWeights.SemiBold;
+            txtSmsUserNameBlk2.Text = nameToShow;
+            txtOnHikeSmsTime.Visibility = Visibility.Collapsed;
+            txtSmsUserNameBlk3.Text = AppResources.Profile_BlockedUser_Blk3;
+            addToFavBtn.Content = AppResources.UnBlock_Txt;
+            addToFavBtn.Visibility = Visibility.Visible;
+            addToFavBtn.Tap += UnblockUser_Tap;
+            btnInvite.Visibility = Visibility.Collapsed;
+            gridSmsUser.Visibility = Visibility.Visible;
+            gridInvite.Visibility = Visibility.Collapsed;
+            gridHikeUser.Visibility = Visibility.Collapsed;
+        }
+        #endregion
+
+        private void Yes_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             App.AnalyticsInstance.addEvent(Analytics.ADD_FAVS_FROM_FAV_REQUEST);
             FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.FRIENDS);
@@ -700,7 +1006,7 @@ namespace windows_client.View
 
         }
 
-        private void no_Click(object sender, System.Windows.Input.GestureEventArgs e)
+        private void No_Click(object sender, System.Windows.Input.GestureEventArgs e)
         {
             JObject data = new JObject();
             data["id"] = msisdn;
@@ -874,7 +1180,37 @@ namespace windows_client.View
                 if (App.newChatThreadPage != null)
                     App.newChatThreadPage.userName.Text = nameToShow;
                 MessageBox.Show(AppResources.CONTACT_SAVED_SUCCESSFULLY);
-                loadStatuses();
+
+
+                switch (friendStatus)
+                {
+                    #region REQUEST RECIEVED
+                    case FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED:
+                    case FriendsTableUtils.FriendStatusEnum.IGNORED:
+                        LoadStatuses();
+                        break;
+                    #endregion
+                    #region UNFRIENDED_BY_YOU
+                    case FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU:
+                        spAddFriend.Visibility = Visibility.Visible;
+                        gridInvite.Visibility = Visibility.Visible;
+                        LoadStatuses();
+                        break;
+                    #endregion
+                    #region REQUEST SENT
+
+                    case FriendsTableUtils.FriendStatusEnum.REQUEST_SENT:
+                        ShowRequestSent();
+                        break;
+                    #endregion
+                    #region NO ACTION OR UNFRIENDED
+
+                    default:
+                        ShowAddAsFriends();
+                        break;
+
+                    #endregion
+                }
             });
         }
         #endregion
