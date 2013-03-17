@@ -1573,7 +1573,7 @@ namespace windows_client.View
                 {
                     _freshStatusUpdates = StatusMsgsTable.GetUnReadStatusMsgs(TotalUnreadStatuses);
                 }
-                else if (_freshStatusUpdates == null)
+                if (_freshStatusUpdates == null) //not in "else" because db too can return null
                 {
                     _freshStatusUpdates = new List<StatusMessage>();
                 }
