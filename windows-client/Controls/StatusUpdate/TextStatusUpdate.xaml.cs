@@ -75,6 +75,14 @@ namespace windows_client.Controls.StatusUpdate
             }
             else
             {
+                if (sm.MoodId > 0)
+                {
+                    this.userProfileImage.Source = MoodsInitialiser.Instance.getMoodImage(sm.MoodId);
+                }
+                else
+                {
+                    this.userProfileImage.Source = UI_Utils.Instance.TextStatusImage;
+                }
                 this.userProfileImage.Source = UI_Utils.Instance.TextStatusImage;
                 this.userProfileImage.MaxHeight = 60;
                 statusTypeImage.Visibility = System.Windows.Visibility.Collapsed;

@@ -78,6 +78,12 @@ namespace windows_client.utils
             isInitialised = true;
         }
 
+        public BitmapImage getMoodImage(int moodId)
+        {
+            //TODO Rohit please implement this. this is a placeholder function.
+            return null;
+        }
+
     }
     class Mood
     {
