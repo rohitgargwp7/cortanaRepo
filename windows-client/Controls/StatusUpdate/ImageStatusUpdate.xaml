@@ -19,12 +19,17 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        
         <Image x:Name="userProfileImage" Source="{Binding UserImage}" Margin="0,5,0,0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Top" Height="69" ></Image>
-        <TextBlock Text="{Binding UserName}" Margin="21,0,0,0" FontSize="16" Grid.Column="1" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
-        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="1" Grid.Row="1" Margin="16,0,5,0"/>
-        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="1" Grid.Row="2" Margin="16,0,5,0" Foreground="#888888"/>
-        <Image x:Name="statusImage" Margin="10,10,0,0" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" MaxWidth="236" ></Image>
+
+        <Image x:Name="statusTypeImage" Source="/View/images/timeline_photo.png" Margin="12,23,0,0" Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="31" ></Image>
+
+        <TextBlock Text="{Binding UserName}" Margin="21,0,0,0" FontSize="16" Grid.Column="2" Grid.Row="0" FontFamily="Segoe WP Semibold"/>
+        <TextBlock x:Name="statusTextTxtBlk" TextWrapping="Wrap" FontSize="23" Grid.Column="2" Grid.Row="1" Margin="16,0,5,0"/>
+        <TextBlock x:Name="timestampTxtBlk" TextWrapping="Wrap" FontSize="16" Grid.Column="2" Grid.Row="2" Margin="16,0,5,0" Foreground="#888888"/>
+        <Image x:Name="statusImage" Margin="10,10,0,0" Grid.Column="2" Grid.Row="3" VerticalAlignment="Top" MaxWidth="236" ></Image>
     </Grid>
 </status:StatusUpdateBox>
