@@ -1271,16 +1271,16 @@
     <value>System Health</value>
   </data>
   <data name="Nux_CloseFriendsConnect_txt" xml:space="preserve">
-    <value>Which of your close friends would you like to connect with on hike?</value>
+    <value>Send your friends a Free SMS invite.</value>
   </data>
   <data name="Nux_FamilyMembersConnect_txt" xml:space="preserve">
-    <value>Which of your family members would you like to connect with on hike?</value>
+    <value>Send your family members a Free SMS invite. </value>
   </data>
-  <data name="Nux_YourFamily_Txt" xml:space="preserve">
-    <value>YOUR FAMILY</value>
+  <data name="Nux_InviteFamily_Txt" xml:space="preserve">
+    <value>INVITE FAMILY</value>
   </data>
-  <data name="Nux_YourFriends_Txt" xml:space="preserve">
-    <value>YOUR FRIENDS</value>
+  <data name="Nux_InviteFriends_Txt" xml:space="preserve">
+    <value>INVITE FRIENDS</value>
   </data>
   <data name="Attachement_Contact_Txt" xml:space="preserve">
     <value>Contact Info</value>
@@ -1370,5 +1370,8 @@
   <data name="Conversations_MessageOnHike_Txt" xml:space="preserve">
     <value>Message {0} on Hike</value>
     <comment>Here {0} will get replaced by user name. (cs)</comment>
+  </data>
+  <data name="Nux_Skip_btnTxt" xml:space="preserve">
+    <value>Skip</value>
   </data>
 </root>

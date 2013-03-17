@@ -1816,7 +1816,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Which of your close friends would you like to connect with on hike?.
+        ///   Looks up a localized string similar to Send your friends a Free SMS invite..
         /// </summary>
         public static string Nux_CloseFriendsConnect_txt {
             get {
@@ -1825,7 +1825,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Which of your family members would you like to connect with on hike?.
+        ///   Looks up a localized string similar to Send your family members a Free SMS invite. .
         /// </summary>
         public static string Nux_FamilyMembersConnect_txt {
             get {
@@ -1834,20 +1834,29 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to YOUR FAMILY.
+        ///   Looks up a localized string similar to INVITE FAMILY.
         /// </summary>
-        public static string Nux_YourFamily_Txt {
+        public static string Nux_InviteFamily_Txt {
             get {
-                return ResourceManager.GetString("Nux_YourFamily_Txt", resourceCulture);
+                return ResourceManager.GetString("Nux_InviteFamily_Txt", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to YOUR FRIENDS.
+        ///   Looks up a localized string similar to INVITE FRIENDS.
         /// </summary>
-        public static string Nux_YourFriends_Txt {
+        public static string Nux_InviteFriends_Txt {
             get {
-                return ResourceManager.GetString("Nux_YourFriends_Txt", resourceCulture);
+                return ResourceManager.GetString("Nux_InviteFriends_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        public static string Nux_Skip_btnTxt {
+            get {
+                return ResourceManager.GetString("Nux_Skip_btnTxt", resourceCulture);
             }
         }
         
