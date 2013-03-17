@@ -278,6 +278,8 @@ namespace windows_client.DbUtils
             else if (HikePubSub.MESSAGE_RECEIVED_READ == type)  // represents event when a msg is read by this user
             {
                 long[] ids = (long[])obj;
+                if (ids == null || ids.Length == 0)
+                    return;
                 updateDbBatch(ids, (int)ConvMessage.State.RECEIVED_READ);
             }
             #endregion
@@ -308,7 +310,11 @@ namespace windows_client.DbUtils
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
-                string msisdn = (string)obj;
+                string msisdn ;
+                if (obj is ContactInfo)
+                    msisdn = (obj as ContactInfo).Msisdn;
+                else
+                    msisdn = (string)obj;
                 UsersTableUtils.block(msisdn);
                 JObject blockObj = blockUnblockSerialize("b", msisdn);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, blockObj);

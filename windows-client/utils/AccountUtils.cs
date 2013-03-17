@@ -15,6 +15,7 @@ using windows_client.Controls;
 using System.Threading;
 using windows_client.DbUtils;
 using windows_client.Misc;
+using windows_client.Controls.StatusUpdate;
 
 namespace windows_client.utils
 {
@@ -144,14 +145,14 @@ namespace windows_client.utils
 
 
         public delegate void postResponseFunction(JObject obj);
+        public delegate void parametrisedPostResponseFunction(JObject jObj, Object obj);
         public delegate void downloadFile(byte[] downloadedData, object metadata);
         public delegate void postUploadPhotoFunction(JObject obj, ConvMessage convMessage, SentChatBubble chatBubble);
-
 
         private enum RequestType
         {
             REGISTER_ACCOUNT, INVITE, VALIDATE_NUMBER, CALL_ME, SET_NAME, DELETE_ACCOUNT, POST_ADDRESSBOOK, UPDATE_ADDRESSBOOK, POST_PROFILE_ICON,
-            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE
+            POST_PUSHNOTIFICATION_DATA, UPLOAD_FILE, SET_PROFILE, SOCIAL_POST, SOCIAL_DELETE, POST_STATUS
         }
         private static void addToken(HttpWebRequest req)
         {
@@ -247,13 +248,21 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.SET_PROFILE, obj, finalCallbackFunction });
         }
 
-        public static void deleteAccount(postResponseFunction finalCallbackFunction)
+        public static void deleteRequest(postResponseFunction finalCallbackFunction, string requestUrl)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account")) as HttpWebRequest;
             addToken(req);
             req.Method = "DELETE";
             addToken(req);
             req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction });
+        }
+        public static void deleteStatus(parametrisedPostResponseFunction finalCallbackFunction, string requestUrl, Object obj)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(requestUrl)) as HttpWebRequest;
+            addToken(req);
+            req.Method = "DELETE";
+            addToken(req);
+            req.BeginGetResponse(json_Callback, new object[] { req, RequestType.DELETE_ACCOUNT, finalCallbackFunction, obj });
         }
         public static void unlinkAccount(postResponseFunction finalCallbackFunction)
         {
@@ -303,6 +312,16 @@ namespace windows_client.utils
             req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.UPLOAD_FILE, dataBytes, finalCallbackFunction, convMessage, 
                 chatbubble });
         }
+
+        public static void postStatus(JObject statusJSON, postResponseFunction finalCallbackFunction)
+        {
+            HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status")) as HttpWebRequest;
+            addToken(req);
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
+        }
+
 
         public static void SocialPost(JObject obj, postResponseFunction finalCallbackFunction, string socialNetowrk, bool isPost)
         {
@@ -484,6 +503,12 @@ namespace windows_client.utils
                     req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackForUploadFile, convMessage, chatBubble });
                     return;
                 #endregion
+                #region POST STATUS
+                case RequestType.POST_STATUS:
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
+                    break;
+                #endregion
                 #region DEFAULT
                 default:
                     break;
@@ -499,7 +524,6 @@ namespace windows_client.utils
             req.BeginGetResponse(json_Callback, new object[] { req, type, finalCallbackFunction });
         }
 
-        //GET request
         public static void createGetRequest(string requestUrl, postResponseFunction callback, bool isRelativeUrl)
         {
             HttpWebRequest request = null;
@@ -511,7 +535,7 @@ namespace windows_client.utils
             {
                 request = (HttpWebRequest)HttpWebRequest.Create(requestUrl);
             }
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();//to disaable caching if GET result
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback });
         }
 
@@ -523,7 +547,6 @@ namespace windows_client.utils
             request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
             request.BeginGetResponse(GetRequestCallback, new object[] { request, callback, metadata });
         }
-
 
         static void GetRequestCallback(IAsyncResult result)
         {
@@ -561,17 +584,22 @@ namespace windows_client.utils
                         }
                     }
                 }
+
                 catch (IOException ioe)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + ioe.StackTrace);
                 }
                 catch (WebException we)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + we.StackTrace);
                 }
                 catch (JsonException je)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + je.StackTrace);
                 }
                 catch (Exception e)
                 {
+                    Debug.WriteLine("AccountUtils ::  GetRequestCallback :  GetRequestCallback , Exception : " + e.StackTrace);
                 }
                 finally
                 {
@@ -582,10 +610,9 @@ namespace windows_client.utils
                     }
                     else if (vars[1] is downloadFile)
                     {
-                        downloadFile finalCallbackFunction = vars[1] as downloadFile;
-                        finalCallbackFunction(fileBytes, vars[2] as object);
+                        downloadFile downloadFileCallback = vars[1] as downloadFile;
+                        downloadFileCallback(fileBytes, vars[2] as object);
                     }
-
                 }
             }
         }
@@ -599,10 +626,12 @@ namespace windows_client.utils
             {
                 byteArray = Convert.FromBase64String(compressedText);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("AccountUtils ::  Decompress :  Decompress , Exception : " + ex.StackTrace);
                 return compressedText;
             }
+
 
             //Prepare for decompress
             MemoryStream ms = new MemoryStream(byteArray);
@@ -768,18 +797,22 @@ namespace windows_client.utils
             }
             catch (IOException ioe)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + ioe.StackTrace);
                 obj = null;
             }
             catch (WebException we)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + we.StackTrace);
                 obj = null;
             }
             catch (JsonException je)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + je.StackTrace);
                 obj = null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  json_Callback :  json_Callback , Exception : " + e.StackTrace);
                 obj = null;
             }
             finally
@@ -795,6 +828,12 @@ namespace windows_client.utils
                     convMessage = vars[3] as ConvMessage;
                     SentChatBubble chatBubble = vars[4] as SentChatBubble;
                     finalCallbackFunctionForUpload(obj, convMessage, chatBubble);
+                }
+                else if (vars[2] is parametrisedPostResponseFunction)
+                {
+                    parametrisedPostResponseFunction finalCallbackFunctionForStatus = vars[2] as parametrisedPostResponseFunction;
+                    StatusUpdateBox sb = vars[3] as StatusUpdateBox;
+                    finalCallbackFunctionForStatus(obj, sb);
                 }
             }
         }
@@ -821,12 +860,15 @@ namespace windows_client.utils
                 }
                 return blockListMsisdns;
             }
+
             catch (ArgumentException e)
             {
+                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  getBlockList :  getBlockList , Exception : " + e.StackTrace);
                 return null;
             }
         }
@@ -980,12 +1022,15 @@ namespace windows_client.utils
                 }
                 return server_contacts;
             }
-            catch (ArgumentException)
+
+            catch (ArgumentException e)
             {
+                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
             catch (Exception e)
             {
+                Debug.WriteLine("AccountUtils ::  getContactList :  getContactList , Exception : " + e.StackTrace);
                 return null;
             }
         }

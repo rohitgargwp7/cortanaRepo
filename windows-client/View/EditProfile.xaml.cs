@@ -38,7 +38,7 @@ namespace windows_client.View
         {
             InitializeComponent();
             App.appSettings.TryGetValue(App.GENDER, out userGender);
-            
+
             if (userGender == "m")
             {
                 genderList.Add(AppResources.EditProfile_GenderMale_LstPckr);
@@ -195,6 +195,9 @@ namespace windows_client.View
                         userName = name.Text;
                         App.HikePubSubInstance.publish(HikePubSub.UPDATE_ACCOUNT_NAME, userName);
                         App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, userName);
+
+                        // this will handle tombstine case too, if we have used pubsub that will not work in case of tombstone
+                        PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED] = userName;
                     }
                     if (shouldSendProfile)
                     {
@@ -209,7 +212,10 @@ namespace windows_client.View
                         {
                             MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Edit Profile ::  setName_Callback, setName_Callback_Okay  , Exception : " + ex.StackTrace);
+                        }
                     }
                 }
                 else
@@ -221,7 +227,10 @@ namespace windows_client.View
                     {
                         MessageBox.Show(AppResources.EditProfile_NameUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Edit Profile ::  setName_Callback, setName_Callback_Okay  , Exception : " + ex.StackTrace);
+                    }
                 }
                 isClicked = false;
             });
@@ -243,7 +252,7 @@ namespace windows_client.View
                     if (genderIndex != genderListPicker.SelectedIndex)
                     {
                         genderIndex = genderListPicker.SelectedIndex;
-                        string gender = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : ""):(genderListPicker.SelectedIndex == 0 ? "m" : "f");
+                        string gender = genderListPicker.Items.Count == 3 ? (genderListPicker.SelectedIndex == 1 ? "m" : genderListPicker.SelectedIndex == 2 ? "f" : "") : (genderListPicker.SelectedIndex == 0 ? "m" : "f");
                         App.WriteToIsoStorageSettings(App.GENDER, gender);
                     }
                     MakeFieldsReadOnly(false);
@@ -255,13 +264,13 @@ namespace windows_client.View
                         MessageBox.Show(AppResources.EditProfile_UpdatMsgBx_Txt, AppResources.EditProfile_UpdatMsgBx_Captn, MessageBoxButton.OK);
                         if (genderListPicker.Items.Count == 3) // if select is there remove it
                         {
-                            genderListPicker.ItemsSource = new List<string> { AppResources.EditProfile_GenderMale_LstPckr,AppResources.EditProfile_GenderFemale_lstPckr};
+                            genderListPicker.ItemsSource = new List<string> { AppResources.EditProfile_GenderMale_LstPckr, AppResources.EditProfile_GenderFemale_lstPckr };
                             genderIndex--;
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception :: ", e.StackTrace);
+                        Debug.WriteLine("Edit Profile ::  setProfile_Callback, setProfile_Callback_okay  , Exception : " + ex.StackTrace);
                     }
                 }
                 else // failure from server
@@ -276,9 +285,9 @@ namespace windows_client.View
                     {
                         MessageBox.Show(AppResources.EditProfile_EmailUpdateErr_MsgBxTxt, AppResources.EditProfile_NameUpdateErr_MsgBxCaptn, MessageBoxButton.OK);
                     }
-                    catch(Exception e) 
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine("Exception :: ", e.StackTrace);
+                        Debug.WriteLine("Edit Profile ::  setProfile_Callback, setProfile_Callback , Exception : " + ex.StackTrace);
                     }
 
                 }

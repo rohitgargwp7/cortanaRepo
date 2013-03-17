@@ -110,7 +110,7 @@ namespace windows_client.View
             }
             progress.Show(LayoutRoot, AppResources.Privacy_DeleteAccountProgress);
             canGoBack = false;
-            AccountUtils.deleteAccount(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback));
+            AccountUtils.deleteRequest(new AccountUtils.postResponseFunction(deleteAccountResponse_Callback), AccountUtils.BASE + "/account");
         }
 
         private void deleteAccountResponse_Callback(JObject obj)
@@ -157,14 +157,18 @@ namespace windows_client.View
                     progress.Hide(LayoutRoot);
                     progress = null;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,hideProgress, Exception : " + ex.StackTrace);
                 }
                 try
                 {
                     NavigationService.Navigate(new Uri("/View/WelcomePage.xaml", UriKind.Relative));
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Privacy.xaml :: DeleteLocalStorage,Navigate, Exception : " + ex.StackTrace);
+                }
             });
 
 

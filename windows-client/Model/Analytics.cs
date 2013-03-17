@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using windows_client.Misc;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -42,6 +43,7 @@ namespace windows_client.Model
         public static readonly string ADD_TO_FAVS_APP_BAR_CHATTHREAD = "ctATFAB";
         public static readonly string REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD = "ctRFFAB";
         public static readonly string SEE_LARGE_PROFILE_PIC = "ctLPP"; //chat thread large profile pic
+        public static readonly string SEE_LARGE_PROFILE_PIC_FROM_USERPROFILE = "upLPP"; //chat thread large profile pic
 
         //hp = help
         public static readonly string FAQS = "hpFAQ";
@@ -130,8 +132,9 @@ namespace windows_client.Model
             {
                 count = reader.ReadInt32();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("Analytics :: Read : read Count, Exception : " + ex.StackTrace);
             }
             string key;
             int value = -1;
@@ -149,8 +152,9 @@ namespace windows_client.Model
                     if (!String.IsNullOrEmpty(key) && value > 0)
                         eventMap[key] = value;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Analytics :: Read : read item, Exception : " + ex.StackTrace);
                 }
             }
         }

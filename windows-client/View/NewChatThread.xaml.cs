@@ -42,7 +42,6 @@ namespace windows_client.View
         private readonly string ON_SMS_TEXT = AppResources.SelectUser_SmsMsg_Txt;
         private readonly string ON_GROUP_TEXT = AppResources.SelectUser_GroupMsg_Txt;
         private readonly string ZERO_CREDITS_MSG = AppResources.SelectUser_ZeroCredits_Txt;
-        private readonly string BLOCK_USER = AppResources.Block_Txt;
         private readonly string UNBLOCK_USER = AppResources.UnBlock_Txt;
 
         private string groupOwner = null;
@@ -51,7 +50,7 @@ namespace windows_client.View
         private string lastText = "";
 
         bool afterMute = true;
-        private bool _isFav;
+
         private bool _isMute = false;
         private bool isFirstLaunch = true;
         private bool isGroupAlive = true;
@@ -80,10 +79,8 @@ namespace windows_client.View
         private byte[] avatar;
         private BitmapImage avatarImage;
         private ApplicationBar appBar;
-        ApplicationBarMenuItem blockUnblockMenuItem;
         ApplicationBarMenuItem muteGroupMenuItem;
         ApplicationBarMenuItem inviteMenuItem = null;
-        ApplicationBarMenuItem addToFavMenuItem = null;
         ApplicationBarMenuItem addUserMenuItem;
         ApplicationBarIconButton sendIconButton = null;
         ApplicationBarIconButton emoticonsIconButton = null;
@@ -92,6 +89,7 @@ namespace windows_client.View
         private CameraCaptureTask cameraCaptureTask;
         private BingMapsTask bingMapsTask = null;
         private bool isShowNudgeTute = true;
+        private object statusObject = null;
 
         //        private ObservableCollection<MyChatBubble> chatThreadPageCollection = new ObservableCollection<MyChatBubble>();
         private Dictionary<long, SentChatBubble> msgMap = new Dictionary<long, SentChatBubble>(); // this holds msgId -> sent message bubble mapping
@@ -186,22 +184,35 @@ namespace windows_client.View
         {
             if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE))
             {
-                this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                object obj = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE];
+                if (obj is ConversationListObject)
+                    statusObject = this.State[HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE] = obj;
+
+                else // obj is ContactInfo obj
+                    statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = obj;
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_CONVERSATIONS_PAGE);
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_SELECTUSER_PAGE))
             {
-                this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
+                //contact info object
+                statusObject = this.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_SELECTUSER_PAGE];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_SELECTUSER_PAGE);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
             }
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.GROUP_CHAT))
             {
-                this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
+                //list<Contact Info>
+                statusObject = this.State[HikeConstants.GROUP_CHAT] = PhoneApplicationService.Current.State[HikeConstants.GROUP_CHAT];
                 PhoneApplicationService.Current.State.Remove(HikeConstants.GROUP_CHAT);
                 if (NavigationService.CanGoBack)
                     NavigationService.RemoveBackEntry();
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
+            {
+                //contactInfo
+                statusObject = this.State[HikeConstants.OBJ_FROM_STATUSPAGE] = PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_STATUSPAGE);
             }
         }
 
@@ -404,7 +415,6 @@ namespace windows_client.View
                 ContactTransfer();
             }
             #endregion
-
         }
 
         protected override void OnNavigatingFrom(System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -555,14 +565,61 @@ namespace windows_client.View
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        avatarImage = empImage;
+                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
                     }
                 }
                 userImage.Source = avatarImage;
+            }
+            #endregion
+            #region OBJECT FROM STATUS PAGE
+            else if (this.State.ContainsKey(HikeConstants.OBJ_FROM_STATUSPAGE))
+            {
+                object obj = this.State[HikeConstants.OBJ_FROM_STATUSPAGE];
+                if (obj is ConversationListObject)
+                {
+                    ConversationListObject co = (ConversationListObject)obj;
+                    mContactNumber = co.Msisdn;
+                    if (co.ContactName != null)
+                        mContactName = co.ContactName;
+                    else
+                    {
+                        mContactName = co.Msisdn;
+                        isAddUser = true;
+                    }
+
+                    isOnHike = co.IsOnhike;
+                    if (App.IS_TOMBSTONED) // in this case avatar needs to be re calculated
+                    {
+                        co.Avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
+                    }
+                    avatarImage = co.AvatarImage;
+                    userImage.Source = co.AvatarImage;
+                }
+                else
+                {
+                    ContactInfo cn = (ContactInfo)obj;
+                    mContactNumber = cn.Msisdn;
+                    if (cn.Name != null)
+                        mContactName = cn.Name;
+                    else
+                    {
+                        mContactName = cn.Msisdn;
+                        isAddUser = true;
+                    }
+
+                    isOnHike = cn.OnHike;
+                    avatar = MiscDBUtil.getThumbNailForMsisdn(mContactNumber);
+
+                    if (avatar == null)
+                    {
+                        avatarImage = UI_Utils.Instance.getDefaultAvatar(mContactNumber);
+                    }
+                    else
+                    {
+                        avatarImage = UI_Utils.Instance.createImageFromBytes(avatar);
+                    }
+                    userImage.Source = avatarImage;
+                }
             }
             #endregion
 
@@ -659,7 +716,6 @@ namespace windows_client.View
             App.RemoveKeyFromAppSettings(App.SHOW_NUDGE_TUTORIAL);
             ScrollToBottom();
         }
-
 
         private void processGroupJoin(bool isNewgroup)
         {
@@ -829,39 +885,9 @@ namespace windows_client.View
                 muteGroupMenuItem.Text = IsMute ? AppResources.SelectUser_UnMuteGrp_Txt : AppResources.SelectUser_MuteGrp_Txt;
                 muteGroupMenuItem.Click += new EventHandler(muteUnmuteGroup_Click);
                 appBar.MenuItems.Add(muteGroupMenuItem);
-
-                if (groupOwner != null)
-                {
-                    if (groupOwner != App.MSISDN) // represents current user is not group owner
-                    {
-                        blockUnblockMenuItem = new ApplicationBarMenuItem();
-                        if (mUserIsBlocked)
-                        {
-                            blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                        }
-                        else
-                        {
-                            blockUnblockMenuItem.Text = BLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                        }
-                        blockUnblockMenuItem.Click += new EventHandler(blockUnblock_Click);
-                        appBar.MenuItems.Add(blockUnblockMenuItem);
-                    }
-                }
             }
             else
             {
-                blockUnblockMenuItem = new ApplicationBarMenuItem();
-                if (mUserIsBlocked)
-                {
-                    blockUnblockMenuItem.Text = UNBLOCK_USER;
-                }
-                else
-                {
-                    blockUnblockMenuItem.Text = BLOCK_USER;
-                }
-                blockUnblockMenuItem.Click += new EventHandler(blockUnblock_Click);
-                appBar.MenuItems.Add(blockUnblockMenuItem);
-
                 if (isAddUser)
                 {
                     addUserMenuItem = new ApplicationBarMenuItem();
@@ -873,19 +899,7 @@ namespace windows_client.View
                 callMenuItem.Text = AppResources.Call_Txt;
                 callMenuItem.Click += new EventHandler(callUser_Click);
                 appBar.MenuItems.Add(callMenuItem);
-
-                // Add to fav is shown only in case of GC
-                addToFavMenuItem = new ApplicationBarMenuItem();
-                addToFavMenuItem.Text = AppResources.Add_To_Fav_Txt;
-                addToFavMenuItem.Click += new EventHandler(AddRemoveFavMenuItem_Click);
-                appBar.MenuItems.Add(addToFavMenuItem);
-                if (App.ViewModel.Isfavourite(mContactNumber))
-                {
-                    addToFavMenuItem.Text = AppResources.RemFromFav_Txt;
-                    _isFav = true;
-                }
             }
-            //            chatThreadMainPage.ApplicationBar = appBar;
         }
 
         private void initInviteMenuItem()
@@ -907,6 +921,7 @@ namespace windows_client.View
         bool hasMoreMessages;
         const int INITIAL_FETCH_COUNT = 21;
         const int SUBSEQUENT_FETCH_COUNT = 11;
+
         private void loadMessages(int messageFetchCount)
         {
             int i;
@@ -1187,77 +1202,14 @@ namespace windows_client.View
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_LEFT_GROUP, this);
                 mPubSub.removeListener(HikePubSub.PARTICIPANT_JOINED_GROUP, this);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml ::  removeListeners , Exception : " + ex.StackTrace);
+            }
         }
         #endregion
 
         #region APPBAR CLICK EVENTS
-
-        private void AddRemoveFavMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!_isFav) // add to fav
-            {
-                ConversationListObject favObj = null;
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                {
-                    favObj = App.ViewModel.ConvMap[mContactNumber];
-                    favObj.IsFav = true;
-                }
-                else
-                    favObj = new ConversationListObject(mContactNumber, mContactName, isOnHike, avatar);
-                App.ViewModel.FavList.Insert(0, favObj);
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.SaveFavourites(favObj);
-                if (App.ViewModel.IsPending(favObj.Msisdn))
-                {
-                    App.ViewModel.PendingRequests.Remove(favObj);
-                    MiscDBUtil.SavePendingRequests();
-                }
-                addToFavMenuItem.Text = AppResources.RemFromFav_Txt;
-
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
-                JObject data = new JObject();
-                data["id"] = mContactNumber;
-                JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.ADD_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                _isFav = true;
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count + 1);
-                App.AnalyticsInstance.addEvent(Analytics.ADD_TO_FAVS_APP_BAR_CHATTHREAD);
-            }
-            else
-            {
-                addToFavMenuItem.Text = AppResources.Add_To_Fav_Txt;
-                foreach (ConversationListObject cObj in App.ViewModel.FavList)
-                {
-                    if (cObj.Msisdn == mContactNumber)
-                    {
-                        App.ViewModel.FavList.Remove(cObj);
-                        break;
-                    }
-                }
-                if (App.ViewModel.ConvMap.ContainsKey(mContactNumber))
-                    App.ViewModel.ConvMap[mContactNumber].IsFav = false;
-                MiscDBUtil.SaveFavourites();
-                MiscDBUtil.DeleteFavourite(mContactNumber);
-                mPubSub.publish(HikePubSub.ADD_REMOVE_FAV_OR_PENDING, null);
-
-                JObject data = new JObject();
-                data["id"] = mContactNumber;
-                JObject obj = new JObject();
-                obj[HikeConstants.TYPE] = HikeConstants.MqttMessageTypes.REMOVE_FAVOURITE;
-                obj[HikeConstants.DATA] = data;
-                mPubSub.publish(HikePubSub.MQTT_PUBLISH, obj);
-                _isFav = false;
-                int count = 0;
-                App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
-                App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
-                App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_CHATTHREAD);
-            }
-        }
 
         private void callUser_Click(object sender, EventArgs e)
         {
@@ -1268,7 +1220,10 @@ namespace windows_client.View
             {
                 phoneCallTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml ::  callUser_Click , Exception : " + ex.StackTrace);
+            }
         }
 
         private void addUser_Click(object sender, EventArgs e)
@@ -1355,7 +1310,6 @@ namespace windows_client.View
                 if (isGroupChat)
                 {
                     mPubSub.publish(HikePubSub.UNBLOCK_GROUPOWNER, groupOwner);
-                    blockUnblockMenuItem.Text = BLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
                 }
                 else
                 {
@@ -1363,39 +1317,38 @@ namespace windows_client.View
                     emoticonsIconButton.IsEnabled = true;
                     sendIconButton.IsEnabled = true;
                     isTypingNotificationEnabled = true;
-                    blockUnblockMenuItem.Text = BLOCK_USER;
                     if (inviteMenuItem != null)
                         inviteMenuItem.IsEnabled = true;
                 }
                 mUserIsBlocked = false;
                 showOverlay(false);
             }
-            else     // BLOCK REQUEST
-            {
-                if (showNoSmsLeftOverlay)
-                    ToggleControlsToNoSms(false);
-                this.Focus();
-                sendMsgTxtbox.Text = "";
-                if (isGroupChat)
-                {
-                    mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
-                    blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
-                }
-                else
-                {
-                    mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
-                    emoticonsIconButton.IsEnabled = false;
-                    sendIconButton.IsEnabled = false;
-                    isTypingNotificationEnabled = false;
-                    blockUnblockMenuItem.Text = UNBLOCK_USER;
-                    if (inviteMenuItem != null)
-                        inviteMenuItem.IsEnabled = false;
-                }
-                emoticonPanel.Visibility = Visibility.Collapsed;
-                attachmentMenu.Visibility = Visibility.Collapsed;
-                mUserIsBlocked = true;
-                showOverlay(true); //true means show block animation
-            }
+            //else     // BLOCK REQUEST
+            //{
+            //    if (showNoSmsLeftOverlay)
+            //        ToggleControlsToNoSms(false);
+            //    this.Focus();
+            //    sendMsgTxtbox.Text = "";
+            //    if (isGroupChat)
+            //    {
+            //        mPubSub.publish(HikePubSub.BLOCK_GROUPOWNER, groupOwner);
+            //        blockUnblockMenuItem.Text = UNBLOCK_USER + " " + AppResources.SelectUser_GrpOwner_Txt;
+            //    }
+            //    else
+            //    {
+            //        mPubSub.publish(HikePubSub.BLOCK_USER, mContactNumber);
+            //        emoticonsIconButton.IsEnabled = false;
+            //        sendIconButton.IsEnabled = false;
+            //        isTypingNotificationEnabled = false;
+            //        blockUnblockMenuItem.Text = UNBLOCK_USER;
+            //        if (inviteMenuItem != null)
+            //            inviteMenuItem.IsEnabled = false;
+            //    }
+            //    emoticonPanel.Visibility = Visibility.Collapsed;
+            //    attachmentMenu.Visibility = Visibility.Collapsed;
+            //    mUserIsBlocked = true;
+            //    showOverlay(true); //true means show block animation
+            //}
         }
 
         private void FileAttachmentMessage_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
@@ -1496,8 +1449,9 @@ namespace windows_client.View
                 {
                     mediaPlayerLauncher.Show();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("NewChatThread.xaml ::  displayAttachment ,Ausio video , Exception : " + ex.StackTrace);
                 }
             }
             else if (chatBubble.FileAttachment.ContentType.Contains(HikeConstants.LOCATION))
@@ -1595,7 +1549,6 @@ namespace windows_client.View
                         }
                         else
                         {
-
                             chatBubble = ReceivedChatBubble.getSplitChatBubbles(convMessage, isGroupChat, isGroupChat ? GroupManager.Instance.getGroupParticipant(null, convMessage.GroupParticipant, mContactNumber).FirstName : mContactName);
                         }
                     }
@@ -1814,6 +1767,51 @@ namespace windows_client.View
                     insertPosition++;
                 }
                 #endregion
+                #region STATUS UPDATE
+                else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    JObject jsonObj = JObject.Parse(convMessage.MetaDataString);
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken val;
+                    #region HANDLE PIC UPDATE
+                    if (data.TryGetValue(HikeConstants.PROFILE_UPDATE, out val) && true == (bool)val)
+                    {
+                        try
+                        {
+                            string serverId = (string)jsonObj[HikeConstants.PROFILE_PIC_ID];
+                            BitmapImage img = null;
+                            byte[] imageBytes = MiscDBUtil.GetProfilePicUpdateForID(convMessage.Msisdn, serverId);
+                            img = UI_Utils.Instance.createImageFromBytes(imageBytes);
+                            MyChatBubble chatBubble = new StatusChatBubble(convMessage, img);
+                            chatBubble.setTapEvent(statusBubble_Tap);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble);
+                            insertPosition++;
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion
+                    #region HANDLE TEXT UPDATE
+                    val = null;
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    {
+                        try
+                        {
+                            MyChatBubble chatBubble = new StatusChatBubble(convMessage);
+                            chatBubble.setTapEvent(statusBubble_Tap);
+                            this.MessageList.Children.Insert(insertPosition, chatBubble);
+                            insertPosition++;
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine("Exception while inserting Text Update msg : " + e.StackTrace);
+                        }
+                    }
+                    #endregion
+                }
+                #endregion
                 #region GROUP PIC CHANGED
                 else if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.GROUP_PIC_CHANGED)
                 {
@@ -1822,6 +1820,7 @@ namespace windows_client.View
                     insertPosition++;
                 }
                 #endregion
+                ScrollToBottom();
                 if (!insertAtTop)
                     ScrollToBottom();
 
@@ -1933,10 +1932,16 @@ namespace windows_client.View
             {
                 isReleaseMode = true;
                 Uri uri = new Uri(e.OriginalFileName);
-                BitmapImage image = new BitmapImage(uri);
-                image.CreateOptions = BitmapCreateOptions.None;
-                image.UriSource = uri;
-                image.ImageOpened += imageOpenedHandler;
+                BitmapImage image = new BitmapImage();
+                image.SetSource(e.ChosenPhoto);
+                try
+                {
+                    SendImage(image, "image_" + TimeUtils.getCurrentTimeStamp().ToString());
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("GROUP INFO :: Exception in photochooser task " + ex.StackTrace);
+                }
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
@@ -1973,17 +1978,6 @@ namespace windows_client.View
                 adjustedWidth = maxWidth;
                 adjustedHeight = (height * adjustedWidth) / width;
             }
-        }
-
-
-        void imageOpenedHandler(object sender, RoutedEventArgs e)
-        {
-            if (isReleaseMode || abc)
-            {
-                BitmapImage image = (BitmapImage)sender;
-                SendImage(image, image.UriSource.ToString());
-            }
-            abc = !abc;
         }
 
         private void SendImage(BitmapImage image, string fileName)
@@ -2171,6 +2165,12 @@ namespace windows_client.View
                     obj.MessageStatus = ConvMessage.State.UNKNOWN;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                 }
+                else if (lastMessageBubble is StatusChatBubble)
+                {
+                    obj.LastMessage = AppResources.Status_Update_Txt;
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    obj.TimeStamp = lastMessageBubble.TimeStampLong;
+                }
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;
@@ -2241,8 +2241,9 @@ namespace windows_client.View
                 photoChooserTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("NewChatThread.xaml :: sendImage_Tap , Exception : " + ex.StackTrace);
             }
         }
         private void clickPhoto_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2253,8 +2254,9 @@ namespace windows_client.View
                 cameraCaptureTask.Show();
                 attachmentMenu.Visibility = Visibility.Collapsed;
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("NewChatThread.xaml :: clickPhoto_Tap , Exception : " + ex.StackTrace);
             }
         }
         private void sendAudio_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -2533,7 +2535,7 @@ namespace windows_client.View
             }
             catch (Exception ex)
             {
-                //logger.("ConvMessage", "invalid json message", e);
+                Debug.WriteLine("NewChatThread.xaml :: sendTypingNotification , Exception : " + ex.StackTrace);
             }
             object[] publishData = new object[2];
             publishData[0] = obj;
@@ -2625,7 +2627,8 @@ namespace windows_client.View
                     {
                         mPubSub.publish(HikePubSub.MQTT_PUBLISH, convMessage.serializeDeliveryReportRead()); // handle return to sender
                     }
-                    updateLastMsgColor(convMessage.Msisdn);
+                    if (convMessage.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                        updateLastMsgColor(convMessage.Msisdn);
                     // Update UI
                     HideTypingNotification();
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -2654,6 +2657,8 @@ namespace windows_client.View
                     if (App.ViewModel.ConvMap.TryGetValue(convMessage.Msisdn, out val) && val.IsMute) // of msg is for muted conv, ignore msg
                         return;
                     ConversationListObject cObj = vals[1] as ConversationListObject;
+                    if (cObj == null) // this will happen in status update msg
+                        return;
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ToastPrompt toast = new ToastPrompt();
@@ -2693,9 +2698,9 @@ namespace windows_client.View
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_CONFIRMED);
                     }
                 }
-                catch (KeyNotFoundException e)
+                catch (Exception ex)
                 {
-                    //logger.Info("NewChatThread", "Message Delivered Read Exception " + e);
+                    Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,SERVER_RECEIVED_MSG Exception : " + ex.StackTrace);
                 }
             }
 
@@ -2719,9 +2724,9 @@ namespace windows_client.View
                         msg.SetSentMessageStatus(ConvMessage.State.SENT_DELIVERED);
                     }
                 }
-                catch (KeyNotFoundException e)
+                catch (Exception ex)
                 {
-                    //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                    Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED, Exception : " + ex.StackTrace);
                 }
             }
 
@@ -2749,9 +2754,9 @@ namespace windows_client.View
                             msgMap.Remove(ids[i]);
                         }
                     }
-                    catch (KeyNotFoundException e)
+                    catch (Exception ex)
                     {
-                        //logger.Info("CHATTHREAD", "Message Delivered Read Exception " + e);
+                        Debug.WriteLine("NewChatThread.xaml :: onEventReceived ,MESSAGE_DELIVERED_READ Exception : " + ex.StackTrace);
                         continue;
                     }
                 }
@@ -2833,6 +2838,11 @@ namespace windows_client.View
                     return;
                 }
                 isOnHike = HikePubSub.USER_JOINED == type;
+                if (statusObject is ContactInfo) // this is done to update user profile
+                {
+                    ContactInfo cn = (ContactInfo)statusObject;
+                    cn.OnHike = isOnHike;
+                }
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
                     changeInviteButtonVisibility();
@@ -3141,7 +3151,10 @@ namespace windows_client.View
             {
                 sms.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("NewChatThread.xaml :: smsUser_Click Exception : " + ex.StackTrace);
+            }
         }
 
         private void emotHeaderRect0_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3216,13 +3229,23 @@ namespace windows_client.View
             }
         }
 
-        private void userImage_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        //TODO - MG try to use sametap event for header n statusBubble
+        private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            App.AnalyticsInstance.addEvent(Analytics.SEE_LARGE_PROFILE_PIC);
-            object[] fileTapped = new object[1];
-            fileTapped[0] = mContactNumber;
-            PhoneApplicationService.Current.State["displayProfilePic"] = fileTapped;
-            NavigationService.Navigate(new Uri("/View/DisplayImage.xaml", UriKind.Relative));
+            if (!isContextMenuTapped && !isGroupChat)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            }
+        }
+
+        private void userHeader_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (!isGroupChat)
+            {
+                PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
+                NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));
+            }
         }
 
         private void MessageList_DoubleTap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -3283,9 +3306,9 @@ namespace windows_client.View
                 }
                 AccountUtils.updateAddressBook(contactListMap, null, new AccountUtils.postResponseFunction(updateAddressBook_Callback));
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                //That's okay, no results//
+                Debug.WriteLine("NewChatThread.xaml :: contactSearchCompleted_Callback, Exception : " + ex.StackTrace);
             }
         }
 

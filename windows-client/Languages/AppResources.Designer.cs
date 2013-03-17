@@ -70,7 +70,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to add to favorites.
+        ///   Looks up a localized string similar to add to friends.
         /// </summary>
         public static string Add_To_Fav_Txt {
             get {
@@ -205,6 +205,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add as a friend.
+        /// </summary>
+        public static string btnAddAsFriend_Txt {
+            get {
+                return ResourceManager.GetString("btnAddAsFriend_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to call.
         /// </summary>
         public static string Call_Txt {
@@ -313,11 +322,38 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to added you as favourite. Would you like to do the same?.
+        ///   Looks up a localized string similar to added you as friend. Would you like to do the same?.
         /// </summary>
         public static string Conversations_AddedYouToFav_Txt {
             get {
                 return ResourceManager.GetString("Conversations_AddedYouToFav_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Added you as a friend!.
+        /// </summary>
+        public static string Conversations_AddedYouToFav_Txt_WP8FrndStatus {
+            get {
+                return ResourceManager.GetString("Conversations_AddedYouToFav_Txt_WP8FrndStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CIRCLE OF FRIENDS.
+        /// </summary>
+        public static string Conversations_Circle_Of_friends_txt {
+            get {
+                return ResourceManager.GetString("Conversations_Circle_Of_friends_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CONTACTS ON HIKE.
+        /// </summary>
+        public static string Conversations_Contacts_on_hike {
+            get {
+                return ResourceManager.GetString("Conversations_Contacts_on_hike", resourceCulture);
             }
         }
         
@@ -439,7 +475,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to favorites.
+        ///   Looks up a localized string similar to friends.
         /// </summary>
         public static string Conversations_Pivot_Favourites_Header_Txt {
             get {
@@ -457,6 +493,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to timeline.
+        /// </summary>
+        public static string Conversations_Pivot_Timeline_Header_Txt {
+            get {
+                return ResourceManager.GetString("Conversations_Pivot_Timeline_Header_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post Status.
+        /// </summary>
+        public static string Conversations_PostStatus_AppBar {
+            get {
+                return ResourceManager.GetString("Conversations_PostStatus_AppBar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Name.
         /// </summary>
         public static string Conversations_ProfileName_Default_Txt {
@@ -466,7 +520,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure about removing this contact from favorites?.
+        ///   Looks up a localized string similar to Are you sure about removing this contact from friends?.
         /// </summary>
         public static string Conversations_RemFromFav_Confirm_Txt {
             get {
@@ -484,7 +538,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have no favorites right now..
+        ///   Looks up a localized string similar to You have no friends right now..
         /// </summary>
         public static string Conversations_TapYesToAdd_Txt {
             get {
@@ -502,7 +556,25 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your favorites.
+        ///   Looks up a localized string similar to {0} new update.
+        /// </summary>
+        public static string Conversations_Timeline_Refresh_SingleStatus {
+            get {
+                return ResourceManager.GetString("Conversations_Timeline_Refresh_SingleStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} new updates.
+        /// </summary>
+        public static string Conversations_Timeline_Refresh_Status {
+            get {
+                return ResourceManager.GetString("Conversations_Timeline_Refresh_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your friends.
         /// </summary>
         public static string Conversations_YourFav_Txt {
             get {
@@ -709,7 +781,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hi! I’ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
+        ///   Looks up a localized string similar to Hi! I&apos;ve started using hike, an awesome new free messaging app. You can message friends on hike and also those who aren’t for free! Messaging has never been simpler. Download the app at http://get.hike.in/{0} to start messaging me for free!.
         /// </summary>
         public static string Email_Invite_Txt {
             get {
@@ -961,7 +1033,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A permanent place for all your favorite friends..
+        ///   Looks up a localized string similar to A permanent place for all your friend friends..
         /// </summary>
         public static string Favorites_Tute_Screen1 {
             get {
@@ -979,7 +1051,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To see all your hike friends and add new to favorites tap the + button.
+        ///   Looks up a localized string similar to To see all your hike friends and add new to friends tap the + button.
         /// </summary>
         public static string Favorites_Tute_Screen2 {
             get {
@@ -1636,6 +1708,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  is missing all the fun..
+        /// </summary>
+        public static string InviteOnHike_Txt {
+            get {
+                return ResourceManager.GetString("InviteOnHike_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite to hike.
+        /// </summary>
+        public static string InviteOnHikeBtn_Txt {
+            get {
+                return ResourceManager.GetString("InviteOnHikeBtn_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help him upgrade to hike!.
+        /// </summary>
+        public static string InviteOnHikeUpgrade_Txt {
+            get {
+                return ResourceManager.GetString("InviteOnHikeUpgrade_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friends Invited.
         /// </summary>
         public static string InviteUsers_FriendsInvited_Txt {
@@ -1717,6 +1816,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to my profile.
+        /// </summary>
+        public static string MyProfileheader_Txt {
+            get {
+                return ResourceManager.GetString("MyProfileheader_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} and {1} others.
         /// </summary>
         public static string NamingConvention_Txt {
@@ -1731,6 +1839,15 @@ namespace windows_client.Languages {
         public static string NetworkError_TryAgain {
             get {
                 return ResourceManager.GetString("NetworkError_TryAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NEW STATUS.
+        /// </summary>
+        public static string NewStatus_Txt {
+            get {
+                return ResourceManager.GetString("NewStatus_Txt", resourceCulture);
             }
         }
         
@@ -1888,6 +2005,33 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to on hike since {0}.
+        /// </summary>
+        public static string OnHIkeSince_Txt {
+            get {
+                return ResourceManager.GetString("OnHIkeSince_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on SMS.
+        /// </summary>
+        public static string OnSms_Txt {
+            get {
+                return ResourceManager.GetString("OnSms_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to profile.
+        /// </summary>
+        public static string OthersProfile_Txt {
+            get {
+                return ResourceManager.GetString("OthersProfile_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to owner.
         /// </summary>
         public static string Owner_Txt {
@@ -1924,6 +2068,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changed profile picture.
+        /// </summary>
+        public static string PicUpdate_StatusTxt {
+            get {
+                return ResourceManager.GetString("PicUpdate_StatusTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to play.
         /// </summary>
         public static string Play_Txt {
@@ -1938,6 +2091,15 @@ namespace windows_client.Languages {
         public static string Please_Try_Again_Txt {
             get {
                 return ResourceManager.GetString("Please_Try_Again_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What&apos;s up,{0}?.
+        /// </summary>
+        public static string PostStatus_WhatsUp_Txt {
+            get {
+                return ResourceManager.GetString("PostStatus_WhatsUp_Txt", resourceCulture);
             }
         }
         
@@ -2041,6 +2203,123 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} has added you as a friend..
+        /// </summary>
+        public static string Profile_AddedYouToFav_Txt_WP8FrndStatus {
+            get {
+                return ResourceManager.GetString("Profile_AddedYouToFav_Txt_WP8FrndStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add now.
+        /// </summary>
+        public static string Profile_AddNow_Btn_Txt {
+            get {
+                return ResourceManager.GetString("Profile_AddNow_Btn_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have blocked.
+        /// </summary>
+        public static string Profile_BlockedUser_Blk1 {
+            get {
+                return ResourceManager.GetString("Profile_BlockedUser_Blk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unblock to send a message..
+        /// </summary>
+        public static string Profile_BlockedUser_Blk3 {
+            get {
+                return ResourceManager.GetString("Profile_BlockedUser_Blk3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Request.
+        /// </summary>
+        public static string Profile_CancelRequest_BtnTxt {
+            get {
+                return ResourceManager.GetString("Profile_CancelRequest_BtnTxt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Would you like to do the same?.
+        /// </summary>
+        public static string Profile_DoTheSame {
+            get {
+                return ResourceManager.GetString("Profile_DoTheSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hasn&apos;t posted anything :(.
+        /// </summary>
+        public static string Profile_NoStatus_Txt {
+            get {
+                return ResourceManager.GetString("Profile_NoStatus_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is not in your address book..
+        /// </summary>
+        public static string Profile_NotInAddressbook_Txt {
+            get {
+                return ResourceManager.GetString("Profile_NotInAddressbook_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting For.
+        /// </summary>
+        public static string Profile_RequestSent_Blk1 {
+            get {
+                return ResourceManager.GetString("Profile_RequestSent_Blk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to accept your friend request..
+        /// </summary>
+        public static string Profile_RequestSent_Blk3 {
+            get {
+                return ResourceManager.GetString("Profile_RequestSent_Blk3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now see updates from {0}. .
+        /// </summary>
+        public static string Profile_YouCanNowSeeUpdates {
+            get {
+                return ResourceManager.GetString("Profile_YouCanNowSeeUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to be friends with.
+        /// </summary>
+        public static string ProfileToBeFriendBlk1 {
+            get {
+                return ResourceManager.GetString("ProfileToBeFriendBlk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to be able to get status updates..
+        /// </summary>
+        public static string ProfileToBeFriendBlk3 {
+            get {
+                return ResourceManager.GetString("ProfileToBeFriendBlk3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rate Now.
         /// </summary>
         public static string Rate_Now_Txt {
@@ -2131,7 +2410,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to remove from favorites.
+        ///   Looks up a localized string similar to remove from friends.
         /// </summary>
         public static string RemFromFav_Txt {
             get {
@@ -2482,6 +2761,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SHARE.
+        /// </summary>
+        public static string Share_With_Txt {
+            get {
+                return ResourceManager.GetString("Share_With_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string ShareContact_ConfirmationCaption {
@@ -2649,6 +2937,42 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Update.
+        /// </summary>
+        public static string Status_Update_Txt {
+            get {
+                return ResourceManager.GetString("Status_Update_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changed profile picture.
+        /// </summary>
+        public static string StatusUpdate_Photo {
+            get {
+                return ResourceManager.GetString("StatusUpdate_Photo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can now see updates from {0}. Would you like to do the same?.
+        /// </summary>
+        public static string StatusUpdate_YouCanNowSeeUpdates_TxtBlk {
+            get {
+                return ResourceManager.GetString("StatusUpdate_YouCanNowSeeUpdates_TxtBlk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to at {0}.
+        /// </summary>
+        public static string StatuUpdate_Location {
+            get {
+                return ResourceManager.GetString("StatuUpdate_Location", resourceCulture);
             }
         }
         

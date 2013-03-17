@@ -11,21 +11,24 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>windows_client</RootNamespace>
     <AssemblyName>windows-client</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
-    <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
-    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    <SilverlightVersion>
+    </SilverlightVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
     <SilverlightApplication>true</SilverlightApplication>
     <SupportedCultures>de-DE</SupportedCultures>
     <XapOutputs>true</XapOutputs>
     <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
-    <XapFilename>hike.xap</XapFilename>
+    <XapFilename>windows-client_$(Configuration)_$(Platform).xap</XapFilename>
     <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
     <SilverlightAppEntry>windows_client.App</SilverlightAppEntry>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <Utf8Output>true</Utf8Output>
     <ExpressionBlendVersion>4.0.30816.0</ExpressionBlendVersion>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,6 +40,7 @@
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,6 +51,53 @@
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>Bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>full</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>Bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>Bin\ARM\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>full</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>Bin\ARM\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>
+    </PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Coding4Fun.Phone.Controls">
@@ -60,17 +111,12 @@
       <HintPath>lib\finalmqtt.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
-    <Reference Include="Microsoft.Phone" />
-    <Reference Include="Microsoft.Phone.Controls, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Phone.Controls.Maps, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e" />
-    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Maps, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WPtoolkit.4.2012.10.30\lib\sl4-windowsphone71\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+      <HintPath>..\packages\WPtoolkit.4.2012.10.30\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Phone.Interop" />
-    <Reference Include="Microsoft.Phone.Reactive" />
-    <Reference Include="Microsoft.Xna.Framework" />
-    <Reference Include="Microsoft.Xna.Framework.GamerServices" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\sl4-windowsphone71\Newtonsoft.Json.dll</HintPath>
@@ -79,18 +125,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\sharpcompress.0.8.2\lib\sl3-wp\SharpCompress.WP7.dll</HintPath>
     </Reference>
-    <Reference Include="system.data.linq" />
-    <Reference Include="System.Device" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Servicemodel.Web" />
-    <Reference Include="System.Windows" />
-    <Reference Include="system" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Xml" />
-    <Reference Include="mscorlib.extensions" />
-    <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -98,6 +132,9 @@
     </Compile>
     <Compile Include="Controls\ConversationBox.xaml.cs">
       <DependentUpon>ConversationBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusChatBubble.xaml.cs">
+      <DependentUpon>StatusChatBubble.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\MyChatBubble.cs" />
     <Compile Include="Controls\NotificationChatBubble.xaml.cs">
@@ -113,13 +150,25 @@
     <Compile Include="Controls\SentChatBubble.xaml.cs">
       <DependentUpon>SentChatBubble.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\StatusUpdate\FriendRequestStatus.xaml.cs">
+      <DependentUpon>FriendRequestStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\TextStatusUpdate.xaml.cs">
+      <DependentUpon>TextStatusUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\ImageStatusUpdate.xaml.cs">
+      <DependentUpon>ImageStatusUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StatusUpdate\StatusUpdateBox.cs" />
     <Compile Include="DbUtils\ConversationTableUtils.cs" />
     <Compile Include="DbUtils\DbCompiledQueries.cs" />
     <Compile Include="DbUtils\DbConversationListener.cs" />
+    <Compile Include="DbUtils\FriendsTableUtils.cs" />
     <Compile Include="DbUtils\GroupTableUtils.cs" />
     <Compile Include="DbUtils\MessagesTableUtils.cs" />
     <Compile Include="DbUtils\MiscDBUtil.cs" />
     <Compile Include="DbUtils\MqttDBUtils.cs" />
+    <Compile Include="DbUtils\StatusMsgsTable.cs" />
     <Compile Include="DbUtils\UsersTableUtils.cs" />
     <Compile Include="FileTransfer.cs" />
     <Compile Include="HikeConstants.cs" />
@@ -141,6 +190,7 @@
     <Compile Include="Model\HikePacket.cs" />
     <Compile Include="Model\MessageMetadata.cs" />
     <Compile Include="Model\MiscDatabases.cs" />
+    <Compile Include="Model\StatusMessage.cs" />
     <Compile Include="Mqtt\ConnectCB.cs" />
     <Compile Include="Mqtt\DisconnectCB.cs" />
     <Compile Include="Mqtt\HikeMqttManager.cs" />
@@ -154,11 +204,16 @@
     <Compile Include="Model\ConversationListPage.cs" />
     <Compile Include="utils\ContactUtils.cs" />
     <Compile Include="utils\ImageUtils.cs" />
+    <Compile Include="utils\MoodsInitialiser.cs" />
     <Compile Include="utils\PushHelper.cs" />
     <Compile Include="utils\RelativeAnimatingContentControl.cs" />
     <Compile Include="utils\SmileyParser.cs" />
+    <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
+    <Compile Include="View\BlockListPage.xaml.cs">
+      <DependentUpon>BlockListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
@@ -179,6 +234,9 @@
     </Compile>
     <Compile Include="View\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PostStatus.xaml.cs">
+      <DependentUpon>PostStatus.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NUX_InviteFriends.xaml.cs">
       <DependentUpon>NUX_InviteFriends.xaml</DependentUpon>
@@ -222,7 +280,12 @@
     <Compile Include="View\ShareLocation.xaml.cs">
       <DependentUpon>ShareLocation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\UpgradePage.xaml.cs" />
+    <Compile Include="View\UserProfile.xaml.cs">
+      <DependentUpon>UserProfile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UpgradePage.xaml.cs">
+      <DependentUpon>UpgradePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
@@ -244,6 +307,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\StatusChatBubble.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\NotificationChatBubble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -259,6 +326,22 @@
     <Page Include="Controls\SentChatBubble.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\FriendRequestStatus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\TextStatusUpdate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\StatusUpdate\ImageStatusUpdate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\BlockListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -285,6 +368,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Error.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PostStatus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -344,6 +431,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\UserProfile.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\UpgradePage.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -362,7 +452,9 @@
     </None>
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
-    <None Include="Properties\WMAppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ApplicationIcon.png">
@@ -371,6 +463,9 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="hike-symbol-app-icon70x110.png" />
+    <Content Include="hike-symbol-app-icon_130x202.png" />
+    <Content Include="hike_lock_bubble.png" />
     <Content Include="README_FIRST.txt" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
@@ -378,6 +473,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="View\images\add_favorites.png" />
     <Content Include="View\images\add_user_icon.png" />
+    <Content Include="View\images\appbar_addfriend.png" />
     <Content Include="View\images\appbar_icon_play.png" />
     <Content Include="View\images\audio_file_icon_white.png" />
     <Content Include="View\images\avatars\Beach.png" />
@@ -413,16 +509,71 @@
     <Content Include="View\images\hike_favorite.png" />
     <Content Include="View\images\hike_users.png" />
     <Content Include="View\images\icon_cross.png" />
+    <Content Include="View\images\icon_editprofile.png" />
     <Content Include="View\images\icon_group.png" />
     <Content Include="View\images\icon_pause.png" />
+    <Content Include="View\images\icon_message.png" />
     <Content Include="View\images\icon_play.png" />
     <Content Include="View\images\icon_play_stop.png" />
     <Content Include="View\images\icon_record.png" />
+    <Content Include="View\images\icon_status.png" />
     <Content Include="View\images\icon_record_appbar.png" />
     <Content Include="View\images\icon_stop.png" />
     <Content Include="View\images\icon_stop_appbar.png" />
     <Content Include="View\images\invite.png" />
     <Content Include="View\images\invite_dark.png" />
+    <Content Include="View\images\moods\icon40-40\apple.png" />
+    <Content Include="View\images\moods\icon40-40\beer.png" />
+    <Content Include="View\images\moods\icon40-40\busy.png" />
+    <Content Include="View\images\moods\icon40-40\camera.png" />
+    <Content Include="View\images\moods\icon40-40\car.png" />
+    <Content Include="View\images\moods\icon40-40\confused.png" />
+    <Content Include="View\images\moods\icon40-40\dumble.png" />
+    <Content Include="View\images\moods\icon40-40\game.png" />
+    <Content Include="View\images\moods\icon40-40\happy.png" />
+    <Content Include="View\images\moods\icon40-40\heart.png" />
+    <Content Include="View\images\moods\icon40-40\hungover.png" />
+    <Content Include="View\images\moods\icon40-40\laugh.png" />
+    <Content Include="View\images\moods\icon40-40\music.png" />
+    <Content Include="View\images\moods\icon40-40\pop_corn.png" />
+    <Content Include="View\images\moods\icon40-40\rain.png" />
+    <Content Include="View\images\moods\icon40-40\reader.png" />
+    <Content Include="View\images\moods\icon40-40\sad.png" />
+    <Content Include="View\images\moods\icon40-40\scooter.png" />
+    <Content Include="View\images\moods\icon40-40\sleepy.png" />
+    <Content Include="View\images\moods\icon40-40\sun.png" />
+    <Content Include="View\images\moods\icon40-40\surprise.png" />
+    <Content Include="View\images\moods\icon40-40\tea.png" />
+    <Content Include="View\images\moods\icon40-40\tv.png" />
+    <Content Include="View\images\moods\icon40-40\write.png" />
+    <Content Include="View\images\moods\icon60-60\apple.png" />
+    <Content Include="View\images\moods\icon60-60\beer.png" />
+    <Content Include="View\images\moods\icon60-60\busy.png" />
+    <Content Include="View\images\moods\icon60-60\camera.png" />
+    <Content Include="View\images\moods\icon60-60\car.png" />
+    <Content Include="View\images\moods\icon60-60\confused.png" />
+    <Content Include="View\images\moods\icon60-60\dumble.png" />
+    <Content Include="View\images\moods\icon60-60\game.png" />
+    <Content Include="View\images\moods\icon60-60\happy.png" />
+    <Content Include="View\images\moods\icon60-60\heart.png" />
+    <Content Include="View\images\moods\icon60-60\hungover.png" />
+    <Content Include="View\images\moods\icon60-60\laugh.png" />
+    <Content Include="View\images\moods\icon60-60\music.png" />
+    <Content Include="View\images\moods\icon60-60\pop_corn.png" />
+    <Content Include="View\images\moods\icon60-60\rain.png" />
+    <Content Include="View\images\moods\icon60-60\reader.png" />
+    <Content Include="View\images\moods\icon60-60\sad.png" />
+    <Content Include="View\images\moods\icon60-60\scooter.png" />
+    <Content Include="View\images\moods\icon60-60\sleepy.png" />
+    <Content Include="View\images\moods\icon60-60\sun.png" />
+    <Content Include="View\images\moods\icon60-60\surprise.png" />
+    <Content Include="View\images\moods\icon60-60\tea.png" />
+    <Content Include="View\images\moods\icon60-60\tv.png" />
+    <Content Include="View\images\moods\icon60-60\write.png" />
+    <Content Include="View\images\notification_read.png" />
+    <Content Include="View\images\notification_unread.png" />
+    <Content Include="View\images\user_invite.png" />
+    <Content Include="View\images\user_lock.png" />
     <Content Include="View\images\menu_camera_icon.png" />
     <Content Include="View\images\menu_video_icon.png" />
     <Content Include="View\images\welome_screen.jpg" />
@@ -440,11 +591,14 @@
     <Content Include="View\images\nudge_sent.png" />
     <Content Include="View\images\nudge_tutorial.png" />
     <Content Include="View\images\plus_tap_on.png" />
+    <Content Include="View\images\profile_stock1.jpg" />
     <Content Include="View\images\remove_icon.png" />
     <Content Include="View\images\rewards_link.png" />
     <Content Include="View\images\rewards_link_dark.png" />
     <Content Include="View\images\signupfb.png" />
     <Content Include="View\images\tick.png" />
+    <Content Include="View\images\timeline_friend.png" />
+    <Content Include="View\images\timeline_status.png" />
     <Content Include="View\images\tw_icon.png" />
     <Content Include="View\images\unlink_account_black.png" />
     <Content Include="View\images\unlink_account_white.png" />
@@ -671,9 +825,10 @@
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

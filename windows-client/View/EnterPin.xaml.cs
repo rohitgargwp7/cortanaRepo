@@ -46,7 +46,7 @@ namespace windows_client
         private void btnEnterPin_Click(object sender, EventArgs e)
         {
             if (isNextClicked)
-                return;           
+                return;
             pinEntered = txtBxEnterPin.Text.Trim();
             if (string.IsNullOrEmpty(pinEntered))
                 return;
@@ -117,7 +117,10 @@ namespace windows_client
                 txtBxEnterPin.Hint = AppResources.EnterPin_PinHint;
                 txtBxEnterPin.Foreground = UI_Utils.Instance.SignUpForeground;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_GotFocus , Exception : " + ex.StackTrace);
+            }
         }
 
         private void btnWrongMsisdn_Click(object sender, RoutedEventArgs e)
@@ -173,7 +176,7 @@ namespace windows_client
             base.OnNavigatedTo(e);
             if (NavigationService.CanGoBack)
                 NavigationService.RemoveBackEntry();
-            
+
             timer.Visibility = Visibility.Visible;
             progressTimer = new DispatcherTimer();
             progressTimer.Interval = TimeSpan.FromSeconds(1);
@@ -251,7 +254,10 @@ namespace windows_client
             {
                 txtBxEnterPin.Background = UI_Utils.Instance.White;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Enter Pin ::  txtBxEnterPin_LostFocus , Exception : " + ex.StackTrace);
+            }
         }
 
         private void enableCallMeOption(object sender, EventArgs e)

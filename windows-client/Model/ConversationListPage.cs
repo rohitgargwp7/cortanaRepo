@@ -254,16 +254,14 @@ namespace windows_client.Model
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(_avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
+                        empImage = UI_Utils.Instance.createImageFromBytes(_avatar);
+                        UI_Utils.Instance.BitmapImageCache[_msisdn] = empImage; // update cache
                         return empImage;
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
+                    Debug.WriteLine("ConversationListPage :: AvatarImage : AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
             }
@@ -413,8 +411,9 @@ namespace windows_client.Model
                 writer.Write(_lastMsgId);
                 writer.Write(_muteVal);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: Write : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -453,8 +452,9 @@ namespace windows_client.Model
                 _isFirstMsg = reader.ReadBoolean();
                 _lastMsgId = reader.ReadInt64();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: ReadVer_1_4_0_0 : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -482,8 +482,9 @@ namespace windows_client.Model
                 _lastMsgId = reader.ReadInt64();
                 _muteVal = reader.ReadInt32();
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: ReadVer_Latest : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }
@@ -519,8 +520,9 @@ namespace windows_client.Model
                     writer.WriteStringBytes(_contactName);
                 writer.Write(_isOnhike);
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConversationListPage :: WriteFavOrPending : WriteFavOrPending, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
         }
@@ -637,8 +639,9 @@ namespace windows_client.Model
                         if (propertyName != null)
                             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("ConversationListPage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
                     }
                 });
             }

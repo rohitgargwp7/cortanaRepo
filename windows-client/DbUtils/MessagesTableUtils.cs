@@ -89,7 +89,7 @@ namespace windows_client.DbUtils
             }
 
         }
-     
+
         public static List<ConvMessage> getAllMessages()
         {
             List<ConvMessage> res;
@@ -121,9 +121,10 @@ namespace windows_client.DbUtils
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception while inserting msg in CHATS DB : " + ex.StackTrace);
+                    Debug.WriteLine("MessagesTableUtils :: addMessage : submit changes, Exception : " + ex.StackTrace);
                     return false;
                 }
+                
                 //if (convMessage.GrpParticipantState == ConvMessage.ParticipantInfoState.NO_INFO)
                 //{
                 //    long msgId = convMessage.MessageId;
@@ -212,6 +213,9 @@ namespace windows_client.DbUtils
             if (!App.ViewModel.ConvMap.ContainsKey(convMsg.Msisdn))
             {
                 if (Utils.isGroupConversation(convMsg.Msisdn) && !isNewGroup) // if its a group chat msg and group does not exist , simply ignore msg.
+                    return null;
+                // if status update dont create a new conversation if not already there
+                if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                     return null;
 
                 obj = ConversationTableUtils.addConversation(convMsg, isNewGroup);
@@ -339,6 +343,12 @@ namespace windows_client.DbUtils
                     obj.LastMessage = convMsg.Message;
                 }
                 #endregion
+                #region STATUS UPDATES
+                else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                {
+                    obj.LastMessage = AppResources.Status_Update_Txt;
+                }
+                #endregion
                 #region NO_INFO or OTHER MSGS
                 else
                     obj.LastMessage = convMsg.Message;
@@ -352,7 +362,10 @@ namespace windows_client.DbUtils
                 long msec1 = st1.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-                obj.MessageStatus = convMsg.MessageStatus;
+                if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                    obj.MessageStatus = convMsg.MessageStatus;
+                else
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 obj.TimeStamp = convMsg.Timestamp;
                 obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
@@ -361,7 +374,6 @@ namespace windows_client.DbUtils
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
-
             return obj;
         }
 
@@ -472,9 +484,9 @@ namespace windows_client.DbUtils
             {
                 context.SubmitChanges(ConflictMode.ContinueOnConflict);
             }
-            catch (ChangeConflictException e)
+            catch (ChangeConflictException ex)
             {
-                Console.WriteLine(e.Message);
+                Debug.WriteLine("MessageTableUtils :: SubmitWithConflictResolve : submitChanges, Exception : " + ex.StackTrace);
                 // Automerge database values for members that client
                 // has not modified.
                 foreach (ObjectChangeConflict occ in context.ChangeConflicts)
@@ -482,8 +494,10 @@ namespace windows_client.DbUtils
                     occ.Resolve(RefreshMode.KeepChanges); // second client changes will be submitted.
                 }
             }
+          
             // Submit succeeds on second try.           
             context.SubmitChanges(ConflictMode.FailOnFirstConflict);
         }
+
     }
 }

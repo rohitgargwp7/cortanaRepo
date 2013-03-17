@@ -56,13 +56,7 @@ namespace windows_client.Controls
 
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null && cm.FileAttachment.Thumbnail.Length != 0)
             {
-                using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
-                {
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage fileThumbnail = new BitmapImage();
-                    fileThumbnail.SetSource(memStream);
-                    this.MessageImage.Source = fileThumbnail;
-                }
+                this.MessageImage.Source = UI_Utils.Instance.createImageFromBytes(cm.FileAttachment.Thumbnail);
             }
         }
 
@@ -147,7 +141,7 @@ namespace windows_client.Controls
         private ProgressBar downloadProgress;
         private LinkifiedTextBox MessageText;
         private TextBlock TimeStampBlock;
-        private PerformanceProgressBar temporaryProgressBar;
+        private ProgressBar temporaryProgressBar;
 
         private static Thickness nudgeMargin = new Thickness(12, 12, 12, 10);
         private static Thickness imgMargin = new Thickness(12, 12, 12, 0);
@@ -279,7 +273,7 @@ namespace windows_client.Controls
                     downloadProgress.Opacity = 0;
                     if (showDownload)
                     {
-                        temporaryProgressBar = new PerformanceProgressBar();
+                        temporaryProgressBar = new ProgressBar();
                         temporaryProgressBar.Height = 10;
                         //                    temporaryProgressBar.Background = UI_Utils.Instance.TextBoxBackground;
                         temporaryProgressBar.Foreground = UI_Utils.Instance.ReceivedChatBubbleProgress;

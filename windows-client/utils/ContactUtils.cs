@@ -86,14 +86,14 @@ namespace windows_client.utils
                 bw.DoWork += (ss, ee) =>
                 {
                     List<ContactInfo> l;
-                    contactsMap = getContactsListMapInitial(e.Results,out l);
+                    contactsMap = getContactsListMapInitial(e.Results, out l);
                     cState = ContactScanState.ADDBOOK_SCANNED;
                 };
                 bw.RunWorkerAsync();
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                //That's okay, no results//
+                Debug.WriteLine("ContactUtils ::  contactSearchCompleted_Callback :  contactSearchCompleted_Callback , Exception : " + ex.StackTrace);
             }
         }
 
@@ -252,7 +252,7 @@ namespace windows_client.utils
                         nameToStore = cn.CompleteName.FirstName.Trim() + " " + cn.CompleteName.MiddleName.Trim();
                     else
                         nameToStore = cn.DisplayName.Trim();
-                    ContactInfo cInfo = new ContactInfo(null,nameToStore , ph.PhoneNumber);
+                    ContactInfo cInfo = new ContactInfo(null, nameToStore, ph.PhoneNumber);
                     int idd = cInfo.GetHashCode();
                     cInfo.Id = Convert.ToString(Math.Abs(idd));
                     cInfo.NuxMatchScore = Convert.ToByte((hasFacebookAccount ? 1 : 0) + ((accNumber > 1) ? 1 : 0) + (addedBirthday ? 1 : 0) + (hasPicture ? 1 : 0));
@@ -299,7 +299,10 @@ namespace windows_client.utils
             {
                 saveContactTask.Show();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ContactUtils ::  saveContact :  saveContact , Exception : " + ex.StackTrace);
+            }
         }
 
     }

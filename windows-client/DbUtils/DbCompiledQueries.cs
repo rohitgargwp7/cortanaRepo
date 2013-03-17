@@ -243,6 +243,96 @@ namespace windows_client.DbUtils
 
         #endregion
 
+        #region STATUS UPDATES
+
+        public static Func<HikeChatsDb, string, IQueryable<StatusMessage>> GetStatusMsgsForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, string myMsisdn) =>
+                    from o in hdc.statusMessage
+                    where o.Msisdn == myMsisdn
+                    orderby o.StatusId descending
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, long, IQueryable<StatusMessage>> GetStatusMsgForStatusId
+        {
+            get
+            {
+                Func<HikeChatsDb, long, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, long, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, long Id) =>
+                    from o in hdc.statusMessage
+                    where o.StatusId == Id
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, string, IQueryable<StatusMessage>> GetStatusMsgForServerId
+        {
+            get
+            {
+                Func<HikeChatsDb, string, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, string Id) =>
+                    from o in hdc.statusMessage
+                    where o.ServerId == Id
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, string, int, IQueryable<StatusMessage>> GetUnReadStatusMsgsForMsisdn
+        {
+            get
+            {
+                Func<HikeChatsDb, string, int, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, string, int, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, string myMsisdn, int count) =>
+                    from o in hdc.statusMessage.Take(count)
+                    orderby o.StatusId descending
+                    where o.Msisdn == myMsisdn
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, IQueryable<StatusMessage>> GetAllStatusMsgsForTimeline
+        {
+            get
+            {
+                Func<HikeChatsDb, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc) =>
+                    from o in hdc.statusMessage where o.ShowOnTimeline == true
+                    orderby o.StatusId descending
+                    select o);
+                return q;
+            }
+        }
+
+        public static Func<HikeChatsDb, int, IQueryable<StatusMessage>> GetUnReadStatusMsgs
+        {
+            get
+            {
+                Func<HikeChatsDb, int, IQueryable<StatusMessage>> q =
+                CompiledQuery.Compile<HikeChatsDb, int, IQueryable<StatusMessage>>
+                ((HikeChatsDb hdc, int count) =>
+                    from o in hdc.statusMessage.Take(count)
+                    orderby o.StatusId descending
+                    select o);
+                return q;
+            }
+        }
+
+        #endregion
+
         #region ConversationTable Queries
 
         //public static Func<HikeChatsDb, IQueryable<ConversationListObject>> GetAllConversations

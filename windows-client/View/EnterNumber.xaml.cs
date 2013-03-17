@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
 using windows_client.Languages;
+using System.Windows.Controls;
 
 namespace windows_client
 {
@@ -23,70 +24,19 @@ namespace windows_client
         bool isGroupViewOpened = false;
         private Dictionary<string, string> isoCodeCountryCode = new Dictionary<string, string>();
 
-        public class Group<T> : IEnumerable<T>
+        public class Group<T> : List<T>
         {
             public Group(string name, List<T> items)
             {
                 this.Title = name;
-                this.Items = items;
             }
 
-            public override bool Equals(object obj)
-            {
-                Group<T> that = obj as Group<T>;
-
-                return (that != null) && (this.Title.Equals(that.Title));
-            }
-            public override int GetHashCode()
-            {
-                return this.Title.GetHashCode();
-            }
             public string Title
             {
                 get;
                 set;
             }
 
-            public List<T> Items
-            {
-                get;
-                set;
-            }
-            public bool HasItems
-            {
-                get
-                {
-                    return (Items == null || Items.Count == 0) ? false : true;
-                }
-            }
-
-            /// <summary>
-            /// This is used to colour the tiles - greying out those that have no entries
-            /// </summary>
-            public Brush GroupBackgroundBrush
-            {
-                get
-                {
-                    return (SolidColorBrush)Application.Current.Resources[(HasItems) ? "PhoneAccentBrush" : "PhoneChromeBrush"];
-                }
-            }
-            #region IEnumerable<T> Members
-
-            public IEnumerator<T> GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
-
-            #region IEnumerable Members
-
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                return this.Items.GetEnumerator();
-            }
-
-            #endregion
         }
 
         public EnterNumber()
@@ -461,11 +411,11 @@ namespace windows_client
                     RegionInfo reg = new RegionInfo(countryCodeName);
                     ISORegion = reg.TwoLetterISORegionName;
                 }
+                
                 catch (ArgumentException argEx)
                 {
-                    // The country code was not valid 
+                    Debug.WriteLine("Enter Number ::  OnNavigatedTo , Country Code Invalid, Exception : " + argEx.StackTrace);
                 }
-
                 if (isoCodeCountryCode.ContainsKey(ISORegion))
                 {
                     txtEnterCountry.Text = countryCode = isoCodeCountryCode[ISORegion];
@@ -603,7 +553,7 @@ namespace windows_client
 
         private void countryList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            string selectedCountryCode = countryList.SelectedItem as string;
+            string selectedCountryCode = (sender as TextBlock).DataContext as string;
             txtEnterCountry.Text = countryCode = selectedCountryCode;
             txtEnterCountry.Foreground = UI_Utils.Instance.Black;
             countryList.Visibility = Visibility.Collapsed;
@@ -638,7 +588,7 @@ namespace windows_client
                 // calculate the index into the list
                 int index = (ch == "#") ? 26 : ch[0] - 'a';
                 // and add the entry
-                glist[index].Items.Add(val);
+                glist[index].Add(val);
             }
             return glist;
         }
@@ -665,14 +615,5 @@ namespace windows_client
             return glist;
         }
 
-        private void countryList_GroupViewOpened(object sender, GroupViewOpenedEventArgs e)
-        {
-            isGroupViewOpened = true;
-        }
-
-        private void countryList_GroupViewClosing(object sender, GroupViewClosingEventArgs e)
-        {
-            isGroupViewOpened = false;
-        }
     }
 }

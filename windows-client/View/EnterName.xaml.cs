@@ -103,7 +103,7 @@ namespace windows_client
             {
                 string token = (string)App.appSettings["token"];
                 AccountUtils.postAddressBook(ContactUtils.contactsMap, new AccountUtils.postResponseFunction(postAddressBook_Callback));
-                
+
             }
             else // if add book is already in posted state then run Background worker that waits for result
             {
@@ -196,9 +196,9 @@ namespace windows_client
                 progressBar.Opacity = 0;
                 progressBar.IsEnabled = false;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Exception handled in page EnterName Screen : " + e.StackTrace);
+                Debug.WriteLine("Enter Name ::  processEnterName , processEnterName  , Exception : " + ex.StackTrace);
             }
         }
 
@@ -286,8 +286,9 @@ namespace windows_client
                         empImage.SetSource(memStream);
                         avatarImage.Source = empImage;
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Debug.WriteLine("Enter Name ::  OnNavigatedTo , Exception : " + ex.StackTrace);
                         avatarImage.Source = UI_Utils.Instance.getDefaultAvatar((string)App.appSettings[App.MSISDN_SETTING]);
                     }
                 }
@@ -376,9 +377,9 @@ namespace windows_client
             {
                 photoChooserTask.Show();
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("EnterName :: OnProfilePicButtonTap, Exception : " + ex.StackTrace);
             }
         }
 

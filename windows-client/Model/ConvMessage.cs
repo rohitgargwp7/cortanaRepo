@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Microsoft.Phone.Shell;
 using windows_client.Misc;
 using windows_client.Languages;
+using System.Diagnostics;
 
 namespace windows_client.Model
 {
@@ -75,7 +76,8 @@ namespace windows_client.Model
             GROUP_JOINED_OR_WAITING,
             CREDITS_GAINED,
             INTERNATIONAL_USER,
-            INTERNATIONAL_GROUP_USER
+            INTERNATIONAL_GROUP_USER,
+            STATUS_UPDATE
         }
 
         public static ParticipantInfoState fromJSON(JObject obj)
@@ -101,6 +103,10 @@ namespace windows_client.Model
                 if (obj.TryGetValue("st", out jt))
                     return ParticipantInfoState.INTERNATIONAL_GROUP_USER;
                 return ParticipantInfoState.PARTICIPANT_LEFT;
+            }
+            else if (HikeConstants.MqttMessageTypes.STATUS_UPDATE == type)
+            {
+                return ParticipantInfoState.STATUS_UPDATE;
             }
             else if (HikeConstants.MqttMessageTypes.GROUP_CHAT_END == type)
             {
@@ -567,8 +573,10 @@ namespace windows_client.Model
                         {
                             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                         }
-                        catch (Exception e)
-                        { }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("ConvMessage :: NotifyPropertyChanged : NotifyPropertyChanged , Exception : " + ex.StackTrace);
+                        }
                     });
             }
         }
@@ -588,8 +596,10 @@ namespace windows_client.Model
                 {
                     PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
                 }
-                catch (Exception)
-                { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ConvMessage :: NotifyPropertyChanging : NotifyPropertyChanging , Exception : " + ex.StackTrace);
+                }
             }
         }
         #endregion
@@ -605,9 +615,9 @@ namespace windows_client.Model
                 obj.Add(HikeConstants.TYPE, NetworkManager.MESSAGE_READ);
                 obj.Add(HikeConstants.TO, _msisdn);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("ConvMessage :: serializeDeliveryReportRead : serializeDeliveryReportRead , Exception : " + ex.StackTrace);
             }
             return obj;
         }
@@ -626,7 +636,10 @@ namespace windows_client.Model
                 {
                     obj[HikeConstants.DATA].ToObject<JObject>().TryGetValue(HikeConstants.METADATA, out metadataToken);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ConvMessage ::  ConvMessage constructor : metadata parse , Exception : " + ex.StackTrace);
+                }
 
                 if (metadataToken != null)
                 {
@@ -742,8 +755,9 @@ namespace windows_client.Model
                 string mappedMsgID = (string)data[HikeConstants.MESSAGE_ID];
                 this.MappedMessageId = System.Int64.Parse(mappedMsgID);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Debug.WriteLine("ConvMessage ::  ConvMessage constructor :  parse json , Exception : " + ex.StackTrace);
                 throw new Exception("Error in parsing json");
             }
         }
@@ -777,12 +791,18 @@ namespace windows_client.Model
                     {
                         onhike = (bool)nameMsisdn["onhike"];
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json onhike, Exception : " + ex.StackTrace);
+                    }
                     try
                     {
                         dnd = (bool)nameMsisdn["dnd"];
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ConvMessage ::  ConvMessage(JObject obj, bool isSelfGenerated, bool addedLater) :  parse json dnd, Exception : " + ex.StackTrace);
+                    }
 
                     GroupParticipant gp = GroupManager.Instance.getGroupParticipant((string)nameMsisdn[HikeConstants.NAME], msisdn, _msisdn);
                     gp.HasLeft = false;
@@ -859,6 +879,16 @@ namespace windows_client.Model
             {
                 case ParticipantInfoState.INTERNATIONAL_USER:
                     this.Message = AppResources.SMS_INDIA;
+                    this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
+                    break;
+                case ParticipantInfoState.STATUS_UPDATE:
+                    JObject data = (JObject)jsonObj[HikeConstants.DATA];
+                    JToken val;
+                    if (data.TryGetValue(HikeConstants.TEXT_UPDATE_MSG, out val) && val != null)
+                        this.Message = val.ToString();
+                    else // this is to handle profile pic update
+                        this.Message = "pu";
+                    data.Remove(HikeConstants.THUMBNAIL);
                     this.MetaDataString = jsonObj.ToString(Newtonsoft.Json.Formatting.None);
                     break;
                 case ParticipantInfoState.GROUP_NAME_CHANGE:

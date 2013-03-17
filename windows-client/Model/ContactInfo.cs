@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using windows_client.Misc;
 using System.Text;
+using windows_client.DbUtils;
 
 namespace windows_client.Model
 {
@@ -31,7 +32,6 @@ namespace windows_client.Model
         private bool _isFav;
         private bool _isCloseFriendNux;//for Nux
         private byte _nuxScore;//for Nux
-        //it significantly improves update performance
 
         # region Users Table Members
 
@@ -366,7 +366,10 @@ namespace windows_client.Model
                     {
                         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("ContactInfo :: NotifyPropertyChanged : NotifyPropertyChanged, Exception : " + ex.StackTrace);
+                    }
                 });
             }
         }
@@ -427,30 +430,35 @@ namespace windows_client.Model
             }
         }
 
+        public FriendsTableUtils.FriendStatusEnum FriendStatus
+        {
+            get;
+            set;
+        }
+
         public BitmapImage AvatarImage
         {
             get
             {
                 try
                 {
+                    // donot add this bitmap to map as this may not be used everywhere in the app
+                    // also this would fill the map with bitmaps for all the contacts
+
                     if (_avatar == null)
                     {
-                        if (Utils.isGroupConversation(Msisdn))
-                            return UI_Utils.Instance.getDefaultGroupAvatar(Msisdn);
-                        return UI_Utils.Instance.getDefaultAvatar(Msisdn);
+                        if (Utils.isGroupConversation(_msisdn))
+                            return UI_Utils.Instance.getDefaultGroupAvatar(_msisdn);
+                        return UI_Utils.Instance.getDefaultAvatar(_msisdn);
                     }
                     else
                     {
-                        MemoryStream memStream = new MemoryStream(_avatar);
-                        memStream.Seek(0, SeekOrigin.Begin);
-                        BitmapImage empImage = new BitmapImage();
-                        empImage.SetSource(memStream);
-                        return empImage;
+                        return UI_Utils.Instance.createImageFromBytes(_avatar);
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.WriteLine("Exception in Avatar Image : {0}", e.ToString());
+                    Debug.WriteLine("ContactInfo :: AvatarImage : fetch AvatarImage, Exception : " + ex.StackTrace);
                     return null;
                 }
             }
@@ -475,12 +483,14 @@ namespace windows_client.Model
                     writer.Write(_avatar.Length);
                     writer.Write(_avatar);
                 }
-                
+
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ContactInfo :: Write : Unable To write, Exception : " + ex.StackTrace);
                 throw new Exception("Unable to write to a file...");
             }
+
         }
 
         public void Read(BinaryReader reader)
@@ -505,8 +515,9 @@ namespace windows_client.Model
                     _avatar = reader.ReadBytes(count);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine("ContactInfo :: Read : Read, Exception : " + ex.StackTrace);
                 throw new Exception("Conversation Object corrupt");
             }
         }

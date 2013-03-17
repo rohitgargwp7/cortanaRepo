@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 using windows_client.utils;
+using System.Diagnostics;
 
 namespace windows_client
 {
@@ -31,7 +32,7 @@ namespace windows_client
         public static readonly string FORWARD_ATTACHMENT = "forwardAttachment";
 
         public static readonly string ATTACHMENT_SENT = "attachmentSent";
-        
+
         public static readonly string MESSAGE_DELIVERED = "messageDelivered"; // represents that msg is delivered to receiver but is not read.
 
         public static readonly string MESSAGE_DELIVERED_READ = "messageDeliveredRead"; // represents that msg is delivered to receiver and is read by the same.
@@ -49,6 +50,12 @@ namespace windows_client
         /* Broadcast after we've received a message and written it to our DB.
          * Status is RECEIVED_UNREAD */
         public static readonly string MESSAGE_RECEIVED = "messagereceived";
+
+        public static readonly string STATUS_RECEIVED = "statusReceived";
+
+        public static readonly string STATUS_DELETED = "statusDeleted";
+
+        public static readonly string FRIEND_RELATIONSHIP_CHANGE = "friendRelation";
 
         public static readonly string NEW_ACTIVITY = "new_activity";
 
@@ -121,7 +128,7 @@ namespace windows_client
 
         public static readonly string DELETE_CONVERSATION = "deleteConversation";
 
-        public static readonly string DELETE_ALL_CONVERSATIONS="deleteAllConversations";
+        public static readonly string DELETE_ALL_CONVERSATIONS = "deleteAllConversations";
 
         public static readonly string DELETED_ALL_CONVERSATIONS = "deletedAllConversations";
 
@@ -131,7 +138,12 @@ namespace windows_client
 
         public static readonly string INVITE_TOKEN_ADDED = "inviteTokenAdded";
 
-        public static readonly string ADD_REMOVE_FAV_OR_PENDING = "addRemFP";
+        // TODO : USE ADDREM FROM FAV instead
+        public static readonly string ADD_REMOVE_FAV = "addRemFP";
+        public static readonly string REMOVE_FRIENDS = "remFriends";
+        public static readonly string ADD_FRIENDS = "addFriends";
+
+        public static readonly string ADD_TO_PENDING = "addToPending";
 
         public static readonly string REWARDS_TOGGLE = "rew_tog";
 
@@ -158,9 +170,10 @@ namespace windows_client
                 mThread.Name = "PUBSUB THREAD";
                 mThread.Start();
             }
-            catch (ThreadStartException e)
+            catch (Exception ex)
             {
                 // do something here
+                Debug.WriteLine("HIkePubSub :: HikePubSub() : thread start, Exception : " + ex.StackTrace);
             }
         }
 
@@ -175,7 +188,7 @@ namespace windows_client
                     list = new List<Listener>();
                     listeners[type] = list;
                 }
-                if(!list.Contains(listener))
+                if (!list.Contains(listener))
                     list.Add(listener);
             }
         }
@@ -210,11 +223,12 @@ namespace windows_client
                 {
                     op = (Operation)mQueue.Dequeue();
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    //logger.Info("PubSub", "exception while running", e);
+                    Debug.WriteLine("HIkePubSub :: startPubSub : startPubSub , Exception : " + ex.StackTrace);
                     continue;
                 }
+
                 if (op == DONE_OPERATION)
                 {
                     break;

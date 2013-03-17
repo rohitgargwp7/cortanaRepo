@@ -52,9 +52,9 @@ namespace windows_client.Controls
                 }
                 return sentChatBubble;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Sent chat bubble :: " + e.StackTrace);
+                Debug.WriteLine("SentChatBubble :: getSplitChatBubbles : getSplitChatBubbles , Exception : " + ex.StackTrace);
                 return null;
             }
         }
@@ -104,13 +104,7 @@ namespace windows_client.Controls
             }
             if (cm.FileAttachment != null && cm.FileAttachment.Thumbnail != null)
             {
-                using (var memStream = new MemoryStream(cm.FileAttachment.Thumbnail))
-                {
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage fileThumbnail = new BitmapImage();
-                    fileThumbnail.SetSource(memStream);
-                    this.MessageImage.Source = fileThumbnail;
-                }
+                this.MessageImage.Source = UI_Utils.Instance.createImageFromBytes(cm.FileAttachment.Thumbnail);
             }
             this.BubblePoint.Fill = bubbleColor;
             this.BubbleBg.Fill = bubbleColor;
@@ -126,13 +120,7 @@ namespace windows_client.Controls
             this.BubbleBg.Fill = bubbleColor;
             if (thumbnailsBytes != null && thumbnailsBytes.Length > 0)
             {
-                using (var memStream = new MemoryStream(thumbnailsBytes))
-                {
-                    memStream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage fileThumbnail = new BitmapImage();
-                    fileThumbnail.SetSource(memStream);
-                    this.MessageImage.Source = fileThumbnail;
-                }
+                this.MessageImage.Source = UI_Utils.Instance.createImageFromBytes(thumbnailsBytes);
             }
         }
 

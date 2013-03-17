@@ -9,6 +9,8 @@ using windows_client.DbUtils;
 using windows_client.Controls;
 using windows_client.View;
 using Microsoft.Phone.Controls;
+using windows_client.Controls.StatusUpdate;
+using System.Diagnostics;
 
 
 namespace windows_client.ViewModel
@@ -20,11 +22,24 @@ namespace windows_client.ViewModel
 
         public static string NUMBER_OF_FAVS = "NoFavs";
 
-        private ObservableCollection<ConversationListObject> _pendingReq = null;
+        private Dictionary<string, ConversationListObject> _pendingReq = null;
 
         private ObservableCollection<ConversationListObject> _favList = null;
 
-        private IScheduler scheduler = Scheduler.NewThread;
+        private ObservableCollection<StatusUpdateBox> _statusList = new ObservableCollection<StatusUpdateBox>();
+
+        public ObservableCollection<StatusUpdateBox> StatusList
+        {
+            get
+            {
+                return _statusList;
+            }
+            set
+            {
+                if (value != _statusList)
+                    _statusList = value;
+            }
+        }
 
         private Dictionary<string, ConversationListObject> _convMap;
 
@@ -40,7 +55,6 @@ namespace windows_client.ViewModel
                     _convMap = value;
             }
         }
-
 
         private ObservableCollection<ConversationBox> _messageListPageCollection;
 
@@ -78,7 +92,7 @@ namespace windows_client.ViewModel
             set;
         }
 
-        public ObservableCollection<ConversationListObject> PendingRequests
+        public Dictionary<string, ConversationListObject> PendingRequests
         {
             get
             {
@@ -102,7 +116,7 @@ namespace windows_client.ViewModel
         public HikeViewModel(List<ConversationListObject> convList)
         {
             _convMap = new Dictionary<string, ConversationListObject>(convList.Count);
-            _pendingReq = new ObservableCollection<ConversationListObject>();
+            _pendingReq = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
 
             List<ConversationBox> listConversationBox = new List<ConversationBox>();
@@ -131,7 +145,7 @@ namespace windows_client.ViewModel
             _messageListPageCollection = new ObservableCollection<ConversationBox>();
             _convMap = new Dictionary<string, ConversationListObject>();
             _favList = new ObservableCollection<ConversationListObject>();
-            _pendingReq = new ObservableCollection<ConversationListObject>();
+            _pendingReq = new Dictionary<string, ConversationListObject>();
             MiscDBUtil.LoadFavourites(_favList, _convMap);
             int count = 0;
             App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
@@ -172,15 +186,11 @@ namespace windows_client.ViewModel
             if (!IsPendingListLoaded)
             {
                 MiscDBUtil.LoadPendingRequests();
-                IsPendingListLoaded = true;
             }
             if (_pendingReq == null)
                 return false;
-            for (int i = 0; i < _pendingReq.Count; i++)
-            {
-                if (_pendingReq[i].Msisdn == ms)
-                    return true;
-            }
+            if (_pendingReq.ContainsKey(ms))
+                return true;
             return false;
         }
 
@@ -188,13 +198,9 @@ namespace windows_client.ViewModel
         {
             if (_pendingReq.Count == 0)
                 return null;
-            for (int i = 0; i < _pendingReq.Count; i++)
-            {
-                if (_pendingReq[i].Msisdn == mContactNumber)
-                    return _pendingReq[i];
-            }
+            if (_pendingReq.ContainsKey(mContactNumber))
+                return _pendingReq[mContactNumber];
             return null;
-
         }
 
         private void RegisterListeners()
@@ -244,8 +250,10 @@ namespace windows_client.ViewModel
                     ConversationListObject convObj = App.ViewModel.ConvMap[msisdn];
                     convObj.IsOnhike = HikePubSub.USER_JOINED == type;
                 }
-                catch (KeyNotFoundException)
+
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("HikeViewModel:: onEventReceived, Exception : " + ex.StackTrace);
                 }
             }
             #endregion
@@ -265,7 +273,6 @@ namespace windows_client.ViewModel
         }
         #endregion
 
-
         public void ClearViewModel()
         {
             if (_pendingReq != null)
@@ -276,6 +283,17 @@ namespace windows_client.ViewModel
                 _messageListPageCollection.Clear();
             if (_convMap != null)
                 _convMap.Clear();
+            if (_statusList != null)
+                _statusList.Clear();
+        }
+
+        private Dictionary<string, ContactInfo> _contactsCache = new Dictionary<string, ContactInfo>();
+        public Dictionary<string, ContactInfo> ContactsCache
+        {
+            get
+            {
+                return _contactsCache;
+            }
         }
     }
 }

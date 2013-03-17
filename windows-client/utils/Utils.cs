@@ -249,6 +249,7 @@ namespace windows_client.utils
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("Utils ::  computeHash :  computeHash , Exception : " + ex.StackTrace);
             }
             return rethash;
         }
@@ -347,6 +348,14 @@ namespace windows_client.utils
                 App.appSettings.TryGetValue<string>(App.COUNTRY_CODE_SETTING, out country_code2);
                 return (country_code2 == null ? "+91" : country_code2) + msisdn;
             }
+        }
+
+        public static ConversationListObject GetConvlistObj(string msisdn)
+        {
+            if (App.ViewModel.ConvMap.ContainsKey(msisdn))
+                return App.ViewModel.ConvMap[msisdn];
+            else
+                return App.ViewModel.GetFav(msisdn);
         }
 
         public static bool IsHikeBotMsg(string msisdn)

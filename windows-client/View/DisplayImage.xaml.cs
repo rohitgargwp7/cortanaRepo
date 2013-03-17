@@ -8,12 +8,12 @@ using windows_client.DbUtils;
 using windows_client.utils;
 using System.Diagnostics;
 using System.Windows.Media;
+using windows_client.Controls.StatusUpdate;
 namespace windows_client.View
 {
     public partial class DisplayImage : PhoneApplicationPage
     {
         private string msisdn;
-
         public DisplayImage()
         {
             InitializeComponent();
@@ -25,10 +25,13 @@ namespace windows_client.View
             base.OnRemovedFromJournal(e);
             PhoneApplicationService.Current.State.Remove("objectForFileTransfer");
             PhoneApplicationService.Current.State.Remove("displayProfilePic");
+            PhoneApplicationService.Current.State.Remove(HikeConstants.IMAGE_TO_DISPLAY);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.STATUS_IMAGE_TO_DISPLAY);
         }
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            //TODO - use constants rather hard coded strings - MG
             if (PhoneApplicationService.Current.State.ContainsKey("objectForFileTransfer"))
             {
                 object[] fileTapped = (object[])PhoneApplicationService.Current.State["objectForFileTransfer"];
@@ -45,7 +48,6 @@ namespace windows_client.View
                 object[] profilePicTapped = (object[])PhoneApplicationService.Current.State["displayProfilePic"];
                 msisdn = (string)profilePicTapped[0];
                 string filePath = msisdn + HikeConstants.FULL_VIEW_IMAGE_PREFIX;
-
                 //check if image is already stored
                 byte[] fullViewBytes = MiscDBUtil.getThumbNailForMsisdn(filePath);
                 if (fullViewBytes != null && fullViewBytes.Length > 0)
@@ -81,8 +83,20 @@ namespace windows_client.View
                     }
                 }
             }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.IMAGE_TO_DISPLAY))
+            {
+                BitmapImage imageToDisplay = (BitmapImage)PhoneApplicationService.Current.State[HikeConstants.IMAGE_TO_DISPLAY];
+                this.FileImage.Source = imageToDisplay;
+            }
+            else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.STATUS_IMAGE_TO_DISPLAY))
+            {
+                ImageStatusUpdate imageStatus = (ImageStatusUpdate)PhoneApplicationService.Current.State[HikeConstants.STATUS_IMAGE_TO_DISPLAY];
+                byte[] statusImageBytes = null;
+                bool isThumbnail;
+                MiscDBUtil.getStatusUpdateImage(imageStatus.Msisdn, imageStatus.serverId, out statusImageBytes, out isThumbnail);
+                this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(statusImageBytes);
+            }
         }
-
         public void getProfilePic_Callback(byte[] fullBytes, object fName)
         {
             string fileName = fName as string;
@@ -92,30 +106,9 @@ namespace windows_client.View
             {
                 loadingProgress.Opacity = 0;
                 if (fullBytes != null && fullBytes.Length > 0)
-                {
                     this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(fullBytes);
-                }
                 else
-                {
-                    byte[] smallThumbnailImage = MiscDBUtil.getThumbNailForMsisdn(msisdn);
-                    if (smallThumbnailImage != null && smallThumbnailImage.Length > 0)
-                    {
-                        this.FileImage.Source = UI_Utils.Instance.createImageFromBytes(smallThumbnailImage);
-                    }
-                    else
-                    {
-                        BitmapImage defaultImage = null;
-                        if (Utils.isGroupConversation(msisdn))
-                        {
-                            defaultImage = UI_Utils.Instance.getDefaultGroupAvatar(msisdn);
-                        }
-                        else
-                        {
-                            defaultImage = UI_Utils.Instance.getDefaultAvatar(msisdn);
-                        }
-                        this.FileImage.Source = defaultImage;
-                    }
-                }
+                    this.FileImage.Source = UI_Utils.Instance.GetBitmapImage(msisdn);
             });
         }
         #endregion

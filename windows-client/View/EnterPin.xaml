@@ -12,7 +12,7 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True" Name="enterPin"
-    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
+    xmlns:toolkit= "clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit">
 
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
@@ -67,7 +67,7 @@
                            Name="pinErrorTxt" Text="{Binding Path= LocalizedResources.EnterPin_PinError_TxtBlk, Source={StaticResource LocalizedStrings}}" 
                            Visibility="Collapsed" FontSize="18" Foreground="Red"/>
 
-                <toolkit:PerformanceProgressBar x:Name="progressBar" Background="Transparent" 
+                <ProgressBar x:Name="progressBar" Background="Transparent" 
                                                 IsIndeterminate="True" VerticalAlignment="Center" VerticalContentAlignment="Center" 
                                                 FontSize="24" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" 
                                                 IsEnabled="False" IsTabStop="True" Opacity="0" Margin="0,10,0,0"/>
