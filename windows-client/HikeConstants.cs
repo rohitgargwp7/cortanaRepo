@@ -109,7 +109,8 @@ namespace windows_client
         public static readonly string INVITE_TOKEN_KEY = "invite_token";//The referral token
         public static readonly string PUSH_CHANNEL_CN = "*.hike.in";//The PUSH CN
         public static readonly string FAVORITES = "favorites";
-        public static readonly string PENDING = "pending"; // TODO : Change to exact constant
+        public static readonly string PENDING = "pending";
+        public static readonly string REQUEST_PENDING = "requestpending";
         public static readonly string FULL_VIEW_IMAGE_PREFIX = "_fullView";
 
 
@@ -228,14 +229,16 @@ namespace windows_client
         public static string USERINFO_FROM_GROUPCHAT_PAGE = "userInfoFromGroupChatThread";
         public static string USERINFO_FROM_PROFILE = "userInfoFromProfile";
         public static string USERINFO_FROM_TIMELINE = "usrInfoFromTimeLine";
-        public static string UNREAD_UPDATES = "unUp";
+        public static string UNREAD_UPDATES = "urUp";
+        public static string UNREAD_FRIEND_REQUESTS = "urFr";
+        public static string REFRESH_BAR = "refBar";
 
         public static string BLOCKLIST_PAGE = "blocklistPage";
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
         public static string LAST_STATUS = "lastStatus";
 
         public static string PHONE_ADDRESS_BOOK = "phoneAddressBook";
-
+        public static string PROFILE_NAME_CHANGED = "ProfileNameChanged";
 
         /* FILE BASED CONSTANTS*/
         public static readonly string LOCATION = "location";

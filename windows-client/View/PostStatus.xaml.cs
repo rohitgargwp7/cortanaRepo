@@ -21,6 +21,10 @@ namespace windows_client.View
     {
         private ApplicationBar appBar;
         private ApplicationBarIconButton postStatusIcon;
+        private bool isFacebookPost = false;
+        private bool isTwitterPost = false;
+        private int moodId = -1; //TODO Rohit set this on mood selection
+
         public PostStatus()
         {
             InitializeComponent();
@@ -37,10 +41,16 @@ namespace windows_client.View
             postStatusIcon.Click += new EventHandler(btnPostStatus_Click);
             postStatusIcon.IsEnabled = true;
             appBar.Buttons.Add(postStatusIcon);
-
             postStatusPage.ApplicationBar = appBar;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            MoodsInitialiser.Instance.Initialise();
+            moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
+        }
+        
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
             postStatusIcon.IsEnabled = false;
@@ -57,10 +67,21 @@ namespace windows_client.View
                 {
                     MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
                     postStatusIcon.IsEnabled = true;
-                    return;
                 });
+                return;
             }
-            AccountUtils.postStatus(statusText, postStatus_Callback);
+            JObject statusJSON = new JObject();
+            statusJSON["status-message"] = statusText;
+            if(isFacebookPost)
+                statusJSON["fb"] = true;
+            if(isTwitterPost)
+                statusJSON["twitter"] = true;
+            if (moodId > 0)
+            {
+                statusJSON["mood"] = moodId;
+                statusJSON["timeofday"] = 2; //TODO - Rohit add function in timeUtils and use it here
+            }
+            AccountUtils.postStatus(statusJSON, postStatus_Callback);
         }
 
         void PostStatusPage_Loaded(object sender, RoutedEventArgs e)
@@ -89,7 +110,7 @@ namespace windows_client.View
                         string message = statusData["msg"].ToString();
                         // status should be in read state when posted yourself
                         StatusMessage sm = new StatusMessage(App.MSISDN, message, StatusMessage.StatusType.TEXT_UPDATE, statusId,
-                            TimeUtils.getCurrentTimeStamp(), -1, false);
+                            TimeUtils.getCurrentTimeStamp(), -1, true);
                         StatusMsgsTable.InsertStatusMsg(sm);
                         App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
 
@@ -102,6 +123,39 @@ namespace windows_client.View
                     }
                 });
             }
+        }
+
+        private void FbIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //TODO - GK toggle isFacebookPostHere
+        }
+
+        private void TwitterIcon_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            //TODO - GK toggle isTwitterPost
+        }
+
+        private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+            gridMood.Visibility = Visibility.Visible;
+            this.appBar.IsVisible = false;
+        }
+
+        private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            if (gridMood.Visibility == Visibility.Visible)
+            {
+                gridMood.Visibility = Visibility.Collapsed;
+                e.Cancel = true;
+                return;
+            }
+            base.OnBackKeyPress(e);
         }
     }
 }

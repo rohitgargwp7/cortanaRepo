@@ -19,8 +19,9 @@ namespace windows_client.Model
         StatusType _type;
         long _timestamp;
         string _serverId;
-        long _msgId;
+        long _msgId; // this is the id of convmsg used to delete status in messagestable
         string _mood;
+        bool _showOnTimeline;
         bool _isUnread;
 
         public enum StatusType
@@ -31,22 +32,17 @@ namespace windows_client.Model
             IS_NOW_FRIEND
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts)
-            : this(msisdn, msg, type, mappedId, ts, -1, null, true)
-        {
-        }
-
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id)
-            : this(msisdn, msg, type, mappedId, ts, id, null, true)
+            : this(msisdn, msg, type, mappedId, ts, true,id, null, true)
         {
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id,bool isUnRead)
-            : this(msisdn, msg, type, mappedId, ts, id, null, isUnRead)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id, bool isUnRead)
+            : this(msisdn, msg, type, mappedId, ts,true ,id, null, isUnRead)
         {
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long msgId, string mood, bool isUnread)
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool showOnTimeline, long msgId, string mood, bool isUnread)
         {
             _msisdn = msisdn;
             _message = msg;
@@ -56,10 +52,23 @@ namespace windows_client.Model
             _msgId = msgId;
             _mood = mood;
             _isUnread = isUnread;
+            _showOnTimeline = showOnTimeline;
         }
 
         public StatusMessage()
         {
+        }
+
+        public StatusMessage(string msisdn, string id1, StatusType statusType, string id2, long p1, bool p2, int p3)
+        {
+            // TODO: Complete member initialization
+            this.Msisdn = msisdn;
+            this.id1 = id1;
+            this.statusType = statusType;
+            this.id2 = id2;
+            this.p1 = p1;
+            this.p2 = p2;
+            this.p3 = p3;
         }
 
         [Column(IsVersion = true)]
@@ -191,6 +200,23 @@ namespace windows_client.Model
             }
         }
 
+        [Column]
+        public bool ShowOnTimeline
+        {
+            get
+            {
+                return _showOnTimeline;
+            }
+            set
+            {
+                if (value != _showOnTimeline)
+                {
+                    NotifyPropertyChanging("ShowOnTimeline");
+                    _showOnTimeline = value;
+                }
+            }
+        }
+
         public bool IsUnread
         {
             get
@@ -206,6 +232,12 @@ namespace windows_client.Model
         #region INotifyPropertyChanging Members
 
         public event PropertyChangingEventHandler PropertyChanging;
+        private string id1;
+        private StatusType statusType;
+        private string id2;
+        private long p1;
+        private bool p2;
+        private int p3;
 
         // Used to notify that a property is about to change
         private void NotifyPropertyChanging(string propertyName)

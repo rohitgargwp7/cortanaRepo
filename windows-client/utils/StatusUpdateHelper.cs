@@ -134,5 +134,10 @@ namespace windows_client.utils
                 App.HikePubSubInstance.publish(HikePubSub.STATUS_DELETED, sb);
             }
         }
+
+        public bool IsTwoWayFriend(string msisdn)
+        {
+            return FriendsTableUtils.GetFriendStatus(msisdn) == FriendsTableUtils.FriendStatusEnum.FRIENDS;
+        }
     }
 }

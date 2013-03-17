@@ -103,7 +103,7 @@ namespace windows_client.Mqtt
             App.appSettings.TryGetValue<string>(App.MSISDN_SETTING, out clientId);
             uid = topic;
             if (!String.IsNullOrEmpty(clientId))
-                clientId += ":1";
+                clientId += ":2";
             return !(String.IsNullOrEmpty(password) || String.IsNullOrEmpty(clientId) || String.IsNullOrEmpty(topic));
         }
 

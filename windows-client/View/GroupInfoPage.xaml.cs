@@ -879,11 +879,7 @@ namespace windows_client.View
                     App.appSettings.TryGetValue<int>(HikeViewModel.NUMBER_OF_FAVS, out count);
                     App.WriteToIsoStorageSettings(HikeViewModel.NUMBER_OF_FAVS, count - 1);
                     App.AnalyticsInstance.addEvent(Analytics.REMOVE_FAVS_CONTEXT_MENU_GROUP_INFO);
-                    FriendsTableUtils.FriendStatusEnum fs = FriendsTableUtils.GetFriendStatus(gp.Msisdn);
-                    if (fs == FriendsTableUtils.FriendStatusEnum.FRIENDS)
-                        FriendsTableUtils.SetFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
-                    else
-                        FriendsTableUtils.DeleteFriend(gp.Msisdn);
+                    FriendsTableUtils.SetFriendStatus(gp.Msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_YOU);
                     // if this user is on hike and contact is stored in DB then add it to contacts on hike list
                     if (gp.IsOnHike)//on hike and in address book will be checked by convlist page
                     {

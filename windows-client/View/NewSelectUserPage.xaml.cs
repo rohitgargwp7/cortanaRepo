@@ -160,8 +160,8 @@ namespace windows_client.View
                 TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
             }
 
-            //if (isGroupChat)
-            //    title.Text = "new group chat";
+            if (isGroupChat)
+                txtChat.Text = AppResources.GrpChat_Txt.ToUpper();
             shellProgress.IsVisible = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
@@ -198,6 +198,7 @@ namespace windows_client.View
             {
                 PhoneApplicationService.Current.State["SharePicker"] = queryStrings["FileId"];
                 queryStrings.Clear();
+                txtChat.Text = AppResources.Share_With_Txt;
             }
         }
 

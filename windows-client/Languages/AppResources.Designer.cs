@@ -340,6 +340,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CIRCLE OF FRIENDS.
+        /// </summary>
+        public static string Conversations_Circle_Of_friends_txt {
+            get {
+                return ResourceManager.GetString("Conversations_Circle_Of_friends_txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CONTACTS ON HIKE.
+        /// </summary>
+        public static string Conversations_Contacts_on_hike {
+            get {
+                return ResourceManager.GetString("Conversations_Contacts_on_hike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete All Chats.
         /// </summary>
         public static string Conversations_DelAllChats_Txt {
@@ -781,7 +799,7 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is this your number?.
+        ///   Looks up a localized string similar to Confirm your number.
         /// </summary>
         public static string EnterMsisdn_ConfirmNumber_Txt {
             get {
@@ -2716,6 +2734,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SHARE.
+        /// </summary>
+        public static string Share_With_Txt {
+            get {
+                return ResourceManager.GetString("Share_With_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string ShareContact_ConfirmationCaption {
@@ -2883,6 +2910,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Update.
+        /// </summary>
+        public static string Status_Update_Txt {
+            get {
+                return ResourceManager.GetString("Status_Update_Txt", resourceCulture);
             }
         }
         
