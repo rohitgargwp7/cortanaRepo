@@ -179,6 +179,7 @@ namespace windows_client.View
 
         private void AddUsers_Tap(object sender, EventArgs e)
         {
+            //todo:handle gk
             PhoneApplicationService.Current.State[HikeConstants.BLOCKLIST_PAGE] = this;
             NavigationService.Navigate(new Uri("/View/UnblockedUsersPage.xaml", UriKind.Relative));
         }
