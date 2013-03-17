@@ -45,7 +45,7 @@ namespace windows_client.View
 
         ApplicationBarIconButton groupChatIconButton;
         ApplicationBarIconButton addFriendIconButton;
-        BitmapImage profileImage = null;
+        
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
