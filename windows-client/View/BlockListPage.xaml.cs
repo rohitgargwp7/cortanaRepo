@@ -18,8 +18,6 @@ namespace windows_client.View
 {
     public partial class BlockListPage : PhoneApplicationPage, HikePubSub.Listener
     {
-        public List<ContactInfo> blockedContacts = null;
-        public List<ContactInfo> unblockedContacts = null;
         public ObservableCollection<ContactInfo> blockedList = null;
         private bool isInitialised;
 
@@ -27,7 +25,6 @@ namespace windows_client.View
         {
             InitializeComponent();
             InitAppBar();
-
         }
 
         private void InitAppBar()
@@ -51,6 +48,7 @@ namespace windows_client.View
         private void registerListeners()
         {
             App.HikePubSubInstance.addListener(HikePubSub.BLOCK_USER, this);
+            App.HikePubSubInstance.addListener(HikePubSub.UNBLOCK_USER, this);
         }
 
         private void removeListeners()
@@ -58,6 +56,7 @@ namespace windows_client.View
             try
             {
                 App.HikePubSubInstance.removeListener(HikePubSub.BLOCK_USER, this);
+                App.HikePubSubInstance.removeListener(HikePubSub.UNBLOCK_USER, this);
             }
             catch (Exception ex)
             {
@@ -77,7 +76,6 @@ namespace windows_client.View
                 if (obj is ContactInfo)
                 {
                     ContactInfo c = obj as ContactInfo;
-                    unblockedContacts.Remove(c);
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                     {
                         blockedList.Add(c);
@@ -89,13 +87,28 @@ namespace windows_client.View
                     });
                 }
             }
+            else if (type == HikePubSub.UNBLOCK_USER)
+            {
+                if (obj is ContactInfo)
+                {
+                    ContactInfo c = obj as ContactInfo;
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        blockedList.Remove(c);
+                        if (txtEmptyScreen.Visibility == Visibility.Collapsed)
+                        {
+                            txtEmptyScreen.Visibility = Visibility.Visible;
+                            ContentPanel.Visibility = Visibility.Collapsed;
+                        }
+                    });
+                }
+            }
         }
         #endregion
 
         protected override void OnRemovedFromJournal(JournalEntryRemovedEventArgs e)
         {
             base.OnRemovedFromJournal(e);
-            PhoneApplicationService.Current.State.Remove(HikeConstants.BLOCKLIST_PAGE);
             removeListeners();
         }
 
@@ -111,8 +124,7 @@ namespace windows_client.View
                 {
                     List<ContactInfo> allContactsList = UsersTableUtils.getAllContactsByGroup();
                     List<Blocked> listBlocked = UsersTableUtils.getBlockList();
-                    FilterUnBlockedUsers(listBlocked, allContactsList);
-                    blockedList = new ObservableCollection<ContactInfo>(blockedContacts);
+                    blockedList = FilterUnBlockedUsers(listBlocked, allContactsList);
                 };
                 bw.RunWorkerAsync();
                 bw.RunWorkerCompleted += (s, a) =>
@@ -129,33 +141,36 @@ namespace windows_client.View
             }
         }
 
-        private void FilterUnBlockedUsers(List<Blocked> blockedList, List<ContactInfo> allContactsList)
+        private ObservableCollection<ContactInfo> FilterUnBlockedUsers(List<Blocked> blockedList, List<ContactInfo> allContactsList)
         {
-            blockedContacts = new List<ContactInfo>();
-            unblockedContacts = new List<ContactInfo>();
-            if (allContactsList == null || allContactsList.Count == 0)
-                return;
-            HashSet<string> hashMsisdns = new HashSet<string>();
-            HashSet<string> hashBlocked = new HashSet<string>();
 
-            if (blockedList != null)
-            {
-                foreach (Blocked bl in blockedList)
-                {
-                    hashBlocked.Add(bl.Msisdn);
-                }
-            }
+            if (allContactsList == null || allContactsList.Count == 0)
+                return null;
+            else if (blockedList == null || blockedList.Count == 0)
+                return new ObservableCollection<ContactInfo>(allContactsList);
+
+            HashSet<string> hashBlocked = new HashSet<string>();
+            foreach (Blocked bl in blockedList)
+                hashBlocked.Add(bl.Msisdn);
+
+            ObservableCollection<ContactInfo> blockedContacts = new ObservableCollection<ContactInfo>();
             for (int i = 0; i < allContactsList.Count; i++)
             {
                 ContactInfo c = allContactsList[i];
-                if (hashMsisdns.Contains(c.Msisdn))
-                    continue;
-                hashMsisdns.Add(c.Msisdn);
                 if (hashBlocked.Contains(c.Msisdn))
+                {
                     blockedContacts.Add(c);
-                else
-                    unblockedContacts.Add(c);
+                    hashBlocked.Remove(c.Msisdn);
+                }
+                if (hashBlocked.Count == 0)
+                    break;
             }
+            if (hashBlocked.Count > 0)
+            {
+                foreach (string msisdn in  hashBlocked)
+                    blockedContacts.Add(new ContactInfo(msisdn, msisdn, false));
+            }
+            return blockedContacts;
         }
 
         private void Unblock_Tap(object sender, System.Windows.Input.GestureEventArgs e)
@@ -168,7 +183,6 @@ namespace windows_client.View
             shellProgress.IsVisible = true;
             App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, c.Msisdn);
             blockedList.Remove(c);
-            unblockedContacts.Add(c);
             if (blockedList.Count == 0)
             {
                 txtEmptyScreen.Visibility = Visibility.Visible;
@@ -179,9 +193,8 @@ namespace windows_client.View
 
         private void AddUsers_Tap(object sender, EventArgs e)
         {
-            //todo:handle gk
-            PhoneApplicationService.Current.State[HikeConstants.BLOCKLIST_PAGE] = this;
-            NavigationService.Navigate(new Uri("/View/UnblockedUsersPage.xaml", UriKind.Relative));
+            PhoneApplicationService.Current.State[HikeConstants.OBJ_FROM_BLOCKED_LIST] = true;
+            NavigationService.Navigate(new Uri("/View/NewSelectUserPage.xaml", UriKind.Relative));
         }
     }
 }

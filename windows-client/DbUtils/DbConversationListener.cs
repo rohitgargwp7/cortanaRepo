@@ -310,7 +310,7 @@ namespace windows_client.DbUtils
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
-                string msisdn ;
+                string msisdn;
                 if (obj is ContactInfo)
                     msisdn = (obj as ContactInfo).Msisdn;
                 else
@@ -323,7 +323,11 @@ namespace windows_client.DbUtils
             #region UNBLOCK_USER
             else if (HikePubSub.UNBLOCK_USER == type)
             {
-                string msisdn = (string)obj;
+                string msisdn;
+                if (obj is ContactInfo)
+                    msisdn = (obj as ContactInfo).Msisdn;
+                else
+                    msisdn = (string)obj;
                 UsersTableUtils.unblock(msisdn);
                 JObject unblockObj = blockUnblockSerialize("ub", msisdn);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, unblockObj);
