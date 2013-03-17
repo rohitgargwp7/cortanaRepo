@@ -38,20 +38,20 @@ namespace windows_client.Controls.StatusUpdate
             }
         }
 
-        public TextStatusUpdate(string userName, BitmapImage userImage, string msisdn, string serverId, string textOrLocationName, long timestamp,
-            bool isUnread, StatusMessage.StatusType statusType, EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
-            : base(userName, userImage, msisdn, serverId)
+        public TextStatusUpdate(string userName, BitmapImage userImage, StatusMessage sm,
+            EventHandler<System.Windows.Input.GestureEventArgs> statusBubbleImageTap)
+            : base(userName, userImage, sm.Msisdn, sm.ServerId)
         {
             InitializeComponent();
-            this.statusTextTxtBlk.Text = textOrLocationName;
-            this.timestamp = timestamp;
-            this.IsUnread = isUnread;
+            this.statusTextTxtBlk.Text = sm.Message;
+            this.timestamp = sm.Timestamp;
+            this.IsUnread = sm.IsUnread;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
             if (statusBubbleImageTap != null)
             {
                 this.userProfileImage.Tap += statusBubbleImageTap;
             }
-            if (isUnread)
+            if (sm.IsUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
                 statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
@@ -61,7 +61,7 @@ namespace windows_client.Controls.StatusUpdate
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
                 statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiLightFont;
             }
-            if (statusType == StatusMessage.StatusType.IS_NOW_FRIEND)
+            if (sm.Status_Type == StatusMessage.StatusType.IS_NOW_FRIEND)
             {
                 statusTypeImage.Source = UI_Utils.Instance.FriendRequestImage;
             }

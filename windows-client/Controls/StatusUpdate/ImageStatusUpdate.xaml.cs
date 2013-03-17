@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using windows_client.Languages;
 using System;
 using System.Windows.Media;
+using windows_client.Model;
 
 namespace windows_client.Controls.StatusUpdate
 {
@@ -35,21 +36,21 @@ namespace windows_client.Controls.StatusUpdate
                 }
             }
         }
-        
-        public ImageStatusUpdate(string userName, BitmapImage userImage, string msisdn, string serverId, BitmapImage statusImageBitmap, long timestamp,
-            bool isUnread, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
-            : base(userName, userImage, msisdn, serverId)
+
+        public ImageStatusUpdate(string userName, BitmapImage userImage, StatusMessage sm,
+            BitmapImage statusImageBitmap, EventHandler<System.Windows.Input.GestureEventArgs> imageTap)
+            : base(userName, userImage, sm.Msisdn, sm.ServerId)
         {
             InitializeComponent();
             this.statusTextTxtBlk.Text = AppResources.StatusUpdate_Photo;
-            this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(timestamp);
-            this.IsUnread = isUnread;
+            this.timestampTxtBlk.Text = TimeUtils.getRelativeTime(sm.Timestamp);
+            this.IsUnread = sm.IsUnread;
             if (statusImageBitmap != null)
                 this.StatusImage = statusImageBitmap;
             if (imageTap != null)
                 this.userProfileImage.Tap += imageTap;
             statusTextTxtBlk.Foreground = UI_Utils.Instance.StatusTextForeground;
-            if (isUnread)
+            if (sm.IsUnread)
             {
                 statusTextTxtBlk.Foreground = UI_Utils.Instance.PhoneThemeColor;
                 statusTextTxtBlk.FontFamily = UI_Utils.Instance.SemiBoldFont;
