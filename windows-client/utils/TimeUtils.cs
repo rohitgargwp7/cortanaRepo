@@ -160,5 +160,15 @@ namespace windows_client.utils
         {
             return (start.Year * 12 + start.Month) - (end.Year * 12 + end.Month);
         }
+
+        public static int GetTimeIntervalDay()
+        {
+            if (DateTime.Now.Hour >= 4 && DateTime.Now.Hour < 12)
+                return 0;
+            else if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 8)
+                return 1;
+            else
+                return 2;
+        }
     }
 }

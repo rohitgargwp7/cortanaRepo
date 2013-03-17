@@ -25,6 +25,7 @@ namespace windows_client.View
 {
     public partial class NewSelectUserPage : PhoneApplicationPage, HikePubSub.Listener
     {
+        private bool frmBlockedList;
         private bool hideSmsContacts;
         private bool isFreeSmsOn = true;
         private bool canGoBack = true;
@@ -57,6 +58,7 @@ namespace windows_client.View
         ContactInfo defaultContact = new ContactInfo(); // this is used to store default phone number 
 
         Dictionary<string, List<Group<ContactInfo>>> groupListDictionary = new Dictionary<string, List<Group<ContactInfo>>>();
+        HashSet<string> blockedSet = null;
 
         private int smsUserCount = 0;
         private int existingGroupUsers = 1; // 1 because owner of the group is already included
@@ -160,18 +162,41 @@ namespace windows_client.View
                 TAP_MSG = AppResources.SelectUser_TapMsg_Grp_Txt;
             }
 
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.OBJ_FROM_BLOCKED_LIST))
+            {
+                frmBlockedList = true;
+                hideSmsContacts = true;
+                blockedSet = new HashSet<string>();
+            }
+
             if (isGroupChat)
                 txtChat.Text = AppResources.GrpChat_Txt.ToUpper();
+
+            if(frmBlockedList) //  this is to show block button
+                contactsListBox.ItemTemplate = this.blockTemplate;
+            else
+                contactsListBox.ItemTemplate = this.defaultTemplate;
+
             shellProgress.IsVisible = true;
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
+                if (frmBlockedList)
+                {
+                    List<Blocked> blkMsisdns = UsersTableUtils.getBlockList();
+                    if (blkMsisdns != null)
+                    {
+                        foreach (Blocked c in blkMsisdns)
+                            blockedSet.Add(c.Msisdn);
+                    }
+                }
                 allContactsList = UsersTableUtils.getAllContactsByGroup();
+                if(hideSmsContacts)
+                    jumpList = getGroupedList(allContactsList);
             };
             bw.RunWorkerAsync();
             bw.RunWorkerCompleted += (s, e) =>
-            {
-                jumpList = getGroupedList(allContactsList);
+            {                
                 if (!hideSmsContacts)
                 {
                     if (filteredJumpList == null)
@@ -229,6 +254,7 @@ namespace windows_client.View
             {
                 Debug.WriteLine("NewSelectUserPage.xaml :: OnRemovedFromJournal, Exception : " + ex.StackTrace);
             }
+            PhoneApplicationService.Current.State.Remove(HikeConstants.OBJ_FROM_BLOCKED_LIST);
             PhoneApplicationService.Current.State.Remove(HikeConstants.START_NEW_GROUP);
             PhoneApplicationService.Current.State.Remove(HikeConstants.EXISTING_GROUP_MEMBERS);
             PhoneApplicationService.Current.State.Remove(HikeConstants.SHARE_CONTACT);
@@ -281,6 +307,9 @@ namespace windows_client.View
             else if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.SHARE_CONTACT))
             {
                 contactsListBox.Tap += contactShared_Click;
+            }
+            else if (frmBlockedList)
+            {
             }
             else
             {
@@ -346,6 +375,9 @@ namespace windows_client.View
                 if (c.Msisdn == App.MSISDN) // don't show own number in any chat.
                     continue;
 
+                // skip already blocked people
+                else if (frmBlockedList && blockedSet.Contains(c.Msisdn))
+                    continue;
 
                 #region FREE SMS SETTINGS SUPPORT
                 if (!isContactShared)
@@ -1107,6 +1139,24 @@ namespace windows_client.View
                     });
                 }
             }
+        }
+
+        private void Block_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            Button btn = sender as Button;
+            ContactInfo ci = btn.DataContext as ContactInfo;
+            if (ci == null)
+                return;
+            if (btn.Content.Equals(AppResources.Block_Txt)) // block request
+            {
+                btn.Content = AppResources.UnBlock_Txt;
+                App.HikePubSubInstance.publish(HikePubSub.BLOCK_USER, ci);
+            }
+            else // unblock request
+            {
+                btn.Content = AppResources.Block_Txt;
+                App.HikePubSubInstance.publish(HikePubSub.UNBLOCK_USER, ci);
+            }           
         }
 
         private void Invite_Tap(object sender, System.Windows.Input.GestureEventArgs e)

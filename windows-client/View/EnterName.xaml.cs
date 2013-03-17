@@ -31,6 +31,7 @@ namespace windows_client
         public ApplicationBarIconButton nextIconButton;
         BitmapImage profileImage = null;
         byte[] _avatar = null;
+        byte[] _avImg = null;
         bool isCalled = false;
         PhotoChooserTask photoChooserTask = null;
 
@@ -183,11 +184,6 @@ namespace windows_client
             Thread.Sleep(1 * 500);
             try
             {
-                if (_avatar != null)
-                {
-                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, _avatar, false);
-                }
-
                 App.appSettings[HikeConstants.IS_NEW_INSTALLATION] = true;
                 App.appSettings[App.SHOW_FAVORITES_TUTORIAL] = true;
                 App.WriteToIsoStorageSettings(App.SHOW_NUDGE_TUTORIAL, true);
@@ -376,6 +372,8 @@ namespace windows_client
             try
             {
                 photoChooserTask.Show();
+                nextIconButton.IsEnabled = false;
+                txtBxEnterName.IsEnabled = false;
             }
             catch (Exception ex)
             {
@@ -388,44 +386,48 @@ namespace windows_client
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.Please_Try_Again_Txt, AppResources.No_Network_Txt, MessageBoxButton.OK);
+                nextIconButton.IsEnabled = true;
+                txtBxEnterName.IsEnabled = true;
                 return;
             }
             //progressBarTop.IsEnabled = true;
             shellProgress.IsVisible = true;
             if (e.TaskResult == TaskResult.OK)
             {
-                Uri uri = new Uri(e.OriginalFileName);
-                profileImage = new BitmapImage(uri);
-                profileImage.CreateOptions = BitmapCreateOptions.None;
-                profileImage.UriSource = uri;
-                profileImage.ImageOpened += imageOpenedHandler;
+                if (profileImage == null)
+                    profileImage = new BitmapImage();
+                profileImage.SetSource(e.ChosenPhoto);
+                try
+                {
+                    byte[] fullViewImageBytes = null;
+                    WriteableBitmap writeableBitmap = new WriteableBitmap(profileImage);
+                    using (var msLargeImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
+                        _avImg = msLargeImage.ToArray();
+                    }
+                    using (var msSmallImage = new MemoryStream())
+                    {
+                        writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
+                        fullViewImageBytes = msSmallImage.ToArray();
+                    }
+                    //send image to server here and insert in db after getting response
+                    AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("EnterName :: Exception in photochooser task " + ex.StackTrace);
+                }
             }
             else if (e.TaskResult == TaskResult.Cancel)
             {
                 //progressBarTop.IsEnabled = false;
                 shellProgress.IsVisible = false;
+                nextIconButton.IsEnabled = true;
+                txtBxEnterName.IsEnabled = true;
                 if (e.Error != null)
                     MessageBox.Show(AppResources.Cannot_Select_Pic_Phone_Connected_to_PC);
             }
-        }
-
-        void imageOpenedHandler(object sender, RoutedEventArgs e)
-        {
-            byte[] fullViewImageBytes = null;
-            BitmapImage image = (BitmapImage)sender;
-            WriteableBitmap writeableBitmap = new WriteableBitmap(image);
-            using (var msLargeImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msLargeImage, 90, 90, 0, 90);
-                _avatar = msLargeImage.ToArray();
-            }
-            using (var msSmallImage = new MemoryStream())
-            {
-                writeableBitmap.SaveJpeg(msSmallImage, HikeConstants.PROFILE_PICS_SIZE, HikeConstants.PROFILE_PICS_SIZE, 0, 100);
-                fullViewImageBytes = msSmallImage.ToArray();
-            }
-            //send image to server here and insert in db after getting response
-            AccountUtils.updateProfileIcon(fullViewImageBytes, new AccountUtils.postResponseFunction(updateProfile_Callback), "");
         }
 
         public void updateProfile_Callback(JObject obj)
@@ -437,7 +439,7 @@ namespace windows_client
                     avatarImage.Source = profileImage;
                     avatarImage.MaxHeight = 83;
                     avatarImage.MaxWidth = 83;
-                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, _avatar, false);
+                    MiscDBUtil.saveAvatarImage(HikeConstants.MY_PROFILE_PIC, _avImg, false);
                 }
                 else
                 {
@@ -445,6 +447,8 @@ namespace windows_client
                 }
                 //progressBarTop.IsEnabled = false;
                 shellProgress.IsVisible = false;
+                nextIconButton.IsEnabled = true;
+                txtBxEnterName.IsEnabled = true;
             });
         }
 

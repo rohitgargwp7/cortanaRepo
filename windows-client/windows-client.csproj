@@ -211,6 +211,9 @@
     <Compile Include="utils\StatusUpdateHelper.cs" />
     <Compile Include="utils\Utils.cs" />
     <Compile Include="ViewModel\HikeViewModel.cs" />
+    <Compile Include="View\BlockListPage.xaml.cs">
+      <DependentUpon>BlockListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ConversationsList.xaml.cs">
       <DependentUpon>ConversationsList.xaml</DependentUpon>
     </Compile>
@@ -335,6 +338,10 @@
     <Page Include="Controls\StatusUpdate\ImageStatusUpdate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\BlockListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ConversationsList.xaml">
       <Generator>MSBuild:Compile</Generator>
