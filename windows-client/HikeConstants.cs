@@ -233,6 +233,7 @@ namespace windows_client
         public static string UNREAD_FRIEND_REQUESTS = "urFr";
         public static string REFRESH_BAR = "refBar";
 
+        public static string BLOCKLIST_PAGE = "blocklistPage";
         public static string CLOSE_FRIENDS_NUX = "closeFriends";
         public static string LAST_STATUS = "lastStatus";
 

@@ -310,7 +310,11 @@ namespace windows_client.DbUtils
             #region BLOCK_USER
             else if (HikePubSub.BLOCK_USER == type)
             {
-                string msisdn = (string)obj;
+                string msisdn ;
+                if (obj is ContactInfo)
+                    msisdn = (obj as ContactInfo).Msisdn;
+                else
+                    msisdn = (string)obj;
                 UsersTableUtils.block(msisdn);
                 JObject blockObj = blockUnblockSerialize("b", msisdn);
                 mPubSub.publish(HikePubSub.MQTT_PUBLISH, blockObj);
