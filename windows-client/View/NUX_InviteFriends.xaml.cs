@@ -116,6 +116,7 @@ namespace windows_client.View
             progressBar.IsEnabled = false;
 
             sendInviteIconButton.IsEnabled = true;
+            btnSkipNux.IsHitTestVisible = true;
         }
 
         private void InitialiseFamilyScreen()
