@@ -49,8 +49,9 @@ namespace windows_client.View
             base.OnNavigatedTo(e);
             MoodsInitialiser.Instance.Initialise();
             moodList.ItemsSource = MoodsInitialiser.Instance.listMoods;
+            userImage.Source = UI_Utils.Instance.GetBitmapImage(HikeConstants.MY_PROFILE_PIC);
         }
-        
+
         private void btnPostStatus_Click(object sender, EventArgs e)
         {
             postStatusIcon.IsEnabled = false;
@@ -72,11 +73,11 @@ namespace windows_client.View
             }
             JObject statusJSON = new JObject();
             statusJSON["status-message"] = statusText;
-            if(isFacebookPost)
+            if (isFacebookPost)
                 statusJSON["fb"] = true;
-            if(isTwitterPost)
+            if (isTwitterPost)
                 statusJSON["twitter"] = true;
-            if (moodId > 0)
+            if (moodId > -1)
             {
                 statusJSON["mood"] = moodId;
                 statusJSON["timeofday"] = 2; //TODO - Rohit add function in timeUtils and use it here
@@ -137,14 +138,20 @@ namespace windows_client.View
 
         private void Mood_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
             gridMood.Visibility = Visibility.Visible;
             this.appBar.IsVisible = false;
         }
 
         private void moodList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-
+            Mood mood = moodList.SelectedItem as Mood;
+            if (mood == null)
+                return;
+            moodId = moodList.SelectedIndex;
+            txtStatus.Text = mood.Text;
+            postedMood.Source = mood.MoodIcon;
+            postedMood.Visibility = Visibility.Visible;
+            gridMood.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
