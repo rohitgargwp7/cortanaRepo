@@ -265,7 +265,7 @@ namespace windows_client
                 }
                 catch (FormatException e)
                 {
-                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}",jsonObj.ToString(Formatting.None) ,e.StackTrace);
+                    Debug.WriteLine("Network Manager:: Delivery Report, Json : {0} Exception : {1}", jsonObj.ToString(Formatting.None), e.StackTrace);
                     msgID = -1;
                     return;
                 }
@@ -372,7 +372,7 @@ namespace windows_client
                 long ts = 0;
                 if (jsonObj.TryGetValue(HikeConstants.TIMESTAMP, out jt))
                     ts = jt.ToObject<long>();
-                FriendsTableUtils.SetJoiningTime(uMsisdn,ts);
+                FriendsTableUtils.SetJoiningTime(uMsisdn, ts);
                 this.pubSub.publish(joined ? HikePubSub.USER_JOINED : HikePubSub.USER_LEFT, uMsisdn);
             }
             #endregion
@@ -529,7 +529,7 @@ namespace windows_client
                                                             if (pToken != null && pToken.HasValues)
                                                             {
                                                                 object o = pToken.ToObject<object>();
-                                                                if(o is bool)
+                                                                if (o is bool)
                                                                     rp = (bool)o;
                                                             }
                                                             if (rp)
@@ -972,7 +972,8 @@ namespace windows_client
                     string ms = (string)jsonObj[HikeConstants.FROM];
                     if (ms == null)
                         return;
-                    FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(ms, FriendsTableUtils.FriendStatusEnum.REQUEST_RECIEVED);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                     if (App.ViewModel.Isfavourite(ms)) // already favourite
                         return;
                     if (App.ViewModel.IsPending(ms))
@@ -1023,7 +1024,8 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.SetFriendStatus(msisdn,FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.NOT_SET);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
                 catch (Exception e)
                 {
@@ -1036,7 +1038,8 @@ namespace windows_client
             {
                 try
                 {
-                    FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
+                    FriendsTableUtils.FriendStatusEnum friendStatus = FriendsTableUtils.SetFriendStatus(msisdn, FriendsTableUtils.FriendStatusEnum.UNFRIENDED_BY_HIM);
+                    App.HikePubSubInstance.publish(HikePubSub.FRIEND_RELATIONSHIP_CHANGE, new Object[] { msisdn, friendStatus });
                 }
                 catch (Exception e)
                 {
@@ -1084,8 +1087,8 @@ namespace windows_client
                         if (data.TryGetValue(HikeConstants.STATUS_ID, out idToken))
                             id = idToken.ToString();
 
-                        
-                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn),-1);
+
+                        sm = new StatusMessage(msisdn, id, StatusMessage.StatusType.PROFILE_PIC_UPDATE, id, TimeUtils.getCurrentTimeStamp(), StatusUpdateHelper.Instance.IsTwoWayFriend(msisdn), -1);
 
                         idToken = null;
                         if (iconBase64 != null)

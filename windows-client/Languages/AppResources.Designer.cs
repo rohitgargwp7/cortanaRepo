@@ -2212,6 +2212,24 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have blocked.
+        /// </summary>
+        public static string Profile_BlockedUser_Blk1 {
+            get {
+                return ResourceManager.GetString("Profile_BlockedUser_Blk1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unblock to send a message..
+        /// </summary>
+        public static string Profile_BlockedUser_Blk3 {
+            get {
+                return ResourceManager.GetString("Profile_BlockedUser_Blk3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel Request.
         /// </summary>
         public static string Profile_CancelRequest_BtnTxt {

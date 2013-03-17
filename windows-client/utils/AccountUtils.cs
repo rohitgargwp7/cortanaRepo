@@ -313,14 +313,13 @@ namespace windows_client.utils
                 chatbubble });
         }
 
-        public static void postStatus(string statusText, postResponseFunction finalCallbackFunction)
+        public static void postStatus(JObject statusJSON, postResponseFunction finalCallbackFunction)
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/user/status")) as HttpWebRequest;
             addToken(req);
-            req.Method = "PUT";
-            req.ContentType = "";
-            req.Headers["hike-status-message"] = statusText;
-            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, finalCallbackFunction });
+            req.Method = "POST";
+            req.ContentType = "application/json";
+            req.BeginGetRequestStream(setParams_Callback, new object[] { req, RequestType.POST_STATUS, statusJSON, finalCallbackFunction });
         }
 
 
@@ -506,7 +505,8 @@ namespace windows_client.utils
                 #endregion
                 #region POST STATUS
                 case RequestType.POST_STATUS:
-                    finalCallbackFunction = vars[2] as postResponseFunction;
+                    data = vars[2] as JObject;
+                    finalCallbackFunction = vars[3] as postResponseFunction;
                     break;
                 #endregion
                 #region DEFAULT
