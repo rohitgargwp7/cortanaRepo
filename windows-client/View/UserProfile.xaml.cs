@@ -84,7 +84,7 @@ namespace windows_client.View
                     return;
                 Deployment.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, null, null, enlargePic_Tap));
+                    statusList.Insert(0, StatusUpdateHelper.Instance.createStatusUIObject(sm, false, null, null, enlargePic_Tap));
                     gridHikeUser.Visibility = Visibility.Visible;
                     gridSmsUser.Visibility = Visibility.Collapsed;
                 });
@@ -369,7 +369,8 @@ namespace windows_client.View
             {
                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                 {
-                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], null, null, enlargePic_Tap));
+                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, null, 
+                        enlargePic_Tap));
                 }
             }
             if (statusList.Count == 0)

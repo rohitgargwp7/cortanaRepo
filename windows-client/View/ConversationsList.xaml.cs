@@ -866,7 +866,7 @@ namespace windows_client.View
                     if (sm.Msisdn == App.MSISDN)
                     {
                         App.appSettings[HikeConstants.LAST_STATUS] = sm.Message;
-                        App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                        App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
                             statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                     }
                     else
@@ -880,7 +880,7 @@ namespace windows_client.View
                         }
                         else
                         {
-                            App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm,
+                            App.ViewModel.StatusList.Insert(count, StatusUpdateHelper.Instance.createStatusUIObject(sm, true,
                                 statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                         }
                         RefreshBarCount++;//persist in this.State. it will be cleared 
@@ -1696,7 +1696,7 @@ namespace windows_client.View
             for (int i = 0; i < FreshStatusUpdates.Count; i++)
             {
                 App.ViewModel.StatusList.Insert(App.ViewModel.PendingRequests.Count,
-                    StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i],
+                    StatusUpdateHelper.Instance.createStatusUIObject(FreshStatusUpdates[i], true,
                     statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
             }
             statusLLS.ScrollIntoView(App.ViewModel.StatusList[App.ViewModel.PendingRequests.Count]);
@@ -1856,7 +1856,7 @@ namespace windows_client.View
                 {
                     if (i < TotalUnreadStatuses)
                         statusMessagesFromDB[i].IsUnread = true;
-                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i],
+                    App.ViewModel.StatusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], true,
                         statusBox_Tap, statusBubblePhoto_Tap, enlargePic_Tap));
                 }
             }
