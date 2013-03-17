@@ -329,7 +329,8 @@ namespace windows_client.View
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
                     StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                        serverId, TimeUtils.getCurrentTimeStamp(), -1);
+                        serverId, TimeUtils.getCurrentTimeStamp(), true,-1);
+                    StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
             }
