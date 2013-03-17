@@ -78,6 +78,20 @@ namespace windows_client.utils
             isInitialised = true;
         }
 
+        public BitmapImage GetMoodIcon(int moodId)
+        {
+            //todo:need to initialise on Appload or for Lazy load check always
+            if (!isInitialised)
+            {
+                Initialise();
+            }
+
+            if (listMoods != null && moodId < 0 || moodId > listMoods.Count - 1)
+                return null;
+            
+            return listMoods[moodId].MoodIcon;
+        }
+
     }
     class Mood
     {
