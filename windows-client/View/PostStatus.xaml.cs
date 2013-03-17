@@ -81,7 +81,7 @@ namespace windows_client.View
                 statusJSON["mood"] = moodId;
                 statusJSON["timeofday"] = 2; //TODO - Rohit add function in timeUtils and use it here
             }
-            AccountUtils.postStatus(statusJSON.ToString(), postStatus_Callback);
+            AccountUtils.postStatus(statusJSON, postStatus_Callback);
         }
 
         void PostStatusPage_Loaded(object sender, RoutedEventArgs e)
