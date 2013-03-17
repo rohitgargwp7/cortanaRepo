@@ -910,7 +910,7 @@ namespace windows_client.View
                         if (sb.IsUnread)
                             _totalUnreadStatuses -= 1;
 
-                        //todo:handle ui for handling zero status
+                        //todo: Rohit handle ui for handling zero status
                     }
                 });
             }
