@@ -96,6 +96,8 @@ namespace windows_client.ViewModel
         {
             get
             {
+                if (_pendingReq == null)
+                    _pendingReq = new Dictionary<string, ConversationListObject>();
                 return _pendingReq;
             }
             set
