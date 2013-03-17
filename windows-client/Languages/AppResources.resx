@@ -1474,4 +1474,8 @@
   <data name="Conversations_Contacts_on_hike" xml:space="preserve">
     <value>CONTACTS ON HIKE</value>
   </data>
+  <data name="Status_Update_Txt" xml:space="preserve">
+    <value>Status Update</value>
+    <comment>Used in convlist last msg</comment>
+  </data>
 </root>
