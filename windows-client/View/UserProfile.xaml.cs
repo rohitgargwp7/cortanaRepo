@@ -370,6 +370,9 @@ namespace windows_client.View
                 }
                 isFirstLoad = false;
             }
+            // this is done to update profile name , as soon as it gets updated
+            if (PhoneApplicationService.Current.State.ContainsKey(HikeConstants.PROFILE_NAME_CHANGED))
+                txtUserName.Text = (string)PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED];
         }
 
         private void InitChatIconBtn()
@@ -389,6 +392,7 @@ namespace windows_client.View
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_GROUPCHAT_PAGE);
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_PROFILE);
             PhoneApplicationService.Current.State.Remove(HikeConstants.USERINFO_FROM_TIMELINE);
+            PhoneApplicationService.Current.State.Remove(HikeConstants.PROFILE_NAME_CHANGED);
             removeListeners();
         }
 
@@ -485,7 +489,8 @@ namespace windows_client.View
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
                     StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                        serverId, TimeUtils.getCurrentTimeStamp(), -1);
+                        serverId, TimeUtils.getCurrentTimeStamp(), true,-1);
+                    StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
             }

@@ -346,8 +346,7 @@ namespace windows_client.DbUtils
                 #region STATUS UPDATES
                 else if (convMsg.GrpParticipantState == ConvMessage.ParticipantInfoState.STATUS_UPDATE)
                 {
-                    addMessage(convMsg);
-                    return obj;
+                    obj.LastMessage = AppResources.Status_Update_Txt;
                 }
                 #endregion
                 #region NO_INFO or OTHER MSGS
@@ -363,7 +362,10 @@ namespace windows_client.DbUtils
                 long msec1 = st1.ElapsedMilliseconds;
                 Debug.WriteLine("Time to add chat msg : {0}", msec1);
 
-                obj.MessageStatus = convMsg.MessageStatus;
+                if (convMsg.GrpParticipantState != ConvMessage.ParticipantInfoState.STATUS_UPDATE)
+                    obj.MessageStatus = convMsg.MessageStatus;
+                else
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
                 obj.TimeStamp = convMsg.Timestamp;
                 obj.LastMsgId = convMsg.MessageId;
                 Stopwatch st = Stopwatch.StartNew();
@@ -372,7 +374,6 @@ namespace windows_client.DbUtils
                 long msec = st.ElapsedMilliseconds;
                 Debug.WriteLine("Time to update conversation  : {0}", msec);
             }
-
             return obj;
         }
 

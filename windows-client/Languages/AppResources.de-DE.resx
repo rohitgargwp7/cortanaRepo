@@ -1261,9 +1261,8 @@
   <data name="TimeUtils_Moments_Ago" xml:space="preserve">
     <value>vor einem Moment</value>
   </data>
-
   <data name="PicUpdate_StatusTxt" xml:space="preserve">
- <value />
+    <value />
   </data>
   <data name="You_Txt" xml:space="preserve">
     <value>Du</value>
@@ -1347,9 +1346,9 @@
     <value>Trennen</value>
     <comment>Privacy page (xaml)</comment>
   </data>
-<data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
+  <data name="GroupImgChangedByGrpMember_Txt" xml:space="preserve">
     <value>{0} hat das Gruppenbild geändert.</value>
-</data>
+  </data>
   <data name="Ask_Me_Later_Txt" xml:space="preserve">
     <value>Später erneut fragen</value>
   </data>
@@ -1364,5 +1363,12 @@
   </data>
   <data name="UpgradingApp_Text" xml:space="preserve">
     <value>Bitte warten, deine App wird aktualisiert...</value>
+  </data>
+  <data name="Status_Update_Txt" xml:space="preserve">
+    <value />
+    <comment>Used in convlist last msg</comment>
+  </data>
+  <data name="Share_With_Txt" xml:space="preserve">
+    <value />
   </data>
 </root>

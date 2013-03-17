@@ -195,6 +195,9 @@ namespace windows_client.View
                         userName = name.Text;
                         App.HikePubSubInstance.publish(HikePubSub.UPDATE_ACCOUNT_NAME, userName);
                         App.WriteToIsoStorageSettings(App.ACCOUNT_NAME, userName);
+
+                        // this will handle tombstine case too, if we have used pubsub that will not work in case of tombstone
+                        PhoneApplicationService.Current.State[HikeConstants.PROFILE_NAME_CHANGED] = userName;
                     }
                     if (shouldSendProfile)
                     {

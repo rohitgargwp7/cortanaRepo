@@ -2752,6 +2752,15 @@ namespace windows_client.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SHARE.
+        /// </summary>
+        public static string Share_With_Txt {
+            get {
+                return ResourceManager.GetString("Share_With_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Share Contact.
         /// </summary>
         public static string ShareContact_ConfirmationCaption {
@@ -2919,6 +2928,15 @@ namespace windows_client.Languages {
         public static string Something_Wrong_Txt {
             get {
                 return ResourceManager.GetString("Something_Wrong_Txt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status Update.
+        /// </summary>
+        public static string Status_Update_Txt {
+            get {
+                return ResourceManager.GetString("Status_Update_Txt", resourceCulture);
             }
         }
         

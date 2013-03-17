@@ -2165,6 +2165,12 @@ namespace windows_client.View
                     obj.MessageStatus = ConvMessage.State.UNKNOWN;
                     obj.TimeStamp = lastMessageBubble.TimeStampLong;
                 }
+                else if (lastMessageBubble is StatusChatBubble)
+                {
+                    obj.LastMessage = AppResources.Status_Update_Txt;
+                    obj.MessageStatus = ConvMessage.State.RECEIVED_READ;
+                    obj.TimeStamp = lastMessageBubble.TimeStampLong;
+                }
                 else
                 {
                     obj.LastMessage = lastMessageBubble.Text;
@@ -3226,7 +3232,7 @@ namespace windows_client.View
         //TODO - MG try to use sametap event for header n statusBubble
         private void statusBubble_Tap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
-            if (!isGroupChat)
+            if (!isContextMenuTapped && !isGroupChat)
             {
                 PhoneApplicationService.Current.State[HikeConstants.USERINFO_FROM_CHATTHREAD_PAGE] = statusObject;
                 NavigationService.Navigate(new Uri("/View/UserProfile.xaml", UriKind.Relative));

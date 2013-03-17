@@ -130,29 +130,17 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0" Margin="0,0,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Image Source="/View/images/timeline_status.png" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="31"/>
-                            <TextBlock x:Name="lastStatusTxtBlk" Grid.Column="1" Margin="12,0,0,0" TextWrapping="Wrap" FontSize="21" Foreground="#4f4f4f"/>
-                        </Grid>
 
-                        <Rectangle Grid.Row="1" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
+                        <TextBlock Grid.Row="0" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
 
-                        <TextBlock Grid.Row="2" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Circle_Of_friends_txt, Source={StaticResource LocalizedStrings}}"/>
-
-                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Tap="Button_Tap_2" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center">
+                        <StackPanel x:Name="emptyListPlaceholder" Margin="0,40,0,30" Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
                             <Image Source="images/favorites_heart.png" Height="90"></Image>
                             <TextBlock Text="{Binding Path= LocalizedResources.Conversations_TapYesToAdd_Txt, Source={StaticResource LocalizedStrings}}" Width="350" Margin="0,20,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                             <TextBlock Text="{Binding Path= LocalizedResources.Favorites_TapToAdd, Source={StaticResource LocalizedStrings}}" Width="270" Margin="0,0,0,0" TextWrapping="Wrap" TextAlignment="Center" FontSize="22" Foreground="#909090"></TextBlock>
                         </StackPanel>
 
-                        <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="3" Tap="favourites_Tap" >
+                        <ListBox x:Name="favourites" Visibility="Collapsed" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1" Tap="favourites_Tap" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
@@ -168,17 +156,17 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <Rectangle Grid.Row="4" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
+                        <Rectangle Grid.Row="2" Height="1" Fill="#d8d8d8" Margin="0,25,0,0"/>
 
-                        <TextBlock Grid.Row="5" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
+                        <TextBlock Grid.Row="3" FontSize="24" FontFamily="Segoe WP Semibold" Text="{Binding Path= LocalizedResources.Conversations_Contacts_on_hike, Source={StaticResource LocalizedStrings}}"/>
 
-                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="6">
+                        <ListBox x:Name="hikeContactListBox" Visibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="4">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0,5,0,5" >
                                         <Image Source="{Binding AvatarImage}" Height="69" Margin="0,10,0,0" Tap="hikeContacts_Tap"></Image>
-                                        <TextBlock Text="{Binding Name}" FontSize="37" MinWidth="300" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0" Tap="hikeContacts_Tap"></TextBlock>
-                                        <Image Name="addUserImage" Source="images\add_users.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right"></Image>
+                                        <TextBlock Text="{Binding Name}" FontSize="37" Width="300" FontFamily="Segoe WP SemiLight" VerticalAlignment="Center" Margin="15,2,0,0" Tap="hikeContacts_Tap"></TextBlock>
+                                        <Image Name="addUserImage" Source="images\add_users.png" Tap="addToFriends_Tap" Width="40" Height="40" HorizontalAlignment="Right" Margin="10,0,0,0"></Image>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -195,8 +183,6 @@
                     </Grid.RowDefinitions>
                     <Rectangle x:Name="refreshStatusBackground" Grid.Row="0" Visibility="Collapsed" Fill="#e9ecee" Height="45" Margin="12,0,0,0" Tap="refreshStatuses_Tap"/>
                     <TextBlock x:Name="refreshStatusText" Grid.Row="0" Visibility="Collapsed" Text="2 new updates" FontSize="19" Foreground="#4a4a44" Tap="refreshStatuses_Tap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <!--<phone:LongListSelector x:Name="statusLLS" Grid.Row="1" Margin="12,0,0,0" LayoutMode="List" IsGroupingEnabled="False">
-                    </phone:LongListSelector>-->
                     <ListBox x:Name="statusLLS" Margin="18,0,0,0" Grid.Row="1">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
