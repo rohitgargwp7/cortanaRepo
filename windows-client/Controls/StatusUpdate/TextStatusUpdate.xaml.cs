@@ -71,7 +71,7 @@ namespace windows_client.Controls.StatusUpdate
             if (isShowOnTimeline)
             {
                 this.userProfileImage.Source = this.UserImage;
-                this.userProfileImage.MinHeight = 69;
+                this.userProfileImage.Height = 69;
             }
             else
             {
