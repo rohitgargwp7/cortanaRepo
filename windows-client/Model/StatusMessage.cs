@@ -33,16 +33,16 @@ namespace windows_client.Model
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id)
-            : this(msisdn, msg, type, mappedId, ts, true,id, null, true)
+            : this(msisdn, msg, type, mappedId, ts, true, id, null, true)
         {
         }
 
         public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, long id, bool isUnRead)
-            : this(msisdn, msg, type, mappedId, ts,true ,id, null, isUnRead)
+            : this(msisdn, msg, type, mappedId, ts, true, id, null, isUnRead)
         {
         }
 
-        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool showOnTimeline, 
+        public StatusMessage(string msisdn, string msg, StatusType type, string mappedId, long ts, bool showOnTimeline,
             long msgId, string moodInfo, bool isUnread)
         {
             _msisdn = msisdn;
@@ -227,6 +227,15 @@ namespace windows_client.Model
             set
             {
                 _isUnread = value;
+            }
+        }
+
+        public int MoodId
+        {
+            get
+            {
+                int _moodId;
+                return int.TryParse(_moodInfo, out _moodId) ? _moodId : -1;
             }
         }
 
