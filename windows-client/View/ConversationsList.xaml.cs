@@ -1201,7 +1201,10 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
-
+        private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
+        }
         private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
