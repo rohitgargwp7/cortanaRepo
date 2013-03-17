@@ -980,7 +980,6 @@ namespace windows_client
 
                     try
                     {
-
                         ConversationListObject favObj;
                         if (App.ViewModel.ConvMap.ContainsKey(ms))
                             favObj = App.ViewModel.ConvMap[ms];
