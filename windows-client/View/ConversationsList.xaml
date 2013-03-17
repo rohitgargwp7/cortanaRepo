@@ -116,6 +116,10 @@
                                 <Image Name="helpImage" VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
                                 <TextBlock Text="{Binding Path= LocalizedResources.Help, Source={StaticResource LocalizedStrings}}" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal" MaxHeight="55" Margin="15,5,0,5" Tap="BlockList_Tap">
+                                <Image  VerticalAlignment="Center" Source="images\help.png" Height="35"></Image>
+                                <TextBlock Text="blocklist" FontFamily="Segoe WP SemiLight" Width="380" VerticalAlignment="Center" Margin="15,0,0,0" FontSize="39"></TextBlock>
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

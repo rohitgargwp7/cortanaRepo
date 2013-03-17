@@ -45,7 +45,7 @@ namespace windows_client.View
 
         ApplicationBarIconButton groupChatIconButton;
         ApplicationBarIconButton addFriendIconButton;
-        BitmapImage profileImage = null;
+        
         private bool isShowFavTute = true;
         private bool isStatusMessagesLoaded = false;
         private ObservableCollection<ContactInfo> hikeContactList = new ObservableCollection<ContactInfo>(); //all hike contacts - hike friends
@@ -725,11 +725,11 @@ namespace windows_client.View
                 App.appSettings.TryGetValue<bool>(App.VIBRATE_PREF, out isVibrateEnabled);
                 if (isVibrateEnabled)
                 {
-                    if (App.newChatThreadPage == null || App.newChatThreadPage.mContactNumber != mObj.Msisdn)
-                    {
-                        VibrateController vibrate = VibrateController.Default;
-                        vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
-                    }
+                    //if (App.newChatThreadPage == null || App.newChatThreadPage.mContactNumber != mObj.Msisdn)
+                    //{
+                    VibrateController vibrate = VibrateController.Default;
+                    vibrate.Start(TimeSpan.FromMilliseconds(HikeConstants.VIBRATE_DURATION));
+                    //                    }
                 }
             }
             #endregion
@@ -1201,7 +1201,10 @@ namespace windows_client.View
             App.AnalyticsInstance.addEvent(Analytics.HELP);
             NavigationService.Navigate(new Uri("/View/Help.xaml", UriKind.Relative));
         }
-
+        private void BlockList_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/View/BlockListPage.xaml", UriKind.Relative));
+        }
         private void Rewards_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
             try
