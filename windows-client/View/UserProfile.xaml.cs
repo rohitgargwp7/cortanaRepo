@@ -445,6 +445,7 @@ namespace windows_client.View
             shellProgress.IsVisible = true;
             if (e.TaskResult == TaskResult.OK)
             {
+                profileImage = new BitmapImage();
                 profileImage.SetSource(e.ChosenPhoto);
                 try
                 {
@@ -497,7 +498,7 @@ namespace windows_client.View
                 {
                     MiscDBUtil.saveStatusImage(App.MSISDN, serverId, fullViewImageBytes);
                     StatusMessage sm = new StatusMessage(App.MSISDN, AppResources.PicUpdate_StatusTxt, StatusMessage.StatusType.PROFILE_PIC_UPDATE,
-                        serverId, TimeUtils.getCurrentTimeStamp(), true, -1);
+                        serverId, TimeUtils.getCurrentTimeStamp(), -1,true);
                     StatusMsgsTable.InsertStatusMsg(sm);
                     App.HikePubSubInstance.publish(HikePubSub.STATUS_RECEIVED, sm);
                 }
