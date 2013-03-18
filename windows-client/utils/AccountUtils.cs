@@ -528,6 +528,7 @@ namespace windows_client.utils
         {
             HttpWebRequest req = HttpWebRequest.Create(new Uri(BASE + "/account/profile/" + msisdn)) as HttpWebRequest;
             addToken(req);
+            req.Method = "GET";
             req.BeginGetResponse(GetRequestCallback, new object[] { req,finalCallbackFunction });
         }
 

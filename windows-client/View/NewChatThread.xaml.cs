@@ -176,8 +176,6 @@ namespace windows_client.View
         public NewChatThread()
         {
             InitializeComponent();
-            //messagesCollection = new ObservableCollection<UIElement>();
-            //messageListBox.ItemsSource = messagesCollection;
         }
 
         private void ManagePageStateObjects()
@@ -228,12 +226,15 @@ namespace windows_client.View
                 this.State.Remove(HikeConstants.GROUP_CHAT);
                 isGC = true;
             }
+            // whenever CT is opened , mark last msg as read if received read
+            if (App.ViewModel.ConvMap.ContainsKey(mContactNumber) && App.ViewModel.ConvMap[mContactNumber].MessageStatus == ConvMessage.State.RECEIVED_UNREAD)
+                App.ViewModel.ConvMap[mContactNumber].MessageStatus = ConvMessage.State.RECEIVED_READ;
+
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (s, e) =>
             {
                 Stopwatch st = Stopwatch.StartNew();
                 attachments = MiscDBUtil.getAllFileAttachment(mContactNumber);
-                //attachments = new Dictionary<long, Attachment>();
                 loadMessages(INITIAL_FETCH_COUNT);
                 ScrollToBottomFromUI();
                 st.Stop();
