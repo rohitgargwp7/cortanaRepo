@@ -143,7 +143,7 @@ namespace windows_client.View
                             {
                                 for (int i = 0; i < statusMessagesFromDB.Count; i++)
                                 {
-                                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                                    statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null,
                                         null, enlargePic_Tap));
                                 }
                             }
@@ -173,7 +173,7 @@ namespace windows_client.View
                                 {
                                     for (int i = 0; i < statusMessagesFromDB.Count; i++)
                                     {
-                                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
+                                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null,
                                             null, enlargePic_Tap));
                                     }
                                 }
@@ -541,8 +541,10 @@ namespace windows_client.View
                 {
                     for (int i = 0; i < statusMessagesFromDB.Count; i++)
                     {
-                        statusList.Add(StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null, 
-                            null, enlargePic_Tap));
+                        StatusUpdateBox sb = StatusUpdateHelper.Instance.createStatusUIObject(statusMessagesFromDB[i], false, null,
+                            null, enlargePic_Tap);
+                        if (sb != null)
+                            statusList.Add(sb);
                     }
                 }
                 if (statusList.Count == 0)
