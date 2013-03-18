@@ -765,7 +765,7 @@ namespace windows_client.View
             }
 
             friendStatus = FriendsTableUtils.GetFriendInfo(msisdn,out timeOfJoin);
-            //if (timeOfJoin == 0)
+            if (timeOfJoin == 0)
             {
                 AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
             }
