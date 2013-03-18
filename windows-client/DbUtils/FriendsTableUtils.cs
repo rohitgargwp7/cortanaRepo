@@ -137,7 +137,7 @@ namespace windows_client.DbUtils
             return friendStatus;
         }
 
-        private static FriendStatusEnum GetFriendStatusFromFile(string msisdn,out long ts)
+        public static FriendStatusEnum GetFriendInfo(string msisdn,out long ts)
         {
             ts = 0;
             FriendStatusEnum friendStatus = FriendStatusEnum.NOT_SET;

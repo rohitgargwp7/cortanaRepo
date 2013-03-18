@@ -45,6 +45,7 @@ namespace windows_client.View
         bool toggleToInvitedScreen;
         bool isBlocked;
         FriendsTableUtils.FriendStatusEnum friendStatus;
+        private long timeOfJoin;
 
         public UserProfile()
         {
@@ -765,7 +766,12 @@ namespace windows_client.View
                 return;
             }
 
-            friendStatus = FriendsTableUtils.GetFriendStatus(msisdn);
+            friendStatus = FriendsTableUtils.GetFriendInfo(msisdn,out timeOfJoin);
+            if (timeOfJoin == 0)
+            {
+                AccountUtils.GetOnhikeDate(msisdn, new AccountUtils.postResponseFunction(GetHikeStatus_Callback));
+            }
+
             if (friendStatus != FriendsTableUtils.FriendStatusEnum.FRIENDS)
             {
                 BackgroundWorker bw = new BackgroundWorker();
@@ -833,6 +839,21 @@ namespace windows_client.View
             else
                 LoadStatuses();
 
+        }
+
+        public void GetHikeStatus_Callback(JObject obj)
+        {
+            if (obj != null && HikeConstants.FAIL != (string)obj[HikeConstants.STAT])
+            {
+                JObject j = (JObject)obj["profile"];
+                long time = (long)j["jointime"];
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    //TODO : Rohit handle the UI
+                });
+                FriendsTableUtils.SetJoiningTime(msisdn, time);
+            }
+            // ignore if call is failed
         }
 
         #region CONTROL UI ON FRIENDSHIP BASIS
